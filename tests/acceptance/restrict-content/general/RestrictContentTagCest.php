@@ -57,8 +57,7 @@ class RestrictContentTagCest
 
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page and the subscriber logs in and obtains
-	 * a signed subscriber ID.
+	 * creating and viewing a new WordPress Page and the subscriber uses a signed subscriber ID.
 	 *
 	 * @since   2.7.1
 	 *
@@ -88,7 +87,7 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $url);
+		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url);
 	}
 
 	/**

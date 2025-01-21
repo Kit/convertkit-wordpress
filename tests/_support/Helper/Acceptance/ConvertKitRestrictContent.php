@@ -386,6 +386,22 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->see($options['text_items']['subscribe_text_tag']);
 		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $recaptchaEnabled ? ' g-recaptcha' : '' ) . '" value="' . $options['text_items']['subscribe_button_label'] . '"');
 
+		// Set cookie with subscriber ID that does not have access to the tag, and reload the restricted content page.
+		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS']);
+		if ( is_numeric( $urlOrPageID ) ) {
+			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
+		} else {
+			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
+		}
+
+		// Confirm an inline error message is displayed.
+		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">' . $options['text_items']['no_access_text'] . '</div>');
+		$I->seeInSource('<div id="convertkit-restrict-content-email-field" class="convertkit-restrict-content-error">');
+
+		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
+		$I->see($options['visible_content']);
+		$I->dontSee($options['member_content']);
+
 		// Enter the email address and submit the form.
 		$I->fillField('convertkit_email', $emailAddress);
 		$I->click('input.wp-block-button__link');
@@ -393,6 +409,83 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Wait for reCAPTCHA to fully load.
 		if ( $recaptchaEnabled ) {
 			$I->wait(3);
+		}
+
+		// Confirm that the restricted content is now displayed.
+		$I->testRestrictContentDisplaysContent($I, $options);
+	}
+
+	/**
+	 * Run frontend tests for restricted content by ConvertKit Product, to confirm that visible and member's content
+	 * is / is not displayed when using signed subscriber IDs that do / do not have access to the content.
+	 *
+	 * @since   2.7.1
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   bool|array       $options {
+	 *           Optional. An array of settings.
+	 *
+	 *     @type string $visible_content            Content that should always be visible.
+	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
+	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 * }
+	 * @param   bool             $recaptchaEnabled   Whether the reCAPTCHA settings are enabled in the Plugin settings.
+	 */
+	public function testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $urlOrPageID, $options = false, $recaptchaEnabled = false)
+	{
+		// Merge options with defaults.
+		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+
+		// Navigate to the page.
+		if ( is_numeric( $urlOrPageID ) ) {
+			$I->amOnPage('?p=' . $urlOrPageID);
+		} else {
+			$I->amOnUrl($urlOrPageID);
+		}
+
+		// Clear any existing cookie from a previous test and reload.
+		$I->resetCookie('ck_subscriber_id');
+		$I->reloadPage();
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm Restrict Content CSS is output.
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+
+		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
+		$I->see($options['visible_content']);
+		$I->dontSee($options['member_content']);
+
+		// Confirm that the CTA displays with the expected headings, text and other elements.
+		$I->seeElementInDOM('#convertkit-restrict-content');
+		$I->seeInSource('<h3>' . $options['text_items']['subscribe_heading_tag'] . '</h3>');
+		$I->see($options['text_items']['subscribe_text_tag']);
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $recaptchaEnabled ? ' g-recaptcha' : '' ) . '" value="' . $options['text_items']['subscribe_button_label'] . '"');
+
+		// Set cookie with signed subscriber ID that does not have access to the tag, and reload the restricted content page.
+		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS']);
+		if ( is_numeric( $urlOrPageID ) ) {
+			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
+		} else {
+			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
+		}
+
+		// Confirm an inline error message is displayed.
+		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">' . $options['text_items']['no_access_text'] . '</div>');
+		$I->seeInSource('<div id="convertkit-restrict-content-email-field" class="convertkit-restrict-content-error">');
+
+		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
+		$I->see($options['visible_content']);
+		$I->dontSee($options['member_content']);
+
+		// Set cookie with signed subscriber ID that does have access to the tag, and reload the restricted content page.
+		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		if ( is_numeric( $urlOrPageID ) ) {
+			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
+		} else {
+			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
 		}
 
 		// Confirm that the restricted content is now displayed.
