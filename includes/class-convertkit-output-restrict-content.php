@@ -829,54 +829,130 @@ class ConvertKit_Output_Restrict_Content {
 		// for restrict by tag and form later.
 		switch ( $this->resource_type ) {
 			case 'product':
-				// Get products that the subscriber has access to.
-				$result = $this->api->profile( $subscriber_id );
-
-				// If an error occured, the subscriber ID is invalid.
-				if ( is_wp_error( $result ) ) {
-					return false;
-				}
-
-				// If no products exist, there's no access.
-				if ( ! $result['products'] || ! count( $result['products'] ) ) {
-					return false;
-				}
-
-				// Return if the subscriber is not subscribed to the product.
-				if ( ! in_array( absint( $this->resource_id ), $result['products'], true ) ) {
-					return false;
-				}
-
-				// If here, the subscriber is subscribed to the product.
-				return true;
+				// For products, the subscriber ID has to be a signed subscriber ID string.
+				return $this->subscriber_has_access_to_product_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
 			case 'tag':
-				// Get tags that the subscriber has been assigned.
-				$tags = $this->api->get_subscriber_tags( $subscriber_id );
-
-				// If an error occured, the subscriber ID is invalid.
-				if ( is_wp_error( $tags ) ) {
-					return false;
+				// If the subscriber ID is numeric, check using get_subscriber_tags().
+				if ( is_numeric( $subscriber_id ) ) {
+					return $this->subscriber_has_access_to_tag_by_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 				}
 
-				// If no tags exist, there's no access.
-				if ( ! count( $tags['tags'] ) ) {
-					return false;
-				}
+				// The subscriber ID is a signed subscriber ID string.
+				// Check using profile().
+				return $this->subscriber_has_access_to_tag_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
-				// Iterate through the subscriber's tags to see if they have the required tag.
-				foreach ( $tags['tags'] as $tag ) {
-					if ( $tag['id'] === absint( $this->resource_id ) ) {
-						// Subscriber has the required tag assigned to them - grant access.
-						return true;
-					}
-				}
-
-				// If here, the subscriber does not have the tag.
-				return false;
 		}
 
 		// If here, the subscriber does not have access.
+		return false;
+
+	}
+
+	/**
+	 * Determines if the given signed subscriber ID has an active subscription to
+	 * the given product.
+	 *
+	 * @since   2.7.1
+	 *
+	 * @param   string $signed_subscriber_id   Signed Subscriber ID.
+	 * @param   int    $product_id             Product ID.
+	 * @return  bool                            Has access to product
+	 */
+	private function subscriber_has_access_to_product_by_signed_subscriber_id( $signed_subscriber_id, $product_id ) {
+
+		// Get products that the subscriber has access to.
+		$result = $this->api->profile( $signed_subscriber_id );
+
+		// If an error occured, the subscriber ID is invalid.
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		// If no products exist, there's no access.
+		if ( ! $result['products'] || ! count( $result['products'] ) ) {
+			return false;
+		}
+
+		// Return if the subscriber is not subscribed to the product.
+		if ( ! in_array( $product_id, $result['products'], true ) ) {
+			return false;
+		}
+
+		// If here, the subscriber is subscribed to the product.
+		return true;
+
+	}
+
+	/**
+	 * Determines if the given signed subscriber ID has an active subscription to
+	 * the given tag.
+	 *
+	 * @since   2.7.1
+	 *
+	 * @param   string $signed_subscriber_id   Signed Subscriber ID.
+	 * @param   int    $tag_id                 Tag ID.
+	 * @return  bool                            Has access to tag
+	 */
+	private function subscriber_has_access_to_tag_by_signed_subscriber_id( $signed_subscriber_id, $tag_id ) {
+
+		// Get products that the subscriber has access to.
+		$result = $this->api->profile( $signed_subscriber_id );
+
+		// If an error occured, the subscriber ID is invalid.
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		// If no tags exist, there's no access.
+		if ( ! $result['tags'] || ! count( $result['tags'] ) ) {
+			return false;
+		}
+
+		// Return if the subscriber is not subscribed to the tag.
+		if ( ! in_array( $tag_id, $result['tags'], true ) ) {
+			return false;
+		}
+
+		// If here, the subscriber is subscribed to the product.
+		return true;
+
+	}
+
+	/**
+	 * Determines if the given signed subscriber ID has an active subscription to
+	 * the given tag.
+	 *
+	 * @since   2.7.1
+	 *
+	 * @param   int $subscriber_id  Subscriber ID.
+	 * @param   int $tag_id         Tag ID.
+	 * @return  bool                Has access to tag
+	 */
+	private function subscriber_has_access_to_tag_by_subscriber_id( $subscriber_id, $tag_id ) {
+
+		// Get tags that the subscriber has been assigned.
+		$tags = $this->api->get_subscriber_tags( $subscriber_id );
+
+		// If an error occured, the subscriber ID is invalid.
+		if ( is_wp_error( $tags ) ) {
+			return false;
+		}
+
+		// If no tags exist, there's no access.
+		if ( ! count( $tags['tags'] ) ) {
+			return false;
+		}
+
+		// Iterate through the subscriber's tags to see if they have the required tag.
+		foreach ( $tags['tags'] as $tag ) {
+			if ( $tag['id'] === $tag_id ) {
+				// Subscriber has the required tag assigned to them - grant access.
+				return true;
+			}
+		}
+
+		// If here, the subscriber does not have the tag.
 		return false;
 
 	}
