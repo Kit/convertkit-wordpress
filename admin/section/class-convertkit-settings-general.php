@@ -755,8 +755,8 @@ class ConvertKit_Settings_General extends ConvertKit_Settings_Base {
 	 *
 	 * @since   2.4.3
 	 *
-	 * @param   array $settings   Submitted Settings Fields.
-	 * @return  array               Sanitized Settings with Defaults
+	 * @param   null|array $settings   Submitted Settings Fields.
+	 * @return  array                   Sanitized Settings with Defaults
 	 */
 	public function sanitize_settings( $settings ) {
 
@@ -765,6 +765,12 @@ class ConvertKit_Settings_General extends ConvertKit_Settings_Base {
 		// This ensures we only blank these values if we explicitly do so via $settings,
 		// as they won't be included in the Settings screen for security.
 		if ( ! array_key_exists( 'disconnect', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// If settings are null, no checkboxes were ticked and no other form elements
+			// were submitted i.e. the Kit account has no forms.
+			if ( is_null( $settings ) ) {
+				$settings = array();
+			}
+
 			if ( ! array_key_exists( 'access_token', $settings ) ) {
 				$settings['access_token'] = $this->settings->get_access_token();
 			}
