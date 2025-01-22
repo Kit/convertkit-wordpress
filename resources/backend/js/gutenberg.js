@@ -142,7 +142,10 @@ function convertKitGutenbergRegisterBlock( block ) {
 							value: '',
 						}
 					);
-					for ( let value in field.values ) {
+					for ( const value of Object.keys( field.values ) ) {
+						console.log( field.values[ value ] );
+						console.log( value );
+
 						fieldOptions.push(
 							{
 								label: field.values[ value ],
@@ -180,7 +183,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 							value: '',
 						}
 					);
-					for ( let value in field.values ) {
+					for ( const value of Object.keys( field.values ) ) {
 						fieldOptions.push(
 							{
 								label: field.values[ value ],
