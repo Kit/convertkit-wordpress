@@ -1199,6 +1199,10 @@ class ConvertKit_Output_Restrict_Content {
 				return trim( ob_get_clean() );
 
 			case 'tag':
+				// Get header and text from settings for Tags.
+				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
+				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
+
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->require_login_for_tags() ) {
 					// If scripts are enabled, output the email login form in a modal, which will be displayed
@@ -1213,10 +1217,6 @@ class ConvertKit_Output_Restrict_Content {
 							}
 						);
 					}
-
-					// Get header and text from settings for Tags.
-					$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
-					$text = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
 
 					// Output.
 					ob_start();
