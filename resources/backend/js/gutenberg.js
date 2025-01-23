@@ -50,6 +50,8 @@ function convertKitGutenbergRegisterBlock( block ) {
 			TextControl,
 			SelectControl,
 			ToggleControl,
+			Flex,
+			FlexItem,
 			Panel,
 			PanelBody,
 			PanelRow
@@ -126,20 +128,24 @@ function convertKitGutenbergRegisterBlock( block ) {
 				}
 			};
 
+			let fieldOptions = [];
+
 			// Define additional Field Properties and the Field Element,
 			// depending on the Field Type (select, textarea, text etc).
 			switch ( field.type ) {
 
 				case 'select':
 					// Build options for <select> input.
-					let fieldOptions = [];
 					fieldOptions.push(
 						{
 							label: '(None)',
 							value: '',
 						}
 					);
-					for ( let value in field.values ) {
+					for ( const value of Object.keys( field.values ) ) {
+						console.log( field.values[ value ] );
+						console.log( value );
+
 						fieldOptions.push(
 							{
 								label: field.values[ value ],
@@ -166,6 +172,60 @@ function convertKitGutenbergRegisterBlock( block ) {
 					return el(
 						SelectControl,
 						fieldProperties
+					);
+					break;
+
+				case 'resource':
+					// Build options for <select> input.
+					fieldOptions.push(
+						{
+							label: '(None)',
+							value: '',
+						}
+					);
+					for ( const value of Object.keys( field.values ) ) {
+						fieldOptions.push(
+							{
+								label: field.values[ value ],
+								value: value
+							}
+						);
+					}
+
+					// Sort field's options alphabetically by label.
+					fieldOptions.sort(
+						function ( x, y ) {
+
+							let a = x.label.toUpperCase(),
+							b     = y.label.toUpperCase();
+							return a.localeCompare( b );
+
+						}
+					);
+
+					// Assign options to field.
+					fieldProperties.options = fieldOptions;
+
+					return el(
+						Flex,
+						{
+							align: 'start',
+						},
+						[
+							el(
+								FlexItem,
+								{},
+								el(
+									SelectControl,
+									fieldProperties
+								)
+							),
+							el(
+								FlexItem,
+								{},
+								inlineRefreshButton( props )
+							)
+						]
 					);
 					break;
 
@@ -502,7 +562,51 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 					}
 				}
-			)
+			);
+
+		}
+
+		/**
+		 * Returns an inline refresh button, used to refresh a block's resources.
+		 *
+		 * @since 	2.7.1
+		 *
+		 * @param 	object 	props 				Block properties.
+		 * @return 	object 						Button.
+		 */
+		const inlineRefreshButton = function ( props ) {
+
+			return el( blockInlineRefreshButton, props );
+
+		}
+
+		/**
+		 * Returns a refresh button.
+		 *
+		 * @since 	2.7.1
+		 *
+		 * @param 	object 	props 	Block properties.
+		 * @return 	object 	Button.
+		 */
+		const blockInlineRefreshButton = function ( props ) {
+
+			const [ buttonDisabled, setButtonDisabled ] = useState( false );
+
+			return el(
+				Button,
+				{
+					key: props.clientId + '-refresh-button',
+					className: 'button button-secondary convertkit-block-refresh',
+					disabled: buttonDisabled,
+					icon: dashIcon( 'update' ),
+					onClick: function () {
+
+						// Refresh block definitions.
+						refreshBlocksDefinitions( props, setButtonDisabled );
+
+					}
+				}
+			);
 
 		}
 
@@ -580,7 +684,9 @@ function convertKitGutenbergRegisterBlock( block ) {
 			data.append( 'nonce', convertkit_gutenberg.get_blocks_nonce );
 
 			// Disable the button.
-			setButtonDisabled( true );
+			if ( typeof setButtonDisabled !== 'undefined' ) {
+				setButtonDisabled( true );
+			}
 
 			// Send AJAX request.
 			fetch(
@@ -619,7 +725,9 @@ function convertKitGutenbergRegisterBlock( block ) {
 					);
 
 					// Enable refresh button.
-					setButtonDisabled( false );
+					if ( typeof setButtonDisabled !== 'undefined' ) {
+						setButtonDisabled( false );
+					}
 
 				}
 			)
