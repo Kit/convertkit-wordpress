@@ -99,6 +99,53 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			)
 		);
 
+		// Restrict by Tag.
+		add_settings_field(
+			'subscribe_heading_tag',
+			__( 'Subscribe Heading', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-tags',
+			array(
+				'name'        => 'subscribe_heading_tag',
+				'label_for'   => 'subscribe_heading_tag',
+				'description' => array(
+					__( 'Displays text in a heading explaining why the content is only available to subscribers.', 'convertkit' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'subscribe_text_tag',
+			__( 'Subscribe Text', 'convertkit' ),
+			array( $this, 'textarea_callback' ),
+			$this->settings_key,
+			$this->name . '-tags',
+			array(
+				'name'        => 'subscribe_text_tag',
+				'label_for'   => 'subscribe_text_tag',
+				'description' => array(
+					__( 'Displays text explaining why the content is only available to subscribers.', 'convertkit' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'require_login_for_tags',
+			__( 'Require Login', 'convertkit' ),
+			array( $this, 'require_login_for_tags_callback' ),
+			$this->settings_key,
+			$this->name . '-tags',
+			array(
+				'name'        => 'require_login_for_tags',
+				'label_for'   => 'require_login_for_tags',
+				'label'		  => __( 'When enabled, subscribers enter their email to receive a login link to access the member-only content.', 'convertkit' ),
+				'description' => array(
+					__( 'If unchecked, subscribers are immediately subscribed to the tag and granted access when entering their email address.', 'convertkit' ),
+				),
+			)
+		);
+
 		// reCAPTCHA.
 		add_settings_field(
 			'recaptcha_site_key',
@@ -142,37 +189,6 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 				'step'        => 0.01,
 				'description' => array(
 					__( 'Enter the minimum threshold for a subscriber to pass Google reCAPTCHA. A higher number will reduce spam signups (1.0 is very likely a good interaction, 0.0 is very likely a bot).', 'convertkit' ),
-				),
-			)
-		);
-
-		// Restrict by Tag.
-		add_settings_field(
-			'subscribe_heading_tag',
-			__( 'Subscribe Heading', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'subscribe_heading_tag',
-				'label_for'   => 'subscribe_heading_tag',
-				'description' => array(
-					__( 'Displays text in a heading explaining why the content is only available to subscribers.', 'convertkit' ),
-				),
-			)
-		);
-
-		add_settings_field(
-			'subscribe_text_tag',
-			__( 'Subscribe Text', 'convertkit' ),
-			array( $this, 'textarea_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'subscribe_text_tag',
-				'label_for'   => 'subscribe_text_tag',
-				'description' => array(
-					__( 'Displays text explaining why the content is only available to subscribers.', 'convertkit' ),
 				),
 			)
 		);
@@ -229,7 +245,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'Email Text', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'email_text',
 				'label_for'   => 'email_text',
@@ -244,7 +260,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'Email Heading', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'email_heading',
 				'label_for'   => 'email_heading',
@@ -259,7 +275,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'Email Field Description', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'email_description_text',
 				'label_for'   => 'email_description_text',
@@ -274,7 +290,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'Email Button Label', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'email_button_label',
 				'label_for'   => 'email_button_label',
@@ -289,7 +305,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'Email Check Heading', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'email_check_heading',
 				'label_for'   => 'email_check_heading',
@@ -304,7 +320,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'Email Check Text', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'email_check_text',
 				'label_for'   => 'email_check_text',
@@ -319,7 +335,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			__( 'No Access Text', 'convertkit' ),
 			array( $this, 'text_callback' ),
 			$this->settings_key,
-			$this->name . '-products',
+			$this->name,
 			array(
 				'name'        => 'no_access_text',
 				'label_for'   => 'no_access_text',
@@ -384,7 +400,7 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 	}
 
 	/**
-	 * Renders the input for the Enable setting.
+	 * Renders the input for the Permit Crawlers setting.
 	 *
 	 * @since   2.4.1
 	 *
@@ -397,6 +413,26 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 			$args['name'],
 			'on',
 			$this->settings->permit_crawlers(), // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Require Login setting.
+	 *
+	 * @since   2.7.2
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function require_login_for_tags_callback( $args ) {
+
+		// Output field.
+		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['name'],
+			'on',
+			$this->settings->require_login_for_tags(), // phpcs:ignore WordPress.Security.EscapeOutput
 			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
 			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
 		);

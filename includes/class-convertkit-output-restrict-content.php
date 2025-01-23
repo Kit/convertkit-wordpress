@@ -207,6 +207,29 @@ class ConvertKit_Output_Restrict_Content {
 				break;
 
 			case 'tag':
+				// If require login is enabled, show the login screen.
+				if ( $this->restrict_content_settings->require_login_for_tags() ) {
+					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
+					$result = $this->api->subscriber_authentication_send_code(
+						$email,
+						$this->get_url()
+					);
+
+					// Bail if an error occured.
+					if ( is_wp_error( $result ) ) {
+						$this->error = $result;
+						return;
+					}
+
+					// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
+					$subscriber = new ConvertKit_Subscriber();
+					$subscriber->forget();
+
+					// Store the token so it's included in the subscriber code form.
+					$this->token = $result;
+					break;
+				}
+
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
 				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
 					$response = wp_remote_post(
@@ -1129,18 +1152,18 @@ class ConvertKit_Output_Restrict_Content {
 
 		}
 
+		// Output code form if this request is after the user entered their email address,
+		// which means we're going through the authentication flow.
+		if ( $this->in_authentication_flow() ) { // phpcs:ignore WordPress.Security.NonceVerification
+			ob_start();
+			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/code.php';
+			return trim( ob_get_clean() );
+		}
+
 		// This is deliberately a switch statement, because we will likely add in support
 		// for restrict by tag and form later.
 		switch ( $this->resource_type ) {
 			case 'product':
-				// Output product code form if this request is after the user entered their email address,
-				// which means we're going through the authentication flow.
-				if ( $this->in_authentication_flow() ) { // phpcs:ignore WordPress.Security.NonceVerification
-					ob_start();
-					include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-code.php';
-					return trim( ob_get_clean() );
-				}
-
 				// Output product restricted message and email form.
 				// Get Product.
 				$products = new ConvertKit_Resource_Products( 'restrict_content' );
@@ -1159,19 +1182,50 @@ class ConvertKit_Output_Restrict_Content {
 						'wp_footer',
 						function () {
 
-							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-modal.php';
+							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 
 						}
 					);
 				}
 
+				// Get header and text from settings for Products.
+				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading' );
+				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
+
 				// Output.
 				ob_start();
 				$button = $products->get_html( $this->resource_id, $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) );
-				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
+				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login.php';
 				return trim( ob_get_clean() );
 
 			case 'tag':
+				// If require login is enabled, show the login screen.
+				if ( $this->restrict_content_settings->require_login_for_tags() ) {
+					// If scripts are enabled, output the email login form in a modal, which will be displayed
+					// when the 'log in' link is clicked.
+					if ( ! $this->settings->scripts_disabled() ) {
+						add_action(
+							'wp_footer',
+							function () {
+
+								include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
+
+							}
+						);
+					}
+
+					// Get header and text from settings for Tags.
+					$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
+					$text = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
+
+					// Output.
+					ob_start();
+					include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login.php';
+					return trim( ob_get_clean() );
+				}
+
+				// If here, no login required.
+				// Users can enter their email to immediately subscribe to the tag and gain access.
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
 				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
 					add_filter(
@@ -1190,7 +1244,7 @@ class ConvertKit_Output_Restrict_Content {
 
 				// Output.
 				ob_start();
-				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/tag.php';
+				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/subscribe.php';
 				return trim( ob_get_clean() );
 
 			default:

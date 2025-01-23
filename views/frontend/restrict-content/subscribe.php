@@ -13,14 +13,9 @@
 
 <div id="convertkit-restrict-content">
 	<div class="convertkit-restrict-content-actions">
-		<h3><?php echo esc_html( $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' ) ); ?></h3>
-		<p>
-			<?php
-			foreach ( explode( "\n", $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' ) ) as $text_line ) {
-				echo esc_html( $text_line ) . '<br />';
-			}
-			?>
-		</p>
+		<?php
+		require 'header.php';
+		?>
 
 		<form id="convertkit-restrict-content-form" action="<?php echo esc_attr( add_query_arg( array( 'convertkit_login' => 1 ), get_permalink( $post_id ) ) ); ?>#convertkit-restrict-content" method="post">
 			<div id="convertkit-restrict-content-email-field" class="<?php echo sanitize_html_class( ( is_wp_error( $this->error ) ? 'convertkit-restrict-content-error' : '' ) ); ?>">
