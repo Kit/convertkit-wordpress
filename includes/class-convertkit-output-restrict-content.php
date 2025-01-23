@@ -208,7 +208,7 @@ class ConvertKit_Output_Restrict_Content {
 
 			case 'tag':
 				// If require login is enabled, show the login screen.
-				if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
+				if ( $this->restrict_content_settings->require_tag_login() ) {
 					// Tag the subscriber.
 					$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
@@ -873,7 +873,7 @@ class ConvertKit_Output_Restrict_Content {
 				if ( is_numeric( $subscriber_id ) ) {
 					// If require login is enabled, only a signed subscriber ID is accepted, as this is generated
 					// via the subscriber verify email flow.
-					if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
+					if ( $this->restrict_content_settings->require_tag_login() ) {
 						return false;
 					}
 
@@ -1224,7 +1224,7 @@ class ConvertKit_Output_Restrict_Content {
 
 				// If require login is enabled and scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
-				if ( $this->restrict_content_settings->subscribe_tag_require_login() && ! $this->settings->scripts_disabled() ) {
+				if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
 					add_action(
 						'wp_footer',
 						function () {

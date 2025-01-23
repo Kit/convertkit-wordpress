@@ -44,7 +44,7 @@
 
 		<?php
 		// If require login is enabled, show the login screen.
-		if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
+		if ( $this->restrict_content_settings->require_tag_login() ) {
 			// If scripts are disabled in the Plugin's settings, output the email login form now.
 			if ( $this->settings->scripts_disabled() ) {
 				?>

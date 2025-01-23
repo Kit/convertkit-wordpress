@@ -691,7 +691,7 @@ class ConvertKit_Settings_General extends ConvertKit_Settings_Base {
 		);
 
 		// Build field.
-		$select_field = $this->forms->get_multi_select_field_non_inline(
+		$select_field = $this->forms->get_select_field_non_inline(
 			$this->settings_key . '[non_inline_form]',
 			$this->settings_key . '_non_inline_form',
 			array(

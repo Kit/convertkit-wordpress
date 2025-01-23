@@ -140,18 +140,16 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 		);
 
 		add_settings_field(
-			'subscribe_tag_method',
-			__( 'Method', 'convertkit' ),
-			array( $this, 'subscribe_tag_method_callback' ),
+			'require_tag_login',
+			__( 'Require Login', 'convertkit' ),
+			array( $this, 'require_tag_login_callback' ),
 			$this->settings_key,
 			$this->name . '-tags',
 			array(
-				'name'        => 'subscribe_tag_method',
-				'label_for'   => 'subscribe_tag_method',
-				'label'		  => __( 'When enabled, subscribers enter their email to receive a login link to access the member-only content.', 'convertkit' ),
-				'description' => array(
-					__( 'If unchecked, subscribers are immediately subscribed to the tag and granted access when entering their email address.', 'convertkit' ),
-				),
+				'name'        => 'require_tag_login',
+				'label_for'   => 'require_tag_login',
+				'label'       => __( 'When checked, subscribers are sent a code in an email to login after being subscribed and tagged.', 'convertkit' ),
+				'description' => '',
 			)
 		);
 
@@ -435,21 +433,15 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 	 *
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
-	public function subscribe_tag_method_callback( $args ) {
+	public function require_tag_login_callback( $args ) {
 
 		// Output field.
-		echo $this->get_select_field(
+		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
 			$args['name'],
-			$this->settings->subscribe_tag_method(),
-			array(
-				'' 	 	=> __( 'Instant confirmation and tagging', 'convertkit' ),
-				'login' => __( 'Enter email to receive login link (Recommended)', 'convertkit' ),
-			),
-			$args['description'],
-			array(
-				'enabled',
-				'widefat',
-			)
+			'on',
+			$this->settings->require_tag_login(), // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
 		);
 
 	}

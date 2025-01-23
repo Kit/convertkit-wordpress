@@ -78,29 +78,15 @@ class ConvertKit_Settings_Restrict_Content {
 	}
 
 	/**
-	 * Returns the method to subscribe to Tag in Member Content functionality.
+	 * Returns whether login by email is required for Member Content by Tag functionality.
 	 *
 	 * @since   2.7.2
 	 *
 	 * @return  bool
 	 */
-	public function subscribe_tag_method() {
+	public function require_tag_login() {
 
-		return $this->settings['subscribe_tag_method'];
-
-	}
-
-	/**
-	 * Returns whether login by email to receive a login link is required
-	 * for Member Content by Tag functionality.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @return  bool
-	 */
-	public function subscribe_tag_require_login() {
-
-		return ( $this->settings['subscribe_tag_method'] === 'login' ? true : false );
+		return ( $this->settings['require_tag_login'] === 'on' ? true : false );
 
 	}
 
@@ -229,7 +215,7 @@ class ConvertKit_Settings_Restrict_Content {
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => __( 'Subscribe to keep reading', 'convertkit' ),
 			'subscribe_text_tag'      => __( 'This post is free to read but only available to subscribers. Join today to get access to all posts.', 'convertkit' ),
-			'subscribe_tag_method' 	  => '', // blank|login.
+			'require_tag_login' 	  => '', // blank|on.
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
 			'recaptcha_minimum_score' => '0.5',
