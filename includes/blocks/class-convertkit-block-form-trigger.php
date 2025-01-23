@@ -372,11 +372,18 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
 
-		// Setup Settings class.
+		// Load classes.
 		$settings = new ConvertKit_Settings();
+		$convertkit_forms = new ConvertKit_Resource_Forms( 'render' );
 
-		// Build HTML.
-		$html = $this->get_html( $atts['form'], $atts['text'], $atts['_css_classes'], $atts['_css_styles'], $this->is_block_editor_request() );
+		// Build button HTML.
+		$html = $convertkit_forms->get_button_html(
+			$atts['form'],
+			$atts['text'],
+			$atts['_css_classes'],
+			$atts['_css_styles'],
+			$this->is_block_editor_request()
+		);
 
 		// Bail if an error occured.
 		if ( is_wp_error( $html ) ) {
@@ -399,103 +406,6 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 
 		return $html;
 
-	}
-
-	/**
-	 * Returns the HTML button markup for the given Form ID.
-	 *
-	 * @since   2.0.0
-	 *
-	 * @param   int    $id             Form ID.
-	 * @param   string $button_text    Button Text.
-	 * @param   array  $css_classes    CSS classes to apply to link (typically included when using Gutenberg).
-	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Gutenberg).
-	 * @param   bool   $return_as_span If true, returns a <span> instead of <a>. Useful for the block editor so that the element is interactible.
-	 * @return  WP_Error|string        Button HTML
-	 */
-	private function get_html( $id, $button_text, $css_classes = array(), $css_styles = array(), $return_as_span = false ) {
-
-		// Cast ID to integer.
-		$id = absint( $id );
-
-		// Load classes.
-		$convertkit_forms = new ConvertKit_Resource_Forms( 'render' );
-
-		// Get form.
-		$form = $convertkit_forms->get_by_id( $id );
-
-		// Bail if the form could not be found.
-		if ( ! $form ) {
-			return new WP_Error(
-				'convertkit_block_form_trigger_get_html',
-				sprintf(
-					/* translators: ConvertKit Form ID */
-					__( 'Kit Form ID %s does not exist on Kit.', 'convertkit' ),
-					$id
-				)
-			);
-		}
-
-		// Bail if no uid or embed_js properties exist.
-		if ( ! array_key_exists( 'uid', $form ) ) {
-			return new WP_Error(
-				'convertkit_block_form_trigger_get_html',
-				sprintf(
-					/* translators: ConvertKit Form ID */
-					__( 'Kit Form ID %s has no uid property.', 'convertkit' ),
-					$id
-				)
-			);
-		}
-		if ( ! array_key_exists( 'embed_js', $form ) ) {
-			return new WP_Error(
-				'convertkit_block_form_trigger_get_html',
-				sprintf(
-					/* translators: ConvertKit Form ID */
-					__( 'Kit Form ID %s has no embed_js property.', 'convertkit' ),
-					$id
-				)
-			);
-		}
-
-		// Build button HTML.
-		$html = '<div class="convertkit-button">';
-
-		if ( $return_as_span ) {
-			$html .= '<span';
-		} else {
-			$html .= '<a data-formkit-toggle="' . esc_attr( $form['uid'] ) . '" href="' . esc_url( $form['embed_url'] ) . '"';
-		}
-
-		$html .= ' class="wp-block-button__link ' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '">';
-		$html .= esc_html( $button_text );
-
-		if ( $return_as_span ) {
-			$html .= '</span>';
-		} else {
-			$html .= '</a>';
-		}
-
-		$html .= '</div>';
-
-		// Register the script, so it's only loaded once for this non-inline form across the entire page.
-		add_filter(
-			'convertkit_output_scripts_footer',
-			function ( $scripts ) use ( $form ) {
-
-				$scripts[] = array(
-					'async'    => true,
-					'data-uid' => $form['uid'],
-					'src'      => $form['embed_js'],
-				);
-
-				return $scripts;
-
-			}
-		);
-
-		// Return.
-		return $html;
 	}
 
 }

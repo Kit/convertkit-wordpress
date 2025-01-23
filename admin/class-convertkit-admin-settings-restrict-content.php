@@ -15,6 +15,15 @@
 class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Base {
 
 	/**
+	 * Holds the ConvertKit Forms Resource.
+	 *
+	 * @since   2.7.2
+	 *
+	 * @var     bool|ConvertKit_Resource_Forms
+	 */
+	private $forms = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   2.1.0
@@ -131,14 +140,30 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 		);
 
 		add_settings_field(
-			'require_login_for_tags',
-			__( 'Require Login', 'convertkit' ),
-			array( $this, 'require_login_for_tags_callback' ),
+			'subscribe_tag_method',
+			__( 'Method', 'convertkit' ),
+			array( $this, 'subscribe_tag_method_callback' ),
 			$this->settings_key,
 			$this->name . '-tags',
 			array(
-				'name'        => 'require_login_for_tags',
-				'label_for'   => 'require_login_for_tags',
+				'name'        => 'subscribe_tag_method',
+				'label_for'   => 'subscribe_tag_method',
+				'label'		  => __( 'When enabled, subscribers enter their email to receive a login link to access the member-only content.', 'convertkit' ),
+				'description' => array(
+					__( 'If unchecked, subscribers are immediately subscribed to the tag and granted access when entering their email address.', 'convertkit' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'subscribe_tag_form',
+			__( 'Form', 'convertkit' ),
+			array( $this, 'subscribe_tag_form_callback' ),
+			$this->settings_key,
+			$this->name . '-tags',
+			array(
+				'name'        => 'subscribe_tag_form',
+				'label_for'   => 'subscribe_tag_form',
 				'label'		  => __( 'When enabled, subscribers enter their email to receive a login link to access the member-only content.', 'convertkit' ),
 				'description' => array(
 					__( 'If unchecked, subscribers are immediately subscribed to the tag and granted access when entering their email address.', 'convertkit' ),
@@ -426,16 +451,60 @@ class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Bas
 	 *
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
-	public function require_login_for_tags_callback( $args ) {
+	public function subscribe_tag_method_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_select_field(
 			$args['name'],
-			'on',
-			$this->settings->require_login_for_tags(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->subscribe_tag_method(),
+			array(
+				'' 	 	=> __( 'Instant confirmation and tagging', 'convertkit' ),
+				'login' => __( 'Sign up using Kit Form, enter email to receive login link (Recommended)', 'convertkit' ),
+			),
+			$args['description'],
+			array(
+				'enabled',
+				'widefat',
+			)
 		);
+
+	}
+
+	/**
+	 * Renders the input for the Subscribe Form setting.
+	 *
+	 * @since  	2.7.2
+	 *
+	 * @param   array $args  Field arguments.
+	 */
+	public function subscribe_tag_form_callback( $args ) {
+
+		// Initialize forms resource class.
+		$this->forms = new ConvertKit_Resource_Forms( 'settings' );
+
+		// Bail if no non-inline Forms exist.
+		if ( ! $this->forms->non_inline_exist() ) {
+			esc_html_e( 'No non-inline Forms exist in Kit.', 'convertkit' );
+			echo '<br /><a href="' . esc_url( convertkit_get_new_form_url() ) . '" target="_blank">' . esc_html__( 'Click here to create your first modal, slide in or sticky bar form', 'convertkit' ) . '</a>';
+			return;
+		}
+
+		// Build field.
+		$select_field = $this->forms->get_select_field_non_inline(
+			'_wp_convertkit_settings_restrict_content[' . $args['name'] . ']',
+			$args['name'],
+			array(
+				'convertkit-select2',
+				'convertkit-preview-output-link',
+			),
+			$this->settings->subscribe_tag_form(),
+			false,
+			false,
+			esc_html__( 'Select the non-inline modal, slide in or sticky bar form to display when the visitor clicks the subscribe button.', 'convertkit' )
+		);
+
+		// Output field.
+		echo '<div class="convertkit-select2-container">' . $select_field . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
 
 	}
 

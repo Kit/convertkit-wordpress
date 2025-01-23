@@ -208,7 +208,7 @@ class ConvertKit_Output_Restrict_Content {
 
 			case 'tag':
 				// If require login is enabled, show the login screen.
-				if ( $this->restrict_content_settings->require_login_for_tags() ) {
+				if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
 					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 					$result = $this->api->subscriber_authentication_send_code(
 						$email,
@@ -1204,7 +1204,7 @@ class ConvertKit_Output_Restrict_Content {
 				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
 
 				// If require login is enabled, show the login screen.
-				if ( $this->restrict_content_settings->require_login_for_tags() ) {
+				if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
 					// If scripts are enabled, output the email login form in a modal, which will be displayed
 					// when the 'log in' link is clicked.
 					if ( ! $this->settings->scripts_disabled() ) {
@@ -1215,6 +1215,15 @@ class ConvertKit_Output_Restrict_Content {
 								include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 
 							}
+						);
+					}
+
+					// Define button if a Form is selected.
+					if ( ! empty( $this->restrict_content_settings->subscribe_tag_form() ) ) {
+						$forms = new ConvertKit_Resource_Forms( 'output_form' );
+						$button = $forms->get_button_html(
+							$this->restrict_content_settings->subscribe_tag_form(),
+							$this->restrict_content_settings->get_by_key( 'subscribe_button_label' )
 						);
 					}
 

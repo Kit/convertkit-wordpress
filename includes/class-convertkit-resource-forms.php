@@ -150,9 +150,10 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
-	 * Returns a <select> field populated with all non-inline forms, based on the given parameters.
+	 * Returns a <select> field populated with all non-inline forms, based on the given parameters,
+	 * that supports multiple selection.
 	 *
-	 * @since   2.3.9
+	 * @since   2.7.1
 	 *
 	 * @param   string            $name             Name.
 	 * @param   string            $id               ID.
@@ -163,7 +164,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	 * @param   bool|string|array $description      Description.
 	 * @return  string                              HTML Select Field
 	 */
-	public function get_select_field_non_inline( $name, $id, $css_classes, $selected_options, $prepend_options = false, $attributes = false, $description = false ) {
+	public function get_multi_select_field_non_inline( $name, $id, $css_classes, $selected_options, $prepend_options = false, $attributes = false, $description = false ) {
 
 		return $this->get_multi_select_field(
 			$this->get_non_inline(),
@@ -171,6 +172,35 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			$id,
 			$css_classes,
 			$selected_options,
+			$prepend_options,
+			$attributes,
+			$description
+		);
+
+	}
+
+	/**
+	 * Returns a <select> field populated with all non-inline forms, based on the given parameters.
+	 *
+	 * @since   2.3.9
+	 *
+	 * @param   string            $name             Name.
+	 * @param   string            $id               ID.
+	 * @param   bool|array        $css_classes      <select> CSS class(es).
+	  * @param   string            $selected_option <option> value to mark as selected.
+	 * @param   bool|array        $prepend_options  <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes       <select> attributes.
+	 * @param   bool|string|array $description      Description.
+	 * @return  string                              HTML Select Field
+	 */
+	public function get_select_field_non_inline( $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
+
+		return $this->get_select_field(
+			$this->get_non_inline(),
+			$name,
+			$id,
+			$css_classes,
+			$selected_option,
 			$prepend_options,
 			$attributes,
 			$description
@@ -487,6 +517,101 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 		// Return script output.
 		return $output;
 
+	}
+
+	/**
+	 * Returns the HTML button markup for the given Form ID, which acts as a trigger
+	 * to display the Form when clicked.
+	 *
+	 * @since   2.7.2
+	 *
+	 * @param   int    $id             Form ID.
+	 * @param   string $button_text    Button Text.
+	 * @param   array  $css_classes    CSS classes to apply to link (typically included when using Gutenberg).
+	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Gutenberg).
+	 * @param   bool   $return_as_span If true, returns a <span> instead of <a>. Useful for the block editor so that the element is interactible.
+	 * @return  WP_Error|string        Button HTML
+	 */
+	public function get_button_html( $id, $button_text, $css_classes = array(), $css_styles = array(), $return_as_span = false ) {
+
+		// Cast ID to integer.
+		$id = absint( $id );
+
+		// Get form.
+		$form = $this->get_by_id( $id );
+
+		// Bail if the form could not be found.
+		if ( ! $form ) {
+			return new WP_Error(
+				'convertkit_resource_forms_get_button_html',
+				sprintf(
+					/* translators: ConvertKit Form ID */
+					__( 'Kit Form ID %s does not exist on Kit.', 'convertkit' ),
+					$id
+				)
+			);
+		}
+
+		// Bail if no uid or embed_js properties exist.
+		if ( ! array_key_exists( 'uid', $form ) ) {
+			return new WP_Error(
+				'convertkit_resource_forms_get_button_html',
+				sprintf(
+					/* translators: ConvertKit Form ID */
+					__( 'Kit Form ID %s has no uid property.', 'convertkit' ),
+					$id
+				)
+			);
+		}
+		if ( ! array_key_exists( 'embed_js', $form ) ) {
+			return new WP_Error(
+				'convertkit_resource_forms_get_button_html',
+				sprintf(
+					/* translators: ConvertKit Form ID */
+					__( 'Kit Form ID %s has no embed_js property.', 'convertkit' ),
+					$id
+				)
+			);
+		}
+
+		// Build button HTML.
+		$html = '<div class="convertkit-button">';
+
+		if ( $return_as_span ) {
+			$html .= '<span';
+		} else {
+			$html .= '<a data-formkit-toggle="' . esc_attr( $form['uid'] ) . '" href="' . esc_url( $form['embed_url'] ) . '"';
+		}
+
+		$html .= ' class="wp-block-button__link ' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '">';
+		$html .= esc_html( $button_text );
+
+		if ( $return_as_span ) {
+			$html .= '</span>';
+		} else {
+			$html .= '</a>';
+		}
+
+		$html .= '</div>';
+
+		// Register the script, so it's only loaded once for this non-inline form across the entire page.
+		add_filter(
+			'convertkit_output_scripts_footer',
+			function ( $scripts ) use ( $form ) {
+
+				$scripts[] = array(
+					'async'    => true,
+					'data-uid' => $form['uid'],
+					'src'      => $form['embed_js'],
+				);
+
+				return $scripts;
+
+			}
+		);
+
+		// Return.
+		return $html;
 	}
 
 }
