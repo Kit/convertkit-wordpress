@@ -1183,6 +1183,10 @@ class ConvertKit_Output_Restrict_Content {
 		// for restrict by tag and form later.
 		switch ( $this->resource_type ) {
 			case 'product':
+				// Get header and text from settings for Products.
+				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading' );
+				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
+
 				// Output product restricted message and email form.
 				// Get Product.
 				$products = new ConvertKit_Resource_Products( 'restrict_content' );
@@ -1207,14 +1211,10 @@ class ConvertKit_Output_Restrict_Content {
 					);
 				}
 
-				// Get header and text from settings for Products.
-				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading' );
-				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
-
 				// Output.
 				ob_start();
 				$button = $products->get_html( $this->resource_id, $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) );
-				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login.php';
+				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
 				return trim( ob_get_clean() );
 
 			case 'tag':
@@ -1222,24 +1222,19 @@ class ConvertKit_Output_Restrict_Content {
 				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
 				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
 
-				// If require login is enabled, show the login screen.
-				if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
-					// If scripts are enabled, output the email login form in a modal, which will be displayed
-					// when the 'log in' link is clicked.
-					if ( ! $this->settings->scripts_disabled() ) {
-						add_action(
-							'wp_footer',
-							function () {
+				// If require login is enabled and scripts are enabled, output the email login form in a modal, which will be displayed
+				// when the 'log in' link is clicked.
+				if ( $this->restrict_content_settings->subscribe_tag_require_login() && ! $this->settings->scripts_disabled() ) {
+					add_action(
+						'wp_footer',
+						function () {
 
-								include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
+							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 
-							}
-						);
-					}
+						}
+					);
 				}
 
-				// If here, no login required.
-				// Users can enter their email to immediately subscribe to the tag and gain access.
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
 				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
 					add_filter(
