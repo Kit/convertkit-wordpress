@@ -3,7 +3,7 @@
  * Outputs the restricted content message,
  * and a form for the subscriber to enter their
  * email address if they've already subscribed
- * to the Kit Product or Tag.
+ * to the Kit Product.
  *
  * @package ConvertKit
  * @author ConvertKit
@@ -27,7 +27,7 @@
 			<?php echo esc_html( $this->restrict_content_settings->get_by_key( 'email_text' ) ); ?>
 		</p>
 		<?php
-		require 'product-email.php';
+		require 'login-email.php';
 	} else {
 		// Just output the paragraph with a link to login, which will trigger the modal to display.
 		?>

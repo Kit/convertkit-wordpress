@@ -209,6 +209,15 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
+					// Tag the subscriber.
+					$result = $this->api->tag_subscribe( $this->resource_id, $email );
+
+					// Bail if an error occured.
+					if ( is_wp_error( $result ) ) {
+						$this->error = $result;
+						return;
+					}
+
 					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 					$result = $this->api->subscriber_authentication_send_code(
 						$email,
@@ -229,6 +238,10 @@ class ConvertKit_Output_Restrict_Content {
 					$this->token = $result;
 					break;
 				}
+
+				// If here, require login is disabled.
+				// Check reCAPTCHA, tag subscriber and assign subscriber ID integer to cookie
+				// without email link.
 
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
 				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
@@ -858,6 +871,12 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If the subscriber ID is numeric, check using get_subscriber_tags().
 				if ( is_numeric( $subscriber_id ) ) {
+					// If require login is enabled, only a signed subscriber ID is accepted, as this is generated
+					// via the subscriber verify email flow.
+					if ( $this->restrict_content_settings->subscribe_tag_require_login() ) {
+						return false;
+					}
+
 					return $this->subscriber_has_access_to_tag_by_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 				}
 
@@ -1217,20 +1236,6 @@ class ConvertKit_Output_Restrict_Content {
 							}
 						);
 					}
-
-					// Define button if a Form is selected.
-					if ( ! empty( $this->restrict_content_settings->subscribe_tag_form() ) ) {
-						$forms = new ConvertKit_Resource_Forms( 'output_form' );
-						$button = $forms->get_button_html(
-							$this->restrict_content_settings->subscribe_tag_form(),
-							$this->restrict_content_settings->get_by_key( 'subscribe_button_label' )
-						);
-					}
-
-					// Output.
-					ob_start();
-					include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login.php';
-					return trim( ob_get_clean() );
 				}
 
 				// If here, no login required.
@@ -1253,7 +1258,7 @@ class ConvertKit_Output_Restrict_Content {
 
 				// Output.
 				ob_start();
-				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/subscribe.php';
+				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/tag.php';
 				return trim( ob_get_clean() );
 
 			default:

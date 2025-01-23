@@ -105,20 +105,6 @@ class ConvertKit_Settings_Restrict_Content {
 	}
 
 	/**
-	 * Returns the Kit Form to use for subscribing
-	 * to Member Content by Tag functionality.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @return  bool
-	 */
-	public function subscribe_tag_form() {
-
-		return $this->settings['subscribe_tag_form'];
-
-	}
-
-	/**
 	 * Returns the reCAPTCHA Site Key Plugin setting.
 	 *
 	 * @since   2.6.8
@@ -244,7 +230,6 @@ class ConvertKit_Settings_Restrict_Content {
 			'subscribe_heading_tag'   => __( 'Subscribe to keep reading', 'convertkit' ),
 			'subscribe_text_tag'      => __( 'This post is free to read but only available to subscribers. Join today to get access to all posts.', 'convertkit' ),
 			'subscribe_tag_method' 	  => '', // blank|login.
-			'subscribe_tag_form'	  => '',
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
 			'recaptcha_minimum_score' => '0.5',
