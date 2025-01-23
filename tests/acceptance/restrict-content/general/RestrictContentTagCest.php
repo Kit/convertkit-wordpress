@@ -56,6 +56,41 @@ class RestrictContentTagCest
 	}
 
 	/**
+	 * Test that restricting content by a Tag specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page and the subscriber uses a signed subscriber ID.
+	 *
+	 * @since   2.7.1
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testRestrictContentByTagUsingSignedSubscriberID(AcceptanceTester $I)
+	{
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag by Signed Subscriber ID');
+
+		// Configure metabox's Restrict Content setting = Tag name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url);
+	}
+
+	/**
 	 * Test that restricting content by a Tag that does not exist does not output
 	 * a fatal error and instead displays all of the Page's content.
 	 *
