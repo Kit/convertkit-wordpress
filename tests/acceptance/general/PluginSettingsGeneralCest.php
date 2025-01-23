@@ -674,6 +674,38 @@ class PluginSettingsGeneralCest
 
 		// Confirm no Form settings are displayed for non-inline Forms.
 		$I->dontSeeElementInDOM('#_wp_convertkit_settings_non_inline_form');
+
+		// Check Debug, Disable JavaScript and Disable CSS settings.
+		$I->checkOption('#debug');
+		$I->checkOption('#no_scripts');
+		$I->checkOption('#no_css');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the fields remain ticked.
+		$I->seeCheckboxIsChecked('#debug');
+		$I->seeCheckboxIsChecked('#no_scripts');
+		$I->seeCheckboxIsChecked('#no_css');
+
+		// Untick fields.
+		$I->uncheckOption('#debug');
+		$I->uncheckOption('#no_scripts');
+		$I->uncheckOption('#no_css');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the fields remain unticked.
+		$I->dontSeeCheckboxIsChecked('#debug');
+		$I->dontSeeCheckboxIsChecked('#no_scripts');
+		$I->dontSeeCheckboxIsChecked('#no_css');
 	}
 
 	/**
