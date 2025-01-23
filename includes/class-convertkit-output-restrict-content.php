@@ -874,13 +874,8 @@ class ConvertKit_Output_Restrict_Content {
 			return false;
 		}
 
-		// Return if the subscriber is not subscribed to the product.
-		if ( ! in_array( $product_id, $result['products'], true ) ) {
-			return false;
-		}
-
-		// If here, the subscriber is subscribed to the product.
-		return true;
+		// Return if the subscriber is subscribed to the product or not.
+		return in_array( $product_id, $result['products'], true );
 
 	}
 
@@ -909,13 +904,8 @@ class ConvertKit_Output_Restrict_Content {
 			return false;
 		}
 
-		// Return if the subscriber is not subscribed to the tag.
-		if ( ! in_array( $tag_id, $result['tags'], true ) ) {
-			return false;
-		}
-
-		// If here, the subscriber is subscribed to the product.
-		return true;
+		// Return if the subscriber is subscribed to the tag or not.
+		return in_array( $tag_id, $result['tags'], true );
 
 	}
 
