@@ -1,11 +1,11 @@
 === Kit (formerly ConvertKit) - Email Newsletter, Email Marketing, Subscribers and Landing Pages ===
 Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
-Tags: email marketing, email newsletter, subscribers, landing page, block
+Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.7.1
 Requires PHP: 5.6.20
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,14 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.1 2025-01-23
+* Added: Populate the `referrer` property in Kit when Contact Form 7 or Forminator is configured to subscribe an email address to a Kit Form
+* Added: Settings: Group Settings in UI
+* Added: Refresh resources button to update the list of Kit Forms / Products when using an applicable block or shortcode
+* Added: Member Content: Support using a signed subscriber ID when viewing content gated by Kit Tag
+* Fix: Settings: Uncaught TypeError when clicking Save Changes at Settings > Kit when a Kit account has no resources and no checkboxes are checked
+* Updated: Kit WordPress Libraries to 2.0.6
 
 ### 2.7.0 2024-12-18
 * Added: Member Content: Automatically configure WP Rocket to not cache when the `ck_subscriber_id` cookie is present, to ensure Member Content correctly displays

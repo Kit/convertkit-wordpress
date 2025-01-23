@@ -259,7 +259,7 @@ add_filter( 'convertkit_admin_notices_output_  notice', function( $output ) {
 </pre>
 <h3 id="convertkit_settings_base_register_notices">
 						convertkit_settings_base_register_notices
-						<code>admin/section/class-convertkit-settings-base.php::173</code>
+						<code>admin/section/class-convertkit-settings-base.php::198</code>
 					</h3><h4>Overview</h4>
 						<p>Register success and error notices for settings screens.</p><h4>Parameters</h4>
 					<table>
@@ -549,7 +549,7 @@ add_filter( 'convertkit_block_content_render', function( $content, $atts, $subsc
 </pre>
 <h3 id="convertkit_block_product_render">
 						convertkit_block_product_render
-						<code>includes/blocks/class-convertkit-block-product.php::461</code>
+						<code>includes/blocks/class-convertkit-block-product.php::462</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -677,7 +677,7 @@ add_filter( 'convertkit_block_broadcasts_build_html_list_item', function( $html,
 </pre>
 <h3 id="convertkit_block_form_render">
 						convertkit_block_form_render
-						<code>includes/blocks/class-convertkit-block-form.php::380</code>
+						<code>includes/blocks/class-convertkit-block-form.php::381</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -712,7 +712,7 @@ add_filter( 'convertkit_block_form_render', function( $form, $atts, $form_id ) {
 </pre>
 <h3 id="convertkit_block_form_trigger_render">
 						convertkit_block_form_trigger_render
-						<code>includes/blocks/class-convertkit-block-form-trigger.php::396</code>
+						<code>includes/blocks/class-convertkit-block-form-trigger.php::397</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1087,7 +1087,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_id', function( $res
 </pre>
 <h3 id="convertkit_output_restrict_content_content_preview">
 						convertkit_output_restrict_content_content_preview
-						<code>includes/class-convertkit-output-restrict-content.php::937</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1003</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1118,7 +1118,7 @@ add_filter( 'convertkit_output_restrict_content_content_preview', function( $con
 </pre>
 <h3 id="convertkit_output_restrict_content_call_to_action">
 						convertkit_output_restrict_content_call_to_action
-						<code>includes/class-convertkit-output-restrict-content.php::951</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1017</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1149,7 +1149,7 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 </pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::1322</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1388</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
@@ -1657,7 +1657,7 @@ add_filter( 'convertkit_broadcasts_parse_broadcast_content_permitted_html_tags',
 					</tbody>
 				</table><h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-settings-base.php::202</code>
+						<code>admin/section/class-convertkit-settings-base.php::227</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1677,7 +1677,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-settings-base.php::221</code>
+						<code>admin/section/class-convertkit-settings-base.php::242</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1697,7 +1697,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-settings-base.php::683</code>
+						<code>admin/section/class-convertkit-settings-base.php::722</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1725,7 +1725,7 @@ do_action( 'convertkit_settings_base_sanitize_settings', function( $name, $updat
 </pre>
 <h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-settings-tools.php::307</code>
+						<code>admin/section/class-convertkit-settings-tools.php::298</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1745,7 +1745,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-settings-tools.php::321</code>
+						<code>admin/section/class-convertkit-settings-tools.php::312</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1765,7 +1765,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-settings-oauth.php::133</code>
+						<code>admin/section/class-convertkit-settings-oauth.php::122</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1785,7 +1785,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-settings-oauth.php::143</code>
+						<code>admin/section/class-convertkit-settings-oauth.php::132</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
