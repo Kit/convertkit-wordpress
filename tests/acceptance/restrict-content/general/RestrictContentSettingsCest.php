@@ -84,11 +84,6 @@ class RestrictContentSettingsCest
 			// Permit Crawlers.
 			'permit_crawlers'         => '',
 
-			// Google reCAPTCHA.
-			'recaptcha_site_key'      => '',
-			'recaptcha_secret_key'    => '',
-			'recaptcha_minimum_score' => '',
-
 			// Restrict by Product.
 			'subscribe_heading'       => '',
 			'subscribe_text'          => '',
@@ -96,6 +91,10 @@ class RestrictContentSettingsCest
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => '',
 			'subscribe_text_tag'      => '',
+			'require_tag_login'       => '',
+			'recaptcha_site_key'      => '',
+			'recaptcha_secret_key'    => '',
+			'recaptcha_minimum_score' => '',
 
 			// All.
 			'subscribe_button_label'  => '',
@@ -142,11 +141,6 @@ class RestrictContentSettingsCest
 			// Permit Crawlers.
 			'permit_crawlers'         => true,
 
-			// Google reCAPTCHA.
-			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
-			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
-			'recaptcha_minimum_score' => '0.8',
-
 			// Restrict by Product.
 			'subscribe_heading'       => 'Subscribe Heading',
 			'subscribe_text'          => 'Subscribe Text',
@@ -154,6 +148,10 @@ class RestrictContentSettingsCest
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe Heading Tag',
 			'subscribe_text_tag'      => 'Subscribe Text Tag',
+			'require_tag_login'       => 'on',
+			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
+			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
+			'recaptcha_minimum_score' => '0.8',
 
 			// All.
 			'subscribe_button_label'  => 'Subscribe Button Label',
@@ -236,6 +234,7 @@ class RestrictContentSettingsCest
 			foreach ( $settings as $key => $value ) {
 				switch ( $key ) {
 					case 'permit_crawlers':
+					case 'require_tag_login':
 						if ( $value ) {
 							$I->checkOption('_wp_convertkit_settings_restrict_content[' . $key . ']');
 						} else {

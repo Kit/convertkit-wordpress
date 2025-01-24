@@ -56,17 +56,28 @@ class RestrictContentTagCest
 	}
 
 	/**
-	 * Test that restricting content by a Tag specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page and the subscriber uses a signed subscriber ID.
+	 * Test that restricting content by a Tag specified in the Page Settings works when:
+	 * - the Plugin is set to Require Login,
+	 * - creating a viewing a new WordPress Page,
+	 * - entering an email address displays the code verification screen
+	 * - using a signed subscriber ID that has access to the Tag displays the content.
 	 *
-	 * @since   2.7.1
+	 * @since   2.7.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testRestrictContentByTagUsingSignedSubscriberID(AcceptanceTester $I)
+	public function testRestrictContentByTagWithRequireLoginEnabled(AcceptanceTester $I)
 	{
+		// Setup Restrict Content functionality with Require Login enabled.
+		$I->setupConvertKitPluginRestrictContent(
+			$I,
+			[
+				'require_tag_login' => 'on',
+			]
+		);
+
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag by Signed Subscriber ID');
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Require Login');
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
@@ -87,7 +98,57 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url);
+		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url, $I->generateEmailAddress());
+	}
+
+	/**
+	 * Test that restricting content by a Tag specified in the Page Settings works when:
+	 * - the Plugin is set to Require Login,
+	 * - the Plugin has its Recaptcha settings defined,
+	 * - creating a viewing a new WordPress Page,
+	 * - entering an email address displays the code verification screen
+	 * - using a signed subscriber ID that has access to the Tag displays the content.
+	 *
+	 * @since   2.7.2
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testRestrictContentByTagWithRecaptchaAndRequireLoginEnabled(AcceptanceTester $I)
+	{
+		// Setup Restrict Content functionality with Require Login and reCAPTCHA enabled.
+		$I->setupConvertKitPluginRestrictContent(
+			$I,
+			[
+				'require_tag_login'       => 'on',
+				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
+				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
+				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
+			]
+		);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Recaptcha and Require Login');
+
+		// Configure metabox's Restrict Content setting = Tag name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url, $I->generateEmailAddress(), false, true);
 	}
 
 	/**

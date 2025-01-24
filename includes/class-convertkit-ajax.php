@@ -178,14 +178,14 @@ class ConvertKit_AJAX {
 		// If an error occured, build the email form view with the error message.
 		if ( is_wp_error( $output_restrict_content->error ) ) {
 			ob_start();
-			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-modal-content-email.php';
+			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-email.php';
 			$output = trim( ob_get_clean() );
 			wp_send_json_success( $output );
 		}
 
 		// Build authentication code view to return for output.
 		ob_start();
-		include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-modal-content-code.php';
+		include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
 		$output = trim( ob_get_clean() );
 		wp_send_json_success( $output );
 
@@ -209,7 +209,7 @@ class ConvertKit_AJAX {
 		// If an error occured, build the code form view with the error message.
 		if ( is_wp_error( $output_restrict_content->error ) ) {
 			ob_start();
-			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-modal-content-code.php';
+			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
 			$output = trim( ob_get_clean() );
 			wp_send_json_error( $output );
 		}

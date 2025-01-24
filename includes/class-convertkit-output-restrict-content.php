@@ -207,6 +207,42 @@ class ConvertKit_Output_Restrict_Content {
 				break;
 
 			case 'tag':
+				// If require login is enabled, show the login screen.
+				if ( $this->restrict_content_settings->require_tag_login() ) {
+					// Tag the subscriber.
+					$result = $this->api->tag_subscribe( $this->resource_id, $email );
+
+					// Bail if an error occured.
+					if ( is_wp_error( $result ) ) {
+						$this->error = $result;
+						return;
+					}
+
+					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
+					$result = $this->api->subscriber_authentication_send_code(
+						$email,
+						$this->get_url()
+					);
+
+					// Bail if an error occured.
+					if ( is_wp_error( $result ) ) {
+						$this->error = $result;
+						return;
+					}
+
+					// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
+					$subscriber = new ConvertKit_Subscriber();
+					$subscriber->forget();
+
+					// Store the token so it's included in the subscriber code form.
+					$this->token = $result;
+					break;
+				}
+
+				// If here, require login is disabled.
+				// Check reCAPTCHA, tag subscriber and assign subscriber ID integer to cookie
+				// without email link.
+
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
 				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
 					$response = wp_remote_post(
@@ -835,6 +871,12 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If the subscriber ID is numeric, check using get_subscriber_tags().
 				if ( is_numeric( $subscriber_id ) ) {
+					// If require login is enabled, only a signed subscriber ID is accepted, as this is generated
+					// via the subscriber verify email flow.
+					if ( $this->restrict_content_settings->require_tag_login() ) {
+						return false;
+					}
+
 					return $this->subscriber_has_access_to_tag_by_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 				}
 
@@ -1129,17 +1171,21 @@ class ConvertKit_Output_Restrict_Content {
 
 		}
 
+		// Output code form if this request is after the user entered their email address,
+		// which means we're going through the authentication flow.
+		if ( $this->in_authentication_flow() ) { // phpcs:ignore WordPress.Security.NonceVerification
+			ob_start();
+			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/code.php';
+			return trim( ob_get_clean() );
+		}
+
 		// This is deliberately a switch statement, because we will likely add in support
 		// for restrict by tag and form later.
 		switch ( $this->resource_type ) {
 			case 'product':
-				// Output product code form if this request is after the user entered their email address,
-				// which means we're going through the authentication flow.
-				if ( $this->in_authentication_flow() ) { // phpcs:ignore WordPress.Security.NonceVerification
-					ob_start();
-					include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-code.php';
-					return trim( ob_get_clean() );
-				}
+				// Get header and text from settings for Products.
+				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading' );
+				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
 
 				// Output product restricted message and email form.
 				// Get Product.
@@ -1159,7 +1205,7 @@ class ConvertKit_Output_Restrict_Content {
 						'wp_footer',
 						function () {
 
-							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product-modal.php';
+							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 
 						}
 					);
@@ -1172,6 +1218,23 @@ class ConvertKit_Output_Restrict_Content {
 				return trim( ob_get_clean() );
 
 			case 'tag':
+				// Get header and text from settings for Tags.
+				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
+				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
+
+				// If require login is enabled and scripts are enabled, output the email login form in a modal, which will be displayed
+				// when the 'log in' link is clicked.
+				if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
+					add_action(
+						'wp_footer',
+						function () {
+
+							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
+
+						}
+					);
+				}
+
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
 				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
 					add_filter(
