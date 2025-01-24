@@ -1185,7 +1185,7 @@ class ConvertKit_Output_Restrict_Content {
 			case 'product':
 				// Get header and text from settings for Products.
 				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading' );
-				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
+				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
 
 				// Output product restricted message and email form.
 				// Get Product.
@@ -1220,7 +1220,7 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// Get header and text from settings for Tags.
 				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
-				$text = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
+				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
 
 				// If require login is enabled and scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.

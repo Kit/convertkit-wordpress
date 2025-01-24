@@ -215,7 +215,7 @@ class ConvertKit_Settings_Restrict_Content {
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => __( 'Subscribe to keep reading', 'convertkit' ),
 			'subscribe_text_tag'      => __( 'This post is free to read but only available to subscribers. Join today to get access to all posts.', 'convertkit' ),
-			'require_tag_login' 	  => '', // blank|on.
+			'require_tag_login'       => '', // blank|on.
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
 			'recaptcha_minimum_score' => '0.5',

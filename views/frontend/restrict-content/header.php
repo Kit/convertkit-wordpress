@@ -3,8 +3,8 @@
  * Outputs a heading and paragraph text based on the supplied
  * $heading and $text variables, used across Restrict Content
  * by Tag and Product.
- * 
- * @since 	2.7.1
+ *
+ * @since   2.7.1
  *
  * @package ConvertKit
  * @author ConvertKit

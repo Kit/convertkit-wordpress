@@ -15,15 +15,6 @@
 class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Base {
 
 	/**
-	 * Holds the ConvertKit Forms Resource.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @var     bool|ConvertKit_Resource_Forms
-	 */
-	private $forms = false;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since   2.1.0
