@@ -33,7 +33,7 @@ class ConvertKit_Settings_OAuth extends ConvertKit_Settings_Base {
 		$this->tab_text = __( 'OAuth', 'convertkit' );
 
 		// Maybe output notices for this settings screen, and the Intercom messenger.
-		if ( $this->on_settings_screen( $this->name ) ) {
+		if ( $this->on_settings_screen( 'general' ) ) {
 			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_notices' ) );
 			add_action( 'admin_footer', array( $this, 'output_intercom' ) );
 		}
