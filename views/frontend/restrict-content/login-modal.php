@@ -14,7 +14,7 @@
 		<button id="convertkit-restrict-content-modal-close"><?php esc_html_e( 'Close', 'convertkit' ); ?></button>
 		<div id="convertkit-restrict-content-modal-content">
 			<?php
-			require 'product-modal-content-email.php';
+			require 'login-modal-content-email.php';
 			?>
 		</div>
 	</div>

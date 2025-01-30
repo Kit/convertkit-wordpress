@@ -1,9 +1,9 @@
 <?php
 /**
- * Outputs the restricted content product message,
+ * Outputs the restricted content message,
  * and a form for the subscriber to enter their
  * email address if they've already subscribed
- * to the ConvertKit Product.
+ * to the Kit Product.
  *
  * @package ConvertKit
  * @author ConvertKit
@@ -12,17 +12,13 @@
 ?>
 
 <div id="convertkit-restrict-content">
-	<h3><?php echo esc_html( $this->restrict_content_settings->get_by_key( 'subscribe_heading' ) ); ?></h3>
-	<p>
-		<?php
-		foreach ( explode( "\n", $this->restrict_content_settings->get_by_key( 'subscribe_text' ) ) as $text_line ) {
-			echo esc_html( $text_line ) . '<br />';
-		}
-		?>
-	</p>
-
 	<?php
-	echo $button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	require 'header.php';
+
+	// Output product button, if specified.
+	if ( isset( $button ) ) {
+		echo $button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 
 	// If scripts are disabled in the Plugin's settings, output the email login form now.
 	if ( $this->settings->scripts_disabled() ) {
@@ -31,7 +27,7 @@
 			<?php echo esc_html( $this->restrict_content_settings->get_by_key( 'email_text' ) ); ?>
 		</p>
 		<?php
-		require 'product-email.php';
+		require 'login-email.php';
 	} else {
 		// Just output the paragraph with a link to login, which will trigger the modal to display.
 		?>
