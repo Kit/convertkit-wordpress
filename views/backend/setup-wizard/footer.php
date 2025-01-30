@@ -59,6 +59,9 @@
 				</div>
 				<?php
 			}
+
+			// Output Intercom.
+			convertkit_output_intercom_messenger();
 			?>
 		</div>
 	</body>

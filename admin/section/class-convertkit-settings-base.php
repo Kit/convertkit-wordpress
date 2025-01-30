@@ -727,4 +727,15 @@ abstract class ConvertKit_Settings_Base {
 
 	}
 
+	/**
+	 * Outputs the Intercom help widget in the footer of the Plugin's settings screens.
+	 *
+	 * @since   2.7.2
+	 */
+	public function output_intercom() {
+
+		convertkit_output_intercom_messenger();
+
+	}
+
 }
