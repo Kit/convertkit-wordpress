@@ -168,6 +168,7 @@ class ConvertKit_Broadcasts_Exporter {
 		// Build URL.
 		$url = add_query_arg(
 			array(
+				'post_type'         => $post->post_type,
 				'convertkit-action' => 'broadcast-export',
 				'id'                => $post->ID,
 				'nonce'             => wp_create_nonce( 'action-convertkit-broadcast-export' ),
