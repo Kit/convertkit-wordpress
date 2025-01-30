@@ -72,6 +72,7 @@ class ConvertKit_Broadcasts_Exporter {
 		add_action( 'init', array( $this, 'run_row_action' ) );
 
 		// Add action below Post Title in WP_List_Table classes.
+		add_filter( 'page_row_actions', array( $this, 'add_row_action' ), 10, 2 );
 		add_filter( 'post_row_actions', array( $this, 'add_row_action' ), 10, 2 );
 
 	}
