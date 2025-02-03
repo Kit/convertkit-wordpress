@@ -160,7 +160,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				// Display a site wide notice.
 				WP_ConvertKit()->get_class( 'admin_notices' )->add( 'authorization_failed' );
 
-				// Redirect to General screen, which will now show the ConvertKit_Settings_OAuth screen, because
+				// Redirect to General screen, which will now show the ConvertKit_Admin_Section_OAuth screen, because
 				// the Plugin has no access token.
 				wp_safe_redirect(
 					add_query_arg(
