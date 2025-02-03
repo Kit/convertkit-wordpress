@@ -313,8 +313,8 @@ class ConvertKit_Admin_Settings {
 
 		// Register the General and Tools settings sections.
 		$sections = array(
-			'general' => new ConvertKit_Settings_General(),
-			'tools'   => new ConvertKit_Settings_Tools(),
+			'general' => new ConvertKit_Admin_Section_General(),
+			'tools'   => new ConvertKit_Admin_Section_Tools(),
 		);
 
 		/**

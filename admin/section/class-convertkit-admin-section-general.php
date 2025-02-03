@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Settings_General extends ConvertKit_Settings_Base {
+class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Holds the API instance.

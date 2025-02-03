@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Admin_Settings_Broadcasts extends ConvertKit_Settings_Base {
+class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Constructor.
@@ -654,7 +654,7 @@ add_action(
 	'convertkit_admin_settings_register_sections',
 	function ( $sections ) {
 
-		$sections['broadcasts'] = new ConvertKit_Admin_Settings_Broadcasts();
+		$sections['broadcasts'] = new ConvertKit_Admin_Section_Broadcasts();
 		return $sections;
 
 	}

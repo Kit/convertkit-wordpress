@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-abstract class ConvertKit_Settings_Base {
+abstract class ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Section name
