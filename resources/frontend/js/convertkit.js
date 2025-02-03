@@ -90,8 +90,17 @@ function convertStoreSubscriberEmailAsIDInCookie( emailAddress ) {
  */
 function convertKitRemoveSubscriberIDFromURL( url ) {
 
-	// Remove ck_subscriber_id, retaining other params.
-	const url_object = new URL( url );
+	// Parse URL.
+	const url_object       = new URL( url );
+	const ck_subscriber_id = url_object.searchParams.get( 'ck_subscriber_id' );
+
+	// If ck_subscriber_id is null, it's not included in the URL.
+	// Don't modify the URL.
+	if ( ck_subscriber_id === null ) {
+		return;
+	}
+
+	// Remove ck_subscriber_id from URL params.
 	url_object.searchParams.delete( 'ck_subscriber_id' );
 
 	// Get title and string of parameters.
