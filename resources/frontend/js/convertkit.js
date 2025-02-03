@@ -113,7 +113,7 @@ function convertKitRemoveSubscriberIDFromURL( url ) {
 	}
 
 	// Update history.
-	window.history.pushState( null, title, url_object.pathname + params + url_object.hash );
+	window.history.replaceState( null, title, url_object.pathname + params + url_object.hash );
 
 }
 
