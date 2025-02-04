@@ -13,7 +13,7 @@
 						<td><a href="#convertkit_admin_notices_output_  notice"><code>convertkit_admin_notices_output_  notice</code></a></td>
 						<td>Define the text to output in an admin error notice.</td>
 					</tr><tr>
-						<td colspan="3">../admin/section/class-convertkit-settings-base.php</td>
+						<td colspan="3">../admin/section/class-convertkit-admin-section-base.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_settings_base_register_notices"><code>convertkit_settings_base_register_notices</code></a></td>
@@ -259,7 +259,7 @@ add_filter( 'convertkit_admin_notices_output_  notice', function( $output ) {
 </pre>
 <h3 id="convertkit_settings_base_register_notices">
 						convertkit_settings_base_register_notices
-						<code>admin/section/class-convertkit-settings-base.php::198</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::198</code>
 					</h3><h4>Overview</h4>
 						<p>Register success and error notices for settings screens.</p><h4>Parameters</h4>
 					<table>
@@ -859,7 +859,7 @@ add_filter( 'convertkit_settings_broadcasts_get_defaults', function( $defaults )
 </pre>
 <h3 id="convertkit_settings_restrict_content_get_defaults">
 						convertkit_settings_restrict_content_get_defaults
-						<code>includes/class-convertkit-settings-restrict-content.php::229</code>
+						<code>includes/class-convertkit-settings-restrict-content.php::241</code>
 					</h3><h4>Overview</h4>
 						<p>The default settings, used when the ConvertKit Restrict Content Settings haven't been saved e.g. on a new installation.</p><h4>Parameters</h4>
 					<table>
@@ -1025,7 +1025,7 @@ add_filter( 'convertkit_wishlist_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_type">
 						convertkit_output_restrict_content_get_resource_type
-						<code>includes/class-convertkit-output-restrict-content.php::716</code>
+						<code>includes/class-convertkit-output-restrict-content.php::752</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource Type that the visitor must be subscribed against to access this content, overriding the Post setting. Return false or an empty string to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1056,7 +1056,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_type', function( $r
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_id">
 						convertkit_output_restrict_content_get_resource_id
-						<code>includes/class-convertkit-output-restrict-content.php::754</code>
+						<code>includes/class-convertkit-output-restrict-content.php::790</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource ID that the visitor must be subscribed against to access this content, overriding the Post setting. Return 0 to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1087,7 +1087,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_id', function( $res
 </pre>
 <h3 id="convertkit_output_restrict_content_content_preview">
 						convertkit_output_restrict_content_content_preview
-						<code>includes/class-convertkit-output-restrict-content.php::1003</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1045</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1118,7 +1118,7 @@ add_filter( 'convertkit_output_restrict_content_content_preview', function( $con
 </pre>
 <h3 id="convertkit_output_restrict_content_call_to_action">
 						convertkit_output_restrict_content_call_to_action
-						<code>includes/class-convertkit-output-restrict-content.php::1017</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1059</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1149,7 +1149,7 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 </pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::1388</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1451</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
@@ -1524,7 +1524,27 @@ add_filter( 'convertkit_broadcasts_parse_broadcast_content_permitted_html_tags',
 					</tr>
 				</thead>
 				<tbody><tr>
-						<td colspan="3">../admin/section/class-convertkit-settings-base.php</td>
+						<td colspan="3">../admin/section/class-convertkit-admin-section-tools.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_settings_base_render_before"><code>convertkit_settings_base_render_before</code></a></td>
+						<td></td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_settings_base_render_after"><code>convertkit_settings_base_render_after</code></a></td>
+						<td></td>
+					</tr><tr>
+						<td colspan="3">../admin/section/class-convertkit-admin-section-oauth.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_settings_base_render_before"><code>convertkit_settings_base_render_before</code></a></td>
+						<td></td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_settings_base_render_after"><code>convertkit_settings_base_render_after</code></a></td>
+						<td></td>
+					</tr><tr>
+						<td colspan="3">../admin/section/class-convertkit-admin-section-base.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_settings_base_render_before"><code>convertkit_settings_base_render_before</code></a></td>
@@ -1536,26 +1556,6 @@ add_filter( 'convertkit_broadcasts_parse_broadcast_content_permitted_html_tags',
 					</tr><tr>
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_settings_base_sanitize_settings"><code>convertkit_settings_base_sanitize_settings</code></a></td>
-						<td></td>
-					</tr><tr>
-						<td colspan="3">../admin/section/class-convertkit-settings-tools.php</td>
-					</tr><tr>
-						<td>&nbsp;</td>
-						<td><a href="#convertkit_settings_base_render_before"><code>convertkit_settings_base_render_before</code></a></td>
-						<td></td>
-					</tr><tr>
-						<td>&nbsp;</td>
-						<td><a href="#convertkit_settings_base_render_after"><code>convertkit_settings_base_render_after</code></a></td>
-						<td></td>
-					</tr><tr>
-						<td colspan="3">../admin/section/class-convertkit-settings-oauth.php</td>
-					</tr><tr>
-						<td>&nbsp;</td>
-						<td><a href="#convertkit_settings_base_render_before"><code>convertkit_settings_base_render_before</code></a></td>
-						<td></td>
-					</tr><tr>
-						<td>&nbsp;</td>
-						<td><a href="#convertkit_settings_base_render_after"><code>convertkit_settings_base_render_after</code></a></td>
 						<td></td>
 					</tr><tr>
 						<td colspan="3">../admin/class-convertkit-admin-settings.php</td>
@@ -1657,7 +1657,7 @@ add_filter( 'convertkit_broadcasts_parse_broadcast_content_permitted_html_tags',
 					</tbody>
 				</table><h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-settings-base.php::227</code>
+						<code>admin/section/class-convertkit-admin-section-tools.php::299</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1677,7 +1677,87 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-settings-base.php::242</code>
+						<code>admin/section/class-convertkit-admin-section-tools.php::313</code>
+					</h3><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+do_action( 'convertkit_settings_base_render_after', function(  ) {
+	// ... your code here
+}, 10, 0 );
+</pre>
+<h3 id="convertkit_settings_base_render_before">
+						convertkit_settings_base_render_before
+						<code>admin/section/class-convertkit-admin-section-oauth.php::123</code>
+					</h3><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+do_action( 'convertkit_settings_base_render_before', function(  ) {
+	// ... your code here
+}, 10, 0 );
+</pre>
+<h3 id="convertkit_settings_base_render_after">
+						convertkit_settings_base_render_after
+						<code>admin/section/class-convertkit-admin-section-oauth.php::133</code>
+					</h3><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+do_action( 'convertkit_settings_base_render_after', function(  ) {
+	// ... your code here
+}, 10, 0 );
+</pre>
+<h3 id="convertkit_settings_base_render_before">
+						convertkit_settings_base_render_before
+						<code>admin/section/class-convertkit-admin-section-base.php::227</code>
+					</h3><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+do_action( 'convertkit_settings_base_render_before', function(  ) {
+	// ... your code here
+}, 10, 0 );
+</pre>
+<h3 id="convertkit_settings_base_render_after">
+						convertkit_settings_base_render_after
+						<code>admin/section/class-convertkit-admin-section-base.php::242</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1697,7 +1777,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-settings-base.php::722</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::722</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1722,86 +1802,6 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 do_action( 'convertkit_settings_base_sanitize_settings', function( $name, $updated_settings ) {
 	// ... your code here
 }, 10, 2 );
-</pre>
-<h3 id="convertkit_settings_base_render_before">
-						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-settings-tools.php::298</code>
-					</h3><h4>Parameters</h4>
-					<table>
-						<thead>
-							<tr>
-								<th>Parameter</th>
-								<th>Type</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table><h4>Usage</h4>
-<pre>
-do_action( 'convertkit_settings_base_render_before', function(  ) {
-	// ... your code here
-}, 10, 0 );
-</pre>
-<h3 id="convertkit_settings_base_render_after">
-						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-settings-tools.php::312</code>
-					</h3><h4>Parameters</h4>
-					<table>
-						<thead>
-							<tr>
-								<th>Parameter</th>
-								<th>Type</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table><h4>Usage</h4>
-<pre>
-do_action( 'convertkit_settings_base_render_after', function(  ) {
-	// ... your code here
-}, 10, 0 );
-</pre>
-<h3 id="convertkit_settings_base_render_before">
-						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-settings-oauth.php::122</code>
-					</h3><h4>Parameters</h4>
-					<table>
-						<thead>
-							<tr>
-								<th>Parameter</th>
-								<th>Type</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table><h4>Usage</h4>
-<pre>
-do_action( 'convertkit_settings_base_render_before', function(  ) {
-	// ... your code here
-}, 10, 0 );
-</pre>
-<h3 id="convertkit_settings_base_render_after">
-						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-settings-oauth.php::132</code>
-					</h3><h4>Parameters</h4>
-					<table>
-						<thead>
-							<tr>
-								<th>Parameter</th>
-								<th>Type</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table><h4>Usage</h4>
-<pre>
-do_action( 'convertkit_settings_base_render_after', function(  ) {
-	// ... your code here
-}, 10, 0 );
 </pre>
 <h3 id="convertkit_admin_settings_enqueue_scripts">
 						convertkit_admin_settings_enqueue_scripts

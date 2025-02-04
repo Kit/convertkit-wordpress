@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.7.1
 Requires PHP: 5.6.20
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,12 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.2 2025-02-04
+* Added: Member Content: Option to require login when gating content by Tag. Subscribers receive an email with a magic link / code to securely access member-only content
+* Added: Broadcasts (Beta): Option to export WordPress Pages and Custom Post Types to draft Kit Broadcasts using `Create Broadcast in Kit` option in admin tables
+* Added: Settings: Intercom help integration
+* Fix: Remove `ck_subscriber_id` from URL using `replaceState`, ensuring current URL is only stored once in browser history
 
 ### 2.7.1 2025-01-23
 * Added: Populate the `referrer` property in Kit when Contact Form 7 or Forminator is configured to subscribe an email address to a Kit Form
