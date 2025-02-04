@@ -302,7 +302,7 @@ class ConvertKit_Admin_Settings {
 		if ( ! $settings->has_access_and_refresh_token() ) {
 			// Just register the OAuth screen.
 			$sections = array(
-				'oauth' => new ConvertKit_Settings_OAuth(),
+				'oauth' => new ConvertKit_Admin_Section_OAuth(),
 			);
 
 			// Assign them to this class.
@@ -313,8 +313,8 @@ class ConvertKit_Admin_Settings {
 
 		// Register the General and Tools settings sections.
 		$sections = array(
-			'general' => new ConvertKit_Settings_General(),
-			'tools'   => new ConvertKit_Settings_Tools(),
+			'general' => new ConvertKit_Admin_Section_General(),
+			'tools'   => new ConvertKit_Admin_Section_Tools(),
 		);
 
 		/**

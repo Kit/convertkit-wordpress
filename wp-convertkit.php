@@ -125,24 +125,24 @@ if ( is_admin() ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-user.php';
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizard.php';
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-multi-value-field-table.php';
-	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-settings-base.php';
-	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-settings-general.php';
-	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-settings-oauth.php';
-	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-settings-tools.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-general.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-oauth.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-tools.php';
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php';
 
 	// Contact Form 7 Integration.
-	require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7-admin-settings.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php';
 
 	// Forminator Integration.
-	require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator-admin-settings.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator-admin-section.php';
 
 	// WishList Member Integration.
-	require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/wishlist/class-convertkit-wishlist-admin-settings.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php';
 
 	// Restrict Content Integration.
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-restrict-content.php';
-	require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-settings-restrict-content.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-restrict-content.php';
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php';
 
 	// Landing Page Integration.
@@ -150,7 +150,7 @@ if ( is_admin() ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php';
 
 	// Broadcasts Integration.
-	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-settings-broadcasts.php';
+	require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-broadcasts.php';
 }
 
 // Register Plugin activation and deactivation functions.

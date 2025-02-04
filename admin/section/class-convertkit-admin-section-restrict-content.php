@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Admin_Settings_Restrict_Content extends ConvertKit_Settings_Base {
+class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Constructor.
@@ -514,7 +514,7 @@ add_action(
 	'convertkit_admin_settings_register_sections',
 	function ( $sections ) {
 
-		$sections['restrict-content'] = new ConvertKit_Admin_Settings_Restrict_Content();
+		$sections['restrict-content'] = new ConvertKit_Admin_Section_Restrict_Content();
 		return $sections;
 
 	}

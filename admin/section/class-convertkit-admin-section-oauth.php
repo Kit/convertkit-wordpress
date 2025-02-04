@@ -13,7 +13,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Settings_OAuth extends ConvertKit_Settings_Base {
+class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Constructor

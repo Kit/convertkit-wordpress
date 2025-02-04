@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Forminator_Admin_Settings extends ConvertKit_Settings_Base {
+class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Constructor
@@ -239,7 +239,7 @@ add_filter(
 		}
 
 		// Register this class as a section at Settings > Kit.
-		$sections['forminator'] = new ConvertKit_Forminator_Admin_Settings();
+		$sections['forminator'] = new ConvertKit_Forminator_Admin_Section();
 		return $sections;
 
 	}

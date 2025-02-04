@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Wishlist_Admin_Settings extends ConvertKit_Settings_Base {
+class ConvertKit_Wishlist_Admin_Section extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Constructor.
@@ -198,7 +198,7 @@ add_filter(
 		}
 
 		// Register this class as a section at Settings > Kit.
-		$sections['wishlist-member'] = new ConvertKit_Wishlist_Admin_Settings();
+		$sections['wishlist-member'] = new ConvertKit_Wishlist_Admin_Section();
 		return $sections;
 
 	}
