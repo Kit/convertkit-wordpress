@@ -34,7 +34,7 @@
 	color: #111;
 }
 
-/* Overlay */
+/* Container */
 #convertkit-restrict-content {
 	width: 100%;
 	background: #F9F7F4;
@@ -44,6 +44,12 @@
 	text-align: center;
 	box-sizing: border-box;
 	border-radius: 8px;
+}
+
+/* Container, no styling */
+#convertkit-restrict-content-no-styles {
+	width: 100%;
+	text-align: center;
 }
 
 /* Actions */
