@@ -1003,7 +1003,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Return if the subscriber is subscribed to the form or not.
-		return in_array( $tag_id, $result['forms'], true );
+		return in_array( $form_id, $result['forms'], true );
 
 	}
 
