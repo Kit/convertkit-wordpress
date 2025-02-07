@@ -87,10 +87,12 @@ class RestrictContentSettingsCest
 			// Restrict by Product.
 			'subscribe_heading'       => '',
 			'subscribe_text'          => '',
+			'no_access_text'          => '',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => '',
 			'subscribe_text_tag'      => '',
+			'no_access_text_tag'      => '',
 			'require_tag_login'       => '',
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
@@ -104,7 +106,6 @@ class RestrictContentSettingsCest
 			'email_description_text'  => '',
 			'email_check_heading'     => '',
 			'email_check_text'        => '',
-			'no_access_text'          => '',
 		);
 
 		// Save settings.
@@ -144,10 +145,12 @@ class RestrictContentSettingsCest
 			// Restrict by Product.
 			'subscribe_heading'       => 'Subscribe Heading',
 			'subscribe_text'          => 'Subscribe Text',
+			'no_access_text'          => 'No Access Text',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe Heading Tag',
 			'subscribe_text_tag'      => 'Subscribe Text Tag',
+			'no_access_text'          => 'No Access Text Tag',
 			'require_tag_login'       => 'on',
 			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
 			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
@@ -161,7 +164,7 @@ class RestrictContentSettingsCest
 			'email_description_text'  => 'Email Description Text',
 			'email_check_heading'     => 'Email Check Heading',
 			'email_check_text'        => 'Email Check Text',
-			'no_access_text'          => 'No Access Text',
+			
 		);
 
 		// Save settings.

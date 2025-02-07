@@ -190,15 +190,15 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaEnabled(AcceptanceTester $I)
 	{
+		// Define options.
+		$options = [
+			'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
+			'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
+			'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
+		];
+
 		// Setup Restrict Content functionality with reCAPTCHA enabled.
-		$I->setupConvertKitPluginRestrictContent(
-			$I,
-			[
-				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
-				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
-				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
-			]
-		);
+		$I->setupConvertKitPluginRestrictContent($I, $options);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: reCAPTCHA');
@@ -222,7 +222,7 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), false, true);
+		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), $options);
 	}
 
 	/**
