@@ -32,7 +32,7 @@ document.addEventListener(
 			'submit',
 			function ( e ) {
 				// Bail if the submission was not for the Restrict Content form.
-				if ( ! e.target.matches( '#convertkit-restrict-content-modal form#convertkit-restrict-content-form' ) ) {
+				if ( ! e.target.matches( 'form#convertkit-restrict-content-form' ) ) {
 					return;
 				}
 
