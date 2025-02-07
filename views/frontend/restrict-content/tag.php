@@ -17,7 +17,6 @@
 		require 'header.php';
 		?>
 
-		<?php // @TODO This cannot be convertkit-restrict-content-form ?>
 		<form class="convertkit-restrict-content-form" action="<?php echo esc_attr( add_query_arg( array( 'convertkit_login' => 1 ), get_permalink( $post_id ) ) ); ?>#convertkit-restrict-content" method="post">
 			<div id="convertkit-restrict-content-email-field" class="<?php echo sanitize_html_class( ( is_wp_error( $this->error ) ? 'convertkit-restrict-content-error' : '' ) ); ?>">
 				<input type="email" name="convertkit_email" id="convertkit_email" value="" placeholder="<?php esc_attr_e( 'Email Address', 'convertkit' ); ?>" required />
@@ -44,25 +43,9 @@
 		</form>
 
 		<?php
-		// If require tag login is enabled, provide a login method.
+		// Maybe output a login link or form, if require login enabled.
 		if ( $this->restrict_content_settings->require_tag_login() ) {
-			// If scripts are disabled in the Plugin's settings, output the email login form now.
-			if ( $this->settings->scripts_disabled() ) {
-				?>
-				<p>
-					<?php echo esc_html( $this->restrict_content_settings->get_by_key( 'email_text' ) ); ?>
-				</p>
-				<?php
-				require 'login-email.php';
-			} else {
-				// Just output the paragraph with a link to login, which will trigger the modal to display.
-				?>
-				<p>
-					<?php echo esc_html( $this->restrict_content_settings->get_by_key( 'email_text' ) ); ?>
-					<a href="#" class="convertkit-restrict-content-modal-open"><?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'email_button_label' ) ); ?></a>
-				</p>
-				<?php
-			}
+			require 'login.php';
 		}
 
 		// Output notices.
