@@ -220,7 +220,7 @@ class ConvertKit_Settings_Restrict_Content {
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
 			'recaptcha_minimum_score' => '0.5',
-			'no_access_text_tag'          => __( 'Your account does not have access to this content. Please use the form above to subscribe.', 'convertkit' ),
+			'no_access_text_tag'      => __( 'Your account does not have access to this content. Please use the form above to subscribe.', 'convertkit' ),
 
 			// All.
 			'subscribe_button_label'  => __( 'Subscribe', 'convertkit' ),

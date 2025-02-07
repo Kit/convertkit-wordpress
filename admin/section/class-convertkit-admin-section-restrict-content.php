@@ -364,8 +364,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			)
 		);
 
-		
-
 	}
 
 	/**

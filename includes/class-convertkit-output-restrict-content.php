@@ -463,9 +463,21 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! $this->subscriber_has_access( $subscriber_id ) ) {
 			// Show an error before the call to action, to tell the subscriber why they still cannot
 			// view the content.
+			switch ( $this->resource_type ) {
+				case 'tag':
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
+					break;
+
+				case 'product':
+				default:
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text' );
+					break;
+			}
+
+			// Define error for output.
 			$this->error = new WP_Error(
 				'convertkit_restrict_content_subscriber_no_access',
-				esc_html( $this->restrict_content_settings->get_by_key( 'no_access_text' ) )
+				esc_html( $message )
 			);
 
 			return $this->restrict_content( $content );
