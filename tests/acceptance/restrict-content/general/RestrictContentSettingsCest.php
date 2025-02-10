@@ -87,6 +87,7 @@ class RestrictContentSettingsCest
 			// Restrict by Product.
 			'subscribe_heading'       => '',
 			'subscribe_text'          => '',
+			'no_access_text'          => '',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => '',
@@ -104,7 +105,6 @@ class RestrictContentSettingsCest
 			'email_description_text'  => '',
 			'email_check_heading'     => '',
 			'email_check_text'        => '',
-			'no_access_text'          => '',
 		);
 
 		// Save settings.
@@ -144,6 +144,7 @@ class RestrictContentSettingsCest
 			// Restrict by Product.
 			'subscribe_heading'       => 'Subscribe Heading',
 			'subscribe_text'          => 'Subscribe Text',
+			'no_access_text'          => 'No Access Text',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe Heading Tag',
@@ -161,7 +162,6 @@ class RestrictContentSettingsCest
 			'email_description_text'  => 'Email Description Text',
 			'email_check_heading'     => 'Email Check Heading',
 			'email_check_text'        => 'Email Check Text',
-			'no_access_text'          => 'No Access Text',
 		);
 
 		// Save settings.
@@ -184,7 +184,7 @@ class RestrictContentSettingsCest
 			$I,
 			$pageID,
 			[
-				'text_items' => $settings,
+				'settings' => $settings,
 			]
 		);
 	}
