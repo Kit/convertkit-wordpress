@@ -267,7 +267,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false)
 	{
 		// Setup test.
-		$this->setupRestrictContentTest($I, $options, $urlOrPageID);
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
@@ -318,7 +318,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	public function testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $urlOrPageID, $emailAddress, $options = false)
 	{
 		// Setup test.
-		$this->setupRestrictContentTest($I, $options, $urlOrPageID);
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
@@ -370,7 +370,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	public function testRestrictedContentModal($I, $urlOrPageID, $options = false)
 	{
 		// Setup test.
-		$this->setupRestrictContentTest($I, $options, $urlOrPageID);
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
@@ -394,7 +394,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->seeRestrictContentSubscriberCode($I, $options['text_items']['email_check_heading'], $options['text_items']['email_check_text']);
 
 		// Enter an invalid code.
-		$this->submitRestrictContentSubscriberCode($I, '999999');
+		$this->submitRestrictContentSubscriberCodeModal($I, '999999');
 
 		// Confirm an inline error message is displayed.
 		$this->seeRestrictContentError($I, 'The entered code is invalid. Please try again, or click the link sent in the email.');
@@ -591,6 +591,19 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	}
 
 	/**
+	 * Submit the given code in the subscriber code form modal.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I     Tester.
+	 * @param   string           $code  Subsciber code.
+	 */
+	public function submitRestrictContentSubscriberCodeModal($I, $code)
+	{
+		$I->fillField('subscriber_code', $code);
+	}
+
+	/**
 	 * Click the restrict content login link, and confirm the modal displays.
 	 *
 	 * @since   2.7.3
@@ -615,6 +628,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	{
 		$I->waitForElementVisible('input#convertkit_email');
 		$I->fillField('convertkit_email', $emailAddress);
+		$I->waitForElementVisible('input.wp-block-button__link');
 		$I->click('input.wp-block-button__link');
 	}
 
