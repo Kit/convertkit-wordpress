@@ -67,7 +67,6 @@ class ConvertKitRestrictContent extends \Codeception\Module
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe to keep reading',
 			'subscribe_text_tag'      => 'This post is free to read but only available to subscribers. Join today to get access to all posts.',
-			'no_access_text_tag'      => 'Your account does not have access to this content. Please use the form above to subscribe.',
 
 			// All.
 			'subscribe_button_label'  => 'Subscribe',
@@ -261,7 +260,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 * 	   @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false)
@@ -280,7 +279,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
 
 		// Confirm an inline error message is displayed.
-		$this->seeRestrictContentError($I, $options['settings']['no_access_text_tag']);
+		$this->seeRestrictContentError($I, $options['settings']['no_access_text']);
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
@@ -329,8 +328,6 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Login.
 		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
-		die();
-
 		// Confirm that confirmation an email has been sent is displayed.
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
 		if ( ! empty($options['visible_content'])) {
@@ -352,9 +349,6 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
 		$this->testRestrictContentDisplaysContent($I, $options);
 	}
-
-	// @TODO Helper method as above but using modal by clicking login instead.
-
 
 	/**
 	 * Run frontend tests for restricted content functionality, using the modal authentication flow, to confirm
@@ -507,7 +501,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $settings                 	Restrict content settings. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictContentDisplaysContent($I, $options = false)

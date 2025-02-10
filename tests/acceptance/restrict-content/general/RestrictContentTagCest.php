@@ -130,7 +130,7 @@ class RestrictContentTagCest
 				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
 				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
 				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
-			]
+			],
 		];
 
 		// Setup Restrict Content functionality with Require Login and reCAPTCHA enabled.
@@ -160,8 +160,6 @@ class RestrictContentTagCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress(), $options);
 	}
-
-	// @TODO Test as above but using modal by clicking login instead.
 
 	/**
 	 * Test that restricting content by a Tag that does not exist does not output
@@ -210,9 +208,11 @@ class RestrictContentTagCest
 
 		// Define options.
 		$options = [
-			'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
-			'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
-			'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
+			'settings' => [
+				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
+				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
+				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
+			],
 		];
 
 		// Setup Restrict Content functionality with reCAPTCHA enabled.
@@ -240,7 +240,7 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), $options);
+		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), $options['settings']);
 	}
 
 	/**
@@ -253,8 +253,8 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaEnabledWithHighMinimumScore(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup ConvertKit Plugin.
+		$I->setupConvertKitPlugin($I);
 
 		// Setup Restrict Content functionality with reCAPTCHA enabled.
 		$I->setupConvertKitPluginRestrictContent(
