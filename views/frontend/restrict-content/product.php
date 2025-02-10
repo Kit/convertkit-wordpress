@@ -22,5 +22,8 @@
 
 	// Output a login link or form, if require login enabled.
 	require 'login.php';
+
+	// Output notices.
+	require 'notices.php';
 	?>
 </div>

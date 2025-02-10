@@ -46,10 +46,10 @@
 		// Maybe output a login link or form, if require login enabled.
 		if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
 			require 'login.php';
-		} else {
-			// Output notices.
-			require 'notices.php';
 		}
+
+		// Output notices.
+		require 'notices.php';
 		?>
 	</div>
 </div>

@@ -20,8 +20,4 @@
 	</div>
 </form>
 
-<?php
-require 'notices.php';
-?>
-
 <small><?php echo esc_html( WP_ConvertKit()->get_class( 'output_restrict_content' )->restrict_content_settings->get_by_key( 'email_description_text' ) ); ?></small>
