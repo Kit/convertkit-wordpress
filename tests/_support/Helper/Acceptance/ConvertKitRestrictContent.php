@@ -189,7 +189,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictedContentByProductOnFrontend($I, $urlOrPageID, $options = false)
@@ -217,7 +217,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
 
 		// Confirm an inline error message is displayed.
-		$this->seeRestrictContentError($I, $options['text_items']['no_access_text']);
+		$this->seeRestrictContentError($I, $options['settings']['no_access_text']);
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
@@ -233,7 +233,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->dontSee($options['member_content']);
 
 		// Confirm that the CTA displays with the expected text.
-		$this->seeRestrictContentSubscriberCode($I, $options['text_items']['email_check_heading'], $options['text_items']['email_check_text']);
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
 
 		// Enter an invalid code.
 		$this->submitRestrictContentSubscriberCode($I, '999999');
@@ -261,7 +261,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 * 	   @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false)
@@ -280,7 +280,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
 
 		// Confirm an inline error message is displayed.
-		$this->seeRestrictContentError($I, $options['text_items']['no_access_text']);
+		$this->seeRestrictContentError($I, $options['settings']['no_access_text_tag']);
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
@@ -289,7 +289,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
 		// Wait for reCAPTCHA to fully load.
-		if ($options['recaptcha_site_key']) {
+		if ($options['settings']['recaptcha_site_key']) {
 			$I->wait(3);
 		}
 
@@ -312,7 +312,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $urlOrPageID, $emailAddress, $options = false)
@@ -337,7 +337,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->dontSee($options['member_content']);
 
 		// Confirm that the CTA displays with the expected text.
-		$this->seeRestrictContentSubscriberCode($I, $options['text_items']['email_check_heading'], $options['text_items']['email_check_text']);
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
 
 		// Enter an invalid code.
 		$this->submitRestrictContentSubscriberCode($I, '999999');
@@ -364,7 +364,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictedContentModal($I, $urlOrPageID, $options = false)
@@ -391,7 +391,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
 		// Confirm that the subscriber code form dispays.
-		$this->seeRestrictContentSubscriberCode($I, $options['text_items']['email_check_heading'], $options['text_items']['email_check_text']);
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
 
 		// Enter an invalid code.
 		$this->submitRestrictContentSubscriberCodeModal($I, '999999');
@@ -419,7 +419,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictContentByProductHidesContentWithCTA($I, $options = false)
@@ -439,15 +439,15 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
 		$I->seeElementInDOM('#convertkit-restrict-content');
 
-		$I->seeInSource('<h3>' . $options['text_items']['subscribe_heading'] . '</h3>');
-		$I->see($options['text_items']['subscribe_text']);
+		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading'] . '</h3>');
+		$I->see($options['settings']['subscribe_text']);
 
-		$I->see($options['text_items']['subscribe_button_label']);
+		$I->see($options['settings']['subscribe_button_label']);
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link');
 
-		$I->see($options['text_items']['email_text']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link" value="' . $options['text_items']['email_button_label'] . '"');
-		$I->seeInSource('<small>' . $options['text_items']['email_description_text'] . '</small>');
+		$I->see($options['settings']['email_text']);
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link" value="' . $options['settings']['email_button_label'] . '"');
+		$I->seeInSource('<small>' . $options['settings']['email_description_text'] . '</small>');
 	}
 
 	/**
@@ -464,7 +464,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false)
@@ -483,11 +483,9 @@ class ConvertKitRestrictContent extends \Codeception\Module
 
 		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
 		$I->seeElementInDOM('#convertkit-restrict-content');
-
-		$I->seeInSource('<h3>' . $options['text_items']['subscribe_heading'] . '</h3>');
-		$I->see($options['text_items']['subscribe_text']);
-
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $options['recaptcha_site_key'] ? ' g-recaptcha' : '' ) . '" value="' . $options['text_items']['subscribe_button_label'] . '"');
+		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading_tag'] . '</h3>');
+		$I->see($options['settings']['subscribe_text_tag']);
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $options['settings']['recaptcha_site_key'] ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
 	}
 
 	/**
@@ -504,7 +502,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                 	Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictContentDisplaysContent($I, $options = false)
@@ -537,7 +535,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
 	 * @return  array
@@ -626,10 +624,10 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 */
 	public function loginToRestrictContentWithEmail($I, $emailAddress)
 	{
-		$I->waitForElementVisible('input#convertkit_email');
-		$I->fillField('convertkit_email', $emailAddress);
-		$I->waitForElementVisible('input.wp-block-button__link');
-		$I->click('input.wp-block-button__link');
+		$I->waitForElementVisible('#convertkit-restrict-content-email-field input#convertkit_email');
+		$I->fillField('#convertkit-restrict-content-email-field input#convertkit_email', $emailAddress);
+		$I->waitForElementVisible('#convertkit-restrict-content-email-field input.wp-block-button__link');
+		$I->click('#convertkit-restrict-content-email-field input.wp-block-button__link');
 	}
 
 	/**
@@ -673,9 +671,9 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 * @param   bool|array $options {
 	 *     Optional. An array of settings.
 	 *
-	 *     @type string $visible_content            Content that should always be visible.
-	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type string $visible_content          Content that should always be visible.
+	 *     @type string $member_content           Content that should only be available to authenticated subscribers.
+	 *     @type array  $settings                 Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	private function _getRestrictedContentOptionsWithDefaultsMerged($options = false)
@@ -684,7 +682,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$defaults = [
 			'visible_content' => 'Visible content.',
 			'member_content'  => 'Member-only content.',
-			'text_items'      => $this->getRestrictedContentDefaultSettings(),
+			'settings'        => $this->getRestrictedContentDefaultSettings(),
 		];
 
 		// If supplied options are an array, merge them with the defaults.

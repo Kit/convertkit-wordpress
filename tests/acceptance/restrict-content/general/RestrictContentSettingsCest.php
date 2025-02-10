@@ -186,7 +186,7 @@ class RestrictContentSettingsCest
 			$I,
 			$pageID,
 			[
-				'text_items' => $settings,
+				'settings' => $settings,
 			]
 		);
 	}
