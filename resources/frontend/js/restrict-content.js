@@ -58,9 +58,21 @@ document.addEventListener(
 	}
 );
 
+/**
+ * Handles Restrict Content Tag form submission when reCAPTCHA is enabled.
+ *
+ * @param string token reCAPTCHA token.
+ */
 function convertKitRestrictContentTagFormSubmit( token ) {
 
-	document.getElementById( 'convertkit-restrict-content-form' ).submit();
+	// Find submit button with the data-callback attribute.
+	const submitButton = document.querySelector( 'input[type="submit"][data-callback="convertKitRestrictContentTagFormSubmit"]');
+
+	// Get the parent form of the submit button.
+	const form = submitButton.closest( 'form' );
+
+	// Submit the form.
+	form.submit();
 
 }
 

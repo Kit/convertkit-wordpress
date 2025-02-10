@@ -183,9 +183,6 @@ class ConvertKit_Output_Restrict_Content {
 		$this->resource_id   = absint( sanitize_text_field( $_REQUEST['convertkit_resource_id'] ) );
 		$this->post_id       = absint( sanitize_text_field( $_REQUEST['convertkit_post_id'] ) );
 
-		var_dump( $_REQUEST);
-		die();
-
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $this->resource_type ) {
 			case 'product':
@@ -212,14 +209,15 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->require_tag_login() ) {
-					die('hitting');
-					// Tag the subscriber.
-					$result = $this->api->tag_subscribe( $this->resource_id, $email );
+					// Tag the subscriber, unless this is an AJAX request.
+					if ( ! wp_doing_ajax() ) {
+						$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
-					// Bail if an error occured.
-					if ( is_wp_error( $result ) ) {
-						$this->error = $result;
-						return;
+						// Bail if an error occured.
+						if ( is_wp_error( $result ) ) {
+							$this->error = $result;
+							return;
+						}
 					}
 
 					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
