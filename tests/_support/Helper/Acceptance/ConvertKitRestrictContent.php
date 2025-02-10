@@ -359,7 +359,6 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I                  Tester.
 	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   string           $emailAddress       Email Address.
 	 * @param   bool|array       $options {
 	 *           Optional. An array of settings.
 	 *
@@ -368,7 +367,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
 	 * }
 	 */
-	public function testRestrictedContentModal($I, $urlOrPageID, $emailAddress, $options = false)
+	public function testRestrictedContentModal($I, $urlOrPageID, $options = false)
 	{
 		// Setup test.
 		$this->setupRestrictContentTest($I, $options, $urlOrPageID);
