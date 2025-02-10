@@ -181,7 +181,7 @@ class RestrictContentTagCest
 		// Define reCAPTCHA settings.
 		$options = [
 			'settings' => [
-				'require_tag_login'       => 'on',
+				'require_tag_login' => 'on',
 			],
 		];
 

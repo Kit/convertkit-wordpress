@@ -676,6 +676,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I             Tester.
 	 * @param   string           $emailAddress  Email address.
+	 * @param   bool             $inModal       Enter the email address in the modal view.
 	 */
 	public function loginToRestrictContentWithEmail($I, $emailAddress, $inModal = false)
 	{

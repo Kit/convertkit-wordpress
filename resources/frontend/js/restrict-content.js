@@ -66,7 +66,7 @@ document.addEventListener(
 function convertKitRestrictContentTagFormSubmit( token ) {
 
 	// Find submit button with the data-callback attribute.
-	const submitButton = document.querySelector( 'input[type="submit"][data-callback="convertKitRestrictContentTagFormSubmit"]');
+	const submitButton = document.querySelector( 'input[type="submit"][data-callback="convertKitRestrictContentTagFormSubmit"]' );
 
 	// Get the parent form of the submit button.
 	const form = submitButton.closest( 'form' );
