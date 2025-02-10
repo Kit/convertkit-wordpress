@@ -329,6 +329,8 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Login.
 		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
+		die();
+
 		// Confirm that confirmation an email has been sent is displayed.
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
 		if ( ! empty($options['visible_content'])) {
@@ -350,6 +352,9 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
 		$this->testRestrictContentDisplaysContent($I, $options);
 	}
+
+	// @TODO Helper method as above but using modal by clicking login instead.
+
 
 	/**
 	 * Run frontend tests for restricted content functionality, using the modal authentication flow, to confirm
@@ -470,11 +475,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false)
 	{
 		// Merge options with defaults.
-		var_dump( $options );
 		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
-
-		var_dump( $options );
-		die();
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -489,10 +490,6 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->seeElementInDOM('#convertkit-restrict-content');
 		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading_tag'] . '</h3>');
 		$I->see($options['settings']['subscribe_text_tag']);
-
-		var_dump( $options );
-		die();
-		
 		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $options['settings']['recaptcha_site_key'] ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
 	}
 
@@ -693,12 +690,22 @@ class ConvertKitRestrictContent extends \Codeception\Module
 			'settings'        => $this->getRestrictedContentDefaultSettings(),
 		];
 
-		// If supplied options are an array, merge them with the defaults.
-		if (is_array($options)) {
-			return array_merge($defaults, $options);
+		// If supplied options are false, just return the defaults.
+		if ( ! $options ) {
+			return $defaults;
 		}
 
-		// Just return defaults.
+		// Override defaults if supplied in options array.
+		if ( array_key_exists('visible_content', $options ) ) {
+			$defaults['visible_content'] = $options['visible_content'];
+		}
+		if ( array_key_exists('member_content', $options ) ) {
+			$defaults['member_content'] = $options['member_content'];
+		}
+		if ( array_key_exists('settings', $options ) ) {
+			$defaults['settings'] = array_merge($defaults['settings'], $options['settings']);
+		}
+
 		return $defaults;
 	}
 }

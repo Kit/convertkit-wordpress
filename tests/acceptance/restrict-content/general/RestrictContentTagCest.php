@@ -120,9 +120,10 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaAndRequireLoginEnabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup ConvertKit Plugin.
+		$I->setupConvertKitPlugin($I);
 
+		// Define reCAPTCHA settings.
 		$options = [
 			'settings' => [
 				'require_tag_login'       => 'on',
@@ -159,6 +160,8 @@ class RestrictContentTagCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress(), $options);
 	}
+
+	// @TODO Test as above but using modal by clicking login instead.
 
 	/**
 	 * Test that restricting content by a Tag that does not exist does not output

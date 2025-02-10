@@ -183,6 +183,9 @@ class ConvertKit_Output_Restrict_Content {
 		$this->resource_id   = absint( sanitize_text_field( $_REQUEST['convertkit_resource_id'] ) );
 		$this->post_id       = absint( sanitize_text_field( $_REQUEST['convertkit_post_id'] ) );
 
+		var_dump( $_REQUEST);
+		die();
+
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $this->resource_type ) {
 			case 'product':
@@ -209,6 +212,7 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->require_tag_login() ) {
+					die('hitting');
 					// Tag the subscriber.
 					$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
@@ -244,7 +248,7 @@ class ConvertKit_Output_Restrict_Content {
 				// without email link.
 
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					$response = wp_remote_post(
 						'https://www.google.com/recaptcha/api/siteverify',
 						array(
@@ -1248,7 +1252,7 @@ class ConvertKit_Output_Restrict_Content {
 				}
 
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					add_filter(
 						'convertkit_output_scripts_footer',
 						function ( $scripts ) {
