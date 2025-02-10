@@ -470,7 +470,11 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false)
 	{
 		// Merge options with defaults.
+		var_dump( $options );
 		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+
+		var_dump( $options );
+		die();
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -485,6 +489,10 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->seeElementInDOM('#convertkit-restrict-content');
 		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading_tag'] . '</h3>');
 		$I->see($options['settings']['subscribe_text_tag']);
+
+		var_dump( $options );
+		die();
+		
 		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $options['settings']['recaptcha_site_key'] ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
 	}
 
