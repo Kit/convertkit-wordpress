@@ -78,7 +78,6 @@ modules:
             capabilities:
                 goog:chromeOptions:
                     args: [
-                        "--headless=new",
                         "--disable-gpu",
                         "--user-agent=%TEST_SITE_HTTP_USER_AGENT%",
                     ]

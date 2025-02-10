@@ -150,7 +150,7 @@ class RestrictContentSettingsCest
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe Heading Tag',
 			'subscribe_text_tag'      => 'Subscribe Text Tag',
-			'no_access_text'          => 'No Access Text Tag',
+			'no_access_text_tag'      => 'No Access Text Tag',
 			'require_tag_login'       => 'on',
 			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
 			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
@@ -164,7 +164,6 @@ class RestrictContentSettingsCest
 			'email_description_text'  => 'Email Description Text',
 			'email_check_heading'     => 'Email Check Heading',
 			'email_check_text'        => 'Email Check Text',
-			
 		);
 
 		// Save settings.

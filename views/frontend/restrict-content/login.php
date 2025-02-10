@@ -24,4 +24,5 @@ if ( $this->settings->scripts_disabled() ) {
 		<a href="#" class="convertkit-restrict-content-modal-open"><?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'email_button_label' ) ); ?></a>
 	</p>
 	<?php
+	require 'notices.php';
 }
