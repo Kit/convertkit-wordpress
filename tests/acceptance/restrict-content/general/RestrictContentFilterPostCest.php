@@ -112,6 +112,106 @@ class RestrictContentFilterPostCest
 	}
 
 	/**
+	 * Test that filtering by Tag works on the Posts screen.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testFilterByTag(AcceptanceTester $I)
+	{
+		// Setup Plugin.
+		$I->setupConvertKitPlugin($I);
+
+		// Create Post, set to restrict content to a Tag.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'post',
+				'post_title'               => 'Kit: Post: Restricted Content: Tag: Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+
+		// Navigate to Posts.
+		$I->amOnAdminPage('edit.php?post_type=post');
+
+		// Wait for the WP_List_Table of Posts to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Post is listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Post: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+
+		// Filter by Tag.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Posts to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Post is still listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Post: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+	}
+
+	/**
+	 * Test that filtering by Form works on the Posts screen.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testFilterByForm(AcceptanceTester $I)
+	{
+		// Setup Plugin.
+		$I->setupConvertKitPlugin($I);
+
+		// Create Post, set to restrict content to a Form.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'post',
+				'post_title'               => 'Kit: Post: Restricted Content: Form: Filter Test',
+				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
+			]
+		);
+
+		// Navigate to Posts.
+		$I->amOnAdminPage('edit.php?post_type=post');
+
+		// Wait for the WP_List_Table of Posts to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Post is listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Post: Restricted Content: Form: Filter Test');
+		$I->see('Kit Member Content');
+
+		// Filter by Form.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Posts to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Post is still listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Post: Restricted Content: Form: Filter Test');
+		$I->see('Kit Member Content');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
