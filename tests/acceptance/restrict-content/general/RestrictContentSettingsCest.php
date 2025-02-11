@@ -84,6 +84,9 @@ class RestrictContentSettingsCest
 			// Permit Crawlers.
 			'permit_crawlers'         => '',
 
+			// Restrict by Form.
+			'no_access_text_form'     => '',
+
 			// Restrict by Product.
 			'subscribe_heading'       => '',
 			'subscribe_text'          => '',

@@ -54,7 +54,7 @@ class RestrictContentFormCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress());
+		$I->testRestrictedContentByFormOnFrontend($I, $url, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class RestrictContentFormCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendUsingLoginModal($I, $url, $I->generateEmailAddress());
+		$I->testRestrictedContentByFormOnFrontendUsingLoginModal($I, $url, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
 
 	/**
@@ -159,7 +159,7 @@ class RestrictContentFormCest
 		);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByFormOnFrontend($I, $pageID, $I->generateEmailAddress());
+		$I->testRestrictedContentByFormOnFrontend($I, $pageID, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
 
 	/**
@@ -204,7 +204,7 @@ class RestrictContentFormCest
 		// Iterate through Pages to run frontend tests.
 		foreach ($pageIDs as $pageID) {
 			// Test Restrict Content functionality.
-			$I->testRestrictedContentByFormOnFrontend($I, $pageID, $I->generateEmailAddress());
+			$I->testRestrictedContentByFormOnFrontend($I, $pageID, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
 	}
 

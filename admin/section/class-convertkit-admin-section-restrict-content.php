@@ -39,6 +39,11 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 				'callback' => array( $this, 'print_section_info' ),
 				'wrap'     => true,
 			),
+			'forms'    => array(
+				'title'    => __( 'Forms', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_forms' ),
+				'wrap'     => true,
+			),
 			'products' => array(
 				'title'    => __( 'Products', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_products' ),
@@ -101,6 +106,22 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 				'label_for'   => 'permit_crawlers',
 				'label'       => __( 'When enabled, search engine crawlers (such as Google and Bing) are able to access Member Content for indexing.', 'convertkit' ),
 				'description' => '',
+			)
+		);
+
+		// Restrict by Form.
+		add_settings_field(
+			'no_access_text_form',
+			__( 'No Access Text', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-forms',
+			array(
+				'name'        => 'no_access_text_form',
+				'label_for'   => 'no_access_text_form',
+				'description' => array(
+					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
+				),
 			)
 		);
 
@@ -375,6 +396,19 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 
 		?>
 		<p class="description"><?php esc_html_e( 'Defines the text and button labels to display when a Page, Post or Custom Post has its Member Content setting defined.', 'convertkit' ); ?></p>
+		<?php
+
+	}
+
+	/**
+	 * Prints help info for the forms section of the settings screen.
+	 *
+	 * @since   2.7.3
+	 */
+	public function print_section_info_forms() {
+
+		?>
+		<p class="description"><?php esc_html_e( 'Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit form.', 'convertkit' ); ?></p>
 		<?php
 
 	}

@@ -467,6 +467,10 @@ class ConvertKit_Output_Restrict_Content {
 			// Show an error before the call to action, to tell the subscriber why they still cannot
 			// view the content.
 			switch ( $this->resource_type ) {
+				case 'form':
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_form' );
+					break;
+
 				case 'tag':
 					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
 					break;
