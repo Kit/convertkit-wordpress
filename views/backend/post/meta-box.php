@@ -150,9 +150,13 @@
 							// Forms.
 							if ( $convertkit_forms->inline_exist() ) {
 								foreach ( $convertkit_forms->get_inline() as $convertkit_form ) {
-									?>
-									<option value="form_<?php echo esc_attr( $convertkit_form['id'] ); ?>"<?php selected( 'form_' . $convertkit_form['id'], $convertkit_post->get_restrict_content() ); ?>><?php echo esc_attr( $convertkit_form['name'] ); ?></option>
-									<?php
+									printf(
+										'<option value="form_%s"%s>%s [%s]</option>',
+										esc_attr( $convertkit_form['id'] ),
+										selected( $convertkit_post->get_restrict_content(), 'form_' . $convertkit_form['id'], false ),
+										esc_attr( $convertkit_form['name'] ),
+										( ! empty( $convertkit_form['format'] ) ? esc_attr( $convertkit_form['format'] ) : 'inline' )
+									);
 								}
 							}
 							?>
