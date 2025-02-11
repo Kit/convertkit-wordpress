@@ -186,45 +186,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $this->resource_type ) {
 			case 'product':
-				// Send email to subscriber with a link to authenticate they have access to the email address submitted.
-				$result = $this->api->subscriber_authentication_send_code(
-					$email,
-					$this->get_url()
-				);
-
-				// Bail if an error occured.
-				if ( is_wp_error( $result ) ) {
-					$this->error = $result;
-					return;
-				}
-
-				// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
-				$subscriber = new ConvertKit_Subscriber();
-				$subscriber->forget();
-
-				// Store the token so it's included in the subscriber code form.
-				$this->token = $result;
-				break;
-
 			case 'form':
-				// Create subscriber.
-				$subscriber = $this->api->create_subscriber( $email );
-
-				// Bail if an error occured.
-				if ( is_wp_error( $subscriber ) ) {
-					$this->error = $subscriber;
-					return;
-				}
-
-				// Add subscriber to form.
-				$result = $this->api->add_subscriber_to_form( $form_id, $subscriber['subscriber']['id'] );
-
-				// Bail if an error occured.
-				if ( is_wp_error( $result ) ) {
-					$this->error = $result;
-					return;
-				}
-
 				// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 				$result = $this->api->subscriber_authentication_send_code(
 					$email,
@@ -998,8 +960,8 @@ class ConvertKit_Output_Restrict_Content {
 	 * @since   2.7.3
 	 *
 	 * @param   string $signed_subscriber_id   Signed Subscriber ID.
-	 * @param   int    $form_id        		   Form ID.
-	 * @return  bool                		   Has access to form
+	 * @param   int    $form_id                Form ID.
+	 * @return  bool                           Has access to form
 	 */
 	private function subscriber_has_access_to_form_by_signed_subscriber_id( $signed_subscriber_id, $form_id ) {
 
@@ -1320,7 +1282,7 @@ class ConvertKit_Output_Restrict_Content {
 			case 'form':
 				// Display the Form.
 				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
-				$form = $forms->get_html( $this->resource_id );
+				$form  = $forms->get_html( $this->resource_id );
 
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
