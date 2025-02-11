@@ -169,7 +169,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 				// Don't display a Form on this Page, so we test against Restrict Content's Form.
 				'meta_input'   => [
 					'_wp_convertkit_post_meta' => [
-						'form'             => '-1',
+						'form'             => '0',
 						'landing_page'     => '',
 						'tag'              => '',
 						'restrict_content' => $options['restrict_content_setting'],
@@ -491,6 +491,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I                  Tester.
 	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   int              $formID             Form ID that should be displayed.
 	 * @param   bool|array       $options {
 	 *           Optional. An array of settings.
 	 *
@@ -499,7 +500,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
-	public function testRestrictedContentByFormOnFrontendUsingLoginModal($I, $urlOrPageID, $options = false)
+	public function testRestrictedContentByFormOnFrontendUsingLoginModal($I, $urlOrPageID, $formID, $options = false)
 	{
 		// Setup test.
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
@@ -535,6 +536,9 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// as if we entered the code sent in the email.
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
 		$this->testRestrictContentDisplaysContent($I, $options);
+
+		// Confirm that no Kit Form is displayed.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
