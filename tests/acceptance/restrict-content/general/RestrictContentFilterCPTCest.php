@@ -186,7 +186,7 @@ class RestrictContentFilterCPTCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the Article is still listed, and has the 'Kit Member Content' label.
-		$I->see('Kit: Article: Restricted Content: Product: Tag Test');
+		$I->see('Kit: Article: Restricted Content: Tag: Filter Test');
 		$I->see('Kit Member Content');
 	}
 
