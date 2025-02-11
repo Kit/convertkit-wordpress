@@ -193,7 +193,8 @@ class ConvertKit_Admin_Restrict_Content {
 			return;
 		}
 
-		// Fetch Products and Tags.
+		// Initialize Forms, Products and Tags resource classes.
+		$this->forms    = new ConvertKit_Resource_Forms();
 		$this->products = new ConvertKit_Resource_Products();
 		$this->tags     = new ConvertKit_Resource_Tags();
 

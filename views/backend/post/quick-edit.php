@@ -60,6 +60,19 @@
 			<select name="wp-convertkit[restrict_content]" id="wp-convertkit-quick-edit-restrict_content" size="1">
 				<option value="0" data-preserve-on-refresh="1"><?php esc_html_e( 'Don\'t restrict content to members only.', 'convertkit' ); ?></option>
 
+				<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>" data-resource="forms">
+					<?php
+					// Forms.
+					if ( $convertkit_forms->inline_exist() ) {
+						foreach ( $convertkit_forms->get_inline() as $convertkit_form ) {
+							?>
+							<option value="form_<?php echo esc_attr( $convertkit_form['id'] ); ?>"><?php echo esc_attr( $convertkit_form['name'] ); ?></option>
+							<?php
+						}
+					}
+					?>
+				</optgroup>
+				
 				<optgroup label="<?php esc_attr_e( 'Tags', 'convertkit' ); ?>" data-resource="tags">
 					<?php
 					// Tags.
