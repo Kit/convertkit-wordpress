@@ -17,9 +17,13 @@
 		<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>">
 			<?php
 			foreach ( $this->forms->get_inline() as $convertkit_form ) {
-				?>
-				<option value="form_<?php echo esc_attr( $convertkit_form['id'] ); ?>"<?php selected( 'form_' . $convertkit_form['id'], $this->restrict_content_filter ); ?>><?php echo esc_attr( $convertkit_form['name'] ); ?></option>
-				<?php
+				printf(
+					'<option value="form_%s"%s>%s [%s]</option>',
+					esc_attr( $convertkit_form['id'] ),
+					selected( $this->restrict_content_filter, 'form_' . $convertkit_form['id'], false ),
+					esc_attr( $convertkit_form['name'] ),
+					( ! empty( $convertkit_form['format'] ) ? esc_attr( $convertkit_form['format'] ) : 'inline' )
+				);
 			}
 			?>
 		</optgroup>

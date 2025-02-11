@@ -127,7 +127,7 @@ class RestrictContentFilterPageCest
 			$I,
 			[
 				'post_title'               => 'Kit: Page: Restricted Content: Form: Filter Test',
-				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_FORM_ID'],
+				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
 

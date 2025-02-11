@@ -18,6 +18,15 @@
 class ConvertKit_Admin_Restrict_Content {
 
 	/**
+	 * Holds the ConvertKit Forms resource class.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @var     bool|ConvertKit_Resource_Forms
+	 */
+	public $forms = false;
+
+	/**
 	 * Holds the ConvertKit Tags resource class.
 	 *
 	 * @since   2.3.2
