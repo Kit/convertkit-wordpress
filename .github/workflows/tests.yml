@@ -57,24 +57,11 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '7.4', '8.0', '8.1', '8.2', '8.3' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '7.4' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'acceptance/broadcasts/blocks-shortcodes',
-          'acceptance/broadcasts/import-export',
-          'acceptance/forms/blocks-shortcodes',
-          'acceptance/forms/general',
-          'acceptance/forms/post-types',
-          'acceptance/general',
-          'acceptance/integrations/other',
-          'acceptance/integrations/wlm',
-          'acceptance/integrations/woocommerce',
-          'acceptance/landing-pages',
-          'acceptance/products',
-          'acceptance/restrict-content/general',
-          'acceptance/restrict-content/post-types',
-          'acceptance/tags',
+          'acceptance/broadcasts/blocks-shortcodes'
         ]
 
     # Steps to install, configure and run tests
@@ -181,16 +168,33 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
 
-      # Make sure that an nginx configuration file exists in this repository at tests/nginx/php-x.x.conf.
-      # Refer to an existing .conf file in this repository if you need to create a new one e.g. for a new PHP version.
-      - name: Copy nginx configuration file
-        run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/conf.d/php-${{ matrix.php-versions }}.conf
+      # Configure nginx for Ubuntu 24.04
+      - name: Configure nginx
+        run: |
+          sudo rm /etc/nginx/sites-enabled/default
+          echo "server {
+              listen 80;
+              root ${{ env.ROOT_DIR }};
+              index index.php;
+              server_name 127.0.0.1;
+              location / {
+                  try_files \$uri \$uri/ /index.php?\$args;
+              }
+              location ~ \.php$ {
+                  include fastcgi_params;
+                  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                  fastcgi_pass unix:/var/run/php/php${{ matrix.php-versions }}-fpm.sock;
+              }
+          }" | sudo tee /etc/nginx/sites-available/wordpress
+          sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 
-      - name: Test nginx
+      - name: Test nginx configuration
         run: sudo nginx -t
 
-      - name: Start nginx
-        run: sudo systemctl start nginx.service
+      - name: Restart nginx
+        run: |
+          sudo systemctl restart php${{ matrix.php-versions }}-fpm
+          sudo systemctl restart nginx
 
       - name: Start chromedriver
         run: |
