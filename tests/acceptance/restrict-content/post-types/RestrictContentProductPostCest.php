@@ -150,8 +150,10 @@ class RestrictContentProductPostCest
 		$I->setupConvertKitPluginDisableJS($I);
 
 		// Define visible content and member-only content.
-		$excerpt           = 'This is a defined excerpt';
-		$memberOnlyContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
+		$options = [
+			'visible_content' => 'This is a defined excerpt',
+			'member_content'  => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi',
+		];
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product: Defined Excerpt');
@@ -168,10 +170,10 @@ class RestrictContentProductPostCest
 
 		// Add member content only as a block.
 		// Visible content will be defined in the excerpt.
-		$I->addGutenbergParagraphBlock($I, $memberOnlyContent);
+		$I->addGutenbergParagraphBlock($I, $options['member_content']);
 
 		// Define excerpt.
-		$I->addGutenbergExcerpt($I, $excerpt);
+		$I->addGutenbergExcerpt($I, $options['visible_content']);
 
 		// Publish Post.
 		$url = $I->publishGutenbergPage($I);
@@ -181,28 +183,19 @@ class RestrictContentProductPostCest
 
 		// Test Restrict Content functionality.
 		// Check content is not displayed, and CTA displays with expected text.
-		$I->testRestrictContentByProductHidesContentWithCTA(
-			$I,
-			[
-				'visible_content' => $excerpt,
-				'member_content'  => $memberOnlyContent,
-			]
-		);
+		$I->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// as if we entered the code sent in the email.
 		// Excerpt should not be displayed, as its an excerpt, and we now show the member content instead.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID(
-			$I,
-			$url,
-			[
-				'visible_content' => '',
-				'member_content'  => $memberOnlyContent,
-			]
-		);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $url);
+
+		// The excerpt shouldn't display, so update the options.
+		$options['visible_content'] = '';
+		$I->testRestrictContentDisplaysContent($I, $options);
 
 		// Assert that the excerpt is no longer displayed.
-		$I->dontSee($excerpt);
+		$I->dontSee('This is a defined excerpt');
 	}
 
 	/**
@@ -241,7 +234,7 @@ class RestrictContentProductPostCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentModalByProductOnFrontend($I, $url);
+		$I->testRestrictedContentModal($I, $url);
 	}
 
 	/**

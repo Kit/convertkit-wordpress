@@ -17,7 +17,7 @@
 		require 'header.php';
 		?>
 
-		<form id="convertkit-restrict-content-form" action="<?php echo esc_attr( add_query_arg( array( 'convertkit_login' => 1 ), get_permalink( $post_id ) ) ); ?>#convertkit-restrict-content" method="post">
+		<form class="convertkit-restrict-content-form" action="<?php echo esc_attr( add_query_arg( array( 'convertkit_login' => 1 ), get_permalink( $post_id ) ) ); ?>#convertkit-restrict-content" method="post">
 			<div id="convertkit-restrict-content-email-field" class="<?php echo sanitize_html_class( ( is_wp_error( $this->error ) ? 'convertkit-restrict-content-error' : '' ) ); ?>">
 				<input type="email" name="convertkit_email" id="convertkit_email" value="" placeholder="<?php esc_attr_e( 'Email Address', 'convertkit' ); ?>" required />
 				<?php
@@ -43,6 +43,11 @@
 		</form>
 
 		<?php
+		// Maybe output a login link or form, if require login enabled.
+		if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
+			require 'login.php';
+		}
+
 		// Output notices.
 		require 'notices.php';
 		?>

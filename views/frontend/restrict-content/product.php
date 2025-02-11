@@ -20,22 +20,7 @@
 		echo $button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
-	// If scripts are disabled in the Plugin's settings, output the email login form now.
-	if ( $this->settings->scripts_disabled() ) {
-		?>
-		<p>
-			<?php echo esc_html( $this->restrict_content_settings->get_by_key( 'email_text' ) ); ?>
-		</p>
-		<?php
-		require 'login-email.php';
-	} else {
-		// Just output the paragraph with a link to login, which will trigger the modal to display.
-		?>
-		<p>
-			<?php echo esc_html( $this->restrict_content_settings->get_by_key( 'email_text' ) ); ?>
-			<a href="#" class="convertkit-restrict-content-modal-open"><?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'email_button_label' ) ); ?></a>
-		</p>
-		<?php
-	}
+	// Output a login link or form, if require login enabled.
+	require 'login.php';
 	?>
 </div>
