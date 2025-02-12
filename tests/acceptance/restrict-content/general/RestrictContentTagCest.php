@@ -60,7 +60,7 @@ class RestrictContentTagCest
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when:
 	 * - the Plugin is set to Require Login,
-	 * - creating a viewing a new WordPress Page,
+	 * - creating and viewing a new WordPress Page,
 	 * - entering an email address displays the code verification screen
 	 * - using a signed subscriber ID that has access to the Tag displays the content.
 	 *
@@ -110,7 +110,7 @@ class RestrictContentTagCest
 	 * Test that restricting content by a Tag specified in the Page Settings works when:
 	 * - the Plugin is set to Require Login,
 	 * - the Plugin has its Recaptcha settings defined,
-	 * - creating a viewing a new WordPress Page,
+	 * - creating and viewing a new WordPress Page,
 	 * - entering an email address displays the code verification screen
 	 * - using a signed subscriber ID that has access to the Tag displays the content.
 	 *
@@ -159,6 +159,58 @@ class RestrictContentTagCest
 
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress(), $options);
+	}
+
+	/**
+	 * Test that restricting content by a Tag specified in the Page Settings works when:
+	 * - the Plugin is set to Require Login,
+	 * - the Plugin has its Recaptcha settings defined,
+	 * - creating and viewing a new WordPress Page,
+	 * - entering an email address displays the code verification screen
+	 * - using a signed subscriber ID that has access to the Tag displays the content.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testRestrictContentByTagUsingLoginModal(AcceptanceTester $I)
+	{
+		// Setup ConvertKit Plugin.
+		$I->setupConvertKitPlugin($I);
+
+		// Define reCAPTCHA settings.
+		$options = [
+			'settings' => [
+				'require_tag_login' => 'on',
+			],
+		];
+
+		// Setup Restrict Content functionality with Require Login enabled.
+		$I->setupConvertKitPluginRestrictContent($I, $options['settings']);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Login Modal');
+
+		// Configure metabox's Restrict Content setting = Tag name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByTagOnFrontendUsingLoginModal($I, $url, $options);
 	}
 
 	/**
