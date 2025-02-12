@@ -209,13 +209,15 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->require_tag_login() ) {
-					// Tag the subscriber.
-					$result = $this->api->tag_subscribe( $this->resource_id, $email );
+					// Tag the subscriber, unless this is an AJAX request.
+					if ( ! wp_doing_ajax() ) {
+						$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
-					// Bail if an error occured.
-					if ( is_wp_error( $result ) ) {
-						$this->error = $result;
-						return;
+						// Bail if an error occured.
+						if ( is_wp_error( $result ) ) {
+							$this->error = $result;
+							return;
+						}
 					}
 
 					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
@@ -244,7 +246,7 @@ class ConvertKit_Output_Restrict_Content {
 				// without email link.
 
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					$response = wp_remote_post(
 						'https://www.google.com/recaptcha/api/siteverify',
 						array(
@@ -463,9 +465,21 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! $this->subscriber_has_access( $subscriber_id ) ) {
 			// Show an error before the call to action, to tell the subscriber why they still cannot
 			// view the content.
+			switch ( $this->resource_type ) {
+				case 'tag':
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
+					break;
+
+				case 'product':
+				default:
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text' );
+					break;
+			}
+
+			// Define error for output.
 			$this->error = new WP_Error(
 				'convertkit_restrict_content_subscriber_no_access',
-				esc_html( $this->restrict_content_settings->get_by_key( 'no_access_text' ) )
+				esc_html( $message )
 			);
 
 			return $this->restrict_content( $content );
@@ -1236,7 +1250,7 @@ class ConvertKit_Output_Restrict_Content {
 				}
 
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					add_filter(
 						'convertkit_output_scripts_footer',
 						function ( $scripts ) {

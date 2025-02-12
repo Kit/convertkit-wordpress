@@ -62,10 +62,12 @@ class ConvertKitRestrictContent extends \Codeception\Module
 			// Restrict by Product.
 			'subscribe_heading'       => 'Read this post with a premium subscription',
 			'subscribe_text'          => 'This post is only available to premium subscribers. Join today to get access to all posts.',
+			'no_access_text'          => 'Your account does not have access to this content. Please use the button above to purchase, or enter the email address you used to purchase the product.',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe to keep reading',
 			'subscribe_text_tag'      => 'This post is free to read but only available to subscribers. Join today to get access to all posts.',
+			'no_access_text_tag'      => 'Your account does not have access to this content. Please use the form above to subscribe.',
 
 			// All.
 			'subscribe_button_label'  => 'Subscribe',
@@ -74,7 +76,6 @@ class ConvertKitRestrictContent extends \Codeception\Module
 			'email_description_text'  => 'We\'ll email you a magic code to log you in without a password.',
 			'email_check_heading'     => 'We just emailed you a log in code',
 			'email_check_text'        => 'Enter the code below to finish logging in',
-			'no_access_text'          => 'Your account does not have access to this content. Please use the button above to purchase, or enter the email address you used to purchase the product.',
 		);
 	}
 
@@ -188,20 +189,13 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictedContentByProductOnFrontend($I, $urlOrPageID, $options = false)
 	{
-		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
-
-		// Navigate to the page.
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID);
-		} else {
-			$I->amOnUrl($urlOrPageID);
-		}
+		// Setup test.
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
@@ -210,37 +204,26 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
 		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
-		$I->waitForElementVisible('input#convertkit_email');
-		$I->fillField('convertkit_email', 'fail@kit.com');
-		$I->click('input.wp-block-button__link');
+		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com');
 
 		// Confirm an inline error message is displayed.
-		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">invalid: Email address is invalid</div>');
-		$I->seeInSource('<div id="convertkit-restrict-content-email-field" class="convertkit-restrict-content-error">');
+		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
 		// Set cookie with signed subscriber ID and reload the restricted content page, as if we entered the
-		// code sent in the email as a ConvertKit subscriber who has not subscribed to the product.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS']);
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
-		} else {
-			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
-		}
+		// code sent in the email as a Kit subscriber who has not subscribed to the product.
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
 
 		// Confirm an inline error message is displayed.
-		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">' . $options['text_items']['no_access_text'] . '</div>');
-		$I->seeInSource('<div id="convertkit-restrict-content-email-field" class="convertkit-restrict-content-error">');
+		$this->seeRestrictContentError($I, $options['settings']['no_access_text']);
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
 		// Login as a ConvertKit subscriber who has subscribed to the product.
-		$I->waitForElementVisible('input#convertkit_email');
-		$I->fillField('convertkit_email', $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
-		$I->click('input.wp-block-button__link');
+		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
 		// Confirm that confirmation an email has been sent is displayed.
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
@@ -250,90 +233,18 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->dontSee($options['member_content']);
 
 		// Confirm that the CTA displays with the expected text.
-		$I->seeElementInDOM('#convertkit-restrict-content');
-		$I->seeInSource('<h4>' . $options['text_items']['email_check_heading'] . '</h4>');
-		$I->see($options['text_items']['email_check_text']);
-		$I->seeElementInDOM('input#convertkit_subscriber_code');
-		$I->seeElementInDOM('input.wp-block-button__link');
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
 
 		// Enter an invalid code.
-		$I->fillField('subscriber_code', '999999');
-		$I->click('Verify');
+		$this->submitRestrictContentSubscriberCode($I, '999999');
 
 		// Confirm an inline error message is displayed.
-		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">The entered code is invalid. Please try again, or click the link sent in the email.</div>');
-		$I->seeInSource('<div id="convertkit-subscriber-code-container" class="convertkit-restrict-content-error">');
+		$this->seeRestrictContentError($I, 'The entered code is invalid. Please try again, or click the link sent in the email.');
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// as if we entered the code sent in the email.
-		$this->testRestrictedContentShowsContentWithValidSubscriberID($I, $urlOrPageID, $options);
-	}
-
-	/**
-	 * Run frontend tests for restricted content by ConvertKit Product, using the modal authentication flow, to confirm
-	 * that visible and member's content is / is not displayed when logging in with valid and invalid subscriber email addresses.
-	 *
-	 * @since   2.3.8
-	 *
-	 * @param   AcceptanceTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
-	 *
-	 *     @type string $visible_content            Content that should always be visible.
-	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
-	 * }
-	 */
-	public function testRestrictedContentModalByProductOnFrontend($I, $urlOrPageID, $options = false)
-	{
-		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
-
-		// Navigate to the page.
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID);
-		} else {
-			$I->amOnUrl($urlOrPageID);
-		}
-
-		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
-
-		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
-
-		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
-		$I->click('a.convertkit-restrict-content-modal-open');
-		$I->waitForElementVisible('#convertkit-restrict-content-modal');
-		$I->waitForElementVisible('input#convertkit_email');
-		$I->fillField('convertkit_email', 'fail@kit.com');
-		$I->click('#convertkit-restrict-content-modal input.wp-block-button__link');
-
-		// Confirm an inline error message is displayed.
-		$I->waitForElementVisible('.convertkit-restrict-content-notice-error');
-		$I->see('invalid: Email address is invalid', '.convertkit-restrict-content-notice-error');
-
-		// Login as a ConvertKit subscriber who has subscribed to the product.
-		$I->fillField('convertkit_email', $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
-		$I->click('#convertkit-restrict-content-modal input.wp-block-button__link');
-
-		// Confirm that confirmation an email has been sent is displayed.
-		$I->waitForElementVisible('input#convertkit_subscriber_code');
-		$I->see($options['text_items']['email_check_heading'], 'h4');
-		$I->see($options['text_items']['email_check_text'], 'p');
-
-		// Enter an invalid code.
-		$I->fillField('subscriber_code', '999999');
-
-		// Confirm an inline error message is displayed.
-		$I->waitForElementVisible('.convertkit-restrict-content-notice-error');
-		$I->see('The entered code is invalid. Please try again, or click the link sent in the email.', '.convertkit-restrict-content-notice-error');
-		$I->seeElementInDOM('input#convertkit_subscriber_code');
-
-		// Test that the restricted content displays when a valid signed subscriber ID is used,
-		// as if we entered the code sent in the email.
-		$this->testRestrictedContentShowsContentWithValidSubscriberID($I, $urlOrPageID, $options);
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
+		$this->testRestrictContentDisplaysContent($I, $options);
 	}
 
 	/**
@@ -350,74 +261,46 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
-	 * @param   bool             $recaptchaEnabled   Whether the reCAPTCHA settings are enabled in the Plugin settings.
 	 */
-	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false, $recaptchaEnabled = false)
+	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false)
 	{
-		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
-
-		// Navigate to the page.
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID);
-		} else {
-			$I->amOnUrl($urlOrPageID);
-		}
-
-		// Clear any existing cookie from a previous test and reload.
-		$I->resetCookie('ck_subscriber_id');
-		$I->reloadPage();
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Setup test.
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
-		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
-		$I->see($options['visible_content']);
-		$I->dontSee($options['member_content']);
+		// Check content is not displayed, and CTA displays with expected text.
+		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
 
-		// Confirm that the CTA displays with the expected headings, text and other elements.
-		$I->seeElementInDOM('#convertkit-restrict-content');
-		$I->seeInSource('<h3>' . $options['text_items']['subscribe_heading_tag'] . '</h3>');
-		$I->see($options['text_items']['subscribe_text_tag']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $recaptchaEnabled ? ' g-recaptcha' : '' ) . '" value="' . $options['text_items']['subscribe_button_label'] . '"');
-
-		// Set cookie with subscriber ID that does not have access to the tag, and reload the restricted content page.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS']);
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
-		} else {
-			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
-		}
+		// Set cookie with signed subscriber ID and reload the restricted content page, as if we entered the
+		// code sent in the email as a Kit subscriber who has not subscribed to the tag.
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
 
 		// Confirm an inline error message is displayed.
-		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">' . $options['text_items']['no_access_text'] . '</div>');
-		$I->seeInSource('<div id="convertkit-restrict-content-email-field" class="convertkit-restrict-content-error">');
+		$this->seeRestrictContentError($I, $options['settings']['no_access_text_tag']);
 
-		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
-		$I->see($options['visible_content']);
-		$I->dontSee($options['member_content']);
+		// Check content is not displayed, and CTA displays with expected text.
+		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
 
 		// Enter the email address and submit the form.
-		$I->fillField('convertkit_email', $emailAddress);
-		$I->click('input.wp-block-button__link');
+		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
 		// Wait for reCAPTCHA to fully load.
-		if ( $recaptchaEnabled ) {
+		if ($options['settings']['recaptcha_site_key']) {
 			$I->wait(3);
 		}
 
 		// Confirm that the restricted content is now displayed.
-		$I->testRestrictContentDisplaysContent($I, $options);
+		$this->testRestrictContentDisplaysContent($I, $options);
 	}
 
 	/**
 	 * Run frontend tests for restricted content by Kit Tag, to confirm that visible and member's content
-	 * is / is not displayed when using signed subscriber IDs that do / do not have access to the content.
+	 * is / is not displayed when the 'Require Login' option is enabled, therefore requiring
+	 * the use of signed subscriber IDs.
 	 *
 	 * @since   2.7.1
 	 *
@@ -429,47 +312,22 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
-	 * @param   bool             $recaptchaEnabled   Whether the reCAPTCHA settings are enabled in the Plugin settings.
 	 */
-	public function testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $urlOrPageID, $emailAddress, $options = false, $recaptchaEnabled = false)
+	public function testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $urlOrPageID, $emailAddress, $options = false)
 	{
-		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
-
-		// Navigate to the page.
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID);
-		} else {
-			$I->amOnUrl($urlOrPageID);
-		}
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Setup test.
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
-		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
-		$I->see($options['visible_content']);
-		$I->dontSee($options['member_content']);
+		// Check content is not displayed, and CTA displays with expected text.
+		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
 
-		// Confirm that the CTA displays with the expected headings, text and other elements.
-		$I->seeElementInDOM('#convertkit-restrict-content');
-		$I->seeInSource('<h3>' . $options['text_items']['subscribe_heading_tag'] . '</h3>');
-		$I->see($options['text_items']['subscribe_text_tag']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $recaptchaEnabled ? ' g-recaptcha' : '' ) . '" value="' . $options['text_items']['subscribe_button_label'] . '"');
-
-		// Signup.
-		$I->waitForElementVisible('input#convertkit_email');
-		$I->fillField('convertkit_email', $emailAddress);
-		$I->click('input.wp-block-button__link');
-
-		// Wait for reCAPTCHA to fully load.
-		if ( $recaptchaEnabled ) {
-			$I->wait(3);
-		}
+		// Login.
+		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
 		// Confirm that confirmation an email has been sent is displayed.
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
@@ -479,30 +337,80 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$I->dontSee($options['member_content']);
 
 		// Confirm that the CTA displays with the expected text.
-		$I->seeElementInDOM('#convertkit-restrict-content');
-		$I->seeInSource('<h4>' . $options['text_items']['email_check_heading'] . '</h4>');
-		$I->see($options['text_items']['email_check_text']);
-		$I->seeElementInDOM('input#convertkit_subscriber_code');
-		$I->seeElementInDOM('input.wp-block-button__link');
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
 
 		// Enter an invalid code.
-		$I->fillField('subscriber_code', '999999');
-		$I->click('Verify');
+		$this->submitRestrictContentSubscriberCode($I, '999999');
 
 		// Confirm an inline error message is displayed.
-		$I->seeInSource('<div class="convertkit-restrict-content-notice convertkit-restrict-content-notice-error">The entered code is invalid. Please try again, or click the link sent in the email.</div>');
-		$I->seeInSource('<div id="convertkit-subscriber-code-container" class="convertkit-restrict-content-error">');
+		$this->seeRestrictContentError($I, 'The entered code is invalid. Please try again, or click the link sent in the email.');
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// as if we entered the code sent in the email.
-		$this->testRestrictedContentShowsContentWithValidSubscriberID($I, $urlOrPageID, $options);
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
+		$this->testRestrictContentDisplaysContent($I, $options);
 	}
 
 	/**
-	 * Run frontend tests for restricted content, to confirm that both visible and member content is displayed
-	 * when a valid signed subscriber ID is set as a cookie, as if the user entered a code sent in the email.
+	 * Run frontend tests for restricted content by Kit Tag, to confirm that visible and member's content
+	 * is / is not displayed when the 'Require Login' option is enabled, and the login modal method works.
 	 *
-	 * @since   2.2.2
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   string           $emailAddress       Email Address.
+	 * @param   bool|array       $options {
+	 *           Optional. An array of settings.
+	 *
+	 *     @type string $visible_content            Content that should always be visible.
+	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
+	 * }
+	 */
+	public function testRestrictedContentByTagOnFrontendUsingLoginModal($I, $urlOrPageID, $emailAddress, $options = false)
+	{
+		// Setup test.
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
+
+		// Confirm Restrict Content CSS is output.
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+
+		// Check content is not displayed, and CTA displays with expected text.
+		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
+
+		// Click the login link to open the login modal.
+		$this->clickRestrictContentLoginLink($I);
+
+		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com', true);
+
+		// Confirm an inline error message is displayed.
+		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
+
+		// Login as a ConvertKit subscriber who has subscribed to the product.
+		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'], true);
+
+		// Confirm that the subscriber code form dispays.
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
+
+		// Enter an invalid code.
+		$this->submitRestrictContentSubscriberCodeModal($I, '999999');
+
+		// Confirm an inline error message is displayed.
+		$this->seeRestrictContentError($I, 'The entered code is invalid. Please try again, or click the link sent in the email.');
+
+		// Test that the restricted content displays when a valid signed subscriber ID is used,
+		// as if we entered the code sent in the email.
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
+		$this->testRestrictContentDisplaysContent($I, $options);
+	}
+
+	/**
+	 * Run frontend tests for restricted content functionality, using the modal authentication flow, to confirm
+	 * that visible and member's content is / is not displayed when logging in with valid and invalid subscriber email addresses.
+	 *
+	 * @since   2.7.3
 	 *
 	 * @param   AcceptanceTester $I                  Tester.
 	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
@@ -511,27 +419,45 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
-	public function testRestrictedContentShowsContentWithValidSubscriberID($I, $urlOrPageID, $options = false)
+	public function testRestrictedContentModal($I, $urlOrPageID, $options = false)
 	{
-		// Set cookie with signed subscriber ID, as if we entered the code sent in the email.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		// Setup test.
+		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
-		// Reload the restricted content page.
-		if ( is_numeric( $urlOrPageID ) ) {
-			$I->amOnPage('?p=' . $urlOrPageID );
-		} else {
-			$I->amOnUrl($urlOrPageID );
-		}
+		// Confirm Restrict Content CSS is output.
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
-		// Confirm cookie was set with the expected value.
-		$I->assertEquals($I->grabCookie('ck_subscriber_id'), $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		// Check content is not displayed, and CTA displays with expected text.
+		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
-		// Confirm that the restricted content is now displayed, as we've authenticated as a subscriber
-		// who has access to this Product.
-		$I->testRestrictContentDisplaysContent($I, $options);
+		// Click the login link to open the login modal.
+		$this->clickRestrictContentLoginLink($I);
+
+		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com', true);
+
+		// Confirm an inline error message is displayed.
+		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
+
+		// Login as a ConvertKit subscriber who has subscribed to the product.
+		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'], true);
+
+		// Confirm that the subscriber code form dispays.
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
+
+		// Enter an invalid code.
+		$this->submitRestrictContentSubscriberCodeModal($I, '999999');
+
+		// Confirm an inline error message is displayed.
+		$this->seeRestrictContentError($I, 'The entered code is invalid. Please try again, or click the link sent in the email.');
+
+		// Test that the restricted content displays when a valid signed subscriber ID is used,
+		// as if we entered the code sent in the email.
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
+		$this->testRestrictContentDisplaysContent($I, $options);
 	}
 
 	/**
@@ -548,7 +474,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictContentByProductHidesContentWithCTA($I, $options = false)
@@ -568,15 +494,53 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
 		$I->seeElementInDOM('#convertkit-restrict-content');
 
-		$I->seeInSource('<h3>' . $options['text_items']['subscribe_heading'] . '</h3>');
-		$I->see($options['text_items']['subscribe_text']);
+		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading'] . '</h3>');
+		$I->see($options['settings']['subscribe_text']);
 
-		$I->see($options['text_items']['subscribe_button_label']);
+		$I->see($options['settings']['subscribe_button_label']);
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link');
 
-		$I->see($options['text_items']['email_text']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link" value="' . $options['text_items']['email_button_label'] . '"');
-		$I->seeInSource('<small>' . $options['text_items']['email_description_text'] . '</small>');
+		$I->see($options['settings']['email_text']);
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link" value="' . $options['settings']['email_button_label'] . '"');
+		$I->seeInSource('<small>' . $options['settings']['email_description_text'] . '</small>');
+	}
+
+	/**
+	 * Run frontend tests for restricted content, to confirm that:
+	 * - visible content is displayed,
+	 * - member's content is not displayed,
+	 * - the CTA is displayed with the expected text
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 * @param   bool|array       $options {
+	 *           Optional. An array of settings.
+	 *
+	 *     @type string $visible_content            Content that should always be visible.
+	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
+	 * }
+	 */
+	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false)
+	{
+		// Merge options with defaults.
+		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
+		if ( ! empty($options['visible_content'])) {
+			$I->see($options['visible_content']);
+		}
+		$I->dontSee($options['member_content']);
+
+		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
+		$I->seeElementInDOM('#convertkit-restrict-content');
+		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading_tag'] . '</h3>');
+		$I->see($options['settings']['subscribe_text_tag']);
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $options['settings']['recaptcha_site_key'] ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
 	}
 
 	/**
@@ -593,7 +557,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	public function testRestrictContentDisplaysContent($I, $options = false)
@@ -615,6 +579,148 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	}
 
 	/**
+	 * Setup Restrict Content options, clear the cookie and navigate
+	 * to the page ID or URL.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 * @param   bool|array       $options {
+	 *           Optional. An array of settings.
+	 *
+	 *     @type string $visible_content            Content that should always be visible.
+	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
+	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
+	 * }
+	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @return  array
+	 */
+	public function setupRestrictContentTest($I, $options, $urlOrPageID)
+	{
+		// Merge options with defaults.
+		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+
+		// Clear any existing cookie from a previous test and reload.
+		$I->resetCookie('ck_subscriber_id');
+
+		// Navigate to the page.
+		if ( is_numeric( $urlOrPageID ) ) {
+			$I->amOnPage('?p=' . $urlOrPageID);
+		} else {
+			$I->amOnUrl($urlOrPageID);
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Assert that the subscriber code form displays, with the expected heading and text.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I         Tester.
+	 * @param   string           $heading   Heading text.
+	 * @param   string           $text      Text.
+	 */
+	public function seeRestrictContentSubscriberCode($I, $heading, $text)
+	{
+		$I->waitForElementVisible('input#convertkit_subscriber_code');
+		$I->see($heading, 'h4');
+		$I->see($text, 'p');
+	}
+
+	/**
+	 * Submit the given code in the subscriber code form.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I     Tester.
+	 * @param   string           $code  Subsciber code.
+	 */
+	public function submitRestrictContentSubscriberCode($I, $code)
+	{
+		$I->fillField('subscriber_code', $code);
+		$I->click('Verify');
+	}
+
+	/**
+	 * Submit the given code in the subscriber code form modal.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I     Tester.
+	 * @param   string           $code  Subsciber code.
+	 */
+	public function submitRestrictContentSubscriberCodeModal($I, $code)
+	{
+		$I->fillField('subscriber_code', $code);
+	}
+
+	/**
+	 * Click the restrict content login link, and confirm the modal displays.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 */
+	public function clickRestrictContentLoginLink($I)
+	{
+		$I->click('a.convertkit-restrict-content-modal-open');
+		$I->waitForElementVisible('#convertkit-restrict-content-modal');
+	}
+
+	/**
+	 * Enter the given email address in the login form for restrict content.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I             Tester.
+	 * @param   string           $emailAddress  Email address.
+	 * @param   bool             $inModal       Enter the email address in the modal view.
+	 */
+	public function loginToRestrictContentWithEmail($I, $emailAddress, $inModal = false)
+	{
+		$selector = ( $inModal ? '#convertkit-restrict-content-modal-content ' : '' ) . '#convertkit-restrict-content-email-field';
+		$I->waitForElementVisible($selector . ' input#convertkit_email');
+		$I->fillField($selector . ' input#convertkit_email', $emailAddress);
+		$I->waitForElementVisible($selector . ' input.wp-block-button__link');
+		$I->click($selector . '#convertkit-restrict-content-email-field input.wp-block-button__link');
+	}
+
+	/**
+	 * Assert that the given error is displayed for restrict content.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I         Tester.
+	 * @param   string           $error     Error message.
+	 */
+	public function seeRestrictContentError($I, $error)
+	{
+		$I->waitForElementVisible('.convertkit-restrict-content-notice-error');
+		$I->see($error, '.convertkit-restrict-content-notice-error');
+	}
+
+	/**
+	 * Set the subscriber ID cookie and reload the given URL or Page ID.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 * @param   string|int       $subscriberID       Signed subscriber ID or subscriber ID.
+	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 */
+	public function setRestrictContentCookieAndReload($I, $subscriberID, $urlOrPageID)
+	{
+		$I->setCookie('ck_subscriber_id', $subscriberID);
+		if ( is_numeric( $urlOrPageID ) ) {
+			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
+		} else {
+			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
+		}
+	}
+
+	/**
 	 * Return an array of Restrict Content strings for tests, based on the optional supplied strings.
 	 *
 	 * @since   2.4.1
@@ -622,9 +728,9 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 * @param   bool|array $options {
 	 *     Optional. An array of settings.
 	 *
-	 *     @type string $visible_content            Content that should always be visible.
-	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $text_items                 Expected text for subscribe text, subscribe button label, email text etc. If not defined, uses expected defaults.
+	 *     @type string $visible_content          Content that should always be visible.
+	 *     @type string $member_content           Content that should only be available to authenticated subscribers.
+	 *     @type array  $settings                 Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
 	private function _getRestrictedContentOptionsWithDefaultsMerged($options = false)
@@ -633,15 +739,25 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		$defaults = [
 			'visible_content' => 'Visible content.',
 			'member_content'  => 'Member-only content.',
-			'text_items'      => $this->getRestrictedContentDefaultSettings(),
+			'settings'        => $this->getRestrictedContentDefaultSettings(),
 		];
 
-		// If supplied options are an array, merge them with the defaults.
-		if (is_array($options)) {
-			return array_merge($defaults, $options);
+		// If supplied options are false, just return the defaults.
+		if ( ! $options ) {
+			return $defaults;
 		}
 
-		// Just return defaults.
+		// Override defaults if supplied in options array.
+		if ( array_key_exists('visible_content', $options ) ) {
+			$defaults['visible_content'] = $options['visible_content'];
+		}
+		if ( array_key_exists('member_content', $options ) ) {
+			$defaults['member_content'] = $options['member_content'];
+		}
+		if ( array_key_exists('settings', $options ) ) {
+			$defaults['settings'] = array_merge($defaults['settings'], $options['settings']);
+		}
+
 		return $defaults;
 	}
 }

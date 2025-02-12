@@ -63,7 +63,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate Litespeed Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'litespeed-cache');
@@ -112,7 +113,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate W3 Total Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'w3-total-cache');
@@ -159,7 +161,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP Fastest Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-fastest-cache');
@@ -206,7 +209,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP-Optimize Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-optimize');
@@ -253,7 +257,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP Super Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-super-cache');
@@ -293,7 +298,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP Super Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
