@@ -171,7 +171,7 @@ class RestrictContentProductPageCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentModalByProductOnFrontend($I, $url);
+		$I->testRestrictedContentModal($I, $url);
 	}
 
 	/**

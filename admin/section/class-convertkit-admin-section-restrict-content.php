@@ -136,6 +136,21 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 		);
 
 		add_settings_field(
+			'no_access_text_tag',
+			__( 'No Access Text', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-tags',
+			array(
+				'name'        => 'no_access_text_tag',
+				'label_for'   => 'no_access_text_tag',
+				'description' => array(
+					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
+				),
+			)
+		);
+
+		add_settings_field(
 			'require_tag_login',
 			__( 'Require Login', 'convertkit' ),
 			array( $this, 'require_tag_login_callback' ),
@@ -244,6 +259,22 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 		);
 
 		add_settings_field(
+			'no_access_text',
+			__( 'No Access Text', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-products',
+			array(
+				'name'        => 'no_access_text',
+				'label_for'   => 'no_access_text',
+				'description' => array(
+					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
+				),
+			)
+		);
+
+		// Member Content.
+		add_settings_field(
 			'email_text',
 			__( 'Email Text', 'convertkit' ),
 			array( $this, 'text_callback' ),
@@ -329,21 +360,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 				'label_for'   => 'email_check_text',
 				'description' => array(
 					__( 'The text to display instructing the subscriber to check their email for the login link that was sent.', 'convertkit' ),
-				),
-			)
-		);
-
-		add_settings_field(
-			'no_access_text',
-			__( 'No Access Text', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name,
-			array(
-				'name'        => 'no_access_text',
-				'label_for'   => 'no_access_text',
-				'description' => array(
-					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
 				),
 			)
 		);
