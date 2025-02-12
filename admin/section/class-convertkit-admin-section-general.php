@@ -686,7 +686,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$preview_url = WP_ConvertKit()->get_class( 'preview_output' )->get_preview_form_home_url();
 		$description = sprintf(
 			'%s %s %s',
-			esc_html__( 'Select one or more non-inline modal, slide in or sticky bar forms to automatically display site wide. Ignored if a non-inline form is specified in Default Form settings above, individual Post / Page settings, or any block / shortcode.', 'convertkit' ),
+			esc_html__( 'Automatically display one or more modal, slide-in, or sticky bar forms across your site. This setting is overridden if a default non-inline form is set above, a specific non-inline form or "None" option is chosen for a post/page, or a non-inline form is specified in a block/shortcode.', 'convertkit' ),
 			'<a href="' . esc_url( $preview_url ) . '" id="convertkit-preview-non-inline-form" target="_blank">' . esc_html__( 'Click here', 'convertkit' ) . '</a>',
 			esc_html__( 'to preview how this will display.', 'convertkit' )
 		);
