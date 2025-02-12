@@ -141,6 +141,56 @@ class RestrictContentFilterCPTCest
 	}
 
 	/**
+	 * Test that filtering by Tag works on the Articles screen.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testFilterByTag(AcceptanceTester $I)
+	{
+		// Setup Plugin.
+		$I->setupConvertKitPlugin($I);
+
+		// Create Article, set to restrict content to a Product.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'article',
+				'post_title'               => 'Kit: Article: Restricted Content: Tag: Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+
+		// Navigate to Articles.
+		$I->amOnAdminPage('edit.php?post_type=article');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Article is listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Article: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+
+		// Filter by Tag.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Article is still listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Article: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
