@@ -186,6 +186,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $this->resource_type ) {
 			case 'product':
+			case 'form':
 				// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 				$result = $this->api->subscriber_authentication_send_code(
 					$email,
@@ -466,6 +467,10 @@ class ConvertKit_Output_Restrict_Content {
 			// Show an error before the call to action, to tell the subscriber why they still cannot
 			// view the content.
 			switch ( $this->resource_type ) {
+				case 'form':
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_form' );
+					break;
+
 				case 'tag':
 					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
 					break;
@@ -833,6 +838,19 @@ class ConvertKit_Output_Restrict_Content {
 				// Product exists in ConvertKit.
 				return true;
 
+			case 'form':
+				// Get Form.
+				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
+				$form  = $forms->get_by_id( $this->resource_id );
+
+				// If the Form does not exist, return false.
+				if ( ! $form ) {
+					return false;
+				}
+
+				// Form exists in ConvertKit.
+				return true;
+
 			case 'tag':
 				// Get Tag.
 				$tags = new ConvertKit_Resource_Tags( 'restrict_content' );
@@ -881,6 +899,10 @@ class ConvertKit_Output_Restrict_Content {
 			case 'product':
 				// For products, the subscriber ID has to be a signed subscriber ID string.
 				return $this->subscriber_has_access_to_product_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
+
+			case 'form':
+				// For forms, the subscriber ID has to be a signed subscriber ID string.
+				return $this->subscriber_has_access_to_form_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
 			case 'tag':
 				// If the subscriber ID is numeric, check using get_subscriber_tags().
@@ -932,6 +954,36 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Return if the subscriber is subscribed to the product or not.
 		return in_array( $product_id, $result['products'], true );
+
+	}
+
+	/**
+	 * Determines if the given signed subscriber ID has an active subscription to
+	 * the given form.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   string $signed_subscriber_id   Signed Subscriber ID.
+	 * @param   int    $form_id                Form ID.
+	 * @return  bool                           Has access to form
+	 */
+	private function subscriber_has_access_to_form_by_signed_subscriber_id( $signed_subscriber_id, $form_id ) {
+
+		// Get products that the subscriber has access to.
+		$result = $this->api->profile( $signed_subscriber_id );
+
+		// If an error occured, the subscriber ID is invalid.
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		// If no forms exist, there's no access.
+		if ( ! $result['forms'] || ! count( $result['forms'] ) ) {
+			return false;
+		}
+
+		// Return if the subscriber is subscribed to the form or not.
+		return in_array( $form_id, $result['forms'], true );
 
 	}
 
@@ -1229,6 +1281,29 @@ class ConvertKit_Output_Restrict_Content {
 				ob_start();
 				$button = $products->get_html( $this->resource_id, $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) );
 				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
+				return trim( ob_get_clean() );
+
+			case 'form':
+				// Display the Form.
+				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
+				$form  = $forms->get_html( $this->resource_id );
+
+				// If scripts are enabled, output the email login form in a modal, which will be displayed
+				// when the 'log in' link is clicked.
+				if ( ! $this->settings->scripts_disabled() ) {
+					add_action(
+						'wp_footer',
+						function () {
+
+							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
+
+						}
+					);
+				}
+
+				// Output.
+				ob_start();
+				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/form.php';
 				return trim( ob_get_clean() );
 
 			case 'tag':

@@ -18,6 +18,15 @@
 class ConvertKit_Admin_Restrict_Content {
 
 	/**
+	 * Holds the ConvertKit Forms resource class.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @var     bool|ConvertKit_Resource_Forms
+	 */
+	public $forms = false;
+
+	/**
 	 * Holds the ConvertKit Tags resource class.
 	 *
 	 * @since   2.3.2
@@ -193,7 +202,8 @@ class ConvertKit_Admin_Restrict_Content {
 			return;
 		}
 
-		// Fetch Products and Tags.
+		// Initialize Forms, Products and Tags resource classes.
+		$this->forms    = new ConvertKit_Resource_Forms();
 		$this->products = new ConvertKit_Resource_Products();
 		$this->tags     = new ConvertKit_Resource_Tags();
 

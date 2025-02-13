@@ -208,6 +208,9 @@ class ConvertKit_Settings_Restrict_Content {
 			// Permit Crawlers.
 			'permit_crawlers'         => '',
 
+			// Restrict by Form.
+			'no_access_text_form'     => __( 'Your account does not have access to this content. Please use the form above to subscribe.', 'convertkit' ),
+
 			// Restrict by Product.
 			'subscribe_heading'       => __( 'Read this post with a premium subscription', 'convertkit' ),
 			'subscribe_text'          => __( 'This post is only available to premium subscribers. Join today to get access to all posts.', 'convertkit' ),
