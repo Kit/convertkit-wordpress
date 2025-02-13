@@ -111,7 +111,56 @@ class RestrictContentFilterPageCest
 	}
 
 	/**
-	 * Test that filtering by Form works on the Pages screen.
+	 * Test that filtering by Tag works on the Pages screen.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testFilterByTag(AcceptanceTester $I)
+	{
+		// Setup Plugin.
+		$I->setupConvertKitPlugin($I);
+
+		// Create Page, set to restrict content to a Tag.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_title'               => 'Kit: Page: Restricted Content: Tag: Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+
+		// Navigate to Pages.
+		$I->amOnAdminPage('edit.php?post_type=page');
+
+		// Wait for the WP_List_Table of Pages to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Page is listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Page: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+
+		// Filter by Tag.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Pages to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Page is still listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Page: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+	}
+
+	/**
+	 * Test that filtering by Form works on the Posts screen.
 	 *
 	 * @since   2.7.3
 	 *
@@ -126,15 +175,16 @@ class RestrictContentFilterPageCest
 		$I->createRestrictedContentPage(
 			$I,
 			[
+				'post_type'                => 'post',
 				'post_title'               => 'Kit: Page: Restricted Content: Form: Filter Test',
 				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
 
-		// Navigate to Pages.
-		$I->amOnAdminPage('edit.php?post_type=page');
+		// Navigate to Posts.
+		$I->amOnAdminPage('edit.php?post_type=post');
 
-		// Wait for the WP_List_Table of Pages to load.
+		// Wait for the WP_List_Table of Posts to load.
 		$I->waitForElementVisible('tbody#the-list');
 
 		// Check that no PHP warnings or notices were output.
@@ -148,7 +198,7 @@ class RestrictContentFilterPageCest
 		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_FORM_NAME']);
 		$I->click('Filter');
 
-		// Wait for the WP_List_Table of Pages to load.
+		// Wait for the WP_List_Table of Posts to load.
 		$I->waitForElementVisible('tbody#the-list');
 
 		// Check that no PHP warnings or notices were output.
