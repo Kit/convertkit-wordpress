@@ -231,7 +231,7 @@ class NonInlineFormCest
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testDefaultNonInlineFormIgnoredWhenPageFormNoneSetting(AcceptanceTester $I)
+	public function testPageLevelNoneSettingIgnored(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
 		$I->setupConvertKitPlugin(
@@ -244,7 +244,48 @@ class NonInlineFormCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None');
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None: Ignored');
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the sticky bar form displays.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
+	}
+
+	/**
+	 * Test that the None option defined on a Page overrides the non-inline form defined
+	 * in the Default Forms (Site Wide) setting when a Page is viewed.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testPageLevelNoneSettingHonored(AcceptanceTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide,
+		// and set to honor the None setting at Page / Post level.
+		$I->setupConvertKitPlugin(
+			$I,
+			[
+				'non_inline_form'                    => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+				'non_inline_form_honor_none_setting' => 'on',
+			]
+		);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None: Honored');
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
@@ -508,7 +549,7 @@ class NonInlineFormCest
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testDefaultNonInlineFormIgnoredWhenPostFormNoneSetting(AcceptanceTester $I)
+	public function testPostLevelNoneSettingIgnored(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
 		$I->setupConvertKitPlugin(
@@ -521,7 +562,48 @@ class NonInlineFormCest
 		);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None');
+		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None: Ignored');
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Publish and view the Post on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the sticky bar form displays.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
+	}
+
+	/**
+	 * Test that the None option defined on a Post overrides the non-inline form defined
+	 * in the Default Forms (Site Wide) setting when a Post is viewed.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testPostLevelNoneSettingHonored(AcceptanceTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide,
+		// and set to honor the None setting at Page / Post level.
+		$I->setupConvertKitPlugin(
+			$I,
+			[
+				'non_inline_form'                    => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+				'non_inline_form_honor_none_setting' => 'on',
+			]
+		);
+
+		// Add a Post using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None: Honored');
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(

@@ -60,15 +60,16 @@ class ConvertKitPlugin extends \Codeception\Module
 	{
 		// Define default options.
 		$defaults = [
-			'access_token'    => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
-			'refresh_token'   => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
-			'debug'           => 'on',
-			'no_scripts'      => '',
-			'no_css'          => '',
-			'post_form'       => $_ENV['CONVERTKIT_API_FORM_ID'],
-			'page_form'       => $_ENV['CONVERTKIT_API_FORM_ID'],
-			'product_form'    => $_ENV['CONVERTKIT_API_FORM_ID'],
-			'non_inline_form' => array(),
+			'access_token'                       => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
+			'refresh_token'                      => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
+			'debug'                              => 'on',
+			'no_scripts'                         => '',
+			'no_css'                             => '',
+			'post_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'page_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'non_inline_form'                    => array(),
+			'non_inline_form_honor_none_setting' => '',
 		];
 
 		// If supplied options are an array, merge them with the defaults.
