@@ -455,7 +455,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Check content is not displayed, and form displays.
 		$this->testRestrictContentByFormHidesContentWithCTA($I, $formID, $options);
 
-		// Login as a ConvertKit subscriber who has subscribed to the product.
+		// Login as a ConvertKit subscriber who has subscribed to the form.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
 		// Confirm that confirmation an email has been sent is displayed.
@@ -520,7 +520,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Confirm an inline error message is displayed.
 		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
 
-		// Login as a ConvertKit subscriber who has subscribed to the product.
+		// Login as a ConvertKit subscriber who has subscribed to the form.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'], true);
 
 		// Confirm that the subscriber code form dispays.

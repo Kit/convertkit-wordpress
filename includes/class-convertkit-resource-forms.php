@@ -85,11 +85,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	 */
 	public function inline_exist() {
 
-		if ( ! $this->get_inline() ) {
-			return false;
-		}
-
-		return true;
+		return (bool) $this->get_inline();
 
 	}
 
