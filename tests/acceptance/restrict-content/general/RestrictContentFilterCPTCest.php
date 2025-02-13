@@ -190,7 +190,7 @@ class RestrictContentFilterCPTCest
 		$I->see('Kit Member Content');
 	}
 
-/**
+	/**
 	 * Test that filtering by Form works on the Articles screen.
 	 *
 	 * @since   2.7.3
