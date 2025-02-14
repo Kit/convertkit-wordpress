@@ -59,12 +59,17 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Define settings sections.
 		$this->settings_sections = array(
-			'general'  => array(
+			'general'   => array(
 				'title'    => $this->title,
 				'callback' => array( $this, 'print_section_info' ),
 				'wrap'     => true,
 			),
-			'advanced' => array(
+			'site-wide' => array(
+				'title'    => __( 'Site Wide', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_site_wide' ),
+				'wrap'     => true,
+			),
+			'advanced'  => array(
 				'title'    => __( 'Advanced', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_advanced' ),
 				'wrap'     => true,
@@ -350,14 +355,26 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			}
 		}
 
+		// Site Wide.
 		add_settings_field(
 			'non_inline_form',
 			__( 'Default Forms (Site Wide)', 'convertkit' ),
 			array( $this, 'non_inline_form_callback' ),
 			$this->settings_key,
-			$this->name,
+			$this->name . '-site-wide',
 			array(
 				'label_for' => 'non_inline_form',
+			)
+		);
+
+		add_settings_field(
+			'non_inline_form_honor_none_setting',
+			__( 'Behavior', 'convertkit' ),
+			array( $this, 'non_inline_form_honor_none_setting_callback' ),
+			$this->settings_key,
+			$this->name . '-site-wide',
+			array(
+				'label_for' => 'non_inline_form_honor_none_setting',
 			)
 		);
 
@@ -414,6 +431,19 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			);
 			?>
 		</p>
+		<?php
+
+	}
+
+	/**
+	 * Prints help info for the site wide section of the settings screen.
+	 *
+	 * @since   2.7.3
+	 */
+	public function print_section_info_site_wide() {
+
+		?>
+		<p class="description"><?php esc_html_e( 'Defines non-inline forms to display site wide, and if these forms should display on Pages / Posts that have the Kit Form setting = None.', 'convertkit' ); ?></p>
 		<?php
 
 	}
@@ -686,7 +716,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$preview_url = WP_ConvertKit()->get_class( 'preview_output' )->get_preview_form_home_url();
 		$description = sprintf(
 			'%s %s %s',
-			esc_html__( 'Select one or more non-inline modal, slide in or sticky bar forms to automatically display site wide. Ignored if a non-inline form is specified in Default Form settings above, individual Post / Page settings, or any block / shortcode.', 'convertkit' ),
+			esc_html__( 'Automatically display one or more modal, slide-in, or sticky bar forms across your site. This setting is overridden if a default non-inline form is set above, a specific non-inline form or "None" option is chosen for a post/page, or a non-inline form is specified in a block/shortcode.', 'convertkit' ),
 			'<a href="' . esc_url( $preview_url ) . '" id="convertkit-preview-non-inline-form" target="_blank">' . esc_html__( 'Click here', 'convertkit' ) . '</a>',
 			esc_html__( 'to preview how this will display.', 'convertkit' )
 		);
@@ -710,6 +740,23 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Output field.
 		echo '<div class="convertkit-select2-container">' . $select_field . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
+
+	}
+
+	/**
+	 * Renders the input for the Non-inline Form override setting.
+	 *
+	 * @since   2.7.3
+	 */
+	public function non_inline_form_honor_none_setting_callback() {
+
+		// Output field.
+		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+			'non_inline_form_honor_none_setting',
+			'on',
+			$this->settings->non_inline_form_honor_none_setting(), // phpcs:ignore WordPress.Security.EscapeOutput
+			esc_html__( 'If checked, do not display the site wide form(s) above on Pages / Posts that have their Kit Form setting = None.', 'convertkit' )
+		);
 
 	}
 
