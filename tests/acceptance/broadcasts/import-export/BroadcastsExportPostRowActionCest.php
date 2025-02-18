@@ -15,10 +15,10 @@ class BroadcastsExportPostRowActionCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -50,7 +50,7 @@ class BroadcastsExportPostRowActionCest
 
 	/**
 	 * Tests that an action is displayed in the Posts table when the 'Enable Export Actions' is enabled
-	 * in the Plugin's settings, and a Broadcast is created in ConvertKit when clicked.
+	 * in the Plugin's settings, and a Broadcast is created in Kit when clicked.
 	 *
 	 * @since   2.4.0
 	 *
@@ -59,7 +59,7 @@ class BroadcastsExportPostRowActionCest
 	public function testBroadcastsExportRowActionWhenEnabled(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -107,7 +107,7 @@ class BroadcastsExportPostRowActionCest
 
 	/**
 	 * Tests that the 'Disable Styles' setting is honored when enabled in the Plugin's settings, and a
-	 * Broadcast is created in ConvertKit.
+	 * Broadcast is created in Kit.
 	 *
 	 * @since   2.4.0
 	 *
@@ -116,7 +116,7 @@ class BroadcastsExportPostRowActionCest
 	public function testBroadcastsExportActionWithDisableStylesEnabled(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -174,7 +174,7 @@ class BroadcastsExportPostRowActionCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

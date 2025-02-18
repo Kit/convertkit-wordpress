@@ -15,12 +15,12 @@ class RestrictContentSetupCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
-	 * Test that the Add New Member Content button does not display on the Pages screen when no ConvertKit
+	 * Test that the Add New Member Content button does not display on the Pages screen when no Kit
 	 * account is connected.
 	 *
 	 * @since   2.1.0
@@ -46,7 +46,7 @@ class RestrictContentSetupCest
 	public function testAddNewMemberContentButtonNotDisplayedOnPosts(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Navigate to Posts.
 		$I->amOnAdminPage('edit.php?post_type=post');
@@ -69,7 +69,7 @@ class RestrictContentSetupCest
 		$I->activateThirdPartyPlugin($I, 'admin-menu-editor');
 
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Navigate to Admin Menu Editor's settings.
 		$I->amOnAdminPage('options-general.php?page=menu_editor');
@@ -86,8 +86,8 @@ class RestrictContentSetupCest
 	}
 
 	/**
-	 * Test that the Add New Member Content wizard displays call to actions to add a Product or Tag in ConvertKit
-	 * when the ConvertKit account has no Tags and Products.
+	 * Test that the Add New Member Content wizard displays call to actions to add a Product or Tag in Kit
+	 * when the Kit account has no Tags and Products.
 	 *
 	 * @since   2.3.3
 	 *
@@ -95,8 +95,8 @@ class RestrictContentSetupCest
 	 */
 	public function testAddNewMemberContentDisplaysCTAWhenNoResources(AcceptanceTester $I)
 	{
-		// Setup Plugin using ConvertKit account that has no resources.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		// Setup Plugin using Kit account that has no resources.
+		$I->setupKitPluginCredentialsNoData($I);
 
 		// Navigate to Pages.
 		$I->amOnAdminPage('edit.php?post_type=page');
@@ -109,14 +109,14 @@ class RestrictContentSetupCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Check that the expected buttons display linking to ConvertKit.
+		// Check that the expected buttons display linking to Kit.
 		$I->see('Create product');
 		$I->see('Create tag');
 		$I->seeInSource('<a href="https://app.kit.com/products/new/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit"');
 		$I->seeInSource('<a href="https://app.kit.com/subscribers/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit"');
 
 		// Update the Plugin to use credentials that have resources.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Click the button to reload the wizard.
 		$I->click('center a.button-primary');
@@ -462,7 +462,7 @@ class RestrictContentSetupCest
 	}
 
 	/**
-	 * Sets up the ConvertKit Plugin, and starts the Setup Wizard for Member Content.
+	 * Sets up the Kit Plugin, and starts the Setup Wizard for Member Content.
 	 *
 	 * @since   2.1.0
 	 *
@@ -470,8 +470,8 @@ class RestrictContentSetupCest
 	 */
 	private function _setupAndLoadAddNewMemberContentScreen(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Navigate to Pages.
 		$I->amOnAdminPage('edit.php?post_type=page');
@@ -498,7 +498,7 @@ class RestrictContentSetupCest
 	{
 		// Clear cookies for next request.
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

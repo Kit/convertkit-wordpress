@@ -2,12 +2,12 @@
 namespace Helper\Acceptance;
 
 /**
- * Helper methods and actions related to the ConvertKit Plugin's Broadcasts
+ * Helper methods and actions related to the Kit Plugin's Broadcasts
  * functionality, which are then available using $I->{yourFunctionName}.
  *
  * @since   1.9.7.5
  */
-class ConvertKitBroadcasts extends \Codeception\Module
+class KitBroadcasts extends \Codeception\Module
 {
 	/**
 	 * Helper method to setup the Plugin's Broadcasts to Posts settings.
@@ -17,10 +17,10 @@ class ConvertKitBroadcasts extends \Codeception\Module
 	 * @param   AcceptanceTester $I          AcceptanceTester.
 	 * @param   bool|array       $settings   Array of key/value settings. If not defined, uses expected defaults.
 	 */
-	public function setupConvertKitPluginBroadcasts($I, $settings = false)
+	public function setupKitPluginBroadcasts($I, $settings = false)
 	{
 		// Go to the Plugin's Broadcasts screen.
-		$I->loadConvertKitSettingsBroadcastsScreen($I);
+		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Complete fields.
 		if ( $settings ) {
@@ -65,7 +65,7 @@ class ConvertKitBroadcasts extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function loadConvertKitSettingsBroadcastsScreen($I)
+	public function loadKitSettingsBroadcastsScreen($I)
 	{
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=broadcasts');
 

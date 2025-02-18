@@ -2,12 +2,12 @@
 namespace Helper\Acceptance;
 
 /**
- * Helper methods and actions related to the ConvertKit Plugin's Member Content
+ * Helper methods and actions related to the Kit Plugin's Member Content
  * functionality, which are then available using $I->{yourFunctionName}.
  *
  * @since   2.1.0
  */
-class ConvertKitRestrictContent extends \Codeception\Module
+class KitRestrictContent extends \Codeception\Module
 {
 	/**
 	 * Helper method to programmatically setup the Plugin's Member Content settings.
@@ -17,7 +17,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 * @param   AcceptanceTester $I          AcceptanceTester.
 	 * @param   bool|array       $settings   Array of key/value settings.
 	 */
-	public function setupConvertKitPluginRestrictContent($I, $settings)
+	public function setupKitPluginRestrictContent($I, $settings)
 	{
 		$I->haveOptionInDatabase(
 			'_wp_convertkit_settings_restrict_content',
@@ -35,7 +35,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function loadConvertKitSettingsRestrictContentScreen($I)
+	public function loadKitSettingsRestrictContentScreen($I)
 	{
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=restrict-content');
 
@@ -180,7 +180,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 	}
 
 	/**
-	 * Run frontend tests for restricted content by ConvertKit Product, to confirm that visible and member's content
+	 * Run frontend tests for restricted content by Kit Product, to confirm that visible and member's content
 	 * is / is not displayed when logging in with valid and invalid subscriber email addresses.
 	 *
 	 * @since   2.1.0
@@ -206,7 +206,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
-		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		// Login as a Kit subscriber who does not exist in Kit.
 		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com');
 
 		// Confirm an inline error message is displayed.
@@ -225,7 +225,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
 
-		// Login as a ConvertKit subscriber who has subscribed to the product.
+		// Login as a Kit subscriber who has subscribed to the product.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
 		// Confirm that confirmation an email has been sent is displayed.
@@ -384,13 +384,13 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Click the login link to open the login modal.
 		$this->clickRestrictContentLoginLink($I);
 
-		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		// Login as a Kit subscriber who does not exist in Kit.
 		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com', true);
 
 		// Confirm an inline error message is displayed.
 		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
 
-		// Login as a ConvertKit subscriber who has subscribed to the product.
+		// Login as a Kit subscriber who has subscribed to the product.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'], true);
 
 		// Confirm that the subscriber code form dispays.
@@ -436,7 +436,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Check content is not displayed, and form displays.
 		$this->testRestrictContentByFormHidesContentWithCTA($I, $formID, $options);
 
-		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		// Login as a Kit subscriber who does not exist in Kit.
 		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com');
 
 		// Confirm an inline error message is displayed.
@@ -455,7 +455,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Check content is not displayed, and form displays.
 		$this->testRestrictContentByFormHidesContentWithCTA($I, $formID, $options);
 
-		// Login as a ConvertKit subscriber who has subscribed to the form.
+		// Login as a Kit subscriber who has subscribed to the form.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
 		// Confirm that confirmation an email has been sent is displayed.
@@ -514,13 +514,13 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Click the login link to open the login modal.
 		$this->clickRestrictContentLoginLink($I);
 
-		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		// Login as a Kit subscriber who does not exist in Kit.
 		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com', true);
 
 		// Confirm an inline error message is displayed.
 		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
 
-		// Login as a ConvertKit subscriber who has subscribed to the form.
+		// Login as a Kit subscriber who has subscribed to the form.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'], true);
 
 		// Confirm that the subscriber code form dispays.
@@ -571,13 +571,13 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Click the login link to open the login modal.
 		$this->clickRestrictContentLoginLink($I);
 
-		// Login as a ConvertKit subscriber who does not exist in ConvertKit.
+		// Login as a Kit subscriber who does not exist in Kit.
 		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com', true);
 
 		// Confirm an inline error message is displayed.
 		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
 
-		// Login as a ConvertKit subscriber who has subscribed to the product.
+		// Login as a Kit subscriber who has subscribed to the product.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'], true);
 
 		// Confirm that the subscriber code form dispays.
@@ -713,7 +713,7 @@ class ConvertKitRestrictContent extends \Codeception\Module
 		// Confirm that the CTA displays with the expected form.
 		$I->seeElementInDOM('#convertkit-restrict-content');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $formID);
 

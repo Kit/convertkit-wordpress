@@ -2,12 +2,12 @@
 namespace Helper\Acceptance;
 
 /**
- * Helper methods and actions related to the ConvertKit API,
+ * Helper methods and actions related to the Kit API,
  * which are then available using $I->{yourFunctionName}.
  *
  * @since   1.9.6
  */
-class ConvertKitAPI extends \Codeception\Module
+class KitAPI extends \Codeception\Module
 {
 	/**
 	 * Returns an encoded `state` parameter compatible with OAuth.
@@ -240,7 +240,7 @@ class ConvertKitAPI extends \Codeception\Module
 	}
 
 	/**
-	 * Fetches the given broadcast from ConvertKit.
+	 * Fetches the given broadcast from Kit.
 	 *
 	 * @since   2.4.0
 	 *
@@ -256,7 +256,7 @@ class ConvertKitAPI extends \Codeception\Module
 	}
 
 	/**
-	 * Deletes the given broadcast from ConvertKit.
+	 * Deletes the given broadcast from Kit.
 	 *
 	 * @since   2.4.0
 	 *
@@ -272,7 +272,7 @@ class ConvertKitAPI extends \Codeception\Module
 	}
 
 	/**
-	 * Sends a request to the ConvertKit API, typically used to read an endpoint to confirm
+	 * Sends a request to the Kit API, typically used to read an endpoint to confirm
 	 * that data in an Acceptance Test was added/edited/deleted successfully.
 	 *
 	 * @param   string $endpoint   Endpoint.

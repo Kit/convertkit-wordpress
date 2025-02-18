@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Forms on WooCommerce Products.
+ * Tests for Kit Forms on WooCommerce Products.
  *
  * @since   1.9.6
  */
@@ -15,7 +15,7 @@ class WooCommerceProductFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'woocommerce');
 	}
 
@@ -30,9 +30,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testAddNewProductUsingDefaultFormWithNoDefaultFormSpecifiedInPlugin(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Products > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=product');
@@ -43,7 +43,7 @@ class WooCommerceProductFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that a ConvertKit Form is not displayed.
+		// Confirm that a Kit Form is not displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -57,9 +57,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testAddNewProductUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Products > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=product');
@@ -70,7 +70,7 @@ class WooCommerceProductFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -85,14 +85,14 @@ class WooCommerceProductFormCest
 	 */
 	public function testAddNewProductUsingNoForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Products > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=product');
 
-		// Scroll to ConvertKit meta box.
+		// Scroll to Kit meta box.
 		$I->scrollTo('#wp-convertkit-meta-box');
 
 		// Change Form to None.
@@ -104,7 +104,7 @@ class WooCommerceProductFormCest
 		// Publish and view the Product.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -118,14 +118,14 @@ class WooCommerceProductFormCest
 	 */
 	public function testAddNewProductUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Products > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=product');
 
-		// Scroll to ConvertKit meta box.
+		// Scroll to Kit meta box.
 		$I->scrollTo('#wp-convertkit-meta-box');
 
 		// Change Form to Form setting in .env file.
@@ -137,7 +137,7 @@ class WooCommerceProductFormCest
 		// Publish and view the Product.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -152,14 +152,14 @@ class WooCommerceProductFormCest
 	 */
 	public function testAddNewProductUsingFormShortcodeInVisualEditor(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Product using the Classic Editor.
 		$I->addClassicEditorPage($I, 'product', 'Kit: Product: Form: Shortcode: Visual Editor');
 
-		// Scroll to ConvertKit meta box.
+		// Scroll to Kit meta box.
 		$I->scrollTo('#wp-convertkit-meta-box');
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
@@ -180,7 +180,7 @@ class WooCommerceProductFormCest
 		// Publish and view the Product on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -195,14 +195,14 @@ class WooCommerceProductFormCest
 	 */
 	public function testAddNewProductUsingFormShortcodeInTextEditor(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Product using the Classic Editor.
 		$I->addClassicEditorPage($I, 'product', 'Kit: Product: Form: Shortcode: Text Editor');
 
-		// Scroll to ConvertKit meta box.
+		// Scroll to Kit meta box.
 		$I->scrollTo('#wp-convertkit-meta-box');
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
@@ -223,7 +223,7 @@ class WooCommerceProductFormCest
 		// Publish and view the Product on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -238,9 +238,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testQuickEditUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Product.
 		$productID = $I->havePostInDatabase(
@@ -266,7 +266,7 @@ class WooCommerceProductFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -281,9 +281,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testQuickEditUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Product.
 		$productID = $I->havePostInDatabase(
@@ -309,7 +309,7 @@ class WooCommerceProductFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -324,9 +324,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testBulkEditUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Products.
 		$productIDs = array(
@@ -362,7 +362,7 @@ class WooCommerceProductFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -378,9 +378,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testBulkEditUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Products.
 		$productIDs = array(
@@ -416,7 +416,7 @@ class WooCommerceProductFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -432,9 +432,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testBulkEditWithNoChanges(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Products with a defined form.
 		$productIDs = array(
@@ -484,7 +484,7 @@ class WooCommerceProductFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -500,9 +500,9 @@ class WooCommerceProductFormCest
 	 */
 	public function testBulkEditFieldsHiddenWhenNoProductsFound(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Emulate the user searching for Products with a query string that yields no results.
 		$I->amOnAdminPage('edit.php?post_type=product&s=nothing');
@@ -522,9 +522,9 @@ class WooCommerceProductFormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 		$I->deactivateThirdPartyPlugin($I, 'woocommerce');
-		$I->resetConvertKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

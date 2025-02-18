@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form's Divi Module.
+ * Tests for the Kit Form's Divi Module.
  *
  * @since   2.5.7
  */
@@ -15,7 +15,7 @@ class DiviFormTriggerCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'divi-builder');
 	}
@@ -31,8 +31,8 @@ class DiviFormTriggerCest
 	public function testFormTriggerModuleInBackendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Form Trigger: Divi: Backend Editor');
@@ -52,7 +52,7 @@ class DiviFormTriggerCest
 		// Confirm that the block displays.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -71,8 +71,8 @@ class DiviFormTriggerCest
 	public function testFormTriggerModuleInFrontendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the frontend editor.
 		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Form Trigger: Divi: Frontend Editor');
@@ -92,7 +92,7 @@ class DiviFormTriggerCest
 		// Confirm that the block displays.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 	}
@@ -122,7 +122,7 @@ class DiviFormTriggerCest
 	}
 
 	/**
-	 * Test the Form module displays the expected message when the ConvertKit account
+	 * Test the Form module displays the expected message when the Kit account
 	 * has no forms.
 	 *
 	 * @since   2.5.7
@@ -132,8 +132,8 @@ class DiviFormTriggerCest
 	public function testFormTriggerModuleInFrontendEditorWhenNoForms(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Create a Divi Page in the frontend editor.
 		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Form Trigger: Divi: Frontend: No Forms');
@@ -160,8 +160,8 @@ class DiviFormTriggerCest
 	public function testFormTriggerModuleWithNoFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Form module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
@@ -178,7 +178,7 @@ class DiviFormTriggerCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form trigger button is displayed.
+		// Confirm that no Kit Form trigger button is displayed.
 		$I->dontSeeFormTriggerOutput($I);
 	}
 
@@ -195,7 +195,7 @@ class DiviFormTriggerCest
 	{
 		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -17,9 +17,9 @@ class RefreshResourcesButtonCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -31,8 +31,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnPage(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Navigate to Pages > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=page');
@@ -119,8 +119,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnQuickEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->havePostInDatabase(
@@ -196,8 +196,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnBulkEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
@@ -283,8 +283,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnAddCategory(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Navigate to Posts > Categories.
 		$I->amOnAdminPage('edit-tags.php?taxonomy=category');
@@ -319,8 +319,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnEditCategory(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Create Category.
 		$termID = $I->haveTermInDatabase( 'Kit Refresh Resources', 'category' );
@@ -359,8 +359,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnFormBlock(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached Form, as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -414,8 +414,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnFormShortcodeUsingTinyMCE(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached Form, as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -474,8 +474,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnFormShortcodeUsingTextEditor(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached Form, as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -533,8 +533,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnFormTriggerBlock(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached non-inline Form, as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -588,8 +588,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnFormTriggerShortcodeUsingTinyMCE(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached non-inline Form, as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -648,8 +648,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnFormTriggerShortcodeUsingTextEditor(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached non-inline Form, as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -707,8 +707,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnProductBlock(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached Product, as if the Products resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -757,8 +757,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnProductShortcodeUsingTinyMCE(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached Product, as if the Products resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -812,8 +812,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnProductShortcodeUsingTextEditor(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Define one cached Product, as if the Products resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -859,7 +859,7 @@ class RefreshResourcesButtonCest
 
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the ConvertKit API returns an error, when adding a Page using the Gutenberg editor.
+	 * or the Kit API returns an error, when adding a Page using the Gutenberg editor.
 	 *
 	 * @since   1.9.8.3
 	 *
@@ -867,8 +867,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesErrorNoticeOnPage(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupConvertKitPluginFakeAPIKey($I);
+		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
+		$I->setupKitPluginFakeAPIKey($I);
 
 		// Navigate to Pages > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=page');
@@ -891,7 +891,7 @@ class RefreshResourcesButtonCest
 
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the ConvertKit API returns an error, when adding a Page using the Classic Editor.
+	 * or the Kit API returns an error, when adding a Page using the Classic Editor.
 	 *
 	 * @since   1.9.8.3
 	 *
@@ -899,8 +899,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesErrorNoticeOnPageClassicEditor(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupConvertKitPluginFakeAPIKey($I);
+		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
+		$I->setupKitPluginFakeAPIKey($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Refresh Resources: Classic Editor' );
@@ -924,7 +924,7 @@ class RefreshResourcesButtonCest
 
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the ConvertKit API returns an error, when using the Quick Edit functionality.
+	 * or the Kit API returns an error, when using the Quick Edit functionality.
 	 *
 	 * @since   1.9.8.3
 	 *
@@ -932,8 +932,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesErrorNoticeOnQuickEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupConvertKitPluginFakeAPIKey($I);
+		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
+		$I->setupKitPluginFakeAPIKey($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->havePostInDatabase(
@@ -965,7 +965,7 @@ class RefreshResourcesButtonCest
 
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the ConvertKit API returns an error, when using the Bulk Edit functionality.
+	 * or the Kit API returns an error, when using the Bulk Edit functionality.
 	 *
 	 * @since   1.9.8.3
 	 *
@@ -973,8 +973,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesErrorNoticeOnBulkEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupConvertKitPluginFakeAPIKey($I);
+		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
+		$I->setupKitPluginFakeAPIKey($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
@@ -1014,7 +1014,7 @@ class RefreshResourcesButtonCest
 
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the ConvertKit API returns an error, when adding a Category.
+	 * or the Kit API returns an error, when adding a Category.
 	 *
 	 * @since   2.0.3
 	 *
@@ -1022,8 +1022,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesErrorNoticeOnAddCategory(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupConvertKitPluginFakeAPIKey($I);
+		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
+		$I->setupKitPluginFakeAPIKey($I);
 
 		// Navigate to Posts > Categories.
 		$I->amOnAdminPage('edit-tags.php?taxonomy=category');
@@ -1047,7 +1047,7 @@ class RefreshResourcesButtonCest
 
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the ConvertKit API returns an error, when editing a Category.
+	 * or the Kit API returns an error, when editing a Category.
 	 *
 	 * @since   1.9.8.3
 	 *
@@ -1055,8 +1055,8 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesErrorNoticeOnEditCategory(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupConvertKitPluginFakeAPIKey($I);
+		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
+		$I->setupKitPluginFakeAPIKey($I);
 
 		// Create Category.
 		$termID = $I->haveTermInDatabase( 'Kit Refresh Resources', 'category' );
@@ -1094,7 +1094,7 @@ class RefreshResourcesButtonCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Forms integration with Forminator.
+ * Tests for Kit Forms integration with Forminator.
  *
  * @since   2.3.0
  */
@@ -15,7 +15,7 @@ class ForminatorCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'forminator');
 	}
 
@@ -37,13 +37,13 @@ class ForminatorCest
 	}
 
 	/**
-	 * Test that saving a Forminator Form to ConvertKit Form Mapping works.
+	 * Test that saving a Forminator Form to Kit Form Mapping works.
 	 *
 	 * @since   2.3.0
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorFormToConvertKitFormMapping(AcceptanceTester $I)
+	public function testSettingsForminatorFormToKitFormMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Form and configuration for this test.
 		$pageID = $this->_forminatorSetupForm(
@@ -61,7 +61,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has the expected form and referrer value set.
@@ -74,13 +74,13 @@ class ForminatorCest
 	}
 
 	/**
-	 * Test that saving a Forminator Form to ConvertKit Legacy Form Mapping works.
+	 * Test that saving a Forminator Form to Kit Legacy Form Mapping works.
 	 *
 	 * @since   2.5.0
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorFormToConvertKitLegacyFormMapping(AcceptanceTester $I)
+	public function testSettingsForminatorFormToKitLegacyFormMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Form and configuration for this test.
 		$pageID = $this->_forminatorSetupForm(
@@ -98,18 +98,18 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that saving a Forminator Form to ConvertKit Tag Mapping works.
+	 * Test that saving a Forminator Form to Kit Tag Mapping works.
 	 *
 	 * @since   2.5.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorFormToConvertKitTagMapping(AcceptanceTester $I)
+	public function testSettingsForminatorFormToKitTagMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Form and configuration for this test.
 		$pageID = $this->_forminatorSetupForm(
@@ -127,7 +127,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the tag.
@@ -135,13 +135,13 @@ class ForminatorCest
 	}
 
 	/**
-	 * Test that saving a Forminator Form to ConvertKit Sequence Mapping works.
+	 * Test that saving a Forminator Form to Kit Sequence Mapping works.
 	 *
 	 * @since   2.5.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorFormToConvertKitSequenceMapping(AcceptanceTester $I)
+	public function testSettingsForminatorFormToKitSequenceMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Form and configuration for this test.
 		$pageID = $this->_forminatorSetupForm(
@@ -159,7 +159,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
@@ -191,7 +191,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
@@ -220,18 +220,18 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that saving a Forminator Quiz to ConvertKit Form Mapping works.
+	 * Test that saving a Forminator Quiz to Kit Form Mapping works.
 	 *
 	 * @since   2.4.3
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorQuizToConvertKitFormMapping(AcceptanceTester $I)
+	public function testSettingsForminatorQuizToKitFormMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Quiz and configuration for this test.
 		$pageID = $this->_forminatorSetupQuiz(
@@ -249,18 +249,18 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that saving a Forminator Quiz to ConvertKit Tag Mapping works.
+	 * Test that saving a Forminator Quiz to Kit Tag Mapping works.
 	 *
 	 * @since   2.5.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorQuizToConvertKitTagMapping(AcceptanceTester $I)
+	public function testSettingsForminatorQuizToKitTagMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Quiz and configuration for this test.
 		$pageID = $this->_forminatorSetupQuiz(
@@ -278,7 +278,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the tag.
@@ -286,13 +286,13 @@ class ForminatorCest
 	}
 
 	/**
-	 * Test that saving a Forminator Quiz to ConvertKit Sequence Mapping works.
+	 * Test that saving a Forminator Quiz to Kit Sequence Mapping works.
 	 *
 	 * @since   2.5.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorQuizToConvertKitSequenceMapping(AcceptanceTester $I)
+	public function testSettingsForminatorQuizToKitSequenceMapping(AcceptanceTester $I)
 	{
 		// Setup Forminator Quiz and configuration for this test.
 		$pageID = $this->_forminatorSetupQuiz(
@@ -310,7 +310,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
@@ -342,7 +342,7 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
@@ -371,23 +371,23 @@ class ForminatorCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
 	 * Tests that the 'Enable Creator Network Recommendations' is not displayed when connected
-	 * to a ConvertKit account that does not have Creator Network Recommendations enabled.
+	 * to a Kit account that does not have Creator Network Recommendations enabled.
 	 *
 	 * @since   2.3.0
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorCreatorNetworkRecommendationsWhenDisabledOnConvertKitAccount(AcceptanceTester $I)
+	public function testSettingsForminatorCreatorNetworkRecommendationsWhenDisabledOnKitAccount(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Forminator Form.
 		$forminatorFormID = $this->_createForminatorForm($I);
@@ -402,7 +402,7 @@ class ForminatorCest
 		$pageID = $I->havePageInDatabase(
 			[
 				'post_title'   => 'Kit: Forminator: Creator Network Recommendations Disabled on Kit',
-				'post_name'    => 'convertkit-forminator-creator-network-recommendations-disabled-convertkit',
+				'post_name'    => 'kit-forminator-creator-network-recommendations-disabled-kit',
 				'post_content' => 'Form:
 [forminator_form id="' . $forminatorFormID . '"]',
 			]
@@ -414,18 +414,18 @@ class ForminatorCest
 
 	/**
 	 * Tests that the 'Enable Creator Network Recommendations' option is displayed and saves correctly when
-	 * valid credentials are specified, and the ConvertKit account has the Creator Network enabled.
+	 * valid credentials are specified, and the Kit account has the Creator Network enabled.
 	 * Viewing and submitting the Form then correctly displays the Creator Network Recommendations modal.
 	 *
 	 * @since   2.3.0
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsForminatorCreatorNetworkRecommendationsWhenEnabledOnConvertKitAccount(AcceptanceTester $I)
+	public function testSettingsForminatorCreatorNetworkRecommendationsWhenEnabledOnKitAccount(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Forminator Form.
 		$forminatorFormID = $this->_createForminatorForm($I);
@@ -449,7 +449,7 @@ class ForminatorCest
 		$pageID = $I->havePageInDatabase(
 			[
 				'post_title'   => 'Kit: Forminator: Creator Network Recommendations',
-				'post_name'    => 'convertkit-forminator-creator-network-recommendations',
+				'post_name'    => 'kit-forminator-creator-network-recommendations',
 				'post_content' => 'Form:
 [forminator_form id="' . $forminatorFormID . '"]',
 			]
@@ -497,7 +497,7 @@ class ForminatorCest
 	 */
 	public function testSettingsMigratedOnUpgrade(AcceptanceTester $I)
 	{
-		// Create settings as if they were created / edited when the ConvertKit Plugin < 2.5.2
+		// Create settings as if they were created / edited when the Kit Plugin < 2.5.2
 		// was active.
 		$I->haveOptionInDatabase(
 			'_wp_convertkit_integration_forminator_settings',
@@ -711,9 +711,9 @@ class ForminatorCest
 	 */
 	private function _forminatorSetupForm(AcceptanceTester $I, string $optionName)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Forminator Form.
 		$forminatorFormID = $this->_createForminatorForm($I);
@@ -760,9 +760,9 @@ class ForminatorCest
 	 */
 	private function _forminatorSetupQuiz(AcceptanceTester $I, string $optionName)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Forminator Form.
 		$forminatorQuizID = $this->_createForminatorQuiz($I);
@@ -879,8 +879,8 @@ class ForminatorCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
 		$I->deactivateThirdPartyPlugin($I, 'forminator');
-		$I->resetConvertKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -15,8 +15,8 @@ class PluginSettingsToolsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,9 +29,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testDebugLogExists(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Check that the Debug Log textarea contains some expected output i.e.
 		// does not show the 'No logs have been generated.' message.
@@ -47,14 +47,14 @@ class PluginSettingsToolsCest
 	 */
 	public function testDownloadLog(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Load settings screen to trigger some API requests.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Load tools screen.
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
 		// This will download the file to $_ENV['WP_ROOT_FOLDER'].
@@ -80,9 +80,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testSystemInfoExists(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Check that the System Info textarea contains some expected output.
 		$I->assertNotFalse(strpos($I->grabValueFrom('#system-info-textarea'), '### wp-core'));
@@ -106,9 +106,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testDownloadSystemInfo(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
 		// This will download the file to $_ENV['WP_ROOT_FOLDER'].
@@ -143,9 +143,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testExportAndImportValidConfiguration(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
 		// This will download the file to $_ENV['WP_ROOT_FOLDER'].
@@ -170,7 +170,7 @@ class PluginSettingsToolsCest
 
 		// Import the created configuration file.
 		// Load Tools screen.
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Select the configuration file at tests/_data/convertkit-export.json to import.
 		$I->attachFile('input[name=import]', 'convertkit-export.json');
@@ -182,13 +182,13 @@ class PluginSettingsToolsCest
 		$I->see('Configuration imported successfully.');
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Check the fields are ticked.
 		$I->seeCheckboxIsChecked('#debug');
 
 		// Go to the Plugin's Restrict Content Settings Screen.
-		$I->loadConvertKitSettingsRestrictContentScreen($I);
+		$I->loadKitSettingsRestrictContentScreen($I);
 
 		// Confirm that the text fields contain the expected data.
 		$I->checkRestrictContentSettings($I, $I->getRestrictedContentDefaultSettings());
@@ -208,9 +208,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testImportConfigurationWithNoFile(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Scroll to Import section.
 		$I->scrollTo('#import');
@@ -232,9 +232,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testImportConfigurationWithInvalidFile(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Scroll to Import section.
 		$I->scrollTo('#import');
@@ -262,9 +262,9 @@ class PluginSettingsToolsCest
 	 */
 	public function testImportConfigurationWithFakeJSONFile(AcceptanceTester $I)
 	{
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Scroll to Import section.
 		$I->scrollTo('#import');
@@ -295,7 +295,7 @@ class PluginSettingsToolsCest
 		// Define a page with a form that exploits the query parameter not being escaped.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-settings-tab-parameter-escaping',
+				'post_name'    => 'kit-settings-tab-parameter-escaping',
 				'post_content' => '<form action="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings&tab=tools" method="POST">
       <input type="hidden" name="page" value=\'"style=animation-name:rotation onanimationstart=document.write(/XSS/)//\' />
       <input type="submit" value="Submit" />
@@ -304,7 +304,7 @@ class PluginSettingsToolsCest
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-settings-tab-parameter-escaping');
+		$I->amOnPage('/kit-settings-tab-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -327,7 +327,7 @@ class PluginSettingsToolsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

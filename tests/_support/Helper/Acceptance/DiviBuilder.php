@@ -206,7 +206,7 @@ class DiviBuilder extends \Codeception\Module
 
 	/**
 	 * Create a Page in the database comprising of Divi Page Builder data
-	 * containing a ConvertKit module.
+	 * containing a Kit module.
 	 *
 	 * @since   2.5.7
 	 *
@@ -236,7 +236,7 @@ class DiviBuilder extends \Codeception\Module
 					'_et_pb_use_builder'         => 'on',
 					'_et_pb_built_for_post_type' => 'page',
 
-					// Configure ConvertKit Plugin to not display a default Form,
+					// Configure Kit Plugin to not display a default Form,
 					// as we are testing for the Form in Elementor.
 					'_wp_convertkit_post_meta'   => [
 						'form'         => '0',

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Product Gutenberg Block.
+ * Tests for the Kit Product Gutenberg Block.
  *
  * @since   1.9.8.5
  */
@@ -15,7 +15,7 @@ class PageBlockProductCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -27,9 +27,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithValidProductParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Valid Product Param');
@@ -69,9 +69,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithNoProductParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: No Product Param');
@@ -99,7 +99,7 @@ class PageBlockProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Product button is displayed.
+		// Confirm that no Kit Product button is displayed.
 		$I->dontSeeProductOutput($I);
 	}
 
@@ -112,9 +112,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Text Param');
@@ -146,9 +146,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithBlankTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Blank Text Param');
@@ -180,9 +180,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithValidDiscountCodeParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Valid Discount Code Param');
@@ -228,9 +228,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithInvalidDiscountCodeParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Invalid Discount Code Param');
@@ -268,7 +268,7 @@ class PageBlockProductCest
 	}
 
 	/**
-	 * Test the Product shortcode opens the ConvertKit Product's checkuot step
+	 * Test the Product shortcode opens the Kit Product's checkuot step
 	 * when the Checkout option is enabled.
 	 *
 	 * @since   2.4.5
@@ -277,9 +277,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithCheckoutParameterEnabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Checkout Step');
@@ -307,7 +307,7 @@ class PageBlockProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 
 		// Confirm the checkout step is displayed.
@@ -317,7 +317,7 @@ class PageBlockProductCest
 	}
 
 	/**
-	 * Test the Product block opens the ConvertKit Product in the same window instead
+	 * Test the Product block opens the Kit Product in the same window instead
 	 * of a modal when the Disable modal on mobile option is enabled.
 	 *
 	 * @since   2.4.1
@@ -326,9 +326,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithDisableModalOnMobileParameterEnabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Disable Modal on Mobile');
@@ -383,9 +383,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithThemeColorParameters(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = 'white';
@@ -397,13 +397,13 @@ class PageBlockProductCest
 		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-product-block-theme-color-params',
+				'post_name'    => 'kit-page-product-block-theme-color-params',
 				'post_content' => '<!-- wp:convertkit/product {"product":"36377","backgroundColor":"' . $backgroundColor . '","textColor":"' . $textColor . '"} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-product-block-theme-color-params');
+		$I->amOnPage('/kit-page-product-block-theme-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -427,9 +427,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockWithHexColorParameters(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = '#ee1616';
@@ -441,13 +441,13 @@ class PageBlockProductCest
 		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-product-block-hex-color-params',
+				'post_name'    => 'kit-page-product-block-hex-color-params',
 				'post_content' => '<!-- wp:convertkit/product {"product":"36377","style":{"color":{"text":"' . $textColor . '","background":"' . $backgroundColor . '"}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-product-block-hex-color-params');
+		$I->amOnPage('/kit-page-product-block-hex-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -490,7 +490,7 @@ class PageBlockProductCest
 
 	/**
 	 * Test the Product block displays a message with a link to the Plugin's
-	 * settings screen, when the ConvertKit account has no products.
+	 * settings screen, when the Kit account has no products.
 	 *
 	 * @since   2.2.3
 	 *
@@ -499,8 +499,8 @@ class PageBlockProductCest
 	public function testProductBlockWhenNoProducts(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Block: No Products');
@@ -508,7 +508,7 @@ class PageBlockProductCest
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Product', 'convertkit-product');
 
-		// Confirm that the Product block displays instructions to the user on how to add a Product in ConvertKit.
+		// Confirm that the Product block displays instructions to the user on how to add a Product in Kit.
 		$I->see(
 			'No products exist in Kit.',
 			[
@@ -516,7 +516,7 @@ class PageBlockProductCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to create your first product.',
 			[
@@ -527,7 +527,7 @@ class PageBlockProductCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -546,9 +546,9 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockRefreshButton(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit Account that has no Products.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		// Setup Plugin with Kit Account that has no Products.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Refresh Button');
@@ -558,8 +558,8 @@ class PageBlockProductCest
 
 		// Setup Plugin with a valid API Key and resources, as if the user performed the necessary steps to authenticate
 		// and create a product.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
@@ -589,20 +589,20 @@ class PageBlockProductCest
 	 */
 	public function testProductBlockParameterEscaping(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-product-block-parameter-escaping',
+				'post_name'    => 'kit-page-product-block-parameter-escaping',
 				'post_content' => '<!-- wp:convertkit/product {"product":"' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '","style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-product-block-parameter-escaping');
+		$I->amOnPage('/kit-page-product-block-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -614,7 +614,7 @@ class PageBlockProductCest
 		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
 		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 	}
 
@@ -629,7 +629,7 @@ class PageBlockProductCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

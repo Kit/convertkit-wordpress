@@ -16,7 +16,7 @@ class AnyErrorsOnBlankInstallCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -30,7 +30,7 @@ class AnyErrorsOnBlankInstallCest
 	public function testSettingsGeneralScreen(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Settings > General Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 	}
 
 	/**
@@ -44,7 +44,7 @@ class AnyErrorsOnBlankInstallCest
 	public function testSettingsToolsScreen(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Settings > Tools Screen.
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class AnyErrorsOnBlankInstallCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

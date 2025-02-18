@@ -15,7 +15,7 @@ class PluginSettingsGeneralCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,10 +29,10 @@ class PluginSettingsGeneralCest
 	public function testAccessibilityAndUTMParameters(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="_wp_convertkit_settings_page_form">');
@@ -57,7 +57,7 @@ class PluginSettingsGeneralCest
 	public function testNoCredentials(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm no option is displayed to save changes, as the Plugin isn't authenticated.
 		$I->dontSeeElementInDOM('input#submit');
@@ -78,7 +78,7 @@ class PluginSettingsGeneralCest
 		// Click the connect button.
 		$I->click('Connect');
 
-		// Confirm the ConvertKit hosted OAuth login screen is displayed.
+		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 	}
@@ -95,7 +95,7 @@ class PluginSettingsGeneralCest
 	public function testInvalidCredentials(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'access_token'  => 'fakeAccessToken',
@@ -104,7 +104,7 @@ class PluginSettingsGeneralCest
 		);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm the Connect button displays.
 		$I->see('Connect');
@@ -129,11 +129,11 @@ class PluginSettingsGeneralCest
 	public function testValidCredentials(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm the Disconnect and Save Changes buttons display.
 		$I->see('Disconnect');
@@ -165,9 +165,9 @@ class PluginSettingsGeneralCest
 		$I->dontSeeErrorNotice($I, 'Kit: Authorization failed. Please connect your Kit account.');
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
-		// Disconnect the Plugin connection to ConvertKit.
+		// Disconnect the Plugin connection to Kit.
 		$I->click('Disconnect');
 
 		// Confirm the Connect button displays.
@@ -235,10 +235,10 @@ class PluginSettingsGeneralCest
 		);
 
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select Default Form for Pages, and change the Position.
 		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_page_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -254,7 +254,7 @@ class PluginSettingsGeneralCest
 		// Confirm that the preview is a WordPress Page.
 		$I->seeElementInDOM('body.page');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
@@ -274,7 +274,7 @@ class PluginSettingsGeneralCest
 		// Confirm that the preview is a WordPress Post.
 		$I->seeElementInDOM('body.single-post');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
@@ -306,10 +306,10 @@ class PluginSettingsGeneralCest
 	public function testChangeDefaultSiteWideFormsSettingAndPreviewFormLinks(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select the Sticky Bar Form for the Site Wide option.
 		$I->fillSelect2MultipleField($I, '#select2-_wp_convertkit_settings_non_inline_form-container', $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME']);
@@ -380,10 +380,10 @@ class PluginSettingsGeneralCest
 	public function testChangeDefaultFormPositionAfterElementSetting(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm the conditional fields do not display for Pages, as the 'After element' is not selected.
 		$I->dontSeeElement('_wp_convertkit_settings[page_form_position_element_index]');
@@ -447,10 +447,10 @@ class PluginSettingsGeneralCest
 	public function testPreviewFormLinksWhenNoPostsOrPagesExist(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm no Page or Post preview links exist, because there are no Pages or Posts in WordPress.
 		$I->dontSeeElementInDOM('a#convertkit-preview-form-post');
@@ -474,10 +474,10 @@ class PluginSettingsGeneralCest
 		$I->registerCustomPostType($I, 'private', 'Private', 'Private', false);
 
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select Default Form for Articles.
 		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_article_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -510,10 +510,10 @@ class PluginSettingsGeneralCest
 	public function testEnableAndDisableDebugSettings(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Tick field.
 		$I->checkOption('#debug');
@@ -551,10 +551,10 @@ class PluginSettingsGeneralCest
 	public function testEnableAndDisableJavaScriptSettings(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Tick field.
 		$I->checkOption('#no_scripts');
@@ -593,10 +593,10 @@ class PluginSettingsGeneralCest
 	public function testEnableAndDisableCSSSetting(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Tick field.
 		$I->checkOption('#no_css');
@@ -618,7 +618,7 @@ class PluginSettingsGeneralCest
 		$I->dontSeeInSource('button.css');
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Untick field.
 		$I->uncheckOption('#no_css');
@@ -652,10 +652,10 @@ class PluginSettingsGeneralCest
 	public function testSettingsScreenWhenNoResources(AcceptanceTester $I)
 	{
 		// Setup Plugin using account that has no resources or data.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm 'No Forms exist in Kit' message displays.
 		$I->see('No Forms exist in Kit.');
@@ -719,7 +719,7 @@ class PluginSettingsGeneralCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

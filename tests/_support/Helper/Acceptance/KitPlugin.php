@@ -2,35 +2,35 @@
 namespace Helper\Acceptance;
 
 /**
- * Helper methods and actions related to the ConvertKit Plugin,
+ * Helper methods and actions related to the Kit Plugin,
  * which are then available using $I->{yourFunctionName}.
  *
  * @since   1.9.6
  */
-class ConvertKitPlugin extends \Codeception\Module
+class KitPlugin extends \Codeception\Module
 {
 	/**
-	 * Helper method to activate the ConvertKit Plugin, checking
+	 * Helper method to activate the Kit Plugin, checking
 	 * it activated and no errors were output.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function activateConvertKitPlugin($I)
+	public function activateKitPlugin($I)
 	{
 		$I->activateThirdPartyPlugin($I, 'convertkit');
 	}
 
 	/**
-	 * Helper method to deactivate the ConvertKit Plugin, checking
+	 * Helper method to deactivate the Kit Plugin, checking
 	 * it activated and no errors were output.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function deactivateConvertKitPlugin($I)
+	public function deactivateKitPlugin($I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'convertkit');
 	}
@@ -56,7 +56,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	 *     @type string $non_inline_form    Default Global non-inline Form ID (if specified, none if false).
 	 * }
 	 */
-	public function setupConvertKitPlugin($I, $options = false)
+	public function setupKitPlugin($I, $options = false)
 	{
 		// Define default options.
 		$defaults = [
@@ -85,16 +85,16 @@ class ConvertKitPlugin extends \Codeception\Module
 
 	/**
 	 * Helper method to programmatically setup the Plugin's settings, as if the
-	 * user configured the Plugin at `Settings > Kit` with a ConvertKit
+	 * user configured the Plugin at `Settings > Kit` with a Kit
 	 * account that has no data (no forms, products, tags etc).
 	 *
 	 * @since   2.4.0
 	 *
 	 * @param   AcceptanceTester $I         AcceptanceTester.
 	 */
-	public function setupConvertKitPluginCredentialsNoData($I)
+	public function setupKitPluginCredentialsNoData($I)
 	{
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA'],
@@ -109,15 +109,15 @@ class ConvertKitPlugin extends \Codeception\Module
 	/**
 	 * Helper method to programmatically setup the Plugin's settings, as if the
 	 * user configured the Plugin at `Settings > Kit` with an invalid
-	 * ConvertKit API Key and Secret.
+	 * Kit API Key and Secret.
 	 *
 	 * @since   2.4.0
 	 *
 	 * @param   AcceptanceTester $I         AcceptanceTester.
 	 */
-	public function setupConvertKitPluginFakeAPIKey($I)
+	public function setupKitPluginFakeAPIKey($I)
 	{
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'access_token'  => 'fakeAccessToken',
@@ -131,7 +131,7 @@ class ConvertKitPlugin extends \Codeception\Module
 
 	/**
 	 * Helper method to programmatically setup the Plugin's settings, as if the
-	 * user configured the Plugin at `Settings > Kit` with a ConvertKit
+	 * user configured the Plugin at `Settings > Kit` with a Kit
 	 * API Key and Secret, and defined no default Forms for Posts, Pages and
 	 * WooCommerce Products.
 	 *
@@ -139,9 +139,9 @@ class ConvertKitPlugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I         AcceptanceTester.
 	 */
-	public function setupConvertKitPluginNoDefaultForms($I)
+	public function setupKitPluginNoDefaultForms($I)
 	{
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'post_form'    => '',
@@ -153,16 +153,16 @@ class ConvertKitPlugin extends \Codeception\Module
 
 	/**
 	 * Helper method to programmatically setup the Plugin's settings, as if the
-	 * user configured the Plugin at `Settings > Kit` with a ConvertKit
+	 * user configured the Plugin at `Settings > Kit` with a Kit
 	 * API Key and Secret, and disabled JS.
 	 *
 	 * @since   2.4.0
 	 *
 	 * @param   AcceptanceTester $I         AcceptanceTester.
 	 */
-	public function setupConvertKitPluginDisableJS($I)
+	public function setupKitPluginDisableJS($I)
 	{
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'no_scripts' => 'on',
@@ -188,7 +188,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I              AcceptanceTester.
 	 */
-	public function setupConvertKitPluginResources($I)
+	public function setupKitPluginResources($I)
 	{
 		// Define Forms as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -445,13 +445,13 @@ class ConvertKitPlugin extends \Codeception\Module
 	/**
 	 * Helper method to define cached Resources (Forms, Landing Pages, Posts, Products and Tags),
 	 * directly into the database, instead of querying the API for them via the Resource classes
-	 * as if the ConvertKit account is new and has no resources defined in ConvertKit.
+	 * as if the Kit account is new and has no resources defined in Kit.
 	 *
 	 * @since   2.0.7
 	 *
 	 * @param   AcceptanceTester $I              AcceptanceTester.
 	 */
-	public function setupConvertKitPluginResourcesNoData($I)
+	public function setupKitPluginResourcesNoData($I)
 	{
 		// Define Forms as if the Forms resource class populated them from the API.
 		$I->haveOptionInDatabase(
@@ -492,13 +492,13 @@ class ConvertKitPlugin extends \Codeception\Module
 	}
 
 	/**
-	 * Helper method to reset the ConvertKit Plugin settings, as if it's a clean installation.
+	 * Helper method to reset the Kit Plugin settings, as if it's a clean installation.
 	 *
 	 * @since   1.9.6.7
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function resetConvertKitPlugin($I)
+	public function resetKitPlugin($I)
 	{
 		// Plugin Settings.
 		$I->dontHaveOptionInDatabase('_wp_convertkit_settings');
@@ -535,7 +535,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function loadConvertKitSettingsGeneralScreen($I)
+	public function loadKitSettingsGeneralScreen($I)
 	{
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings');
 
@@ -550,7 +550,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	 *
 	 * @param   AcceptanceTester $I     AcceptanceTester.
 	 */
-	public function loadConvertKitSettingsToolsScreen($I)
+	public function loadKitSettingsToolsScreen($I)
 	{
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=tools');
 
@@ -568,7 +568,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	public function clearDebugLog($I)
 	{
 		// Go to the Plugin's Tools Screen.
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Clear log button.
 		$I->click('Clear log');
@@ -584,7 +584,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	 */
 	public function seeInPluginDebugLog($I, $entry)
 	{
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 		$I->seeInSource($entry);
 	}
 
@@ -598,7 +598,7 @@ class ConvertKitPlugin extends \Codeception\Module
 	 */
 	public function dontSeeInPluginDebugLog($I, $entry)
 	{
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 		$I->dontSeeInSource($entry);
 	}
 

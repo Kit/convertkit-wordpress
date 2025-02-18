@@ -15,8 +15,8 @@ class RestrictContentFilterPostCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class RestrictContentFilterPostCest
 	}
 
 	/**
-	 * Test that no dropdown filter on the Posts screen is displayed when the ConvertKit
+	 * Test that no dropdown filter on the Posts screen is displayed when the Kit
 	 * account has no Forms, Tag and Products.
 	 *
 	 * @since   2.3.2
@@ -49,7 +49,7 @@ class RestrictContentFilterPostCest
 	public function testNoFilterDisplayedWhenNoResources(AcceptanceTester $I)
 	{
 		// Setup Plugin using credentials that have no resources.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
 
 		// Navigate to Posts.
 		$I->amOnAdminPage('edit.php?post_type=post');
@@ -57,7 +57,7 @@ class RestrictContentFilterPostCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Check no filter is displayed, as the ConvertKit account has no resources.
+		// Check no filter is displayed, as the Kit account has no resources.
 		$I->dontSeeElementInDOM('#wp-convertkit-restrict-content-filter');
 	}
 
@@ -71,7 +71,7 @@ class RestrictContentFilterPostCest
 	public function testFilterByProduct(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Create Post, set to restrict content to a Product.
 		$I->createRestrictedContentPage(
@@ -121,7 +121,7 @@ class RestrictContentFilterPostCest
 	public function testFilterByTag(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Create Post, set to restrict content to a Tag.
 		$I->createRestrictedContentPage(
@@ -171,7 +171,7 @@ class RestrictContentFilterPostCest
 	public function testFilterByForm(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Create Post, set to restrict content to a Form.
 		$I->createRestrictedContentPage(
@@ -222,7 +222,7 @@ class RestrictContentFilterPostCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

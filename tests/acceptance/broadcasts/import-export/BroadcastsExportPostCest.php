@@ -15,10 +15,10 @@ class BroadcastsExportPostCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class BroadcastsExportPostCest
 	public function testCreateBroadcastNotDisplayedOnPages(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -84,7 +84,7 @@ class BroadcastsExportPostCest
 	/**
 	 * Tests that:
 	 * - the "Create Broadcast" option is displayed when creating a Post,
-	 * - the Broadcast is not created in ConvertKit when the "Create Broadcast" option is not enabled on the Post.
+	 * - the Broadcast is not created in Kit when the "Create Broadcast" option is not enabled on the Post.
 	 *
 	 * @since   2.4.0
 	 *
@@ -93,7 +93,7 @@ class BroadcastsExportPostCest
 	public function testCreateBroadcastWhenDisabledInPost(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -109,7 +109,7 @@ class BroadcastsExportPostCest
 		// Get Post ID.
 		$postID = $I->grabValueFrom('post_ID');
 
-		// Confirm Broadcast was not created in ConvertKit.
+		// Confirm Broadcast was not created in Kit.
 		$I->dontSeePostMetaInDatabase(
 			array(
 				'post_id'  => $postID,
@@ -121,7 +121,7 @@ class BroadcastsExportPostCest
 	/**
 	 * Tests that:
 	 * - the "Create Broadcast" option is displayed when creating a Post,
-	 * - the Broadcast is created in ConvertKit when the "Create Broadcast" option is enabled on the Post.
+	 * - the Broadcast is created in Kit when the "Create Broadcast" option is enabled on the Post.
 	 *
 	 * @since   2.4.0
 	 *
@@ -130,7 +130,7 @@ class BroadcastsExportPostCest
 	public function testCreateBroadcastWhenEnabledInPost(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -155,7 +155,7 @@ class BroadcastsExportPostCest
 		// Get Post ID.
 		$postID = $I->grabValueFrom('post_ID');
 
-		// Confirm Broadcast was created in ConvertKit.
+		// Confirm Broadcast was created in Kit.
 		$I->seePostMetaInDatabase(
 			array(
 				'post_id'  => $postID,
@@ -184,7 +184,7 @@ class BroadcastsExportPostCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Product's Divi Module.
+ * Tests for the Kit Product's Divi Module.
  *
  * @since   2.5.7
  */
@@ -15,7 +15,7 @@ class DiviProductCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'divi-builder');
 	}
@@ -31,8 +31,8 @@ class DiviProductCest
 	public function testProductModuleInBackendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Product: Divi: Backend Editor');
@@ -67,8 +67,8 @@ class DiviProductCest
 	public function testProductModuleInFrontendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the frontend editor.
 		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Product: Divi: Frontend Editor');
@@ -114,7 +114,7 @@ class DiviProductCest
 	}
 
 	/**
-	 * Test the Product module displays the expected message when the ConvertKit account
+	 * Test the Product module displays the expected message when the Kit account
 	 * has no products.
 	 *
 	 * @since   2.5.7
@@ -124,8 +124,8 @@ class DiviProductCest
 	public function testProductModuleInFrontendEditorWhenNoProducts(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Create a Divi Page in the frontend editor.
 		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Product: Divi: Product: No Products');
@@ -152,8 +152,8 @@ class DiviProductCest
 	public function testProductModuleWithNoProductParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Product module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
@@ -170,7 +170,7 @@ class DiviProductCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Product is displayed.
+		// Confirm that no Kit Product is displayed.
 		$I->dontSeeProductOutput($I);
 	}
 
@@ -188,7 +188,7 @@ class DiviProductCest
 	{
 		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }
