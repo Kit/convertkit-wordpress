@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form shortcode.
+ * Tests for the Kit Form shortcode.
  *
  * @since   1.9.6
  */
@@ -15,7 +15,7 @@ class PageShortcodeFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,8 +29,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeInVisualEditorWithValidFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Visual Editor');
@@ -57,7 +57,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -73,8 +73,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeInTextEditorWithValidFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Text Editor');
@@ -101,7 +101,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -116,24 +116,24 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithInvalidFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-invalid-form-param',
+				'post_name'    => 'kit-form-shortcode-invalid-form-param',
 				'post_content' => '[convertkit form=1]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-invalid-form-param');
+		$I->amOnPage('/kit-form-shortcode-invalid-form-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Form is not displayed.
+		// Confirm that the Kit Form is not displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -147,24 +147,24 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithValidIDParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-valid-id-param',
+				'post_name'    => 'kit-form-shortcode-valid-id-param',
 				'post_content' => '[convertkit id=' . $_ENV['CONVERTKIT_API_FORM_ID'] . ']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-valid-id-param');
+		$I->amOnPage('/kit-form-shortcode-valid-id-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -179,24 +179,24 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithInvalidIDParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-invalid-id-param',
+				'post_name'    => 'kit-form-shortcode-invalid-id-param',
 				'post_content' => '[convertkit id=1]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-invalid-id-param');
+		$I->amOnPage('/kit-form-shortcode-invalid-id-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Form is not displayed.
+		// Confirm that the Kit Form is not displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -204,10 +204,10 @@ class PageShortcodeFormCest
 	 * Test the [convertkit form] shortcode works when a valid Form ID is specified,
 	 * but the Form ID does not exist in the options table.
 	 *
-	 * This emulates when a ConvertKit User has:
-	 * - added a new ConvertKit Form to their account at https://app.kit.com/
-	 * - copied the ConvertKit Form Shortcode at https://app.kit.com/
-	 * - pasted the ConvertKit Form Shortcode into a new WordPress Page
+	 * This emulates when a Kit User has:
+	 * - added a new Kit Form to their account at https://app.kit.com/
+	 * - copied the Kit Form Shortcode at https://app.kit.com/
+	 * - pasted the Kit Form Shortcode into a new WordPress Page
 	 * - not navigated to Settings > Kit to refresh the Plugin's Form Resources.
 	 *
 	 * @since   1.9.6.2
@@ -217,8 +217,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWhenFormDoesNotExistInPluginFormResources(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Update the Form Resource option table value to only contain a dummy Form with an ID
 		// that does not match the shortcode Form's ID.
@@ -236,18 +236,18 @@ class PageShortcodeFormCest
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-no-form-resources',
+				'post_name'    => 'kit-form-shortcode-no-form-resources',
 				'post_content' => '[convertkit form=' . $_ENV['CONVERTKIT_API_FORM_ID'] . ']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-no-form-resources');
+		$I->amOnPage('/kit-form-shortcode-no-form-resources');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -262,7 +262,7 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithValidLegacyFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -272,23 +272,23 @@ class PageShortcodeFormCest
 				'product_form' => '',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-valid-legacy-form-param',
+				'post_name'    => 'kit-form-shortcode-valid-legacy-form-param',
 				'post_content' => '[convertkit form=' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . ']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-valid-legacy-form-param');
+		$I->amOnPage('/kit-form-shortcode-valid-legacy-form-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Default Legacy Form displays.
+		// Confirm that the Kit Default Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -302,40 +302,40 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithValidLegacyIDParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I); // Don't specify default forms.
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I); // Don't specify default forms.
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-valid-legacy-id-param',
+				'post_name'    => 'kit-form-shortcode-valid-legacy-id-param',
 				'post_content' => '[convertkit id=' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . ']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-valid-legacy-id-param');
+		$I->amOnPage('/kit-form-shortcode-valid-legacy-id-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Default Legacy Form displays.
+		// Confirm that the Kit Default Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
 	/**
 	 * Test the [convertkit form] shortcode, as supplied by app.kit.com, works when a valid Legacy Form ID is specified.
 	 * The shortcode form's number / ID differs from the ID given to us in the API.
-	 * For example, a Legacy Form ID might be 470099, but the ConvertKit app says to use the shortcode [convertkit form=5281783]).
+	 * For example, a Legacy Form ID might be 470099, but the Kit app says to use the shortcode [convertkit form=5281783]).
 	 *
 	 * @since   1.9.6.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testFormShortcodeWithValidLegacyFormShortcodeFromConvertKitApp(AcceptanceTester $I)
+	public function testFormShortcodeWithValidLegacyFormShortcodeFromKitApp(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -345,23 +345,23 @@ class PageShortcodeFormCest
 				'product_form' => '',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-shortcode-valid-legacy-form-shortcode-from-convertkit-app',
+				'post_name'    => 'kit-form-shortcode-valid-legacy-form-shortcode-from-kit-app',
 				'post_content' => $_ENV['CONVERTKIT_API_LEGACY_FORM_SHORTCODE'],
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-shortcode-valid-legacy-form-shortcode-from-convertkit-app');
+		$I->amOnPage('/kit-form-shortcode-valid-legacy-form-shortcode-from-kit-app');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Default Legacy Form displays.
+		// Confirm that the Kit Default Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -420,8 +420,8 @@ class PageShortcodeFormCest
 	}
 
 	/**
-	 * Test the Form shortcode displays a message with a link to ConvertKit,
-	 * when the ConvertKit account has no forms.
+	 * Test the Form shortcode displays a message with a link to Kit,
+	 * when the Kit account has no forms.
 	 *
 	 * @since   2.2.3
 	 *
@@ -430,8 +430,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWhenNoForms(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: No Forms');
@@ -445,7 +445,7 @@ class PageShortcodeFormCest
 		// Confirm an error notice displays.
 		$I->waitForElementVisible('#convertkit-modal-body-body div.notice');
 
-		// Confirm that the Form block displays instructions to the user on how to add a Form in ConvertKit.
+		// Confirm that the Form block displays instructions to the user on how to add a Form in Kit.
 		$I->see(
 			'No forms exist in Kit.',
 			[
@@ -453,7 +453,7 @@ class PageShortcodeFormCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to create your first form.',
 			[
@@ -464,7 +464,7 @@ class PageShortcodeFormCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -488,8 +488,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithAutoptimizePlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Autoptimize Plugin.
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
@@ -519,7 +519,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that Autoptimize hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
@@ -539,8 +539,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithJetpackBoostPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Jetpack Boost Plugin.
 		$I->activateThirdPartyPlugin($I, 'jetpack-boost');
@@ -574,7 +574,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
@@ -594,8 +594,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithLiteSpeedCachePlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate and enable LiteSpeed Cache Plugin.
 		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
@@ -631,7 +631,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
@@ -651,8 +651,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithPerfmattersPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Perfmatters Plugin.
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
@@ -695,7 +695,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -715,8 +715,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithSitegroundSpeedOptimizerPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Siteground Speed Optimizer Plugin.
 		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
@@ -749,7 +749,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -768,8 +768,8 @@ class PageShortcodeFormCest
 	public function testFormShortcodeWithWPRocketPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
@@ -803,7 +803,7 @@ class PageShortcodeFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -824,7 +824,7 @@ class PageShortcodeFormCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Forms integration with WishList Member.
+ * Tests for Kit Forms integration with WishList Member.
  *
  * @since   1.9.6
  */
@@ -15,21 +15,21 @@ class WishListMemberCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'wishlist-member');
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Form Mapping works,
-	 * and the email address is added to ConvertKit when assigned the WishList Member Level
+	 * Test that WishList Member Level to Kit Form Mapping works,
+	 * and the email address is added to Kit when assigned the WishList Member Level
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitFormMappingOnLevelAdded(AcceptanceTester $I)
+	public function testWLMToKitFormMappingOnLevelAdded(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -46,19 +46,19 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Legacy Form Mapping works,
-	 * and the email address is added to ConvertKit when assigned the WishList Member Level
+	 * Test that WishList Member Level to Kit Legacy Form Mapping works,
+	 * and the email address is added to Kit when assigned the WishList Member Level
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitLegacyFormMappingOnLevelAdded(AcceptanceTester $I)
+	public function testWLMToKitLegacyFormMappingOnLevelAdded(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -75,19 +75,19 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Tag Mapping works,
-	 * and the email address is added to ConvertKit when assigned the WishList Member Level
+	 * Test that WishList Member Level to Kit Tag Mapping works,
+	 * and the email address is added to Kit when assigned the WishList Member Level
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitTagMappingOnLevelAdded(AcceptanceTester $I)
+	public function testWLMToKitTagMappingOnLevelAdded(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -104,7 +104,7 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check subscriber assigned to tag.
@@ -112,14 +112,14 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Sequence Mapping works,
-	 * and the email address is added to ConvertKit when assigned the WishList Member Level
+	 * Test that WishList Member Level to Kit Sequence Mapping works,
+	 * and the email address is added to Kit when assigned the WishList Member Level
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitSequenceMappingOnLevelAdded(AcceptanceTester $I)
+	public function testWLMToKitSequenceMappingOnLevelAdded(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -136,7 +136,7 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
@@ -144,13 +144,13 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Test that the email address is added to ConvertKit when assigned the WishList Member Level.
+	 * Test that the email address is added to Kit when assigned the WishList Member Level.
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitSubscribeMappingOnLevelAdded(AcceptanceTester $I)
+	public function testWLMToKitSubscribeMappingOnLevelAdded(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -167,19 +167,19 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Form Mapping works,
-	 * and the email address is added to ConvertKit when removed from the WishList Member Level
+	 * Test that WishList Member Level to Kit Form Mapping works,
+	 * and the email address is added to Kit when removed from the WishList Member Level
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitFormMappingOnLevelRemoved(AcceptanceTester $I)
+	public function testWLMToKitFormMappingOnLevelRemoved(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -196,25 +196,25 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 
 		// Remove level from user.
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Legacy Form Mapping works,
-	 * and the email address is added to ConvertKit when removed from the WishList Member Level
+	 * Test that WishList Member Level to Kit Legacy Form Mapping works,
+	 * and the email address is added to Kit when removed from the WishList Member Level
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitLegacyFormMappingOnLevelRemoved(AcceptanceTester $I)
+	public function testWLMToKitLegacyFormMappingOnLevelRemoved(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -231,25 +231,25 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 
 		// Remove level from user.
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Tag Mapping works,
-	 * and the email address is added to ConvertKit when removed from the WishList Member Level
+	 * Test that WishList Member Level to Kit Tag Mapping works,
+	 * and the email address is added to Kit when removed from the WishList Member Level
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitTagMappingOnLevelRemoved(AcceptanceTester $I)
+	public function testWLMToKitTagMappingOnLevelRemoved(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -266,13 +266,13 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 
 		// Remove level from user.
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check subscriber assigned to tag.
@@ -280,14 +280,14 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Test that WishList Member Level to ConvertKit Sequence Mapping works,
-	 * and the email address is added to ConvertKit when removed from the WishList Member Level
+	 * Test that WishList Member Level to Kit Sequence Mapping works,
+	 * and the email address is added to Kit when removed from the WishList Member Level
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitSequenceMappingOnLevelRemoved(AcceptanceTester $I)
+	public function testWLMToKitSequenceMappingOnLevelRemoved(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -304,13 +304,13 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 
 		// Remove level from user.
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
@@ -318,13 +318,13 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Test that the email address is removed from to ConvertKit when removed from the WishList Member Level.
+	 * Test that the email address is removed from to Kit when removed from the WishList Member Level.
 	 *
 	 * @since   2.5.4
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testWLMToConvertKitUnsubscribeMappingOnLevelRemoved(AcceptanceTester $I)
+	public function testWLMToKitUnsubscribeMappingOnLevelRemoved(AcceptanceTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -342,13 +342,13 @@ class WishListMemberCest
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Remove level from user.
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
@@ -363,7 +363,7 @@ class WishListMemberCest
 	 */
 	public function testSettingsMigratedOnUpgrade(AcceptanceTester $I)
 	{
-		// Create settings as if they were created / edited when the ConvertKit Plugin < 2.5.3
+		// Create settings as if they were created / edited when the Kit Plugin < 2.5.3
 		// was active.
 		$I->haveOptionInDatabase(
 			'_wp_convertkit_integration_wishlistmember_settings',
@@ -429,7 +429,7 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Configure WishList Member Levels to ConvertKit settings mapping.
+	 * Configure WishList Member Levels to Kit settings mapping.
 	 *
 	 * @since   2.5.4
 	 *
@@ -515,7 +515,7 @@ class WishListMemberCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

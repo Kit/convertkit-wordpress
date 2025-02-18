@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Tags on WordPress Pages.
+ * Tests for Kit Tags on WordPress Pages.
  *
  * @since   1.9.6
  */
@@ -15,12 +15,12 @@ class PageTagCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -34,7 +34,7 @@ class PageTagCest
 	 */
 	public function testAddNewPageUsingNoTag(AcceptanceTester $I)
 	{
-		// Programmatically create a subscriber in ConvertKit.
+		// Programmatically create a subscriber in Kit.
 		// Must be a domain email doesn't bounce on, otherwise subscriber won't be confirmed even if the Form's
 		// "Auto-confirm new subscribers" setting is enabled.
 		// We need the subscriber to be confirmed so they can then be tagged.
@@ -65,7 +65,7 @@ class PageTagCest
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Load the page with the ?ck_subscriber_id parameter, as if the subscriber clicked a link in a ConvertKit broadcast.
+		// Load the page with the ?ck_subscriber_id parameter, as if the subscriber clicked a link in a Kit broadcast.
 		$I->amOnPage($url . '?ck_subscriber_id=' . $subscriberID);
 
 		// Check that no PHP warnings or notices were output.
@@ -86,7 +86,7 @@ class PageTagCest
 	 */
 	public function testAddNewPageUsingDefinedTag(AcceptanceTester $I)
 	{
-		// Programmatically create a subscriber in ConvertKit.
+		// Programmatically create a subscriber in Kit.
 		// Must be a domain email doesn't bounce on, otherwise subscriber won't be confirmed even if the Form's
 		// "Auto-confirm new subscribers" setting is enabled.
 		// We need the subscriber to be confirmed so they can then be tagged.
@@ -108,7 +108,7 @@ class PageTagCest
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Load the page with the ?ck_subscriber_id parameter, as if the subscriber clicked a link in a ConvertKit broadcast.
+		// Load the page with the ?ck_subscriber_id parameter, as if the subscriber clicked a link in a Kit broadcast.
 		$I->amOnUrl($url . '?ck_subscriber_id=' . $subscriberID);
 
 		// Check that no PHP warnings or notices were output.
@@ -161,7 +161,7 @@ class PageTagCest
 	 */
 	public function testQuickEditUsingDefinedTag(AcceptanceTester $I)
 	{
-		// Programmatically create a subscriber in ConvertKit.
+		// Programmatically create a subscriber in Kit.
 		// Must be a domain email doesn't bounce on, otherwise subscriber won't be confirmed even if the Form's
 		// "Auto-confirm new subscribers" setting is enabled.
 		// We need the subscriber to be confirmed so they can then be tagged.
@@ -234,7 +234,7 @@ class PageTagCest
 
 		// Iterate through Pages to run frontend tests.
 		foreach ($pageIDs as $pageID) {
-			// Programmatically create a subscriber in ConvertKit.
+			// Programmatically create a subscriber in Kit.
 			// Must be a domain email doesn't bounce on, otherwise subscriber won't be confirmed even if the Form's
 			// "Auto-confirm new subscribers" setting is enabled.
 			// We need the subscriber to be confirmed so they can then be tagged.
@@ -304,7 +304,7 @@ class PageTagCest
 
 		// Iterate through Pages to run frontend tests.
 		foreach ($pageIDs as $pageID) {
-			// Programmatically create a subscriber in ConvertKit.
+			// Programmatically create a subscriber in Kit.
 			// Must be a domain email doesn't bounce on, otherwise subscriber won't be confirmed even if the Form's
 			// "Auto-confirm new subscribers" setting is enabled.
 			// We need the subscriber to be confirmed so they can then be tagged.
@@ -333,7 +333,7 @@ class PageTagCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

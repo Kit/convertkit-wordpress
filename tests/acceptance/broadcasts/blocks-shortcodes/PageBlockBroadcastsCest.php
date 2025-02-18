@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Broadcasts Gutenberg Block.
+ * Tests for the Kit Broadcasts Gutenberg Block.
  *
  * @since   1.9.7.4
  */
@@ -15,7 +15,7 @@ class PageBlockBroadcastsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -64,9 +64,9 @@ class PageBlockBroadcastsCest
 	 */
 	public function testBroadcastsBlockWithNoBroadcasts(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit Account that has no Broadcasts.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		// Setup Plugin with Kit Account that has no Broadcasts.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: No Broadcasts');
@@ -74,7 +74,7 @@ class PageBlockBroadcastsCest
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
 
-		// Confirm that the Broadcasts block displays instructions to the user on how to add a Broadcast in ConvertKit.
+		// Confirm that the Broadcasts block displays instructions to the user on how to add a Broadcast in Kit.
 		$I->see(
 			'No broadcasts exist in Kit.',
 			[
@@ -82,7 +82,7 @@ class PageBlockBroadcastsCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to send your first broadcast.',
 			[
@@ -93,7 +93,7 @@ class PageBlockBroadcastsCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -102,7 +102,7 @@ class PageBlockBroadcastsCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Broadcasts are displayed.
+		// Confirm that no Kit Broadcasts are displayed.
 		$I->dontSeeElementInDOM('div.convertkit-broadcasts');
 	}
 
@@ -115,9 +115,9 @@ class PageBlockBroadcastsCest
 	 */
 	public function testBroadcastsBlockRefreshButton(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit Account that has no Broadcasts.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		// Setup Plugin with Kit Account that has no Broadcasts.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Refresh Button');
@@ -127,8 +127,8 @@ class PageBlockBroadcastsCest
 
 		// Setup Plugin with a valid API Key and resources, as if the user performed the necessary steps to authenticate
 		// and created a broadcast.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
@@ -158,8 +158,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithDefaultParameters(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Default Params');
@@ -198,8 +198,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithDisplayGridParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display as Grid');
@@ -237,8 +237,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithDateFormatParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Date Format Param');
@@ -284,8 +284,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithDisplayImageParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display image');
@@ -325,8 +325,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithDisplayDescriptionParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display description');
@@ -364,8 +364,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithDisplayReadMoreLinkParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display read more link');
@@ -404,8 +404,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithLimitParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Limit Param');
@@ -448,8 +448,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithBlankLimitParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Blank Limit Param');
@@ -494,8 +494,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithPaginationEnabled(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Pagination');
@@ -528,8 +528,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithPaginationLabelParameters(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Pagination Labels');
@@ -564,8 +564,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithBlankPaginationLabelParameters(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Blank Pagination Labels');
@@ -600,8 +600,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithThemeColorParameters(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = 'white';
@@ -613,13 +613,13 @@ class PageBlockBroadcastsCest
 		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-broadcasts-block-theme-color-params',
+				'post_name'    => 'kit-page-broadcasts-block-theme-color-params',
 				'post_content' => '<!-- wp:convertkit/broadcasts {"backgroundColor":"' . $backgroundColor . '","textColor":"' . $textColor . '"} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-broadcasts-block-theme-color-params');
+		$I->amOnPage('/kit-page-broadcasts-block-theme-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -652,8 +652,8 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWithHexColorParameters(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = '#ee1616';
@@ -665,13 +665,13 @@ class PageBlockBroadcastsCest
 		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-broadcasts-block-hex-color-params',
+				'post_name'    => 'kit-page-broadcasts-block-hex-color-params',
 				'post_content' => '<!-- wp:convertkit/broadcasts {"date_format":"m/d/Y","limit":' . $_ENV['CONVERTKIT_API_BROADCAST_COUNT'] . ',"style":{"color":{"text":"' . $textColor . '","background":"' . $backgroundColor . '"}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-broadcasts-block-hex-color-params');
+		$I->amOnPage('/kit-page-broadcasts-block-hex-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -705,19 +705,19 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockParameterEscaping(AcceptanceTester $I)
 	{
 		// Setup Plugin and enable debug log.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-broadcasts-block-parameter-escaping',
+				'post_name'    => 'kit-page-broadcasts-block-parameter-escaping',
 				'post_content' => '<!-- wp:convertkit/broadcasts {"limit":2,"paginate":true,"style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-broadcasts-block-parameter-escaping');
+		$I->amOnPage('/kit-page-broadcasts-block-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -748,7 +748,7 @@ class PageBlockBroadcastsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

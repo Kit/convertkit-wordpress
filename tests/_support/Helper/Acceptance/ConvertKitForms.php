@@ -2,12 +2,12 @@
 namespace Helper\Acceptance;
 
 /**
- * Helper methods and actions related to the ConvertKit Plugin's Forms
+ * Helper methods and actions related to the Kit Plugin's Forms
  * functionality, which are then available using $I->{yourFunctionName}.
  *
  * @since   2.2.0
  */
-class ConvertKitForms extends \Codeception\Module
+class KitForms extends \Codeception\Module
 {
 	/**
 	 * Check that expected HTML exists in the DOM of the page we're viewing for
@@ -72,7 +72,7 @@ class ConvertKitForms extends \Codeception\Module
 	/**
 	 * Check that expected HTML exists in the DOM of the page we're viewing for
 	 * a Form Trigger block or shortcode, and that the button loads the expected
-	 * ConvertKit Form.
+	 * Kit Form.
 	 *
 	 * @since   2.2.0
 	 *
@@ -116,7 +116,7 @@ class ConvertKitForms extends \Codeception\Module
 			);
 		}
 
-		// Click the button to confirm that the ConvertKit modal displays.
+		// Click the button to confirm that the Kit modal displays.
 		$I->click('a.convertkit-formtrigger');
 		$I->waitForElementVisible('div.formkit-overlay');
 	}
@@ -138,7 +138,7 @@ class ConvertKitForms extends \Codeception\Module
 	/**
 	 * Check that expected HTML exists in the DOM of the page we're viewing for
 	 * a Form Trigger link, and that the link loads the expected
-	 * ConvertKit Form.
+	 * Kit Form.
 	 *
 	 * @since   2.2.0
 	 *
@@ -159,7 +159,7 @@ class ConvertKitForms extends \Codeception\Module
 			$I->see($text);
 		}
 
-		// Click the link to confirm that the ConvertKit form displays.
+		// Click the link to confirm that the Kit form displays.
 		$I->click('a.convertkit-form-link');
 		$I->waitForElementVisible('div.formkit-overlay');
 	}

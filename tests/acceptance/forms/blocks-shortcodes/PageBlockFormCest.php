@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form's Gutenberg Block.
+ * Tests for the Kit Form's Gutenberg Block.
  *
  * @since   1.9.6
  */
@@ -15,7 +15,7 @@ class PageBlockFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -28,8 +28,8 @@ class PageBlockFormCest
 	public function testFormBlockWithValidFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Form Param');
@@ -56,7 +56,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -71,7 +71,7 @@ class PageBlockFormCest
 	public function testFormBlockWithValidLegacyFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -81,7 +81,7 @@ class PageBlockFormCest
 				'product_form' => '',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Legacy Form: Block: Valid Form Param');
@@ -108,7 +108,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that the ConvertKit Form is displayed.
+		// Confirm that the Kit Form is displayed.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -123,8 +123,8 @@ class PageBlockFormCest
 	public function testFormBlockWithValidModalFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Modal Form Param');
@@ -161,7 +161,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 	}
@@ -177,8 +177,8 @@ class PageBlockFormCest
 	public function testFormBlocksWithValidModalFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Modal Form Param');
@@ -225,7 +225,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 	}
@@ -241,8 +241,8 @@ class PageBlockFormCest
 	public function testFormBlockWithValidSlideInFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Slide In Form Param');
@@ -279,7 +279,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID'] . '"]', 1);
 	}
@@ -295,8 +295,8 @@ class PageBlockFormCest
 	public function testFormBlocksWithValidSlideInFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Slide In Form Param');
@@ -343,7 +343,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID'] . '"]', 1);
 	}
@@ -359,8 +359,8 @@ class PageBlockFormCest
 	public function testFormBlockWithValidStickyBarFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Sticky Bar Form Param');
@@ -397,7 +397,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 	}
@@ -413,8 +413,8 @@ class PageBlockFormCest
 	public function testFormBlocksWithValidStickyBarFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Sticky Bar Form Param');
@@ -461,7 +461,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 	}
@@ -476,8 +476,8 @@ class PageBlockFormCest
 	public function testFormBlockWithNoFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Valid Sticky Bar Form Param');
@@ -505,7 +505,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -541,7 +541,7 @@ class PageBlockFormCest
 
 	/**
 	 * Test the Form block displays a message with a link to the Plugin's
-	 * settings screen, when the ConvertKit account has no forms.
+	 * settings screen, when the Kit account has no forms.
 	 *
 	 * @since   2.2.3
 	 *
@@ -550,8 +550,8 @@ class PageBlockFormCest
 	public function testFormBlockWhenNoForms(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: No Forms');
@@ -559,7 +559,7 @@ class PageBlockFormCest
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Form', 'convertkit-form');
 
-		// Confirm that the Form block displays instructions to the user on how to add a Form in ConvertKit.
+		// Confirm that the Form block displays instructions to the user on how to add a Form in Kit.
 		$I->see(
 			'No forms exist in Kit.',
 			[
@@ -567,7 +567,7 @@ class PageBlockFormCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to create your first form.',
 			[
@@ -578,7 +578,7 @@ class PageBlockFormCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -597,9 +597,9 @@ class PageBlockFormCest
 	 */
 	public function testFormBlockRefreshButton(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit Account that has no Forms.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		// Setup Plugin with Kit Account that has no Forms.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Forms: Refresh Button');
@@ -609,8 +609,8 @@ class PageBlockFormCest
 
 		// Setup Plugin with a valid API Key and resources, as if the user performed the necessary steps to authenticate
 		// and create a form.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
@@ -641,8 +641,8 @@ class PageBlockFormCest
 	public function testFormBlockWithAutoptimizePlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Autoptimize Plugin.
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
@@ -672,7 +672,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that Autoptimize hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
@@ -692,8 +692,8 @@ class PageBlockFormCest
 	public function testFormBlockWithJetpackBoostPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Jetpack Boost Plugin.
 		$I->activateThirdPartyPlugin($I, 'jetpack-boost');
@@ -727,7 +727,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
@@ -747,8 +747,8 @@ class PageBlockFormCest
 	public function testFormBlockWithSitegroundSpeedOptimizerPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Siteground Speed Optimizer Plugin.
 		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
@@ -781,7 +781,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -800,8 +800,8 @@ class PageBlockFormCest
 	public function testFormBlockWithLiteSpeedCachePlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate and enable LiteSpeed Cache Plugin.
 		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
@@ -837,7 +837,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
@@ -857,8 +857,8 @@ class PageBlockFormCest
 	public function testFormBlockWithPerfmattersPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Perfmatters Plugin.
 		$I->activateThirdPartyPlugin($I, 'perfmatters');
@@ -900,7 +900,7 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -919,8 +919,8 @@ class PageBlockFormCest
 	public function testFormBlockWithWPRocketPluginDelayJS(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
@@ -959,7 +959,7 @@ class PageBlockFormCest
 		// View the Page.
 		$I->amOnUrl($url);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -978,8 +978,8 @@ class PageBlockFormCest
 	public function testFormBlockWithWPRocketPluginMinifyJS(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
@@ -1018,7 +1018,7 @@ class PageBlockFormCest
 		// View the Page.
 		$I->amOnUrl($url);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
 
@@ -1037,8 +1037,8 @@ class PageBlockFormCest
 	public function testFormBlockWithNonInlineFormAndBlockVisibilityPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Block Visibility Plugin.
 		$I->activateThirdPartyPlugin($I, 'block-visibility');
@@ -1052,7 +1052,7 @@ class PageBlockFormCest
 				'post_title'   => 'Kit: Page: Form: Block: Block Visibility',
 				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '","blockVisibility":{"controlSets":[{"id":1,"enable":true,"controls":{"location":{"ruleSets":[{"enable":true,"rules":[{"field":"postType","operator":"any","value":["page"]}]}],"hideOnRuleSets":true}}}]}} /-->',
 				'meta_input'   => [
-					// Configure ConvertKit Plugin to not display a default Form.
+					// Configure Kit Plugin to not display a default Form.
 					'_wp_convertkit_post_meta' => [
 						'form'         => '0',
 						'landing_page' => '',
@@ -1068,7 +1068,7 @@ class PageBlockFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 
 		// Deactivate Block Visibility Plugin.
@@ -1086,7 +1086,7 @@ class PageBlockFormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

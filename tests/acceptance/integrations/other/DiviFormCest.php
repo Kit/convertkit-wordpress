@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form's Divi Module.
+ * Tests for the Kit Form's Divi Module.
  *
  * @since   2.5.6
  */
@@ -15,7 +15,7 @@ class DiviFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'divi-builder');
 	}
@@ -31,8 +31,8 @@ class DiviFormCest
 	public function testFormModuleInBackendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Form: Divi: Backend Editor');
@@ -49,7 +49,7 @@ class DiviFormCest
 		// Save Divi module and view the page on the frontend site.
 		$I->saveDiviModuleInBackendEditorAndViewPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
@@ -68,8 +68,8 @@ class DiviFormCest
 	public function testFormModuleInFrontendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the frontend editor.
 		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Form: Divi: Frontend Editor');
@@ -86,7 +86,7 @@ class DiviFormCest
 		// Save Divi module and view the page on the frontend site.
 		$I->saveDiviModuleInFrontendEditorAndViewPage($I, $url);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -116,7 +116,7 @@ class DiviFormCest
 	}
 
 	/**
-	 * Test the Form module displays the expected message when the ConvertKit account
+	 * Test the Form module displays the expected message when the Kit account
 	 * has no forms.
 	 *
 	 * @since   2.5.7
@@ -126,8 +126,8 @@ class DiviFormCest
 	public function testFormModuleInFrontendEditorWhenNoForms(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Create a Divi Page in the frontend editor.
 		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Form: Divi: Frontend: No Forms');
@@ -154,7 +154,7 @@ class DiviFormCest
 	public function testFormModuleWithValidLegacyFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -164,7 +164,7 @@ class DiviFormCest
 				'product_form' => '',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Form module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
@@ -181,7 +181,7 @@ class DiviFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Form is displayed.
+		// Confirm that the Kit Form is displayed.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -195,8 +195,8 @@ class DiviFormCest
 	public function testFormModuleWithNoFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Form module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
@@ -213,7 +213,7 @@ class DiviFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -230,7 +230,7 @@ class DiviFormCest
 	{
 		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -15,12 +15,12 @@ class PageLandingPageSetupWizardCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
-	 * Test that the Add New Landing Page button does not display on the Pages screen when no ConvertKit
+	 * Test that the Add New Landing Page button does not display on the Pages screen when no Kit
 	 * account is connected.
 	 *
 	 * @since   2.5.5
@@ -46,7 +46,7 @@ class PageLandingPageSetupWizardCest
 	public function testAddNewLandingPageButtonNotDisplayedOnPosts(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Navigate to Posts.
 		$I->amOnAdminPage('edit.php?post_type=post');
@@ -69,7 +69,7 @@ class PageLandingPageSetupWizardCest
 		$I->activateThirdPartyPlugin($I, 'admin-menu-editor');
 
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Navigate to Admin Menu Editor's settings.
 		$I->amOnAdminPage('options-general.php?page=menu_editor');
@@ -86,8 +86,8 @@ class PageLandingPageSetupWizardCest
 	}
 
 	/**
-	 * Test that the Add New Landing Page wizard displays call to actions to add a Landing Page in ConvertKit
-	 * when the ConvertKit account has no Landing Pages
+	 * Test that the Add New Landing Page wizard displays call to actions to add a Landing Page in Kit
+	 * when the Kit account has no Landing Pages
 	 *
 	 * @since   2.3.3
 	 *
@@ -95,8 +95,8 @@ class PageLandingPageSetupWizardCest
 	 */
 	public function testAddNewLandingPageDisplaysCTAWhenNoLandingPagesExist(AcceptanceTester $I)
 	{
-		// Setup Plugin using ConvertKit account that has no resources.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		// Setup Plugin using Kit account that has no resources.
+		$I->setupKitPluginCredentialsNoData($I);
 
 		// Navigate to Pages.
 		$I->amOnAdminPage('edit.php?post_type=page');
@@ -109,12 +109,12 @@ class PageLandingPageSetupWizardCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Check that the expected buttons display linking to ConvertKit.
+		// Check that the expected buttons display linking to Kit.
 		$I->see('Create landing page');
 		$I->seeInSource('<a href="https://app.kit.com/pages/new/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit"');
 
 		// Update the Plugin to use credentials that have resources.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Click the button to reload the wizard.
 		$I->click('I\'ve created a landing page in Kit');
@@ -188,12 +188,12 @@ class PageLandingPageSetupWizardCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
 
-		// Confirm the ConvertKit Site Icon displays.
+		// Confirm the Kit Site Icon displays.
 		$I->seeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
@@ -225,13 +225,13 @@ class PageLandingPageSetupWizardCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I);
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
-	 * Sets up the ConvertKit Plugin, and starts the Setup Wizard for Landing Pages.
+	 * Sets up the Kit Plugin, and starts the Setup Wizard for Landing Pages.
 	 *
 	 * @since   2.5.5
 	 *
@@ -239,8 +239,8 @@ class PageLandingPageSetupWizardCest
 	 */
 	private function _setupAndLoadAddNewLandingPageScreen(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Navigate to Pages.
 		$I->amOnAdminPage('edit.php?post_type=page');
@@ -265,7 +265,7 @@ class PageLandingPageSetupWizardCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

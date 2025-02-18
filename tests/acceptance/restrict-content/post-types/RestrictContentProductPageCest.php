@@ -15,8 +15,8 @@ class RestrictContentProductPageCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -28,8 +28,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentWhenDisabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product');
@@ -58,8 +58,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentByProduct(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product');
@@ -97,8 +97,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentByProductWithGeneratedExcerpt(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Define visible content and member-only content.
 		$visibleContent    = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
@@ -146,8 +146,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentModalByProduct(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product: Modal');
@@ -178,7 +178,7 @@ class RestrictContentProductPageCest
 	 * Test that restricting content by a Product that does not exist does not output
 	 * a fatal error and instead displays all of the Page's content.
 	 *
-	 * This checks for when a Product is deleted in ConvertKit, but is still specified
+	 * This checks for when a Product is deleted in Kit, but is still specified
 	 * as the Restrict Content setting for a Page.
 	 *
 	 * @since   2.3.3
@@ -187,15 +187,15 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentByInvalidProduct(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
 			$I,
 			[
 				'post_title'               => 'Kit: Page: Restrict Content: Invalid Product',
-				'restrict_content_setting' => 'product_12345', // A fake Product that does not exist in ConvertKit.
+				'restrict_content_setting' => 'product_12345', // A fake Product that does not exist in Kit.
 			]
 		);
 
@@ -217,8 +217,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentWhenEditingWithFrontendPageBuilder(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Activate Beaver Builder Lite, a frontend Page Builder.
 		$I->activateThirdPartyPlugin($I, 'beaver-builder-lite-version');
@@ -269,16 +269,16 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentUsingCrawler(AcceptanceTester $I)
 	{
-		// Enable ConvertKit Action and Filter Tests Plugin.
+		// Enable Kit Action and Filter Tests Plugin.
 		// This will register Chrome and 127.0.0.1 as a user agent and client IP address combination
 		// that is permitted to bypass Restrict Content functionality, as if we were a crawler.
 		$I->activateThirdPartyPlugin($I, 'convertkit-actions-and-filters-tests');
 
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Setup Restrict Content functionality with permit crawlers setting enabled.
-		$I->setupConvertKitPluginRestrictContent(
+		$I->setupKitPluginRestrictContent(
 			$I,
 			[
 				'permit_crawlers' => 'on',
@@ -323,8 +323,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentByProductUsingQuickEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -358,8 +358,8 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentByProductUsingBulkEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
@@ -408,7 +408,7 @@ class RestrictContentProductPageCest
 	{
 		$I->resetCookie('ck_subscriber_id');
 		$I->deactivateThirdPartyPlugin($I, 'convertkit-actions-and-filters-tests');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

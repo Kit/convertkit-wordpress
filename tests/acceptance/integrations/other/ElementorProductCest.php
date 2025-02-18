@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Product Elementor Widget.
+ * Tests for the Kit Product Elementor Widget.
  *
  * @since   2.0.0
  */
@@ -15,10 +15,10 @@ class ElementorProductCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'elementor');
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class ElementorProductCest
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
 
-		// When Elementor loads, search for the ConvertKit Product block.
+		// When Elementor loads, search for the Kit Product block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Product');
 
@@ -110,7 +110,7 @@ class ElementorProductCest
 
 	/**
 	 * Create a Page in the database comprising of Elementor Page Builder data
-	 * containing a ConvertKit Product widget.
+	 * containing a Kit Product widget.
 	 *
 	 * Codeception's dragAndDrop() method doesn't support dropping an element into an iframe, which is
 	 * how Elementor works for adding widgets to a Page.
@@ -166,7 +166,7 @@ class ElementorProductCest
 					'_elementor_edit_mode'     => 'builder',
 					'_elementor_template_type' => 'wp-page',
 
-					// Configure ConvertKit Plugin to not display a default Form,
+					// Configure Kit Plugin to not display a default Form,
 					// as we are testing for the Form in Elementor.
 					'_wp_convertkit_post_meta' => [
 						'form'         => '0',
@@ -190,7 +190,7 @@ class ElementorProductCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'elementor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

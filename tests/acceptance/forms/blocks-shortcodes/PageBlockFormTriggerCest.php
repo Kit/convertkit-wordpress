@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form Trigger Gutenberg Block.
+ * Tests for the Kit Form Trigger Gutenberg Block.
  *
  * @since   2.2.0
  */
@@ -15,7 +15,7 @@ class PageBlockFormTriggerCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -27,9 +27,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWithValidFormParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Valid Form Param');
@@ -69,9 +69,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlocksWithValidFormParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Valid Form Param, Multiple Blocks');
@@ -111,7 +111,7 @@ class PageBlockFormTriggerCest
 		// Confirm that the block displays.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 	}
@@ -125,9 +125,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWithNoFormParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: No Form Param');
@@ -155,7 +155,7 @@ class PageBlockFormTriggerCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form trigger button is displayed.
+		// Confirm that no Kit Form trigger button is displayed.
 		$I->dontSeeFormTriggerOutput($I);
 	}
 
@@ -168,9 +168,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWithTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Text Param');
@@ -202,9 +202,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWithBlankTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Blank Text Param');
@@ -236,9 +236,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWithThemeColorParameters(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = 'white';
@@ -250,13 +250,13 @@ class PageBlockFormTriggerCest
 		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-form-trigger-block-theme-color-params',
+				'post_name'    => 'kit-page-form-trigger-block-theme-color-params',
 				'post_content' => '<!-- wp:convertkit/formtrigger {"form":"' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '","backgroundColor":"' . $backgroundColor . '","textColor":"' . $textColor . '"} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-form-trigger-block-theme-color-params');
+		$I->amOnPage('/kit-page-form-trigger-block-theme-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -280,9 +280,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWithHexColorParameters(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = '#ee1616';
@@ -294,13 +294,13 @@ class PageBlockFormTriggerCest
 		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-form-trigger-block-hex-color-params',
+				'post_name'    => 'kit-page-form-trigger-block-hex-color-params',
 				'post_content' => '<!-- wp:convertkit/formtrigger {"form":"' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '","style":{"color":{"text":"' . $textColor . '","background":"' . $backgroundColor . '"}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-form-trigger-block-hex-color-params');
+		$I->amOnPage('/kit-page-form-trigger-block-hex-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -322,20 +322,20 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockParameterEscaping(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-form-trigger-block-parameter-escaping',
+				'post_name'    => 'kit-page-form-trigger-block-parameter-escaping',
 				'post_content' => '<!-- wp:convertkit/formtrigger {"form":"' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '","style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-form-trigger-block-parameter-escaping');
+		$I->amOnPage('/kit-page-form-trigger-block-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -347,7 +347,7 @@ class PageBlockFormTriggerCest
 		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
 		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
@@ -382,7 +382,7 @@ class PageBlockFormTriggerCest
 
 	/**
 	 * Test the Form Trigger block displays a message with a link to the Plugin's
-	 * settings screen, when the ConvertKit account has no forms.
+	 * settings screen, when the Kit account has no forms.
 	 *
 	 * @since   2.2.3
 	 *
@@ -391,8 +391,8 @@ class PageBlockFormTriggerCest
 	public function testFormTriggerBlockWhenNoForms(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Block: No Forms');
@@ -400,7 +400,7 @@ class PageBlockFormTriggerCest
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Form Trigger', 'convertkit-formtrigger');
 
-		// Confirm that the Form block displays instructions to the user on how to add a Form in ConvertKit.
+		// Confirm that the Form block displays instructions to the user on how to add a Form in Kit.
 		$I->see(
 			'No modal, sticky bar or slide in forms exist in Kit.',
 			[
@@ -408,7 +408,7 @@ class PageBlockFormTriggerCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to create a form.',
 			[
@@ -419,7 +419,7 @@ class PageBlockFormTriggerCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -438,9 +438,9 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockRefreshButton(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit Account that has no Forms.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		// Setup Plugin with Kit Account that has no Forms.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Refresh Button');
@@ -450,8 +450,8 @@ class PageBlockFormTriggerCest
 
 		// Setup Plugin with a valid API Key and resources, as if the user performed the necessary steps to authenticate
 		// and create a form.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
@@ -482,7 +482,7 @@ class PageBlockFormTriggerCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

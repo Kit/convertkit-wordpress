@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Custom Content shortcode.
+ * Tests for the Kit Custom Content shortcode.
  *
  * @since   1.9.6
  */
@@ -15,11 +15,11 @@ class PageShortcodeCustomContentCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -87,13 +87,13 @@ class PageShortcodeCustomContentCest
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id',
-				'post_content' => '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]ConvertKitCustomContent[/convertkit_content]',
+				'post_name'    => 'kit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id',
+				'post_content' => '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]KitCustomContent[/convertkit_content]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id');
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -102,7 +102,7 @@ class PageShortcodeCustomContentCest
 		$I->dontSee('KitCustomContent');
 
 		// Reload the page, this time with an invalid subscriber ID .
-		$I->amOnPage('/convertkit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id?ck_subscriber_id=1');
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id?ck_subscriber_id=1');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -124,13 +124,13 @@ class PageShortcodeCustomContentCest
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id',
-				'post_content' => '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]ConvertKitCustomContent[/convertkit_content]',
+				'post_name'    => 'kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id',
+				'post_content' => '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]KitCustomContent[/convertkit_content]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -139,7 +139,7 @@ class PageShortcodeCustomContentCest
 		$I->dontSee('KitCustomContent');
 
 		// Reload the page, this time with a subscriber ID who is already subscribed to the tag.
-		$I->amOnPage('/convertkit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -160,7 +160,7 @@ class PageShortcodeCustomContentCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

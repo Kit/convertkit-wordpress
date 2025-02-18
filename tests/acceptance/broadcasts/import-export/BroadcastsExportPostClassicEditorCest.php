@@ -15,10 +15,10 @@ class BroadcastsExportPostClassicEditorCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class BroadcastsExportPostClassicEditorCest
 		$I->activateThirdPartyPlugin($I, 'classic-editor');
 
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -79,7 +79,7 @@ class BroadcastsExportPostClassicEditorCest
 	public function testCreateBroadcastNotDisplayedWhenPostPreviouslyPublished(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -105,7 +105,7 @@ class BroadcastsExportPostClassicEditorCest
 	/**
 	 * Tests that:
 	 * - the "Create Broadcast" option is displayed when creating a Post,
-	 * - the Broadcast is not created in ConvertKit when the "Create Broadcast" option is not enabled on the Post.
+	 * - the Broadcast is not created in Kit when the "Create Broadcast" option is not enabled on the Post.
 	 *
 	 * @since   2.4.0
 	 *
@@ -114,7 +114,7 @@ class BroadcastsExportPostClassicEditorCest
 	public function testCreateBroadcastWhenDisabledInPost(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -136,7 +136,7 @@ class BroadcastsExportPostClassicEditorCest
 		// Get Post ID.
 		$postID = $I->grabValueFrom('post_ID');
 
-		// Confirm Broadcast was not created in ConvertKit.
+		// Confirm Broadcast was not created in Kit.
 		$I->dontSeePostMetaInDatabase(
 			array(
 				'post_id'  => $postID,
@@ -148,7 +148,7 @@ class BroadcastsExportPostClassicEditorCest
 	/**
 	 * Tests that:
 	 * - the "Create Broadcast" option is displayed when creating a Post,
-	 * - the Broadcast is created in ConvertKit when the "Create Broadcast" option is enabled on the Post.
+	 * - the Broadcast is created in Kit when the "Create Broadcast" option is enabled on the Post.
 	 *
 	 * @since   2.4.0
 	 *
@@ -157,7 +157,7 @@ class BroadcastsExportPostClassicEditorCest
 	public function testCreateBroadcastWhenEnabledInPost(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -182,7 +182,7 @@ class BroadcastsExportPostClassicEditorCest
 		// Get Post ID.
 		$postID = $I->grabValueFrom('post_ID');
 
-		// Confirm Broadcast was created in ConvertKit.
+		// Confirm Broadcast was created in Kit.
 		$I->seePostMetaInDatabase(
 			array(
 				'post_id'  => $postID,
@@ -211,7 +211,7 @@ class BroadcastsExportPostClassicEditorCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }
