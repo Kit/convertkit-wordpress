@@ -130,8 +130,8 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 
 		// Sanitize configuration.
 		$configuration = array(
-			'landing_page' => ( isset( $_POST['landing_page'] ? sanitize_text_field( wp_unslash( $_POST['landing_page'] ) ) : '' ),
-			'post_name'    => ( isset( $_POST['post_name'] ? sanitize_text_field( wp_unslash( $_POST['post_name'] ) ) : '' ),
+			'landing_page' => ( isset( $_POST['landing_page'] ) ? sanitize_text_field( wp_unslash( $_POST['landing_page'] ) ) : '' ),
+			'post_name'    => ( isset( $_POST['post_name'] ) ? sanitize_text_field( wp_unslash( $_POST['post_name'] ) ) : '' ),
 			'post_type'    => $this->post_type,
 		);
 

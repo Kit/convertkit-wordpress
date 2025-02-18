@@ -177,7 +177,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				// Sanitize configuration.
 				$configuration = array(
 					'type'             => ( isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'download' ),
-					'title'            => ( isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ), : '' ),
+					'title'            => ( isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '' ),
 					'description'      => ( isset( $_POST['description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['description'] ) ) : '' ),
 					'number_of_pages'  => ( isset( $_POST['number_of_pages'] ) ? absint( $_POST['number_of_pages'] ) : 0 ),
 					'restrict_content' => ( isset( $_POST['restrict_content'] ) ? sanitize_text_field( wp_unslash( $_POST['restrict_content'] ) ) : '' ),
