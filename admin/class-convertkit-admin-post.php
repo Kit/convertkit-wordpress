@@ -274,7 +274,7 @@ class ConvertKit_Admin_Post {
 		}
 
 		// Save Post's settings.
-		$this->save_post_settings( $post_id, $_POST['wp-convertkit'] );
+		$this->save_post_settings( $post_id, wp_unslash( $_POST['wp-convertkit'] ) );
 
 	}
 
@@ -304,7 +304,7 @@ class ConvertKit_Admin_Post {
 			}
 
 			// Sanitize value.
-			$new_value = sanitize_text_field( wp_unslash( $settings[ $key ] ) );
+			$new_value = sanitize_text_field( $settings[ $key ] );
 
 			// Skip if the setting value is -2, as this means it's a Bulk Edit request and this setting
 			// is set as 'No Change'.

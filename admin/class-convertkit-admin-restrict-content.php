@@ -97,7 +97,7 @@ class ConvertKit_Admin_Restrict_Content {
 		if ( ! array_key_exists( 'convertkit_restrict_content', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
-		if ( ! $_REQUEST['convertkit_restrict_content'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
 
@@ -113,7 +113,7 @@ class ConvertKit_Admin_Restrict_Content {
 		// setting name and value, to be as accurate as possible.
 		$value = maybe_serialize(
 			array(
-				'restrict_content' => sanitize_text_field( $_REQUEST['convertkit_restrict_content'] ), // phpcs:ignore WordPress.Security.NonceVerification
+				'restrict_content' => sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ), // phpcs:ignore WordPress.Security.NonceVerification
 			)
 		);
 
@@ -139,7 +139,7 @@ class ConvertKit_Admin_Restrict_Content {
 		}
 
 		// Store Restrict Content filter value.
-		$this->restrict_content_filter = sanitize_text_field( $_REQUEST['convertkit_restrict_content'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		$this->restrict_content_filter = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 
 	}
 

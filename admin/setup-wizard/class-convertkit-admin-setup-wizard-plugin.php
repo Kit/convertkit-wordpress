@@ -215,7 +215,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				if ( array_key_exists( 'error', $_REQUEST ) && array_key_exists( 'error_description', $_REQUEST ) ) {
 					// Decrement the step.
 					$this->step  = ( $this->step - 1 );
-					$this->error = sanitize_text_field( $_REQUEST['error_description'] );
+					$this->error = sanitize_text_field( wp_unslash( $_REQUEST['error_description'] ) );
 					return;
 				}
 
@@ -225,7 +225,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				}
 
 				// Sanitize token.
-				$authorization_code = sanitize_text_field( $_REQUEST['code'] ); // phpcs:ignore WordPress.Security.NonceVerification
+				$authorization_code = sanitize_text_field( wp_unslash( $_REQUEST['code'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 
 				// Exchange the authorization code and verifier for an access token.
 				$result = $this->api->get_access_token( $authorization_code );
@@ -262,8 +262,8 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				$settings = new ConvertKit_Settings();
 				$settings->save(
 					array(
-						'post_form' => sanitize_text_field( $_POST['post_form'] ),
-						'page_form' => sanitize_text_field( $_POST['page_form'] ),
+						'post_form' => ( isset( $_POST['post_form'] ) ? sanitize_text_field( wp_unslash( $_POST['post_form'] ) ) : '0' ),
+						'page_form' => ( isset( $_POST['page_form'] ) ? sanitize_text_field( wp_unslash( $_POST['page_form'] ) ) : '0' ),
 					)
 				);
 				break;

@@ -229,12 +229,17 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Bail if no configuration file was supplied.
-		if ( $_FILES['import']['error'] !== 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( isset( $_FILES['import']['error'] ) && $_FILES['import']['error'] !== 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$this->redirect_with_error_notice( 'import_configuration_upload_error' );
+		}
+
+		// Bail if the file cannot be read.
+		if ( ! isset( $_FILES['import']['tmp_name'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->redirect_with_error_notice( 'import_configuration_upload_error' );
 		}
 
 		// Read file.
-		$json = $wp_filesystem->get_contents( $_FILES['import']['tmp_name'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$json = $wp_filesystem->get_contents( $_FILES['import']['tmp_name'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		// Decode.
 		$import = json_decode( $json, true );

@@ -110,13 +110,13 @@ abstract class ConvertKit_Admin_Section_Base {
 		if ( ! array_key_exists( 'page', $_REQUEST ) ) {
 			return false;
 		}
-		if ( sanitize_text_field( $_REQUEST['page'] ) !== '_wp_convertkit_settings' ) {
+		if ( sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) !== '_wp_convertkit_settings' ) {
 			return false;
 		}
 
 		// Define current settings tab.
 		// General screen won't always be loaded with a `tab` parameter.
-		$current_tab = ( array_key_exists( 'tab', $_REQUEST ) ? sanitize_text_field( $_REQUEST['tab'] ) : 'general' );
+		$current_tab = ( array_key_exists( 'tab', $_REQUEST ) ? sanitize_text_field( wp_unslash( $_REQUEST['tab'] ) ) : 'general' );
 
 		// Return whether the request is for the current settings tab.
 		return ( $current_tab === $tab );
@@ -200,17 +200,17 @@ abstract class ConvertKit_Admin_Section_Base {
 
 		// Output the verbose error description if supplied (e.g. OAuth).
 		if ( isset( $_REQUEST['error_description'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->output_error( sanitize_text_field( $_REQUEST['error_description'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			$this->output_error( sanitize_text_field( wp_unslash( $_REQUEST['error_description'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		// Output error notification if defined.
-		if ( isset( $_REQUEST['error'] ) && array_key_exists( sanitize_text_field( $_REQUEST['error'] ), $notices ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->output_error( $notices[ sanitize_text_field( $_REQUEST['error'] ) ] ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( isset( $_REQUEST['error'] ) && array_key_exists( sanitize_text_field( wp_unslash( $_REQUEST['error'] ) ), $notices ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->output_error( $notices[ sanitize_text_field( wp_unslash( $_REQUEST['error'] ) ) ] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		// Output success notification if defined.
-		if ( isset( $_REQUEST['success'] ) && array_key_exists( sanitize_text_field( $_REQUEST['success'] ), $notices ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->output_success( $notices[ sanitize_text_field( $_REQUEST['success'] ) ] ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( isset( $_REQUEST['success'] ) && array_key_exists( sanitize_text_field( wp_unslash( $_REQUEST['success'] ) ), $notices ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->output_success( $notices[ sanitize_text_field( wp_unslash( $_REQUEST['success'] ) ) ] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 	}

@@ -38,7 +38,7 @@ class ConvertKit_Admin_Refresh_Resources {
 		check_ajax_referer( 'convertkit_admin_refresh_resources', 'nonce' );
 
 		// Get resource type.
-		$resource = sanitize_text_field( $_REQUEST['resource'] );
+		$resource = ( isset( $_REQUEST['resource'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['resource'] ) ) : '' );
 
 		// Fetch resources.
 		switch ( $resource ) {

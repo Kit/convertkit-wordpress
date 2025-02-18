@@ -502,17 +502,17 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		// Build attributes array.
 		$atts = array(
-			'date_format'         => stripslashes( sanitize_text_field( $_REQUEST['date_format'] ) ),
-			'display_image'       => absint( $_REQUEST['display_image'] ),
-			'display_description' => absint( $_REQUEST['display_description'] ),
-			'display_read_more'   => absint( $_REQUEST['display_read_more'] ),
-			'read_more_label'     => stripslashes( sanitize_text_field( $_REQUEST['read_more_label'] ) ),
-			'limit'               => absint( $_REQUEST['limit'] ),
-			'page'                => absint( $_REQUEST['page'] ),
-			'paginate'            => absint( $_REQUEST['paginate'] ),
-			'paginate_label_next' => stripslashes( sanitize_text_field( $_REQUEST['paginate_label_next'] ) ),
-			'paginate_label_prev' => stripslashes( sanitize_text_field( $_REQUEST['paginate_label_prev'] ) ),
-			'link_color'          => stripslashes( sanitize_text_field( $_REQUEST['link_color'] ) ),
+			'date_format'         => ( isset( $_REQUEST['date_format'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['date_format'] ) ) : $this->get_default_value( 'date_format' ) ),
+			'display_image'       => ( isset( $_REQUEST['display_image'] ) ? absint( $_REQUEST['display_image'] ) : $this->get_default_value( 'display_image' ) ),
+			'display_description' => ( isset( $_REQUEST['display_description'] ) ? absint( $_REQUEST['display_description'] ) : $this->get_default_value( 'display_description' ) ),
+			'display_read_more'   => ( isset( $_REQUEST['display_read_more'] ) ? absint( $_REQUEST['display_read_more'] ) : $this->get_default_value( 'display_read_more' ) ),
+			'read_more_label'     => ( isset( $_REQUEST['read_more_label'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['read_more_label'] ) ) : $this->get_default_value( 'read_more_label' ) ),
+			'limit'               => ( isset( $_REQUEST['limit'] ) ? absint( $_REQUEST['limit'] ) : $this->get_default_value( 'limit' ) ),
+			'page'                => ( isset( $_REQUEST['page'] ) ? absint( $_REQUEST['page'] ) : $this->get_default_value( 'page' ) ),
+			'paginate'            => ( isset( $_REQUEST['paginate'] ) ? absint( $_REQUEST['paginate'] ) : $this->get_default_value( 'paginate' ) ),
+			'paginate_label_next' => ( isset( $_REQUEST['paginate_label_next'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['paginate_label_next'] ) ) : $this->get_default_value( 'paginate_label_next' ) ),
+			'paginate_label_prev' => ( isset( $_REQUEST['paginate_label_prev'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['paginate_label_prev'] ) ) : $this->get_default_value( 'paginate_label_prev' ) ),
+			'link_color'          => ( isset( $_REQUEST['link_color'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['link_color'] ) ) : $this->get_default_value( 'link_color' ) ),
 		);
 
 		// Parse attributes, defining fallback defaults if required

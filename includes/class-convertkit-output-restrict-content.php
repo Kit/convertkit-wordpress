@@ -178,10 +178,10 @@ class ConvertKit_Output_Restrict_Content {
 		);
 
 		// Sanitize inputs.
-		$email               = sanitize_text_field( $_REQUEST['convertkit_email'] );
-		$this->resource_type = sanitize_text_field( $_REQUEST['convertkit_resource_type'] );
-		$this->resource_id   = absint( sanitize_text_field( $_REQUEST['convertkit_resource_id'] ) );
-		$this->post_id       = absint( sanitize_text_field( $_REQUEST['convertkit_post_id'] ) );
+		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
+		$this->resource_type = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) );
+		$this->resource_id   = absint( $_REQUEST['convertkit_resource_id'] );
+		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
 
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $this->resource_type ) {
@@ -253,8 +253,8 @@ class ConvertKit_Output_Restrict_Content {
 						array(
 							'body' => array(
 								'secret'   => $this->restrict_content_settings->get_recaptcha_secret_key(),
-								'response' => $_POST['g-recaptcha-response'],
-								'remoteip' => $_SERVER['REMOTE_ADDR'],
+								'response' => ( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
+								'remoteip' => ( isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '' ),
 							),
 						)
 					);
@@ -359,6 +359,9 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! array_key_exists( 'subscriber_code', $_REQUEST ) ) {
 			return;
 		}
+		if ( ! array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
+			return;
+		}
 
 		// If the Plugin Access Token has not been configured, we can't get this subscriber's ID by email.
 		if ( ! $this->settings->has_access_and_refresh_token() ) {
@@ -366,8 +369,8 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Store the token so it's included in the subscriber code form if verification fails.
-		$this->token   = sanitize_text_field( $_REQUEST['token'] );
-		$this->post_id = absint( sanitize_text_field( $_REQUEST['convertkit_post_id'] ) );
+		$this->token   = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
+		$this->post_id = absint( $_REQUEST['convertkit_post_id'] );
 
 		// Initialize the API.
 		$this->api = new ConvertKit_API_V4(
@@ -381,8 +384,8 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Verify the token and subscriber code.
 		$subscriber_id = $this->api->subscriber_authentication_verify(
-			sanitize_text_field( $_REQUEST['token'] ),
-			sanitize_text_field( $_REQUEST['subscriber_code'] )
+			sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ),
+			sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) )
 		);
 
 		// Bail if an error occured.
@@ -1548,13 +1551,13 @@ class ConvertKit_Output_Restrict_Content {
 		// Iterate through permitted crawler IP addresses.
 		foreach ( $permitted_user_agent_ip_ranges as $permitted_user_agent => $permitted_ip_addresses ) {
 			// Skip this user agent's IP addresses if the client user agent doesn't contain this user agent.
-			if ( stripos( $_SERVER['HTTP_USER_AGENT'], $permitted_user_agent ) === false ) {
+			if ( stripos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), $permitted_user_agent ) === false ) {
 				continue;
 			}
 
 			// Check IP address.
 			foreach ( $permitted_ip_addresses as $permitted_ip_range ) {
-				if ( ! $this->ip_in_range( $_SERVER['REMOTE_ADDR'], $permitted_ip_range ) ) {
+				if ( ! $this->ip_in_range( sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ), $permitted_ip_range ) ) {
 					continue;
 				}
 
