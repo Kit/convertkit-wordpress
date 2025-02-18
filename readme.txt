@@ -3,9 +3,9 @@ Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 5.6.20
-Stable tag: 2.7.2
+Stable tag: 2.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -158,6 +158,12 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.3 2025-02-18
+* Added: Member Content: Tags: Display login link when `Require login` option enabled
+* Added: Member Content: Option to gate content by Kit Form
+* Added: Default Forms (Site Wide): Option to honor `None` setting on Page, Post and Custom Post level
+* Updated: Use WordPress Libraries 2.0.6
 
 ### 2.7.2 2025-02-04
 * Added: Member Content: Option to require login when gating content by Tag. Subscribers receive an email with a magic link / code to securely access member-only content
