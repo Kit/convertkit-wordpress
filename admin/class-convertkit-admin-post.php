@@ -274,7 +274,7 @@ class ConvertKit_Admin_Post {
 		}
 
 		// Save Post's settings.
-		$this->save_post_settings( $post_id, wp_unslash( $_POST['wp-convertkit'] ) );
+		$this->save_post_settings( $post_id, wp_unslash( $_POST['wp-convertkit'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 	}
 

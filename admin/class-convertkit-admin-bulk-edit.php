@@ -111,7 +111,7 @@ class ConvertKit_Admin_Bulk_Edit {
 
 		// Iterate through each Post, updating its settings.
 		foreach ( $post_ids as $post_id ) {
-			WP_ConvertKit()->get_class( 'admin_post' )->save_post_settings( $post_id, wp_unslash( $_REQUEST['wp-convertkit'] ) );
+			WP_ConvertKit()->get_class( 'admin_post' )->save_post_settings( $post_id, wp_unslash( $_REQUEST['wp-convertkit'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
 	}
