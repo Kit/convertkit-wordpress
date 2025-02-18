@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Product shortcode.
+ * Tests for the Kit Product shortcode.
  *
  * @since   1.9.8.5
  */
@@ -15,7 +15,7 @@ class PageShortcodeProductCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -28,9 +28,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeInVisualEditorWithValidProductParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Visual Editor');
@@ -48,7 +48,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 	}
 
@@ -62,9 +62,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeInTextEditorWithValidProductParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Text Editor');
@@ -82,7 +82,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 	}
 
@@ -95,25 +95,25 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeWithInvalidProductParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-product-shortcode-invalid-product-param',
+				'post_name'    => 'kit-product-shortcode-invalid-product-param',
 				'post_content' => '[convertkit_product=1]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-product-shortcode-invalid-product-param');
+		$I->amOnPage('/kit-product-shortcode-invalid-product-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Product button is displayed.
+		// Confirm that no Kit Product button is displayed.
 		$I->dontSeeProductOutput($I);
 	}
 
@@ -126,9 +126,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeInVisualEditorWithTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Text Param');
@@ -147,7 +147,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy now');
 	}
 
@@ -160,9 +160,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeInVisualEditorWithBlankTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Blank Text Param');
@@ -181,7 +181,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 	}
 
@@ -194,9 +194,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeInVisualEditorWithValidDiscountCodeParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Valid Discount Code Param');
@@ -215,7 +215,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 
 		// Confirm the discount code has been applied.
@@ -233,9 +233,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeInVisualEditorWithInvalidDiscountCodeParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Valid Discount Code Param');
@@ -254,7 +254,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 
 		// Confirm the discount code is not valid, but the modal displays so the user can still purchase.
@@ -264,7 +264,7 @@ class PageShortcodeProductCest
 	}
 
 	/**
-	 * Test the Product shortcode opens the ConvertKit Product's checkuot step
+	 * Test the Product shortcode opens the Kit Product's checkuot step
 	 * when the Checkout option is enabled.
 	 *
 	 * @since   2.4.5
@@ -273,9 +273,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeWithCheckoutParameterEnabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Checkout Step');
@@ -294,7 +294,7 @@ class PageShortcodeProductCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 
 		// Confirm the checkout step is displayed.
@@ -304,7 +304,7 @@ class PageShortcodeProductCest
 	}
 
 	/**
-	 * Test the Product shortcode opens the ConvertKit Product in the same window instead
+	 * Test the Product shortcode opens the Kit Product in the same window instead
 	 * of a modal when the Disable modal on mobile option is enabled.
 	 *
 	 * @since   2.4.1
@@ -313,9 +313,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeWithDisableModalOnMobileParameterEnabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Disable Modal on Mobile');
@@ -364,9 +364,9 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeWithHexColorParameters(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = '#ee1616';
@@ -378,13 +378,13 @@ class PageShortcodeProductCest
 		// other Acceptance tests confirm that the shortcode can be added in the Classic Editor.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-product-shortcode-hex-color-params',
+				'post_name'    => 'kit-page-product-shortcode-hex-color-params',
 				'post_content' => '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy my product" checkout="0" disable_modal_on_mobile="0" background_color="' . $backgroundColor . '" text_color="' . $textColor . '"]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-product-shortcode-hex-color-params');
+		$I->amOnPage('/kit-page-product-shortcode-hex-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -392,7 +392,7 @@ class PageShortcodeProductCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product', $textColor, $backgroundColor);
 	}
 
@@ -406,20 +406,20 @@ class PageShortcodeProductCest
 	 */
 	public function testProductShortcodeParameterEscaping(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define a 'bad' shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-product-shortcode-parameter-escaping',
+				'post_name'    => 'kit-page-product-shortcode-parameter-escaping',
 				'post_content' => '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text=\'Buy my product\' text_color=\'red" onmouseover="alert(1)"\']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-product-shortcode-parameter-escaping');
+		$I->amOnPage('/kit-page-product-shortcode-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -431,7 +431,7 @@ class PageShortcodeProductCest
 		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
 		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
 
-		// Confirm that the ConvertKit Product is displayed.
+		// Confirm that the Kit Product is displayed.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
 	}
 
@@ -492,8 +492,8 @@ class PageShortcodeProductCest
 	}
 
 	/**
-	 * Test the Product shortcode displays a message with a link to ConvertKit,
-	 * when the ConvertKit account has no forms.
+	 * Test the Product shortcode displays a message with a link to Kit,
+	 * when the Kit account has no forms.
 	 *
 	 * @since   2.2.3
 	 *
@@ -502,8 +502,8 @@ class PageShortcodeProductCest
 	public function testProductShortcodeWhenNoProducts(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: No Products');
@@ -517,7 +517,7 @@ class PageShortcodeProductCest
 		// Confirm an error notice displays.
 		$I->waitForElementVisible('#convertkit-modal-body-body div.notice');
 
-		// Confirm that the Product shortcode displays instructions to the user on how to add a Form in ConvertKit.
+		// Confirm that the Product shortcode displays instructions to the user on how to add a Form in Kit.
 		$I->see(
 			'No products exist in Kit.',
 			[
@@ -525,7 +525,7 @@ class PageShortcodeProductCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to create your first product.',
 			[
@@ -536,7 +536,7 @@ class PageShortcodeProductCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -561,7 +561,7 @@ class PageShortcodeProductCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

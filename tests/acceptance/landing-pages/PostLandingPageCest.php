@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Landing Pages on WordPress Posts.
+ * Tests for Kit Landing Pages on WordPress Posts.
  *
  * @since   1.9.6.4
  */
@@ -15,12 +15,12 @@ class PostLandingPageCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class PostLandingPageCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -70,7 +70,7 @@ class PostLandingPageCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

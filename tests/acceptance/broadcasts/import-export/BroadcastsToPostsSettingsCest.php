@@ -15,9 +15,9 @@ class BroadcastsToPostsSettingsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Create a Category named 'Kit Broadcasts to Posts'.
 		$I->haveTermInDatabase('Kit Broadcasts to Posts', 'category');
@@ -33,7 +33,7 @@ class BroadcastsToPostsSettingsCest
 	public function testAccessibility(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Broadcasts Screen.
-		$I->loadConvertKitSettingsBroadcastsScreen($I);
+		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="enabled">');
@@ -57,7 +57,7 @@ class BroadcastsToPostsSettingsCest
 	public function testEnableDisableImport(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Broadcasts Screen.
-		$I->loadConvertKitSettingsBroadcastsScreen($I);
+		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Confirm that additional fields are hidden, because the 'Enable' option is not checked.
 		$I->dontSeeElement('input.enabled');
@@ -124,7 +124,7 @@ class BroadcastsToPostsSettingsCest
 	public function testSaveSettings(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Broadcasts Screen.
-		$I->loadConvertKitSettingsBroadcastsScreen($I);
+		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Enable Broadcasts to Posts, and modify settings.
 		$I->checkOption('#enabled');
@@ -166,8 +166,8 @@ class BroadcastsToPostsSettingsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 
 		// Remove Category named 'Kit Broadcasts to Posts'.
 		$I->dontHaveTermInDatabase(

@@ -15,8 +15,8 @@ class RestrictContentFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,8 +29,8 @@ class RestrictContentFormCest
 	 */
 	public function testRestrictContentByForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Form');
@@ -67,8 +67,8 @@ class RestrictContentFormCest
 	 */
 	public function testRestrictContentByFormWithLoginModal(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Form');
@@ -99,7 +99,7 @@ class RestrictContentFormCest
 	 * Test that restricting content by a Form that does not exist does not output
 	 * a fatal error and instead displays all of the Page's content.
 	 *
-	 * This checks for when a Form is deleted in ConvertKit, but is still specified
+	 * This checks for when a Form is deleted in Kit, but is still specified
 	 * as the Restrict Content setting for a Page.
 	 *
 	 * @since   2.7.3
@@ -108,8 +108,8 @@ class RestrictContentFormCest
 	 */
 	public function testRestrictContentByInvalidForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -137,8 +137,8 @@ class RestrictContentFormCest
 	 */
 	public function testRestrictContentByFormUsingQuickEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -172,8 +172,8 @@ class RestrictContentFormCest
 	 */
 	public function testRestrictContentByFormUsingBulkEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
@@ -220,7 +220,7 @@ class RestrictContentFormCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -15,11 +15,11 @@ class RestrictContentSettingsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 	}
 
 	/**
@@ -32,7 +32,7 @@ class RestrictContentSettingsCest
 	public function testAccessibility(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Member Content Screen.
-		$I->loadConvertKitSettingsRestrictContentScreen($I);
+		$I->loadKitSettingsRestrictContentScreen($I);
 
 		// Confirm that settings have label[for] attributes.
 		$defaults = $I->getRestrictedContentDefaultSettings();
@@ -51,7 +51,7 @@ class RestrictContentSettingsCest
 	public function testSaveDefaultSettings(AcceptanceTester $I)
 	{
 		// Save settings.
-		$this->_setupConvertKitPluginRestrictContent($I);
+		$this->_setupKitPluginRestrictContent($I);
 
 		// Confirm default values were saved and display in the form fields.
 		$I->checkRestrictContentSettings($I, $I->getRestrictedContentDefaultSettings());
@@ -112,7 +112,7 @@ class RestrictContentSettingsCest
 		);
 
 		// Save settings.
-		$this->_setupConvertKitPluginRestrictContent($I, $settings);
+		$this->_setupKitPluginRestrictContent($I, $settings);
 
 		// Confirm default values were saved and display in the form fields.
 		$I->checkRestrictContentSettings($I, $I->getRestrictedContentDefaultSettings());
@@ -170,7 +170,7 @@ class RestrictContentSettingsCest
 		);
 
 		// Save settings.
-		$this->_setupConvertKitPluginRestrictContent($I, $settings);
+		$this->_setupKitPluginRestrictContent($I, $settings);
 
 		// Confirm custom values were saved and display in the form fields.
 		$I->checkRestrictContentSettings($I, $settings);
@@ -204,7 +204,7 @@ class RestrictContentSettingsCest
 	public function testDisableCSSSetting(AcceptanceTester $I)
 	{
 		// Disable CSS.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 		$I->checkOption('#no_css');
 		$I->click('Save Changes');
 
@@ -229,10 +229,10 @@ class RestrictContentSettingsCest
 	 * @param   AcceptanceTester $I          AcceptanceTester.
 	 * @param   bool|array       $settings   Array of key/value settings. If not defined, uses expected defaults.
 	 */
-	public function _setupConvertKitPluginRestrictContent($I, $settings = false)
+	public function _setupKitPluginRestrictContent($I, $settings = false)
 	{
 		// Go to the Plugin's Member Content Screen.
-		$I->loadConvertKitSettingsRestrictContentScreen($I);
+		$I->loadKitSettingsRestrictContentScreen($I);
 
 		// Complete fields.
 		if ( $settings ) {
@@ -272,7 +272,7 @@ class RestrictContentSettingsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

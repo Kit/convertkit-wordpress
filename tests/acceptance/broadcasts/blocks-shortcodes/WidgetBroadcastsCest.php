@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Broadcasts block when used as a widget.
+ * Tests for the Kit Broadcasts block when used as a widget.
  *
  * A widget area is typically defined by a Theme in a shared area, such as a sidebar or footer.
  *
@@ -17,9 +17,9 @@ class WidgetBroadcastsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate an older WordPress Theme that supports Widgets.
 		$I->useTheme('twentytwentyone');
@@ -222,7 +222,7 @@ class WidgetBroadcastsCest
 		// Activate the current theme.
 		$I->useTheme('twentytwentytwo');
 		$I->resetWidgets($I);
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

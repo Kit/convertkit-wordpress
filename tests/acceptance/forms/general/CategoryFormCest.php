@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Forms when adding and editing Categories.
+ * Tests for Kit Forms when adding and editing Categories.
  *
  * @since   2.0.3
  */
@@ -15,15 +15,15 @@ class CategoryFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
 	 * Test that the expected Form is displayed when the user:
-	 * - Creates a Category in WordPress, selecting the ConvertKit Form to display,
+	 * - Creates a Category in WordPress, selecting the Kit Form to display,
 	 * - Creates a WordPress Post assigned to the created Category.
 	 *
 	 * @since   2.0.3
@@ -61,7 +61,7 @@ class CategoryFormCest
 		// Get the Category ID from the table.
 		$termID = (int) str_replace( 'tag-', '', $I->grabAttributeFrom('#the-list tr:first-child', 'id') );
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -78,14 +78,14 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
 
 	/**
 	 * Test that no Form is displayed when the user:
-	 * - Creates a Category in WordPress, selecting 'None' as the ConvertKit Form to display,
+	 * - Creates a Category in WordPress, selecting 'None' as the Kit Form to display,
 	 * - Creates a WordPress Post assigned to the created Category.
 	 *
 	 * @since   2.6.6
@@ -123,7 +123,7 @@ class CategoryFormCest
 		// Get the Category ID from the table.
 		$termID = (int) str_replace( 'tag-', '', $I->grabAttributeFrom('#the-list tr:first-child', 'id') );
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -140,13 +140,13 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
 	 * Test that the expected Form is displayed when the user:
-	 * - Edits an existing Category in WordPress, selecting the ConvertKit Form to display,
+	 * - Edits an existing Category in WordPress, selecting the Kit Form to display,
 	 * - Creates a WordPress Post assigned to the edited Category.
 	 *
 	 * @since   2.0.3
@@ -159,7 +159,7 @@ class CategoryFormCest
 		$termID = $I->haveTermInDatabase( 'Kit: Edit Category', 'category' );
 		$termID = $termID[0];
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -210,14 +210,14 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
 
 	/**
 	 * Test that no Form is displayed when the user:
-	 * - Edits an existing Category in WordPress, selecting the 'None' ConvertKit Form option,
+	 * - Edits an existing Category in WordPress, selecting the 'None' Kit Form option,
 	 * - Creates a WordPress Post assigned to the edited Category.
 	 *
 	 * @since   2.6.6
@@ -230,7 +230,7 @@ class CategoryFormCest
 		$termID = $I->haveTermInDatabase( 'Kit: Edit Category: None', 'category' );
 		$termID = $termID[0];
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -281,14 +281,14 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
 	 * Test that the expected Form is displayed on the Category archive above the Posts
 	 * when the user:
-	 * - Creates a Category in WordPress, selecting the ConvertKit Form to display before the Posts
+	 * - Creates a Category in WordPress, selecting the Kit Form to display before the Posts
 	 * - Creates a WordPress Post assigned to the created Category.
 	 *
 	 * @since   2.4.9.1
@@ -314,7 +314,7 @@ class CategoryFormCest
 		// Get the Category ID from the table.
 		$termID = (int) str_replace( 'tag-', '', $I->grabAttributeFrom('#the-list tr:first-child', 'id') );
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -338,7 +338,7 @@ class CategoryFormCest
 	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -346,7 +346,7 @@ class CategoryFormCest
 	/**
 	 * Test that the expected Form is displayed on the Category archive above the Posts
 	 * when the user:
-	 * - Creates a Category in WordPress, selecting the ConvertKit Form to display after the Posts
+	 * - Creates a Category in WordPress, selecting the Kit Form to display after the Posts
 	 * - Creates a WordPress Post assigned to the created Category.
 	 *
 	 * @since   2.4.9.1
@@ -372,7 +372,7 @@ class CategoryFormCest
 		// Get the Category ID from the table.
 		$termID = (int) str_replace( 'tag-', '', $I->grabAttributeFrom('#the-list tr:first-child', 'id') );
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -395,7 +395,7 @@ class CategoryFormCest
 	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -403,7 +403,7 @@ class CategoryFormCest
 	/**
 	 * Test that the expected Form is displayed on the Category archive above the Posts
 	 * when the user:
-	 * - Edits an existing Category in WordPress, selecting the ConvertKit Form to display before the Posts
+	 * - Edits an existing Category in WordPress, selecting the Kit Form to display before the Posts
 	 * - Creates a WordPress Post assigned to the created Category.
 	 *
 	 * @since   2.4.9.1
@@ -416,7 +416,7 @@ class CategoryFormCest
 		$termID = $I->haveTermInDatabase( 'Kit: Edit: Position: Before', 'category' );
 		$termID = $termID[0];
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -476,7 +476,7 @@ class CategoryFormCest
 	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -484,7 +484,7 @@ class CategoryFormCest
 	/**
 	 * Test that the expected Form is displayed on the Category archive above the Posts
 	 * when the user:
-	 * - Edits an existing Category in WordPress, selecting the ConvertKit Form to display after the Posts
+	 * - Edits an existing Category in WordPress, selecting the Kit Form to display after the Posts
 	 * - Creates a WordPress Post assigned to the created Category.
 	 *
 	 * @since   2.4.9.1
@@ -497,7 +497,7 @@ class CategoryFormCest
 		$termID = $I->haveTermInDatabase( 'Kit: Edit: Position: After', 'category' );
 		$termID = $termID[0];
 
-		// Create Post, assigned to ConvertKit Category.
+		// Create Post, assigned to Kit Category.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'post',
@@ -556,14 +556,14 @@ class CategoryFormCest
 	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
 
 	/**
 	 * Test that the Default Form specified at Plugin level for Posts displays when:
-	 * - A Category was created with ConvertKit Form = 'None' when 1.9.5.2 or earlier of the Plugin was activated,
+	 * - A Category was created with Kit Form = 'None' when 1.9.5.2 or earlier of the Plugin was activated,
 	 * - The WordPress Post is set to use the Default Form,
 	 * - A Default Form is set in the Plugin settings.
 	 *
@@ -579,7 +579,7 @@ class CategoryFormCest
 	 */
 	public function testAddNewPostUsingDefaultFormWithCategoryCreatedBefore1960(AcceptanceTester $I)
 	{
-		// Create Category as if it were created / edited when the ConvertKit Plugin < 1.9.6.0
+		// Create Category as if it were created / edited when the Kit Plugin < 1.9.6.0
 		// was active.
 		$termID = $I->haveTermInDatabase(
 			'Kit 1.9.5.2 and earlier',
@@ -615,7 +615,7 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -630,7 +630,7 @@ class CategoryFormCest
 	 */
 	public function testCategorySettingsMigratedToNewTermKeyOnUpgrade(AcceptanceTester $I)
 	{
-		// Create Category as if it were created / edited when the ConvertKit Plugin < 2.4.9.1
+		// Create Category as if it were created / edited when the Kit Plugin < 2.4.9.1
 		// was active.
 		$termID = $I->haveTermInDatabase(
 			'Kit 2.4.9.1 and earlier',
@@ -684,7 +684,7 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that the Category settings were correctly mapped.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
@@ -700,7 +700,7 @@ class CategoryFormCest
 	 */
 	public function testCategoryDefaultSettingsMigratedToNewValueOnUpgrade(AcceptanceTester $I)
 	{
-		// Create Category as if it were created / edited when the ConvertKit Plugin < 2.6.6
+		// Create Category as if it were created / edited when the Kit Plugin < 2.6.6
 		// was active.
 		$termID = $I->haveTermInDatabase(
 			'Kit 2.6.6 and earlier',
@@ -751,7 +751,7 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the default ConvertKit Form is output in the DOM.
+		// Confirm that the default Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that the Category settings were correctly mapped.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
@@ -768,7 +768,7 @@ class CategoryFormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

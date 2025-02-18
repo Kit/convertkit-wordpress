@@ -16,9 +16,9 @@ class RestrictContentCacheCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Clear up any cache configuration files that might exist from previous tests.
 		$I->deleteWPCacheConfigFiles($I);
@@ -138,7 +138,7 @@ class RestrictContentCacheCest
 		$I->enableCachingWPFastestCachePlugin($I);
 
 		// No need to configure WP-Optimize to exclude caching when the ck_subscriber_id cookie is set,
-		// as this is automatically performed by the ConvertKit Plugin.
+		// as this is automatically performed by the Kit Plugin.
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -186,7 +186,7 @@ class RestrictContentCacheCest
 		$I->enableCachingWPOptimizePlugin($I);
 
 		// No need to configure WP-Optimize to exclude caching when the ck_subscriber_id cookie is set,
-		// as this is automatically performed by the ConvertKit Plugin.
+		// as this is automatically performed by the Kit Plugin.
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -317,7 +317,7 @@ class RestrictContentCacheCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

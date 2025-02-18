@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Settings on WordPress Posts when no API Credentials specified.
+ * Tests for Kit Settings on WordPress Posts when no API Credentials specified.
  *
  * @since   1.9.6
  */
@@ -15,11 +15,11 @@ class PostCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
-	 * Test that the ConvertKit Post Settings displays a message with a link to the Plugin Settings
+	 * Test that the Kit Post Settings displays a message with a link to the Plugin Settings
 	 * telling the user to configure their API Credentials, when no API Credentials exist.
 	 *
 	 * @since   1.9.6
@@ -55,7 +55,7 @@ class PostCest
 		// Click the link.
 		$I->click('connect your Kit account.');
 
-		// Confirm the ConvertKit hosted OAuth login screen is displayed.
+		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 	}
@@ -73,9 +73,9 @@ class PostCest
 	 */
 	public function testPostWithInvalidSettings(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Post with invalid settings.
 		$postID = $I->havePostInDatabase(
@@ -100,7 +100,7 @@ class PostCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -116,7 +116,7 @@ class PostCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

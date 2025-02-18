@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for non-inline ConvertKit Forms.
+ * Tests for non-inline Kit Forms.
  *
  * @since   2.3.9
  */
@@ -15,8 +15,8 @@ class NonInlineFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,8 +29,8 @@ class NonInlineFormCest
 	 */
 	public function testSettingsWhenNoNonInlineForms(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit account that has no non-inline forms.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		// Setup Plugin with Kit account that has no non-inline forms.
+		$I->setupKitPluginCredentialsNoData($I);
 	}
 
 	/**
@@ -43,13 +43,13 @@ class NonInlineFormCest
 	public function testDefaultNonInlineForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array( $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] ),
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(
@@ -63,14 +63,14 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 	}
@@ -86,7 +86,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineForms(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -95,7 +95,7 @@ class NonInlineFormCest
 				),
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(
@@ -109,7 +109,7 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that two ConvertKit Forms are output in the DOM.
+		// Confirm that two Kit Forms are output in the DOM.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -131,13 +131,13 @@ class NonInlineFormCest
 	public function testNoDefaultNonInlineForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that no ConvertKit Form is output in the DOM.
+		// Confirm that no Kit Form is output in the DOM.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -153,7 +153,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenDefaultPageNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for both Pages and Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'       => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
@@ -194,7 +194,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPageNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -234,7 +234,7 @@ class NonInlineFormCest
 	public function testPageLevelNoneSettingIgnored(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -274,7 +274,7 @@ class NonInlineFormCest
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide,
 		// and set to honor the None setting at Page / Post level.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form'                    => array(
@@ -314,7 +314,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPageNonInlineFormDefinedInBlock(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -364,7 +364,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPageNonInlineFormDefinedInShortcode(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -415,7 +415,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenDefaultPostNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for both Posts and Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'post_form'       => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
@@ -456,7 +456,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPostNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -496,7 +496,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPostCategoryNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -552,7 +552,7 @@ class NonInlineFormCest
 	public function testPostLevelNoneSettingIgnored(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -592,7 +592,7 @@ class NonInlineFormCest
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide,
 		// and set to honor the None setting at Page / Post level.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form'                    => array(
@@ -633,7 +633,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormOnUpgrade(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -641,7 +641,7 @@ class NonInlineFormCest
 				),
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(
@@ -655,14 +655,14 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global-upgrade');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 	}
@@ -679,7 +679,7 @@ class NonInlineFormCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

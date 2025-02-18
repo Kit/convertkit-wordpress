@@ -116,7 +116,7 @@ class WPCachePlugins extends \Codeception\Module
 		// Save.
 		$I->click('Submit');
 
-		// The ConvertKit Plugin will now automatically add an exclusion rule
+		// The Kit Plugin will now automatically add an exclusion rule
 		// to WP Fastest Cache. Check this rule does exist in the settings.
 		$I->amOnAdminPage('admin.php?page=wpfastestcacheoptions');
 		$I->click('label[for="wpfc-exclude"]');

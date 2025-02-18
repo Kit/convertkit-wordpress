@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests edge cases when upgrading between specific ConvertKit Plugin versions.
+ * Tests edge cases when upgrading between specific Kit Plugin versions.
  *
  * @since   1.9.6.4
  */
@@ -15,10 +15,10 @@ class UpgradePathsCest
 	 */
 	public function testUndefinedIndexForPost(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Post with Post Meta that does not include landing_page and tag keys,
 		// mirroring how 1.4.6 and earlier of the Plugin worked.
@@ -27,7 +27,7 @@ class UpgradePathsCest
 				'post_type'   => 'post',
 				'post_status' => 'publish',
 				'post_title'  => 'Kit: Post: 1.4.6',
-				'post_name'   => 'convertkit-post-1-4-6',
+				'post_name'   => 'kit-post-1-4-6',
 				'meta_input'  => [
 					// 1.4.6 and earlier wouldn't set a landing_page or tag meta keys if no values were specified
 					// in the Meta Box.
@@ -39,7 +39,7 @@ class UpgradePathsCest
 		);
 
 		// Load the Post on the frontend site.
-		$I->amOnPage('convertkit-post-1-4-6');
+		$I->amOnPage('kit-post-1-4-6');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -54,10 +54,10 @@ class UpgradePathsCest
 	 */
 	public function testUndefinedIndexForPage(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page with Post Meta that does not include landing_page and tag keys,
 		// mirroring how 1.4.6 and earlier of the Plugin worked.
@@ -66,7 +66,7 @@ class UpgradePathsCest
 				'post_type'   => 'post',
 				'post_status' => 'publish',
 				'post_title'  => 'Kit: Page: 1.4.6',
-				'post_name'   => 'convertkit-page-1-4-6',
+				'post_name'   => 'kit-page-1-4-6',
 				'meta_input'  => [
 					// 1.4.6 and earlier wouldn't set a landing_page or tag meta keys if no values were specified
 					// in the Meta Box.
@@ -78,7 +78,7 @@ class UpgradePathsCest
 		);
 
 		// Load the Post on the frontend site.
-		$I->amOnPage('convertkit-page-1-4-6');
+		$I->amOnPage('kit-page-1-4-6');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -94,7 +94,7 @@ class UpgradePathsCest
 	 */
 	public function testGetAccessTokenByAPIKeyAndSecret(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin's settings with an API Key and Secret.
+		// Setup Kit Plugin's settings with an API Key and Secret.
 		$I->haveOptionInDatabase(
 			'_wp_convertkit_settings',
 			[
@@ -114,7 +114,7 @@ class UpgradePathsCest
 		$I->haveOptionInDatabase('convertkit_version', '2.4.0');
 
 		// Activate the Plugin, as if we just upgraded to 2.5.0 or higher.
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 
 		// Confirm the options table now contains an Access Token and Refresh Token.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
@@ -129,7 +129,7 @@ class UpgradePathsCest
 		$I->assertEquals($settings['api_secret'], $_ENV['CONVERTKIT_API_SECRET']);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm the Plugin authorized by checking for a Disconnect button.
 		$I->see('Kit WordPress');
@@ -156,7 +156,7 @@ class UpgradePathsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

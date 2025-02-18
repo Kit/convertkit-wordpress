@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Landing Pages on WordPress Pages.
+ * Tests for Kit Landing Pages on WordPress Pages.
  *
  * @since   1.9.6
  */
@@ -15,12 +15,12 @@ class PageLandingPageCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -57,14 +57,14 @@ class PageLandingPageCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Landing Page is displayed.
+		// Confirm that no Kit Landing Page is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
 	 * Test that the Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, and that the Landing Page's
-	 * "Redirect to an external page" setting in ConvertKit is honored.
+	 * "Redirect to an external page" setting in Kit is honored.
 	 *
 	 * @since   1.9.6
 	 *
@@ -93,12 +93,12 @@ class PageLandingPageCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
 
-		// Confirm the ConvertKit Site Icon displays.
+		// Confirm the Kit Site Icon displays.
 		$I->seeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Subscribe.
 		$I->fillField('email_address', $I->generateEmailAddress());
@@ -147,9 +147,9 @@ class PageLandingPageCest
 		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
 		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
@@ -182,7 +182,7 @@ class PageLandingPageCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
 
-		// Confirm that the Landing Page title is the same as defined on ConvertKit i.e. that character encoding is correct.
+		// Confirm that the Landing Page title is the same as defined on Kit i.e. that character encoding is correct.
 		$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
 	}
 
@@ -217,9 +217,9 @@ class PageLandingPageCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I);
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
@@ -264,14 +264,14 @@ class PageLandingPageCest
 		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
 		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.kit.com/templates/favicon.ico">');
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
 	 * Test that the Legacy Landing Page specified in the Page Settings works when
-	 * the Landing Page was defined by the ConvertKit Plugin < 1.9.6, which used a URL
+	 * the Landing Page was defined by the Kit Plugin < 1.9.6, which used a URL
 	 * instead of an ID.
 	 *
 	 * @since   1.9.6.3
@@ -287,7 +287,7 @@ class PageLandingPageCest
 				'post_type'   => 'page',
 				'post_status' => 'publish',
 				'post_title'  => 'Kit: Landing Page: Legacy URL',
-				'post_name'   => 'convertkit-landing-page-legacy-url',
+				'post_name'   => 'kit-landing-page-legacy-url',
 				'meta_input'  => [
 					'_wp_convertkit_post_meta' => [
 						'form'         => '0',
@@ -300,7 +300,7 @@ class PageLandingPageCest
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-landing-page-legacy-url');
+		$I->amOnPage('/kit-landing-page-legacy-url');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -308,9 +308,9 @@ class PageLandingPageCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I);
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
@@ -324,8 +324,8 @@ class PageLandingPageCest
 	public function testAddNewPageUsingDefinedLandingPageWithPerfmattersPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Perfmatters Plugin.
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
@@ -362,12 +362,12 @@ class PageLandingPageCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
 
-		// Confirm the ConvertKit Site Icon displays.
+		// Confirm the Kit Site Icon displays.
 		$I->seeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Perfmatters has not lazy loaded assets.
 		$I->dontSeeElementInDOM('.perfmatters-lazy');
@@ -422,12 +422,12 @@ class PageLandingPageCest
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
 
-		// Confirm the ConvertKit Site Icon displays.
+		// Confirm the Kit Site Icon displays.
 		$I->seeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
 
-		// Confirm that the ConvertKit Landing Page displays.
+		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // ConvertKit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that WP Rocket has not minified any CSS or JS assets.
 		$I->dontSeeElementInDOM('script[data-minify="1"]');
@@ -450,7 +450,7 @@ class PageLandingPageCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

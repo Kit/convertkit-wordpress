@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form widget.
+ * Tests for the Kit Form widget.
  *
  * A widget area is typically defined by a Theme in a shared area, such as a sidebar or footer.
  *
@@ -21,9 +21,9 @@ class WidgetFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->activateKitPlugin($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate an older WordPress Theme that supports Widgets.
 		$I->useTheme('twentytwentyone');
@@ -43,7 +43,7 @@ class WidgetFormCest
 	public function testLegacyFormWidgetWithValidFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
@@ -81,7 +81,7 @@ class WidgetFormCest
 	public function testLegacyFormWidgetWithValidLegacyFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
@@ -141,7 +141,7 @@ class WidgetFormCest
 	public function testBlockFormBlockWithValidLegacyFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
@@ -284,7 +284,7 @@ class WidgetFormCest
 		// Activate the current theme.
 		$I->useTheme('twentytwentytwo');
 		$I->resetWidgets($I);
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form shortcode.
+ * Tests for the Kit Form shortcode.
  *
  * @since   1.9.7.4
  */
@@ -15,9 +15,9 @@ class PageShortcodeBroadcastsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -406,13 +406,13 @@ class PageShortcodeBroadcastsCest
 		// other Acceptance tests confirm that the shortcode can be added in the Classic Editor.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-broadcasts-shortcode-hex-color-params',
+				'post_name'    => 'kit-page-broadcasts-shortcode-hex-color-params',
 				'post_content' => '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older" link_color="' . $linkColor . '" background_color="' . $backgroundColor . '" text_color="' . $textColor . '"]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-broadcasts-shortcode-hex-color-params');
+		$I->amOnPage('/kit-page-broadcasts-shortcode-hex-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -814,13 +814,13 @@ class PageShortcodeBroadcastsCest
 		// Define a 'bad' shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-broadcasts-shortcode-parameter-escaping',
+				'post_name'    => 'kit-page-broadcasts-shortcode-parameter-escaping',
 				'post_content' => '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next" link_color=\'red" onmouseover="alert(1)"\']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-broadcasts-shortcode-parameter-escaping');
+		$I->amOnPage('/kit-page-broadcasts-shortcode-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -852,7 +852,7 @@ class PageShortcodeBroadcastsCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -118,7 +118,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 1 );
-		add_action( 'init', array( $this, 'maybe_run_subscriber_verification' ), 2 );
+		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 2 );
 		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
@@ -342,16 +342,6 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function maybe_run_subscriber_verification() {
 
-		// Bail if no nonce was specified.
-		if ( ! array_key_exists( '_wpnonce', $_REQUEST ) ) {
-			return;
-		}
-
-		// Bail if the nonce failed validation.
-		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_subscriber_code' ) ) {
-			return;
-		}
-
 		// Bail if the expected token and subscriber code is missing.
 		if ( ! array_key_exists( 'token', $_REQUEST ) ) {
 			return;
@@ -363,14 +353,31 @@ class ConvertKit_Output_Restrict_Content {
 			return;
 		}
 
+		// If a nonce was specified, validate it now.
+		// It won't be provided if clicking the link in the magic link email.
+		if ( array_key_exists( '_wpnonce', $_REQUEST ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_subscriber_code' ) ) {
+				return;
+			}
+		}
+
 		// If the Plugin Access Token has not been configured, we can't get this subscriber's ID by email.
 		if ( ! $this->settings->has_access_and_refresh_token() ) {
 			return;
 		}
 
 		// Store the token so it's included in the subscriber code form if verification fails.
-		$this->token   = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
-		$this->post_id = absint( $_REQUEST['convertkit_post_id'] );
+
+		$this->token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
+
+		// Store the post ID if this is an AJAX request.
+		// This won't be included if clicking the link in the magic link email, so fall back to using
+		// get_the_ID() to get the post ID.
+		if ( array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
+			$this->post_id = absint( wp_unslash( $_REQUEST['convertkit_post_id'] ) );
+		} else {
+			$this->post_id = get_the_ID();
+		}
 
 		// Initialize the API.
 		$this->api = new ConvertKit_API_V4(
