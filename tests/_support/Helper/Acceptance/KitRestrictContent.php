@@ -96,6 +96,7 @@ class KitRestrictContent extends \Codeception\Module
 		foreach ( $settings as $key => $value ) {
 			switch ( $key ) {
 				case 'permit_crawlers':
+				case 'require_tag_login':
 					if ( $value ) {
 						$I->seeCheckboxIsChecked('_wp_convertkit_settings_restrict_content[' . $key . ']');
 					} else {
