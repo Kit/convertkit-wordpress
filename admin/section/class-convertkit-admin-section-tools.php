@@ -190,12 +190,14 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		// Initialize classes that hold settings.
 		$settings                  = new ConvertKit_Settings();
 		$restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
+		$broadcasts_settings 	   = new ConvertKit_Settings_Broadcasts();
 
 		// Define configuration data to include in the export file.
 		$json = wp_json_encode(
 			array(
 				'settings'         => $settings->get(),
 				'restrict_content' => $restrict_content_settings->get(),
+				'broadcasts'	   => $broadcasts_settings->get(),
 			)
 		);
 
@@ -259,6 +261,12 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		if ( array_key_exists( 'restrict_content', $import ) ) {
 			$restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
 			update_option( $restrict_content_settings::SETTINGS_NAME, $import['restrict_content'] );
+		}
+
+		// Import: Broadcasts Settings.
+		if ( array_key_exists( 'broadcasts', $import ) ) {
+			$broadcasts_settings = new ConvertKit_Settings_Broadcasts();
+			update_option( $broadcasts_settings::SETTINGS_NAME, $import['broadcasts'] );
 		}
 
 		// Redirect to Tools screen.
