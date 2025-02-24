@@ -13,7 +13,7 @@
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
- * License:     GPLv2 or later
+ * License:     GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
