@@ -71,6 +71,7 @@ class KitRestrictContent extends \Codeception\Module
 			'subscribe_heading_tag'   => 'Subscribe to keep reading',
 			'subscribe_text_tag'      => 'This post is free to read but only available to subscribers. Join today to get access to all posts.',
 			'no_access_text_tag'      => 'Your account does not have access to this content. Please use the form above to subscribe.',
+			'require_tag_login'       => '',
 
 			// All.
 			'subscribe_button_label'  => 'Subscribe',
@@ -95,6 +96,7 @@ class KitRestrictContent extends \Codeception\Module
 		foreach ( $settings as $key => $value ) {
 			switch ( $key ) {
 				case 'permit_crawlers':
+				case 'require_tag_login':
 					if ( $value ) {
 						$I->seeCheckboxIsChecked('_wp_convertkit_settings_restrict_content[' . $key . ']');
 					} else {
