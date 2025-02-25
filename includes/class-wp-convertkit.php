@@ -143,8 +143,9 @@ class WP_ConvertKit {
 			return;
 		}
 
-		$this->classes['cache_plugins'] = new ConvertKit_Cache_Plugins();
-		$this->classes['output']        = new ConvertKit_Output();
+		$this->classes['cache_plugins']     = new ConvertKit_Cache_Plugins();
+		$this->classes['output']            = new ConvertKit_Output();
+		$this->classes['output_broadcasts'] = new ConvertKit_Output_Broadcasts();
 
 		/**
 		 * Initialize integration classes for the frontend web site.

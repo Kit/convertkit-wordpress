@@ -143,8 +143,25 @@ class PluginSettingsToolsCest
 	 */
 	public function testExportAndImportValidConfiguration(AcceptanceTester $I)
 	{
+		// Configure Plugin with General, Restrict Content and Broadcasts settings.
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
+		$I->setupKitPluginRestrictContent(
+			$I,
+			[
+				'require_tag_login' => 'on',
+			]
+		);
+		$I->setupKitPluginBroadcasts(
+			$I,
+			[
+				'enabled'               => true,
+				'published_at_min_date' => '01/01/2020',
+				'enabled_export'        => true,
+			]
+		);
+
+		// Load Tools screen.
 		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
@@ -163,6 +180,12 @@ class PluginSettingsToolsCest
 
 		// Confirm some expected Restrict Content settings data is included.
 		$I->seeInThisFile('"restrict_content":{"permit_crawlers":');
+		$I->seeInThisFile('require_tag_login":"on"');
+
+		// Confirm some expected Broadcasts settings data is included.
+		$I->seeInThisFile('"broadcasts":{"enabled":"on"');
+		$I->seeInThisFile('published_at_min_date":"2020-01-01"');
+		$I->seeInThisFile('enabled_export":"on"');
 
 		// Copy the exported configuration file to the tests/_data folder.
 		// This is so we have a valid configuration file to test when testing the import next.
@@ -181,17 +204,26 @@ class PluginSettingsToolsCest
 		// Confirm success message displays.
 		$I->see('Configuration imported successfully.');
 
-		// Go to the Plugin's Settings Screen.
-		$I->loadKitSettingsGeneralScreen($I);
+		// Assert settings updated from imported configuration.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
+		$I->assertArrayHasKey('access_token', $settings);
+		$I->assertEquals($settings['access_token'], $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN']);
+		$I->assertArrayHasKey('refresh_token', $settings);
+		$I->assertEquals($settings['refresh_token'], $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN']);
+		$I->assertArrayHasKey('debug', $settings);
+		$I->assertEquals($settings['debug'], 'on');
 
-		// Check the fields are ticked.
-		$I->seeCheckboxIsChecked('#debug');
+		// Assert Restrict Content settings updated from imported configuration.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings_restrict_content');
+		$I->assertArrayHasKey('require_tag_login', $settings);
+		$I->assertEquals($settings['require_tag_login'], 'on');
 
-		// Go to the Plugin's Restrict Content Settings Screen.
-		$I->loadKitSettingsRestrictContentScreen($I);
-
-		// Confirm that the text fields contain the expected data.
-		$I->checkRestrictContentSettings($I, $I->getRestrictedContentDefaultSettings());
+		// Assert Broadcasts settings updated from imported configuration.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings_broadcasts');
+		$I->assertArrayHasKey('enabled', $settings);
+		$I->assertEquals($settings['enabled'], 'on');
+		$I->assertArrayHasKey('published_at_min_date', $settings);
+		$I->assertEquals($settings['published_at_min_date'], '2020-01-01');
 
 		// Delete export files.
 		$I->deleteFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json');

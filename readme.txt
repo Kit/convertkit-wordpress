@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.7.2
 Requires PHP: 5.6.20
-Stable tag: 2.7.3
+Stable tag: 2.7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -158,6 +158,12 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.4 2025-02-24
+* Added: Broadcasts (Beta): `convertkit-broadcast` body CSS class to Posts imported from Kit Broadcasts, to allow targeted CSS styles
+* Fix: Broadcasts (Beta): Remove table borders and background colors added by Elementor on imported Kit Broadcasts
+* Fix: Member Content: Support magic links in emails
+* Fix: Tools: Import & Export: Include Broadcasts settings
 
 ### 2.7.3 2025-02-18
 * Added: Member Content: Tags: Display login link when `Require login` option enabled

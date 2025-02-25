@@ -173,11 +173,17 @@ class BroadcastsToPostsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
+
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
+
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Confirm inline styles exist in the imported Broadcast.
 		$I->seeElementInDOM('div.ck-inner-section');
@@ -252,11 +258,17 @@ class BroadcastsToPostsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
+
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
+
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Confirm inline styles exist in the imported Broadcast.
 		$I->seeElementInDOM('div.ck-inner-section');
@@ -703,11 +715,17 @@ class BroadcastsToPostsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
+
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
+
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Confirm no inline styles exist in the imported Broadcast.
 		$I->dontSeeElementInDOM('div.ck-inner-section');
