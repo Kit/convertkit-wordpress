@@ -47,9 +47,15 @@ class ConvertKit_Admin_TinyMCE {
 		// Get shortcodes.
 		$shortcodes = convertkit_get_shortcodes();
 
+		// Bail if no shortcode or editor type is specified.
+		if ( ! isset( $_REQUEST['shortcode'] ) || ! isset( $_REQUEST['editor_type'] ) ) {
+			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-missing.php';
+			die();
+		}
+
 		// Get requested shortcode name.
-		$shortcode_name = sanitize_text_field( $_REQUEST['shortcode'] );
-		$editor_type    = sanitize_text_field( $_REQUEST['editor_type'] );
+		$shortcode_name = sanitize_text_field( wp_unslash( $_REQUEST['shortcode'] ) );
+		$editor_type    = sanitize_text_field( wp_unslash( $_REQUEST['editor_type'] ) );
 
 		// If the shortcode is not registered, return a view in the modal to tell the user.
 		if ( ! isset( $shortcodes[ $shortcode_name ] ) ) {

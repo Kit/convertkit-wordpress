@@ -231,13 +231,13 @@ class WP_ConvertKit {
 
 		// Pro.
 		if ( array_key_exists( 'REQUEST_URI', $_SERVER ) ) {
-			if ( strpos( sanitize_text_field( $_SERVER['REQUEST_URI'] ), '/pro/' ) !== false ) {
+			if ( strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/pro/' ) !== false ) {
 				return true;
 			}
-			if ( strpos( sanitize_text_field( $_SERVER['REQUEST_URI'] ), '/x/' ) !== false ) {
+			if ( strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/x/' ) !== false ) {
 				return true;
 			}
-			if ( strpos( sanitize_text_field( $_SERVER['REQUEST_URI'] ), 'cornerstone-endpoint' ) !== false ) {
+			if ( strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), 'cornerstone-endpoint' ) !== false ) {
 				return true;
 			}
 		}
@@ -271,7 +271,7 @@ class WP_ConvertKit {
 		}
 
 		// Elementor.
-		if ( array_key_exists( 'action', $_REQUEST ) && sanitize_text_field( $_REQUEST['action'] ) === 'elementor' ) {
+		if ( array_key_exists( 'action', $_REQUEST ) && sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) === 'elementor' ) {
 			return true;
 		}
 
@@ -301,7 +301,7 @@ class WP_ConvertKit {
 		}
 
 		// Zion Builder.
-		if ( array_key_exists( 'action', $_REQUEST ) && sanitize_text_field( $_REQUEST['action'] ) === 'zion_builder_active' ) {
+		if ( array_key_exists( 'action', $_REQUEST ) && sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) === 'zion_builder_active' ) {
 			return true;
 		}
 

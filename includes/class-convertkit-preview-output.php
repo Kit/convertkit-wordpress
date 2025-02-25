@@ -64,7 +64,7 @@ class ConvertKit_Preview_Output {
 		}
 
 		// Determine the form to preview.
-		$preview_form_id = (int) ( isset( $_REQUEST['convertkit_form_id'] ) ? sanitize_text_field( $_REQUEST['convertkit_form_id'] ) : 0 );
+		$preview_form_id = ( isset( $_REQUEST['convertkit_form_id'] ) ? absint( wp_unslash( $_REQUEST['convertkit_form_id'] ) ) : 0 );
 
 		// Return.
 		return $preview_form_id;
@@ -106,7 +106,7 @@ class ConvertKit_Preview_Output {
 
 		// Determine form ID(s) to preview.
 		$convertkit_forms = new ConvertKit_Resource_Forms();
-		$preview_form_ids = explode( ',', sanitize_text_field( $_REQUEST['convertkit_form_id'] ) );
+		$preview_form_ids = explode( ',', sanitize_text_field( wp_unslash( $_REQUEST['convertkit_form_id'] ) ) );
 
 		foreach ( $preview_form_ids as $preview_form_id ) {
 			// Get form.

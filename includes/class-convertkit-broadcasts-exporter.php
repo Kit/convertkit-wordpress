@@ -88,17 +88,20 @@ class ConvertKit_Broadcasts_Exporter {
 		if ( ! array_key_exists( 'nonce', $_REQUEST ) ) {
 			return;
 		}
-		if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'action-convertkit-' . $this->action_name ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['nonce'] ) ), 'action-convertkit-' . $this->action_name ) ) {
 			return;
 		}
 
-		// If no action specified, return.
+		// If no action or ID specified, return.
 		if ( ! isset( $_REQUEST['convertkit-action'] ) ) {
+			return;
+		}
+		if ( ! isset( $_REQUEST['id'] ) ) {
 			return;
 		}
 
 		// Fetch action and post ID.
-		$action  = sanitize_text_field( $_REQUEST['convertkit-action'] );
+		$action  = sanitize_text_field( wp_unslash( $_REQUEST['convertkit-action'] ) );
 		$post_id = absint( $_REQUEST['id'] );
 
 		// Bail if the action isn't for exporting a post.

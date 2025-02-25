@@ -369,7 +369,7 @@ class ConvertKit_Block {
 		if ( ! array_key_exists( 'context', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return false;
 		}
-		if ( sanitize_text_field( $_GET['context'] ) !== 'edit' ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( sanitize_text_field( wp_unslash( $_GET['context'] ) ) !== 'edit' ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return false;
 		}
 

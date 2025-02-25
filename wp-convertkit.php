@@ -13,6 +13,8 @@
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
+ * License:     GPLv3 or later
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 // Bail if Kit is alread loaded.
