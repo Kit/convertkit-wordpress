@@ -894,12 +894,40 @@ class KitRestrictContent extends \Codeception\Module
 	 */
 	public function setRestrictContentCookieAndReload($I, $subscriberID, $urlOrPageID)
 	{
-		$I->setCookie('ck_subscriber_id', $subscriberID);
+		$I->setRestrictContentCookie($I, $subscriberID);
+
 		if ( is_numeric( $urlOrPageID ) ) {
 			$I->amOnPage('?p=' . $urlOrPageID . '&ck-cache-bust=' . microtime() );
 		} else {
 			$I->amOnUrl($urlOrPageID . '?ck-cache-bust=' . microtime() );
 		}
+	}
+
+	/**
+	 * Clear the restrict content cookie.
+	 *
+	 * @since   2.7.4
+	 *
+	 * @param   AcceptanceTester $I                  Tester.
+	 * @param   string|int       $subscriberID       Signed subscriber ID or subscriber ID.
+	 */
+	public function setRestrictContentCookie($I, $subscriberID)
+	{
+		$I->setCookie('ck_subscriber_id', $subscriberID);
+		$I->setCookie('wordpress_ck_subscriber_id', $subscriberID);
+	}
+
+	/**
+	 * Clear the restrict content cookie.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function clearRestrictContentCookie($I)
+	{
+		$I->deleteCookie('ck_subscriber_id');
+		$I->deleteCookie('wordpress_ck_subscriber_id');
 	}
 
 	/**

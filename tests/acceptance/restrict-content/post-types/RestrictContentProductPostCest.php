@@ -351,7 +351,7 @@ class RestrictContentProductPostCest
 		foreach ($postIDs as $postID) {
 			// Test Restrict Content functionality.
 			$I->testRestrictedContentByProductOnFrontend($I, $postID);
-			$I->resetCookie('ck_subscriber_id');
+			$I->clearRestrictContentCookie($I);
 		}
 	}
 
@@ -366,7 +366,7 @@ class RestrictContentProductPostCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

@@ -177,7 +177,7 @@ class BroadcastsToPostsCest
 		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
