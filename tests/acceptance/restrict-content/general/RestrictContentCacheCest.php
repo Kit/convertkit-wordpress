@@ -22,7 +22,7 @@ class RestrictContentCacheCest
 
 		// Clear up any cache configuration files that might exist from previous tests.
 		$I->deleteWPCacheConfigFiles($I);
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 	}
 
 	/**
@@ -316,7 +316,7 @@ class RestrictContentCacheCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

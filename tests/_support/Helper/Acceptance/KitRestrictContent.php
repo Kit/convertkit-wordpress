@@ -783,7 +783,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Clear any existing cookie from a previous test and reload.
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 
 		// Navigate to the page.
 		if ( is_numeric( $urlOrPageID ) ) {

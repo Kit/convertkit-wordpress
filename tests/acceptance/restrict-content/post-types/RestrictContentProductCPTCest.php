@@ -317,7 +317,7 @@ class RestrictContentProductCPTCest
 		foreach ($postIDs as $postID) {
 			// Test Restrict Content functionality.
 			$I->testRestrictedContentByProductOnFrontend($I, $postID);
-			$I->resetCookie('ck_subscriber_id');
+			$I->clearRestrictContentCookie($I);
 		}
 	}
 
@@ -334,7 +334,7 @@ class RestrictContentProductCPTCest
 	{
 		$I->unregisterCustomPostType($I, 'article');
 		$I->unregisterCustomPostType($I, 'private');
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

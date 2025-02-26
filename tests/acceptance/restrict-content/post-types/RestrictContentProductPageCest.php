@@ -391,7 +391,7 @@ class RestrictContentProductPageCest
 		foreach ($pageIDs as $pageID) {
 			// Test Restrict Content functionality.
 			$I->testRestrictedContentByProductOnFrontend($I, $pageID);
-			$I->resetCookie('ck_subscriber_id');
+			$I->clearRestrictContentCookie($I);
 		}
 	}
 
@@ -406,7 +406,7 @@ class RestrictContentProductPageCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateThirdPartyPlugin($I, 'convertkit-actions-and-filters-tests');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);

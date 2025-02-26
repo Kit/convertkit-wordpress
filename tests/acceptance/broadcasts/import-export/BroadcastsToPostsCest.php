@@ -262,7 +262,7 @@ class BroadcastsToPostsCest
 		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
@@ -566,7 +566,7 @@ class BroadcastsToPostsCest
 		];
 
 		// Set cookie with signed subscriber ID, so Member Content broadcasts can be viewed.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// View the first post.
 		$I->amOnPage('?p=' . $postIDs[0]);
@@ -719,7 +719,7 @@ class BroadcastsToPostsCest
 		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
