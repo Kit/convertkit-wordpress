@@ -497,7 +497,7 @@ class RestrictContentSetupCest
 	public function _passed(AcceptanceTester $I)
 	{
 		// Clear cookies for next request.
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

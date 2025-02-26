@@ -219,7 +219,7 @@ class RestrictContentFormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
