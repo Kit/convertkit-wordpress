@@ -57,7 +57,7 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.2' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.3' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
@@ -137,15 +137,6 @@ jobs:
         run: |
           wp-cli config set DISALLOW_FILE_MODS true --raw
 
-      # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
-      # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
-      # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-          coverage: xdebug
-
       # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
       - name: Set File and Folder Permissions
         run: |
@@ -194,9 +185,16 @@ jobs:
         run: |
           ls -la /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
 
-      - name: Upload Config Files to artifact
+      - name: Upload nginx Config
         uses: actions/upload-artifact@v4
         with:
           name: nginx.conf
           path: |
             /etc/nginx/nginx.conf
+
+      - name: Upload PHP Config
+        uses: actions/upload-artifact@v4
+        with:
+          name: php.conf
+          path: |
+            /etc/php/8.3/fpm/pool.d/www.conf
