@@ -125,4 +125,80 @@ jobs:
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
 
       - name: cURL Test
-        run: curl -v http://127.0.0.1
+        run: |
+          curl -v http://127.0.0.1
+
+      - name: Move Plugin
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit ${{ env.PLUGIN_DIR }}
+      
+      # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
+      # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
+      - name: Enable WP_DEBUG
+        if: ${{ matrix.test-groups != 'acceptance/integrations/wlm' && matrix.test-groups != 'acceptance/integrations/elementor' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set WP_DEBUG true --raw
+
+      # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
+      - name: Enable FS_METHOD
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set FS_METHOD direct
+
+      # DISALLOW_FILE_MODS = true is required to disable the block directory's "Available to Install" suggestions, which trips up
+      # tests that search and wait for block results.
+      - name: Enable DISALLOW_FILE_MODS
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set DISALLOW_FILE_MODS true --raw
+
+      # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
+      # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
+      # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
+
+      # Configure nginx to use the PHP version.
+      - name: Configure nginx site
+        run: |
+          sudo rm -f /etc/nginx/sites-enabled/default
+          sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+
+          server {
+            listen 80 default_server;
+            listen [::]:80 default_server;
+
+            root /var/www/html;
+            index index.php;
+
+            server_name localhost;
+
+            location / {
+                try_files $uri $uri/ /index.php?$args;
+            }
+
+            location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
+            }
+
+            location ~ /\.ht {
+                deny all;
+            }
+          }
+          EOF
+
+          sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default || true
+
+      - name: Test nginx
+        run: sudo nginx -t
+
+      - name: Start nginx
+        run: sudo systemctl start nginx.service
+
+      - name: cURL Test
+        run: |
+          curl -v http://127.0.0.1
