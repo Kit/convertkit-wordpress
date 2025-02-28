@@ -22,7 +22,6 @@ jobs:
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
     # Use ${{ secrets.NAME }} to include any GitHub Secrets in ${{ env.NAME }}
-    # The base folder will always be /home/runner/work/github-repo-name/github-repo-name
     env:
       ROOT_DIR: /var/www/html
       PLUGIN_DIR: /var/www/html/wp-content/plugins/convertkit
