@@ -242,6 +242,10 @@ jobs:
           sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
           sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
 
+          sudo chmod +x /home/runner/work
+          sudo chmod +x /home/runner/work/convertkit-wordpress
+          sudo chmod +x /home/runner/work/convertkit-wordpress/convertkit-wordpress
+
       # This ensures the Plugin's log file can be written to.
       # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
       - name: Set Permissions for Plugin Directory
