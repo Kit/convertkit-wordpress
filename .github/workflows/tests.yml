@@ -75,6 +75,15 @@ jobs:
           replace: '-'
           replaceAll: true
 
+      # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress
+      - name: Checkout Plugin
+        uses: actions/checkout@v4
+        with:
+          path: ${{ env.PLUGIN_DIR }}
+
+      - name: List Files
+        run: ls -la
+
       - name: Start MySQL
         run: sudo systemctl start mysql.service
 
@@ -97,11 +106,8 @@ jobs:
           wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
           tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
 
-      # Checkout (copy) this repository's Plugin to this VM.
-      - name: Checkout Plugin
-        uses: actions/checkout@v4
-        with:
-          path: ${{ env.PLUGIN_DIR }}
+      - name: Copy Plugin
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/wp-content/plugins/convertkit /var/www/html/wp-content/plugins/convertkit
 
       # We install WP-CLI, as it provides useful commands to setup and install WordPress through the command line.
       - name: Install WP-CLI
