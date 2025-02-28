@@ -163,17 +163,8 @@ jobs:
           sudo chmod -R 767 ${{ env.ROOT_DIR }}
           sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}
 
-          # sudo chmod 767 ${{ env.ROOT_DIR }}/wp-config.php
-          # sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
-
-          #sudo chmod 767 ${{ env.ROOT_DIR }}/wp-content
-          #sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content
-
-          #sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
-          #sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
-
-     - name: Run cURL
+      - name: Set File and Folder Permissions
         run: |
           curl -v http://127.0.0.1/
           curl -v http://127.0.0.1/wp-login.php
-          curl -v http://127.0.0.1/index.php
+          curl -v http://127.0.0.1/index.php       
