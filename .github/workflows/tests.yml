@@ -194,10 +194,9 @@ jobs:
         run: |
           ls -la /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
 
-      - name: Upload Nginx Logs to Artifact
+      - name: Upload Config Files to artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          name: nginx.conf
           path: |
-            /var/log/nginx/error.log
-            /var/log/nginx/access.log
+            /etc/nginx/nginx.conf
