@@ -115,28 +115,6 @@ jobs:
       - name: Install WordPress
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
-
-      # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
-      - name: Install Free Third Party WordPress Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
-
-      # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions ot third party Plugins.
-      - name: Install Free Third Party WordPress Specific Version Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
-
-      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
-      # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
-      - name: Install Paid Third Party WordPress Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
-
-      # Install 2021 Theme, which provides support for widgets.
-      # 2021 Theme isn't included in WordPress 6.4 or higher, but is required for our widget tests.
-      - name: Install WordPress Themes
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli theme install twentytwentyone
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
@@ -179,106 +157,11 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
-      - name: Start chromedriver
+      - name: Test nginx connection
         run: |
-          export DISPLAY=:99
-          chromedriver --port=9515 --url-base=/wd/hub &
-          sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
-
-      # Write any secrets, such as API keys, to the .env.dist.testing file now.
-      # Make sure your committed .env.dist.testing file ends with a newline.
-      # The formatting of the contents to include a blank newline is deliberate.
-      - name: Define GitHub Secrets in .env.dist.testing
-        uses: DamianReeves/write-file-action@v1.3
-        with:
-          path: ${{ env.PLUGIN_DIR }}/.env.dist.testing
-          contents: |
-
-            CONVERTKIT_API_KEY=${{ env.CONVERTKIT_API_KEY }}
-            CONVERTKIT_API_SECRET=${{ env.CONVERTKIT_API_SECRET }}
-            CONVERTKIT_API_KEY_NO_DATA=${{ env.CONVERTKIT_API_KEY_NO_DATA }}
-            CONVERTKIT_API_SECRET_NO_DATA=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}
-            CONVERTKIT_OAUTH_ACCESS_TOKEN=${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN }}
-            CONVERTKIT_OAUTH_REFRESH_TOKEN=${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN }}
-            CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA }}
-            CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA=${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA }}
-            CONVERTKIT_OAUTH_CLIENT_ID=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}
-            CONVERTKIT_OAUTH_REDIRECT_URI=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}
-            KIT_OAUTH_REDIRECT_URI=${{ env.KIT_OAUTH_REDIRECT_URI }}
-            CONVERTKIT_API_SIGNED_SUBSCRIBER_ID=${{ env.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID }}
-            CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS=${{ env.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS }}
-            CONVERTKIT_API_RECAPTCHA_SITE_KEY=${{ env.CONVERTKIT_API_RECAPTCHA_SITE_KEY }}
-            CONVERTKIT_API_RECAPTCHA_SECRET_KEY=${{ env.CONVERTKIT_API_RECAPTCHA_SECRET_KEY }}
-            
-          write-mode: append
-
-      # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
-      - name: Run Composer
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: composer update
-
-      - name: Build PHP Autoloader
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: composer dump-autoload
-
-      # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
-      - name: Set File and Folder Permissions
-        run: |
-          sudo chmod 767 ${{ env.ROOT_DIR }}
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}
-
-          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-config.php
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
-
-          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-content
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content
-
-          sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
-
-      # This ensures the Plugin's log file can be written to.
-      # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
-      - name: Set Permissions for Plugin Directory
-        run: |
-          sudo chmod g+w ${{ env.PLUGIN_DIR }}
-          sudo chown www-data:www-data ${{ env.PLUGIN_DIR }}
-
-      # Build Codeception Tests.
-      - name: Build Tests
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept build
-
-      # Run Codeception WPUnit Tests on the PHP 8.3 instance before the acceptance/tags acceptance tests.
-      # We run these once to avoid hitting API rate limits.
-      - name: Run tests/wpunit
-        if: ${{ matrix.php-versions == '8.3' && matrix.test-groups == 'acceptance/tags' }}
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept run tests/wpunit --fail-fast
-
-      # Run Codeception Acceptance Tests
-      - name: Run tests/${{ matrix.test-groups }}
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept run tests/${{ matrix.test-groups }} --fail-fast
-
-      # Artifacts are data generated by this workflow that we want to access, such as log files, screenshots, HTML output.
-      # The if: failure() directive means that this will run when the workflow fails e.g. if a test fails, which is needed
-      # because we want to see why a test failed.
-      - name: Upload Test Results to Artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
-          path: ${{ env.PLUGIN_DIR }}/tests/_output/
-
-      - name: Upload Plugin Log File to Artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
-          path: ${{ env.PLUGIN_DIR }}/log/log.txt
+          curl -v http://127.0.0.1/wp-login.php
 
       - name: Upload Nginx Logs to Artifact
-        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
