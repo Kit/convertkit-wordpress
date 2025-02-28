@@ -124,10 +124,6 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
 
-      - name: cURL Test
-        run: |
-          curl -v http://127.0.0.1
-
       - name: Move Plugin
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit ${{ env.PLUGIN_DIR }}
       
