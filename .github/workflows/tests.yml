@@ -75,26 +75,6 @@ jobs:
           replace: '-'
           replaceAll: true
 
-      - name: Start MySQL
-        run: sudo systemctl start mysql.service
-
-      - name: Create MySQL Database
-        run: |
-          mysql -e 'CREATE DATABASE test;' -u${{ env.DB_USER }} -p${{ env.DB_PASS }}
-          mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASS }}
-
-      # WordPress won't be able to connect to the DB if we don't perform this step.
-      - name: Permit MySQL Password Auth for MySQL 8.0
-        run: mysql -e "ALTER USER '${{ env.DB_USER }}'@'${{ env.DB_HOST }}' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASS }}';"  -u${{ env.DB_USER }} -p${{ env.DB_PASS }} 
-
-      # Some workflows checkout WordPress from GitHub, but that seems to bring a bunch of uncompiled files with it.
-      # Instead download from wordpress.org stable.
-      - name: Download WordPress
-        run: wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
-
-      - name: Extract WordPress
-        run: tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
-
       # Checkout (copy) this repository's Plugin to this VM.
       - name: Checkout Plugin
         uses: actions/checkout@v4
@@ -107,35 +87,6 @@ jobs:
           curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
           chmod +x wp-cli.phar
           sudo mv wp-cli.phar /usr/local/bin/wp-cli
-
-      - name: Setup wp-config.php
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli config create --dbname=${{ env.DB_NAME }} --dbuser=${{ env.DB_USER }} --dbpass=${{ env.DB_PASS }} --dbhost=${{ env.DB_HOST }} --locale=en_DB
-
-      - name: Install WordPress
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
-      
-      # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
-      - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'acceptance/integrations/wlm' && matrix.test-groups != 'acceptance/integrations/elementor' }}
-        working-directory: ${{ env.ROOT_DIR }}
-        run: |
-          wp-cli config set WP_DEBUG true --raw
-
-      # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
-      - name: Enable FS_METHOD
-        working-directory: ${{ env.ROOT_DIR }}
-        run: |
-          wp-cli config set FS_METHOD direct
-
-      # DISALLOW_FILE_MODS = true is required to disable the block directory's "Available to Install" suggestions, which trips up
-      # tests that search and wait for block results.
-      - name: Enable DISALLOW_FILE_MODS
-        working-directory: ${{ env.ROOT_DIR }}
-        run: |
-          wp-cli config set DISALLOW_FILE_MODS true --raw
 
       # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
       # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
@@ -173,6 +124,15 @@ jobs:
 
           sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default || true
 
+      # Create WordPress root directory and add test index.php
+      - name: Create WordPress directory and test file
+        run: |
+          sudo mkdir -p ${{ env.ROOT_DIR }}
+          sudo tee ${{ env.ROOT_DIR }}/index.php > /dev/null << 'EOF'
+          <?php
+          echo 'hello';
+          EOF
+
       # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
       - name: Set File and Folder Permissions
         run: |
@@ -185,54 +145,6 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
-      - name: Debug nginx setup
-        run: |
-          echo "=== PHP-FPM Status ==="
-          sudo systemctl status php${{ matrix.php-versions }}-fpm
-          
-          echo -e "\n=== Nginx Status ==="
-          sudo systemctl status nginx
-          
-          echo -e "\n=== PHP-FPM Socket ==="
-          ls -l /run/php/php${{ matrix.php-versions }}-fpm.sock
-          
-          echo -e "\n=== Nginx Config Test ==="
-          sudo nginx -T
-          
-          echo -e "\n=== Process List ==="
-          ps aux | grep -E 'nginx|php-fpm'
-          
-          echo -e "\n=== Nginx Error Log ==="
-          sudo tail -n 50 /var/log/nginx/error.log
-          
-          echo -e "\n=== Directory Structure ==="
-          ls -la ${{ env.ROOT_DIR }}
-          
-          echo -e "\n=== PHP-FPM Pool Config ==="
-          cat /etc/php/${{ matrix.php-versions }}/fpm/pool.d/www.conf | grep -E 'listen|user|group'
-
       - name: Test
         run: |
-          curl -v http://127.0.0.1/
-          curl -v http://127.0.0.1/wp-login.php
           curl -v http://127.0.0.1/index.php
-          ls -la ${{ env.ROOT_DIR }}
-          sudo systemctl status php8.2-fpm
-          ls -la /etc/nginx/sites-available
-
-      # Upload nginx configuration
-      - name: Upload nginx config
-        uses: actions/upload-artifact@v4
-        with:
-          name: default-site-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
-          path: |
-            /etc/nginx/sites-available/default
-
-      # Upload nginx logs
-      - name: Upload nginx logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
-          path: |
-            /var/log/nginx/access.log
-            /var/log/nginx/error.log
