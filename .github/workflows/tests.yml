@@ -161,6 +161,10 @@ jobs:
         run: |
           curl -v http://127.0.0.1/wp-login.php
 
+      - name: List WordPress folder contents
+        run: |
+          ls -la /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
+
       - name: Upload Nginx Logs to Artifact
         uses: actions/upload-artifact@v4
         with:
