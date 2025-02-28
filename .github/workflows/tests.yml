@@ -17,7 +17,7 @@ jobs:
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
@@ -184,6 +184,32 @@ jobs:
 
       - name: Start nginx
         run: sudo systemctl start nginx.service
+
+      - name: Debug nginx setup
+        run: |
+          echo "=== PHP-FPM Status ==="
+          sudo systemctl status php${{ matrix.php-versions }}-fpm
+          
+          echo -e "\n=== Nginx Status ==="
+          sudo systemctl status nginx
+          
+          echo -e "\n=== PHP-FPM Socket ==="
+          ls -l /run/php/php${{ matrix.php-versions }}-fpm.sock
+          
+          echo -e "\n=== Nginx Config Test ==="
+          sudo nginx -T
+          
+          echo -e "\n=== Process List ==="
+          ps aux | grep -E 'nginx|php-fpm'
+          
+          echo -e "\n=== Nginx Error Log ==="
+          sudo tail -n 50 /var/log/nginx/error.log
+          
+          echo -e "\n=== Directory Structure ==="
+          ls -la ${{ env.ROOT_DIR }}
+          
+          echo -e "\n=== PHP-FPM Pool Config ==="
+          cat /etc/php/${{ matrix.php-versions }}/fpm/pool.d/www.conf | grep -E 'listen|user|group'
 
       - name: Test
         run: |
