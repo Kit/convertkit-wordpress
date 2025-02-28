@@ -159,6 +159,10 @@ jobs:
               index index.php;
               server_name localhost;
 
+              # Add error and access log paths
+              error_log  /var/log/nginx/wordpress_error.log debug;
+              access_log /var/log/nginx/wordpress_access.log;
+
               location / {
                   try_files \$uri \$uri/ /index.php?\$query_string;
               }
@@ -279,3 +283,13 @@ jobs:
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
+
+      # Add new step to upload nginx logs when tests fail
+      - name: Upload Nginx Logs to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          path: |
+            /var/log/nginx/wordpress_error.log
+            /var/log/nginx/wordpress_access.log
