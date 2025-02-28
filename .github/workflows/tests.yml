@@ -152,6 +152,12 @@ jobs:
           sudo chmod 777 ${{ env.ROOT_DIR }}
           sudo chown www-data:www-data ${{ env.ROOT_DIR }}
 
+          sudo chmod 777 ${{ env.ROOT_DIR }}
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/index.php
+
+          sudo chmod 777 ${{ env.ROOT_DIR }}
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-login.php
+
           sudo chmod 777 ${{ env.ROOT_DIR }}/wp-config.php
           sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
 
