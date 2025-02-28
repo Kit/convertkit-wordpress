@@ -168,7 +168,7 @@ jobs:
       # Make sure that an nginx configuration file exists in this repository at tests/nginx/php-x.x.conf.
       # Refer to an existing .conf file in this repository if you need to create a new one e.g. for a new PHP version.
       - name: Copy nginx configuration file
-        run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/conf.d/php-${{ matrix.php-versions }}.conf
+        run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/sites-enabled/php-${{ matrix.php-versions }}.conf
 
       - name: Test nginx
         run: sudo nginx -t
@@ -184,6 +184,11 @@ jobs:
       - name: List WordPress folder contents
         run: |
           ls -la /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
+          ls -la /etc/php/
+          ls -la /etc/php/8.3/
+          ls -la /etc/php/8.3/fpm/
+          ls -la /etc/php/8.3/fpm/pool.d
+          
 
       - name: Upload nginx Config
         uses: actions/upload-artifact@v4
