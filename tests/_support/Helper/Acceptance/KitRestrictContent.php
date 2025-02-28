@@ -926,8 +926,8 @@ class KitRestrictContent extends \Codeception\Module
 	 */
 	public function clearRestrictContentCookie($I)
 	{
-		$I->deleteCookie('ck_subscriber_id');
-		$I->deleteCookie('wordpress_ck_subscriber_id');
+		$I->resetCookie('ck_subscriber_id');
+		$I->resetCookie('wordpress_ck_subscriber_id');
 	}
 
 	/**
