@@ -17,7 +17,7 @@ jobs:
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
@@ -194,9 +194,19 @@ jobs:
           sudo systemctl status php8.2-fpm
           ls -la /etc/nginx/sites-available
 
-      - name: Artifact
+      # Upload nginx configuration
+      - name: Upload nginx config
         uses: actions/upload-artifact@v4
         with:
           name: default-site-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
           path: |
             /etc/nginx/sites-available/default
+
+      # Upload nginx logs
+      - name: Upload nginx logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          path: |
+            /var/log/nginx/access.log
+            /var/log/nginx/error.log
