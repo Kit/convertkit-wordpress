@@ -17,16 +17,15 @@ jobs:
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
     # Use ${{ secrets.NAME }} to include any GitHub Secrets in ${{ env.NAME }}
-    # The base folder will always be /home/runner/work/github-repo-name/github-repo-name
     env:
-      ROOT_DIR: /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
-      PLUGIN_DIR: /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress/wp-content/plugins/convertkit
-      CACHE_DIR: /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress/wp-content/plugins/wp-super-cache/
+      ROOT_DIR: /var/www/html
+      PLUGIN_DIR: /var/www/html/wp-content/plugins/convertkit
+      CACHE_DIR: /var/www/html/wp-content/plugins/wp-super-cache/
       DB_NAME: test
       DB_USER: root
       DB_PASS: root
@@ -88,6 +87,13 @@ jobs:
           replace: '-'
           replaceAll: true
 
+      # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
+      # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
+      - name: Checkout Plugin
+        uses: actions/checkout@v4
+        with:
+          path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit
+
       - name: Start MySQL
         run: sudo systemctl start mysql.service
 
@@ -102,17 +108,15 @@ jobs:
 
       # Some workflows checkout WordPress from GitHub, but that seems to bring a bunch of uncompiled files with it.
       # Instead download from wordpress.org stable.
-      - name: Download WordPress
-        run: wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
-
-      - name: Extract WordPress
-        run: tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
-
-      # Checkout (copy) this repository's Plugin to this VM.
-      - name: Checkout Plugin
-        uses: actions/checkout@v4
-        with:
-          path: ${{ env.PLUGIN_DIR }}
+      - name: Download and Extract WordPress
+        run: |
+          sudo chown -R runner:docker /var/www/html
+          ls -la /var/www/html
+          cd /var/www/html
+          wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
+          tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
+          mv wordpress/* .
+          rm -rf wordpress wordpress-${{ matrix.wp-versions }}.tar.gz
 
       # We install WP-CLI, as it provides useful commands to setup and install WordPress through the command line.
       - name: Install WP-CLI
@@ -129,27 +133,8 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
 
-      # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
-      - name: Install Free Third Party WordPress Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
-
-      # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions ot third party Plugins.
-      - name: Install Free Third Party WordPress Specific Version Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
-
-      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
-      # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
-      - name: Install Paid Third Party WordPress Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
-
-      # Install 2021 Theme, which provides support for widgets.
-      # 2021 Theme isn't included in WordPress 6.4 or higher, but is required for our widget tests.
-      - name: Install WordPress Themes
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli theme install twentytwentyone
+      - name: Move Plugin
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
@@ -181,10 +166,37 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
 
-      # Make sure that an nginx configuration file exists in this repository at tests/nginx/php-x.x.conf.
-      # Refer to an existing .conf file in this repository if you need to create a new one e.g. for a new PHP version.
-      - name: Copy nginx configuration file
-        run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/conf.d/php-${{ matrix.php-versions }}.conf
+      # Configure nginx to use the PHP version.
+      - name: Configure nginx site
+        run: |
+          sudo rm -f /etc/nginx/sites-enabled/default
+          sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+
+          server {
+            listen 80 default_server;
+            listen [::]:80 default_server;
+
+            root /var/www/html;
+            index index.php;
+
+            server_name localhost;
+
+            location / {
+                try_files $uri $uri/ /index.php?$args;
+            }
+
+            location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
+            }
+
+            location ~ /\.ht {
+                deny all;
+            }
+          }
+          EOF
+
+          sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default || true
 
       - name: Test nginx
         run: sudo nginx -t
