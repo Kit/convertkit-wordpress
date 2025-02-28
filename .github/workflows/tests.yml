@@ -245,6 +245,7 @@ jobs:
           sudo chmod +x /home/runner/work
           sudo chmod +x /home/runner/work/convertkit-wordpress
           sudo chmod +x /home/runner/work/convertkit-wordpress/convertkit-wordpress
+          sudo chmod +x /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
 
       # This ensures the Plugin's log file can be written to.
       # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
