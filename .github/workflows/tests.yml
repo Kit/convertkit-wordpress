@@ -146,6 +146,28 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
 
+      # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
+      - name: Set File and Folder Permissions
+        run: |
+          sudo chmod 767 ${{ env.ROOT_DIR }}
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}
+
+          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-config.php
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
+
+          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-content
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content
+
+          sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
+
+      # This ensures the Plugin's log file can be written to.
+      # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
+      - name: Set Permissions for Plugin Directory
+        run: |
+          sudo chmod g+w ${{ env.PLUGIN_DIR }}
+          sudo chown www-data:www-data ${{ env.PLUGIN_DIR }}
+
       # Make sure that an nginx configuration file exists in this repository at tests/nginx/php-x.x.conf.
       # Refer to an existing .conf file in this repository if you need to create a new one e.g. for a new PHP version.
       - name: Copy nginx configuration file
