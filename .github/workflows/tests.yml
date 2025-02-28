@@ -151,20 +151,21 @@ jobs:
       - name: Copy nginx configuration file
         run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/conf.d/php-${{ matrix.php-versions }}.conf
 
-      - name: Test nginx
-        run: sudo nginx -t
-
-      - name: Start nginx
-        run: sudo systemctl start nginx.service
-
       # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
       - name: Set File and Folder Permissions
         run: |
           sudo chmod -R 767 ${{ env.ROOT_DIR }}
           sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}
 
-      - name: Set File and Folder Permissions
+      - name: Test nginx
+        run: sudo nginx -t
+
+      - name: Start nginx
+        run: sudo systemctl start nginx.service
+
+      - name: Test
         run: |
           curl -v http://127.0.0.1/
           curl -v http://127.0.0.1/wp-login.php
-          curl -v http://127.0.0.1/index.php       
+          curl -v http://127.0.0.1/index.php
+          ls -la ${{ env.ROOT_DIR }}
