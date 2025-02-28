@@ -395,6 +395,20 @@ class ConvertKit_Settings {
 	}
 
 	/**
+	 * Returns whether the Global non-inline Form setting should honor the Page / Post
+	 * None setting.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @return  bool
+	 */
+	public function non_inline_form_honor_none_setting() {
+
+		return ( $this->settings['non_inline_form_honor_none_setting'] === 'on' ? true : false );
+
+	}
+
+	/**
 	 * Returns whether debugging is enabled in the Plugin settings.
 	 *
 	 * @since   1.9.6
@@ -445,19 +459,22 @@ class ConvertKit_Settings {
 
 		$defaults = array(
 			// OAuth.
-			'access_token'    => '', // string.
-			'refresh_token'   => '', // string.
-			'token_expires'   => '', // integer.
+			'access_token'                       => '', // string.
+			'refresh_token'                      => '', // string.
+			'token_expires'                      => '', // integer.
 
 			// API Key. Retained if needed for backward compat.
-			'api_key'         => '', // string.
-			'api_secret'      => '', // string.
+			'api_key'                            => '', // string.
+			'api_secret'                         => '', // string.
 
-			// Settings.
-			'non_inline_form' => array(), // array.
-			'debug'           => '', // blank|on.
-			'no_scripts'      => '', // blank|on.
-			'no_css'          => '', // blank|on.
+			// Site Wide.
+			'non_inline_form'                    => array(), // array.
+			'non_inline_form_honor_none_setting' => '', // blank|on.
+
+			// Advanced.
+			'debug'                              => '', // blank|on.
+			'no_scripts'                         => '', // blank|on.
+			'no_css'                             => '', // blank|on.
 		);
 
 		// Add Post Type Default Forms.

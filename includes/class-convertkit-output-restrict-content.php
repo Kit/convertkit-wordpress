@@ -118,7 +118,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 1 );
-		add_action( 'init', array( $this, 'maybe_run_subscriber_verification' ), 2 );
+		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 2 );
 		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
@@ -178,14 +178,15 @@ class ConvertKit_Output_Restrict_Content {
 		);
 
 		// Sanitize inputs.
-		$email               = sanitize_text_field( $_REQUEST['convertkit_email'] );
-		$this->resource_type = sanitize_text_field( $_REQUEST['convertkit_resource_type'] );
-		$this->resource_id   = absint( sanitize_text_field( $_REQUEST['convertkit_resource_id'] ) );
-		$this->post_id       = absint( sanitize_text_field( $_REQUEST['convertkit_post_id'] ) );
+		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
+		$this->resource_type = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) );
+		$this->resource_id   = absint( $_REQUEST['convertkit_resource_id'] );
+		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
 
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $this->resource_type ) {
 			case 'product':
+			case 'form':
 				// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 				$result = $this->api->subscriber_authentication_send_code(
 					$email,
@@ -209,13 +210,15 @@ class ConvertKit_Output_Restrict_Content {
 			case 'tag':
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->require_tag_login() ) {
-					// Tag the subscriber.
-					$result = $this->api->tag_subscribe( $this->resource_id, $email );
+					// Tag the subscriber, unless this is an AJAX request.
+					if ( ! wp_doing_ajax() ) {
+						$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
-					// Bail if an error occured.
-					if ( is_wp_error( $result ) ) {
-						$this->error = $result;
-						return;
+						// Bail if an error occured.
+						if ( is_wp_error( $result ) ) {
+							$this->error = $result;
+							return;
+						}
 					}
 
 					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
@@ -244,14 +247,14 @@ class ConvertKit_Output_Restrict_Content {
 				// without email link.
 
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					$response = wp_remote_post(
 						'https://www.google.com/recaptcha/api/siteverify',
 						array(
 							'body' => array(
 								'secret'   => $this->restrict_content_settings->get_recaptcha_secret_key(),
-								'response' => $_POST['g-recaptcha-response'],
-								'remoteip' => $_SERVER['REMOTE_ADDR'],
+								'response' => ( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
+								'remoteip' => ( isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '' ),
 							),
 						)
 					);
@@ -339,22 +342,23 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function maybe_run_subscriber_verification() {
 
-		// Bail if no nonce was specified.
-		if ( ! array_key_exists( '_wpnonce', $_REQUEST ) ) {
-			return;
-		}
-
-		// Bail if the nonce failed validation.
-		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_subscriber_code' ) ) {
-			return;
-		}
-
 		// Bail if the expected token and subscriber code is missing.
 		if ( ! array_key_exists( 'token', $_REQUEST ) ) {
 			return;
 		}
 		if ( ! array_key_exists( 'subscriber_code', $_REQUEST ) ) {
 			return;
+		}
+		if ( ! array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
+			return;
+		}
+
+		// If a nonce was specified, validate it now.
+		// It won't be provided if clicking the link in the magic link email.
+		if ( array_key_exists( '_wpnonce', $_REQUEST ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_subscriber_code' ) ) {
+				return;
+			}
 		}
 
 		// If the Plugin Access Token has not been configured, we can't get this subscriber's ID by email.
@@ -363,8 +367,17 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Store the token so it's included in the subscriber code form if verification fails.
-		$this->token   = sanitize_text_field( $_REQUEST['token'] );
-		$this->post_id = absint( sanitize_text_field( $_REQUEST['convertkit_post_id'] ) );
+
+		$this->token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
+
+		// Store the post ID if this is an AJAX request.
+		// This won't be included if clicking the link in the magic link email, so fall back to using
+		// get_the_ID() to get the post ID.
+		if ( array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
+			$this->post_id = absint( wp_unslash( $_REQUEST['convertkit_post_id'] ) );
+		} else {
+			$this->post_id = get_the_ID();
+		}
 
 		// Initialize the API.
 		$this->api = new ConvertKit_API_V4(
@@ -378,8 +391,8 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Verify the token and subscriber code.
 		$subscriber_id = $this->api->subscriber_authentication_verify(
-			sanitize_text_field( $_REQUEST['token'] ),
-			sanitize_text_field( $_REQUEST['subscriber_code'] )
+			sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ),
+			sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) )
 		);
 
 		// Bail if an error occured.
@@ -463,9 +476,25 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! $this->subscriber_has_access( $subscriber_id ) ) {
 			// Show an error before the call to action, to tell the subscriber why they still cannot
 			// view the content.
+			switch ( $this->resource_type ) {
+				case 'form':
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_form' );
+					break;
+
+				case 'tag':
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
+					break;
+
+				case 'product':
+				default:
+					$message = $this->restrict_content_settings->get_by_key( 'no_access_text' );
+					break;
+			}
+
+			// Define error for output.
 			$this->error = new WP_Error(
 				'convertkit_restrict_content_subscriber_no_access',
-				esc_html( $this->restrict_content_settings->get_by_key( 'no_access_text' ) )
+				esc_html( $message )
 			);
 
 			return $this->restrict_content( $content );
@@ -819,6 +848,19 @@ class ConvertKit_Output_Restrict_Content {
 				// Product exists in ConvertKit.
 				return true;
 
+			case 'form':
+				// Get Form.
+				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
+				$form  = $forms->get_by_id( $this->resource_id );
+
+				// If the Form does not exist, return false.
+				if ( ! $form ) {
+					return false;
+				}
+
+				// Form exists in ConvertKit.
+				return true;
+
 			case 'tag':
 				// Get Tag.
 				$tags = new ConvertKit_Resource_Tags( 'restrict_content' );
@@ -867,6 +909,10 @@ class ConvertKit_Output_Restrict_Content {
 			case 'product':
 				// For products, the subscriber ID has to be a signed subscriber ID string.
 				return $this->subscriber_has_access_to_product_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
+
+			case 'form':
+				// For forms, the subscriber ID has to be a signed subscriber ID string.
+				return $this->subscriber_has_access_to_form_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
 			case 'tag':
 				// If the subscriber ID is numeric, check using get_subscriber_tags().
@@ -918,6 +964,36 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Return if the subscriber is subscribed to the product or not.
 		return in_array( $product_id, $result['products'], true );
+
+	}
+
+	/**
+	 * Determines if the given signed subscriber ID has an active subscription to
+	 * the given form.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   string $signed_subscriber_id   Signed Subscriber ID.
+	 * @param   int    $form_id                Form ID.
+	 * @return  bool                           Has access to form
+	 */
+	private function subscriber_has_access_to_form_by_signed_subscriber_id( $signed_subscriber_id, $form_id ) {
+
+		// Get products that the subscriber has access to.
+		$result = $this->api->profile( $signed_subscriber_id );
+
+		// If an error occured, the subscriber ID is invalid.
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		// If no forms exist, there's no access.
+		if ( ! $result['forms'] || ! count( $result['forms'] ) ) {
+			return false;
+		}
+
+		// Return if the subscriber is subscribed to the form or not.
+		return in_array( $form_id, $result['forms'], true );
 
 	}
 
@@ -1217,6 +1293,29 @@ class ConvertKit_Output_Restrict_Content {
 				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
 				return trim( ob_get_clean() );
 
+			case 'form':
+				// Display the Form.
+				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
+				$form  = $forms->get_html( $this->resource_id );
+
+				// If scripts are enabled, output the email login form in a modal, which will be displayed
+				// when the 'log in' link is clicked.
+				if ( ! $this->settings->scripts_disabled() ) {
+					add_action(
+						'wp_footer',
+						function () {
+
+							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
+
+						}
+					);
+				}
+
+				// Output.
+				ob_start();
+				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/form.php';
+				return trim( ob_get_clean() );
+
 			case 'tag':
 				// Get header and text from settings for Tags.
 				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
@@ -1236,7 +1335,7 @@ class ConvertKit_Output_Restrict_Content {
 				}
 
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					add_filter(
 						'convertkit_output_scripts_footer',
 						function ( $scripts ) {
@@ -1459,13 +1558,13 @@ class ConvertKit_Output_Restrict_Content {
 		// Iterate through permitted crawler IP addresses.
 		foreach ( $permitted_user_agent_ip_ranges as $permitted_user_agent => $permitted_ip_addresses ) {
 			// Skip this user agent's IP addresses if the client user agent doesn't contain this user agent.
-			if ( stripos( $_SERVER['HTTP_USER_AGENT'], $permitted_user_agent ) === false ) {
+			if ( stripos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), $permitted_user_agent ) === false ) {
 				continue;
 			}
 
 			// Check IP address.
 			foreach ( $permitted_ip_addresses as $permitted_ip_range ) {
-				if ( ! $this->ip_in_range( $_SERVER['REMOTE_ADDR'], $permitted_ip_range ) ) {
+				if ( ! $this->ip_in_range( sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ), $permitted_ip_range ) ) {
 					continue;
 				}
 

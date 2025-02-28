@@ -43,10 +43,10 @@ class BroadcastsToPostsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate WP Crontrol, to manually run scheduled events.
 		$I->activateThirdPartyPlugin($I, 'wp-crontrol');
@@ -70,7 +70,7 @@ class BroadcastsToPostsCest
 		$I->seeCronEvent($I, $this->cronEventName);
 
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled' => true,
@@ -81,7 +81,7 @@ class BroadcastsToPostsCest
 		$I->deleteCronEvent($I, $this->cronEventName);
 
 		// Make a request.
-		$I->loadConvertKitSettingsBroadcastsScreen($I);
+		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Confirm Cron event was recreated.
 		$I->seeCronEvent($I, $this->cronEventName);
@@ -100,7 +100,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWhenDisabled(AcceptanceTester $I)
 	{
 		// Disable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled' => false,
@@ -135,7 +135,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWhenEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -173,11 +173,17 @@ class BroadcastsToPostsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
+
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
+
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Confirm inline styles exist in the imported Broadcast.
 		$I->seeElementInDOM('div.ck-inner-section');
@@ -208,7 +214,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsManualImportWhenEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -252,11 +258,17 @@ class BroadcastsToPostsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
+
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
+
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Confirm inline styles exist in the imported Broadcast.
 		$I->seeElementInDOM('div.ck-inner-section');
@@ -279,7 +291,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithPostStatusEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -339,7 +351,7 @@ class BroadcastsToPostsCest
 		$I->haveUserInDatabase( 'editor', 'editor' );
 
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -396,7 +408,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithCategoryEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -455,7 +467,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithImportThumbnailDisabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -519,7 +531,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithImportImagesEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -571,7 +583,7 @@ class BroadcastsToPostsCest
 	/**
 	 * Tests that Broadcasts do not import when enabled in the Plugin's settings
 	 * and an Earliest Date is specified that is newer than any Broadcasts sent
-	 * on the ConvertKit account.
+	 * on the Kit account.
 	 *
 	 * @since   2.2.8
 	 *
@@ -580,7 +592,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithEarliestDate(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -618,7 +630,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithMemberContentEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -664,7 +676,7 @@ class BroadcastsToPostsCest
 	public function testBroadcastsImportWithDisableStylesEnabled(AcceptanceTester $I)
 	{
 		// Enable Broadcasts to Posts.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled'               => true,
@@ -703,11 +715,17 @@ class BroadcastsToPostsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
+
 		// Set cookie with signed subscriber ID, as if we completed the Restrict Content authentication flow.
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Reload the post.
 		$I->reloadPage();
+
+		// Confirm a body CSS class is applied.
+		$I->seeElementInDOM('body.convertkit-broadcast');
 
 		// Confirm no inline styles exist in the imported Broadcast.
 		$I->dontSeeElementInDOM('div.ck-inner-section');
@@ -725,9 +743,9 @@ class BroadcastsToPostsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
 		$I->deactivateThirdPartyPlugin($I, 'wp-crontrol');
-		$I->resetConvertKitPlugin($I);
+		$I->resetKitPlugin($I);
 
 		// Remove Category named 'Kit Broadcasts to Posts'.
 		$I->dontHaveTermInDatabase(

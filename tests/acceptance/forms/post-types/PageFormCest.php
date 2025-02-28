@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Forms on WordPress Pages.
+ * Tests for Kit Forms on WordPress Pages.
  *
  * @since   1.9.6
  */
@@ -15,8 +15,8 @@ class PageFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -28,9 +28,9 @@ class PageFormCest
 	 */
 	public function testAccessibility(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=page');
@@ -52,9 +52,9 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormWithNoDefaultFormSpecifiedInPlugin(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with no default Forms configured.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin with no default Forms configured.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Default: None');
@@ -81,7 +81,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -95,9 +95,9 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Default');
@@ -114,7 +114,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -130,14 +130,14 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormBeforeContent(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Pages set to be output before the Page content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Pages set to be output before the Page content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form_position' => 'before_content',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Default: Before Content');
@@ -157,7 +157,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the Page content.
+		// Confirm that one Kit Form is output in the DOM after the Page content.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_content');
 	}
@@ -173,14 +173,14 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormBeforeAndAfterContent(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Pages set to be output before and after the Page content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Pages set to be output before and after the Page content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form_position' => 'before_after_content',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Default: Before and After Content');
@@ -200,7 +200,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that two ConvertKit Forms are output in the DOM before and after the Page content.
+		// Confirm that two Kit Forms are output in the DOM before and after the Page content.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_after_content');
 	}
 
@@ -215,8 +215,8 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterParagraphElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Pages set to be output after the 3rd paragraph of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Pages set to be output after the 3rd paragraph of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -225,7 +225,7 @@ class PageFormCest
 				'page_form_position_element_index' => 3,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'page', 'Kit: Page: Form: Default: After 3rd Paragraph Element');
@@ -236,7 +236,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the third paragraph.
+		// Confirm that one Kit Form is output in the DOM after the third paragraph.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'p', 3);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
@@ -257,8 +257,8 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultNonInlineFormAfterParagraphElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Pages set to be output after the 3rd paragraph of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Pages set to be output after the 3rd paragraph of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
@@ -267,7 +267,7 @@ class PageFormCest
 				'page_form_position_element_index' => 3,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'page', 'Kit: Page: Non-Inline Form: Default: After 3rd Paragraph Element');
@@ -278,7 +278,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -300,8 +300,8 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterHeadingElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Pages set to be output after the 2nd <h2> of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Pages set to be output after the 2nd <h2> of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -310,7 +310,7 @@ class PageFormCest
 				'page_form_position_element_index' => 2,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'page', 'Kit: Page: Form: Default: After 2nd H2 Element');
@@ -321,7 +321,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the second <h2> element.
+		// Confirm that one Kit Form is output in the DOM after the second <h2> element.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'h2', 2);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
@@ -342,8 +342,8 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterImageElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Posts set to be output after the 2nd <img> of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Posts set to be output after the 2nd <img> of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -352,7 +352,7 @@ class PageFormCest
 				'page_form_position_element_index' => 2,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'page', 'Kit: Page: Form: Default: After 2nd H2 Element');
@@ -363,7 +363,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the second <img> element.
+		// Confirm that one Kit Form is output in the DOM after the second <img> element.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'img', 2);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
@@ -387,8 +387,8 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterOutOfBoundsElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for Pages set to be output after the 7rd paragraph of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for Pages set to be output after the 7rd paragraph of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -397,7 +397,7 @@ class PageFormCest
 				'page_form_position_element_index' => 9,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'page', 'Kit: Page: Form: Default: After 9th Paragraph Element');
@@ -408,7 +408,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the content, as
+		// Confirm that one Kit Form is output in the DOM after the content, as
 		// the number of paragraphs is less than the position.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_content');
 
@@ -430,7 +430,7 @@ class PageFormCest
 	public function testAddNewPageUsingDefaultLegacyForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
@@ -438,7 +438,7 @@ class PageFormCest
 				'page_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Legacy: Default');
@@ -455,7 +455,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that the ConvertKit Default Legacy Form displays.
+		// Confirm that the Kit Default Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 
 		// Confirm that the Legacy Form title's character encoding is correct.
@@ -472,9 +472,9 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingNoForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: None');
@@ -491,7 +491,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -505,9 +505,9 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -524,7 +524,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -540,8 +540,8 @@ class PageFormCest
 	public function testAddNewPageUsingModalFormWithAutoptimizePlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Autoptimize Plugin.
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
@@ -561,7 +561,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that Autoptimize hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
@@ -581,8 +581,8 @@ class PageFormCest
 	public function testAddNewPageUsingModalFormWithJetpackBoostPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Jetpack Boost Plugin.
 		$I->activateThirdPartyPlugin($I, 'jetpack-boost');
@@ -606,7 +606,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
@@ -625,9 +625,9 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingModalFormWithLiteSpeedCachePlugin(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate and enable LiteSpeed Cache Plugin.
 		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
@@ -653,7 +653,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
 		// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
@@ -673,8 +673,8 @@ class PageFormCest
 	public function testAddNewPageUsingModalFormWithSitegroundSpeedOptimizerPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Siteground Speed Optimizer Plugin.
 		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
@@ -697,7 +697,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
 		// Deactivate Siteground Speed Optimizer Plugin.
@@ -715,8 +715,8 @@ class PageFormCest
 	public function testAddNewPageUsingModalFormWithPerfmattersPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Perfmatters Plugin.
 		$I->activateThirdPartyPlugin($I, 'perfmatters');
@@ -748,7 +748,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -767,8 +767,8 @@ class PageFormCest
 	public function testAddNewPageUsingModalFormWithWPRocketPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin and Resources.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
@@ -791,7 +791,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM within the <main> element.
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -810,7 +810,7 @@ class PageFormCest
 	public function testAddNewPageUsingDefinedLegacyForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
@@ -818,7 +818,7 @@ class PageFormCest
 				'page_form'  => '',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']);
@@ -835,7 +835,7 @@ class PageFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that the ConvertKit Legacy Form displays.
+		// Confirm that the Kit Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 
 		// Confirm that the Legacy Form title's character encoding is correct.
@@ -848,8 +848,8 @@ class PageFormCest
 	 *
 	 * Whilst the on screen options won't permit selecting an invalid Form ID, a Page might
 	 * have an invalid Form ID because:
-	 * - the form belongs to another ConvertKit account (i.e. API credentials were changed in the Plugin, but this Page's specified Form was not changed)
-	 * - the form was deleted from the ConvertKit account.
+	 * - the form belongs to another Kit account (i.e. API credentials were changed in the Plugin, but this Page's specified Form was not changed)
+	 * - the form was deleted from the Kit account.
 	 *
 	 * @since   1.9.7.2
 	 *
@@ -857,12 +857,12 @@ class PageFormCest
 	 */
 	public function testAddNewPageUsingInvalidDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
-		// a Form being deleted in ConvertKit.
+		// a Form being deleted in Kit.
 		$pageID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'page',
@@ -883,10 +883,10 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the invalid ConvertKit Form does not display.
+		// Confirm that the invalid Kit Form does not display.
 		$I->dontSeeElementInDOM('form[data-sv-form="11111"]');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -901,9 +901,9 @@ class PageFormCest
 	 */
 	public function testQuickEditUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->havePostInDatabase(
@@ -929,7 +929,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -944,9 +944,9 @@ class PageFormCest
 	 */
 	public function testQuickEditUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->havePostInDatabase(
@@ -972,7 +972,7 @@ class PageFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -987,9 +987,9 @@ class PageFormCest
 	 */
 	public function testBulkEditUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
@@ -1025,7 +1025,7 @@ class PageFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -1041,9 +1041,9 @@ class PageFormCest
 	 */
 	public function testBulkEditUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
@@ -1079,7 +1079,7 @@ class PageFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -1095,9 +1095,9 @@ class PageFormCest
 	 */
 	public function testBulkEditWithNoChanges(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Pages with a defined form.
 		$pageIDs = array(
@@ -1147,7 +1147,7 @@ class PageFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -1163,9 +1163,9 @@ class PageFormCest
 	 */
 	public function testBulkEditFieldsHiddenWhenNoPagesFound(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Emulate the user searching for Pages with a query string that yields no results.
 		$I->amOnAdminPage('edit.php?post_type=page&s=nothing');
@@ -1185,7 +1185,7 @@ class PageFormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

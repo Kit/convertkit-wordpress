@@ -39,6 +39,11 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 				'callback' => array( $this, 'print_section_info' ),
 				'wrap'     => true,
 			),
+			'forms'    => array(
+				'title'    => __( 'Forms', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_forms' ),
+				'wrap'     => true,
+			),
 			'products' => array(
 				'title'    => __( 'Products', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_products' ),
@@ -104,6 +109,22 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			)
 		);
 
+		// Restrict by Form.
+		add_settings_field(
+			'no_access_text_form',
+			__( 'No Access Text', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-forms',
+			array(
+				'name'        => 'no_access_text_form',
+				'label_for'   => 'no_access_text_form',
+				'description' => array(
+					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
+				),
+			)
+		);
+
 		// Restrict by Tag.
 		add_settings_field(
 			'subscribe_heading_tag',
@@ -131,6 +152,21 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 				'label_for'   => 'subscribe_text_tag',
 				'description' => array(
 					__( 'Displays text explaining why the content is only available to subscribers.', 'convertkit' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'no_access_text_tag',
+			__( 'No Access Text', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-tags',
+			array(
+				'name'        => 'no_access_text_tag',
+				'label_for'   => 'no_access_text_tag',
+				'description' => array(
+					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
 				),
 			)
 		);
@@ -244,6 +280,22 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 		);
 
 		add_settings_field(
+			'no_access_text',
+			__( 'No Access Text', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name . '-products',
+			array(
+				'name'        => 'no_access_text',
+				'label_for'   => 'no_access_text',
+				'description' => array(
+					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
+				),
+			)
+		);
+
+		// Member Content.
+		add_settings_field(
 			'email_text',
 			__( 'Email Text', 'convertkit' ),
 			array( $this, 'text_callback' ),
@@ -333,21 +385,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			)
 		);
 
-		add_settings_field(
-			'no_access_text',
-			__( 'No Access Text', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name,
-			array(
-				'name'        => 'no_access_text',
-				'label_for'   => 'no_access_text',
-				'description' => array(
-					__( 'The text to display for a subscriber who authenticates via the login link, but is not subscribed.', 'convertkit' ),
-				),
-			)
-		);
-
 	}
 
 	/**
@@ -359,6 +396,19 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 
 		?>
 		<p class="description"><?php esc_html_e( 'Defines the text and button labels to display when a Page, Post or Custom Post has its Member Content setting defined.', 'convertkit' ); ?></p>
+		<?php
+
+	}
+
+	/**
+	 * Prints help info for the forms section of the settings screen.
+	 *
+	 * @since   2.7.3
+	 */
+	public function print_section_info_forms() {
+
+		?>
+		<p class="description"><?php esc_html_e( 'Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit form.', 'convertkit' ); ?></p>
 		<?php
 
 	}

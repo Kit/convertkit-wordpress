@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Settings on WordPress Pages when no API Credentials specified.
+ * Tests for Kit Settings on WordPress Pages when no API Credentials specified.
  *
  * @since   1.9.6
  */
@@ -15,12 +15,12 @@ class PageCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
-	 * Test that the ConvertKit Page Settings displays a message with a link to the Plugin Settings
-	 * telling the user to connect their ConvertKit account, when no credentials exist.
+	 * Test that the Kit Page Settings displays a message with a link to the Plugin Settings
+	 * telling the user to connect their Kit account, when no credentials exist.
 	 *
 	 * @since   1.9.6
 	 *
@@ -55,7 +55,7 @@ class PageCest
 		// Click the link.
 		$I->click('connect your Kit account.');
 
-		// Confirm the ConvertKit hosted OAuth login screen is displayed.
+		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 	}
@@ -71,7 +71,7 @@ class PageCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -75,7 +75,7 @@
 
 
 /* Buttons */
-form#convertkit-restrict-content-form input[type=submit] {
+form.convertkit-restrict-content-form input[type=submit] {
 	height: 42px;
 	line-height: 42px;
 	font-size: 15px;
@@ -86,7 +86,7 @@ form#convertkit-restrict-content-form input[type=submit] {
 }
 
 /* Email input with inline button */
-form#convertkit-restrict-content-form div#convertkit-restrict-content-email-field {
+form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field {
 	display: grid;
 	grid-template-areas: "email button";
 	grid-template-columns: 3fr 1fr;
@@ -104,10 +104,10 @@ form#convertkit-restrict-content-form div#convertkit-restrict-content-email-fiel
 	border: 1px solid #fff;
 	border-radius: 3px;
 }
-form#convertkit-restrict-content-form div#convertkit-restrict-content-email-field.convertkit-restrict-content-error {
+form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field.convertkit-restrict-content-error {
 	border-color: #d3434a;
 }
-form#convertkit-restrict-content-form div#convertkit-restrict-content-email-field input[type=email] {
+form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field input[type=email] {
 	grid-area: email;
 	text-indent: 35px;
 	height: 42px;
@@ -118,12 +118,12 @@ form#convertkit-restrict-content-form div#convertkit-restrict-content-email-fiel
 	background: none;
 	border: none;
 }
-form#convertkit-restrict-content-form div#convertkit-restrict-content-email-field input[type=submit] {
+form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field input[type=submit] {
 	grid-area: button;
 }
 
 /* One time code */
-form#convertkit-restrict-content-form div#convertkit-subscriber-code-container {
+form.convertkit-restrict-content-form div#convertkit-subscriber-code-container {
 	width: 427px;
 	height: 100px;
 	border: 1px solid #dce1e5;
@@ -132,10 +132,10 @@ form#convertkit-restrict-content-form div#convertkit-subscriber-code-container {
 	overflow: hidden;
 	background: #dce1e5;
 }
-form#convertkit-restrict-content-form div#convertkit-subscriber-code-container.convertkit-restrict-content-error {
+form.convertkit-restrict-content-form div#convertkit-subscriber-code-container.convertkit-restrict-content-error {
 	border-color: #d3434a;
 }
-form#convertkit-restrict-content-form div#convertkit-subscriber-code-container input#convertkit_subscriber_code {
+form.convertkit-restrict-content-form div#convertkit-subscriber-code-container input#convertkit_subscriber_code {
 	--otp-digits: 6;
 	--otp-height: 98px;
 	--otp-number-width: 70px;
@@ -209,7 +209,7 @@ form#convertkit-restrict-content-form div#convertkit-subscriber-code-container i
 	border-radius: 8px;
 	text-align: center;
 }
-#convertkit-restrict-content-modal form#convertkit-restrict-content-form div#convertkit-restrict-content-email-field {
+#convertkit-restrict-content-modal form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field {
 	background-color: #f4f6f8;
 }
 #convertkit-restrict-content-modal-close {
@@ -239,11 +239,11 @@ form#convertkit-restrict-content-form div#convertkit-subscriber-code-container i
 		left: 5%;
 		padding: 40px;
 	}
-	form#convertkit-restrict-content-form div#convertkit-subscriber-code-container {
+	form.convertkit-restrict-content-form div#convertkit-subscriber-code-container {
 		width: 213px;
 		height: 50px;
 	}
-	form#convertkit-restrict-content-form div#convertkit-subscriber-code-container input#convertkit_subscriber_code {
+	form.convertkit-restrict-content-form div#convertkit-subscriber-code-container input#convertkit_subscriber_code {
 		--otp-height: 49px;
 		--otp-number-width: 35px;
 		--otp-letter-spacing: 20px;

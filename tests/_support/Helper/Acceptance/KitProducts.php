@@ -2,17 +2,17 @@
 namespace Helper\Acceptance;
 
 /**
- * Helper methods and actions related to the ConvertKit Plugin's Products
+ * Helper methods and actions related to the Kit Plugin's Products
  * functionality, which are then available using $I->{yourFunctionName}.
  *
  * @since   1.9.8.5
  */
-class ConvertKitProducts extends \Codeception\Module
+class KitProducts extends \Codeception\Module
 {
 	/**
 	 * Check that expected HTML exists in the DOM of the page we're viewing
-	 * when a ConvertKit Product link was inserted into a paragraph or button,
-	 * and that the button loads the expected ConvertKit Product modal.
+	 * when a Kit Product link was inserted into a paragraph or button,
+	 * and that the button loads the expected Kit Product modal.
 	 *
 	 * @since   2.0.0
 	 *
@@ -36,8 +36,8 @@ class ConvertKitProducts extends \Codeception\Module
 			$I->seeInSource('>' . $text . '</a>');
 		}
 
-		// Click the button to confirm that the ConvertKit modal displays; this confirms
-		// necessary ConvertKit scripts have been loaded.
+		// Click the button to confirm that the Kit modal displays; this confirms
+		// necessary Kit scripts have been loaded.
 		$I->click('a[href="' . $productURL . '"]');
 		$I->seeElementInDOM('iframe[data-active]');
 	}
@@ -45,7 +45,7 @@ class ConvertKitProducts extends \Codeception\Module
 	/**
 	 * Check that expected HTML exists in the DOM of the page we're viewing for
 	 * a Product block or shortcode, and that the button loads the expected
-	 * ConvertKit Product modal.
+	 * Kit Product modal.
 	 *
 	 * @since   1.9.8.5
 	 *
@@ -89,8 +89,8 @@ class ConvertKitProducts extends \Codeception\Module
 			);
 		}
 
-		// Click the button to confirm that the ConvertKit modal displays; this confirms
-		// necessary ConvertKit scripts have been loaded.
+		// Click the button to confirm that the Kit modal displays; this confirms
+		// necessary Kit scripts have been loaded.
 		$I->click('a.convertkit-product');
 		$I->seeElementInDOM('iframe[data-active]');
 	}

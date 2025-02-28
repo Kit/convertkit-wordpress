@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form Trigger Gutenberg Block Formatter.
+ * Tests for the Kit Form Trigger Gutenberg Block Formatter.
  *
  * @since   2.2.0
  */
@@ -15,7 +15,7 @@ class PageBlockFormatterFormTriggerCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -27,9 +27,9 @@ class PageBlockFormatterFormTriggerCest
 	 */
 	public function testFormTriggerFormatterWithModalForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger Formatter: Modal Form');
@@ -66,7 +66,7 @@ class PageBlockFormatterFormTriggerCest
 		// Confirm that the link displays and works when clicked.
 		$I->seeFormTriggerLinkOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 	}
@@ -81,9 +81,9 @@ class PageBlockFormatterFormTriggerCest
 	 */
 	public function testFormTriggerFormatterToggleFormSelection(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger Formatter: Modal Form Toggle');
@@ -141,9 +141,9 @@ class PageBlockFormatterFormTriggerCest
 	 */
 	public function testFormTriggerFormatterWithNoForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger Formatter: No Form');
@@ -182,7 +182,7 @@ class PageBlockFormatterFormTriggerCest
 	}
 
 	/**
-	 * Test the Form Trigger formatter is not available when no forms exist in ConvertKit.
+	 * Test the Form Trigger formatter is not available when no forms exist in Kit.
 	 *
 	 * @since   2.2.2
 	 *
@@ -217,7 +217,7 @@ class PageBlockFormatterFormTriggerCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

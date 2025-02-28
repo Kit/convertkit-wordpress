@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Broadcasts Divi Module.
+ * Tests for the Kit Broadcasts Divi Module.
  *
  * @since   2.5.7
  */
@@ -15,7 +15,7 @@ class DiviBroadcastsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'divi-builder');
 	}
@@ -31,8 +31,8 @@ class DiviBroadcastsCest
 	public function testBroadcastsModuleInBackendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Broadcasts: Divi: Backend Editor');
@@ -77,8 +77,8 @@ class DiviBroadcastsCest
 	public function testBroadcastsModuleInFrontendEditor(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Divi Page in the frontend editor.
 		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend Editor');
@@ -134,7 +134,7 @@ class DiviBroadcastsCest
 	}
 
 	/**
-	 * Test the Broadcasts module displays the expected message when the ConvertKit account
+	 * Test the Broadcasts module displays the expected message when the Kit account
 	 * has no broadcasts.
 	 *
 	 * @since   2.5.7
@@ -144,8 +144,8 @@ class DiviBroadcastsCest
 	public function testBroadcastsModuleInFrontendEditorWhenNoBroadcasts(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Create a Divi Page in the frontend editor.
 		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend: No Broadcasts');
@@ -175,7 +175,7 @@ class DiviBroadcastsCest
 	{
 		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

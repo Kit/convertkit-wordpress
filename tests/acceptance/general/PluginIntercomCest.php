@@ -15,7 +15,7 @@ class PluginIntercomCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -28,34 +28,34 @@ class PluginIntercomCest
 	public function testIntercomDisplaysOnPluginScreens(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Settings screen, which will show the OAuth Connect button.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm the Intercom script is loaded.
 		$this->_seeIntercomScript($I);
 
 		// Authenticate the Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Settings screen, which will show all settings.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Confirm the Intercom script is loaded.
 		$this->_seeIntercomScript($I);
 
 		// Go to the Plugin's Tools screen.
-		$I->loadConvertKitSettingsToolsScreen($I);
+		$I->loadKitSettingsToolsScreen($I);
 
 		// Confirm the Intercom script is loaded.
 		$this->_seeIntercomScript($I);
 
 		// Go to the Plugin's Restrict Content Settings screen.
-		$I->loadConvertKitSettingsRestrictContentScreen($I);
+		$I->loadKitSettingsRestrictContentScreen($I);
 
 		// Confirm the Intercom script is loaded.
 		$this->_seeIntercomScript($I);
 
 		// Go to the Plugin's Broadcasts screen.
-		$I->loadConvertKitSettingsBroadcastsScreen($I);
+		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Confirm the Intercom script is loaded.
 		$this->_seeIntercomScript($I);
@@ -71,7 +71,7 @@ class PluginIntercomCest
 	public function testIntercomDisplaysOnSetupWizardScreens(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Go to the Plugin's Setup Wizard screen.
 		$I->amOnAdminPage('options.php?page=convertkit-setup');
@@ -117,7 +117,7 @@ class PluginIntercomCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

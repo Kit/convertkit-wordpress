@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form's Elementor Widget.
+ * Tests for the Kit Form's Elementor Widget.
  *
  * @since   1.9.6
  */
@@ -15,12 +15,12 @@ class ElementorFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'elementor');
 
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -38,7 +38,7 @@ class ElementorFormCest
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
 
-		// When Elementor loads, search for the ConvertKit Form block.
+		// When Elementor loads, search for the Kit Form block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form');
 
@@ -64,7 +64,7 @@ class ElementorFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -79,7 +79,7 @@ class ElementorFormCest
 	public function testFormWidgetWithValidLegacyFormParameter(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -99,7 +99,7 @@ class ElementorFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Form is displayed.
+		// Confirm that the Kit Form is displayed.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -121,13 +121,13 @@ class ElementorFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
 	 * Create a Page in the database comprising of Elementor Page Builder data
-	 * containing a ConvertKit Form widget.
+	 * containing a Kit Form widget.
 	 *
 	 * Codeception's dragAndDrop() method doesn't support dropping an element into an iframe, which is
 	 * how Elementor works for adding widgets to a Page.
@@ -142,7 +142,7 @@ class ElementorFormCest
 	 *
 	 * @param   AcceptanceTester $I      Tester.
 	 * @param   string           $title  Page Title.
-	 * @param   int              $formID ConvertKit Form ID.
+	 * @param   int              $formID Kit Form ID.
 	 * @return  int                         Page ID
 	 */
 	private function _createPageWithFormWidget(AcceptanceTester $I, $title, $formID)
@@ -185,7 +185,7 @@ class ElementorFormCest
 					'_elementor_edit_mode'     => 'builder',
 					'_elementor_template_type' => 'wp-page',
 
-					// Configure ConvertKit Plugin to not display a default Form,
+					// Configure Kit Plugin to not display a default Form,
 					// as we are testing for the Form in Elementor.
 					'_wp_convertkit_post_meta' => [
 						'form'         => '0',
@@ -209,7 +209,7 @@ class ElementorFormCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'elementor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

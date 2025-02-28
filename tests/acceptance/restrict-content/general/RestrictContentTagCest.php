@@ -15,9 +15,8 @@ class RestrictContentTagCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -30,6 +29,9 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTag(AcceptanceTester $I)
 	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag');
 
@@ -58,7 +60,7 @@ class RestrictContentTagCest
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when:
 	 * - the Plugin is set to Require Login,
-	 * - creating a viewing a new WordPress Page,
+	 * - creating and viewing a new WordPress Page,
 	 * - entering an email address displays the code verification screen
 	 * - using a signed subscriber ID that has access to the Tag displays the content.
 	 *
@@ -68,8 +70,11 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRequireLoginEnabled(AcceptanceTester $I)
 	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
 		// Setup Restrict Content functionality with Require Login enabled.
-		$I->setupConvertKitPluginRestrictContent(
+		$I->setupKitPluginRestrictContent(
 			$I,
 			[
 				'require_tag_login' => 'on',
@@ -98,14 +103,14 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url, $I->generateEmailAddress());
+		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress());
 	}
 
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when:
 	 * - the Plugin is set to Require Login,
 	 * - the Plugin has its Recaptcha settings defined,
-	 * - creating a viewing a new WordPress Page,
+	 * - creating and viewing a new WordPress Page,
 	 * - entering an email address displays the code verification screen
 	 * - using a signed subscriber ID that has access to the Tag displays the content.
 	 *
@@ -115,16 +120,21 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaAndRequireLoginEnabled(AcceptanceTester $I)
 	{
-		// Setup Restrict Content functionality with Require Login and reCAPTCHA enabled.
-		$I->setupConvertKitPluginRestrictContent(
-			$I,
-			[
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
+		// Define reCAPTCHA settings.
+		$options = [
+			'settings' => [
 				'require_tag_login'       => 'on',
 				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
 				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
 				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
-			]
-		);
+			],
+		];
+
+		// Setup Restrict Content functionality with Require Login and reCAPTCHA enabled.
+		$I->setupKitPluginRestrictContent($I, $options['settings']);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Recaptcha and Require Login');
@@ -148,14 +158,66 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendUsingSignedSubscriberID($I, $url, $I->generateEmailAddress(), false, true);
+		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress(), $options);
+	}
+
+	/**
+	 * Test that restricting content by a Tag specified in the Page Settings works when:
+	 * - the Plugin is set to Require Login,
+	 * - the Plugin has its Recaptcha settings defined,
+	 * - creating and viewing a new WordPress Page,
+	 * - entering an email address displays the code verification screen
+	 * - using a signed subscriber ID that has access to the Tag displays the content.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testRestrictContentByTagUsingLoginModal(AcceptanceTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
+		// Define reCAPTCHA settings.
+		$options = [
+			'settings' => [
+				'require_tag_login' => 'on',
+			],
+		];
+
+		// Setup Restrict Content functionality with Require Login enabled.
+		$I->setupKitPluginRestrictContent($I, $options['settings']);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Login Modal');
+
+		// Configure metabox's Restrict Content setting = Tag name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByTagOnFrontendUsingLoginModal($I, $url, $options);
 	}
 
 	/**
 	 * Test that restricting content by a Tag that does not exist does not output
 	 * a fatal error and instead displays all of the Page's content.
 	 *
-	 * This checks for when a Tag is deleted in ConvertKit, but is still specified
+	 * This checks for when a Tag is deleted in Kit, but is still specified
 	 * as the Restrict Content setting for a Page.
 	 *
 	 * @since   2.3.3
@@ -164,12 +226,15 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByInvalidTag(AcceptanceTester $I)
 	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
 			$I,
 			[
 				'post_title'               => 'Kit: Page: Restrict Content: Invalid Tag',
-				'restrict_content_setting' => 'tag_12345', // A fake Tag that does not exist in ConvertKit.
+				'restrict_content_setting' => 'tag_12345', // A fake Tag that does not exist in Kit.
 			]
 		);
 
@@ -190,15 +255,20 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaEnabled(AcceptanceTester $I)
 	{
-		// Setup Restrict Content functionality with reCAPTCHA enabled.
-		$I->setupConvertKitPluginRestrictContent(
-			$I,
-			[
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
+		// Define options.
+		$options = [
+			'settings' => [
 				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
 				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
 				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
-			]
-		);
+			],
+		];
+
+		// Setup Restrict Content functionality with reCAPTCHA enabled.
+		$I->setupKitPluginRestrictContent($I, $options);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: reCAPTCHA');
@@ -222,7 +292,7 @@ class RestrictContentTagCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), false, true);
+		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), $options['settings']);
 	}
 
 	/**
@@ -235,8 +305,11 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaEnabledWithHighMinimumScore(AcceptanceTester $I)
 	{
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
 		// Setup Restrict Content functionality with reCAPTCHA enabled.
-		$I->setupConvertKitPluginRestrictContent(
+		$I->setupKitPluginRestrictContent(
 			$I,
 			[
 				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
@@ -291,6 +364,9 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagUsingQuickEdit(AcceptanceTester $I)
 	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
 			$I,
@@ -323,6 +399,9 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagUsingBulkEdit(AcceptanceTester $I)
 	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
 		// Programmatically create two Pages.
 		$pageIDs = array(
 			$I->createRestrictedContentPage(
@@ -368,7 +447,7 @@ class RestrictContentTagCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

@@ -15,8 +15,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 
 		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
 		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
@@ -34,8 +34,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentWhenDisabled(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product');
@@ -64,8 +64,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testNoRestrictContentOnPrivateCPT(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'private', 'Kit: Private: Restrict Content');
@@ -87,8 +87,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentByProduct(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product');
@@ -126,8 +126,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentByProductWithGeneratedExcerpt(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Define visible content and member-only content.
 		$visibleContent    = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
@@ -175,8 +175,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentModalByProduct(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
 
 		// Add the CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product: Modal');
@@ -200,14 +200,14 @@ class RestrictContentProductCPTCest
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentModalByProductOnFrontend($I, $url);
+		$I->testRestrictedContentModal($I, $url);
 	}
 
 	/**
 	 * Test that restricting content by a Product that does not exist does not output
 	 * a fatal error and instead displays all of the CPT's content.
 	 *
-	 * This checks for when a Product is deleted in ConvertKit, but is still specified
+	 * This checks for when a Product is deleted in Kit, but is still specified
 	 * as the Restrict Content setting for the CPT.
 	 *
 	 * @since   2.4.3
@@ -216,8 +216,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentByInvalidProduct(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create the CPT.
 		$postID = $I->createRestrictedContentPage(
@@ -225,7 +225,7 @@ class RestrictContentProductCPTCest
 			[
 				'post_type'                => 'article',
 				'post_title'               => 'Kit: Article: Restrict Content: Invalid Product',
-				'restrict_content_setting' => 'product_12345', // A fake Product that does not exist in ConvertKit.
+				'restrict_content_setting' => 'product_12345', // A fake Product that does not exist in Kit.
 			]
 		);
 
@@ -246,8 +246,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentByProductUsingQuickEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create the CPT.
 		$postID = $I->createRestrictedContentPage(
@@ -282,8 +282,8 @@ class RestrictContentProductCPTCest
 	 */
 	public function testRestrictContentByProductUsingBulkEdit(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 
 		// Programmatically create two CPTs.
 		$postIDs = array(
@@ -335,7 +335,7 @@ class RestrictContentProductCPTCest
 		$I->unregisterCustomPostType($I, 'article');
 		$I->unregisterCustomPostType($I, 'private');
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

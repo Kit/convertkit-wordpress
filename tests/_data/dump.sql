@@ -110,9 +110,9 @@ CREATE TABLE `wp_options` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
-(1, 'siteurl',  'http://convertkit.local', 'on'),
-(2, 'home', 'http://convertkit.local', 'on'),
-(3, 'blogname', 'convertkit', 'on'),
+(1, 'siteurl',  'http://kit.local', 'on'),
+(2, 'home', 'http://kit.local', 'on'),
+(3, 'blogname', 'kit', 'on'),
 (4, 'blogdescription',  'Just another WordPress site',  'on'),
 (5, 'users_can_register', '0',  'on'),
 (6, 'admin_email',  'dev-email@flywheel.local', 'on'),
@@ -392,7 +392,7 @@ CREATE TABLE `wp_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 INSERT INTO `wp_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`) VALUES
-(1, 'admin',  '$P$BPKHO1xSCwu6j57sJB/p7JndeBdRVd.', 'admin',  'dev-email@flywheel.local', 'http://convertkit.local',  '2023-07-03 13:38:12',  '', 0,  'admin');
+(1, 'admin',  '$P$BPKHO1xSCwu6j57sJB/p7JndeBdRVd.', 'admin',  'dev-email@flywheel.local', 'http://kit.local',  '2023-07-03 13:38:12',  '', 0,  'admin');
 
 DROP TABLE IF EXISTS `wp_wlcc_contentarchiver`;
 CREATE TABLE `wp_wlcc_contentarchiver` (

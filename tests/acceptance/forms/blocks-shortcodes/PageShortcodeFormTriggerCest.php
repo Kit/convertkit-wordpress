@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Form Trigger shortcode.
+ * Tests for the Kit Form Trigger shortcode.
  *
  * @since   2.2.0
  */
@@ -15,7 +15,7 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -28,9 +28,9 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeInVisualEditorWithValidFormParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Visual Editor');
@@ -48,7 +48,7 @@ class PageShortcodeFormTriggerCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
@@ -62,9 +62,9 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeInTextEditorWithValidFormTriggerParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Text Editor');
@@ -82,7 +82,7 @@ class PageShortcodeFormTriggerCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
@@ -95,25 +95,25 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeWithInvalidFormParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Page with Shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-form-trigger-shortcode-invalid-form-param',
+				'post_name'    => 'kit-form-trigger-shortcode-invalid-form-param',
 				'post_content' => '[convertkit_formtrigger=1]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-form-trigger-shortcode-invalid-form-param');
+		$I->amOnPage('/kit-form-trigger-shortcode-invalid-form-param');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that no ConvertKit Form Trigger button is displayed.
+		// Confirm that no Kit Form Trigger button is displayed.
 		$I->dontSeeFormTriggerOutput($I);
 	}
 
@@ -126,9 +126,9 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeInVisualEditorWithTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Text Param');
@@ -147,7 +147,7 @@ class PageShortcodeFormTriggerCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Sign up');
 	}
 
@@ -160,9 +160,9 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeInVisualEditorWithBlankTextParameter(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Blank Text Param');
@@ -181,7 +181,7 @@ class PageShortcodeFormTriggerCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
@@ -194,9 +194,9 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeWithHexColorParameters(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define colors.
 		$backgroundColor = '#ee1616';
@@ -208,13 +208,13 @@ class PageShortcodeFormTriggerCest
 		// other Acceptance tests confirm that the shortcode can be added in the Classic Editor.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-form-trigger-shortcode-hex-color-params',
+				'post_name'    => 'kit-page-form-trigger-shortcode-hex-color-params',
 				'post_content' => '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe" background_color="' . $backgroundColor . '" text_color="' . $textColor . '"]',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-form-trigger-shortcode-hex-color-params');
+		$I->amOnPage('/kit-page-form-trigger-shortcode-hex-color-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -222,7 +222,7 @@ class PageShortcodeFormTriggerCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe', $textColor, $backgroundColor);
 	}
 
@@ -236,20 +236,20 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeParameterEscaping(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin with no default form specified.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Define a 'bad' shortcode.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-page-form-trigger-shortcode-parameter-escaping',
+				'post_name'    => 'kit-page-form-trigger-shortcode-parameter-escaping',
 				'post_content' => '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text=\'Subscribe\' text_color=\'red" onmouseover="alert(1)"\']',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/convertkit-page-form-trigger-shortcode-parameter-escaping');
+		$I->amOnPage('/kit-page-form-trigger-shortcode-parameter-escaping');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -261,7 +261,7 @@ class PageShortcodeFormTriggerCest
 		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
 		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
 
-		// Confirm that the ConvertKit Form Trigger is displayed.
+		// Confirm that the Kit Form Trigger is displayed.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
@@ -322,8 +322,8 @@ class PageShortcodeFormTriggerCest
 	}
 
 	/**
-	 * Test the Form shortcode displays a message with a link to ConvertKit,
-	 * when the ConvertKit account has no forms.
+	 * Test the Form shortcode displays a message with a link to Kit,
+	 * when the Kit account has no forms.
 	 *
 	 * @since   2.2.3
 	 *
@@ -332,8 +332,8 @@ class PageShortcodeFormTriggerCest
 	public function testFormTriggerShortcodeWhenNoForms(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: No Forms');
@@ -347,7 +347,7 @@ class PageShortcodeFormTriggerCest
 		// Confirm an error notice displays.
 		$I->waitForElementVisible('#convertkit-modal-body-body div.notice');
 
-		// Confirm that the Form block displays instructions to the user on how to add a Form in ConvertKit.
+		// Confirm that the Form block displays instructions to the user on how to add a Form in Kit.
 		$I->see(
 			'No modal, sticky bar or slide in forms exist in Kit.',
 			[
@@ -355,7 +355,7 @@ class PageShortcodeFormTriggerCest
 			]
 		);
 
-		// Click the link to confirm it loads ConvertKit.
+		// Click the link to confirm it loads Kit.
 		$I->click(
 			'Click here to create a form.',
 			[
@@ -366,7 +366,7 @@ class PageShortcodeFormTriggerCest
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
 
-		// Confirm the ConvertKit login screen loaded.
+		// Confirm the Kit login screen loaded.
 		$I->waitForElementVisible('input[name="user[email]"]');
 
 		// Close tab.
@@ -391,7 +391,7 @@ class PageShortcodeFormTriggerCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

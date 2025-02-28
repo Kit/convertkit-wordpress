@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for WordPress Pages when no ConvertKit Forms exist in the ConvertKit account.
+ * Tests for WordPress Pages when no Kit Forms exist in the Kit account.
  *
  * @since   1.9.6.1
  */
@@ -15,10 +15,10 @@ class PageNoFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResourcesNoData($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
 
 		// Navigate to Pages > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=page');
@@ -29,7 +29,7 @@ class PageNoFormCest
 
 	/**
 	 * Test that UTM parameters are included in links displayed in the metabox for the user to sign in to
-	 * their ConvertKit account.
+	 * their Kit account.
 	 *
 	 * @since   1.9.6
 	 *
@@ -58,7 +58,7 @@ class PageNoFormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

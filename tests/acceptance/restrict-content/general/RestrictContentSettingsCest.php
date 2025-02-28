@@ -15,11 +15,11 @@ class RestrictContentSettingsCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit Plugin, disabling JS.
-		$I->setupConvertKitPluginDisableJS($I);
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 	}
 
 	/**
@@ -32,7 +32,7 @@ class RestrictContentSettingsCest
 	public function testAccessibility(AcceptanceTester $I)
 	{
 		// Go to the Plugin's Member Content Screen.
-		$I->loadConvertKitSettingsRestrictContentScreen($I);
+		$I->loadKitSettingsRestrictContentScreen($I);
 
 		// Confirm that settings have label[for] attributes.
 		$defaults = $I->getRestrictedContentDefaultSettings();
@@ -51,7 +51,7 @@ class RestrictContentSettingsCest
 	public function testSaveDefaultSettings(AcceptanceTester $I)
 	{
 		// Save settings.
-		$this->_setupConvertKitPluginRestrictContent($I);
+		$this->_setupKitPluginRestrictContent($I);
 
 		// Confirm default values were saved and display in the form fields.
 		$I->checkRestrictContentSettings($I, $I->getRestrictedContentDefaultSettings());
@@ -84,13 +84,18 @@ class RestrictContentSettingsCest
 			// Permit Crawlers.
 			'permit_crawlers'         => '',
 
+			// Restrict by Form.
+			'no_access_text_form'     => '',
+
 			// Restrict by Product.
 			'subscribe_heading'       => '',
 			'subscribe_text'          => '',
+			'no_access_text'          => '',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => '',
 			'subscribe_text_tag'      => '',
+			'no_access_text_tag'      => '',
 			'require_tag_login'       => '',
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
@@ -104,11 +109,10 @@ class RestrictContentSettingsCest
 			'email_description_text'  => '',
 			'email_check_heading'     => '',
 			'email_check_text'        => '',
-			'no_access_text'          => '',
 		);
 
 		// Save settings.
-		$this->_setupConvertKitPluginRestrictContent($I, $settings);
+		$this->_setupKitPluginRestrictContent($I, $settings);
 
 		// Confirm default values were saved and display in the form fields.
 		$I->checkRestrictContentSettings($I, $I->getRestrictedContentDefaultSettings());
@@ -144,10 +148,12 @@ class RestrictContentSettingsCest
 			// Restrict by Product.
 			'subscribe_heading'       => 'Subscribe Heading',
 			'subscribe_text'          => 'Subscribe Text',
+			'no_access_text'          => 'No Access Text',
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => 'Subscribe Heading Tag',
 			'subscribe_text_tag'      => 'Subscribe Text Tag',
+			'no_access_text_tag'      => 'No Access Text Tag',
 			'require_tag_login'       => 'on',
 			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
 			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
@@ -161,11 +167,10 @@ class RestrictContentSettingsCest
 			'email_description_text'  => 'Email Description Text',
 			'email_check_heading'     => 'Email Check Heading',
 			'email_check_text'        => 'Email Check Text',
-			'no_access_text'          => 'No Access Text',
 		);
 
 		// Save settings.
-		$this->_setupConvertKitPluginRestrictContent($I, $settings);
+		$this->_setupKitPluginRestrictContent($I, $settings);
 
 		// Confirm custom values were saved and display in the form fields.
 		$I->checkRestrictContentSettings($I, $settings);
@@ -184,7 +189,7 @@ class RestrictContentSettingsCest
 			$I,
 			$pageID,
 			[
-				'text_items' => $settings,
+				'settings' => $settings,
 			]
 		);
 	}
@@ -199,7 +204,7 @@ class RestrictContentSettingsCest
 	public function testDisableCSSSetting(AcceptanceTester $I)
 	{
 		// Disable CSS.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 		$I->checkOption('#no_css');
 		$I->click('Save Changes');
 
@@ -224,10 +229,10 @@ class RestrictContentSettingsCest
 	 * @param   AcceptanceTester $I          AcceptanceTester.
 	 * @param   bool|array       $settings   Array of key/value settings. If not defined, uses expected defaults.
 	 */
-	public function _setupConvertKitPluginRestrictContent($I, $settings = false)
+	public function _setupKitPluginRestrictContent($I, $settings = false)
 	{
 		// Go to the Plugin's Member Content Screen.
-		$I->loadConvertKitSettingsRestrictContentScreen($I);
+		$I->loadKitSettingsRestrictContentScreen($I);
 
 		// Complete fields.
 		if ( $settings ) {
@@ -267,7 +272,7 @@ class RestrictContentSettingsCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

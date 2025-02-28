@@ -145,6 +145,23 @@
 					<select name="wp-convertkit[restrict_content]" id="wp-convertkit-restrict_content" class="convertkit-select2">
 						<option value="0"<?php selected( '', $convertkit_post->get_restrict_content() ); ?> data-preserve-on-refresh="1"><?php esc_html_e( 'Don\'t restrict content to members only.', 'convertkit' ); ?></option>
 
+						<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>" data-resource="forms">
+							<?php
+							// Forms.
+							if ( $convertkit_forms->inline_exist() ) {
+								foreach ( $convertkit_forms->get_inline() as $convertkit_form ) {
+									printf(
+										'<option value="form_%s"%s>%s [%s]</option>',
+										esc_attr( $convertkit_form['id'] ),
+										selected( $convertkit_post->get_restrict_content(), 'form_' . $convertkit_form['id'], false ),
+										esc_attr( $convertkit_form['name'] ),
+										( ! empty( $convertkit_form['format'] ) ? esc_attr( $convertkit_form['format'] ) : 'inline' )
+									);
+								}
+							}
+							?>
+						</optgroup>
+
 						<optgroup label="<?php esc_attr_e( 'Tags', 'convertkit' ); ?>" data-resource="tags">
 							<?php
 							// Tags.
@@ -175,9 +192,16 @@
 						<span class="dashicons dashicons-update"></span>
 					</button>
 					<p class="description">
-						<?php esc_html_e( 'Select the Kit tag or product that the visitor must be subscribed to, permitting them access to view this members only content.', 'convertkit' ); ?>
+						<?php esc_html_e( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this members only content.', 'convertkit' ); ?>
 						<br />
-						<?php esc_html_e( 'If a tag is selected, a subscription form will be displayed. On submission, the email address will be subscribed to the selected tag, granting access to the members only content.', 'convertkit' ); ?>
+						<code><?php esc_html_e( 'Form', 'convertkit' ); ?></code>
+						<?php esc_html_e( ': Displays the Kit form. On submission, the email address will be subscribed to the selected form, granting access to the members only content. Useful to gate free content in return for an email address.', 'convertkit' ); ?>
+						<br />
+						<code><?php esc_html_e( 'Tag', 'convertkit' ); ?></code>
+						<?php esc_html_e( ': Displays a WordPress styled subscription form. On submission, the email address will be subscribed to the selected tag, granting access to the members only content. Useful to gate free content in return for an email address.', 'convertkit' ); ?>
+						<br />
+						<code><?php esc_html_e( 'Product', 'convertkit' ); ?></code>
+						<?php esc_html_e( ': Displays a link to the Kit product, and a login form. Useful to gate content that can only be accessed by purchasing the Kit product.', 'convertkit' ); ?>
 					</p>
 				</div>
 			</td>

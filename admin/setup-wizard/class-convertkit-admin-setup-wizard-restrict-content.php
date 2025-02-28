@@ -176,11 +176,11 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 			case 3:
 				// Sanitize configuration.
 				$configuration = array(
-					'type'             => sanitize_text_field( stripslashes( $_POST['type'] ) ),
-					'title'            => sanitize_text_field( stripslashes( $_POST['title'] ) ),
-					'description'      => sanitize_textarea_field( stripslashes( $_POST['description'] ) ),
+					'type'             => ( isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'download' ),
+					'title'            => ( isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '' ),
+					'description'      => ( isset( $_POST['description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['description'] ) ) : '' ),
 					'number_of_pages'  => ( isset( $_POST['number_of_pages'] ) ? absint( $_POST['number_of_pages'] ) : 0 ),
-					'restrict_content' => sanitize_text_field( stripslashes( $_POST['restrict_content'] ) ),
+					'restrict_content' => ( isset( $_POST['restrict_content'] ) ? sanitize_text_field( wp_unslash( $_POST['restrict_content'] ) ) : '' ),
 					'post_type'        => $this->post_type,
 				);
 
@@ -234,7 +234,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 		}
 
 		// Bail if the Post Type isn't supported.
-		$this->post_type = isset( $_REQUEST['ck_post_type'] ) ? sanitize_text_field( $_REQUEST['ck_post_type'] ) : 'page'; // phpcs:ignore WordPress.Security.NonceVerification
+		$this->post_type = isset( $_REQUEST['ck_post_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['ck_post_type'] ) ) : 'page'; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! in_array( $this->post_type, convertkit_get_supported_post_types(), true ) ) {
 			wp_die(
 				sprintf(
@@ -303,7 +303,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 			case 2:
 				// Define Member Content Type.
-				$this->type = sanitize_text_field( $_REQUEST['type'] ); // phpcs:ignore WordPress.Security.NonceVerification
+				$this->type = ( isset( $_REQUEST['type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['type'] ) ) : 'download' ); // phpcs:ignore WordPress.Security.NonceVerification
 
 				// Define Label for Title.
 				switch ( $this->type ) {

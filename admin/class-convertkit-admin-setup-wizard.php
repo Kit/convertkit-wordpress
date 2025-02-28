@@ -406,7 +406,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		if ( ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return false;
 		}
-		if ( sanitize_text_field( $_GET['page'] ) !== $this->page_name ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( sanitize_text_field( wp_unslash( $_GET['page'] ) ) !== $this->page_name ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return false;
 		}
 

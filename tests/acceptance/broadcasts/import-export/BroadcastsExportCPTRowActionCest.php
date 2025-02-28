@@ -15,10 +15,10 @@ class BroadcastsExportCPTRowActionCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
 		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
@@ -53,7 +53,7 @@ class BroadcastsExportCPTRowActionCest
 
 	/**
 	 * Tests that an action is displayed in the Articles table when the 'Enable Export Actions' is enabled
-	 * in the Plugin's settings, and a Broadcast is created in ConvertKit when clicked.
+	 * in the Plugin's settings, and a Broadcast is created in Kit when clicked.
 	 *
 	 * @since   2.7.2
 	 *
@@ -62,7 +62,7 @@ class BroadcastsExportCPTRowActionCest
 	public function testBroadcastsExportRowActionWhenEnabled(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Articles.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -110,7 +110,7 @@ class BroadcastsExportCPTRowActionCest
 
 	/**
 	 * Tests that the 'Disable Styles' setting is honored when enabled in the Plugin's settings, and a
-	 * Broadcast is created in ConvertKit.
+	 * Broadcast is created in Kit.
 	 *
 	 * @since   2.7.2
 	 *
@@ -119,7 +119,7 @@ class BroadcastsExportCPTRowActionCest
 	public function testBroadcastsExportActionWithDisableStylesEnabled(AcceptanceTester $I)
 	{
 		// Enable Export Actions for Articles.
-		$I->setupConvertKitPluginBroadcasts(
+		$I->setupKitPluginBroadcasts(
 			$I,
 			[
 				'enabled_export' => true,
@@ -178,7 +178,7 @@ class BroadcastsExportCPTRowActionCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->unregisterCustomPostType($I, 'article');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

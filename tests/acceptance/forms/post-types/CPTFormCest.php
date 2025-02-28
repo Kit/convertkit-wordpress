@@ -15,12 +15,12 @@ class CPTFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 
-		// Setup ConvertKit plugin .
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit plugin .
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
 		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
@@ -38,9 +38,9 @@ class CPTFormCest
 	 */
 	public function testAccessibility(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=article');
@@ -52,7 +52,7 @@ class CPTFormCest
 
 	/**
 	 * Tests that:
-	 * - no ConvertKit options are displayed when adding a new private Custom Post Type,
+	 * - no Kit options are displayed when adding a new private Custom Post Type,
 	 * - no debug output is displayed when viewing a private Custom Post Type.
 	 *
 	 * @since   2.4.3
@@ -70,7 +70,7 @@ class CPTFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 
 		// Confirm that no debug data is output, as this isn't a supported Post Type.
@@ -78,7 +78,7 @@ class CPTFormCest
 	}
 
 	/**
-	 * Tests that no ConvertKit options are display when quick or bulk editing in a private Custom Post Type.
+	 * Tests that no Kit options are display when quick or bulk editing in a private Custom Post Type.
 	 *
 	 * @since   2.4.3
 	 *
@@ -122,8 +122,8 @@ class CPTFormCest
 	public function testAddNewCPTUsingDefaultFormWithNoDefaultFormSpecifiedInPlugin(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default: None');
@@ -150,7 +150,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -164,14 +164,14 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default');
@@ -188,7 +188,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -204,15 +204,15 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultFormBeforeContent(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output before the CPT content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output before the CPT content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'          => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'article_form_position' => 'before_content',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default: Before Content');
@@ -232,7 +232,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the CPT content.
+		// Confirm that one Kit Form is output in the DOM after the CPT content.
 		// This confirms that there is only one script on the CPT for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_content');
 	}
@@ -248,15 +248,15 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultFormBeforeAndAfterContent(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output before and after the CPT content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output before and after the CPT content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'          => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'article_form_position' => 'before_after_content',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default: Before and After Content');
@@ -276,7 +276,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that two ConvertKit Forms are output in the DOM before and after the CPT content.
+		// Confirm that two Kit Forms are output in the DOM before and after the CPT content.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_after_content');
 	}
 
@@ -291,8 +291,8 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultFormAfterParagraphElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output after the 3rd paragraph of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output after the 3rd paragraph of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -301,7 +301,7 @@ class CPTFormCest
 				'article_form_position_element_index' => 3,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 3rd Paragraph Element');
@@ -312,7 +312,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the third paragraph.
+		// Confirm that one Kit Form is output in the DOM after the third paragraph.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'p', 3);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
@@ -333,8 +333,8 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultNonInlineFormAfterParagraphElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output after the 3rd paragraph of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output after the 3rd paragraph of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
@@ -343,7 +343,7 @@ class CPTFormCest
 				'article_form_position_element_index' => 3,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup CPT with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Non-Inline Form: Default: After 3rd Paragraph Element');
@@ -354,7 +354,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -376,8 +376,8 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultFormAfterHeadingElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output after the 2nd <h2> of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output after the 2nd <h2> of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -386,7 +386,7 @@ class CPTFormCest
 				'article_form_position_element_index' => 2,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 2nd H2 Element');
@@ -397,7 +397,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the second <h2> element.
+		// Confirm that one Kit Form is output in the DOM after the second <h2> element.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'h2', 2);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
@@ -418,8 +418,8 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultFormAfterImageElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output after the 2nd <img> of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output after the 2nd <img> of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -428,7 +428,7 @@ class CPTFormCest
 				'article_form_position_element_index' => 2,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 2nd Image Element');
@@ -439,7 +439,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the second <img> element.
+		// Confirm that one Kit Form is output in the DOM after the second <img> element.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'img', 2);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
@@ -460,8 +460,8 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefaultFormAfterOutOfBoundsElement(AcceptanceTester $I)
 	{
-		// Setup ConvertKit plugin with Default Form for CPTs set to be output after the 7th paragraph of content.
-		$I->setupConvertKitPlugin(
+		// Setup Kit plugin with Default Form for CPTs set to be output after the 7th paragraph of content.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -470,7 +470,7 @@ class CPTFormCest
 				'article_form_position_element_index' => 9,
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
 		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 9th Paragraph Element');
@@ -481,7 +481,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM after the content, as
+		// Confirm that one Kit Form is output in the DOM after the content, as
 		// the number of paragraphs is less than the position.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_content');
 
@@ -503,7 +503,7 @@ class CPTFormCest
 	public function testAddNewCPTUsingDefaultLegacyForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -511,7 +511,7 @@ class CPTFormCest
 				'article_form' => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Legacy: Default');
@@ -528,7 +528,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that the ConvertKit Default Legacy Form displays.
+		// Confirm that the Kit Default Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -542,14 +542,14 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingNoForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: None');
@@ -566,7 +566,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that no ConvertKit Form is displayed.
+		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
@@ -580,14 +580,14 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -604,7 +604,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -620,7 +620,7 @@ class CPTFormCest
 	public function testAddNewCPTUsingDefinedLegacyForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
@@ -628,7 +628,7 @@ class CPTFormCest
 				'article_form' => '',
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']);
@@ -645,7 +645,7 @@ class CPTFormCest
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that the ConvertKit Legacy Form displays.
+		// Confirm that the Kit Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
@@ -655,8 +655,8 @@ class CPTFormCest
 	 *
 	 * Whilst the on screen options won't permit selecting an invalid Form ID, a CPT might
 	 * have an invalid Form ID because:
-	 * - the form belongs to another ConvertKit account (i.e. API credentials were changed in the Plugin, but this CPT's specified Form was not changed)
-	 * - the form was deleted from the ConvertKit account.
+	 * - the form belongs to another Kit account (i.e. API credentials were changed in the Plugin, but this CPT's specified Form was not changed)
+	 * - the form was deleted from the Kit account.
 	 *
 	 * @since   2.4.3
 	 *
@@ -664,17 +664,17 @@ class CPTFormCest
 	 */
 	public function testAddNewCPTUsingInvalidDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create CPT, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
-		// a Form being deleted in ConvertKit.
+		// a Form being deleted in Kit.
 		$postID = $I->havePostInDatabase(
 			[
 				'post_type'  => 'article',
@@ -695,10 +695,10 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the invalid ConvertKit Form does not display.
+		// Confirm that the invalid Kit Form does not display.
 		$I->dontSeeElementInDOM('form[data-sv-form="11111"]');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -713,14 +713,14 @@ class CPTFormCest
 	 */
 	public function testQuickEditUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a CPT.
 		$postID = $I->havePostInDatabase(
@@ -746,7 +746,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -761,14 +761,14 @@ class CPTFormCest
 	 */
 	public function testQuickEditUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a CPT.
 		$postID = $I->havePostInDatabase(
@@ -794,7 +794,7 @@ class CPTFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 	}
@@ -809,14 +809,14 @@ class CPTFormCest
 	 */
 	public function testBulkEditUsingDefaultForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two CPTs.
 		$postIDs = array(
@@ -852,7 +852,7 @@ class CPTFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -868,14 +868,14 @@ class CPTFormCest
 	 */
 	public function testBulkEditUsingDefinedForm(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two CPTs.
 		$postIDs = array(
@@ -911,7 +911,7 @@ class CPTFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -927,14 +927,14 @@ class CPTFormCest
 	 */
 	public function testBulkEditWithNoChanges(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two CPTs with a defined form.
 		$postIDs = array(
@@ -984,7 +984,7 @@ class CPTFormCest
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-			// Confirm that one ConvertKit Form is output in the DOM.
+			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 		}
@@ -1000,14 +1000,14 @@ class CPTFormCest
 	 */
 	public function testBulkEditFieldsHiddenWhenNoCPTsFound(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin(
+		// Setup Kit Plugin.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'article_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Emulate the user searching for CPTs with a query string that yields no results.
 		$I->amOnAdminPage('edit.php?post_type=article&s=nothing');
@@ -1029,7 +1029,7 @@ class CPTFormCest
 	{
 		$I->unregisterCustomPostType($I, 'article');
 		$I->unregisterCustomPostType($I, 'private');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

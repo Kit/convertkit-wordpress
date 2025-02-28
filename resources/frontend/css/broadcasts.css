@@ -146,3 +146,18 @@
 		margin-bottom: 30px;
 	}
 }
+
+/**
+ * Imported Broadcasts to Posts
+ * - Styles here are designed to override common themes that may interfere
+ * with an imported Kit Broadcast, such as Elementor.
+ */
+body.convertkit-broadcast.elementor-default table,
+body.convertkit-broadcast.elementor-default table tbody,
+body.convertkit-broadcast.elementor-default table tbody td {
+	border: none;
+}
+body.convertkit-broadcast.elementor-default table tbody>tr:nth-child(odd)>td,
+body.convertkit-broadcast.elementor-default table tbody>tr:nth-child(odd)>th {
+	background: none;
+}

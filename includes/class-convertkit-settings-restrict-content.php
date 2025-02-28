@@ -208,9 +208,13 @@ class ConvertKit_Settings_Restrict_Content {
 			// Permit Crawlers.
 			'permit_crawlers'         => '',
 
+			// Restrict by Form.
+			'no_access_text_form'     => __( 'Your account does not have access to this content. Please use the form above to subscribe.', 'convertkit' ),
+
 			// Restrict by Product.
 			'subscribe_heading'       => __( 'Read this post with a premium subscription', 'convertkit' ),
 			'subscribe_text'          => __( 'This post is only available to premium subscribers. Join today to get access to all posts.', 'convertkit' ),
+			'no_access_text'          => __( 'Your account does not have access to this content. Please use the button above to purchase, or enter the email address you used to purchase the product.', 'convertkit' ),
 
 			// Restrict by Tag.
 			'subscribe_heading_tag'   => __( 'Subscribe to keep reading', 'convertkit' ),
@@ -219,6 +223,7 @@ class ConvertKit_Settings_Restrict_Content {
 			'recaptcha_site_key'      => '',
 			'recaptcha_secret_key'    => '',
 			'recaptcha_minimum_score' => '0.5',
+			'no_access_text_tag'      => __( 'Your account does not have access to this content. Please use the form above to subscribe.', 'convertkit' ),
 
 			// All.
 			'subscribe_button_label'  => __( 'Subscribe', 'convertkit' ),
@@ -228,7 +233,6 @@ class ConvertKit_Settings_Restrict_Content {
 			'email_description_text'  => __( 'We\'ll email you a magic code to log you in without a password.', 'convertkit' ),
 			'email_check_heading'     => __( 'We just emailed you a log in code', 'convertkit' ),
 			'email_check_text'        => __( 'Enter the code below to finish logging in', 'convertkit' ),
-			'no_access_text'          => __( 'Your account does not have access to this content. Please use the button above to purchase, or enter the email address you used to purchase the product.', 'convertkit' ),
 		);
 
 		/**

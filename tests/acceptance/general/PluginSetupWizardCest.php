@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the ConvertKit Plugin Setup Wizard, displayed on new Plugin activations.
+ * Tests for the Kit Plugin Setup Wizard, displayed on new Plugin activations.
  *
  * @since   1.9.8.4
  */
@@ -32,9 +32,9 @@ class PluginSetupWizardCest
 	 */
 	public function testSetupWizardDoesNotDisplayWhenConfigured(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Plugin.
 		$this->_activatePlugin($I);
@@ -56,9 +56,9 @@ class PluginSetupWizardCest
 		// Activate Admin Menu Editor Plugin.
 		$I->activateThirdPartyPlugin($I, 'admin-menu-editor');
 
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Activate Plugin.
 		$this->_activatePlugin($I);
@@ -123,12 +123,12 @@ class PluginSetupWizardCest
 		// Test Connect button.
 		$I->click('Connect');
 
-		// Confirm the ConvertKit hosted OAuth login screen is displayed.
+		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 
 		// Act as if we completed OAuth.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
 
 		// Confirm expected setup wizard screen is displayed.
@@ -158,7 +158,7 @@ class PluginSetupWizardCest
 		// Test Connect button.
 		$I->click('Connect');
 
-		// Confirm the ConvertKit hosted OAuth login screen is displayed.
+		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 
@@ -193,7 +193,7 @@ class PluginSetupWizardCest
 		$this->_activatePlugin($I);
 
 		// Define Plugin settings.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Create a Page and a Post, so that preview links display.
 		$I->havePostInDatabase(
@@ -230,7 +230,7 @@ class PluginSetupWizardCest
 		// Confirm that the preview is a WordPress Post.
 		$I->seeElementInDOM('body.single-post');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
@@ -250,7 +250,7 @@ class PluginSetupWizardCest
 		// Confirm that the preview is a WordPress Page.
 		$I->seeElementInDOM('body.page');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
@@ -272,7 +272,7 @@ class PluginSetupWizardCest
 
 	/**
 	 * Test that the Setup Wizard > Form Configuration screen works as expected
-	 * when API credentials are supplied for a ConvertKit account that contains
+	 * when API credentials are supplied for a Kit account that contains
 	 * no forms.
 	 *
 	 * @since   1.9.8.4
@@ -284,8 +284,8 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
-		// Define Plugin settings with a ConvertKit account containing no forms.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		// Define Plugin settings with a Kit account containing no forms.
+		$I->setupKitPluginCredentialsNoData($I);
 
 		// Load Step 2/3.
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
@@ -293,14 +293,14 @@ class PluginSetupWizardCest
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Create your first Kit Form', true);
 
-		// Confirm button link to create a form on ConvertKit is correct.
+		// Confirm button link to create a form on Kit is correct.
 		$I->seeInSource('<a href="https://app.kit.com/forms/new/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit"');
 
-		// Define Plugin settings with a ConvertKit account containing forms,
-		// as if we created a form in ConvertKit.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		// Define Plugin settings with a Kit account containing forms,
+		// as if we created a form in Kit.
+		$I->setupKitPluginNoDefaultForms($I);
 
-		// Click "I've created a form in ConvertKit" button.
+		// Click "I've created a form in Kit" button.
 		$I->click('I\'ve created a form in Kit');
 
 		// Confirm expected setup wizard screen is displayed.
@@ -324,7 +324,7 @@ class PluginSetupWizardCest
 		$this->_activatePlugin($I);
 
 		// Define Plugin settings.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Load Step 2/3.
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
@@ -346,10 +346,10 @@ class PluginSetupWizardCest
 	 */
 	public function testSetupWizardLinkOnPluginsScreen(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Plugins screen.
 		$I->amOnPluginsPage();
@@ -365,7 +365,7 @@ class PluginSetupWizardCest
 	 * Activate the Plugin, without checking it is activated, so that its Setup Wizard
 	 * screen loads.
 	 *
-	 * This differs from the activateConvertKitPlugin() method, which will ignore a Setup Wizard
+	 * This differs from the activateKitPlugin() method, which will ignore a Setup Wizard
 	 * screen by reloading the Plugins screen to confirm a Plugin's activation.
 	 *
 	 * @since   1.9.8.4
@@ -459,19 +459,19 @@ class PluginSetupWizardCest
 	 */
 	public function testSetupWizardModal(AcceptanceTester $I)
 	{
-		// Activate ConvertKit Plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit Plugin.
+		$I->activateKitPlugin($I);
 
 		// Manually navigate to the Plugin Setup Wizard; this will be performed via a block
 		// in a future PR, so this test can be moved to e.g. PageBlockFormCest.
 		$I->amOnAdminPage('options.php?page=convertkit-setup&convertkit-modal=1');
 
-		// Confirm the ConvertKit hosted OAuth login screen is displayed.
+		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 
 		// Act as if we completed OAuth.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2&convertkit-modal=1');
 
 		// Confirm the close modal view was loaded, which includes some JS.
@@ -489,7 +489,7 @@ class PluginSetupWizardCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

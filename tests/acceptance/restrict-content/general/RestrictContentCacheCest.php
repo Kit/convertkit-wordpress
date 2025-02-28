@@ -16,9 +16,9 @@ class RestrictContentCacheCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate and Setup ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Clear up any cache configuration files that might exist from previous tests.
 		$I->deleteWPCacheConfigFiles($I);
@@ -63,7 +63,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate Litespeed Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'litespeed-cache');
@@ -112,7 +113,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate W3 Total Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'w3-total-cache');
@@ -136,7 +138,7 @@ class RestrictContentCacheCest
 		$I->enableCachingWPFastestCachePlugin($I);
 
 		// No need to configure WP-Optimize to exclude caching when the ck_subscriber_id cookie is set,
-		// as this is automatically performed by the ConvertKit Plugin.
+		// as this is automatically performed by the Kit Plugin.
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -159,7 +161,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP Fastest Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-fastest-cache');
@@ -183,7 +186,7 @@ class RestrictContentCacheCest
 		$I->enableCachingWPOptimizePlugin($I);
 
 		// No need to configure WP-Optimize to exclude caching when the ck_subscriber_id cookie is set,
-		// as this is automatically performed by the ConvertKit Plugin.
+		// as this is automatically performed by the Kit Plugin.
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -206,7 +209,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP-Optimize Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-optimize');
@@ -253,7 +257,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP Super Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-super-cache');
@@ -293,7 +298,8 @@ class RestrictContentCacheCest
 
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// to confirm caching does not show the incorrect content.
-		$I->testRestrictedContentShowsContentWithValidSubscriberID($I, $pageID);
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $pageID);
+		$I->testRestrictContentDisplaysContent($I);
 
 		// Deactivate WP Super Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
@@ -311,7 +317,7 @@ class RestrictContentCacheCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

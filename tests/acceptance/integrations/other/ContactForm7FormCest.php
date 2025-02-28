@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for ConvertKit Forms integration with Contact Form 7.
+ * Tests for Kit Forms integration with Contact Form 7.
  *
  * @since   1.9.6
  */
@@ -15,7 +15,7 @@ class ContactForm7FormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'contact-form-7');
 	}
 
@@ -37,13 +37,13 @@ class ContactForm7FormCest
 	}
 
 	/**
-	 * Test that saving a Contact Form 7 to ConvertKit Form Mapping works.
+	 * Test that saving a Contact Form 7 to Kit Form Mapping works.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsContactForm7ToConvertKitFormMapping(AcceptanceTester $I)
+	public function testSettingsContactForm7ToKitFormMapping(AcceptanceTester $I)
 	{
 		// Setup Contact form 7 Form and configuration for this test.
 		$pageID = $this->_contactForm7SetupForm(
@@ -61,7 +61,7 @@ class ContactForm7FormCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has the expected form and referrer value set.
@@ -74,13 +74,13 @@ class ContactForm7FormCest
 	}
 
 	/**
-	 * Test that saving a Contact Form 7 to ConvertKit Legacy Form Mapping works.
+	 * Test that saving a Contact Form 7 to Kit Legacy Form Mapping works.
 	 *
 	 * @since   2.5.0
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsContactForm7ToConvertKitLegacyFormMapping(AcceptanceTester $I)
+	public function testSettingsContactForm7ToKitLegacyFormMapping(AcceptanceTester $I)
 	{
 		// Setup Contact form 7 Form and configuration for this test.
 		$pageID = $this->_contactForm7SetupForm(
@@ -98,18 +98,18 @@ class ContactForm7FormCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
-	 * Test that saving a Contact Form 7 to ConvertKit Tag Mapping works.
+	 * Test that saving a Contact Form 7 to Kit Tag Mapping works.
 	 *
 	 * @since   2.5.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsContactForm7ToConvertKitTagMapping(AcceptanceTester $I)
+	public function testSettingsContactForm7ToKitTagMapping(AcceptanceTester $I)
 	{
 		// Setup Contact form 7 Form and configuration for this test.
 		$pageID = $this->_contactForm7SetupForm(
@@ -127,7 +127,7 @@ class ContactForm7FormCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the tag.
@@ -135,13 +135,13 @@ class ContactForm7FormCest
 	}
 
 	/**
-	 * Test that saving a Contact Form 7 to ConvertKit Sequence Mapping works.
+	 * Test that saving a Contact Form 7 to Kit Sequence Mapping works.
 	 *
 	 * @since   2.5.2
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsContactForm7ToConvertKitSequenceMapping(AcceptanceTester $I)
+	public function testSettingsContactForm7ToKitSequenceMapping(AcceptanceTester $I)
 	{
 		// Setup Contact form 7 Form and configuration for this test.
 		$pageID = $this->_contactForm7SetupForm(
@@ -159,7 +159,7 @@ class ContactForm7FormCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
@@ -191,7 +191,7 @@ class ContactForm7FormCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was not added to ConvertKit.
+		// Confirm that the email address was not added to Kit.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
@@ -220,23 +220,23 @@ class ContactForm7FormCest
 			$emailAddress
 		);
 
-		// Confirm that the email address was added to ConvertKit.
+		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
 	 * Tests that the 'Enable Creator Network Recommendations' option on a Form's settings
-	 * is not displayed when invalid credentials are specified at WPForms > Settings > Integrations > ConvertKit.
+	 * is not displayed when invalid credentials are specified at WPForms > Settings > Integrations > Kit.
 	 *
 	 * @since   2.2.7
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsContactForm7CreatorNetworkRecommendationsOptionWhenDisabledOnConvertKitAccount(AcceptanceTester $I)
+	public function testSettingsContactForm7CreatorNetworkRecommendationsOptionWhenDisabledOnKitAccount(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginCredentialsNoData($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Contact Form 7 Form.
 		$contactForm7ID = $this->_createContactForm7Form($I);
@@ -251,7 +251,7 @@ class ContactForm7FormCest
 		$pageID = $I->havePageInDatabase(
 			[
 				'post_title'   => 'Kit: Contact Form 7: Creator Network Recommendations Disabled on Kit',
-				'post_name'    => 'convertkit-contact-form-7-creator-network-recommendations-disabled-convertkit',
+				'post_name'    => 'kit-contact-form-7-creator-network-recommendations-disabled-kit',
 				'post_content' => 'Form:
 [contact-form-7 id="' . $contactForm7ID . '"]',
 			]
@@ -263,19 +263,19 @@ class ContactForm7FormCest
 
 	/**
 	 * Tests that the 'Enable Creator Network Recommendations' option on a Form's settings
-	 * is displayed and saves correctly when valid credentials are specified at WPForms > Settings > Integrations > ConvertKit,
-	 * and the ConvertKit account has the Creator Network enabled.  Viewing and submitting the Form then correctly
+	 * is displayed and saves correctly when valid credentials are specified at WPForms > Settings > Integrations > Kit,
+	 * and the Kit account has the Creator Network enabled.  Viewing and submitting the Form then correctly
 	 * displays the Creator Network Recommendations modal.
 	 *
 	 * @since   2.2.7
 	 *
 	 * @param   AcceptanceTester $I  Tester.
 	 */
-	public function testSettingsContactForm7CreatorNetworkRecommendationsWhenEnabledOnConvertKitAccount(AcceptanceTester $I)
+	public function testSettingsContactForm7CreatorNetworkRecommendationsWhenEnabledOnKitAccount(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Contact Form 7 Form.
 		$contactForm7ID = $this->_createContactForm7Form($I);
@@ -299,7 +299,7 @@ class ContactForm7FormCest
 		$pageID = $I->havePageInDatabase(
 			[
 				'post_title'   => 'Kit: Contact Form 7: Creator Network Recommendations',
-				'post_name'    => 'convertkit-contact-form-7-creator-network-recommendations',
+				'post_name'    => 'kit-contact-form-7-creator-network-recommendations',
 				'post_content' => 'Form:
 [contact-form-7 id="' . $contactForm7ID . '"]',
 			]
@@ -371,7 +371,7 @@ class ContactForm7FormCest
 	 */
 	public function testSettingsMigratedOnUpgrade(AcceptanceTester $I)
 	{
-		// Create settings as if they were created / edited when the ConvertKit Plugin < 2.5.2
+		// Create settings as if they were created / edited when the Kit Plugin < 2.5.2
 		// was active.
 		$I->haveOptionInDatabase(
 			'_wp_convertkit_integration_contactform7_settings',
@@ -412,9 +412,9 @@ class ContactForm7FormCest
 	 */
 	private function _contactForm7SetupForm(AcceptanceTester $I, string $optionName)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPluginNoDefaultForms($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Contact Form 7 Form.
 		$contactForm7ID = $this->_createContactForm7Form($I);
@@ -495,8 +495,8 @@ class ContactForm7FormCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 
 		// We don't use deactivateThirdPartyPlugin(), as this checks for PHP warnings/errors.
 		// Contact Form 7 throws a warning on deactivation related to WordPress capabilities,

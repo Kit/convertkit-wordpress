@@ -202,7 +202,7 @@ class WPWidget extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('sidebar_widgets');
 		$I->dontHaveOptionInDatabase('widget_block');
 
-		// List any ConvertKit blocks here, so they're also removed as widgets from sidebars/footers.
+		// List any Kit blocks here, so they're also removed as widgets from sidebars/footers.
 		$I->dontHaveOptionInDatabase('widget_convertkit_form');
 		$I->dontHaveOptionInDatabase('widget_convertkit_broadcasts');
 	}

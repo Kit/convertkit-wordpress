@@ -11,6 +11,25 @@
 	<option value="0"><?php esc_html_e( 'All content', 'convertkit' ); ?></option>
 
 	<?php
+	// Forms.
+	if ( $this->forms->inline_exist() ) {
+		?>
+		<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>">
+			<?php
+			foreach ( $this->forms->get_inline() as $convertkit_form ) {
+				printf(
+					'<option value="form_%s"%s>%s [%s]</option>',
+					esc_attr( $convertkit_form['id'] ),
+					selected( $this->restrict_content_filter, 'form_' . $convertkit_form['id'], false ),
+					esc_attr( $convertkit_form['name'] ),
+					( ! empty( $convertkit_form['format'] ) ? esc_attr( $convertkit_form['format'] ) : 'inline' )
+				);
+			}
+			?>
+		</optgroup>
+		<?php
+	}
+
 	// Tags.
 	if ( $this->tags->exist() ) {
 		?>

@@ -16,13 +16,13 @@ class ActivateDeactivatePluginCest
 	 */
 	public function testPluginActivationAndDeactivation(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
-		$I->deactivateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
+		$I->deactivateKitPlugin($I);
 	}
 
 	/**
 	 * Test for no errors when this Plugin is activated after other
-	 * ConvertKit Plugins (downloaded from wordpress.org) are activated.
+	 * Kit Plugins (downloaded from wordpress.org) are activated.
 	 *
 	 * @since   2.0.1
 	 *
@@ -30,20 +30,20 @@ class ActivateDeactivatePluginCest
 	 */
 	public function testPluginActivationAndDeactivationWithOtherPlugins(AcceptanceTester $I)
 	{
-		// Activate other ConvertKit Plugins from wordpress.org.
+		// Activate other Kit Plugins from wordpress.org.
 		$I->activateThirdPartyPlugin($I, 'convertkit-for-woocommerce');
 
 		// Activate this Plugin.
-		// If this Plugin calls a function that doesn't exist in the outdated ConvertKit WordPress Library,
+		// If this Plugin calls a function that doesn't exist in the outdated Kit WordPress Library,
 		// activating this Plugin will fail, therefore failing the test.
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 
 		// Setup Plugin as if we performed OAuth.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Use API by loading Settings screen, which will use WordPress Libraries and show errors
-		// if there's a conflict e.g. an older WordPress Library was loaded from another ConvertKit Plugin.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		// if there's a conflict e.g. an older WordPress Library was loaded from another Kit Plugin.
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
@@ -52,7 +52,7 @@ class ActivateDeactivatePluginCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Deactivate Plugins.
-		$I->deactivateConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
 		$I->deactivateThirdPartyPlugin($I, 'convertkit-for-woocommerce');
 	}
 }

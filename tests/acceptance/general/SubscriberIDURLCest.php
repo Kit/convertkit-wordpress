@@ -15,9 +15,9 @@ class SubscriberIDURLCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->activateKitPlugin($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -32,28 +32,28 @@ class SubscriberIDURLCest
 		// Create Page.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-subscriber-id-url',
+				'post_name'    => 'kit-subscriber-id-url',
 				'post_content' => 'Test',
 			]
 		);
 
 		// Confirm that a blank ck_subscriber_id does not cause a fatal error.
-		$I->amOnPage('/convertkit-subscriber-id-url?ck_subscriber_id=');
+		$I->amOnPage('/kit-subscriber-id-url?ck_subscriber_id=');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that a non-numeric ck_subscriber_id does not cause a fatal error.
-		$I->amOnPage('/convertkit-subscriber-id-url?ck_subscriber_id=abcde');
+		$I->amOnPage('/kit-subscriber-id-url?ck_subscriber_id=abcde');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the ck_subscriber_id was removed.
-		$I->amOnPage('/convertkit-subscriber-id-url?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		$I->amOnPage('/kit-subscriber-id-url?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], $I->grabFromCurrentUrl());
 		$I->assertStringNotContainsString('#', $I->grabFromCurrentUrl());
 
 		// Load the Page with UTM parameters at the end.
-		$I->amOnPage('/convertkit-subscriber-id-url?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '&utm_source=email&utm_medium=email');
+		$I->amOnPage('/kit-subscriber-id-url?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '&utm_source=email&utm_medium=email');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], $I->grabFromCurrentUrl());
@@ -61,7 +61,7 @@ class SubscriberIDURLCest
 		$I->assertStringNotContainsString('#', $I->grabFromCurrentUrl());
 
 		// Load the Page with UTM parameters at the start.
-		$I->amOnPage('/convertkit-subscriber-id-url?utm_source=email&utm_medium=email&ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		$I->amOnPage('/kit-subscriber-id-url?utm_source=email&utm_medium=email&ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], $I->grabFromCurrentUrl());
@@ -82,28 +82,28 @@ class SubscriberIDURLCest
 		// Create Page.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-subscriber-id-url-hash',
+				'post_name'    => 'kit-subscriber-id-url-hash',
 				'post_content' => 'Test',
 			]
 		);
 
 		// Confirm that a blank ck_subscriber_id does not cause a fatal error.
-		$I->amOnPage('/convertkit-subscriber-id-url-hash?ck_subscriber_id=#hash');
+		$I->amOnPage('/kit-subscriber-id-url-hash?ck_subscriber_id=#hash');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that a non-numeric ck_subscriber_id does not cause a fatal error.
-		$I->amOnPage('/convertkit-subscriber-id-url-hash?ck_subscriber_id=abcde#hash');
+		$I->amOnPage('/kit-subscriber-id-url-hash?ck_subscriber_id=abcde#hash');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the ck_subscriber_id was removed.
-		$I->amOnPage('/convertkit-subscriber-id-url-hash?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '#hash');
+		$I->amOnPage('/kit-subscriber-id-url-hash?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '#hash');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], $I->grabFromCurrentUrl());
 		$I->assertStringContainsString('#hash', $I->grabFromCurrentUrl());
 
 		// Load the Page with UTM parameters at the end.
-		$I->amOnPage('/convertkit-subscriber-id-url-hash?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '&utm_source=email&utm_medium=email#hash');
+		$I->amOnPage('/kit-subscriber-id-url-hash?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '&utm_source=email&utm_medium=email#hash');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], $I->grabFromCurrentUrl());
@@ -111,7 +111,7 @@ class SubscriberIDURLCest
 		$I->assertStringContainsString('#hash', $I->grabFromCurrentUrl());
 
 		// Load the Page with UTM parameters at the start.
-		$I->amOnPage('/convertkit-subscriber-id-url-hash?utm_source=email&utm_medium=email&ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '#hash');
+		$I->amOnPage('/kit-subscriber-id-url-hash?utm_source=email&utm_medium=email&ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '#hash');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], $I->grabFromCurrentUrl());
@@ -131,7 +131,7 @@ class SubscriberIDURLCest
 		// Create Page.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-subscriber-id-cookie',
+				'post_name'    => 'kit-subscriber-id-cookie',
 				'post_content' => 'Test',
 			]
 		);
@@ -140,7 +140,7 @@ class SubscriberIDURLCest
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
 
 		// Confirm that no query parameters does not append a separator/question mark.
-		$I->amOnPage('/convertkit-subscriber-id-url');
+		$I->amOnPage('/kit-subscriber-id-url');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('?', $I->grabFromCurrentUrl());
@@ -160,7 +160,7 @@ class SubscriberIDURLCest
 		// Create Page.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'convertkit-subscriber-id-cookie-hash',
+				'post_name'    => 'kit-subscriber-id-cookie-hash',
 				'post_content' => 'Test',
 			]
 		);
@@ -169,7 +169,7 @@ class SubscriberIDURLCest
 		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
 
 		// Confirm that no query parameters does not append a separator/question mark.
-		$I->amOnPage('/convertkit-subscriber-id-url#hash');
+		$I->amOnPage('/kit-subscriber-id-url#hash');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 		$I->wait(2);
 		$I->assertStringNotContainsString('?', $I->grabFromCurrentUrl());
@@ -188,7 +188,7 @@ class SubscriberIDURLCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->resetCookie('ck_subscriber_id');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

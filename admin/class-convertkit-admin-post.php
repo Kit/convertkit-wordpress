@@ -224,8 +224,9 @@ class ConvertKit_Admin_Post {
 		$restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
 
 		// Fetch Post Settings, Forms, Landing Pages and Tags.
-		$convertkit_post          = new ConvertKit_Post( $post->ID );
-		$convertkit_forms         = new ConvertKit_Resource_Forms();
+		$convertkit_post  = new ConvertKit_Post( $post->ID );
+		$convertkit_forms = new ConvertKit_Resource_Forms();
+
 		$convertkit_landing_pages = new ConvertKit_Resource_Landing_Pages();
 		$convertkit_products      = new ConvertKit_Resource_Products();
 		$convertkit_tags          = new ConvertKit_Resource_Tags();
@@ -273,7 +274,7 @@ class ConvertKit_Admin_Post {
 		}
 
 		// Save Post's settings.
-		$this->save_post_settings( $post_id, $_POST['wp-convertkit'] );
+		$this->save_post_settings( $post_id, wp_unslash( $_POST['wp-convertkit'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 	}
 
@@ -303,7 +304,7 @@ class ConvertKit_Admin_Post {
 			}
 
 			// Sanitize value.
-			$new_value = sanitize_text_field( wp_unslash( $settings[ $key ] ) );
+			$new_value = sanitize_text_field( $settings[ $key ] );
 
 			// Skip if the setting value is -2, as this means it's a Bulk Edit request and this setting
 			// is set as 'No Change'.

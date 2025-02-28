@@ -15,8 +15,8 @@ class RestrictContentFilterCPTCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 
 		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
 		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
@@ -45,7 +45,7 @@ class RestrictContentFilterCPTCest
 	}
 
 	/**
-	 * Test that no dropdown filter on the CPT screen is displayed when the ConvertKit
+	 * Test that no dropdown filter on the CPT screen is displayed when the Kit
 	 * account has no Forms, Tag and Products.
 	 *
 	 * @since   2.4.3
@@ -55,7 +55,7 @@ class RestrictContentFilterCPTCest
 	public function testNoFilterDisplayedWhenNoResources(AcceptanceTester $I)
 	{
 		// Setup Plugin using credentials that have no resources.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		$I->setupKitPluginCredentialsNoData($I);
 
 		// Navigate to Articles.
 		$I->amOnAdminPage('edit.php?post_type=article');
@@ -63,7 +63,7 @@ class RestrictContentFilterCPTCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Check no filter is displayed, as the ConvertKit account has no resources.
+		// Check no filter is displayed, as the Kit account has no resources.
 		$I->dontSeeElementInDOM('#wp-convertkit-restrict-content-filter');
 	}
 
@@ -78,7 +78,7 @@ class RestrictContentFilterCPTCest
 	public function testNoFilterOnPrivateCPT(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Navigate to Private CPT.
 		$I->amOnAdminPage('edit.php?post_type=private');
@@ -100,7 +100,7 @@ class RestrictContentFilterCPTCest
 	public function testFilterByProduct(AcceptanceTester $I)
 	{
 		// Setup Plugin.
-		$I->setupConvertKitPlugin($I);
+		$I->setupKitPlugin($I);
 
 		// Create Article, set to restrict content to a Product.
 		$I->createRestrictedContentPage(
@@ -141,6 +141,106 @@ class RestrictContentFilterCPTCest
 	}
 
 	/**
+	 * Test that filtering by Tag works on the Articles screen.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testFilterByTag(AcceptanceTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Create Article, set to restrict content to a Product.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'article',
+				'post_title'               => 'Kit: Article: Restricted Content: Tag: Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+
+		// Navigate to Articles.
+		$I->amOnAdminPage('edit.php?post_type=article');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Article is listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Article: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+
+		// Filter by Tag.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Article is still listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Article: Restricted Content: Tag: Filter Test');
+		$I->see('Kit Member Content');
+	}
+
+	/**
+	 * Test that filtering by Form works on the Articles screen.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testFilterByForm(AcceptanceTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Create Article, set to restrict content to a Product.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'article',
+				'post_title'               => 'Kit: Article: Restricted Content: Form: Filter Test',
+				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
+			]
+		);
+
+		// Navigate to Articles.
+		$I->amOnAdminPage('edit.php?post_type=article');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Article is listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Article: Restricted Content: Form: Filter Test');
+		$I->see('Kit Member Content');
+
+		// Filter by Form.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Article is still listed, and has the 'Kit Member Content' label.
+		$I->see('Kit: Article: Restricted Content: Form: Filter Test');
+		$I->see('Kit Member Content');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
@@ -153,7 +253,7 @@ class RestrictContentFilterCPTCest
 	{
 		$I->unregisterCustomPostType($I, 'article');
 		$I->unregisterCustomPostType($I, 'private');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

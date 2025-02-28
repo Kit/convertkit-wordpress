@@ -10,8 +10,8 @@
 	<!-- Exclude minified Javascript files. -->
 	<exclude-pattern>*.min.js</exclude-pattern>
 
-	<!-- Check that code meets WordPress-Extra standards. -->
-	<rule ref="WordPress-Extra">
+	<!-- Check that code meets WordPress standards - this includes core, docs and extra. -->
+	<rule ref="WordPress">
 		<!--
 		We may want a middle ground though. The best way to do this is add the
 		entire ruleset, then rule by rule, remove ones that don't suit a project.
@@ -29,12 +29,10 @@
 		<exclude name="WordPress.Security.EscapeOutput"/>
 		-->
 		<exclude name="WordPress.PHP.YodaConditions" />
+		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_query" />
 		<exclude name="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose" />
 		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody" />
 	</rule>
-
-	<!-- Check that code is documented to WordPress Standards. -->
-	<rule ref="WordPress-Docs"/>
 
 	<!-- Add in some extra rules from other standards. -->
 	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>

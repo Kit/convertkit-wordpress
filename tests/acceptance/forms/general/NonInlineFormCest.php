@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for non-inline ConvertKit Forms.
+ * Tests for non-inline Kit Forms.
  *
  * @since   2.3.9
  */
@@ -15,8 +15,8 @@ class NonInlineFormCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		// Activate ConvertKit plugin.
-		$I->activateConvertKitPlugin($I);
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,8 +29,8 @@ class NonInlineFormCest
 	 */
 	public function testSettingsWhenNoNonInlineForms(AcceptanceTester $I)
 	{
-		// Setup Plugin with ConvertKit account that has no non-inline forms.
-		$I->setupConvertKitPluginCredentialsNoData($I);
+		// Setup Plugin with Kit account that has no non-inline forms.
+		$I->setupKitPluginCredentialsNoData($I);
 	}
 
 	/**
@@ -43,13 +43,13 @@ class NonInlineFormCest
 	public function testDefaultNonInlineForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array( $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] ),
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(
@@ -63,14 +63,14 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 	}
@@ -86,7 +86,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineForms(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -95,7 +95,7 @@ class NonInlineFormCest
 				),
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(
@@ -109,7 +109,7 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that two ConvertKit Forms are output in the DOM.
+		// Confirm that two Kit Forms are output in the DOM.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
@@ -131,19 +131,19 @@ class NonInlineFormCest
 	public function testNoDefaultNonInlineForm(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that no ConvertKit Form is output in the DOM.
+		// Confirm that no Kit Form is output in the DOM.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
 	 * Test that the non-inline form defined as the Default Form for Pages overrides
-	 * the non-inline form defined in the Default Non-Inline Form (Global) setting
+	 * the non-inline form defined in the Default Forms (Site Wide) setting
 	 * when a Page is viewed.
 	 *
 	 * @since   2.3.9
@@ -153,7 +153,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenDefaultPageNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for both Pages and Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'page_form'       => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
@@ -185,7 +185,7 @@ class NonInlineFormCest
 
 	/**
 	 * Test that the non-inline form defined on a Page overrides the non-inline form defined
-	 * in the Default Non-Inline Form (Global) setting when a Page is viewed.
+	 * in the Default Forms (Site Wide) setting when a Page is viewed.
 	 *
 	 * @since   2.3.9
 	 *
@@ -194,7 +194,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPageNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -224,8 +224,88 @@ class NonInlineFormCest
 	}
 
 	/**
+	 * Test that the None option defined on a Page overrides the non-inline form defined
+	 * in the Default Forms (Site Wide) setting when a Page is viewed.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testPageLevelNoneSettingIgnored(AcceptanceTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'non_inline_form' => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+			]
+		);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None: Ignored');
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the sticky bar form displays.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
+	}
+
+	/**
+	 * Test that the None option defined on a Page overrides the non-inline form defined
+	 * in the Default Forms (Site Wide) setting when a Page is viewed.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testPageLevelNoneSettingHonored(AcceptanceTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide,
+		// and set to honor the None setting at Page / Post level.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'non_inline_form'                    => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+				'non_inline_form_honor_none_setting' => 'on',
+			]
+		);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None: Honored');
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that no sticky bar form displays.
+		$I->dontSeeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
+	}
+
+	/**
 	 * Test that the non-inline form output using the Form Block overrides the non-inline form defined
-	 * in the Default Non-Inline Form (Global) setting when a Page is viewed.
+	 * in the Default Forms (Site Wide) setting when a Page is viewed.
 	 *
 	 * @since   2.3.9
 	 *
@@ -234,7 +314,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPageNonInlineFormDefinedInBlock(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -275,7 +355,7 @@ class NonInlineFormCest
 
 	/**
 	 * Test that the non-inline form output using the Form shortcode overrides the non-inline form defined
-	 * in the Default Non-Inline Form (Global) setting when a Page is viewed.
+	 * in the Default Forms (Site Wide) setting when a Page is viewed.
 	 *
 	 * @since   2.3.9
 	 *
@@ -284,7 +364,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPageNonInlineFormDefinedInShortcode(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -325,7 +405,7 @@ class NonInlineFormCest
 
 	/**
 	 * Test that the non-inline form defined as the Default Form for Posts overrides
-	 * the non-inline form defined in the Default Non-Inline Form (Global) setting
+	 * the non-inline form defined in the Default Forms (Site Wide) setting
 	 * when a Post is viewed.
 	 *
 	 * @since   2.3.9
@@ -335,7 +415,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenDefaultPostNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for both Posts and Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'post_form'       => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
@@ -367,7 +447,7 @@ class NonInlineFormCest
 
 	/**
 	 * Test that the non-inline form defined on a Post overrides the non-inline form defined
-	 * in the Default Non-Inline Form (Global) setting when a Post is viewed.
+	 * in the Default Forms (Site Wide) setting when a Post is viewed.
 	 *
 	 * @since   2.3.9
 	 *
@@ -376,7 +456,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPostNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -407,7 +487,7 @@ class NonInlineFormCest
 
 	/**
 	 * Test that the non-inline form defined on a Category overrides the non-inline form defined
-	 * in the Default Non-Inline Form (Global) setting when a Post assigned to the Category is viewed.
+	 * in the Default Forms (Site Wide) setting when a Post assigned to the Category is viewed.
 	 *
 	 * @since   2.3.9
 	 *
@@ -416,7 +496,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormIgnoredWhenPostCategoryNonInlineFormDefined(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form for Site Wide.
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -462,6 +542,86 @@ class NonInlineFormCest
 	}
 
 	/**
+	 * Test that the None option defined on a Post overrides the non-inline form defined
+	 * in the Default Forms (Site Wide) setting when a Post is viewed.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testPostLevelNoneSettingIgnored(AcceptanceTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'non_inline_form' => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+			]
+		);
+
+		// Add a Post using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None: Ignored');
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Publish and view the Post on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the sticky bar form displays.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
+	}
+
+	/**
+	 * Test that the None option defined on a Post overrides the non-inline form defined
+	 * in the Default Forms (Site Wide) setting when a Post is viewed.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @param   AcceptanceTester $I  Tester.
+	 */
+	public function testPostLevelNoneSettingHonored(AcceptanceTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide,
+		// and set to honor the None setting at Page / Post level.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'non_inline_form'                    => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+				'non_inline_form_honor_none_setting' => 'on',
+			]
+		);
+
+		// Add a Post using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None: Honored');
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Publish and view the Post on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that no sticky bar form displays.
+		$I->dontSeeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
+	}
+
+	/**
 	 * Test that the defined default non-inline form displays site wide
 	 * when stored as a string in the Plugin settings from older
 	 * Plugin versions < 2.6.9.
@@ -473,7 +633,7 @@ class NonInlineFormCest
 	public function testDefaultNonInlineFormOnUpgrade(AcceptanceTester $I)
 	{
 		// Setup Plugin with a non-inline Default Form (Site Wide).
-		$I->setupConvertKitPlugin(
+		$I->setupKitPlugin(
 			$I,
 			[
 				'non_inline_form' => array(
@@ -481,7 +641,7 @@ class NonInlineFormCest
 				),
 			]
 		);
-		$I->setupConvertKitPluginResources($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(
@@ -495,14 +655,14 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global-upgrade');
 
-		// Confirm that one ConvertKit Form is output in the DOM.
+		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 	}
@@ -519,7 +679,7 @@ class NonInlineFormCest
 	public function _passed(AcceptanceTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

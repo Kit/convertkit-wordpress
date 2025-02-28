@@ -56,6 +56,40 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
+	 * Returns all inline forms based on the sort order.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @return  bool|array
+	 */
+	public function get_inline() {
+
+		// If the ConvertKit WordPress Libraries are < 1.3.6 (e.g. loaded by an outdated
+		// addon), or a WordPress site updates this Plugin before other ConvertKit Plugins,
+		// get_by() won't be available and will cause an E_ERROR, crashing the site.
+		// @see https://wordpress.org/support/topic/error-1795/.
+		if ( ! method_exists( $this, 'get_by' ) ) { // @phpstan-ignore-line Older WordPress Libraries won't have this function.
+			return false;
+		}
+
+		return $this->get_by( 'format', array( 'inline' ) );
+
+	}
+
+	/**
+	 * Returns whether any inline forms exist in the options table.
+	 *
+	 * @since   2.7.3
+	 *
+	 * @return  bool
+	 */
+	public function inline_exist() {
+
+		return (bool) $this->get_inline();
+
+	}
+
+	/**
 	 * Returns all non-inline forms based on the sort order.
 	 *
 	 * @since   2.2.4
@@ -75,7 +109,6 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 		return $this->get_by( 'format', array( 'modal', 'slide in', 'sticky bar' ) );
 
 	}
-
 
 	/**
 	 * Returns whether any non-inline forms exist in the options table.

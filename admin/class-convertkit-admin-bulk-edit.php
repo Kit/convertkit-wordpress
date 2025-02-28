@@ -72,12 +72,18 @@ class ConvertKit_Admin_Bulk_Edit {
 		}
 
 		// Bail if the nonce verification fails.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['wp-convertkit-save-meta-nonce'] ) ), 'wp-convertkit-save-meta' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wp-convertkit-save-meta-nonce'] ) ), 'wp-convertkit-save-meta' ) ) {
+			return;
+		}
+
+		// Bail if the Post Type or Post IDs are not specified.
+		if ( ! isset( $_REQUEST['post_type'] ) || ! isset( $_REQUEST['post'] ) ) {
 			return;
 		}
 
 		// Bail if the Post isn't a supported Post Type.
-		if ( ! in_array( sanitize_text_field( $_REQUEST['post_type'] ), convertkit_get_supported_post_types(), true ) ) {
+		$post_type = sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ) );
+		if ( ! in_array( $post_type, convertkit_get_supported_post_types(), true ) ) {
 			return;
 		}
 
@@ -87,15 +93,15 @@ class ConvertKit_Admin_Bulk_Edit {
 		}
 
 		// Get Post Type object.
-		$post_type = get_post_type_object( $_REQUEST['post_type'] );
+		$post_type_object = get_post_type_object( $post_type );
 
 		// Bail if the logged in user cannot edit Pages/Posts.
-		if ( ! current_user_can( $post_type->cap->edit_posts ) ) {
+		if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
 			wp_die(
 				sprintf(
 					/* translators: Post Type name */
 					esc_html__( 'Sorry, you are not allowed to edit %s.', 'convertkit' ),
-					esc_html( $post_type->name )
+					esc_html( $post_type_object->name )
 				)
 			);
 		}
@@ -105,7 +111,7 @@ class ConvertKit_Admin_Bulk_Edit {
 
 		// Iterate through each Post, updating its settings.
 		foreach ( $post_ids as $post_id ) {
-			WP_ConvertKit()->get_class( 'admin_post' )->save_post_settings( $post_id, $_REQUEST['wp-convertkit'] );
+			WP_ConvertKit()->get_class( 'admin_post' )->save_post_settings( $post_id, wp_unslash( $_REQUEST['wp-convertkit'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
 	}

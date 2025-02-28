@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests the ConvertKit Review Notification.
+ * Tests the Kit Review Notification.
  *
  * @since   1.9.6
  */
@@ -15,7 +15,7 @@ class ReviewRequestCest
 	 */
 	public function _before(AcceptanceTester $I)
 	{
-		$I->activateConvertKitPlugin($I);
+		$I->activateKitPlugin($I);
 	}
 
 	/**
@@ -29,10 +29,10 @@ class ReviewRequestCest
 	public function testReviewRequestOnSaveSettings(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select Default Form for Pages and Posts.
 		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_page_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -62,10 +62,10 @@ class ReviewRequestCest
 	public function testReviewRequestOnSaveBlankSettings(AcceptanceTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
-		$I->setupConvertKitPluginNoDefaultForms($I);
+		$I->setupKitPluginNoDefaultForms($I);
 
 		// Go to the Plugin's Settings Screen.
-		$I->loadConvertKitSettingsGeneralScreen($I);
+		$I->loadKitSettingsGeneralScreen($I);
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
@@ -81,7 +81,7 @@ class ReviewRequestCest
 	/**
 	 * Test that the review request is set in the options table when a
 	 * WordPress Page is created and saved with a Form specified in
-	 * the ConvertKit Meta Box.
+	 * the Kit Meta Box.
 	 *
 	 * @since   1.9.6.7
 	 *
@@ -89,9 +89,9 @@ class ReviewRequestCest
 	 */
 	public function testReviewRequestOnSavePageWithFormSpecified(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Test Review Request on Save with Form Specified');
@@ -121,7 +121,7 @@ class ReviewRequestCest
 	/**
 	 * Test that the review request is set in the options table when a
 	 * WordPress Page is created and saved with a Landing Page specified in
-	 * the ConvertKit Meta Box.
+	 * the Kit Meta Box.
 	 *
 	 * @since   1.9.6.7
 	 *
@@ -129,9 +129,9 @@ class ReviewRequestCest
 	 */
 	public function testReviewRequestOnSavePageWithLandingPageSpecified(AcceptanceTester $I)
 	{
-		// Setup ConvertKit Plugin.
-		$I->setupConvertKitPlugin($I);
-		$I->setupConvertKitPluginResources($I);
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Test Review Request on Save with Form Specified');
@@ -224,7 +224,7 @@ class ReviewRequestCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->deactivateConvertKitPlugin($I);
-		$I->resetConvertKitPlugin($I);
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 }

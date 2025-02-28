@@ -85,7 +85,7 @@ class ConvertKit_AJAX {
 		}
 
 		// Bail if no subscriber ID provided.
-		$id = absint( sanitize_text_field( $_REQUEST['subscriber_id'] ) );
+		$id = absint( sanitize_text_field( wp_unslash( $_REQUEST['subscriber_id'] ) ) );
 		if ( empty( $id ) ) {
 			wp_send_json_error( __( 'Kit: Required parameter `subscriber_id` empty in AJAX request.', 'convertkit' ) );
 		}
@@ -125,7 +125,7 @@ class ConvertKit_AJAX {
 		if ( ! isset( $_REQUEST['email'] ) ) {
 			wp_send_json_error( __( 'Kit: Required parameter `email` not included in AJAX request.', 'convertkit' ) );
 		}
-		$email = sanitize_text_field( $_REQUEST['email'] );
+		$email = sanitize_text_field( wp_unslash( $_REQUEST['email'] ) );
 
 		// Bail if the email address is empty.
 		if ( empty( $email ) ) {
