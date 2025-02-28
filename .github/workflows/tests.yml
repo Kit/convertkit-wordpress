@@ -93,9 +93,7 @@ jobs:
         run: wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
 
       - name: Extract WordPress
-        run: |
-          tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
-          ls -la
+        run: tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
 
       # Checkout (copy) this repository's Plugin to this VM.
       - name: Checkout Plugin
@@ -103,7 +101,201 @@ jobs:
         with:
           path: ${{ env.PLUGIN_DIR }}
 
-      - name: Debug
+      # We install WP-CLI, as it provides useful commands to setup and install WordPress through the command line.
+      - name: Install WP-CLI
         run: |
-          cd /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
-          ls -la
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp-cli
+
+      - name: Setup wp-config.php
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli config create --dbname=${{ env.DB_NAME }} --dbuser=${{ env.DB_USER }} --dbpass=${{ env.DB_PASS }} --dbhost=${{ env.DB_HOST }} --locale=en_DB
+
+      - name: Install WordPress
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
+
+      # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
+      # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
+      - name: Enable WP_DEBUG
+        if: ${{ matrix.test-groups != 'acceptance/integrations/wlm' && matrix.test-groups != 'acceptance/integrations/elementor' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set WP_DEBUG true --raw
+
+      # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
+      - name: Enable FS_METHOD
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set FS_METHOD direct
+
+      # DISALLOW_FILE_MODS = true is required to disable the block directory's "Available to Install" suggestions, which trips up
+      # tests that search and wait for block results.
+      - name: Enable DISALLOW_FILE_MODS
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set DISALLOW_FILE_MODS true --raw
+
+      # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
+      # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
+      # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
+
+      # Install and configure nginx
+      - name: Install nginx
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+          sudo rm /etc/nginx/sites-enabled/default
+          echo "
+          server {
+              listen 80;
+              root ${{ env.ROOT_DIR }};
+              index index.php;
+              server_name 127.0.0.1;
+
+              # Add error and access log paths
+              error_log  /var/log/nginx/wordpress_error.log debug;
+              access_log /var/log/nginx/wordpress_access.log;
+
+              location / {
+                  try_files \$uri \$uri/ /index.php?\$query_string;
+              }
+
+              location ~ \.php$ {
+                  include snippets/fastcgi-php.conf;
+                  fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
+              }
+
+              location ~ /\.ht {
+                  deny all;
+              }
+          }" | sudo tee /etc/nginx/sites-available/wordpress
+          sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+
+      - name: Test nginx configuration
+        run: sudo nginx -t
+
+      - name: Restart nginx
+        run: |
+          sudo systemctl restart php${{ matrix.php-versions }}-fpm
+          sudo systemctl restart nginx
+
+      - name: Start chromedriver
+        run: |
+          export DISPLAY=:99
+          chromedriver --port=9515 --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
+
+      # Write any secrets, such as API keys, to the .env.dist.testing file now.
+      # Make sure your committed .env.dist.testing file ends with a newline.
+      # The formatting of the contents to include a blank newline is deliberate.
+      - name: Define GitHub Secrets in .env.dist.testing
+        uses: DamianReeves/write-file-action@v1.3
+        with:
+          path: ${{ env.PLUGIN_DIR }}/.env.dist.testing
+          contents: |
+
+            CONVERTKIT_API_KEY=${{ env.CONVERTKIT_API_KEY }}
+            CONVERTKIT_API_SECRET=${{ env.CONVERTKIT_API_SECRET }}
+            CONVERTKIT_API_KEY_NO_DATA=${{ env.CONVERTKIT_API_KEY_NO_DATA }}
+            CONVERTKIT_API_SECRET_NO_DATA=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}
+            CONVERTKIT_OAUTH_ACCESS_TOKEN=${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN }}
+            CONVERTKIT_OAUTH_REFRESH_TOKEN=${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN }}
+            CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA }}
+            CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA=${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA }}
+            CONVERTKIT_OAUTH_CLIENT_ID=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}
+            CONVERTKIT_OAUTH_REDIRECT_URI=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}
+            KIT_OAUTH_REDIRECT_URI=${{ env.KIT_OAUTH_REDIRECT_URI }}
+            CONVERTKIT_API_SIGNED_SUBSCRIBER_ID=${{ env.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID }}
+            CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS=${{ env.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS }}
+            CONVERTKIT_API_RECAPTCHA_SITE_KEY=${{ env.CONVERTKIT_API_RECAPTCHA_SITE_KEY }}
+            CONVERTKIT_API_RECAPTCHA_SECRET_KEY=${{ env.CONVERTKIT_API_RECAPTCHA_SECRET_KEY }}
+            
+          write-mode: append
+
+      # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
+      - name: Run Composer
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: composer update
+
+      - name: Build PHP Autoloader
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: composer dump-autoload
+
+      # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
+      - name: Set File and Folder Permissions
+        run: |
+          # Set ownership of all WordPress files to www-data
+          sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}
+          
+          # Set directory permissions to 755
+          sudo find ${{ env.ROOT_DIR }} -type d -exec chmod 755 {} \;
+          
+          # Set file permissions to 644
+          sudo find ${{ env.ROOT_DIR }} -type f -exec chmod 644 {} \;
+          
+          # Make wp-content and uploads writable
+          sudo chmod -R 775 ${{ env.ROOT_DIR }}/wp-content
+          sudo chmod -R 775 ${{ env.ROOT_DIR }}/wp-content/uploads
+          
+          # Ensure wp-config.php is writable but secure
+          sudo chmod 660 ${{ env.ROOT_DIR }}/wp-config.php
+          
+          # Add nginx user to www-data group to ensure it can read files
+          sudo usermod -a -G www-data nginx
+
+      # This ensures the Plugin's log file can be written to.
+      - name: Set Permissions for Plugin Directory
+        run: |
+          sudo chown -R www-data:www-data ${{ env.PLUGIN_DIR }}
+          sudo chmod -R 775 ${{ env.PLUGIN_DIR }}
+
+      # Build Codeception Tests.
+      - name: Build Tests
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: php vendor/bin/codecept build
+
+      # Run Codeception WPUnit Tests on the PHP 8.3 instance before the acceptance/tags acceptance tests.
+      # We run these once to avoid hitting API rate limits.
+      - name: Run tests/wpunit
+        if: ${{ matrix.php-versions == '8.3' && matrix.test-groups == 'acceptance/tags' }}
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: php vendor/bin/codecept run tests/wpunit --fail-fast
+
+      # Run Codeception Acceptance Tests
+      - name: Run tests/${{ matrix.test-groups }}
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: php vendor/bin/codecept run tests/${{ matrix.test-groups }} --fail-fast
+
+      # Artifacts are data generated by this workflow that we want to access, such as log files, screenshots, HTML output.
+      # The if: failure() directive means that this will run when the workflow fails e.g. if a test fails, which is needed
+      # because we want to see why a test failed.
+      - name: Upload Test Results to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          path: ${{ env.PLUGIN_DIR }}/tests/_output/
+
+      - name: Upload Plugin Log File to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
+          path: ${{ env.PLUGIN_DIR }}/log/log.txt
+
+      # Add new step to upload nginx logs when tests fail
+      - name: Upload Nginx Logs to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          path: |
+            /var/log/nginx/wordpress_error.log
+            /var/log/nginx/wordpress_access.log
