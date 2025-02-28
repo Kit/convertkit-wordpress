@@ -102,33 +102,38 @@ jobs:
         run: |
           sudo rm -f /etc/nginx/sites-enabled/default
           sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+
           server {
-              listen 80;
-              root /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress;
-              server_name 127.0.0.1;
-              index index.php;
+            listen 80 default_server;
+            listen [::]:80 default_server;
 
-              error_log /var/log/nginx/error.log debug;
-              access_log /var/log/nginx/access.log;
+            root /var/www/html;
+            index index.php;
 
-              location / {
-                  try_files $uri $uri/ /index.php?$args;
-              }
+            server_name localhost;
 
-              location ~ \.php$ {
-                  include snippets/fastcgi-php.conf;
-                  fastcgi_pass unix:/run/php/php8.2-fpm.sock;
-              }
+            location / {
+                try_files $uri $uri/ /index.php?$args;
+            }
+
+            location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+            }
+
+            location ~ /\.ht {
+                deny all;
+            }
           }
           EOF
 
           sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default || true
 
       # Create WordPress root directory and add test index.php
-      - name: Create WordPress directory and test file
+      - name: Create test file
         run: |
           sudo mkdir -p ${{ env.ROOT_DIR }}
-          sudo tee ${{ env.ROOT_DIR }}/index.php > /dev/null << 'EOF'
+          sudo tee /var/www/html/index.php > /dev/null << 'EOF'
           <?php
           echo 'hello';
           EOF
@@ -136,8 +141,8 @@ jobs:
       # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
       - name: Set File and Folder Permissions
         run: |
-          sudo chmod -R 767 ${{ env.ROOT_DIR }}
-          sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}
+          sudo chmod -R 767 /var/www/html
+          sudo chown -R www-data:www-data /var/www/html
 
       - name: Test nginx
         run: sudo nginx -t
@@ -147,4 +152,4 @@ jobs:
 
       - name: Test
         run: |
-          curl -v http://127.0.0.1/index.php
+          curl -v http://127.0.0.1
