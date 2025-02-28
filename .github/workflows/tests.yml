@@ -181,6 +181,7 @@ jobs:
 
       - name: Test nginx connection
         run: |
+          curl -v http://127.0.0.1
           curl -v http://127.0.0.1/wp-login.php
 
       - name: List WordPress folder contents
