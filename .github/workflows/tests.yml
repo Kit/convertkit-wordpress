@@ -89,11 +89,13 @@ jobs:
 
       # Some workflows checkout WordPress from GitHub, but that seems to bring a bunch of uncompiled files with it.
       # Instead download from wordpress.org stable.
-      - name: Download WordPress
-        run: wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
-
-      - name: Extract WordPress
-        run: tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz -C /var/www/html --strip-components=1
+      - name: Download and Extract WordPress
+        run: |
+          ls -la /var/www
+          ls -la /var/www/html
+          cd /var/www/html
+          wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
+          tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
 
       - name: List Files
         run: ls -la /var/www/html
