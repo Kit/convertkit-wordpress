@@ -134,25 +134,25 @@ jobs:
 
       # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
       - name: Install Free Third Party WordPress Plugins
-      working-directory: ${{ env.ROOT_DIR }}
-      run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
 
       # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions ot third party Plugins.
       - name: Install Free Third Party WordPress Specific Version Plugins
-      working-directory: ${{ env.ROOT_DIR }}
-      run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
 
       # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
       # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
       - name: Install Paid Third Party WordPress Plugins
-      working-directory: ${{ env.ROOT_DIR }}
-      run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
 
       # Install 2021 Theme, which provides support for widgets.
       # 2021 Theme isn't included in WordPress 6.4 or higher, but is required for our widget tests.
       - name: Install WordPress Themes
-      working-directory: ${{ env.ROOT_DIR }}
-      run: wp-cli theme install twentytwentyone
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli theme install twentytwentyone
 
       # Move Plugin
       - name: Move Plugin
