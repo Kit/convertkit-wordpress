@@ -75,11 +75,12 @@ jobs:
           replace: '-'
           replaceAll: true
 
-      # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress
+      # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
+      # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
       - name: Checkout Plugin
         uses: actions/checkout@v4
         with:
-          path: ${{ env.PLUGIN_DIR }}
+          path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit
 
       - name: List Files
         run: ls -la
@@ -106,9 +107,6 @@ jobs:
           wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
           tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
 
-      - name: Copy Plugin
-        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/wp-content/plugins/convertkit /var/www/html/wp-content/plugins/convertkit
-
       # We install WP-CLI, as it provides useful commands to setup and install WordPress through the command line.
       - name: Install WP-CLI
         run: |
@@ -123,6 +121,9 @@ jobs:
       - name: Install WordPress
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
+
+      - name: Move Plugin
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
