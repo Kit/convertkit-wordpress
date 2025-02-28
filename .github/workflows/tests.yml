@@ -168,25 +168,10 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
 
-      # Configure nginx for Ubuntu 24.04
-      - name: Configure nginx
-        run: |
-          sudo rm /etc/nginx/sites-enabled/default
-          echo "server {
-              listen 80;
-              root ${{ env.ROOT_DIR }};
-              index index.php;
-              server_name 127.0.0.1;
-              location / {
-                  try_files \$uri \$uri/ /index.php?\$args;
-              }
-              location ~ \.php$ {
-                  include fastcgi_params;
-                  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                  fastcgi_pass unix:/var/run/php/php${{ matrix.php-versions }}-fpm.sock;
-              }
-          }" | sudo tee /etc/nginx/sites-available/wordpress
-          sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+      # Make sure that an nginx configuration file exists in this repository at tests/nginx/php-x.x.conf.
+      # Refer to an existing .conf file in this repository if you need to create a new one e.g. for a new PHP version.
+      - name: Copy nginx configuration file
+        run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/conf.d/php-${{ matrix.php-versions }}.conf
 
       - name: Test nginx configuration
         run: sudo nginx -t
