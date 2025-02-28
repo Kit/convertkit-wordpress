@@ -19,36 +19,6 @@ jobs:
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
 
-    # Environment Variables.
-    # Accessible by using ${{ env.NAME }}
-    # Use ${{ secrets.NAME }} to include any GitHub Secrets in ${{ env.NAME }}
-    # The base folder will always be /home/runner/work/github-repo-name/github-repo-name
-    env:
-      ROOT_DIR: /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
-      PLUGIN_DIR: /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress/wp-content/plugins/convertkit
-      CACHE_DIR: /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress/wp-content/plugins/wp-super-cache/
-      DB_NAME: test
-      DB_USER: root
-      DB_PASS: root
-      DB_HOST: localhost
-      INSTALL_PLUGINS: "admin-menu-editor autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui elementor forminator jetpack-boost woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress" # Don't include this repository's Plugin here.
-      INSTALL_PLUGINS_URLS: "https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip" # URLs to specific third party Plugins
-      CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
-      CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
-      CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
-      CONVERTKIT_API_SECRET_NO_DATA: ${{ secrets.CONVERTKIT_API_SECRET_NO_DATA }} # ConvertKit API Secret for ConvertKit account with no data, stored in the repository's Settings > Secrets
-      CONVERTKIT_OAUTH_ACCESS_TOKEN: ${{ secrets.CONVERTKIT_OAUTH_ACCESS_TOKEN }}
-      CONVERTKIT_OAUTH_REFRESH_TOKEN: ${{ secrets.CONVERTKIT_OAUTH_REFRESH_TOKEN }}
-      CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA: ${{ secrets.CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA }}
-      CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA: ${{ secrets.CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA }}
-      CONVERTKIT_OAUTH_CLIENT_ID: ${{ secrets.CONVERTKIT_OAUTH_CLIENT_ID }}
-      CONVERTKIT_OAUTH_REDIRECT_URI: ${{ secrets.CONVERTKIT_OAUTH_REDIRECT_URI }}
-      KIT_OAUTH_REDIRECT_URI: ${{ secrets.KIT_OAUTH_REDIRECT_URI }}
-      CONVERTKIT_API_SIGNED_SUBSCRIBER_ID: ${{ secrets.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID }} # ConvertKit API Signed Subscriber ID, stored in the repository's Settings > Secrets
-      CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS: ${{ secrets.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS }} # ConvertKit API Signed Subscriber ID with no access to Products, stored in the repository's Settings > Secrets
-      CONVERTKIT_API_RECAPTCHA_SITE_KEY: ${{ secrets.CONVERTKIT_API_RECAPTCHA_SITE_KEY }} # Google reCAPTCHA v3 Site Key, stored in the repository's Settings > Secrets
-      CONVERTKIT_API_RECAPTCHA_SECRET_KEY: ${{ secrets.CONVERTKIT_API_RECAPTCHA_SECRET_KEY }} # Google reCAPTCHA v3 Secret Key, stored in the repository's Settings > Secrets
-      
     # Defines the WordPress and PHP Versions matrix to run tests on
     # WooCommerce 5.9.0 requires WordPress 5.6 or greater, so we do not test on earlier versions
     # If testing older WordPress versions, ensure they are e.g. 5.7.4, 5.6.6 that have the X3 SSL fix: https://core.trac.wordpress.org/ticket/54207
@@ -67,5 +37,4 @@ jobs:
     # Steps to install, configure and run tests
     steps:
       - name: Debug
-        run: |
-          ls
+        run: ls -la
