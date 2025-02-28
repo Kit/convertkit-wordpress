@@ -17,7 +17,7 @@ jobs:
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
@@ -169,3 +169,12 @@ jobs:
           curl -v http://127.0.0.1/wp-login.php
           curl -v http://127.0.0.1/index.php
           ls -la ${{ env.ROOT_DIR }}
+          sudo systemctl status php8.2-fpm
+          ls -la /etc/nginx/sites-available
+
+      - name: Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: default-site-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          path: |
+            /etc/nginx/sites-available/default
