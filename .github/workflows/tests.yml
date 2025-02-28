@@ -17,7 +17,7 @@ jobs:
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
@@ -57,11 +57,11 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.2' ] #[ '7.4', '8.0', '8.1', '8.2' ]
+        php-versions: [ '8.2' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'acceptance/broadcasts/blocks-shortcodes'
+          'acceptance/broadcasts/blocks-shortcodes',
         ]
 
     # Steps to install, configure and run tests
@@ -116,6 +116,28 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
 
+      # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
+      - name: Install Free Third Party WordPress Plugins
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
+
+      # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions ot third party Plugins.
+      - name: Install Free Third Party WordPress Specific Version Plugins
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
+
+      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
+      # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
+      - name: Install Paid Third Party WordPress Plugins
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
+
+      # Install 2021 Theme, which provides support for widgets.
+      # 2021 Theme isn't included in WordPress 6.4 or higher, but is required for our widget tests.
+      - name: Install WordPress Themes
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli theme install twentytwentyone
+      
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
       - name: Enable WP_DEBUG
@@ -145,6 +167,17 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
+
+      # Make sure that an nginx configuration file exists in this repository at tests/nginx/php-x.x.conf.
+      # Refer to an existing .conf file in this repository if you need to create a new one e.g. for a new PHP version.
+      - name: Copy nginx configuration file
+        run: sudo cp ${{ env.PLUGIN_DIR }}/tests/nginx/php-${{ matrix.php-versions }}.conf /etc/nginx/conf.d/php-${{ matrix.php-versions }}.conf
+
+      - name: Test nginx
+        run: sudo nginx -t
+
+      - name: Start nginx
+        run: sudo systemctl start nginx.service
 
       - name: Start chromedriver
         run: |
@@ -191,21 +224,17 @@ jobs:
       # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
       - name: Set File and Folder Permissions
         run: |
-          # Set ownership of all WordPress files to www-data
-          sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}
-          
-          # Set directory permissions to 755
-          sudo find ${{ env.ROOT_DIR }} -type d -exec chmod 755 {} \;
-          
-          # Set file permissions to 644
-          sudo find ${{ env.ROOT_DIR }} -type f -exec chmod 644 {} \;
-          
-          # Make wp-content and uploads writable
-          sudo chmod -R 775 ${{ env.ROOT_DIR }}/wp-content
-          sudo chmod -R 775 ${{ env.ROOT_DIR }}/wp-content/uploads
-          
-          # Ensure wp-config.php is writable but secure
-          sudo chmod 660 ${{ env.ROOT_DIR }}/wp-config.php
+          sudo chmod 767 ${{ env.ROOT_DIR }}
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}
+
+          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-config.php
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
+
+          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-content
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content
+
+          sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
 
       # This ensures the Plugin's log file can be written to.
       # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
@@ -213,36 +242,6 @@ jobs:
         run: |
           sudo chmod g+w ${{ env.PLUGIN_DIR }}
           sudo chown www-data:www-data ${{ env.PLUGIN_DIR }}
-
-      # Install and configure nginx
-      - name: Install nginx
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y nginx
-          sudo rm /etc/nginx/sites-enabled/default
-          echo "
-          server {
-              listen 80;
-              root /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress;
-              server_name 127.0.0.1;
-              index index.php;
-              location / {
-                  try_files $uri $uri/ /index.php?$args;
-              }
-              location ~ \.php$ {
-                  include snippets/fastcgi-php.conf;
-                  fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
-              }
-          }" | sudo tee /etc/nginx/sites-available/wordpress
-          sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
-
-      - name: Test nginx configuration
-        run: sudo nginx -t
-
-      - name: Restart nginx
-        run: |
-          sudo systemctl restart php${{ matrix.php-versions }}-fpm
-          sudo systemctl restart nginx
 
       # Build Codeception Tests.
       - name: Build Tests
@@ -277,13 +276,3 @@ jobs:
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
-
-      # Add new step to upload nginx logs when tests fail
-      - name: Upload Nginx Logs to Artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: nginx-logs-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
-          path: |
-            /var/log/nginx/wordpress_error.log
-            /var/log/nginx/wordpress_access.log
