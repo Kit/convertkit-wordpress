@@ -137,7 +137,7 @@ class SubscriberIDURLCest
 		);
 
 		// Set the ck_subscriber_id cookie.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Confirm that no query parameters does not append a separator/question mark.
 		$I->amOnPage('/kit-subscriber-id-url');
@@ -166,7 +166,7 @@ class SubscriberIDURLCest
 		);
 
 		// Set the ck_subscriber_id cookie.
-		$I->setCookie('ck_subscriber_id', $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
 
 		// Confirm that no query parameters does not append a separator/question mark.
 		$I->amOnPage('/kit-subscriber-id-url#hash');
@@ -187,7 +187,7 @@ class SubscriberIDURLCest
 	 */
 	public function _passed(AcceptanceTester $I)
 	{
-		$I->resetCookie('ck_subscriber_id');
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
