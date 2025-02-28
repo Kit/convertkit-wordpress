@@ -57,7 +57,7 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '7.4' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.2' ] #[ '7.4', '8.0', '8.1', '8.2' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
@@ -160,14 +160,16 @@ jobs:
               server_name localhost;
 
               location / {
-                  try_files \$uri \$uri/ /index.php?\$args;
+                  try_files \$uri \$uri/ /index.php?\$query_string;
               }
 
               location ~ \.php$ {
-                  include fastcgi_params;
-                  fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                  fastcgi_pass unix:/var/run/php/php${{ matrix.php-versions }}-fpm.sock;
-                  fastcgi_index index.php;
+                  include snippets/fastcgi-php.conf;
+                  fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
+              }
+
+              location ~ /\.ht {
+                  deny all;
               }
           }" | sudo tee /etc/nginx/sites-available/wordpress
           sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
