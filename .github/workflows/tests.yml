@@ -230,29 +230,40 @@ jobs:
       # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
       - name: Set File and Folder Permissions
         run: |
-          sudo chmod 767 ${{ env.ROOT_DIR }}
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}
-
-          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-config.php
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
-
-          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-content
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content
-
-          sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
-          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
-
-          sudo chmod +x /home/runner/work
-          sudo chmod +x /home/runner/work/convertkit-wordpress
-          sudo chmod +x /home/runner/work/convertkit-wordpress/convertkit-wordpress
-          sudo chmod +x /home/runner/work/convertkit-wordpress/convertkit-wordpress/wordpress
+          # First ensure www-data owns the WordPress directory and files
+          sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}
+          
+          # Set base permissions for directories (755 = rwxr-xr-x)
+          sudo find ${{ env.ROOT_DIR }} -type d -exec chmod 755 {} \;
+          
+          # Set base permissions for files (644 = rw-r--r--)
+          sudo find ${{ env.ROOT_DIR }} -type f -exec chmod 644 {} \;
+          
+          # Make wp-content and uploads writable
+          sudo chmod 775 ${{ env.ROOT_DIR }}/wp-content
+          sudo chmod -R 775 ${{ env.ROOT_DIR }}/wp-content/uploads
+          
+          # Ensure wp-config.php is writable but secure
+          sudo chmod 660 ${{ env.ROOT_DIR }}/wp-config.php
+          
+          # Ensure parent directories are traversable
+          sudo chown -R www-data:www-data /home/runner/work/convertkit-wordpress
+          sudo chmod 755 /home/runner/work
+          sudo chmod 755 /home/runner/work/convertkit-wordpress
+          sudo chmod 755 /home/runner/work/convertkit-wordpress/convertkit-wordpress
+          
+          # Debug: Show permissions
+          echo "Permissions for WordPress directory:"
+          ls -la ${{ env.ROOT_DIR }}
+          echo "Permissions for parent directories:"
+          namei -l ${{ env.ROOT_DIR }}
 
       # This ensures the Plugin's log file can be written to.
-      # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
       - name: Set Permissions for Plugin Directory
         run: |
-          sudo chmod g+w ${{ env.PLUGIN_DIR }}
-          sudo chown www-data:www-data ${{ env.PLUGIN_DIR }}
+          sudo chown -R www-data:www-data ${{ env.PLUGIN_DIR }}
+          sudo chmod -R 755 ${{ env.PLUGIN_DIR }}
+          sudo chmod 775 ${{ env.PLUGIN_DIR }}
 
       # Build Codeception Tests.
       - name: Build Tests
