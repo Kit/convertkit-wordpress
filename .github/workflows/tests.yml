@@ -51,7 +51,6 @@ jobs:
     # Defines the WordPress and PHP Versions matrix to run tests on
     # WooCommerce 5.9.0 requires WordPress 5.6 or greater, so we do not test on earlier versions
     # If testing older WordPress versions, ensure they are e.g. 5.7.4, 5.6.6 that have the X3 SSL fix: https://core.trac.wordpress.org/ticket/54207
-    # For PHP, make sure that an nginx configuration file exists for the required PHP version in this repository at tests/nginx/php-x.x.conf
     strategy:
       fail-fast: false
       matrix:
@@ -92,7 +91,7 @@ jobs:
       - name: Checkout Plugin
         uses: actions/checkout@v4
         with:
-          path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit
+          path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
 
       - name: Start MySQL
         run: sudo systemctl start mysql.service
@@ -134,7 +133,7 @@ jobs:
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
 
       - name: Move Plugin
-        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/converkit ${{ env.PLUGIN_DIR }}
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
@@ -166,7 +165,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
 
-      # Configure nginx to use the PHP version.
+      # Configure nginx to use the PHP version and WOrdPress installation at /var/www/html
       - name: Configure nginx site
         run: |
           sudo rm -f /etc/nginx/sites-enabled/default
