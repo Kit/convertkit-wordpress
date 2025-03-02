@@ -19,6 +19,8 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function activateKitPlugin($I)
 	{
+		// Wait before activating the Plugin, to avoid rate limits.
+		$I->wait(2);
 		$I->activateThirdPartyPlugin($I, 'convertkit');
 	}
 
