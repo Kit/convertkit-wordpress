@@ -11,7 +11,7 @@ jobs:
     
     # Virtual Environment to use
     # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     # Steps to deploy
     steps:
