@@ -5,16 +5,18 @@ This document describes how to setup your development environment, so that it is
 Suggestions are provided for the LAMP/LEMP stack and Git client are for those who prefer the UI over a command line and/or are less familiar with 
 WordPress, PHP, MySQL and Git - but you're free to use your preferred software.
 
-## Setup
-
-### LAMP/LEMP stack
+## LAMP/LEMP stack
 
 Any Apache/nginx, PHP 7.x+ and MySQL 5.8+ stack running WordPress.  For example, but not limited to:
 - Local by Flywheel (recommended)
-- Docker
 - MAMP
 - WAMP
 - VVV
+- Docker
+
+## Local, MAMP, WAMP, VVV
+
+If using a non-Docker environment, follow the below steps:
 
 ### Composer
 
@@ -104,7 +106,7 @@ CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_NAME="Third Party Integrations Form
 CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID="3003590"
 ```
 
-#### Codeception
+### Codeception
 
 Create a `codeception.yml` file in the root of the repository, with the following contents:
 ```yaml
@@ -113,46 +115,6 @@ params:
 ```
 
 This tells Codeception to read the above `.env.testing` file when testing on the local development enviornment.
-
-#### PHPStan
-
-Copy the `phpstan.neon.example` file to `phpstan.neon` in the root of this repository, changing the `scanDirectories` to point to your
-local WordPress installation:
-```yaml
-# PHPStan configuration for local static analysis.
-
-# Include PHPStan for WordPress configuration.
-includes:
-    - vendor/szepeviktor/phpstan-wordpress/extension.neon
-
-# Parameters
-parameters:
-    # Paths to scan
-    # This should comprise of the base Plugin PHP file, plus directories that contain Plugin PHP files
-    paths:
-        - wp-convertkit.php
-        - admin/
-        - includes/
-
-    # Files that include Plugin-specific PHP constants
-    bootstrapFiles:
-        - wp-convertkit.php
-
-    # Location of WordPress Plugins for PHPStan to scan, building symbols.
-    scanDirectories:
-        - /Users/tim/Local Sites/convertkit-github/app/public/wp-content/plugins
-
-    # Should not need to edit anything below here
-    # Rule Level: https://phpstan.org/user-guide/rule-levels
-    level: 5
-
-    # Ignore the following errors, as PHPStan and PHPStan for WordPress haven't registered symbols for them yet,
-    # so they're false positives.
-    ignoreErrors:
-        - '#Access to an undefined property WP_Theme::#'
-        - '#Constant WP_MEMORY_LIMIT not found.#'
-        - '#Function apply_filters invoked with#' # apply_filters() accepted a variable number of parameters, which PHPStan fails to detect
-```
 
 ### Install Packages
 
@@ -260,10 +222,65 @@ vendor/bin/phpstan --memory-limit=1G
 Again, don't worry if you don't understand these commands; if your output looks similar to the above screenshot, with no errors, your environment
 is setup successfully.
 
-### Add your API Key to the Plugin
+### Connect Plugin to Kit
 
 Refer to the [Kit Help Article](https://help.kit.com/en/articles/2502591-getting-started-the-wordpress-plugin) to get started with
 using the WordPress Plugin.
+
+## Docker
+
+Using the Development Container, and either GitHub Codespaces or VS Code, it's quick and easy to get started:
+
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), or [Docker Engine](https://docs.docker.com/engine/) if you're developing on Linux
+- Install [Visual Studio Code]()
+- Open Visual Studio Code, and install the [Dev Containers]() extension
+- Open the Visual Studio Code Command Palette (`Ctrl + Shift + P`)
+- Type `>Dev Container: Rebuild and Reopen in Container`, pressing Enter
+
+Visual Studio Code will switch to the Dev Container, loading the preconfigured Docker image for WordPress development, with the Terminal in Visual Studio Code showing the progress:
+
+[]
+
+After a few minutes, your development environment should be ready.  Click on the Ports tab, and navigate to the "Application" URL:
+
+[]
+
+[]
+
+### Accessing WordPress
+
+To access the WordPress Administration interface, append `/wp-admin` to the URL, using the following credentials:
+- Username: `vipgo`
+- Password: `password`
+
+Once logged in, navigating to the Plugins screen will show the repository Plugin installed and active, along with some other common third party Plugins:
+
+[]
+
+### Running Codesniffer
+
+In Visual Studio Code's Terminal, navigate to `/workspaces/convertkit-wordpress`, and run the following command to run PHP_CodeSniffer, which will check the code meets WordPress' Coding Standards:
+
+```bash
+vendor/bin/phpcs ./ -v -s
+```
+
+If no Terminal instance is open, you can create a new one by clicking the `+` icon.
+
+### Running PHPStan
+
+In Visual Studio Code's Terminal, navigate to `/workspaces/convertkit-wordpress`, and run the following command to run PHPStan, which will perform static analysis on the code, checking it meets required
+standards, that PHP DocBlocks are valid, WordPress action/filter DocBlocks are valid etc:
+
+```bash
+vendor/bin/phpstan --memory-limit=1G
+```
+
+If no Terminal instance is open, you can create a new one by clicking the `+` icon.
+
+### Testing
+
+Codeception testing is currently unavailable when using Dev Containers or GitHub Codespaces. This may be available in a future PR.
 
 ### Next Steps
 
