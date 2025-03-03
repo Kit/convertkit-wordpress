@@ -231,23 +231,34 @@ using the WordPress Plugin.
 
 Using the Development Container, and either GitHub Codespaces or VS Code, it's quick and easy to get started:
 
+### Clone Repository
+
+Using your preferred Git client or command line, clone this repository to your local machine.
+
+If you're new to this, use [GitHub Desktop](https://desktop.github.com/) or [Tower](https://www.git-tower.com/mac)
+
+### Install Docker and Visual Studio Code
+
 - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), or [Docker Engine](https://docs.docker.com/engine/) if you're developing on Linux
 - Install [Visual Studio Code]()
+
+### Install and Run Dev Containers
+
 - Open Visual Studio Code, and install the [Dev Containers]() extension
 - Open the Visual Studio Code Command Palette (`Ctrl + Shift + P`)
 - Type `>Dev Container: Rebuild and Reopen in Container`, pressing Enter
 
 Visual Studio Code will switch to the Dev Container, loading the preconfigured Docker image for WordPress development, with the Terminal in Visual Studio Code showing the progress:
 
-[]
+![Terminal](/.github/docs/dev-container.png?raw=true)
 
-After a few minutes, your development environment should be ready.  Click on the Ports tab, and navigate to the "Application" URL:
-
-[]
-
-[]
+After a few minutes, your development environment should be ready. 
 
 ### Accessing WordPress
+
+Click on the `Ports` tab, and navigate to the "Application" URL by hovering over the `Forwarded Address` and clicking the globe icon:
+
+![Ports tab](/.github/docs/dev-container-ports.png?raw=true)
 
 To access the WordPress Administration interface, append `/wp-admin` to the URL, using the following credentials:
 - Username: `vipgo`
@@ -255,7 +266,7 @@ To access the WordPress Administration interface, append `/wp-admin` to the URL,
 
 Once logged in, navigating to the Plugins screen will show the repository Plugin installed and active, along with some other common third party Plugins:
 
-[]
+![Ports tab](/.github/docs/dev-container-plugins.png?raw=true)
 
 ### Running Codesniffer
 
@@ -266,6 +277,8 @@ vendor/bin/phpcs ./ -v -s
 ```
 
 If no Terminal instance is open, you can create a new one by clicking the `+` icon.
+
+[]
 
 ### Running PHPStan
 
