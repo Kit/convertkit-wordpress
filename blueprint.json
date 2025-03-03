@@ -1,0 +1,13 @@
+{
+  "landingPage": "/wp-admin/index.php",
+  "login": true,
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/Kit/convertkit-wordpress/pr-playground-785/convertkit.zip"
+      }
+    }
+  ]
+}
