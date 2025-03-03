@@ -278,7 +278,7 @@ vendor/bin/phpcs ./ -v -s
 
 If no Terminal instance is open, you can create a new one by clicking the `+` icon.
 
-[]
+![Terminal tab](/.github/docs/dev-container-terminal-plus.png?raw=true)
 
 ### Running PHPStan
 
@@ -286,10 +286,12 @@ In Visual Studio Code's Terminal, navigate to `/workspaces/convertkit-wordpress`
 standards, that PHP DocBlocks are valid, WordPress action/filter DocBlocks are valid etc:
 
 ```bash
-vendor/bin/phpstan --memory-limit=1G
+vendor/bin/phpstan --configuration phpstan-dev.neon --memory-limit=1G
 ```
 
 If no Terminal instance is open, you can create a new one by clicking the `+` icon.
+
+![Terminal tab](/.github/docs/dev-container-terminal-plus.png?raw=true)
 
 ### Testing
 
