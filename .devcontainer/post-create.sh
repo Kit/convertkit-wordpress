@@ -7,7 +7,7 @@ wp plugin install classic-editor custom-post-type-ui elementor forminator woocom
 wp theme install twentytwentyfive
 
 # Symlink Plugin
-ln -s /workspaces/convertkit /wp/wp-content/plugins/convertkit
+ln -s /workspaces/convertkit-wordpress /wp/wp-content/plugins/convertkit
 
 # Run Composer in Plugin Directory to build
 cd /wp/wp-content/plugins/convertkit
