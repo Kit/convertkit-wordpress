@@ -44,7 +44,7 @@ jobs:
       - name: Create ZIP File and Blueprint JSON
         run: |
           # Create ZIP file
-          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "vendor/*"
+          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example"
 
           # Create blueprint.json
           cat > blueprint.json << EOF
