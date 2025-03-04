@@ -229,8 +229,10 @@ class WPGutenberg extends \Codeception\Module
 		$I->waitForElementVisible('.block-editor-block-toolbar button[aria-label="More"]');
 		$I->click('.block-editor-block-toolbar button[aria-label="More"]');
 
-		// Click Block Formatter button.
+		// Click Block Formatter button, and wait for the popover to be fully visible.
+		$I->waitForElementVisible('.components-popover.is-positioned');
 		$I->waitForElementVisible('.components-dropdown-menu__popover');
+		$I->wait(1);
 		$I->click($formatterName, '.components-dropdown-menu__popover');
 
 		// Apply formatter configuration.
