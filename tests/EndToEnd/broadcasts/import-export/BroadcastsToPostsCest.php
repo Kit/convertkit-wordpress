@@ -582,7 +582,7 @@ class BroadcastsToPostsCest
 		// Confirm no images are served from Kit's CDN, and they are served from the WordPress Media Library
 		// (uploads folder).
 		$I->dontSeeInSource('embed.filekitcdn.com');
-		$I->seeInSource($_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/2023/08');
+		$I->seeInSource($_ENV['WORDPRESS_URL'] . '/wp-content/uploads/2023/08');
 	}
 
 	/**

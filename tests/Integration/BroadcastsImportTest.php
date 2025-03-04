@@ -90,9 +90,6 @@ class BroadcastsImportTest extends WPTestCase
 		// Import broadcast.
 		$result = $this->importer->import_broadcast($_ENV['CONVERTKIT_API_BROADCAST_ID']);
 
-		var_dump($result);
-		die();
-
 		// Assert a Post ID was returned.
 		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
@@ -420,7 +417,7 @@ class BroadcastsImportTest extends WPTestCase
 	private function assertImagesImported($post)
 	{
 		$this->assertStringNotContainsString('embed.filekitcdn.com', $post->post_content);
-		$this->assertStringContainsString($_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
+		$this->assertStringContainsString($_ENV['WORDPRESS_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
 	}
 
 	/**
@@ -434,7 +431,7 @@ class BroadcastsImportTest extends WPTestCase
 	private function assertImagesNotImported($post)
 	{
 		$this->assertStringContainsString('embed.filekitcdn.com', $post->post_content);
-		$this->assertStringNotContainsString($_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
+		$this->assertStringNotContainsString($_ENV['WORDPRESS_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
 	}
 
 	/**

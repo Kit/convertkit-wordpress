@@ -85,7 +85,7 @@ class KitForms extends \Codeception\Module
 	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false)
 	{
 		// Confirm that the button stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
 
 		// Confirm that the block displays.
 		$I->seeElementInDOM('a.convertkit-formtrigger.wp-block-button__link');

@@ -59,7 +59,7 @@ class ResourceFormsNoDataTest extends WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Forms();
+		$this->resource = new \ConvertKit_Resource_Forms();
 
 		// Confirm initialization didn't result in an error.
 		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);

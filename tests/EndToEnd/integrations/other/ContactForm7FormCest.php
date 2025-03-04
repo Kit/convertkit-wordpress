@@ -74,7 +74,7 @@ class ContactForm7FormCest
 			$I,
 			$subscriberID,
 			$_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID'],
-			$_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl()
+			$_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}
 

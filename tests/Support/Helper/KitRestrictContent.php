@@ -203,7 +203,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
@@ -275,7 +275,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
@@ -326,7 +326,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
@@ -378,7 +378,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
@@ -433,7 +433,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and form displays.
 		$this->testRestrictContentByFormHidesContentWithCTA($I, $formID, $options);
@@ -508,7 +508,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByFormHidesContentWithCTA($I, $formID, $options);
@@ -565,7 +565,7 @@ class KitRestrictContent extends \Codeception\Module
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
 
 		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
 		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);

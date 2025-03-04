@@ -146,10 +146,10 @@ class PageLandingPageCest
 		$I->seeLandingPageOutput($I, true);
 
 		// Confirm the WordPress Site Icon displays.
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-150x150.png" sizes="32x32">');
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png" sizes="192x192">');
-		$I->seeInSource('<link rel="apple-touch-icon" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
-		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
+		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-150x150.png" sizes="32x32">');
+		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png" sizes="192x192">');
+		$I->seeInSource('<link rel="apple-touch-icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
+		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
 		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
 
 		// Confirm that the Kit Landing Page displays.
@@ -263,10 +263,10 @@ class PageLandingPageCest
 		$I->seeLandingPageOutput($I);
 
 		// Confirm the WordPress Site Icon displays.
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-150x150.png" sizes="32x32">');
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png" sizes="192x192">');
-		$I->seeInSource('<link rel="apple-touch-icon" href="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
-		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
+		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-150x150.png" sizes="32x32">');
+		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png" sizes="192x192">');
+		$I->seeInSource('<link rel="apple-touch-icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
+		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
 		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.kit.com/templates/favicon.ico">');
 
 		// Confirm that the Kit Landing Page displays.

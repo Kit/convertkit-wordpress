@@ -333,7 +333,7 @@ class PluginSettingsToolsCest
 		$I->havePageInDatabase(
 			[
 				'post_name'    => 'kit-settings-tab-parameter-escaping',
-				'post_content' => '<form action="' . $_ENV['TEST_SITE_WP_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings&tab=tools" method="POST">
+				'post_content' => '<form action="' . $_ENV['WORDPRESS_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings&tab=tools" method="POST">
       <input type="hidden" name="page" value=\'"style=animation-name:rotation onanimationstart=document.write(/XSS/)//\' />
       <input type="submit" value="Submit" />
     </form>',

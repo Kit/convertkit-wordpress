@@ -57,7 +57,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -95,7 +95,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -192,7 +192,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -240,7 +240,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -289,7 +289,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -330,7 +330,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -372,7 +372,7 @@ class EditFormLinkCest
 		$I->dontSee('Edit form in Kit');
 
 		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['TEST_SITE_WP_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
+		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
