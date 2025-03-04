@@ -882,15 +882,19 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function enableMobileEmulation()
 	{
-		$this->getModule('WPWebDriver')->_restart(
+		$this->getModule(\lucatume\WPBrowser\Module\WPWebDriver::class)->_restart(
 			[
 				'browser'      => 'chrome',
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args'            => [
-							'--headless=new',
-							'--disable-gpu',
-							'--user-agent=' . $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
+							"--headless=new",
+							"--disable-gpu",
+							"--disable-dev-shm-usage",
+							"--proxy-server='direct://'",
+							"--proxy-bypass-list=*",
+							"--no-sandbox",
+							"--user-agent=" . $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
 						],
 						'mobileEmulation' => [
 							'deviceMetrics' => [
@@ -918,15 +922,19 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function disableMobileEmulation()
 	{
-		$this->getModule('WPWebDriver')->_restart(
+		$this->getModule(\lucatume\WPBrowser\Module\WPWebDriver::class)->_restart(
 			[
 				'browser'      => 'chrome',
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args' => [
-							'--headless=new',
-							'--disable-gpu',
-							'--user-agent=' . $_ENV['TEST_SITE_HTTP_USER_AGENT'],
+							"--headless=new",
+							"--disable-gpu",
+							"--disable-dev-shm-usage",
+							"--proxy-server='direct://'",
+							"--proxy-bypass-list=*",
+							"--no-sandbox",
+							"--user-agent=" . $_ENV['TEST_SITE_HTTP_USER_AGENT'],
 						],
 						// excluding mobileEmulation arguments here makes chromedriver behave in desktop mode.
 					],
