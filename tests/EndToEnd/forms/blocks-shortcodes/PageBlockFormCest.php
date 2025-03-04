@@ -523,18 +523,16 @@ class PageBlockFormCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testFormBlockWhenNoAPIKey(EndToEndTester $I)
+	public function testFormBlockWhenNoCredentials(EndToEndTester $I)
 	{
-		$I->markTestIncomplete();
-
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: No API Key');
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: No Credentials');
 
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Form', 'convertkit-form');
 
 		// Test that the popup window works.
-		$I->testBlockNoAPIKeyPopupWindow(
+		$I->testBlockNoCredentialsPopupWindow(
 			$I,
 			'convertkit-form',
 			'Select a Form using the Form option in the Gutenberg sidebar.'
