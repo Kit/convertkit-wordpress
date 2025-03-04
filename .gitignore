@@ -7,6 +7,7 @@ log
 log.txt
 phpstan.neon
 tests/_output
-tests/_data/convertkit-export.json
+tests/_wordpress
+tests/Support/Data/convertkit-export.json
 vendor
 *.zip

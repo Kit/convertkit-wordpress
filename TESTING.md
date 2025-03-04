@@ -67,11 +67,11 @@ This will create a PHP test file in the `tests/acceptance/general` directory cal
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
     }
 
-    public function tryToTest(AcceptanceTester $I)
+    public function tryToTest(EndToEndTester $I)
     {
     }
 }
@@ -83,13 +83,13 @@ performed for every test that you write in this Acceptance Test, it's recommende
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function tryToTest(AcceptanceTester $I)
+    public function tryToTest(EndToEndTester $I)
     {
     }
 }
@@ -103,13 +103,13 @@ Next, rename the `tryToTest` function to a descriptive function name that best d
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function testPluginActivation(AcceptanceTester $I)
+    public function testPluginActivation(EndToEndTester $I)
     {
     }
 }
@@ -119,13 +119,13 @@ Within your test function, write the test:
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function testPluginActivation(AcceptanceTester $I)
+    public function testPluginActivation(EndToEndTester $I)
     {
         // Go to the Plugins screen in the WordPress Administration interface.
         $I->amOnPluginsPage();
@@ -147,13 +147,13 @@ also works:
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function testPluginActivation(AcceptanceTester $I)
+    public function testPluginActivation(EndToEndTester $I)
     {
         // Go to the Plugins screen in the WordPress Administration interface.
         $I->amOnPluginsPage();
@@ -168,7 +168,7 @@ class ActivatePluginCest
         $I->dontSeeElement('body.php-error');
     }
 
-    public function testPluginDeactivation(AcceptanceTester $I)
+    public function testPluginDeactivation(EndToEndTester $I)
     {
         // Go to the Plugins screen in the WordPress Administration interface.
         $I->amOnPluginsPage();
@@ -240,7 +240,7 @@ class ExampleCest
      * 
      * @param   AcceptanceTester    $I  Tester
      */
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         $I->activateConvertKitPlugin($I);
         $I->activateThirdPartyPlugin($I, 'third-party-plugin-slug');
@@ -248,12 +248,12 @@ class ExampleCest
         $I->enableDebugLog($I);
     }
 
-    public function testSpecificSteps(AcceptanceTester $I)
+    public function testSpecificSteps(EndToEndTester $I)
     {
         // ... write a test here.
     }
 
-    public function testAnotherSpecificSteps(AcceptanceTester $I)
+    public function testAnotherSpecificSteps(EndToEndTester $I)
     {
         // ... write a test here.
     }
@@ -269,7 +269,7 @@ class ExampleCest
      * 
      * @param   AcceptanceTester    $I  Tester
      */
-    public function _passed(AcceptanceTester $I)
+    public function _passed(EndToEndTester $I)
     {
         $I->deactivateConvertKitPlugin($I);
         $I->deactivateThirdPartyPlugin($I, 'third-party-plugin-slug');
@@ -347,7 +347,7 @@ This will create a PHP test file in the `tests/wpunit` directory called `APITest
 ```php
 <?php
 
-class APITest extends \Codeception\TestCase\WPTestCase
+class APITest extends WPTestCase
 {
     /**
      * @var \WpunitTester
