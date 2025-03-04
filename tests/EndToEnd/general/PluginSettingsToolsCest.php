@@ -192,15 +192,15 @@ class PluginSettingsToolsCest
 		$I->seeInThisFile('published_at_min_date":"2020-01-01"');
 		$I->seeInThisFile('enabled_export":"on"');
 
-		// Copy the exported configuration file to the tests/_data folder.
+		// Copy the exported configuration file to the tests/Support/Data folder.
 		// This is so we have a valid configuration file to test when testing the import next.
-		$I->writeToFile('tests/_data/convertkit-export.json', file_get_contents($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json')); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$I->writeToFile('tests/Support/Data/convertkit-export.json', file_get_contents($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json')); // phpcs:ignore WordPress.WP.AlternativeFunctions
 
 		// Import the created configuration file.
 		// Load Tools screen.
 		$I->loadKitSettingsToolsScreen($I);
 
-		// Select the configuration file at tests/_data/convertkit-export.json to import.
+		// Select the configuration file at tests/Support/Data/convertkit-export.json to import.
 		$I->attachFile('input[name=import]', 'convertkit-export.json');
 
 		// Click the Import button.
@@ -232,7 +232,7 @@ class PluginSettingsToolsCest
 
 		// Delete export files.
 		$I->deleteFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json');
-		$I->deleteFile('tests/_data/convertkit-export.json');
+		$I->deleteFile('tests/Support/Data/convertkit-export.json');
 	}
 
 	/**
@@ -276,7 +276,7 @@ class PluginSettingsToolsCest
 		// Scroll to Import section.
 		$I->scrollTo('#import');
 
-		// Select the invalid configuration file at tests/_data/convertkit-export-invalid.json to import.
+		// Select the invalid configuration file at tests/Support/Data/convertkit-export-invalid.json to import.
 		$I->attachFile('input[name=import]', 'convertkit-export-invalid.json');
 
 		// Wait for page to load.
@@ -306,7 +306,7 @@ class PluginSettingsToolsCest
 		// Scroll to Import section.
 		$I->scrollTo('#import');
 
-		// Select the invalid configuration file at tests/_data/convertkit-export-invalid.json to import.
+		// Select the invalid configuration file at tests/Support/Data/convertkit-export-invalid.json to import.
 		$I->attachFile('input[name=import]', 'convertkit-export-fake.json');
 
 		// Click the Import button.
