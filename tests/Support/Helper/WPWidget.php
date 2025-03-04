@@ -14,7 +14,7 @@ class WPWidget extends \Codeception\Module
 	 *
 	 * @since   1.9.7.6
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $blockName              Block Name (e.g. 'Kit Form').
 	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
 	 * @param   bool|array       $blockConfiguration     Block Configuration (field => value key/value array).
@@ -72,7 +72,7 @@ class WPWidget extends \Codeception\Module
 	 *
 	 * @since   1.9.7.6
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
 	 * @param   bool|array       $expectedMarkup         Expected HTML markup.
 	 */
@@ -98,7 +98,7 @@ class WPWidget extends \Codeception\Module
 	 *
 	 * @since   1.9.7.6
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $blockName              Block Name (e.g. 'Kit Form').
 	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
 	 * @param   bool|array       $blockConfiguration     Block Configuration (field => value key/value array).
@@ -177,7 +177,7 @@ class WPWidget extends \Codeception\Module
 	 *
 	 * @since   1.9.7.6
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   bool|array       $expectedMarkup         Expected HTML markup.
 	 */
 	public function seeBlockWidget($I, $expectedMarkup)
@@ -195,7 +195,7 @@ class WPWidget extends \Codeception\Module
 	 *
 	 * @since   1.9.7.6
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 */
 	public function resetWidgets($I)
 	{

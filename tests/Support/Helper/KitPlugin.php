@@ -15,7 +15,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function activateKitPlugin($I)
 	{
@@ -30,7 +30,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function deactivateKitPlugin($I)
 	{
@@ -43,7 +43,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 * @param   bool|array       $options {
 	 *           Optional. An array of settings.
 	 *
@@ -92,7 +92,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.4.0
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 */
 	public function setupKitPluginCredentialsNoData($I)
 	{
@@ -115,7 +115,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.4.0
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 */
 	public function setupKitPluginFakeAPIKey($I)
 	{
@@ -139,7 +139,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.4.0
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 */
 	public function setupKitPluginNoDefaultForms($I)
 	{
@@ -160,7 +160,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.4.0
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 */
 	public function setupKitPluginDisableJS($I)
 	{
@@ -176,7 +176,7 @@ class KitPlugin extends \Codeception\Module
 	 * Helper method to define cached Resources (Forms, Landing Pages, Posts, Products and Tags),
 	 * directly into the database, instead of querying the API for them via the Resource classes.
 	 *
-	 * This can safely be done for Acceptance tests, as WPUnit tests ensure that
+	 * This can safely be done for EndToEnd tests, as WPUnit tests ensure that
 	 * caching Resources from calls made to the API work and store data in the expected
 	 * structure.
 	 *
@@ -188,7 +188,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.0.7
 	 *
-	 * @param   EndToEndTester $I              AcceptanceTester.
+	 * @param   EndToEndTester $I              EndToEndTester.
 	 */
 	public function setupKitPluginResources($I)
 	{
@@ -451,7 +451,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.0.7
 	 *
-	 * @param   EndToEndTester $I              AcceptanceTester.
+	 * @param   EndToEndTester $I              EndToEndTester.
 	 */
 	public function setupKitPluginResourcesNoData($I)
 	{
@@ -498,7 +498,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6.7
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function resetKitPlugin($I)
 	{
@@ -535,7 +535,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function loadKitSettingsGeneralScreen($I)
 	{
@@ -550,7 +550,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function loadKitSettingsToolsScreen($I)
 	{
@@ -565,7 +565,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function clearDebugLog($I)
 	{
@@ -581,7 +581,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 * @param   string           $entry     Log entry.
 	 */
 	public function seeInPluginDebugLog($I, $entry)
@@ -595,7 +595,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I         AcceptanceTester.
+	 * @param   EndToEndTester $I         EndToEndTester.
 	 * @param   string           $entry     Log entry.
 	 */
 	public function dontSeeInPluginDebugLog($I, $entry)
@@ -610,7 +610,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.0.8
 	 *
-	 * @param   EndToEndTester $I                 AcceptanceTester.
+	 * @param   EndToEndTester $I                 EndToEndTester.
 	 * @param   string           $selectElement     <select> element.
 	 * @param   bool|array       $prependOptions    Option elements that should appear before the resources.
 	 */
@@ -637,7 +637,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.0.8
 	 *
-	 * @param   EndToEndTester $I                 AcceptanceTester.
+	 * @param   EndToEndTester $I                 EndToEndTester.
 	 * @param   string           $selectElement     <select> element.
 	 * @param   bool|array       $prependOptions    Option elements that should appear before the resources.
 	 */
@@ -664,7 +664,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.0.8
 	 *
-	 * @param   EndToEndTester $I                 AcceptanceTester.
+	 * @param   EndToEndTester $I                 EndToEndTester.
 	 * @param   string           $selectElement     <select> element.
 	 * @param   bool|array       $prependOptions    Option elements that should appear before the resources.
 	 */
@@ -691,7 +691,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.0.8
 	 *
-	 * @param   EndToEndTester $I             AcceptanceTester.
+	 * @param   EndToEndTester $I             EndToEndTester.
 	 * @param   string           $selectElement <select> element.
 	 * @param   array            $values        <option> values.
 	 */
@@ -816,7 +816,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.7
 	 *
-	 * @param   EndToEndTester $I             AcceptanceTester.
+	 * @param   EndToEndTester $I             EndToEndTester.
 	 * @param   int              $pageID        Page ID.
 	 */
 	public function seeCreatorNetworkRecommendationsScript($I, $pageID)
@@ -837,7 +837,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.7
 	 *
-	 * @param   EndToEndTester $I             AcceptanceTester.
+	 * @param   EndToEndTester $I             EndToEndTester.
 	 * @param   int              $pageID        Page ID.
 	 */
 	public function dontSeeCreatorNetworkRecommendationsScript($I, $pageID)
@@ -857,7 +857,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   EndToEndTester $I         Acceptance Tester.
+	 * @param   EndToEndTester $I         EndToEnd Tester.
 	 * @param   string           $selector  CSS or ID selector for the input element.
 	 */
 	public function selectAllText($I, $selector)

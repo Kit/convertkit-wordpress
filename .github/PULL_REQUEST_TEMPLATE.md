@@ -13,7 +13,7 @@ Not sure how to perform testing, or perhaps didn't include a test in this PR? Wa
 
 ## Checklist
 
-* [ ] I have [written a test](TESTING.md#writing-an-acceptance-test) and included it in this PR
+* [ ] I have [written a test](TESTING.md#writing-an-end-to-end-test) and included it in this PR
 * [ ] I have [run all tests](TESTING.md#run-tests) and they pass
 * [ ] The code passes when [running the PHP CodeSniffer](TESTING.md#run-php-codesniffer)
 * [ ] Code meets [WordPress Coding Standards](DEVELOPMENT.md#coding-standards) for PHP, HTML, CSS and JS

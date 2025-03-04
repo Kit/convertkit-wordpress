@@ -14,7 +14,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I          Acceptance Tester.
+	 * @param   EndToEndTester $I          EndToEnd Tester.
 	 * @param   string           $postType   Post Type.
 	 * @param   string           $title      Post Title.
 	 */
@@ -35,7 +35,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   1.9.7.4
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $blockName              Block Name (e.g. 'Kit Form').
 	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
 	 * @param   bool|array       $blockConfiguration     Block Configuration (field => value key/value array).
@@ -104,7 +104,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $text   Paragraph Text.
 	 */
 	public function addGutenbergParagraphBlock($I, $text)
@@ -120,7 +120,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $name   Page, Post or Custom Post Type Title/Name to link to.
 	 */
 	public function addGutenbergLinkToParagraph($I, $name)
@@ -143,7 +143,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $name   Page, Post or Custom Post Type Title/Name to link to.
 	 */
 	public function addGutenbergLinkToButton($I, $name)
@@ -168,7 +168,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.3.7
 	 *
-	 * @param   EndToEndTester $I         Acceptance Tester.
+	 * @param   EndToEndTester $I         EndToEnd Tester.
 	 * @param   string           $excerpt   Post excerpt.
 	 */
 	public function addGutenbergExcerpt($I, $excerpt)
@@ -194,7 +194,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $name   Page, Post or Custom Post Type Title/Name to link to.
 	 */
 	private function insertGutenbergLink($I, $name)
@@ -218,7 +218,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $formatterName          Formatter Name (e.g. 'Kit Form Trigger').
 	 * @param   string           $formatterProgrammaticName  Programmatic Formatter Name (e.g. 'convertkit-form-link').
 	 * @param   bool|array       $formatterConfiguration Block formatter's configuration (field => value key/value array).
@@ -269,7 +269,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $formatterName          Formatter Name (e.g. 'Kit Form Trigger').
 	 */
 	public function dontSeeGutenbergFormatter($I, $formatterName)
@@ -291,7 +291,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   1.9.7.4
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string           $blockName              Block Name (e.g. 'Kit Form').
 	 */
 	public function checkGutenbergBlockHasNoErrors($I, $blockName)
@@ -306,7 +306,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I     Acceptance Tester.
+	 * @param   EndToEndTester $I     EndToEnd Tester.
 	 * @return  string           $url   Page / Post URL.
 	 */
 	public function publishAndViewGutenbergPage($I)
@@ -333,7 +333,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.1.0
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 */
 	public function publishGutenbergPage($I)
 	{
@@ -350,7 +350,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.4.0
 	 *
-	 * @param   EndToEndTester $I                      Acceptance Tester.
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 */
 	public function clickPublishOnPrePublishChecksForGutenbergPage($I)
 	{
@@ -377,7 +377,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.6.2
 	 *
-	 * @param   EndToEndTester $I                     Acceptance Tester.
+	 * @param   EndToEndTester $I                     EndToEnd Tester.
 	 * @param   string           $postType              Post Type.
 	 * @param   string           $title                 Post Title.
 	 * @param   string           $formID                Meta Box `Form` value (-1: Default).

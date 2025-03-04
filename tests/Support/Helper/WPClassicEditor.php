@@ -14,7 +14,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I          Acceptance Tester.
+	 * @param   EndToEndTester $I          EndToEnd Tester.
 	 * @param   string           $postType   Post Type.
 	 * @param   string           $title      Post Title.
 	 */
@@ -38,7 +38,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I                          Acceptance Tester.
+	 * @param   EndToEndTester $I                          EndToEnd Tester.
 	 * @param   string           $shortcodeName              Shortcode Name (e.g. 'Kit Form').
 	 * @param   bool|array       $shortcodeConfiguration     Shortcode Configuration (field => value key/value array).
 	 * @param   bool|string      $expectedShortcodeOutput    Expected Shortcode Output (e.g. [convertkit_form form="12345"]).
@@ -98,7 +98,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   2.2.4
 	 *
-	 * @param   EndToEndTester $I                          Acceptance Tester.
+	 * @param   EndToEndTester $I                          EndToEnd Tester.
 	 * @param   string           $shortcodeName              Shortcode Name (e.g. 'Kit Form').
 	 * @param   string           $targetEditor               Target TinyMCE editor instance.
 	 */
@@ -132,7 +132,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I                          Acceptance Tester.
+	 * @param   EndToEndTester $I                          EndToEnd Tester.
 	 * @param   string           $shortcodeProgrammaticName  Programmatic Shortcode Name (e.g. 'convertkit-form').
 	 * @param   bool|array       $shortcodeConfiguration     Shortcode Configuration (field => value key/value array).
 	 * @param   bool|string      $expectedShortcodeOutput    Expected Shortcode Output (e.g. [convertkit_form form="12345"]).
@@ -190,7 +190,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   2.2.4
 	 *
-	 * @param   EndToEndTester $I                          Acceptance Tester.
+	 * @param   EndToEndTester $I                          EndToEnd Tester.
 	 * @param   string           $shortcodeProgrammaticName  Programmatic Shortcode Name (e.g. 'convertkit-form').
 	 * @param   string           $targetEditor               Target TinyMCE editor instance.
 	 */
@@ -222,7 +222,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $name   Page, Post or Custom Post Type Title/Name to link to.
 	 */
 	public function addClassicEditorLink($I, $name)
@@ -247,7 +247,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   2.5.6
 	 *
-	 * @param   EndToEndTester $I     Acceptance Tester.
+	 * @param   EndToEndTester $I     EndToEnd Tester.
 	 */
 	public function publishClassicEditorPage($I)
 	{
@@ -270,7 +270,7 @@ class WPClassicEditor extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I     Acceptance Tester.
+	 * @param   EndToEndTester $I     EndToEnd Tester.
 	 */
 	public function publishAndViewClassicEditorPage($I)
 	{

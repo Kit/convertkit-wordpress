@@ -14,7 +14,7 @@ class KitRestrictContent extends \Codeception\Module
 	 *
 	 * @since   2.1.0
 	 *
-	 * @param   EndToEndTester $I          AcceptanceTester.
+	 * @param   EndToEndTester $I          EndToEndTester.
 	 * @param   bool|array       $settings   Array of key/value settings.
 	 */
 	public function setupKitPluginRestrictContent($I, $settings)
@@ -33,7 +33,7 @@ class KitRestrictContent extends \Codeception\Module
 	 *
 	 * @since   2.1.0
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function loadKitSettingsRestrictContentScreen($I)
 	{
@@ -88,7 +88,7 @@ class KitRestrictContent extends \Codeception\Module
 	 *
 	 * @since   2.4.2
 	 *
-	 * @param   EndToEndTester $I          AcceptanceTester.
+	 * @param   EndToEndTester $I          EndToEndTester.
 	 * @param   bool|array       $settings   Array of expected key/value settings.
 	 */
 	public function checkRestrictContentSettings($I, $settings)

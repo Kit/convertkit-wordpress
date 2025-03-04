@@ -14,7 +14,7 @@ class WPMetabox extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   AcceptanceHelper $I              Acceptance Helper.
+	 * @param   EndToEndTester   $I              EndToEnd Tester.
 	 * @param   string           $metabox        Programmatic Metabox Name.
 	 * @param   array            $configuration  Metabox Configuration (field => value key/value array).
 	 */

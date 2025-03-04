@@ -399,7 +399,7 @@ class PageBlockProductCest
 		// It's tricky to interact with Gutenberg's color picker, so we programmatically create the Page
 		// instead to then confirm the color settings apply on the output.
 		// We don't need to test the color picker itself, as it's a Gutenberg supplied component, and our
-		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
 				'post_name'    => 'kit-page-product-block-theme-color-params',
@@ -443,7 +443,7 @@ class PageBlockProductCest
 		// It's tricky to interact with Gutenberg's color picker, so we programmatically create the Page
 		// instead to then confirm the color settings apply on the output.
 		// We don't need to test the color picker itself, as it's a Gutenberg supplied component, and our
-		// other Acceptance tests confirm that the block can be added in Gutenberg etc.
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
 				'post_name'    => 'kit-page-product-block-hex-color-params',

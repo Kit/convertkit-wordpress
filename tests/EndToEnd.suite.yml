@@ -19,7 +19,7 @@ modules:
         - \Codeception\Module\Filesystem
 
         # Our helper classes, which contain functions used across multiple tests.
-        # If you created a new file in tests/_support/Helper/Acceptance, add its namespace and class below,
+        # If you created a new file in tests/Support/Helper, add its namespace and class below,
         - \Tests\Support\Helper\KitAPI
         - \Tests\Support\Helper\KitBroadcasts
         - \Tests\Support\Helper\KitForms

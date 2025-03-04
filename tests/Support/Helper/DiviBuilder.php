@@ -14,7 +14,7 @@ class DiviBuilder extends \Codeception\Module
 	 *
 	 * @since   2.5.7
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $title  Page Title.
 	 */
 	public function createDiviPageInBackendEditor($I, $title)
@@ -74,7 +74,7 @@ class DiviBuilder extends \Codeception\Module
 	 *
 	 * @since   2.5.7
 	 *
-	 * @param   EndToEndTester $I                 Acceptance Tester.
+	 * @param   EndToEndTester $I                 EndToEnd Tester.
 	 * @param   string           $title             Page Title.
 	 * @param   bool             $configureMetaBox  Configure Plugin's Meta Box to set Form = None (set to false if running a test with no credentials).
 	 * @return  string                              Page URL.
@@ -118,7 +118,7 @@ class DiviBuilder extends \Codeception\Module
 	 *
 	 * @since   2.5.7
 	 *
-	 * @param   EndToEndTester $I                 Acceptance Tester.
+	 * @param   EndToEndTester $I                 EndToEnd Tester.
 	 * @param   string           $name              Module Name.
 	 * @param   string           $programmaticName  Programmatic Module Name.
 	 * @param   bool|string      $fieldName         Field Name.
@@ -152,7 +152,7 @@ class DiviBuilder extends \Codeception\Module
 	 *
 	 * @since   2.5.7
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function saveDiviModuleInBackendEditorAndViewPage($I)
 	{
@@ -180,7 +180,7 @@ class DiviBuilder extends \Codeception\Module
 	 *
 	 * @since   2.5.7
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 * @param   string           $url    Page URL.
 	 */
 	public function saveDiviModuleInFrontendEditorAndViewPage($I, $url)

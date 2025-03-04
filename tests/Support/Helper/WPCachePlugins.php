@@ -14,7 +14,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function enableCachingLiteSpeedCachePlugin($I)
 	{
@@ -34,7 +34,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I             Acceptance Tester.
+	 * @param   EndToEndTester $I             EndToEnd Tester.
 	 * @param   string           $cookieName    Cookie Name to exclude from caching.
 	 */
 	public function excludeCachingLiteSpeedCachePlugin($I, $cookieName = 'ck_subscriber_id')
@@ -58,7 +58,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function enableCachingW3TotalCachePlugin($I)
 	{
@@ -82,7 +82,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I             Acceptance Tester.
+	 * @param   EndToEndTester $I             EndToEnd Tester.
 	 * @param   string           $cookieName    Cookie Name to exclude from caching.
 	 */
 	public function excludeCachingW3TotalCachePlugin($I, $cookieName = 'ck_subscriber_id')
@@ -103,7 +103,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function enableCachingWPFastestCachePlugin($I)
 	{
@@ -128,7 +128,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function enableCachingWPOptimizePlugin($I)
 	{
@@ -151,7 +151,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function enableCachingWPSuperCachePlugin($I)
 	{
@@ -171,7 +171,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I             Acceptance Tester.
+	 * @param   EndToEndTester $I             EndToEnd Tester.
 	 * @param   string           $cookieName    Cookie Name to exclude from caching.
 	 */
 	public function excludeCachingWPSuperCachePlugin($I, $cookieName = 'ck_subscriber_id')
@@ -191,7 +191,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.6.5
 	 *
-	 * @param   EndToEndTester $I             Acceptance Tester.
+	 * @param   EndToEndTester $I             EndToEnd Tester.
 	 */
 	public function enableWPRocketMinifyConcatenateJSAndCSS($I)
 	{
@@ -212,7 +212,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.6.5
 	 *
-	 * @param   EndToEndTester $I             Acceptance Tester.
+	 * @param   EndToEndTester $I             EndToEnd Tester.
 	 */
 	public function enableWPRocketDelayJS($I)
 	{
@@ -231,7 +231,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.6.5
 	 *
-	 * @param   EndToEndTester $I             Acceptance Tester.
+	 * @param   EndToEndTester $I             EndToEnd Tester.
 	 */
 	public function enableWPRocketLazyLoad($I)
 	{
@@ -252,7 +252,7 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @since   2.2.2
 	 *
-	 * @param   EndToEndTester $I      Acceptance Tester.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
 	public function deleteWPCacheConfigFiles($I)
 	{

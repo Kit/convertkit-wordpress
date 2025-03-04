@@ -380,7 +380,7 @@ class PageShortcodeProductCest
 		// It's tricky to interact with WordPress's color picker, so we programmatically create the Page
 		// instead to then confirm the color settings apply on the output.
 		// We don't need to test the color picker itself, as it's a WordPress supplied component, and our
-		// other Acceptance tests confirm that the shortcode can be added in the Classic Editor.
+		// other End To End tests confirm that the shortcode can be added in the Classic Editor.
 		$I->havePageInDatabase(
 			[
 				'post_name'    => 'kit-page-product-shortcode-hex-color-params',

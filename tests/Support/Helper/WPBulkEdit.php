@@ -14,7 +14,7 @@ class WPBulkEdit extends \Codeception\Module
 	 *
 	 * @since   1.9.8.0
 	 *
-	 * @param   AcceptanceHelper $I              Acceptance Helper.
+	 * @param   EndToEndTester $I                EndToEnd Tester.
 	 * @param   string           $postType       Programmatic Post Type.
 	 * @param   array            $postIDs        Post IDs.
 	 * @param   array            $configuration  Configuration (field => value key/value array).
@@ -70,7 +70,7 @@ class WPBulkEdit extends \Codeception\Module
 	 *
 	 * @since   1.9.8.1
 	 *
-	 * @param   AcceptanceHelper $I              Acceptance Helper.
+	 * @param   EndToEndTester $I              	 EndToEnd Tester.
 	 * @param   string           $postType       Programmatic Post Type.
 	 * @param   array            $postIDs        Post IDs.
 	 */

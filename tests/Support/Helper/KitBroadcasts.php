@@ -14,7 +14,7 @@ class KitBroadcasts extends \Codeception\Module
 	 *
 	 * @since   2.2.8
 	 *
-	 * @param   EndToEndTester $I          AcceptanceTester.
+	 * @param   EndToEndTester $I          EndToEndTester.
 	 * @param   bool|array       $settings   Array of key/value settings. If not defined, uses expected defaults.
 	 */
 	public function setupKitPluginBroadcasts($I, $settings = false)
@@ -63,7 +63,7 @@ class KitBroadcasts extends \Codeception\Module
 	 *
 	 * @since   2.2.8
 	 *
-	 * @param   EndToEndTester $I     AcceptanceTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function loadKitSettingsBroadcastsScreen($I)
 	{
@@ -162,7 +162,7 @@ class KitBroadcasts extends \Codeception\Module
 
 		// Confirm that the number of expected broadcasts displays.
 		if ($options['number_posts'] !== false) {
-			$I->seeNumberOfElements('li.convertkit-broadcast', $options['number_posts']);
+			$I->seeNumberOfElements('li.convertkit-broadcast', (int) $options['number_posts']);
 		}
 
 		// Confirm that previous pagination displays, if expected.
