@@ -280,8 +280,6 @@ class PageShortcodeFormTriggerCest
 	 */
 	public function testFormTriggerShortcodeWhenNoCredentials(EndToEndTester $I)
 	{
-		$I->markTestIncomplete();
-
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: No Credentials');
 

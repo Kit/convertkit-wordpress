@@ -472,10 +472,8 @@ class PageBlockProductCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testProductBlockWhenNoAPIKey(EndToEndTester $I)
+	public function testProductBlockWhenNoCredentials(EndToEndTester $I)
 	{
-		$I->markTestIncomplete();
-
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Block: No API Key');
 
@@ -483,7 +481,7 @@ class PageBlockProductCest
 		$I->addGutenbergBlock($I, 'Kit Product', 'convertkit-product');
 
 		// Test that the popup window works.
-		$I->testBlockNoAPIKeyPopupWindow(
+		$I->testBlockNoCredentialsPopupWindow(
 			$I,
 			'convertkit-product',
 			'Select a Product using the Product option in the Gutenberg sidebar.'
