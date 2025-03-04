@@ -888,13 +888,13 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args'            => [
-							"--headless=new",
-							"--disable-gpu",
-							"--disable-dev-shm-usage",
+							'--headless=new',
+							'--disable-gpu',
+							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
-							"--proxy-bypass-list=*",
-							"--no-sandbox",
-							"--user-agent=" . $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
+							'--proxy-bypass-list=*',
+							'--no-sandbox',
+							'--user-agent=' . $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
 						],
 						'mobileEmulation' => [
 							'deviceMetrics' => [
@@ -928,13 +928,13 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args' => [
-							"--headless=new",
-							"--disable-gpu",
-							"--disable-dev-shm-usage",
+							'--headless=new',
+							'--disable-gpu',
+							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
-							"--proxy-bypass-list=*",
-							"--no-sandbox",
-							"--user-agent=" . $_ENV['TEST_SITE_HTTP_USER_AGENT'],
+							'--proxy-bypass-list=*',
+							'--no-sandbox',
+							'--user-agent=' . $_ENV['TEST_SITE_HTTP_USER_AGENT'],
 						],
 						// excluding mobileEmulation arguments here makes chromedriver behave in desktop mode.
 					],
