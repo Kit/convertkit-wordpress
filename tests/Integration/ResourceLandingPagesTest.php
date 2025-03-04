@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
- * Tests for the ConvertKit_Resource_Products class.
+ * Tests for the ConvertKit_Resource_Landing_Pages class.
  *
- * @since   1.9.8.5
+ * @since   1.9.7.4
  */
-class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
+class ResourceLandingPagesTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -16,7 +21,7 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Settings class.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 *
 	 * @var     ConvertKit_Settings
 	 */
@@ -25,16 +30,16 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Resource class.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 *
-	 * @var     ConvertKit_Resource_Products
+	 * @var     ConvertKit_Resource_Landing_Pages
 	 */
 	private $resource;
 
 	/**
 	 * Performs actions before each test.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 */
 	public function setUp(): void
 	{
@@ -44,7 +49,7 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Products();
+		$this->resource = new \ConvertKit_Resource_Landing_Pages();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -84,7 +89,7 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the refresh() function performs as expected.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 */
 	public function testRefresh()
 	{
@@ -98,7 +103,7 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the expiry timestamp is set and returns the expected value.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 */
 	public function testExpiry()
 	{
@@ -116,7 +121,7 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	 * Tests that the get() function returns resources in alphabetical ascending order
 	 * by default.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 */
 	public function testGet()
 	{
@@ -135,8 +140,8 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Example Tip Jar', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('PDF Guide', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('Character Encoding', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('Legacy Landing Page', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -166,8 +171,8 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('PDF Guide', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Example Tip Jar', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('Legacy Landing Page', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('Character Encoding', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -196,8 +201,8 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('PDF Guide', reset($result)['name']);
-		$this->assertEquals('Newsletter Subscription', end($result)['name']);
+		$this->assertEquals('Character Encoding', reset($result)['name']);
+		$this->assertEquals('Legacy Landing Page', end($result)['name']);
 	}
 
 	/**
@@ -214,7 +219,7 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the exist() function performs as expected.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.4
 	 */
 	public function testExist()
 	{
@@ -230,18 +235,20 @@ class ResourceProductsTest extends \Codeception\TestCase\WPTestCase
 	 */
 	public function testGetHTML()
 	{
-		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_PRODUCT_ID'], 'Buy now');
-		$this->assertSame($result, '<div class="convertkit-product"><a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link " style="" data-commerce>Buy now</a></div>');
+		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LANDING_PAGE_ID']);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+		$this->assertStringContainsString('<form method="POST" action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '/subscriptions" data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '" data-uid="99f1db6843" class="formkit-form"', $result);
 	}
 
 	/**
-	 * Test that the get_commerce_js_url() function returns the expected commerce.js URL.
+	 * Test that the get_html() function returns the expected data for a Legacy Landing Page ID.
 	 *
 	 * @since   2.0.4
 	 */
-	public function testGetCommerceJSURL()
+	public function testGetHTMLWithLegacyLandingPageID()
 	{
-		$result = $this->resource->get_commerce_js_url();
-		$this->assertSame($result, $_ENV['CONVERTKIT_API_COMMERCE_JS_URL']);
+		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID']);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+		$this->assertStringContainsString('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">', $result);
 	}
 }

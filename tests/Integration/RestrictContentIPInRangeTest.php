@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
  * Tests for the ConvertKit_Output_Restrict_Content::ip_in_range() function.
  *
  * @since   2.4.2
  */
-class RestrictContentIPInRangeTest extends \Codeception\TestCase\WPTestCase
+class RestrictContentIPInRangeTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -26,10 +31,10 @@ class RestrictContentIPInRangeTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Initialize the class we want to test.
-		$this->resource = new ConvertKit_Output_Restrict_Content();
+		$this->resource = new \ConvertKit_Output_Restrict_Content();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource);
 	}
 
 	/**
