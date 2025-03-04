@@ -49,7 +49,7 @@ class ResourceProductsNoDataTest extends WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -59,10 +59,10 @@ class ResourceProductsNoDataTest extends WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Products();
+		$this->resource = new \ConvertKit_Resource_Products();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class ResourceProductsNoDataTest extends WPTestCase
 	{
 		// Confirm that the data is stored in the options table and includes some expected keys.
 		$result = $this->resource->refresh();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -126,7 +126,7 @@ class ResourceProductsNoDataTest extends WPTestCase
 	{
 		// Confirm that the data is fetched from the options table when using get(), and includes some expected keys.
 		$result = $this->resource->get();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}

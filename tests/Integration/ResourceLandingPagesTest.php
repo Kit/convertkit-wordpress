@@ -49,7 +49,7 @@ class ResourceLandingPagesTest extends WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -59,10 +59,10 @@ class ResourceLandingPagesTest extends WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Landing_Pages();
+		$this->resource = new \ConvertKit_Resource_Landing_Pages();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -236,7 +236,7 @@ class ResourceLandingPagesTest extends WPTestCase
 	public function testGetHTML()
 	{
 		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LANDING_PAGE_ID']);
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertStringContainsString('<form method="POST" action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '/subscriptions" data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '" data-uid="99f1db6843" class="formkit-form"', $result);
 	}
 
@@ -248,7 +248,7 @@ class ResourceLandingPagesTest extends WPTestCase
 	public function testGetHTMLWithLegacyLandingPageID()
 	{
 		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID']);
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertStringContainsString('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">', $result);
 	}
 }

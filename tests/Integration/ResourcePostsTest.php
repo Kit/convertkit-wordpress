@@ -49,7 +49,7 @@ class ResourcePostsTest extends WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -59,10 +59,10 @@ class ResourcePostsTest extends WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Posts();
+		$this->resource = new \ConvertKit_Resource_Posts();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -425,7 +425,7 @@ class ResourcePostsTest extends WPTestCase
 	 */
 	private function testPagination($result, $page, $perPage, $hasNextPage, $hasPrevPage)
 	{
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertArrayHasKey('items', $result);
 		$this->assertArrayHasKey('page', $result);

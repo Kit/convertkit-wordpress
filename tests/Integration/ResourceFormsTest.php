@@ -49,7 +49,7 @@ class ResourceFormsTest extends WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -59,10 +59,10 @@ class ResourceFormsTest extends WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Forms();
+		$this->resource = new \ConvertKit_Resource_Forms();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -336,7 +336,7 @@ class ResourceFormsTest extends WPTestCase
 	public function testGetHTML()
 	{
 		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_FORM_ID']);
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertSame($result, '<script async data-uid="85629c512d" src="https://cheerful-architect-3237.kit.com/85629c512d/index.js" data-jetpack-boost="ignore" data-no-defer="1" nowprocket></script>');
 	}
 
@@ -348,7 +348,7 @@ class ResourceFormsTest extends WPTestCase
 	public function testGetHTMLWithLegacyFormID()
 	{
 		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LEGACY_FORM_ID']);
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertStringContainsString('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">', $result);
 	}
 
