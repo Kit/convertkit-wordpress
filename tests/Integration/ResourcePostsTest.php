@@ -223,7 +223,7 @@ class ResourcePostsTest extends WPTestCase
 	{
 		// Skip this test.
 		$this->markTestSkipped('This test is temporarily skipped.');
-		
+
 		// Deactivate Plugin.
 		deactivate_plugins('convertkit/wp-convertkit.php');
 
