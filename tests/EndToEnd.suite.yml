@@ -63,7 +63,7 @@ modules:
                   - "--no-sandbox"
                   - "--user-agent=%TEST_SITE_HTTP_USER_AGENT%"
                 prefs:
-                  download.default_directory: '%WP_ROOT_FOLDER%'
+                  download.default_directory: '%WORDPRESS_ROOT_DIR%'
         lucatume\WPBrowser\Module\WPDb:
             dbUrl: '%WORDPRESS_DB_URL%'
             dump: 'tests/Support/Data/dump.sql'

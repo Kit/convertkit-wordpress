@@ -62,18 +62,18 @@ class PluginSettingsToolsCest
 		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
-		// This will download the file to $_ENV['WP_ROOT_FOLDER'].
+		// This will download the file to $_ENV['WORDPRESS_ROOT_DIR'].
 		$I->click('input#convertkit-download-debug-log');
 
 		// Wait 2 seconds for the download to complete.
 		sleep(2);
 
 		// Check downloaded file exists and contains some expected information.
-		$I->openFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-log.txt');
+		$I->openFile($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-log.txt');
 		$I->seeInThisFile('API: GET account');
 
 		// Delete the file.
-		$I->deleteFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-log.txt');
+		$I->deleteFile($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-log.txt');
 	}
 
 	/**
@@ -116,14 +116,14 @@ class PluginSettingsToolsCest
 		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
-		// This will download the file to $_ENV['WP_ROOT_FOLDER'].
+		// This will download the file to $_ENV['WORDPRESS_ROOT_DIR'].
 		$I->click('input#convertkit-download-system-info');
 
 		// Wait 2 seconds for the download to complete.
 		sleep(2);
 
 		// Check downloaded file exists and contains some expected information.
-		$I->openFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-system-info.txt');
+		$I->openFile($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-system-info.txt');
 		$I->seeInThisFile('### wp-core');
 		$I->seeInThisFile('### wp-active-theme');
 		$I->seeInThisFile('### wp-themes-inactive');
@@ -136,7 +136,7 @@ class PluginSettingsToolsCest
 		$I->seeInThisFile('### wp-filesystem');
 
 		// Delete the file.
-		$I->deleteFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-system-info.txt');
+		$I->deleteFile($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-system-info.txt');
 	}
 
 	/**
@@ -170,7 +170,7 @@ class PluginSettingsToolsCest
 		$I->loadKitSettingsToolsScreen($I);
 
 		// Click the Export button.
-		// This will download the file to $_ENV['WP_ROOT_FOLDER'].
+		// This will download the file to $_ENV['WORDPRESS_ROOT_DIR'].
 		$I->scrollTo('#export');
 		$I->click('input#convertkit-export');
 
@@ -178,7 +178,7 @@ class PluginSettingsToolsCest
 		sleep(2);
 
 		// Check downloaded file exists.
-		$I->openFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json');
+		$I->openFile($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-export.json');
 
 		// Confirm some expected general settings data is included.
 		$I->seeInThisFile('{"settings":{"access_token":"' . $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'] . '","refresh_token":"' . $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'] . '"');
@@ -194,7 +194,7 @@ class PluginSettingsToolsCest
 
 		// Copy the exported configuration file to the tests/Support/Data folder.
 		// This is so we have a valid configuration file to test when testing the import next.
-		$I->writeToFile('tests/Support/Data/convertkit-export.json', file_get_contents($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json')); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$I->writeToFile('tests/Support/Data/convertkit-export.json', file_get_contents($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-export.json')); // phpcs:ignore WordPress.WP.AlternativeFunctions
 
 		// Import the created configuration file.
 		// Load Tools screen.
@@ -231,7 +231,7 @@ class PluginSettingsToolsCest
 		$I->assertEquals($settings['published_at_min_date'], '2020-01-01');
 
 		// Delete export files.
-		$I->deleteFile($_ENV['WP_ROOT_FOLDER'] . '/convertkit-export.json');
+		$I->deleteFile($_ENV['WORDPRESS_ROOT_DIR'] . '/convertkit-export.json');
 		$I->deleteFile('tests/Support/Data/convertkit-export.json');
 	}
 
