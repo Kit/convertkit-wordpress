@@ -295,10 +295,10 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/codecept build
 
-      # Run Codeception Integration Tests on the PHP 8.3 instance before the acceptance/tags End to End tests.
+      # Run Codeception Integration Tests on the PHP 8.3 instance before the EndToEnd/tags End to End tests.
       # We run these once to avoid hitting API rate limits.
       - name: Run tests/wpunit
-        if: ${{ matrix.php-versions == '8.3' && matrix.test-groups == 'acceptance/tags' }}
+        if: ${{ matrix.php-versions == '8.3' && matrix.test-groups == 'EndToEnd/tags' }}
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/codecept run tests/Integration --fail-fast
 
