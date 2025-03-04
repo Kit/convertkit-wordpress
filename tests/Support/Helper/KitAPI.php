@@ -43,7 +43,7 @@ class KitAPI extends \Codeception\Module
 	 * Check the given email address exists as a subscriber.
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   string           $emailAddress   Email Address.
+	 * @param   string         $emailAddress   Email Address.
 	 */
 	public function apiCheckSubscriberExists($I, $emailAddress)
 	{
@@ -74,9 +74,9 @@ class KitAPI extends \Codeception\Module
 	 * @since   2.7.1
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   int              $subscriberID  Subscriber ID.
-	 * @param   int              $formID        Form ID.
-	 * @param   string           $referrer      Referrer.
+	 * @param   int            $subscriberID  Subscriber ID.
+	 * @param   int            $formID        Form ID.
+	 * @param   string         $referrer      Referrer.
 	 */
 	public function apiCheckSubscriberHasForm($I, $subscriberID, $formID, $referrer = false)
 	{
@@ -114,8 +114,8 @@ class KitAPI extends \Codeception\Module
 	 * @since   2.5.2
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   int              $subscriberID  Subscriber ID.
-	 * @param   int              $sequenceID         Sequence ID.
+	 * @param   int            $subscriberID  Subscriber ID.
+	 * @param   int            $sequenceID         Sequence ID.
 	 */
 	public function apiCheckSubscriberHasSequence($I, $subscriberID, $sequenceID)
 	{
@@ -142,8 +142,8 @@ class KitAPI extends \Codeception\Module
 	 * Check the given subscriber ID has been assigned to the given tag ID.
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   int              $subscriberID  Subscriber ID.
-	 * @param   int              $tagID         Tag ID.
+	 * @param   int            $subscriberID  Subscriber ID.
+	 * @param   int            $tagID         Tag ID.
 	 */
 	public function apiCheckSubscriberHasTag($I, $subscriberID, $tagID)
 	{
@@ -163,7 +163,7 @@ class KitAPI extends \Codeception\Module
 	 * @since   2.4.9.1
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   int              $subscriberID  Subscriber ID.
+	 * @param   int            $subscriberID  Subscriber ID.
 	 */
 	public function apiCheckSubscriberHasNoTags($I, $subscriberID)
 	{
@@ -181,7 +181,7 @@ class KitAPI extends \Codeception\Module
 	 * Check the given email address does not exists as a subscriber.
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   string           $emailAddress   Email Address.
+	 * @param   string         $emailAddress   Email Address.
 	 */
 	public function apiCheckSubscriberDoesNotExist($I, $emailAddress)
 	{

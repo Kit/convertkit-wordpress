@@ -129,8 +129,8 @@ class ElementorProductCest
 	 * @since   2.0.0
 	 *
 	 * @param   EndToEndTester $I          Tester.
-	 * @param   string           $title      Page Title.
-	 * @param   array            $settings   Widget settings.
+	 * @param   string         $title      Page Title.
+	 * @param   array          $settings   Widget settings.
 	 * @return  int                             Page ID
 	 */
 	private function _createPageWithProductWidget(EndToEndTester $I, $title, $settings)

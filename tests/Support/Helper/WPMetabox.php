@@ -14,9 +14,9 @@ class WPMetabox extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester   $I              EndToEnd Tester.
-	 * @param   string           $metabox        Programmatic Metabox Name.
-	 * @param   array            $configuration  Metabox Configuration (field => value key/value array).
+	 * @param   EndToEndTester $I              EndToEnd Tester.
+	 * @param   string         $metabox        Programmatic Metabox Name.
+	 * @param   array          $configuration  Metabox Configuration (field => value key/value array).
 	 */
 	public function configureMetaboxSettings($I, $metabox, $configuration)
 	{

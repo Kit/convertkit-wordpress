@@ -15,9 +15,9 @@ class WPWidget extends \Codeception\Module
 	 * @since   1.9.7.6
 	 *
 	 * @param   EndToEndTester $I                      EndToEnd Tester.
-	 * @param   string           $blockName              Block Name (e.g. 'Kit Form').
-	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
-	 * @param   bool|array       $blockConfiguration     Block Configuration (field => value key/value array).
+	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 * @param   bool|array     $blockConfiguration     Block Configuration (field => value key/value array).
 	 */
 	public function addLegacyWidget($I, $blockName, $blockProgrammaticName, $blockConfiguration = false)
 	{
@@ -73,8 +73,8 @@ class WPWidget extends \Codeception\Module
 	 * @since   1.9.7.6
 	 *
 	 * @param   EndToEndTester $I                      EndToEnd Tester.
-	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
-	 * @param   bool|array       $expectedMarkup         Expected HTML markup.
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 * @param   bool|array     $expectedMarkup         Expected HTML markup.
 	 */
 	public function seeLegacyWidget($I, $blockProgrammaticName, $expectedMarkup)
 	{
@@ -99,9 +99,9 @@ class WPWidget extends \Codeception\Module
 	 * @since   1.9.7.6
 	 *
 	 * @param   EndToEndTester $I                      EndToEnd Tester.
-	 * @param   string           $blockName              Block Name (e.g. 'Kit Form').
-	 * @param   string           $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
-	 * @param   bool|array       $blockConfiguration     Block Configuration (field => value key/value array).
+	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 * @param   bool|array     $blockConfiguration     Block Configuration (field => value key/value array).
 	 */
 	public function addBlockWidget($I, $blockName, $blockProgrammaticName, $blockConfiguration = false)
 	{
@@ -178,7 +178,7 @@ class WPWidget extends \Codeception\Module
 	 * @since   1.9.7.6
 	 *
 	 * @param   EndToEndTester $I                      EndToEnd Tester.
-	 * @param   bool|array       $expectedMarkup         Expected HTML markup.
+	 * @param   bool|array     $expectedMarkup         Expected HTML markup.
 	 */
 	public function seeBlockWidget($I, $expectedMarkup)
 	{

@@ -17,8 +17,8 @@ class KitProducts extends \Codeception\Module
 	 * @since   2.0.0
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   string           $productURL     Product URL.
-	 * @param   bool|string      $text           Test if the link text matches the given value.
+	 * @param   string         $productURL     Product URL.
+	 * @param   bool|string    $text           Test if the link text matches the given value.
 	 */
 	public function seeProductLink($I, $productURL, $text = false)
 	{
@@ -50,10 +50,10 @@ class KitProducts extends \Codeception\Module
 	 * @since   1.9.8.5
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   string           $productURL     Product URL.
-	 * @param   bool|string      $text           Test if the button text matches the given value.
-	 * @param   bool|string      $textColor      Test if the given text color is applied.
-	 * @param   bool|string      $backgroundColor Test is the given background color is applied.
+	 * @param   string         $productURL     Product URL.
+	 * @param   bool|string    $text           Test if the button text matches the given value.
+	 * @param   bool|string    $textColor      Test if the given text color is applied.
+	 * @param   bool|string    $backgroundColor Test is the given background color is applied.
 	 */
 	public function seeProductOutput($I, $productURL, $text = false, $textColor = false, $backgroundColor = false)
 	{

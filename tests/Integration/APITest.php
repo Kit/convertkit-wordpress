@@ -15,8 +15,8 @@ class APITest extends WPTestCase
 	 * The testing implementation.
 	 *
 	 * @var \IntegrationTester
-     */
-    protected $tester;
+	 */
+	protected $tester;
 
 	/**
 	 * Holds the ConvertKit API class.

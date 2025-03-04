@@ -35,7 +35,7 @@ class WPCachePlugins extends \Codeception\Module
 	 * @since   2.2.2
 	 *
 	 * @param   EndToEndTester $I             EndToEnd Tester.
-	 * @param   string           $cookieName    Cookie Name to exclude from caching.
+	 * @param   string         $cookieName    Cookie Name to exclude from caching.
 	 */
 	public function excludeCachingLiteSpeedCachePlugin($I, $cookieName = 'ck_subscriber_id')
 	{
@@ -83,7 +83,7 @@ class WPCachePlugins extends \Codeception\Module
 	 * @since   2.2.2
 	 *
 	 * @param   EndToEndTester $I             EndToEnd Tester.
-	 * @param   string           $cookieName    Cookie Name to exclude from caching.
+	 * @param   string         $cookieName    Cookie Name to exclude from caching.
 	 */
 	public function excludeCachingW3TotalCachePlugin($I, $cookieName = 'ck_subscriber_id')
 	{
@@ -172,7 +172,7 @@ class WPCachePlugins extends \Codeception\Module
 	 * @since   2.2.2
 	 *
 	 * @param   EndToEndTester $I             EndToEnd Tester.
-	 * @param   string           $cookieName    Cookie Name to exclude from caching.
+	 * @param   string         $cookieName    Cookie Name to exclude from caching.
 	 */
 	public function excludeCachingWPSuperCachePlugin($I, $cookieName = 'ck_subscriber_id')
 	{

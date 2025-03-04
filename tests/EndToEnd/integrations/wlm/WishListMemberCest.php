@@ -416,7 +416,7 @@ class WishListMemberCest
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   string           $emailAddress   Email Address.
+	 * @param   string         $emailAddress   Email Address.
 	 * @return  int                                 User ID
 	 */
 	private function _createUser(EndToEndTester $I, $emailAddress)
@@ -439,9 +439,9 @@ class WishListMemberCest
 	 * @since   2.5.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
-	 * @param   int              $wlmLevelID    WishList Member Level ID.
-	 * @param   string           $action        Action (subscribe,unsubscribe).
-	 * @param   string           $resourceName  Resource option to select (subscribe, form, tag, sequence etc).
+	 * @param   int            $wlmLevelID    WishList Member Level ID.
+	 * @param   string         $action        Action (subscribe,unsubscribe).
+	 * @param   string         $resourceName  Resource option to select (subscribe, form, tag, sequence etc).
 	 */
 	private function _configureMapping(EndToEndTester $I, $wlmLevelID, $action, $resourceName)
 	{
@@ -467,8 +467,8 @@ class WishListMemberCest
 	 * @since   2.5.4
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   int              $wlmLevelID     WishList Member Level ID.
-	 * @param   int              $userID         WordPress User ID.
+	 * @param   int            $wlmLevelID     WishList Member Level ID.
+	 * @param   int            $userID         WordPress User ID.
 	 */
 	private function _assignLevelToUser(EndToEndTester $I, $wlmLevelID, $userID)
 	{
@@ -491,8 +491,8 @@ class WishListMemberCest
 	 * @since   2.5.4
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   int              $wlmLevelID     WishList Member Level ID.
-	 * @param   int              $userID         WordPress User ID.
+	 * @param   int            $wlmLevelID     WishList Member Level ID.
+	 * @param   int            $userID         WordPress User ID.
 	 */
 	private function _removeLevelFromUser(EndToEndTester $I, $wlmLevelID, $userID)
 	{

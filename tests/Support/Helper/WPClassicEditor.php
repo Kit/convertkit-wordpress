@@ -15,8 +15,8 @@ class WPClassicEditor extends \Codeception\Module
 	 * @since   1.9.7.5
 	 *
 	 * @param   EndToEndTester $I          EndToEnd Tester.
-	 * @param   string           $postType   Post Type.
-	 * @param   string           $title      Post Title.
+	 * @param   string         $postType   Post Type.
+	 * @param   string         $title      Post Title.
 	 */
 	public function addClassicEditorPage($I, $postType = 'page', $title = 'Classic Editor Title')
 	{
@@ -39,10 +39,10 @@ class WPClassicEditor extends \Codeception\Module
 	 * @since   1.9.7.5
 	 *
 	 * @param   EndToEndTester $I                          EndToEnd Tester.
-	 * @param   string           $shortcodeName              Shortcode Name (e.g. 'Kit Form').
-	 * @param   bool|array       $shortcodeConfiguration     Shortcode Configuration (field => value key/value array).
-	 * @param   bool|string      $expectedShortcodeOutput    Expected Shortcode Output (e.g. [convertkit_form form="12345"]).
-	 * @param   string           $targetEditor               Target TinyMCE editor instance.
+	 * @param   string         $shortcodeName              Shortcode Name (e.g. 'Kit Form').
+	 * @param   bool|array     $shortcodeConfiguration     Shortcode Configuration (field => value key/value array).
+	 * @param   bool|string    $expectedShortcodeOutput    Expected Shortcode Output (e.g. [convertkit_form form="12345"]).
+	 * @param   string         $targetEditor               Target TinyMCE editor instance.
 	 */
 	public function addVisualEditorShortcode($I, $shortcodeName, $shortcodeConfiguration = false, $expectedShortcodeOutput = false, $targetEditor = 'content')
 	{
@@ -99,8 +99,8 @@ class WPClassicEditor extends \Codeception\Module
 	 * @since   2.2.4
 	 *
 	 * @param   EndToEndTester $I                          EndToEnd Tester.
-	 * @param   string           $shortcodeName              Shortcode Name (e.g. 'Kit Form').
-	 * @param   string           $targetEditor               Target TinyMCE editor instance.
+	 * @param   string         $shortcodeName              Shortcode Name (e.g. 'Kit Form').
+	 * @param   string         $targetEditor               Target TinyMCE editor instance.
 	 */
 	public function openVisualEditorShortcodeModal($I, $shortcodeName, $targetEditor = 'content')
 	{
@@ -133,10 +133,10 @@ class WPClassicEditor extends \Codeception\Module
 	 * @since   1.9.7.5
 	 *
 	 * @param   EndToEndTester $I                          EndToEnd Tester.
-	 * @param   string           $shortcodeProgrammaticName  Programmatic Shortcode Name (e.g. 'convertkit-form').
-	 * @param   bool|array       $shortcodeConfiguration     Shortcode Configuration (field => value key/value array).
-	 * @param   bool|string      $expectedShortcodeOutput    Expected Shortcode Output (e.g. [convertkit_form form="12345"]).
-	 * @param   string           $targetEditor               ID of text editor instance.
+	 * @param   string         $shortcodeProgrammaticName  Programmatic Shortcode Name (e.g. 'convertkit-form').
+	 * @param   bool|array     $shortcodeConfiguration     Shortcode Configuration (field => value key/value array).
+	 * @param   bool|string    $expectedShortcodeOutput    Expected Shortcode Output (e.g. [convertkit_form form="12345"]).
+	 * @param   string         $targetEditor               ID of text editor instance.
 	 */
 	public function addTextEditorShortcode($I, $shortcodeProgrammaticName, $shortcodeConfiguration = false, $expectedShortcodeOutput = false, $targetEditor = 'content')
 	{
@@ -191,8 +191,8 @@ class WPClassicEditor extends \Codeception\Module
 	 * @since   2.2.4
 	 *
 	 * @param   EndToEndTester $I                          EndToEnd Tester.
-	 * @param   string           $shortcodeProgrammaticName  Programmatic Shortcode Name (e.g. 'convertkit-form').
-	 * @param   string           $targetEditor               Target TinyMCE editor instance.
+	 * @param   string         $shortcodeProgrammaticName  Programmatic Shortcode Name (e.g. 'convertkit-form').
+	 * @param   string         $targetEditor               Target TinyMCE editor instance.
 	 */
 	public function openTextEditorShortcodeModal($I, $shortcodeProgrammaticName, $targetEditor = 'content')
 	{
@@ -223,7 +223,7 @@ class WPClassicEditor extends \Codeception\Module
 	 * @since   2.0.0
 	 *
 	 * @param   EndToEndTester $I      EndToEnd Tester.
-	 * @param   string           $name   Page, Post or Custom Post Type Title/Name to link to.
+	 * @param   string         $name   Page, Post or Custom Post Type Title/Name to link to.
 	 */
 	public function addClassicEditorLink($I, $name)
 	{

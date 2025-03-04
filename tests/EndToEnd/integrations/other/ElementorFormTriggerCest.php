@@ -129,8 +129,8 @@ class ElementorFormTriggerCest
 	 * @since   2.2.2
 	 *
 	 * @param   EndToEndTester $I          Tester.
-	 * @param   string           $title      Page Title.
-	 * @param   array            $settings   Widget settings.
+	 * @param   string         $title      Page Title.
+	 * @param   array          $settings   Widget settings.
 	 * @return  int                             Page ID
 	 */
 	private function _createPageWithFormTriggerWidget(EndToEndTester $I, $title, $settings)

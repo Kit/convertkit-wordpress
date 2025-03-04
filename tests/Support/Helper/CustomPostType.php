@@ -14,10 +14,10 @@ class CustomPostType extends \Codeception\Module
 	 * @since   2.3.5
 	 *
 	 * @param   EndToEndTester $I                   End To End Tester.
-	 * @param   string           $slug              Post Type Slug.
-	 * @param   string           $singularLabel     Singular Label.
-	 * @param   string           $pluralLabel       Plural Label.
-	 * @param   bool             $isPublicPostType  Public Post Type.
+	 * @param   string         $slug              Post Type Slug.
+	 * @param   string         $singularLabel     Singular Label.
+	 * @param   string         $pluralLabel       Plural Label.
+	 * @param   bool           $isPublicPostType  Public Post Type.
 	 */
 	public function registerCustomPostType($I, $slug, $singularLabel, $pluralLabel, $isPublicPostType = true)
 	{
@@ -49,7 +49,7 @@ class CustomPostType extends \Codeception\Module
 	 * @since   2.3.5
 	 *
 	 * @param   EndToEndTester $I             EndToEnd Tester.
-	 * @param   string           $slug          Post Type Slug.
+	 * @param   string         $slug          Post Type Slug.
 	 */
 	public function unregisterCustomPostType($I, $slug)
 	{

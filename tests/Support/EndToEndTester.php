@@ -6,6 +6,7 @@ namespace Tests\Support;
 
 /**
  * Inherited Methods
+ *
  * @method void wantTo($text)
  * @method void wantToTest($text)
  * @method void execute($callable)
@@ -18,12 +19,12 @@ namespace Tests\Support;
  * @method void pause($vars = [])
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class EndToEndTester extends \Codeception\Actor
 {
-    use _generated\EndToEndTesterActions;
+	use _generated\EndToEndTesterActions;
 
-    /**
-     * Define custom actions here
-     */
+	/**
+	 * Define custom actions here
+	 */
 }

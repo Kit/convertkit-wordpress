@@ -14,8 +14,8 @@ class WPNotices extends \Codeception\Module
 	 *
 	 * @since   2.0.9
 	 *
-	 * @param   EndToEndTester   $I              EndToEnd Tester.
-	 * @param   string           $message        Message.
+	 * @param   EndToEndTester $I              EndToEnd Tester.
+	 * @param   string         $message        Message.
 	 */
 	public function seeErrorNotice($I, $message)
 	{
@@ -27,8 +27,8 @@ class WPNotices extends \Codeception\Module
 	 *
 	 * @since   2.0.9
 	 *
-	 * @param   EndToEndTester   $I              EndToEnd Tester.
-	 * @param   string           $message        Message.
+	 * @param   EndToEndTester $I              EndToEnd Tester.
+	 * @param   string         $message        Message.
 	 */
 	public function dontSeeErrorNotice($I, $message)
 	{

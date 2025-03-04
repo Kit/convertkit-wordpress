@@ -146,8 +146,8 @@ class ElementorFormCest
 	 * @since   1.9.7.2
 	 *
 	 * @param   EndToEndTester $I      Tester.
-	 * @param   string           $title  Page Title.
-	 * @param   int              $formID Kit Form ID.
+	 * @param   string         $title  Page Title.
+	 * @param   int            $formID Kit Form ID.
 	 * @return  int                         Page ID
 	 */
 	private function _createPageWithFormWidget(EndToEndTester $I, $title, $formID)

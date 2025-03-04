@@ -6,6 +6,7 @@ namespace Tests\Support;
 
 /**
  * Inherited Methods
+ *
  * @method void wantTo($text)
  * @method void wantToTest($text)
  * @method void execute($callable)
@@ -18,12 +19,12 @@ namespace Tests\Support;
  * @method void pause($vars = [])
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class IntegrationTester extends \Codeception\Actor
 {
-    use _generated\IntegrationTesterActions;
+	use _generated\IntegrationTesterActions;
 
-    /**
-     * Define custom actions here
-     */
+	/**
+	 * Define custom actions here
+	 */
 }

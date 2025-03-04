@@ -15,9 +15,9 @@ class Select2 extends \Codeception\Module
 	 * @since   1.9.6.4
 	 *
 	 * @param   EndToEndTester $I          Tester.
-	 * @param   string           $container  Field CSS Class / ID.
-	 * @param   string           $value      Field Value.
-	 * @param   string           $ariaAttributeName  Aria Attribute Name (aria-controls|aria-owns).
+	 * @param   string         $container  Field CSS Class / ID.
+	 * @param   string         $value      Field Value.
+	 * @param   string         $ariaAttributeName  Aria Attribute Name (aria-controls|aria-owns).
 	 */
 	public function fillSelect2Field($I, $container, $value, $ariaAttributeName = 'aria-controls')
 	{
@@ -36,9 +36,9 @@ class Select2 extends \Codeception\Module
 	 * @since   2.6.9
 	 *
 	 * @param   EndToEndTester $I          Tester.
-	 * @param   string           $container  Field CSS Class / ID.
-	 * @param   string           $value      Field Value.
-	 * @param   string           $ariaAttributeName  Aria Attribute Name (aria-controls|aria-owns).
+	 * @param   string         $container  Field CSS Class / ID.
+	 * @param   string         $value      Field Value.
+	 * @param   string         $ariaAttributeName  Aria Attribute Name (aria-controls|aria-owns).
 	 */
 	public function fillSelect2MultipleField($I, $container, $value, $ariaAttributeName = 'aria-describedby')
 	{

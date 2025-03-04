@@ -711,7 +711,7 @@ class ForminatorCest
 	 * @since   2.5.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   string           $optionName    <select> option name.
+	 * @param   string         $optionName    <select> option name.
 	 * @return  int                             Page ID
 	 */
 	private function _forminatorSetupForm(EndToEndTester $I, string $optionName)
@@ -760,7 +760,7 @@ class ForminatorCest
 	 * @since   2.5.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   string           $optionName    <select> option name.
+	 * @param   string         $optionName    <select> option name.
 	 * @return  int                             Page ID
 	 */
 	private function _forminatorSetupQuiz(EndToEndTester $I, string $optionName)
@@ -809,8 +809,8 @@ class ForminatorCest
 	 * @since   2.5.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   int              $pageID        Page ID.
-	 * @param   string           $emailAddress  Email Address.
+	 * @param   int            $pageID        Page ID.
+	 * @param   string         $emailAddress  Email Address.
 	 */
 	private function _forminatorCompleteAndSubmitForm(EndToEndTester $I, int $pageID, string $emailAddress)
 	{
@@ -846,8 +846,8 @@ class ForminatorCest
 	 * @since   2.5.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   int              $pageID        Page ID.
-	 * @param   string           $emailAddress  Email Address.
+	 * @param   int            $pageID        Page ID.
+	 * @param   string         $emailAddress  Email Address.
 	 */
 	private function _forminatorCompleteAndSubmitQuiz(EndToEndTester $I, int $pageID, string $emailAddress)
 	{

@@ -232,7 +232,7 @@ class RestrictContentSettingsCest
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I          EndToEndTester.
-	 * @param   bool|array       $settings   Array of key/value settings. If not defined, uses expected defaults.
+	 * @param   bool|array     $settings   Array of key/value settings. If not defined, uses expected defaults.
 	 */
 	public function _setupKitPluginRestrictContent($I, $settings = false)
 	{

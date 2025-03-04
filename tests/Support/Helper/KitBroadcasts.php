@@ -15,7 +15,7 @@ class KitBroadcasts extends \Codeception\Module
 	 * @since   2.2.8
 	 *
 	 * @param   EndToEndTester $I          EndToEndTester.
-	 * @param   bool|array       $settings   Array of key/value settings. If not defined, uses expected defaults.
+	 * @param   bool|array     $settings   Array of key/value settings. If not defined, uses expected defaults.
 	 */
 	public function setupKitPluginBroadcasts($I, $settings = false)
 	{
@@ -80,8 +80,8 @@ class KitBroadcasts extends \Codeception\Module
 	 * @since   1.9.7.5
 	 *
 	 * @param   EndToEndTester $I                      Tester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type bool|int    $number_posts              Number of Broadcasts listed.
 	 *     @type bool|string $see_prev_pagination_label Test if the "previous" pagination link is output and matches expected label.
@@ -185,8 +185,8 @@ class KitBroadcasts extends \Codeception\Module
 	 * @since   2.0.0
 	 *
 	 * @param   EndToEndTester $I                      Tester.
-	 * @param   string           $previousLabel          Previous / Newer Broadcasts Label.
-	 * @param   string           $nextLabel              Next / Older Broadcasts Label.
+	 * @param   string         $previousLabel          Previous / Newer Broadcasts Label.
+	 * @param   string         $nextLabel              Next / Older Broadcasts Label.
 	 */
 	public function testBroadcastsPagination($I, $previousLabel, $nextLabel)
 	{

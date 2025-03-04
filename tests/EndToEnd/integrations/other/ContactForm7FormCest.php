@@ -412,7 +412,7 @@ class ContactForm7FormCest
 	 * @since   2.5.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   string           $optionName    <select> option name.
+	 * @param   string         $optionName    <select> option name.
 	 * @return  int                             Page ID
 	 */
 	private function _contactForm7SetupForm(EndToEndTester $I, string $optionName)
@@ -461,8 +461,8 @@ class ContactForm7FormCest
 	 * @since   2.5.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   int              $pageID        Page ID.
-	 * @param   string           $emailAddress  Email Address.
+	 * @param   int            $pageID        Page ID.
+	 * @param   string         $emailAddress  Email Address.
 	 */
 	private function _contactForm7CompleteAndSubmitForm(EndToEndTester $I, int $pageID, string $emailAddress)
 	{

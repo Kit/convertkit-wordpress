@@ -303,8 +303,8 @@ class ElementorBroadcastsCest
 	 * @since   1.9.7.8
 	 *
 	 * @param   EndToEndTester $I          Tester.
-	 * @param   string           $title      Page Title.
-	 * @param   array            $settings   Widget settings.
+	 * @param   string         $title      Page Title.
+	 * @param   array          $settings   Widget settings.
 	 * @return  int                             Page ID
 	 */
 	private function _createPageWithBroadcastsWidget(EndToEndTester $I, $title, $settings)

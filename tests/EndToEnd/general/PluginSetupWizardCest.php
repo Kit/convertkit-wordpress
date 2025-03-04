@@ -394,9 +394,9 @@ class PluginSetupWizardCest
 	 * @since   1.9.8.4
 	 *
 	 * @param   EndToEndTester $I      Tester.
-	 * @param   int              $step   Current step.
-	 * @param   string           $title  Expected title.
-	 * @param   bool             $nextButtonIsLink   Check that next button is a link (false = must be a <button> element).
+	 * @param   int            $step   Current step.
+	 * @param   string         $title  Expected title.
+	 * @param   bool           $nextButtonIsLink   Check that next button is a link (false = must be a <button> element).
 	 */
 	private function _seeExpectedSetupWizardScreen(EndToEndTester $I, $step, $title, $nextButtonIsLink = false)
 	{

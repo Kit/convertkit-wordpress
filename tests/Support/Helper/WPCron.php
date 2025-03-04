@@ -24,7 +24,7 @@ class WPCron extends \Codeception\Module
 	 * @since   2.2.8
 	 *
 	 * @param   EndToEndTester $I     EndToEndTester.
-	 * @param   string           $name  Event Name.
+	 * @param   string         $name  Event Name.
 	 */
 	public function seeCronEvent($I, $name)
 	{
@@ -37,7 +37,7 @@ class WPCron extends \Codeception\Module
 	 * @since   2.2.8
 	 *
 	 * @param   EndToEndTester $I     EndToEndTester.
-	 * @param   string           $name  Event Name.
+	 * @param   string         $name  Event Name.
 	 */
 	public function dontSeeCronEvent($I, $name)
 	{
@@ -53,7 +53,7 @@ class WPCron extends \Codeception\Module
 	 * @since   2.2.8
 	 *
 	 * @param   EndToEndTester $I     EndToEndTester.
-	 * @param   string           $name  Event Name.
+	 * @param   string         $name  Event Name.
 	 */
 	public function runCronEvent($I, $name)
 	{
@@ -78,7 +78,7 @@ class WPCron extends \Codeception\Module
 	 * @since   2.6.6
 	 *
 	 * @param   EndToEndTester $I     EndToEndTester.
-	 * @param   string           $name  Event Name.
+	 * @param   string         $name  Event Name.
 	 */
 	public function deleteCronEvent($I, $name)
 	{
@@ -101,7 +101,7 @@ class WPCron extends \Codeception\Module
 	 * @since   2.2.8
 	 *
 	 * @param   EndToEndTester $I     EndToEndTester.
-	 * @param   string           $name  Event Name.
+	 * @param   string         $name  Event Name.
 	 */
 	private function _cronEventExists($I, $name)
 	{

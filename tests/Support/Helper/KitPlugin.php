@@ -44,8 +44,8 @@ class KitPlugin extends \Codeception\Module
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I         EndToEndTester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $access_token       Access Token (if specified, used instead of CONVERTKIT_OAUTH_ACCESS_TOKEN).
 	 *     @type string $refresh_token      Refresh Token (if specified, used instead of CONVERTKIT_OAUTH_REFRESH_TOKEN).
@@ -582,7 +582,7 @@ class KitPlugin extends \Codeception\Module
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I         EndToEndTester.
-	 * @param   string           $entry     Log entry.
+	 * @param   string         $entry     Log entry.
 	 */
 	public function seeInPluginDebugLog($I, $entry)
 	{
@@ -596,7 +596,7 @@ class KitPlugin extends \Codeception\Module
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I         EndToEndTester.
-	 * @param   string           $entry     Log entry.
+	 * @param   string         $entry     Log entry.
 	 */
 	public function dontSeeInPluginDebugLog($I, $entry)
 	{
@@ -611,8 +611,8 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.0.8
 	 *
 	 * @param   EndToEndTester $I                 EndToEndTester.
-	 * @param   string           $selectElement     <select> element.
-	 * @param   bool|array       $prependOptions    Option elements that should appear before the resources.
+	 * @param   string         $selectElement     <select> element.
+	 * @param   bool|array     $prependOptions    Option elements that should appear before the resources.
 	 */
 	public function checkSelectFormOptionOrder($I, $selectElement, $prependOptions = false)
 	{
@@ -638,8 +638,8 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.0.8
 	 *
 	 * @param   EndToEndTester $I                 EndToEndTester.
-	 * @param   string           $selectElement     <select> element.
-	 * @param   bool|array       $prependOptions    Option elements that should appear before the resources.
+	 * @param   string         $selectElement     <select> element.
+	 * @param   bool|array     $prependOptions    Option elements that should appear before the resources.
 	 */
 	public function checkSelectLandingPageOptionOrder($I, $selectElement, $prependOptions = false)
 	{
@@ -665,8 +665,8 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.0.8
 	 *
 	 * @param   EndToEndTester $I                 EndToEndTester.
-	 * @param   string           $selectElement     <select> element.
-	 * @param   bool|array       $prependOptions    Option elements that should appear before the resources.
+	 * @param   string         $selectElement     <select> element.
+	 * @param   bool|array     $prependOptions    Option elements that should appear before the resources.
 	 */
 	public function checkSelectTagOptionOrder($I, $selectElement, $prependOptions = false)
 	{
@@ -692,8 +692,8 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.0.8
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   string           $selectElement <select> element.
-	 * @param   array            $values        <option> values.
+	 * @param   string         $selectElement <select> element.
+	 * @param   array          $values        <option> values.
 	 */
 	public function checkSelectOptionOrder($I, $selectElement, $values)
 	{
@@ -721,8 +721,8 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.2.6
 	 *
 	 * @param   EndToEndTester $I                 Tester.
-	 * @param   string           $blockName         Block Name.
-	 * @param   bool|string      $expectedMessage   Expected message displayed in block after entering valid API Keys.
+	 * @param   string         $blockName         Block Name.
+	 * @param   bool|string    $expectedMessage   Expected message displayed in block after entering valid API Keys.
 	 */
 	public function testBlockNoAPIKeyPopupWindow($I, $blockName, $expectedMessage = false)
 	{
@@ -817,7 +817,7 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.2.7
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   int              $pageID        Page ID.
+	 * @param   int            $pageID        Page ID.
 	 */
 	public function seeCreatorNetworkRecommendationsScript($I, $pageID)
 	{
@@ -838,7 +838,7 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.2.7
 	 *
 	 * @param   EndToEndTester $I             EndToEndTester.
-	 * @param   int              $pageID        Page ID.
+	 * @param   int            $pageID        Page ID.
 	 */
 	public function dontSeeCreatorNetworkRecommendationsScript($I, $pageID)
 	{
@@ -858,7 +858,7 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.2.0
 	 *
 	 * @param   EndToEndTester $I         EndToEnd Tester.
-	 * @param   string           $selector  CSS or ID selector for the input element.
+	 * @param   string         $selector  CSS or ID selector for the input element.
 	 */
 	public function selectAllText($I, $selector)
 	{

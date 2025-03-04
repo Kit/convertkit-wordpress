@@ -16,10 +16,10 @@ class KitForms extends \Codeception\Module
 	 * @since   2.5.8
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   int              $formID         Form ID.
-	 * @param   bool|string      $position       Position of the form in the DOM relative to the content.
-	 * @param   bool|string      $element        Element the form should display after.
-	 * @param   bool|string      $element_index  Number of elements before the form should display.
+	 * @param   int            $formID         Form ID.
+	 * @param   bool|string    $position       Position of the form in the DOM relative to the content.
+	 * @param   bool|string    $element        Element the form should display after.
+	 * @param   bool|string    $element_index  Number of elements before the form should display.
 	 */
 	public function seeFormOutput($I, $formID, $position = false, $element = false, $element_index = 0)
 	{
@@ -77,10 +77,10 @@ class KitForms extends \Codeception\Module
 	 * @since   2.2.0
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   string           $formURL        Form URL.
-	 * @param   bool|string      $text           Test if the button text matches the given value.
-	 * @param   bool|string      $textColor      Test if the given text color is applied.
-	 * @param   bool|string      $backgroundColor Test is the given background color is applied.
+	 * @param   string         $formURL        Form URL.
+	 * @param   bool|string    $text           Test if the button text matches the given value.
+	 * @param   bool|string    $textColor      Test if the given text color is applied.
+	 * @param   bool|string    $backgroundColor Test is the given background color is applied.
 	 */
 	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false)
 	{
@@ -143,8 +143,8 @@ class KitForms extends \Codeception\Module
 	 * @since   2.2.0
 	 *
 	 * @param   EndToEndTester $I              Tester.
-	 * @param   string           $formURL        Form URL.
-	 * @param   bool|string      $text           Test if the text matches the given value.
+	 * @param   string         $formURL        Form URL.
+	 * @param   bool|string    $text           Test if the text matches the given value.
 	 */
 	public function seeFormTriggerLinkOutput($I, $formURL, $text = false)
 	{
@@ -184,7 +184,7 @@ class KitForms extends \Codeception\Module
 	 * @since   2.5.9
 	 *
 	 * @param   EndToEndTester $I  Tester.
-	 * @param   bool             $langTag   Assert if HTML tag includes lang attribute.
+	 * @param   bool           $langTag   Assert if HTML tag includes lang attribute.
 	 */
 	public function seeLandingPageOutput($I, $langTag = false)
 	{

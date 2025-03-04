@@ -15,7 +15,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I          EndToEndTester.
-	 * @param   bool|array       $settings   Array of key/value settings.
+	 * @param   bool|array     $settings   Array of key/value settings.
 	 */
 	public function setupKitPluginRestrictContent($I, $settings)
 	{
@@ -89,7 +89,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.4.2
 	 *
 	 * @param   EndToEndTester $I          EndToEndTester.
-	 * @param   bool|array       $settings   Array of expected key/value settings.
+	 * @param   bool|array     $settings   Array of expected key/value settings.
 	 */
 	public function checkRestrictContentSettings($I, $settings)
 	{
@@ -128,8 +128,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I                          Tester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $post_type                  Post Type.
 	 *     @type string $post_title                 Post Title.
@@ -188,9 +188,9 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -259,10 +259,10 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   string           $emailAddress       Email Address.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   string         $emailAddress       Email Address.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -310,10 +310,10 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.1
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   string           $emailAddress       Email Address.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   string         $emailAddress       Email Address.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -363,9 +363,9 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -417,10 +417,10 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   int              $formID             Form ID to display.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   int            $formID             Form ID to display.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -492,10 +492,10 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   int              $formID             Form ID that should be displayed.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   int            $formID             Form ID that should be displayed.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -550,9 +550,9 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -606,8 +606,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -651,8 +651,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -689,9 +689,9 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                 Tester.
-	 * @param   int              $formID            Form ID that should be displayed.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   int            $formID            Form ID that should be displayed.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -734,8 +734,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.1.0
 	 *
 	 * @param   EndToEndTester $I                 Tester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
@@ -767,14 +767,14 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   bool|array       $options {
-	 *           Optional. An array of settings.
+	 * @param   bool|array     $options {
+	 *         Optional. An array of settings.
 	 *
 	 *     @type string $visible_content            Content that should always be visible.
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
 	 * @return  array
 	 */
 	public function setupRestrictContentTest($I, $options, $urlOrPageID)
@@ -801,8 +801,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I         Tester.
-	 * @param   string           $heading   Heading text.
-	 * @param   string           $text      Text.
+	 * @param   string         $heading   Heading text.
+	 * @param   string         $text      Text.
 	 */
 	public function seeRestrictContentSubscriberCode($I, $heading, $text)
 	{
@@ -817,7 +817,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I     Tester.
-	 * @param   string           $code  Subsciber code.
+	 * @param   string         $code  Subsciber code.
 	 */
 	public function submitRestrictContentSubscriberCode($I, $code)
 	{
@@ -831,7 +831,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I     Tester.
-	 * @param   string           $code  Subsciber code.
+	 * @param   string         $code  Subsciber code.
 	 */
 	public function submitRestrictContentSubscriberCodeModal($I, $code)
 	{
@@ -857,8 +857,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I             Tester.
-	 * @param   string           $emailAddress  Email address.
-	 * @param   bool             $inModal       Enter the email address in the modal view.
+	 * @param   string         $emailAddress  Email address.
+	 * @param   bool           $inModal       Enter the email address in the modal view.
 	 */
 	public function loginToRestrictContentWithEmail($I, $emailAddress, $inModal = false)
 	{
@@ -875,7 +875,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I         Tester.
-	 * @param   string           $error     Error message.
+	 * @param   string         $error     Error message.
 	 */
 	public function seeRestrictContentError($I, $error)
 	{
@@ -889,8 +889,8 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.3
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $subscriberID       Signed subscriber ID or subscriber ID.
-	 * @param   string|int       $urlOrPageID        URL or ID of Restricted Content Page.
+	 * @param   string|int     $subscriberID       Signed subscriber ID or subscriber ID.
+	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
 	 */
 	public function setRestrictContentCookieAndReload($I, $subscriberID, $urlOrPageID)
 	{
@@ -909,7 +909,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * @since   2.7.4
 	 *
 	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int       $subscriberID       Signed subscriber ID or subscriber ID.
+	 * @param   string|int     $subscriberID       Signed subscriber ID or subscriber ID.
 	 */
 	public function setRestrictContentCookie($I, $subscriberID)
 	{
