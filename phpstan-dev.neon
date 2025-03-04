@@ -1,0 +1,38 @@
+# PHPStan configuration for Dev Containers
+
+# Include PHPStan for WordPress configuration.
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+# Parameters
+parameters:
+    # Paths to scan
+    # This should comprise of the base Plugin PHP file, plus directories that contain Plugin PHP files
+    paths:
+        - wp-convertkit.php
+        - admin/
+        - includes/
+
+    # Files that include Plugin-specific PHP constants.
+    bootstrapFiles:
+        - wp-convertkit.php
+
+    # Location of WordPress Plugins for PHPStan to scan, building symbols.
+    scanDirectories:
+        - /wp/wp-content/plugins
+
+    # Location of constants, Kit helper functions and Kit WordPress Libraries for PHPStan to scan, building symbols.
+    scanFiles:
+        - /wp/wp-config.php
+
+    # Don't report unmatched ignored errors on older PHP versions (7.2, 7.3)
+    reportUnmatchedIgnoredErrors: false
+
+    # Ignore the following errors, as PHPStan and PHPStan for WordPress haven't correctly registered symbols,
+    # so they're false positives.
+    ignoreErrors:
+        - '#Function __ invoked with 2 parameters, 1 required.#'
+
+    # Should not need to edit anything below here
+    # Rule Level: https://phpstan.org/user-guide/rule-levels
+    level: 5
