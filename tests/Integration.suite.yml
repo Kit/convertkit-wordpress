@@ -1,0 +1,21 @@
+# Integration suite configuration
+#
+# Run integration and "WordPress unit" tests.
+
+actor: IntegrationTester
+bootstrap: _bootstrap.php
+modules:
+    enabled:
+        - lucatume\WPBrowser\Module\WPLoader
+    config:
+        lucatume\WPBrowser\Module\WPLoader:
+           wpRootFolder: "%WORDPRESS_ROOT_DIR%" 
+           dbUrl: '%WORDPRESS_DB_URL%'
+           wpDebug: true
+           WP_HTTP_BLOCK_EXTERNAL: false
+           tablePrefix: '%TEST_TABLE_PREFIX%'
+           domain: '%WORDPRESS_DOMAIN%'
+           adminEmail: 'admin@%WORDPRESS_DOMAIN%'
+           title: 'Integration Tests'
+           plugins: ['./wp-convertkit.php']
+           theme: ''

@@ -56,53 +56,7 @@ Create a blank `test` database in MySQL, with a MySQL user who can read and writ
 
 ### Configure Testing Environment
 
-Copy the `.env.example` file to `.env.testing` in the root of this repository, changing folder and database credentials as necessary:
-
-```
-TEST_SITE_DB_DSN=mysql:host=localhost;dbname=test
-TEST_SITE_DB_HOST=localhost
-TEST_SITE_DB_NAME=test
-TEST_SITE_DB_USER=root
-TEST_SITE_DB_PASSWORD=root
-TEST_SITE_TABLE_PREFIX=wp_
-TEST_SITE_ADMIN_USERNAME=admin
-TEST_SITE_ADMIN_PASSWORD=password
-TEST_SITE_WP_ADMIN_PATH=/wp-admin
-WP_ROOT_FOLDER="/Users/tim/Local Sites/convertkit-github/app/public"
-TEST_DB_NAME=test
-TEST_DB_HOST=localhost
-TEST_DB_USER=root
-TEST_DB_PASSWORD=root
-TEST_TABLE_PREFIX=wp_
-TEST_SITE_WP_URL=http://convertkit.local
-TEST_SITE_WP_DOMAIN=convertkit.local
-TEST_SITE_ADMIN_EMAIL=wordpress@convertkit.local
-CONVERTKIT_API_KEY_NO_DATA=
-CONVERTKIT_API_SECRET_NO_DATA=
-CONVERTKIT_API_KEY=
-CONVERTKIT_API_SECRET=
-CONVERTKIT_API_FORM_NAME="Page Form"
-CONVERTKIT_API_FORM_ID="2765139"
-CONVERTKIT_API_FORM_FORMAT_MODAL_NAME="Modal Form"
-CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME="Slide In Form"
-CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME="Sticky Bar Form"
-CONVERTKIT_API_LANDING_PAGE_NAME="Landing Page"
-CONVERTKIT_API_LANDING_PAGE_ID="2765196"
-CONVERTKIT_API_LANDING_PAGE_CHARACTER_ENCODING_NAME="Character Encoding"
-CONVERTKIT_API_LEGACY_FORM_NAME="Legacy Form"
-CONVERTKIT_API_LEGACY_FORM_ID="470099"
-CONVERTKIT_API_LEGACY_FORM_SHORTCODE="[convertkit form=5281783]"
-CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME="Legacy Landing Page"
-CONVERTKIT_API_LEGACY_LANDING_PAGE_ID="470103"
-CONVERTKIT_API_LEGACY_LANDING_PAGE_URL="https://app.kit.com/landing_pages/470103"
-CONVERTKIT_API_SEQUENCE_ID="1030824"
-CONVERTKIT_API_TAG_NAME="wordpress"
-CONVERTKIT_API_TAG_ID="2744672"
-CONVERTKIT_API_SUBSCRIBER_EMAIL="optin@n7studios.com"
-CONVERTKIT_API_SUBSCRIBER_ID="1579118532"
-CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_NAME="Third Party Integrations Form"
-CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID="3003590"
-```
+Copy the `.env.example` file to `.env.testing` in the root of this repository, changing the `WORDPRESS_*` and `CHROMEDRIVER_*` variables as necessary to match your environment.
 
 #### Codeception
 
@@ -116,43 +70,7 @@ This tells Codeception to read the above `.env.testing` file when testing on the
 
 #### PHPStan
 
-Copy the `phpstan.neon.example` file to `phpstan.neon` in the root of this repository, changing the `scanDirectories` to point to your
-local WordPress installation:
-```yaml
-# PHPStan configuration for local static analysis.
-
-# Include PHPStan for WordPress configuration.
-includes:
-    - vendor/szepeviktor/phpstan-wordpress/extension.neon
-
-# Parameters
-parameters:
-    # Paths to scan
-    # This should comprise of the base Plugin PHP file, plus directories that contain Plugin PHP files
-    paths:
-        - wp-convertkit.php
-        - admin/
-        - includes/
-
-    # Files that include Plugin-specific PHP constants
-    bootstrapFiles:
-        - wp-convertkit.php
-
-    # Location of WordPress Plugins for PHPStan to scan, building symbols.
-    scanDirectories:
-        - /Users/tim/Local Sites/convertkit-github/app/public/wp-content/plugins
-
-    # Should not need to edit anything below here
-    # Rule Level: https://phpstan.org/user-guide/rule-levels
-    level: 5
-
-    # Ignore the following errors, as PHPStan and PHPStan for WordPress haven't registered symbols for them yet,
-    # so they're false positives.
-    ignoreErrors:
-        - '#Access to an undefined property WP_Theme::#'
-        - '#Constant WP_MEMORY_LIMIT not found.#'
-        - '#Function apply_filters invoked with#' # apply_filters() accepted a variable number of parameters, which PHPStan fails to detect
-```
+Copy the `phpstan.neon.example` file to `phpstan.neon` in the root of this repository, changing the `scanDirectories` to point to your local WordPress installation.
 
 ### Install Packages
 
@@ -202,7 +120,7 @@ Our change above tells WordPress to use the test database for our test requests,
 
 ### Install ChromeDriver
 
-ChromeDriver is a headless (i.e. non-GUI) browser that our test suite uses to run Acceptance tests, interacting with the Kit
+ChromeDriver is a headless (i.e. non-GUI) browser that our test suite uses to run End to End tests, interacting with the Kit
 Plugin just as a user would - including full JavaScript execution, user inputs etc.
 
 Download ChromeDriver for your Google Chrome version and OS from https://sites.google.com/chromium.org/driver/downloads?authuser=0
@@ -224,8 +142,8 @@ correctly setup your environment:
 
 ```bash
 vendor/bin/codecept build
-vendor/bin/codecept run acceptance
-vendor/bin/codecept run wpunit
+vendor/bin/codecept run EndToEnd
+vendor/bin/codecept run Integration
 ```
 
 ![Codeception Test Results](/.github/docs/codeception.png?raw=true)

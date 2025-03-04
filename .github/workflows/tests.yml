@@ -59,20 +59,20 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'acceptance/broadcasts/blocks-shortcodes',
-          'acceptance/broadcasts/import-export',
-          'acceptance/forms/blocks-shortcodes',
-          'acceptance/forms/general',
-          'acceptance/forms/post-types',
-          'acceptance/general',
-          'acceptance/integrations/other',
-          'acceptance/integrations/wlm',
-          'acceptance/integrations/woocommerce',
-          'acceptance/landing-pages',
-          'acceptance/products',
-          'acceptance/restrict-content/general',
-          'acceptance/restrict-content/post-types',
-          'acceptance/tags',
+          'EndToEnd/broadcasts/blocks-shortcodes',
+          'EndToEnd/broadcasts/import-export',
+          'EndToEnd/forms/blocks-shortcodes',
+          'EndToEnd/forms/general',
+          'EndToEnd/forms/post-types',
+          'EndToEnd/general',
+          'EndToEnd/integrations/other',
+          'EndToEnd/integrations/wlm',
+          'EndToEnd/integrations/woocommerce',
+          'EndToEnd/landing-pages',
+          'EndToEnd/products',
+          'EndToEnd/restrict-content/general',
+          'EndToEnd/restrict-content/post-types',
+          'EndToEnd/tags',
         ]
 
     # Steps to install, configure and run tests
@@ -161,7 +161,7 @@ jobs:
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'acceptance/integrations/wlm' && matrix.test-groups != 'acceptance/integrations/elementor' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw
@@ -295,14 +295,14 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/codecept build
 
-      # Run Codeception WPUnit Tests on the PHP 8.3 instance before the acceptance/tags acceptance tests.
+      # Run Codeception Integration Tests on the PHP 8.3 instance before the EndToEnd/tags End to End tests.
       # We run these once to avoid hitting API rate limits.
       - name: Run tests/wpunit
-        if: ${{ matrix.php-versions == '8.3' && matrix.test-groups == 'acceptance/tags' }}
+        if: ${{ matrix.php-versions == '8.3' && matrix.test-groups == 'EndToEnd/tags' }}
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept run tests/wpunit --fail-fast
+        run: php vendor/bin/codecept run tests/Integration --fail-fast
 
-      # Run Codeception Acceptance Tests
+      # Run Codeception End to End Tests
       - name: Run tests/${{ matrix.test-groups }}
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/codecept run tests/${{ matrix.test-groups }} --fail-fast
