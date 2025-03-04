@@ -1,15 +1,20 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
  * Tests for the ConvertKit_API class.
  *
  * @since   2.0.8
  */
-class APITest extends \Codeception\TestCase\WPTestCase
+class APITest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
 	 *
-	 * @var \WpunitTester.
+	 * @var \IntegrationTester
 	 */
 	protected $tester;
 
@@ -35,7 +40,7 @@ class APITest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Initialize the classes we want to test.
-		$this->api = new ConvertKit_API_V4(
+		$this->api = new \ConvertKit_API_V4(
 			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
 			$_ENV['KIT_OAUTH_REDIRECT_URI'],
 			$_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
@@ -66,7 +71,7 @@ class APITest extends \Codeception\TestCase\WPTestCase
 	public function testAccessTokenRefreshedAndSavedWhenExpired()
 	{
 		// Confirm no Access or Refresh Token exists in the Plugin settings.
-		$settings = new ConvertKit_Settings();
+		$settings = new \ConvertKit_Settings();
 		$this->assertEquals( $settings->get_access_token(), '' );
 		$this->assertEquals( $settings->get_refresh_token(), '' );
 

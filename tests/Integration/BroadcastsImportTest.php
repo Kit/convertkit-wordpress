@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
  * Tests for the ConvertKit_Broadcasts_Importer functions.
  *
  * @since   2.6.4
  */
-class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
+class BroadcastsImportTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -26,7 +31,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Configure access and refresh token in Plugin settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		$this->settings->save(
 			[
 				'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
@@ -35,10 +40,10 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the class we want to test.
-		$this->importer = new ConvertKit_Broadcasts_Importer();
+		$this->importer = new \ConvertKit_Broadcasts_Importer();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->importer);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
 	}
 
 	/**
@@ -69,10 +74,10 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		$this->settings->delete_credentials();
 
 		// Re-initialize the class we want to test.
-		$this->importer = new ConvertKit_Broadcasts_Importer();
+		$this->importer = new \ConvertKit_Broadcasts_Importer();
 
 		// Assert a WP_Error is returned when attempting to import a Broadcast.
-		$this->assertInstanceOf(WP_Error::class, $this->importer->import_broadcast($_ENV['CONVERTKIT_API_BROADCAST_ID']));
+		$this->assertInstanceOf(\WP_Error::class, $this->importer->import_broadcast($_ENV['CONVERTKIT_API_BROADCAST_ID']));
 	}
 
 	/**
@@ -86,7 +91,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		$result = $this->importer->import_broadcast($_ENV['CONVERTKIT_API_BROADCAST_ID']);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -116,7 +121,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -147,7 +152,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -182,7 +187,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -217,7 +222,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -251,7 +256,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -286,7 +291,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Assert a Post ID was returned.
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsInt($result);
 
 		// Fetch Post from database.
@@ -412,7 +417,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 	private function assertImagesImported($post)
 	{
 		$this->assertStringNotContainsString('embed.filekitcdn.com', $post->post_content);
-		$this->assertStringContainsString($_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
+		$this->assertStringContainsString($_ENV['WORDPRESS_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
 	}
 
 	/**
@@ -426,7 +431,7 @@ class BroadcastsImportTest extends \Codeception\TestCase\WPTestCase
 	private function assertImagesNotImported($post)
 	{
 		$this->assertStringContainsString('embed.filekitcdn.com', $post->post_content);
-		$this->assertStringNotContainsString($_ENV['TEST_SITE_WP_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
+		$this->assertStringNotContainsString($_ENV['WORDPRESS_URL'] . '/wp-content/uploads/2023/08', $post->post_content);
 	}
 
 	/**

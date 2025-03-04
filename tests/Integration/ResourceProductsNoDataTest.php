@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
- * Tests for the ConvertKit_Resource_Forms class when no data is present in the API.
+ * Tests for the ConvertKit_Resource_Products class when no data is present in the API.
  *
- * @since   1.9.7.8
+ * @since   1.9.8.5
  */
-class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
+class ResourceProductsNoDataTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -16,7 +21,7 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Settings class.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 *
 	 * @var     ConvertKit_Settings
 	 */
@@ -25,16 +30,16 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Resource class.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 *
-	 * @var     ConvertKit_Resource_Forms
+	 * @var     ConvertKit_Resource_Products
 	 */
 	private $resource;
 
 	/**
 	 * Performs actions before each test.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 */
 	public function setUp(): void
 	{
@@ -43,8 +48,8 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 		// Activate Plugin.
 		activate_plugins('convertkit/wp-convertkit.php');
 
-		// Store credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		// Store Credentials in Plugin's settings.
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Forms();
+		$this->resource = new \ConvertKit_Resource_Products();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -84,13 +89,13 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the refresh() function performs as expected, storing data in the options table.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 */
 	public function testRefresh()
 	{
 		// Confirm that the data is stored in the options table and includes some expected keys.
 		$result = $this->resource->refresh();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -98,7 +103,7 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the expiry timestamp is set and returns the expected value.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 */
 	public function testExpiry()
 	{
@@ -115,13 +120,13 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the get() function performs as expected.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 */
 	public function testGet()
 	{
 		// Confirm that the data is fetched from the options table when using get(), and includes some expected keys.
 		$result = $this->resource->get();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -140,7 +145,7 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the exist() function performs as expected.
 	 *
-	 * @since   1.9.7.8
+	 * @since   1.9.8.5
 	 */
 	public function testExist()
 	{
@@ -150,14 +155,14 @@ class ResourceFormsNoDataTest extends \Codeception\TestCase\WPTestCase
 	}
 
 	/**
-	 * Test that the non_inline_exist() function performs as expected.
+	 * Test that the get_commerce_js_url() function returns no commerce.js URL,
+	 * as no Products exist.
 	 *
-	 * @since   2.2.4
+	 * @since   2.0.4
 	 */
-	public function testNonInlineExist()
+	public function testGetCommerceJSURL()
 	{
-		// Confirm that the function returns true, because resources exist.
-		$result = $this->resource->non_inline_exist();
+		$result = $this->resource->get_commerce_js_url();
 		$this->assertSame($result, false);
 	}
 }

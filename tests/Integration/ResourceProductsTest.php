@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
- * Tests for the ConvertKit_Resource_Tags class.
+ * Tests for the ConvertKit_Resource_Products class.
  *
- * @since   1.9.7.4
+ * @since   1.9.8.5
  */
-class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
+class ResourceProductsTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -16,7 +21,7 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Settings class.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 *
 	 * @var     ConvertKit_Settings
 	 */
@@ -25,16 +30,16 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Resource class.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 *
-	 * @var     ConvertKit_Resource_Tags
+	 * @var     ConvertKit_Resource_Products
 	 */
 	private $resource;
 
 	/**
 	 * Performs actions before each test.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 */
 	public function setUp(): void
 	{
@@ -44,7 +49,7 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Tags();
+		$this->resource = new \ConvertKit_Resource_Products();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -84,7 +89,7 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the refresh() function performs as expected.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 */
 	public function testRefresh()
 	{
@@ -98,7 +103,7 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the expiry timestamp is set and returns the expected value.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 */
 	public function testExpiry()
 	{
@@ -116,7 +121,7 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 	 * Tests that the get() function returns resources in alphabetical ascending order
 	 * by default.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 */
 	public function testGet()
 	{
@@ -135,8 +140,8 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('gravityforms-tag-1', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('wpforms', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('Example Tip Jar', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('PDF Guide', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -166,8 +171,8 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('wpforms', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('gravityforms-tag-1', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('PDF Guide', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('Example Tip Jar', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -196,8 +201,8 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('wpforms', reset($result)['name']);
-		$this->assertEquals('wordpress', end($result)['name']);
+		$this->assertEquals('PDF Guide', reset($result)['name']);
+		$this->assertEquals('Newsletter Subscription', end($result)['name']);
 	}
 
 	/**
@@ -214,12 +219,34 @@ class ResourceTagsTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the exist() function performs as expected.
 	 *
-	 * @since   1.9.7.4
+	 * @since   1.9.8.5
 	 */
 	public function testExist()
 	{
 		// Confirm that the function returns true, because resources exist.
 		$result = $this->resource->exist();
 		$this->assertSame($result, true);
+	}
+
+	/**
+	 * Test that the get_html() function returns the expected data.
+	 *
+	 * @since   2.0.4
+	 */
+	public function testGetHTML()
+	{
+		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_PRODUCT_ID'], 'Buy now');
+		$this->assertSame($result, '<div class="convertkit-product"><a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link " style="" data-commerce>Buy now</a></div>');
+	}
+
+	/**
+	 * Test that the get_commerce_js_url() function returns the expected commerce.js URL.
+	 *
+	 * @since   2.0.4
+	 */
+	public function testGetCommerceJSURL()
+	{
+		$result = $this->resource->get_commerce_js_url();
+		$this->assertSame($result, $_ENV['CONVERTKIT_API_COMMERCE_JS_URL']);
 	}
 }

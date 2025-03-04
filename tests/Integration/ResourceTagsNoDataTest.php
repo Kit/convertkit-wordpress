@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
  * Tests for the ConvertKit_Resource_Tags class when no data is present in the API.
  *
  * @since   1.9.7.8
  */
-class ResourceTagsNoDataTest extends \Codeception\TestCase\WPTestCase
+class ResourceTagsNoDataTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -44,7 +49,7 @@ class ResourceTagsNoDataTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceTagsNoDataTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Forms();
+		$this->resource = new \ConvertKit_Resource_Forms();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -90,7 +95,7 @@ class ResourceTagsNoDataTest extends \Codeception\TestCase\WPTestCase
 	{
 		// Confirm that the data is stored in the options table and includes some expected keys.
 		$result = $this->resource->refresh();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -121,7 +126,7 @@ class ResourceTagsNoDataTest extends \Codeception\TestCase\WPTestCase
 	{
 		// Confirm that the data is fetched from the options table when using get(), and includes some expected keys.
 		$result = $this->resource->get();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}

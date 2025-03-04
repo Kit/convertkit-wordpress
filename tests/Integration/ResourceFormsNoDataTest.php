@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
- * Tests for the ConvertKit_Resource_Landing_Pages class when no data is present in the API.
+ * Tests for the ConvertKit_Resource_Forms class when no data is present in the API.
  *
  * @since   1.9.7.8
  */
-class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
+class ResourceFormsNoDataTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -43,8 +48,8 @@ class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
 		// Activate Plugin.
 		activate_plugins('convertkit/wp-convertkit.php');
 
-		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		// Store credentials in Plugin's settings.
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Forms();
+		$this->resource = new \ConvertKit_Resource_Forms();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -82,7 +87,7 @@ class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
 	}
 
 	/**
-	 * Test that the refresh() function performs as expected.
+	 * Test that the refresh() function performs as expected, storing data in the options table.
 	 *
 	 * @since   1.9.7.8
 	 */
@@ -90,7 +95,7 @@ class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
 	{
 		// Confirm that the data is stored in the options table and includes some expected keys.
 		$result = $this->resource->refresh();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -121,7 +126,7 @@ class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
 	{
 		// Confirm that the data is fetched from the options table when using get(), and includes some expected keys.
 		$result = $this->resource->get();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -146,6 +151,18 @@ class ResourceLandingPagesNoDataTest extends \Codeception\TestCase\WPTestCase
 	{
 		// Confirm that the function returns true, because resources exist.
 		$result = $this->resource->exist();
+		$this->assertSame($result, false);
+	}
+
+	/**
+	 * Test that the non_inline_exist() function performs as expected.
+	 *
+	 * @since   2.2.4
+	 */
+	public function testNonInlineExist()
+	{
+		// Confirm that the function returns true, because resources exist.
+		$result = $this->resource->non_inline_exist();
 		$this->assertSame($result, false);
 	}
 }

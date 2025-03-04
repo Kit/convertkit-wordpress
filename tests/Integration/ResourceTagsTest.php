@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
- * Tests for the ConvertKit_Resource_Landing_Pages class.
+ * Tests for the ConvertKit_Resource_Tags class.
  *
  * @since   1.9.7.4
  */
-class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
+class ResourceTagsTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -27,7 +32,7 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 	 *
 	 * @since   1.9.7.4
 	 *
-	 * @var     ConvertKit_Resource_Landing_Pages
+	 * @var     ConvertKit_Resource_Tags
 	 */
 	private $resource;
 
@@ -44,7 +49,7 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Landing_Pages();
+		$this->resource = new \ConvertKit_Resource_Tags();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -135,8 +140,8 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Character Encoding', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Legacy Landing Page', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('gravityforms-tag-1', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('wpforms', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -166,8 +171,8 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Legacy Landing Page', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Character Encoding', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('wpforms', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('gravityforms-tag-1', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -196,8 +201,8 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('Character Encoding', reset($result)['name']);
-		$this->assertEquals('Legacy Landing Page', end($result)['name']);
+		$this->assertEquals('wpforms', reset($result)['name']);
+		$this->assertEquals('wordpress', end($result)['name']);
 	}
 
 	/**
@@ -221,29 +226,5 @@ class ResourceLandingPagesTest extends \Codeception\TestCase\WPTestCase
 		// Confirm that the function returns true, because resources exist.
 		$result = $this->resource->exist();
 		$this->assertSame($result, true);
-	}
-
-	/**
-	 * Test that the get_html() function returns the expected data.
-	 *
-	 * @since   2.0.4
-	 */
-	public function testGetHTML()
-	{
-		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LANDING_PAGE_ID']);
-		$this->assertNotInstanceOf(WP_Error::class, $result);
-		$this->assertStringContainsString('<form method="POST" action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '/subscriptions" data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '" data-uid="99f1db6843" class="formkit-form"', $result);
-	}
-
-	/**
-	 * Test that the get_html() function returns the expected data for a Legacy Landing Page ID.
-	 *
-	 * @since   2.0.4
-	 */
-	public function testGetHTMLWithLegacyLandingPageID()
-	{
-		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID']);
-		$this->assertNotInstanceOf(WP_Error::class, $result);
-		$this->assertStringContainsString('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">', $result);
 	}
 }

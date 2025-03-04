@@ -1,10 +1,15 @@
 <?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 /**
- * Tests for the ConvertKit_Resource_Products class when no data is present in the API.
+ * Tests for the ConvertKit_Resource_Landing_Pages class when no data is present in the API.
  *
- * @since   1.9.8.5
+ * @since   1.9.7.8
  */
-class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
+class ResourceLandingPagesNoDataTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.
@@ -16,7 +21,7 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Settings class.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 *
 	 * @var     ConvertKit_Settings
 	 */
@@ -25,16 +30,16 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Holds the ConvertKit Resource class.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 *
-	 * @var     ConvertKit_Resource_Products
+	 * @var     ConvertKit_Resource_Forms
 	 */
 	private $resource;
 
 	/**
 	 * Performs actions before each test.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 */
 	public function setUp(): void
 	{
@@ -44,7 +49,7 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 		activate_plugins('convertkit/wp-convertkit.php');
 
 		// Store Credentials in Plugin's settings.
-		$this->settings = new ConvertKit_Settings();
+		$this->settings = new \ConvertKit_Settings();
 		update_option(
 			$this->settings::SETTINGS_NAME,
 			[
@@ -54,10 +59,10 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 		);
 
 		// Initialize the resource class we want to test.
-		$this->resource = new ConvertKit_Resource_Products();
+		$this->resource = new \ConvertKit_Resource_Forms();
 
 		// Confirm initialization didn't result in an error.
-		$this->assertNotInstanceOf(WP_Error::class, $this->resource->resources);
+		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
 	}
 
 	/**
@@ -82,15 +87,15 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 	}
 
 	/**
-	 * Test that the refresh() function performs as expected, storing data in the options table.
+	 * Test that the refresh() function performs as expected.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 */
 	public function testRefresh()
 	{
 		// Confirm that the data is stored in the options table and includes some expected keys.
 		$result = $this->resource->refresh();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -98,7 +103,7 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the expiry timestamp is set and returns the expected value.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 */
 	public function testExpiry()
 	{
@@ -115,13 +120,13 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the get() function performs as expected.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 */
 	public function testGet()
 	{
 		// Confirm that the data is fetched from the options table when using get(), and includes some expected keys.
 		$result = $this->resource->get();
-		$this->assertNotInstanceOf(WP_Error::class, $result);
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertIsArray($result);
 		$this->assertCount(0, $result);
 	}
@@ -140,24 +145,12 @@ class ResourceProductsNoDataTest extends \Codeception\TestCase\WPTestCase
 	/**
 	 * Test that the exist() function performs as expected.
 	 *
-	 * @since   1.9.8.5
+	 * @since   1.9.7.8
 	 */
 	public function testExist()
 	{
 		// Confirm that the function returns true, because resources exist.
 		$result = $this->resource->exist();
-		$this->assertSame($result, false);
-	}
-
-	/**
-	 * Test that the get_commerce_js_url() function returns no commerce.js URL,
-	 * as no Products exist.
-	 *
-	 * @since   2.0.4
-	 */
-	public function testGetCommerceJSURL()
-	{
-		$result = $this->resource->get_commerce_js_url();
 		$this->assertSame($result, false);
 	}
 }
