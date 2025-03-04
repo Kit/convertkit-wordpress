@@ -11,7 +11,8 @@
         "wp-coding-standards/wpcs": "^3.0.0",
         "phpstan/phpstan": "^1.0 || ^2.0",
         "szepeviktor/phpstan-wordpress": "^1.0 || ^2.0",
-        "lucatume/wp-browser": "^3.0 || ^4.0"
+        "lucatume/wp-browser": "^3.0 || ^4.0",
+        "gumlet/php-image-resize": "^1.6"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
