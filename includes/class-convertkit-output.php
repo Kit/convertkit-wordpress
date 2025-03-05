@@ -261,8 +261,15 @@ class ConvertKit_Output {
 			return $content;
 		}
 
-		// Get Post ID and ConvertKit Form ID for the Post.
+		// Get Post ID.
 		$post_id = get_the_ID();
+
+		// Bail if Post Type is not supported by Kit.
+		if ( ! in_array( get_post_type( $post_id ), convertkit_get_supported_post_types(), true ) ) {
+			return $content;
+		}
+
+		// Get Form ID for the Post.
 		$form_id = $this->get_post_form_id( $post_id );
 
 		/**
