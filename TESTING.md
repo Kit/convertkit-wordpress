@@ -39,57 +39,50 @@ $I->activatePlugin('convertkit');
 ## Types of Test
 
 There are different types of tests that can be written:
-- Acceptance Tests: Test as a non-technical user in the web browser.
-- Functional Tests: Test the framework (WordPress).
-- Integration Tests: Test code modules in the context of a WordPress web site.
-- Unit Tests: Test single PHP classes or functions in isolation.
-- WordPress Unit Tests: Test single PHP classes or functions in isolation, with WordPress functions and classes loaded.
+- End to End Tests: Test the UI as a non-technical user in the web browser.
+- Integration Tests: Test code modules in the context of a WordPress web site, and test single PHP classes or functions in isolation, with WordPress functions and classes loaded.
 
-There is no definitive / hard guide, as a test can typically overlap into different types (such as Acceptance and Functional).
+## Writing an End to End Test
 
-The most important thing is that you have a test for *something*.  If in doubt, an Acceptance Test will suffice.
-
-## Writing an Acceptance Test
-
-To create a new Acceptance Test, at the command line in the Plugin's folder, enter the following command, replacing:
-- `general` with the subfolder name to place the test within at `tests/acceptance`,
+To create a new End to End Test, at the command line in the Plugin's folder, enter the following command, replacing:
+- `general` with the subfolder name to place the test within at `tests/EndToEnd`,
 - `ActivatePlugin` with a meaningful name of what the test will perform.
 
-Acceptance tests are placed in groups within subfolders at `tests/acceptance` so that they can be run in isolation, and the GitHub Action can run each folder's acceptance tests in parallel for speed.
+End to End tests are placed in groups within subfolders at `tests/EndToEnd` so that they can be run in isolation, and the GitHub Action can run each folder's End to End tests in parallel for speed.
 
-For example, to generate an `ActivatePlugin` acceptance test in the `tests/acceptance/general` folder:
+For example, to generate an `ActivatePlugin` End to End test in the `tests/EndtoEnd/general` folder:
 
 ```bash
-php vendor/bin/codecept generate:cest acceptance general/ActivatePlugin
+php vendor/bin/codecept generate:cest EndToEnd general/ActivatePlugin
 ```
-This will create a PHP test file in the `tests/acceptance/general` directory called `ActivatePluginCest.php`
+This will create a PHP test file in the `tests/EndToEnd/general` directory called `ActivatePluginCest.php`
 
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
     }
 
-    public function tryToTest(AcceptanceTester $I)
+    public function tryToTest(EndToEndTester $I)
     {
     }
 }
 ```
 
 For common WordPress actions that do not relate to the Plugin (such as logging into the WordPress Administration interface), which need to be 
-performed for every test that you write in this Acceptance Test, it's recommended to use the `_before()` function:
+performed for every test that you write in this End to End Test, it's recommended to use the `_before()` function:
 
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function tryToTest(AcceptanceTester $I)
+    public function tryToTest(EndToEndTester $I)
     {
     }
 }
@@ -103,13 +96,13 @@ Next, rename the `tryToTest` function to a descriptive function name that best d
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function testPluginActivation(AcceptanceTester $I)
+    public function testPluginActivation(EndToEndTester $I)
     {
     }
 }
@@ -119,13 +112,13 @@ Within your test function, write the test:
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function testPluginActivation(AcceptanceTester $I)
+    public function testPluginActivation(EndToEndTester $I)
     {
         // Go to the Plugins screen in the WordPress Administration interface.
         $I->amOnPluginsPage();
@@ -147,13 +140,13 @@ also works:
 ```php
 class ActivatePluginCest
 {
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         // Login as a WordPress Administrator before performing each test.
         $I->loginAsAdmin();
     }
 
-    public function testPluginActivation(AcceptanceTester $I)
+    public function testPluginActivation(EndToEndTester $I)
     {
         // Go to the Plugins screen in the WordPress Administration interface.
         $I->amOnPluginsPage();
@@ -168,7 +161,7 @@ class ActivatePluginCest
         $I->dontSeeElement('body.php-error');
     }
 
-    public function testPluginDeactivation(AcceptanceTester $I)
+    public function testPluginDeactivation(EndToEndTester $I)
     {
         // Go to the Plugins screen in the WordPress Administration interface.
         $I->amOnPluginsPage();
@@ -195,31 +188,31 @@ chromedriver --url-base=/wd/hub
 In a second Terminal window, run the test to confirm it works:
 ```bash
 vendor/bin/codecept build
-vendor/bin/codecept run acceptance general/ActivatePluginCest
+vendor/bin/codecept run EndToEnd general/ActivatePluginCest
 ```
 
 The console will show the successful result:
 
 ![Codeception Test Results](/.github/docs/codeception.png?raw=true)
 
-To run all acceptance tests, use:
+To run all End to End tests, use:
 ```bash
-vendor/bin/codecept run acceptance
+vendor/bin/codecept run EndToEnd
 ```
 
-To run acceptance tests in a specific folder (for example, `general`), use:
+To run End to End tests in a specific folder (for example, `general`), use:
 ```bash
-vendor/bin/codecept run acceptance general
+vendor/bin/codecept run EndToEnd general
 ```
 
-To run a specific acceptance test in a specific folder (for example, `ActivateDeactivatePluginCest` in the `general` folder), use:
+To run a specific End to End test in a specific folder (for example, `ActivateDeactivatePluginCest` in the `general` folder), use:
 ```bash
-vendor/bin/codecept run acceptance general/ActivateDeactivatePluginCest
+vendor/bin/codecept run EndtoEnd general/ActivateDeactivatePluginCest
 ```
 
 For a full list of available wp-browser and Codeception functions that can be used for testing, see:
 - [wp-browser](https://wpbrowser.wptestkit.dev/modules)
-- [Codeception](https://codeception.com/docs/03-AcceptanceTests)
+- [Codeception](https://codeception.com/docs/AcceptanceTests)
 
 ## Required Test Format
 
@@ -238,9 +231,9 @@ class ExampleCest
      * 
      * @since   X.X.X
      * 
-     * @param   AcceptanceTester    $I  Tester
+     * @param   EndToEndTester    $I  Tester
      */
-    public function _before(AcceptanceTester $I)
+    public function _before(EndToEndTester $I)
     {
         $I->activateConvertKitPlugin($I);
         $I->activateThirdPartyPlugin($I, 'third-party-plugin-slug');
@@ -248,12 +241,12 @@ class ExampleCest
         $I->enableDebugLog($I);
     }
 
-    public function testSpecificSteps(AcceptanceTester $I)
+    public function testSpecificSteps(EndToEndTester $I)
     {
         // ... write a test here.
     }
 
-    public function testAnotherSpecificSteps(AcceptanceTester $I)
+    public function testAnotherSpecificSteps(EndToEndTester $I)
     {
         // ... write a test here.
     }
@@ -267,9 +260,9 @@ class ExampleCest
      * 
      * @since   X.X.X
      * 
-     * @param   AcceptanceTester    $I  Tester
+     * @param   EndToEndTester    $I  Tester
      */
-    public function _passed(AcceptanceTester $I)
+    public function _passed(EndToEndTester $I)
     {
         $I->deactivateConvertKitPlugin($I);
         $I->deactivateThirdPartyPlugin($I, 'third-party-plugin-slug');
@@ -283,29 +276,28 @@ class ExampleCest
 Helpers extend testing by registering functions that we might want to use across multiple tests, which are not provided by wp-browser, 
 Codeception or PHPUnit.  This helps achieve the principle of DRY code (Don't Repeat Yourself).
 
-For example, in the `tests/_support/Helper/Acceptance` directory, our `Xdebug.php` helper contains the `checkNoWarningsAndNoticesOnScreen()` function,
+For example, in the `tests/Support/Helper` directory, our `Xdebug.php` helper contains the `checkNoWarningsAndNoticesOnScreen()` function,
 which checks that
 - the <body> class does not contain the `php-error` class, which WordPress adds if a PHP error is detected
 - no Xdebug errors were output
 - no PHP Warnings or Notices were output
 
-Our Acceptance Tests can now call `$I->checkNoWarningsAndNoticesOnScreen($I)`, instead of having to write several lines of code to perform each 
+Our End to End Tests can now call `$I->checkNoWarningsAndNoticesOnScreen($I)`, instead of having to write several lines of code to perform each 
 error check for every test.
 
-Further Acceptance Test Helpers that are provided include:
+Further End to End Test Helpers that are provided include:
 - `activateConvertKitPlugin($I)`: Logs in to WordPress as the `admin` user, and activates the ConvertKit Plugin.
 - `deactivateConvertKitPlugin($I)`: Logs in to WordPress as the `admin` user, and deactivates the ConvertKit Plugin.
 - `activateThirdPartyPlugin($I, $name)`: Logs in to WordPress as the `admin` user, and activates the given third party Plugin by its slug.
 - `deactivateThirdPartyPlugin($I, $name)`: Logs in to WordPress as the `admin` user, and deactivates the given third party Plugin by its slug.
 - `setupConvertKitPlugin($I)`: Enters the ConvertKit API Key and Secret in the Plugin's Settings screen, saving it.
 
-Other helpers most likely exist; refer to the [Acceptance.php](https://github.com/ConvertKit/convertkit-wordpress/blob/main/tests/_support/Helper/Acceptance/)
-folder of helper files for all available functions.
+Other helpers most likely exist; refer to the [Helper](https://github.com/ConvertKit/convertkit-wordpress/blob/main/tests/Support/Helper/) folder for all available functions.
 
 ## Writing Helpers
 
 With this methodology, if two or more of your tests perform the same checks, you should:
-- add a function to the applicable file in the `tests/_support/Helper/Acceptance` directory (e.g. `tests/_support/Helper/Acceptance/Plugin.php`),
+- add a function to the applicable file in the `tests/Support/Helper` directory (e.g. `tests/Support/Helper/Plugin.php`),
 usually in the format of
 ```php
 /**
@@ -323,8 +315,8 @@ public function yourCustomFunctionNameInHelper($I)
 - at the command line, tell Codeception to build your custom function helpers by using `vendor/bin/codecept build`
 
 If the function doesn't fit into any existing helper file:
-- create a new file in the `tests/_support/Helper/Acceptance` directory
-- edit the [acceptance.suite.yml](https://github.com/ConvertKit/convertkit-wordpress/blob/main/tests/acceptance.suite.yml) file, adding
+- create a new file in the `tests/Support/Helper` directory
+- edit the [EndToEnd.suite.yml](https://github.com/ConvertKit/convertkit-wordpress/blob/main/tests/EndToEnd.suite.yml) file, adding
 the Helper's namespace and class under the `enabled` section.
 
 Need to change how Codeception runs?  Edit the [codeception.dist.xml](codeception.dist.xml) file.
@@ -339,15 +331,15 @@ To create a new WordPress Unit Test, at the command line in the Plugin's folder,
 with a meaningful name of what the test will perform:
 
 ```bash
-php vendor/bin/codecept generate:wpunit wpunit APITest
+php vendor/bin/codecept generate:wpunit Integration APITest
 ```
 
-This will create a PHP test file in the `tests/wpunit` directory called `APITest.php`
+This will create a PHP test file in the `tests/Integration` directory called `APITest.php`
 
 ```php
 <?php
 
-class APITest extends \Codeception\TestCase\WPTestCase
+class APITest extends WPTestCase
 {
     /**
      * @var \WpunitTester
@@ -380,8 +372,8 @@ class APITest extends \Codeception\TestCase\WPTestCase
 }
 ```
 
-Helpers can be used for WordPress Unit Tests, similar to how they can be used for acceptance tests.
-To register your own helper function, add it to the `tests/_support/Helper/Wpunit.php` file.
+Helpers can be used for WordPress Unit Tests, the same as how they can be used for End To End tests.
+To register your own helper function, add it to the `tests/Support/Helper/Wpunit.php` file.
 
 ## Run Tests
 
@@ -397,8 +389,8 @@ To run the tests, enter the following commands in a separate Terminal window:
 
 ```bash
 vendor/bin/codecept build
-vendor/bin/codecept run acceptance
-vendor/bin/codecept run wpunit
+vendor/bin/codecept run EndToEnd
+vendor/bin/codecept run Integration
 ```
 
 If a test fails, you can inspect the output and screenshot at `tests/_output`.
