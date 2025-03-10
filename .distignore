@@ -1,3 +1,4 @@
+/.devcontainer
 /.git
 /.github
 /.scripts
@@ -27,6 +28,7 @@ LICENSE
 log.txt
 phpcs.xml
 phpcs.tests.xml
+phpstan-dev.neon
 phpstan.neon
 phpstan.neon.dist
 phpstan.neon.example
