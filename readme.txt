@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.7.2
 Requires PHP: 5.6.20
-Stable tag: 2.7.4
+Stable tag: 2.7.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -158,6 +158,10 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.5 2025-03-07
+* Fix: Member Content: Set `wordpress_ck_subscriber_id` cookie to beat WP Engine's server caching
+* Fix: Settings: Forms: Check Post Type of main Post, to ensure correct form is output when multiple Posts output on a singular Post, Page or CPT
 
 ### 2.7.4 2025-02-24
 * Added: Broadcasts (Beta): `convertkit-broadcast` body CSS class to Posts imported from Kit Broadcasts, to allow targeted CSS styles
