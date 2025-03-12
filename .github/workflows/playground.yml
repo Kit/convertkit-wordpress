@@ -27,8 +27,11 @@ jobs:
     # The base folder will always be /home/runner/work/github-repo-name/github-repo-name
     env:
       PLUGIN_SLUG: "convertkit" # The plugin's slug
-      PLAYGROUND_BRANCH_NAME: "pr-playground-${{ github.event.pull_request.number }}" # The branch to create from this PR which will have the built Plugin ZIP and blueprint.json added
- 
+      AWS_ROLE: "arn:aws:iam::048876701201:role/KitWPPluginBuildsRole"
+      AWS_ROLE_SESSION_NAME: "kit-wordpress"
+      AWS_BUCKET: "048876701201-kit-wp-plugin-builds" # The Amazon S3 bucket name
+      AWS_REGION: "us-east-2" # The Amazon S3 region
+
     # Steps to build and provide the Playground URL
     steps:
       # Checkout (copy) this repository's Plugin to this VM.
@@ -39,14 +42,22 @@ jobs:
       - name: Run Composer
         run: composer install --no-dev
 
-      # Installs required packages that must be included in the Plugin
-      # as specified in composer.json's "require" section.
-      - name: Create ZIP File and Blueprint JSON
+      # Configure AWS Credentials
+      - name: Configure AWS credentials
+        id: credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Create ZIP file
+      - name: Create ZIP File and blueprint.json
         run: |
           # Create ZIP file
           zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example"
 
-          # Create blueprint.json
+          # Create blueprint.json 
           cat > blueprint.json << EOF
           {
             "landingPage": "/wp-admin/index.php",
@@ -56,31 +67,24 @@ jobs:
                 "step": "installPlugin",
                 "pluginData": {
                   "resource": "url",
-                  "url": "https://raw.githubusercontent.com/${{ github.repository }}/${{ env.PLAYGROUND_BRANCH_NAME }}/${{ env.PLUGIN_SLUG }}.zip"
+                  "url": "https://${{ env.AWS_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip"
                 }
               }
             ]
           }
           EOF
 
-      # Create Temporary Branch
-      - name: Create Temporary Branch for Playground
+      # Upload to S3
+      - name: Upload to S3
+        id: upload-s3
         run: |
-          # Create branch specifically for PR artifacts
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          # Upload the ZIP file
+          aws s3 cp ${{ env.PLUGIN_SLUG }}.zip s3://${{ env.AWS_BUCKET }}/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip
           
-          # Create new branch if it doesn't exist, or reset it if it does
-          git checkout -B ${{ env.PLAYGROUND_BRANCH_NAME }}
+          # Upload the blueprint.json file
+          aws s3 cp blueprint.json s3://${{ env.AWS_BUCKET }}/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/blueprint.json
 
-          # Clean the branch to avoid keeping old files
-          git rm -rf .
-
-          # Add and commit all files to the branch
-          git add ${{ env.PLUGIN_SLUG }}.zip blueprint.json
-          git commit -m "Add plugin ZIP and blueprint for PR #${{ github.event.pull_request.number }}"
-          git push -f origin ${{ env.PLAYGROUND_BRANCH_NAME }}
-      
+      # Add comment to PR linking to Playground
       - name: Comment on PR
         uses: actions/github-script@v6
         with:
@@ -94,5 +98,5 @@ jobs:
               
               :rocket: Your PR has been built and is ready for testing in WordPress Playground!
               
-              [Click here to test your changes in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/${{ github.repository }}/${{ env.PLAYGROUND_BRANCH_NAME }}/blueprint.json)`
+              [Click here to test your changes in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://${{ env.AWS_BUCKET }}.s3.us-east-2.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/blueprint.json)`
             })
