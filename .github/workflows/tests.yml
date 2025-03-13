@@ -226,10 +226,16 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
-      - name: Set up chromedriver
-        uses: nanasess/setup-chromedriver@v2
+      - name: Install chromedriver v132
+      - uses: browser-actions/setup-chrome@v1
         with:
-          chromedriver-version: '132.0.6834.159'
+          chrome-version: 132
+          install-chromedriver: true
+
+      - name: Output Chrome Info
+        run: |
+          google-chrome --version
+          chromedriver --version
 
       - name: Start chromedriver
         run: |
