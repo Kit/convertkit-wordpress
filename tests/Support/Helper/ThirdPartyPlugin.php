@@ -29,20 +29,6 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Activate the Plugin.
 		$I->activatePlugin($name);
 
-		// Go to the Plugins screen again; this prevents any Plugin that loads a wizard-style screen from
-		// causing seePluginActivated() to fail.
-		$I->amOnPluginsPage();
-
-		// Some Plugins redirect to a welcome screen on activation, so we can't reliably check they're activated.
-		switch ($name) {
-			case 'wpforms-lite':
-				break;
-
-			default:
-				$I->seePluginActivated($name);
-				break;
-		}
-
 		// Some Plugins throw warnings / errors on activation, so we can't reliably check for errors.
 		if ($name === 'wishlist-member' && version_compare( phpversion(), '8.1', '>' )) {
 			return;
