@@ -213,6 +213,17 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
+      - name: Install chromedriver v133
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: '133.0.6943.141'
+          install-chromedriver: true
+
+      - name: Output Chrome Info
+        run: |
+          google-chrome --version
+          chromedriver --version
+
       - name: Start chromedriver
         run: |
           export DISPLAY=:99
