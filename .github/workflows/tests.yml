@@ -229,7 +229,7 @@ jobs:
       - name: Set up chromedriver
         uses: nanasess/setup-chromedriver@v2
         with:
-          chromedriver-version: '132.0.6834.159'
+          chromedriver-version: '133.0.6943.141'
 
       - name: Start chromedriver
         run: |
