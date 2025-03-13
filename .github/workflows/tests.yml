@@ -227,14 +227,14 @@ jobs:
         run: sudo systemctl start nginx.service
 
       - name: Install chromedriver v132
-        uses: browser-actions/setup-chrome@v1
+        uses: nanasess/setup-chromedriver@v2
         with:
-          chrome-version: 132
-          install-chromedriver: true
+          chromedriver-version: '132.0.6834.159'
 
-      - name: Update Chrome Path
+      - name: Output Chrome Info
         run: |
-          sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/stable/x64/chrome /usr/bin/google-chrome
+          google-chrome --version
+          chromedriver --version
 
       - name: Start chromedriver
         run: |
