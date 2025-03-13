@@ -236,11 +236,6 @@ jobs:
         run: |
           sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/stable/x64/chrome /usr/bin/google-chrome
 
-      - name: Output Chrome Info
-        run: |
-          google-chrome --version
-          chromedriver --version
-
       - name: Start chromedriver
         run: |
           export DISPLAY=:99
