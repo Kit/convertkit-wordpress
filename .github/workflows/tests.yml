@@ -218,7 +218,7 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         id: setup-chromedriver
         with:
-          chrome-version: 132
+          chrome-version: '133.0.6943.141'
           install-chromedriver: true
 
       - name: Update Chrome Path
