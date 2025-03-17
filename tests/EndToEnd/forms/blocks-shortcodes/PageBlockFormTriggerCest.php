@@ -366,8 +366,6 @@ class PageBlockFormTriggerCest
 	 */
 	public function testFormTriggerBlockWhenNoCredentials(EndToEndTester $I)
 	{
-		$I->markTestIncomplete();
-
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Block: No Credentials');
 
@@ -375,7 +373,7 @@ class PageBlockFormTriggerCest
 		$I->addGutenbergBlock($I, 'Kit Form Trigger', 'convertkit-formtrigger');
 
 		// Test that the popup window works.
-		$I->testBlockNoAPIKeyPopupWindow(
+		$I->testBlockNoCredentialsPopupWindow(
 			$I,
 			'convertkit-formtrigger',
 			'Select a Form using the Form option in the Gutenberg sidebar.'
