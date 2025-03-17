@@ -213,12 +213,12 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
-      # Install Chrome v132
+      # Install specific chromedriver version
       - name: Install Chromedriver
         uses: browser-actions/setup-chrome@v1
         id: setup-chromedriver
         with:
-          chrome-version: '133.0.6943.141'
+          chrome-version: '130.0.6669.0'
           install-chromedriver: true
 
       - name: Update Chrome Path
