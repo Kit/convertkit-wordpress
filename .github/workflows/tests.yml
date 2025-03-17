@@ -221,6 +221,10 @@ jobs:
           chrome-version: 132
           install-chromedriver: true
 
+      - name: Update Chrome Path
+        run: |
+          sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/stable/x64/chrome /usr/bin/google-chrome
+
       # Output Chrome and Chromedriver paths and versions
       - name: Output Chrome and Chromedriver paths and versions
         run: |
