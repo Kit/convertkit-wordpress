@@ -223,7 +223,8 @@ jobs:
 
       - name: Update Chrome Path
         run: |
-          sudo ln -sf ${{ steps.setup-chromedriver.outputs.chrome-path }} /usr/bin/google-chrome
+          sudo rm -f /opt/google/chrome/chrome
+          sudo ln -sf ${{ steps.setup-chromedriver.outputs.chrome-path }} /opt/google/chrome/chrome
 
       # Output Chrome and Chromedriver paths and versions
       - name: Output Chrome and Chromedriver paths and versions
