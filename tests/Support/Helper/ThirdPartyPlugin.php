@@ -24,14 +24,23 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->loginAsAdmin();
 
 		// Go to the Plugins screen in the WordPress Administration interface.
-		$I->amOnPluginsPage();
+		$I->amOnAdminPage('plugins.php');
+
+		// Wait for the page to load.
+		$I->waitForElementVisible('body.plugins-php');
 
 		// Activate the Plugin.
 		$I->activatePlugin($name);
 
+		// Wait for the page to load.
+		$I->wait(2);
+
 		// Go to the Plugins screen again; this prevents any Plugin that loads a wizard-style screen from
 		// causing seePluginActivated() to fail.
-		$I->amOnPluginsPage();
+		$I->amOnAdminPage('plugins.php');
+
+		// Wait for the page to load.
+		$I->waitForElementVisible('body.plugins-php');
 
 		// Some Plugins redirect to a welcome screen on activation, so we can't reliably check they're activated.
 		switch ($name) {
@@ -70,7 +79,10 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->loginAsAdmin();
 
 		// Go to the Plugins screen in the WordPress Administration interface.
-		$I->amOnPluginsPage();
+		$I->amOnAdminPage('plugins.php');
+
+		// Wait for the page to load.
+		$I->waitForElementVisible('body.plugins-php');
 
 		// Deactivate the Plugin.
 		$I->deactivatePlugin($name);

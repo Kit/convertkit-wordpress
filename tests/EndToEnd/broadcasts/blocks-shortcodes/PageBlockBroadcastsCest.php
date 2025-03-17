@@ -20,7 +20,6 @@ class PageBlockBroadcastsCest
 	 */
 	public function _before(EndToEndTester $I)
 	{
-		$I->haveOptionInDatabase('admin_email_lifespan', ( time() + 6 * MONTH_IN_SECONDS ) );
 		$I->activateKitPlugin($I);
 	}
 

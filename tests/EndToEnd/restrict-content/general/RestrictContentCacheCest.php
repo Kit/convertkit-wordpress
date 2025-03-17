@@ -90,7 +90,7 @@ class RestrictContentCacheCest
 	{
 		// Activate and enable W3 Total Cache Plugin.
 		// Don't use activateThirdPartyPlugin(), as W3 Total Cache returns a PHP Deprecated notice in 8.1+.
-		$I->amOnPluginsPage();
+		$I->amOnAdminPage('plugins.php');
 		$I->activatePlugin('w3-total-cache');
 		$I->enableCachingW3TotalCachePlugin($I);
 
