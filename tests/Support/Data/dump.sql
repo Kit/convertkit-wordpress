@@ -200,7 +200,6 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (88,  'medium_large_size_h',  '0',  'on'),
 (89,  'wp_page_for_privacy_policy', '3',  'on'),
 (90,  'show_comments_cookies_opt_in', '1',  'on'),
-(91,  'admin_email_lifespan', '1712414097', 'on'),
 (92,  'disallowed_keys',  '', 'off'),
 (93,  'comment_previously_approved',  '1',  'on'),
 (94,  'auto_plugin_theme_update_emails',  'a:0:{}', 'off'),
