@@ -44,8 +44,10 @@ class RestrictContentCacheCest
 		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
 		$I->enableCachingLiteSpeedCachePlugin($I);
 
-		// Configure LiteSpeed Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
-		$I->excludeCachingLiteSpeedCachePlugin($I);
+		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content
+		// page is not configured.
+		$I->amOnAdminPage('index.php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -55,6 +57,18 @@ class RestrictContentCacheCest
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
 		);
+
+		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
+		// page is configured.
+		$I->amOnAdminPage('index.php');
+		$I->see('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+
+		// Configure LiteSpeed Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
+		$I->excludeCachingLiteSpeedCachePlugin($I);
+
+		// Test that no notice is displayed in the WordPress Administration interface, as LiteSpeed Cache is configured.
+		$I->amOnAdminPage('index.php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Log out, so that caching is honored.
 		$I->logOut();
@@ -94,8 +108,10 @@ class RestrictContentCacheCest
 		$I->activatePlugin('w3-total-cache');
 		$I->enableCachingW3TotalCachePlugin($I);
 
-		// Configure W3 Total Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
-		$I->excludeCachingW3TotalCachePlugin($I);
+		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content
+		// page is not configured.
+		$I->amOnAdminPage('index.php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -105,6 +121,18 @@ class RestrictContentCacheCest
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
 		);
+
+		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
+		// page is configured.
+		$I->amOnAdminPage('index.php');
+		$I->see('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+
+		// Configure W3 Total Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
+		$I->excludeCachingW3TotalCachePlugin($I);
+
+		// Test that no notice is displayed in the WordPress Administration interface, as LiteSpeed Cache is configured.
+		$I->amOnAdminPage('index.php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Log out, so that caching is honored.
 		$I->logOut();
@@ -142,8 +170,18 @@ class RestrictContentCacheCest
 		$I->activateThirdPartyPlugin($I, 'wp-fastest-cache');
 		$I->enableCachingWPFastestCachePlugin($I);
 
-		// No need to configure WP-Optimize to exclude caching when the ck_subscriber_id cookie is set,
-		// as this is automatically performed by the Kit Plugin.
+		// Test that the WpFastestCacheExclude option doesn't include ck_subscriber_id, as a Restrict Content
+		// page is not configured.
+		$I->assertStringNotContainsString(
+			json_encode( // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+				array(
+					'prefix'  => 'contain',
+					'content' => 'ck_subscriber_id',
+					'type'    => 'cookie',
+				)
+			),
+			$I->grabOptionFromDatabase('WpFastestCacheExclude')
+		);
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -152,6 +190,19 @@ class RestrictContentCacheCest
 				'post_title'               => 'Kit: Restrict Content: Product: WP Fastest Cache',
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
+		);
+
+		// Test that the WpFastestCacheExclude option does include ck_subscriber_id, as a Restrict Content
+		// page is configured, and the Plugin can auto configure the cache plugin.
+		$I->assertStringContainsString(
+			json_encode( // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+				array(
+					'prefix'  => 'contain',
+					'content' => 'ck_subscriber_id',
+					'type'    => 'cookie',
+				)
+			),
+			$I->grabOptionFromDatabase('WpFastestCacheExclude')
 		);
 
 		// Log out, so that caching is honored.
@@ -190,8 +241,12 @@ class RestrictContentCacheCest
 		$I->activateThirdPartyPlugin($I, 'wp-optimize');
 		$I->enableCachingWPOptimizePlugin($I);
 
-		// No need to configure WP-Optimize to exclude caching when the ck_subscriber_id cookie is set,
-		// as this is automatically performed by the Kit Plugin.
+		// Test that the wpo_cache_config option doesn't include ck_subscriber_id, as a Restrict Content
+		// page is not configured.
+		$I->assertStringNotContainsString(
+			'ck_subscriber_id',
+			$I->grabOptionFromDatabase('wpo_cache_config')
+		);
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -200,6 +255,13 @@ class RestrictContentCacheCest
 				'post_title'               => 'Kit: Restrict Content: Product: WP-Optimize',
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
+		);
+
+		// Test that the wpo_cache_config option does include ck_subscriber_id, as a Restrict Content
+		// page is configured and the Plugin can auto configure the cache plugin.
+		$I->assertStringContainsString(
+			'ck_subscriber_id',
+			$I->grabOptionFromDatabase('wpo_cache_config')
 		);
 
 		// Log out, so that caching is honored.
@@ -238,8 +300,10 @@ class RestrictContentCacheCest
 		$I->activateThirdPartyPlugin($I, 'wp-super-cache');
 		$I->enableCachingWPSuperCachePlugin($I);
 
-		// Configure WP Super Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
-		$I->excludeCachingWPSuperCachePlugin($I);
+		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content
+		// page is not configured.
+		$I->amOnAdminPage('index.php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -249,6 +313,18 @@ class RestrictContentCacheCest
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
 		);
+
+		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
+		// page is configured.
+		$I->amOnAdminPage('index.php');
+		$I->see('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+
+		// Configure WP Super Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
+		$I->excludeCachingWPSuperCachePlugin($I);
+
+		// Test that no notice is displayed in the WordPress Administration interface, as LiteSpeed Cache is configured.
+		$I->amOnAdminPage('index.php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Log out, so that caching is honored.
 		$I->logOut();
@@ -270,7 +346,7 @@ class RestrictContentCacheCest
 	}
 
 	/**
-	 * Tests that the WP RocketPlugin does not interfere with Restrict Content
+	 * Tests that the WP Rocket Plugin does not interfere with Restrict Content
 	 * output when a ck_subscriber_id cookie is present.
 	 *
 	 * @since   2.7.0
@@ -282,6 +358,13 @@ class RestrictContentCacheCest
 		// Activate WP Rocket Plugin.
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
 
+		// Test that the wp_rocket_cache_reject_cookies option doesn't include ck_subscriber_id, as a Restrict Content
+		// page is not configured.
+		$I->assertStringNotContainsString(
+			'ck_subscriber_id',
+			$I->grabOptionFromDatabase('wp_rocket_cache_reject_cookies')
+		);
+
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
 			$I,
@@ -289,6 +372,13 @@ class RestrictContentCacheCest
 				'post_title'               => 'Kit: Restrict Content: Product: WP Rocket',
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
+		);
+
+		// Test that the wp_rocket_cache_reject_cookies option does include ck_subscriber_id, as a Restrict Content
+		// page is configured and the Plugin can auto configure the cache plugin.
+		$I->assertStringContainsString(
+			'ck_subscriber_id',
+			$I->grabOptionFromDatabase('wp_rocket_cache_reject_cookies')
 		);
 
 		// Log out, so that caching is honored.
