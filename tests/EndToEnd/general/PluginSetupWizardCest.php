@@ -357,7 +357,7 @@ class PluginSetupWizardCest
 		$I->setupKitPluginResources($I);
 
 		// Navigate to Plugins screen.
-		$I->amOnAdminPage('plugins.php');
+		$I->amOnPluginsPage();
 
 		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
 		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
@@ -380,7 +380,7 @@ class PluginSetupWizardCest
 	private function _activatePlugin(EndToEndTester $I)
 	{
 		$I->loginAsAdmin();
-		$I->amOnAdminPage('plugins.php');
+		$I->amOnPluginsPage();
 		$I->activatePlugin('convertkit');
 
 		// Check that no PHP warnings or notices were output.
