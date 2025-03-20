@@ -113,8 +113,5 @@ class ThirdPartyPlugin extends \Codeception\Module
 
 		// Deactivate the Plugin.
 		$I->deactivatePlugin($name);
-
-		// Wait for the Plugins page to load.
-		$I->waitForElementVisible('body.plugins-php');
 	}
 }
