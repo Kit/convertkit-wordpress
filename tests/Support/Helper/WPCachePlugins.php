@@ -76,6 +76,10 @@ class WPCachePlugins extends \Codeception\Module
 		// Save.
 		$I->scrollTo('#litespeed-submit-0');
 		$I->click('#litespeed-submit-0');
+
+		// Confirm LiteSpeed Cache settings saved.
+		$I->waitForElementVisible('div.notice-success');
+		$I->see('Options saved.');
 	}
 
 	/**
