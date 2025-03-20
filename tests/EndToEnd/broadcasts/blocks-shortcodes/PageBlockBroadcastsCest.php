@@ -739,4 +739,19 @@ class PageBlockBroadcastsCest
 		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
 		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
 	}
+
+	/**
+	 * Deactivate and reset Plugin(s) after each test, if the test passes.
+	 * We don't use _after, as this would provide a screenshot of the Plugin
+	 * deactivation and not the true test error.
+	 *
+	 * @since   1.9.7.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _passed(EndToEndTester $I)
+	{
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+	}
 }

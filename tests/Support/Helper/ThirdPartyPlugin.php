@@ -20,8 +20,13 @@ class ThirdPartyPlugin extends \Codeception\Module
 	 */
 	public function activateThirdPartyPlugin($I, $name)
 	{
+		// Add admin_email_lifespan option to prevent Administration email verification screen from
+		// displaying on login, which causes tests to fail.
+		// This is included in the dump.sql file, but seems to be deleted after a test.
+		$I->haveOptionInDatabase('admin_email_lifespan', '1805512805');
+
 		// Login as the Administrator, if we're not already logged in.
-		$cookies = $I->grabCookiesWithPattern('/^wordpress_[a-z0-9]{32}$/');
+		$cookies = $I->grabCookiesWithPattern('/^wordpress_logged_in_[a-z0-9]{32}$/');
 		if ( is_null( $cookies ) ) {
 			$I->loginAsAdmin();
 
@@ -92,8 +97,9 @@ class ThirdPartyPlugin extends \Codeception\Module
 	public function deactivateThirdPartyPlugin($I, $name)
 	{
 		// Login as the Administrator, if we're not already logged in.
-		$cookies = $I->grabCookiesWithPattern('/^wordpress_[a-z0-9]{32}$/');
+		$cookies = $I->grabCookiesWithPattern('/^wordpress_logged_in_[a-z0-9]{32}$/');
 		if ( is_null( $cookies ) ) {
+			die('would login');
 			$I->loginAsAdmin();
 
 			// Wait for the Dashboard page to load after logging in.
