@@ -44,8 +44,11 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
-		// Confirm setup wizard does not display.
-		$I->dontSee('Welcome to the Kit Setup Wizard');
+		// Wait for the Plugins page to load, confirming the setup wizard does not display.
+		$I->waitForElementVisible('body.plugins-php');
+
+		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
+		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
 	}
 
 	/**

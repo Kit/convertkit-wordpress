@@ -21,11 +21,36 @@ class WPCachePlugins extends \Codeception\Module
 		// Navigate to its settings screen.
 		$I->amOnAdminPage('admin.php?page=litespeed-cache');
 
-		// Enable.
+		// Wait for the LiteSpeed Cache settings to load.
+		$I->waitForElementVisible('label[for=input_radio_cache_1]');
 		$I->click('label[for="input_radio_cache_1"]');
-
-		// Save.
 		$I->click('Save Changes');
+
+		// Confirm LiteSpeed Cache settings saved.
+		$I->waitForElementVisible('div.notice-success');
+		$I->see('Options saved.');
+	}
+
+	/**
+	 * Helper method to enable JS deferral in the LiteSpeed Plugin.
+	 *
+	 * @since   2.7.6
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 */
+	public function enableLiteSpeedCacheLoadJSDeferred($I)
+	{
+		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
+		$I->amOnAdminPage('admin.php?page=litespeed-page_optm#settings_js');
+
+		// Wait for the LiteSpeed Cache settings to load.
+		$I->waitForElementVisible('label[for=input_radio_optmjs_defer_1]');
+		$I->click('label[for=input_radio_optmjs_defer_1]');
+		$I->click('Save Changes');
+
+		// Confirm LiteSpeed Cache settings saved.
+		$I->waitForElementVisible('div.notice-success');
+		$I->see('Options saved.');
 	}
 
 	/**
