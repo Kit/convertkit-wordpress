@@ -457,6 +457,10 @@ class WishListMemberCest
 		// Save Changes.
 		$I->click('Save Changes');
 
+		// Wait for the Settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+		$I->see('Settings saved.');
+
 		// Check the value of the Form field matches the input provided.
 		$I->seeOptionIsSelected('#_wp_convertkit_integration_wishlistmember_settings_' . $wlmLevelID . '_' . $action, $resourceName);
 	}
@@ -481,6 +485,10 @@ class WishListMemberCest
 		// Save Changes.
 		$I->click('Update Member Profile');
 
+		// Wait for the Settings to save.
+		$I->waitForElementVisible('#message');
+		$I->see('User updated.');
+
 		// Confirm that the User is still assigned to the WLM Level.
 		$I->seeCheckboxIsChecked('#WishListMemberUserProfile input[value="' . $wlmLevelID . '"]');
 	}
@@ -504,6 +512,10 @@ class WishListMemberCest
 
 		// Save Changes.
 		$I->click('Update Member Profile');
+
+		// Wait for the Settings to save.
+		$I->waitForElementVisible('#message');
+		$I->see('User updated.');
 
 		// Confirm that the User is no longer assigned to the WLM Level.
 		$I->dontSeeCheckboxIsChecked('#WishListMemberUserProfile input[value="' . $wlmLevelID . '"]');

@@ -103,9 +103,7 @@ class RestrictContentCacheCest
 	public function testRestrictContentW3TotalCache(EndToEndTester $I)
 	{
 		// Activate and enable W3 Total Cache Plugin.
-		// Don't use activateThirdPartyPlugin(), as W3 Total Cache returns a PHP Deprecated notice in 8.1+.
-		$I->amOnPluginsPage();
-		$I->activatePlugin('w3-total-cache');
+		$I->activateThirdPartyPlugin($I, 'w3-total-cache');
 		$I->enableCachingW3TotalCachePlugin($I);
 
 		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content

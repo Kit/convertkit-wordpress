@@ -15,13 +15,14 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     EndToEndTester.
+	 * @param   EndToEndTester $I                       EndToEndTester.
+	 * @param   bool           $wizardExpectsToDisplay  Whether the Plugin Setup Wizard is expected to display.
 	 */
-	public function activateKitPlugin($I)
+	public function activateKitPlugin($I, $wizardExpectsToDisplay = true)
 	{
 		// Wait before activating the Plugin, to avoid rate limits.
 		$I->wait(2);
-		$I->activateThirdPartyPlugin($I, 'convertkit');
+		$I->activateThirdPartyPlugin($I, 'convertkit', $wizardExpectsToDisplay);
 	}
 
 	/**
@@ -853,7 +854,7 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args'            => [
-							'--headless=new',
+							'--headless',
 							'--disable-gpu',
 							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
@@ -893,7 +894,7 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args' => [
-							'--headless=new',
+							'--headless',
 							'--disable-gpu',
 							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
