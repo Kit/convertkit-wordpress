@@ -34,7 +34,7 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Activate the Plugin.
 		$I->activatePlugin($name);
 
-		// Some Plugins redirect to a welcome screen on activation, so we can't reliably check they're activated.
+		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
 			case 'convertkit':
 				// Wait for the Plugin Setup Wizard screen to load.

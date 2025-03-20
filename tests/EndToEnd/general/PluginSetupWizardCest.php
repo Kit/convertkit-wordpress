@@ -359,6 +359,9 @@ class PluginSetupWizardCest
 		// Navigate to Plugins screen.
 		$I->amOnPluginsPage();
 
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
 		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
 		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
 
@@ -380,9 +383,8 @@ class PluginSetupWizardCest
 	private function _activatePlugin(EndToEndTester $I)
 	{
 		// Login as the Administrator, if we're not already logged in.
-		$cookies = $I->grabCookiesWithPattern('/^wordpress_[a-z0-9]{32}$/');
-		if ( is_null( $cookies ) ) {
-			$I->loginAsAdmin();
+		if ( ! $this->amLoggedInAsAdmin($I) ) {
+			$this->doLoginAsAdmin($I);
 		}
 
 		// Go to the Plugins screen in the WordPress Administration interface.

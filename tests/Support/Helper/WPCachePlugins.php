@@ -74,6 +74,10 @@ class WPCachePlugins extends \Codeception\Module
 
 		// Save.
 		$I->click('Save Settings');
+
+		// Confirm setting saved.
+		$I->wait(2);
+		$I->waitForElementVisible('#pgcache__enabled');
 	}
 
 	/**
@@ -96,6 +100,10 @@ class WPCachePlugins extends \Codeception\Module
 
 		// Save.
 		$I->click('Save Settings');
+
+		// Confirm setting saved.
+		$I->wait(2);
+		$I->waitForElementVisible('#pgcache_reject_cookie');
 	}
 
 	/**
@@ -156,13 +164,17 @@ class WPCachePlugins extends \Codeception\Module
 	public function enableCachingWPSuperCachePlugin($I)
 	{
 		// Navigate to its settings screen.
-		$I->amOnAdminPage('options-general.php?page=wpsupercache');
+		$I->amOnAdminPage('options-general.php?page=wpsupercache&tab=easy');
 
 		// Enable.
 		$I->selectOption('input[name="wp_cache_easy_on"]', '1');
 
 		// Save.
 		$I->click('Update Status');
+
+		// Confirm setting saved.
+		$I->wait(2);
+		$I->waitForElementVisible('input[name="wp_cache_easy_on"]');
 	}
 
 	/**
@@ -184,6 +196,10 @@ class WPCachePlugins extends \Codeception\Module
 
 		// Save.
 		$I->click('form[name="wp_edit_rejected_cookies"] input.button-primary');
+
+		// Confirm setting saved.
+		$I->wait(2);
+		$I->waitForElementVisible('textarea[name="wp_rejected_cookies"]');
 	}
 
 	/**
