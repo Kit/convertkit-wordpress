@@ -15,10 +15,11 @@ class ThirdPartyPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6.7
 	 *
-	 * @param   EndToEndTester $I                 EndToEndTester.
-	 * @param   string         $name              Plugin Slug.
+	 * @param   EndToEndTester $I                       EndToEndTester.
+	 * @param   string         $name                    Plugin Slug.
+	 * @param   bool           $wizardExpectsToDisplay  Whether the Plugin Setup Wizard is expected to display.
 	 */
-	public function activateThirdPartyPlugin($I, $name)
+	public function activateThirdPartyPlugin($I, $name, $wizardExpectsToDisplay = true)
 	{
 		// Login as the Administrator, if we're not already logged in.
 		if ( ! $this->amLoggedInAsAdmin($I) ) {
@@ -49,8 +50,10 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
 			case 'convertkit':
-				// Wait for the Plugin Setup Wizard screen to load.
-				$I->waitForElementVisible('body.convertkit');
+				// Wait for the Plugin Setup Wizard screen to load, if it's expected to display.
+				if ( $wizardExpectsToDisplay ) {
+					$I->waitForElementVisible('body.convertkit');
+				}
 
 				// Go to the Plugins screen again.
 				$I->amOnPluginsPage();
