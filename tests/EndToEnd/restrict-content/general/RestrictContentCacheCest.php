@@ -47,6 +47,7 @@ class RestrictContentCacheCest
 		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is not configured.
 		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
 		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Create Restricted Content Page.
@@ -61,6 +62,7 @@ class RestrictContentCacheCest
 		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is configured.
 		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
 		$I->see('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Configure LiteSpeed Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
@@ -68,6 +70,7 @@ class RestrictContentCacheCest
 
 		// Test that no notice is displayed in the WordPress Administration interface, as LiteSpeed Cache is configured.
 		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
 		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
 		// Log out, so that caching is honored.
@@ -109,7 +112,8 @@ class RestrictContentCacheCest
 		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is not configured.
 		$I->amOnAdminPage('index.php');
-		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+		$I->waitForElementVisible('body.index-php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Rejected Cookies" setting by clicking here.');
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -123,14 +127,16 @@ class RestrictContentCacheCest
 		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is configured.
 		$I->amOnAdminPage('index.php');
-		$I->see('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+		$I->waitForElementVisible('body.index-php');
+		$I->see('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Rejected Cookies" setting by clicking here.');
 
 		// Configure W3 Total Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
 		$I->excludeCachingW3TotalCachePlugin($I);
 
 		// Test that no notice is displayed in the WordPress Administration interface, as LiteSpeed Cache is configured.
 		$I->amOnAdminPage('index.php');
-		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+		$I->waitForElementVisible('body.index-php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Rejected Cookies" setting by clicking here.');
 
 		// Log out, so that caching is honored.
 		$I->logOut();
@@ -166,7 +172,6 @@ class RestrictContentCacheCest
 	{
 		// Activate and enable WP Fastest Cache Plugin.
 		$I->activateThirdPartyPlugin($I, 'wp-fastest-cache');
-		$I->enableCachingWPFastestCachePlugin($I);
 
 		// Test that the WpFastestCacheExclude option doesn't include ck_subscriber_id, as a Restrict Content
 		// page is not configured.
@@ -189,6 +194,10 @@ class RestrictContentCacheCest
 				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 			]
 		);
+
+		// Load the Dashboard.
+		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
 
 		// Test that the WpFastestCacheExclude option does include ck_subscriber_id, as a Restrict Content
 		// page is configured, and the Plugin can auto configure the cache plugin.
@@ -241,9 +250,10 @@ class RestrictContentCacheCest
 
 		// Test that the wpo_cache_config option doesn't include ck_subscriber_id, as a Restrict Content
 		// page is not configured.
+		$config = $I->grabOptionFromDatabase('wpo_cache_config');
 		$I->assertStringNotContainsString(
 			'ck_subscriber_id',
-			$I->grabOptionFromDatabase('wpo_cache_config')
+			$config['cache_exception_cookies'][0]
 		);
 
 		// Create Restricted Content Page.
@@ -255,11 +265,16 @@ class RestrictContentCacheCest
 			]
 		);
 
+		// Load the Dashboard.
+		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
+
 		// Test that the wpo_cache_config option does include ck_subscriber_id, as a Restrict Content
 		// page is configured and the Plugin can auto configure the cache plugin.
+		$config = $I->grabOptionFromDatabase('wpo_cache_config');
 		$I->assertStringContainsString(
 			'ck_subscriber_id',
-			$I->grabOptionFromDatabase('wpo_cache_config')
+			$config['cache_exception_cookies'][1]
 		);
 
 		// Log out, so that caching is honored.
@@ -301,7 +316,8 @@ class RestrictContentCacheCest
 		// Test that no notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is not configured.
 		$I->amOnAdminPage('index.php');
-		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+		$I->waitForElementVisible('body.index-php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Rejected Cookies" setting by clicking here.');
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -315,14 +331,16 @@ class RestrictContentCacheCest
 		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is configured.
 		$I->amOnAdminPage('index.php');
-		$I->see('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+		$I->waitForElementVisible('body.index-php');
+		$I->see('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Rejected Cookies" setting by clicking here.');
 
 		// Configure WP Super Cache Plugin to exclude caching when the ck_subscriber_id cookie is set.
 		$I->excludeCachingWPSuperCachePlugin($I);
 
 		// Test that no notice is displayed in the WordPress Administration interface, as LiteSpeed Cache is configured.
 		$I->amOnAdminPage('index.php');
-		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Do Not Cache Cookies" setting by clicking here.');
+		$I->waitForElementVisible('body.index-php');
+		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Rejected Cookies" setting by clicking here.');
 
 		// Log out, so that caching is honored.
 		$I->logOut();
@@ -358,10 +376,8 @@ class RestrictContentCacheCest
 
 		// Test that the wp_rocket_cache_reject_cookies option doesn't include ck_subscriber_id, as a Restrict Content
 		// page is not configured.
-		$I->assertStringNotContainsString(
-			'ck_subscriber_id',
-			$I->grabOptionFromDatabase('wp_rocket_cache_reject_cookies')
-		);
+		$config = $I->grabOptionFromDatabase('wp_rocket_settings');
+		$I->assertNotContains('ck_subscriber_id', $config['cache_reject_cookies']);
 
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -372,12 +388,14 @@ class RestrictContentCacheCest
 			]
 		);
 
+		// Load the Dashboard.
+		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
+
 		// Test that the wp_rocket_cache_reject_cookies option does include ck_subscriber_id, as a Restrict Content
 		// page is configured and the Plugin can auto configure the cache plugin.
-		$I->assertStringContainsString(
-			'ck_subscriber_id',
-			$I->grabOptionFromDatabase('wp_rocket_cache_reject_cookies')
-		);
+		$config = $I->grabOptionFromDatabase('wp_rocket_settings');
+		$I->assertContains('ck_subscriber_id', $config['cache_reject_cookies']);
 
 		// Log out, so that caching is honored.
 		$I->logOut();
