@@ -138,6 +138,9 @@ class DiviBuilder extends \Codeception\Module
 		$I->waitForElementVisible('li.' . $programmaticName);
 		$I->click('li.' . $programmaticName);
 
+		// Wait for module to load.
+		$I->waitForElementVisible('div.et-fb-modal');
+
 		// Select field value.
 		if ($fieldName && $fieldValue) {
 			$I->waitForElementVisible('#et-fb-' . $fieldName);

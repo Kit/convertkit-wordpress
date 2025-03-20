@@ -55,7 +55,6 @@ modules:
             capabilities:
               "goog:chromeOptions":
                 args:
-                  - "--headless=new"
                   - "--disable-gpu"
                   - "--disable-dev-shm-usage"
                   - "--proxy-server='direct://'"
@@ -70,7 +69,7 @@ modules:
             #import the dump before the tests; this means the test site database will be repopulated before the tests.
             populate: true
             # re-import the dump between tests; this means the test site database will be repopulated between the tests.
-            cleanup: false
+            cleanup: true
             reconnect: false
             url: '%WORDPRESS_URL%'
             urlReplacement: true

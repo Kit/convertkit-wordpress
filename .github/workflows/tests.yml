@@ -59,8 +59,20 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
+          'EndToEnd/broadcasts/blocks-shortcodes',
+          'EndToEnd/broadcasts/import-export',
+          'EndToEnd/forms/blocks-shortcodes',
+          'EndToEnd/forms/general',
+          'EndToEnd/forms/post-types',
+          'EndToEnd/general',
           'EndToEnd/integrations/other',
-          'EndToEnd/products'
+          'EndToEnd/integrations/wlm',
+          'EndToEnd/integrations/woocommerce',
+          'EndToEnd/landing-pages',
+          'EndToEnd/products',
+          'EndToEnd/restrict-content/general',
+          'EndToEnd/restrict-content/post-types',
+          'EndToEnd/tags',
         ]
 
     # Steps to install, configure and run tests
@@ -214,32 +226,11 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
-      # Install specific chromedriver version
-      - name: Install Chromedriver
-        uses: browser-actions/setup-chrome@v1
-        id: setup-chromedriver
-        with:
-          chrome-version: '128.0.6534.0'
-          install-chromedriver: true
-
-      - name: Update Chrome Path
-        run: |
-          sudo rm -f /opt/google/chrome/chrome
-          sudo ln -sf ${{ steps.setup-chromedriver.outputs.chrome-path }} /opt/google/chrome/chrome
-
-      # Output Chrome and Chromedriver paths and versions
-      - name: Output Chrome and Chromedriver paths and versions
-        run: |
-          echo "Chrome path: ${{ steps.setup-chromedriver.outputs.chrome-path }}"
-          echo "Chrome version: ${{ steps.setup-chromedriver.outputs.chrome-version }}"
-          echo "Chromedriver path: ${{ steps.setup-chromedriver.outputs.chromedriver-path }}"
-          echo "Chromedriver version: ${{ steps.setup-chromedriver.outputs.chromedriver-version }}"
-
       # Start chromedriver
       - name: Start chromedriver
         run: |
           export DISPLAY=:99
-          ${{ steps.setup-chromedriver.outputs.chromedriver-path }} --port=9515 --url-base=/wd/hub &
+          chromedriver --port=9515 --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
 
       # Write any secrets, such as API keys, to the .env.dist.testing file now.

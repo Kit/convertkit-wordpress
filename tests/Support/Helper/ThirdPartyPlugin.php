@@ -20,18 +20,43 @@ class ThirdPartyPlugin extends \Codeception\Module
 	 */
 	public function activateThirdPartyPlugin($I, $name)
 	{
-		// Login as the Administrator.
-		$I->loginAsAdmin();
+		// Login as the Administrator, if we're not already logged in.
+		$cookies = $I->grabCookiesWithPattern('/^wordpress_[a-z0-9]{32}$/');
+		if ( is_null( $cookies ) ) {
+			$I->loginAsAdmin();
+
+			// Wait for the Dashboard page to load after logging in.
+			$I->waitForElementVisible('body.index-php');
+		}
 
 		// Go to the Plugins screen in the WordPress Administration interface.
 		$I->amOnPluginsPage();
 
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
 		// Activate the Plugin.
 		$I->activatePlugin($name);
+
+		// Some Plugins redirect to a welcome screen on activation, so we can't reliably check they're activated.
+		switch ($name) {
+			case 'convertkit':
+				// Wait for the Plugin Setup Wizard screen to load.
+				$I->waitForElementVisible('body.convertkit');
+				break;
+
+			default:
+				// Wait for the Plugins page to load.
+				$I->waitForElementVisible('body.plugins-php');
+				break;
+		}
 
 		// Go to the Plugins screen again; this prevents any Plugin that loads a wizard-style screen from
 		// causing seePluginActivated() to fail.
 		$I->amOnPluginsPage();
+
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
 
 		// Some Plugins redirect to a welcome screen on activation, so we can't reliably check they're activated.
 		switch ($name) {
@@ -66,13 +91,25 @@ class ThirdPartyPlugin extends \Codeception\Module
 	 */
 	public function deactivateThirdPartyPlugin($I, $name)
 	{
-		// Login as the Administrator.
-		$I->loginAsAdmin();
+		// Login as the Administrator, if we're not already logged in.
+		$cookies = $I->grabCookiesWithPattern('/^wordpress_[a-z0-9]{32}$/');
+		if ( is_null( $cookies ) ) {
+			$I->loginAsAdmin();
+
+			// Wait for the Dashboard page to load after logging in.
+			$I->waitForElementVisible('body.index-php');
+		}
 
 		// Go to the Plugins screen in the WordPress Administration interface.
 		$I->amOnPluginsPage();
 
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
 		// Deactivate the Plugin.
 		$I->deactivatePlugin($name);
+
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
 	}
 }

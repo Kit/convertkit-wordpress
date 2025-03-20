@@ -379,9 +379,23 @@ class PluginSetupWizardCest
 	 */
 	private function _activatePlugin(EndToEndTester $I)
 	{
-		$I->loginAsAdmin();
+		// Login as the Administrator, if we're not already logged in.
+		$cookies = $I->grabCookiesWithPattern('/^wordpress_[a-z0-9]{32}$/');
+		if ( is_null( $cookies ) ) {
+			$I->loginAsAdmin();
+		}
+
+		// Go to the Plugins screen in the WordPress Administration interface.
 		$I->amOnPluginsPage();
+
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
+		// Activate Plugin.
 		$I->activatePlugin('convertkit');
+
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
