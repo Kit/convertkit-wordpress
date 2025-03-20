@@ -853,7 +853,7 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args'            => [
-							'--headless=new',
+							'--headless',
 							'--disable-gpu',
 							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
@@ -893,7 +893,7 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args' => [
-							'--headless=new',
+							'--headless',
 							'--disable-gpu',
 							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
