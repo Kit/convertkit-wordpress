@@ -39,35 +39,14 @@ class ThirdPartyPlugin extends \Codeception\Module
 			case 'convertkit':
 				// Wait for the Plugin Setup Wizard screen to load.
 				$I->waitForElementVisible('body.convertkit');
-				break;
 
-			case 'beaver-builder-lite-version':
-				$I->waitForElementVisible('div.updated');
-				$I->see('Beaver Builder activated!');
-				break;
-
-			default:
-				// Wait for the Plugins page to load.
-				$I->waitForElementVisible('body.plugins-php');
+				// Go to the Plugins screen again.
+				$I->amOnPluginsPage();
 				break;
 		}
 
-		// Go to the Plugins screen again; this prevents any Plugin that loads a wizard-style screen from
-		// causing seePluginActivated() to fail.
-		$I->amOnPluginsPage();
-
-		// Wait for the Plugins page to load.
-		$I->waitForElementVisible('body.plugins-php');
-
-		// Some Plugins redirect to a welcome screen on activation, so we can't reliably check they're activated.
-		switch ($name) {
-			case 'wpforms-lite':
-				break;
-
-			default:
-				$I->seePluginActivated($name);
-				break;
-		}
+		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
+		$I->waitForElementVisible('table.plugins tr[data-slug=' . $name . '].active');
 
 		// Some Plugins throw warnings / errors on activation, so we can't reliably check for errors.
 		if ($name === 'wishlist-member' && version_compare( phpversion(), '8.1', '>' )) {
