@@ -44,8 +44,8 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
-		// Wait for the Plugins page to load, confirming the setup wizard does not display.
-		$I->waitForElementVisible('body.plugins-php');
+		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
+		$I->waitForElementVisible('table.plugins tr[data-slug=convertkit].active');
 
 		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
 		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
@@ -210,6 +210,9 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
 		// Define Plugin settings.
 		$I->setupKitPluginNoDefaultForms($I);
 
@@ -343,6 +346,9 @@ class PluginSetupWizardCest
 	{
 		// Activate Plugin.
 		$this->_activatePlugin($I);
+
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
 
 		// Define Plugin settings.
 		$I->setupKitPluginNoDefaultForms($I);

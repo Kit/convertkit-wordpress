@@ -31,11 +31,31 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Wait for the Plugins page to load.
 		$I->waitForElementVisible('body.plugins-php');
 
-		// Activate the Plugin.
-		$I->activatePlugin($name);
+		// Depending on the Plugin name, perform activation.
+		switch ($name) {
+			case 'woocommerce':
+				// The bulk action to activate won't be available in WordPress 6.5+ due to dependent
+				// plugins being installed.
+				// See https://core.trac.wordpress.org/ticket/60863.
+				$I->click('a#activate-' . $name);
+				break;
+
+			default:
+				// Activate the Plugin.
+				$I->activatePlugin($name);
+				break;
+		}
 
 		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
+			case 'woocommerce':
+				// Wait for the WooCommerce Welcome screen to load.
+				$I->waitForElementVisible('body.woocommerce-admin-full-screen');
+
+				// Go to the Plugins screen again.
+				$I->amOnPluginsPage();
+				break;
+
 			case 'convertkit':
 				// Wait for the Plugin Setup Wizard screen to load.
 				$I->waitForElementVisible('body.convertkit');
@@ -50,9 +70,6 @@ class ThirdPartyPlugin extends \Codeception\Module
 
 		// Some Plugins throw warnings / errors on activation, so we can't reliably check for errors.
 		if ($name === 'wishlist-member' && version_compare( phpversion(), '8.1', '>' )) {
-			return;
-		}
-		if ($name === 'woocommerce') {
 			return;
 		}
 
