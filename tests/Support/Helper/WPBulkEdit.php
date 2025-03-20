@@ -51,6 +51,7 @@ class WPBulkEdit extends \Codeception\Module
 
 		// Wait for the confirmation message to display.
 		$I->waitForElementVisible('div.updated');
+		$I->wait(2);
 
 		// Confirm that Bulk Editing saved with no errors.
 		switch ($postType) {

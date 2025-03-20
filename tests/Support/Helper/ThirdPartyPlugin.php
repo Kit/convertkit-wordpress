@@ -91,8 +91,20 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Wait for the Plugins page to load.
 		$I->waitForElementVisible('body.plugins-php');
 
-		// Deactivate the Plugin.
-		$I->deactivatePlugin($name);
+		// Depending on the Plugin name, perform deactivation.
+		switch ($name) {
+			case 'woocommerce':
+				// The bulk action to deactivate won't be available in WordPress 6.5+ due to dependent
+				// plugins being installed.
+				// See https://core.trac.wordpress.org/ticket/60863.
+				$I->click('a#deactivate-' . $name);
+				break;
+
+			default:
+				// Deactivate the Plugin.
+				$I->deactivatePlugin($name);
+				break;
+		}
 	}
 
 	/**

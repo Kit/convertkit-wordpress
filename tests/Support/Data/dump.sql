@@ -239,7 +239,8 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (127, 'WishListMemberOptions_MigrateLevelData', '1',  'on'),
 (128, 'WishListMemberOptions_MigrateContentLevelData',  '1',  'on'),
 (129, 'et_support_center_setup_done',  'processed',  'on'),
-(130, 'et_support_center_installed',  'true',  'on');
+(130, 'et_support_center_installed',  'true',  'on'),
+(131, 'woocommerce_version',  '9.7.1',  'on');
 
 DROP TABLE IF EXISTS `wp_postmeta`;
 CREATE TABLE `wp_postmeta` (
