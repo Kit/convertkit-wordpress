@@ -48,14 +48,6 @@ class ThirdPartyPlugin extends \Codeception\Module
 
 		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
-			case 'woocommerce':
-				// Wait for the WooCommerce Welcome screen to load.
-				$I->waitForElementVisible('body.woocommerce-admin-full-screen');
-
-				// Go to the Plugins screen again.
-				$I->amOnPluginsPage();
-				break;
-
 			case 'convertkit':
 				// Wait for the Plugin Setup Wizard screen to load.
 				$I->waitForElementVisible('body.convertkit');
