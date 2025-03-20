@@ -69,7 +69,7 @@ modules:
             #import the dump before the tests; this means the test site database will be repopulated before the tests.
             populate: true
             # re-import the dump between tests; this means the test site database will be repopulated between the tests.
-            cleanup: true
+            cleanup: false
             reconnect: false
             url: '%WORDPRESS_URL%'
             urlReplacement: true
