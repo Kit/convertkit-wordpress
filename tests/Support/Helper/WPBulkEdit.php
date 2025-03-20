@@ -49,8 +49,8 @@ class WPBulkEdit extends \Codeception\Module
 		// Click Update.
 		$I->click('#bulk_edit');
 
-		// Wait for the WP_List_Table of Pages to load.
-		$I->waitForElementVisible('tbody#the-list');
+		// Wait for the confirmation message to display.
+		$I->waitForElementVisible('div#message');
 
 		// Confirm that Bulk Editing saved with no errors.
 		switch ($postType) {

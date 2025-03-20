@@ -160,6 +160,10 @@ class CustomPostType extends \Codeception\Module
 				'enter_title_here' => '',
 			),
 		]);
+
+		// Navigate to Settings > General to flush Permalinks.
+		$I->amOnAdminPage('options-permalink.php');
+		$I->waitForElementVisible('body.options-permalink-php');
 	}
 
 	/**
@@ -172,7 +176,6 @@ class CustomPostType extends \Codeception\Module
 	public function unregisterCustomPostTypes($I)
 	{
 		$I->dontHaveOptionInDatabase('cptui_post_types');
-
 		$I->deactivateThirdPartyPlugin($I, 'custom-post-type-ui');
 	}
 }
