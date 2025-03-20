@@ -226,11 +226,32 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
+      # Install specific chromedriver version
+      - name: Install Chromedriver
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chromedriver
+        with:
+          chrome-version: '133.0.6943.126'
+          install-chromedriver: true
+
+      - name: Update Chrome Path
+        run: |
+          sudo rm -f /opt/google/chrome/chrome
+          sudo ln -sf ${{ steps.setup-chromedriver.outputs.chrome-path }} /opt/google/chrome/chrome
+
+      # Output Chrome and Chromedriver paths and versions
+      - name: Output Chrome and Chromedriver paths and versions
+        run: |
+          echo "Chrome path: ${{ steps.setup-chromedriver.outputs.chrome-path }}"
+          echo "Chrome version: ${{ steps.setup-chromedriver.outputs.chrome-version }}"
+          echo "Chromedriver path: ${{ steps.setup-chromedriver.outputs.chromedriver-path }}"
+          echo "Chromedriver version: ${{ steps.setup-chromedriver.outputs.chromedriver-version }}"
+
       # Start chromedriver
       - name: Start chromedriver
         run: |
           export DISPLAY=:99
-          chromedriver --port=9515 --url-base=/wd/hub &
+          ${{ steps.setup-chromedriver.outputs.chromedriver-path }} --port=9515 --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
 
       # Write any secrets, such as API keys, to the .env.dist.testing file now.
