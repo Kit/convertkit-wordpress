@@ -79,9 +79,16 @@ class RestrictContentSetupCest
 		// Navigate to Admin Menu Editor's settings.
 		$I->amOnAdminPage('options-general.php?page=menu_editor');
 
+		// Wait for the Admin Menu Editor settings screen to load.
+		$I->waitForElementVisible('body.settings_page_menu_editor');
+
 		// Save settings. If hiding submenu items fails in the Plugin, this step
 		// will display those submenu items on subsequent page loads.
 		$I->click('Save Changes');
+
+		// Wait for the Admin Menu Editor settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+		$I->see('Settings saved.');
 
 		// Navigate to Dashboard.
 		$I->amOnAdminPage('index.php');
