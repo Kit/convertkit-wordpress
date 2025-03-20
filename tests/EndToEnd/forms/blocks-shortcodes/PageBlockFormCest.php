@@ -812,8 +812,15 @@ class PageBlockFormCest
 
 		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
 		$I->amOnAdminPage('admin.php?page=litespeed-page_optm#settings_js');
+
+		// Wait for the LiteSpeed Cache settings to load.
+		$I->waitForElementVisible('label[for=input_radio_optmjs_defer_1]');
 		$I->click('label[for=input_radio_optmjs_defer_1]');
 		$I->click('Save Changes');
+
+		// Confirm LiteSpeed Cache settings saved.
+		$I->waitForElementVisible('div.notice-success');
+		$I->see('Options saved.');
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: LiteSpeed Cache');

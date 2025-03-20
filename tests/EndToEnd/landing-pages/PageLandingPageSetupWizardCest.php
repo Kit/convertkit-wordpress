@@ -233,6 +233,7 @@ class PageLandingPageSetupWizardCest
 		$I->click('Create');
 
 		// Confirm that setup completed.
+		$I->waitForElementVisible('div.convertkit-setup-wizard-grid');
 		$I->see('Setup complete');
 
 		// Click the button to view the landing page.
