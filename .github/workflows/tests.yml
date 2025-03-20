@@ -64,7 +64,8 @@ jobs:
           'EndToEnd/forms/blocks-shortcodes',
           'EndToEnd/forms/general',
           'EndToEnd/forms/post-types',
-          'EndToEnd/general',
+          'EndToEnd/general/other',
+          'EndToEnd/general/plugin-screens',
           'EndToEnd/integrations/other',
           'EndToEnd/integrations/wlm',
           'EndToEnd/integrations/woocommerce',
@@ -72,7 +73,7 @@ jobs:
           'EndToEnd/products',
           'EndToEnd/restrict-content/general',
           'EndToEnd/restrict-content/post-types',
-          'EndToEnd/tags',
+          'EndToEnd/tags'
         ]
 
     # Steps to install, configure and run tests
@@ -226,6 +227,7 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
+      # Start chromedriver
       - name: Start chromedriver
         run: |
           export DISPLAY=:99

@@ -472,11 +472,8 @@ class PluginSettingsGeneralCest
 	 */
 	public function testPublicPrivateCustomPostTypeSettingsExist(EndToEndTester $I)
 	{
-		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
-
-		// Create a non-public Custom Post Type called Private, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'private', 'Private', 'Private', false);
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
@@ -500,8 +497,7 @@ class PluginSettingsGeneralCest
 		$I->seeInField('_wp_convertkit_settings[article_form]', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
 		// Unregister CPTs.
-		$I->unregisterCustomPostType($I, 'article');
-		$I->unregisterCustomPostType($I, 'private');
+		$I->unregisterCustomPostTypes($I);
 	}
 
 	/**

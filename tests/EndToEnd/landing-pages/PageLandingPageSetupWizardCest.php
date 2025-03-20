@@ -79,9 +79,16 @@ class PageLandingPageSetupWizardCest
 		// Navigate to Admin Menu Editor's settings.
 		$I->amOnAdminPage('options-general.php?page=menu_editor');
 
+		// Wait for the Admin Menu Editor settings screen to load.
+		$I->waitForElementVisible('body.settings_page_menu_editor');
+
 		// Save settings. If hiding submenu items fails in the Plugin, this step
 		// will display those submenu items on subsequent page loads.
 		$I->click('Save Changes');
+
+		// Wait for the Admin Menu Editor settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+		$I->see('Settings saved.');
 
 		// Navigate to Dashboard.
 		$I->amOnAdminPage('index.php');
@@ -185,10 +192,14 @@ class PageLandingPageSetupWizardCest
 		$I->click('Create');
 
 		// Confirm that setup completed.
+		$I->waitForElementVisible('div.convertkit-setup-wizard-grid');
 		$I->see('Setup complete');
 
 		// Click the button to view the landing page.
 		$I->click('View landing page');
+
+		// Wait for the Landing Page to load.
+		$I->waitForElementNotVisible('body.convertkit');
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
@@ -222,10 +233,14 @@ class PageLandingPageSetupWizardCest
 		$I->click('Create');
 
 		// Confirm that setup completed.
+		$I->waitForElementVisible('div.convertkit-setup-wizard-grid');
 		$I->see('Setup complete');
 
 		// Click the button to view the landing page.
 		$I->click('View landing page');
+
+		// Wait for the Landing Page to load.
+		$I->waitForElementNotVisible('body.convertkit');
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I);

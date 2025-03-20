@@ -25,8 +25,8 @@ class BroadcastsExportCPTRowActionCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -182,7 +182,7 @@ class BroadcastsExportCPTRowActionCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->unregisterCustomPostType($I, 'article');
+		$I->unregisterCustomPostTypes($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
