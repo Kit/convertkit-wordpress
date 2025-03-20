@@ -41,6 +41,11 @@ class ThirdPartyPlugin extends \Codeception\Module
 				$I->waitForElementVisible('body.convertkit');
 				break;
 
+			case 'beaver-builder-lite-version':
+				$I->waitForElementVisible('div.updated');
+				$I->see('Beaver Builder activated!');
+				break;
+
 			default:
 				// Wait for the Plugins page to load.
 				$I->waitForElementVisible('body.plugins-php');
