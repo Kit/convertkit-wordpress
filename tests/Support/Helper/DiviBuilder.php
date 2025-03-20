@@ -157,6 +157,7 @@ class DiviBuilder extends \Codeception\Module
 	public function saveDiviModuleInBackendEditorAndViewPage($I)
 	{
 		// Save module.
+		$I->waitForElementVisible('button[data-tip="Save Changes"]');
 		$I->click('button[data-tip="Save Changes"]');
 
 		// Update page.
