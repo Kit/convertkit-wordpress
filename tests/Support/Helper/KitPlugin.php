@@ -15,13 +15,14 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   EndToEndTester $I     EndToEndTester.
+	 * @param   EndToEndTester $I                       EndToEndTester.
+	 * @param   bool           $wizardExpectsToDisplay  Whether the Plugin Setup Wizard is expected to display.
 	 */
-	public function activateKitPlugin($I)
+	public function activateKitPlugin($I, $wizardExpectsToDisplay = true)
 	{
 		// Wait before activating the Plugin, to avoid rate limits.
 		$I->wait(2);
-		$I->activateThirdPartyPlugin($I, 'convertkit');
+		$I->activateThirdPartyPlugin($I, 'convertkit', $wizardExpectsToDisplay);
 	}
 
 	/**
@@ -716,15 +717,15 @@ class KitPlugin extends \Codeception\Module
 
 	/**
 	 * Test that the 'Click here to connect your Kit account' link displays a popup window,
-	 * when using a block with no API Keys specified.
+	 * when using a block with no credentials specified.
 	 *
 	 * @since   2.2.6
 	 *
 	 * @param   EndToEndTester $I                 Tester.
 	 * @param   string         $blockName         Block Name.
-	 * @param   bool|string    $expectedMessage   Expected message displayed in block after entering valid API Keys.
+	 * @param   bool|string    $expectedMessage   Expected message displayed in block after valid OAuth tokens are specified.
 	 */
-	public function testBlockNoAPIKeyPopupWindow($I, $blockName, $expectedMessage = false)
+	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false)
 	{
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
 		$I->see(
@@ -745,59 +746,24 @@ class KitPlugin extends \Codeception\Module
 		// Switch to the window that just opened.
 		$I->switchToWindow('convertkit_popup_window');
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Confirm that the OAuth login page is displayed.
+		$I->waitForElementVisible('main[data-component="Page"]');
 
-		// Confirm no logo or progress bar is displayed, as this is the modal version of the wizard.
-		$I->dontSeeElementInDOM('#convertkit-setup-wizard-header');
+		// Enter OAuth details as if we completed OAuth.
+		$I->setupKitPlugin($I);
 
-		// Confirm no exit wizard link is displayed.
-		$I->dontSeeElementInDOM('#convertkit-setup-wizard-exit-link');
-
-		// Confirm expected title is displayed.
-		$I->see('Welcome to the Kit Setup Wizard');
-
-		// Confirm Step text is correct.
-		$I->see('Step 1 of 2');
-
-		// Test Connect button.
-		$I->click('Connect');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm no logo or progress bar is displayed, as this is the modal version of the wizard.
-		$I->dontSeeElementInDOM('#convertkit-setup-wizard-header');
-
-		// Confirm no exit wizard link is displayed.
-		$I->dontSeeElementInDOM('#convertkit-setup-wizard-exit-link');
-
-		// Confirm expected title is displayed.
-		$I->see('Connect your Kit account');
-
-		// Confirm Step text is correct.
-		$I->see('Step 2 of 2');
-
-		// Confirm Back and Connect buttons display.
-		$I->seeElementInDOM('#convertkit-setup-wizard-footer div.left a.button');
-		$I->seeElementInDOM('#convertkit-setup-wizard-footer div.right button');
-
-		// Fill fields with valid API Keys.
-		$I->fillField('api_key', $_ENV['CONVERTKIT_API_KEY']);
-		$I->fillField('api_secret', $_ENV['CONVERTKIT_API_SECRET']);
-
-		// Click Connect button.
-		$I->click('Connect');
+		// Close the popup window.
+		$I->closeTab();
 
 		// Switch back to the main browser window.
 		$I->switchToWindow();
 
 		// Wait until the block changes to refreshing.
-		$I->waitForElementVisible('.' . $blockName . ' span.spinner', 5);
+		$I->waitForElementVisible('.' . $blockName . ' span.spinner', 30);
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh', 30);
 
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
@@ -888,7 +854,7 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args'            => [
-							'--headless=new',
+							'--headless',
 							'--disable-gpu',
 							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",
@@ -928,7 +894,7 @@ class KitPlugin extends \Codeception\Module
 				'capabilities' => [
 					'goog:chromeOptions' => [
 						'args' => [
-							'--headless=new',
+							'--headless',
 							'--disable-gpu',
 							'--disable-dev-shm-usage',
 							"--proxy-server='direct://'",

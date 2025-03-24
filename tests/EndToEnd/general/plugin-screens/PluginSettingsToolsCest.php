@@ -207,6 +207,7 @@ class PluginSettingsToolsCest
 		$I->click('input#convertkit-import');
 
 		// Confirm success message displays.
+		$I->waitForElementVisible('.notice-success');
 		$I->see('Configuration imported successfully.');
 
 		// Assert settings updated from imported configuration.
@@ -256,6 +257,7 @@ class PluginSettingsToolsCest
 		$I->click('input#convertkit-import');
 
 		// Confirm error message displays.
+		$I->waitForElementVisible('.notice-error');
 		$I->see('An error occured uploading the configuration file.');
 	}
 
@@ -286,6 +288,7 @@ class PluginSettingsToolsCest
 		$I->click('input#convertkit-import');
 
 		// Confirm error message displays.
+		$I->waitForElementVisible('.notice-error');
 		$I->see('The uploaded configuration file contains no settings.');
 	}
 
@@ -316,6 +319,7 @@ class PluginSettingsToolsCest
 		$I->waitForElementVisible('#wpfooter');
 
 		// Confirm error message displays.
+		$I->waitForElementVisible('.notice-error');
 		$I->see('The uploaded configuration file isn\'t valid.');
 	}
 
