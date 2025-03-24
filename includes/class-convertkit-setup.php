@@ -468,7 +468,8 @@ class ConvertKit_Setup {
 		$api    = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
 		$result = $api->get_access_token_by_api_key_and_secret(
 			$convertkit_settings->get_api_key(),
-			$convertkit_settings->get_api_secret()
+			$convertkit_settings->get_api_secret(),
+			get_site_url()
 		);
 
 		// Bail if an error occured.
