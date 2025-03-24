@@ -27,11 +27,8 @@ class CPTFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
-
-		// Create a non-public Custom Post Type called Private, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'private', 'Private', 'Private', false);
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -1032,8 +1029,7 @@ class CPTFormCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->unregisterCustomPostType($I, 'article');
-		$I->unregisterCustomPostType($I, 'private');
+		$I->unregisterCustomPostTypes($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

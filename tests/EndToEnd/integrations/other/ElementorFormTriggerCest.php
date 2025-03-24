@@ -41,7 +41,11 @@ class ElementorFormTriggerCest
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
 
-		// When Elementor loads, search for the Kit Form Trigger block.
+		// When Elementor loads, dismiss the browser incompatibility message.
+		$I->waitForElementVisible('#elementor-fatal-error-dialog');
+		$I->click('#elementor-fatal-error-dialog button.dialog-confirm-ok');
+
+		// Search for the Kit Form Trigger block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form Trigger');
 
