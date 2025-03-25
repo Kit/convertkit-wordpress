@@ -162,6 +162,7 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 ### 2.7.6 2025-03-25
 * Fix: Remove `load_plugin_textdomain` call, as it's not needed since WordPress 4.6
 * Fix: Issue client ID, site-specific v4 API Access and Refresh Token when upgrading from < 2.5.0
+* Fix: Member Content: Only automatically configure caching Plugins if Member Content is used on a Page, Post or Custom Post
 * Updated: Use WordPress Libraries 2.0.7
 
 ### 2.7.5 2025-03-07
