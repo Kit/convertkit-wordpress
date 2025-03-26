@@ -60,6 +60,7 @@ class NonInlineFormCest
 		$I->havePostInDatabase(
 			[
 				'post_title'  => 'Kit: Default Non Inline Global',
+				'post_name'   => 'kit-default-non-inline-global',
 				'post_type'   => 'page',
 				'post_status' => 'publish',
 			]
@@ -78,6 +79,18 @@ class NonInlineFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+
+		// View a search page.
+		$I->amOnPage('/?s=test');
+
+		// Confirm that no Kit Form is output in the DOM.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
+
+		// View a 404 page.
+		$I->amOnPage('/non-existent-page');
+
+		// Confirm that no Kit Form is output in the DOM.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**
@@ -106,6 +119,7 @@ class NonInlineFormCest
 		$I->havePostInDatabase(
 			[
 				'post_title'  => 'Kit: Default Non Inline Global Forms',
+				'post_name'   => 'kit-default-non-inline-global-forms',
 				'post_type'   => 'page',
 				'post_status' => 'publish',
 			]
@@ -124,6 +138,18 @@ class NonInlineFormCest
 		// Confirm that two Kit Forms are output in the DOM.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+
+		// View a search page.
+		$I->amOnPage('/?s=test');
+
+		// Confirm that no Kit Form is output in the DOM.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
+
+		// View a 404 page.
+		$I->amOnPage('/non-existent-page');
+
+		// Confirm that no Kit Form is output in the DOM.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
 	}
 
 	/**

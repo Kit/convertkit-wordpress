@@ -873,6 +873,11 @@ class ConvertKit_Output {
 	 */
 	public function output_scripts_footer() {
 
+		// Don't output scripts if the request is for a search page or 404.
+		if ( is_search() || is_404() ) {
+			return;
+		}
+
 		// Define array of scripts.
 		$scripts = array();
 
