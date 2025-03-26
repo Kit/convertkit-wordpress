@@ -11,7 +11,7 @@
 // This prevents JS errors if this script is accidentally enqueued on a non-
 // Gutenberg editor screen, or the Classic Editor Plugin is active.
 if ( typeof wp !== 'undefined' &&
-	typeof wp.blocks !== 'undefined' ) {
+	typeof wp.blockEditor !== 'undefined' ) {
 
 	// Register each ConvertKit formatter in Gutenberg.
 	for ( const formatter in convertkit_block_formatters ) {
