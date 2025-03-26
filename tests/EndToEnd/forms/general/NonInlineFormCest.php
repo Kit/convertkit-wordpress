@@ -678,6 +678,7 @@ class NonInlineFormCest
 		$I->havePostInDatabase(
 			[
 				'post_title'  => 'Kit: Default Non Inline Global Upgrade',
+				'post_name'   => 'kit-default-non-inline-global-upgrade',
 				'post_type'   => 'page',
 				'post_status' => 'publish',
 			]
