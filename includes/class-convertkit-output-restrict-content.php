@@ -349,9 +349,6 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! array_key_exists( 'subscriber_code', $_REQUEST ) ) {
 			return;
 		}
-		if ( ! array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
-			return;
-		}
 
 		// If a nonce was specified, validate it now.
 		// It won't be provided if clicking the link in the magic link email.
@@ -367,7 +364,6 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Store the token so it's included in the subscriber code form if verification fails.
-
 		$this->token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
 
 		// Store the post ID if this is an AJAX request.
