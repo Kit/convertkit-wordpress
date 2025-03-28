@@ -137,6 +137,21 @@ class ConvertKit_Output {
 			'output'
 		);
 
+		// If the subscriber ID is not numeric, it's a signed subscriber ID, set
+		// when using the Member Content functionality.
+		// Fetch the underlying subscriber ID for the tag_subscriber() method.
+		if ( ! is_numeric( $this->subscriber_id ) ) {
+			$result = $api->profile( $this->subscriber_id );
+
+			// If an error occured, the subscriber ID is invalid.
+			if ( is_wp_error( $result ) ) {
+				return;
+			}
+
+			// Set the subscriber ID.
+			$this->subscriber_id = $result['id'];
+		}
+
 		// Tag subscriber.
 		$api->tag_subscriber( $this->post_settings->get_tag(), $this->subscriber_id );
 
