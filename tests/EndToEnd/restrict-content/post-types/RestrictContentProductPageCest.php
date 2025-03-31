@@ -188,7 +188,7 @@ class RestrictContentProductPageCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
+	public function testRestrictContentByProductWithUncodeThemeAndVisualComposer(EndToEndTester $I)
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
