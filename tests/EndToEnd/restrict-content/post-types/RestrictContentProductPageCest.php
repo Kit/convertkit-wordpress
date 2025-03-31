@@ -180,6 +180,63 @@ class RestrictContentProductPageCest
 	}
 
 	/**
+	 * Test that restricting content by a Product specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page using the Uncode theme with and without
+	 * the Visual Composer Page Builder.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
+		// Activate Uncode theme and Plugins.
+		$I->useTheme('uncode');
+		$I->activateThirdPartyPlugin($I, 'uncode-core');
+		$I->activateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
+
+		// Programmatically create a Page using the Visual Composer Page Builder.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Restrict Content: Product: Uncode Theme with Visual Composer',
+
+				// Emulate Visual Composer content.
+				'post_content' => '[vc_row][vc_column width="1/1"][vc_column_text uncode_shortcode_id="998876"]Member-only content.[/vc_column_text][/vc_column][/vc_row]',
+
+				// Don't display a Form on this Page, so we test against Restrict Content's Form.
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+					'_wpb_vc_js_status'        => 'true',
+				],
+			]
+		);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend(
+			$I,
+			$pageID,
+			[
+				'visible_content' => '',
+				'member_content'  => 'Member-only content.',
+			]
+		);
+
+		// Deactivate Uncode theme and Plugins.
+		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
+		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
+		$I->useTheme('twentytwentyfive');
+	}
+
+	/**
 	 * Test that restricting content by a Product that does not exist does not output
 	 * a fatal error and instead displays all of the Page's content.
 	 *
@@ -399,6 +456,8 @@ class RestrictContentProductPageCest
 			$I->clearRestrictContentCookie($I);
 		}
 	}
+
+
 
 	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
