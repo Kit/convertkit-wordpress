@@ -40,7 +40,18 @@ class WP_ConvertKit {
 	 */
 	public function __construct() {
 
-		// Initialize class(es) to register hooks.
+		// Initialize Plugin classes on init, so the `_load_textdomain_just_in_time` warning isn't triggered.
+		add_action( 'init', array( $this, 'initialize' ), 1 );
+
+	}
+
+	/**
+	 * Initialize classes.
+	 *
+	 * @since   2.7.7
+	 */
+	public function initialize() {
+
 		$this->initialize_admin();
 		$this->initialize_admin_or_frontend_editor();
 		$this->initialize_cli_cron();
@@ -50,7 +61,7 @@ class WP_ConvertKit {
 	}
 
 	/**
-	 * Initialize classes for the WordPress Administration interface
+	 * Initialize classes for the WordPress Administration interface.
 	 *
 	 * @since   1.9.6
 	 */

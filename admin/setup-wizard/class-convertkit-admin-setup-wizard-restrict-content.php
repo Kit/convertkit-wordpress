@@ -129,6 +129,22 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 	 */
 	public function __construct() {
 
+		// Define details for each step in the setup process.
+		$this->steps = array(
+			1 => array(
+				'name' => __( 'Setup', 'convertkit' ),
+			),
+			2 => array(
+				'name'        => __( 'Configure', 'convertkit' ),
+				'next_button' => array(
+					'label' => __( 'Submit', 'convertkit' ),
+				),
+			),
+			3 => array(
+				'name' => __( 'Done', 'convertkit' ),
+			),
+		);
+
 		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-restrict-content-setup', array( $this, 'process_form' ) );
 		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-restrict-content-setup', array( $this, 'load_screen_data' ) );
 
@@ -208,22 +224,6 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 	 * @param   int $step   Current step.
 	 */
 	public function load_screen_data( $step ) {
-
-		// Define details for each step in the setup process.
-		$this->steps = array(
-			1 => array(
-				'name' => __( 'Setup', 'convertkit' ),
-			),
-			2 => array(
-				'name'        => __( 'Configure', 'convertkit' ),
-				'next_button' => array(
-					'label' => __( 'Submit', 'convertkit' ),
-				),
-			),
-			3 => array(
-				'name' => __( 'Done', 'convertkit' ),
-			),
-		);
 
 		// Show an error screen if API credentials have not been specified.
 		// This shouldn't happen, because the 'Add New Member Content' button is only displayed

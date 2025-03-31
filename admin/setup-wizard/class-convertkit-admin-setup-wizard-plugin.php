@@ -99,6 +99,26 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	 */
 	public function __construct() {
 
+		// Define details for each step in the setup process.
+		$this->steps = array(
+			1 => array(
+				'name'        => __( 'Connect', 'convertkit' ),
+				'next_button' => array(
+					'label' => __( 'Connect', 'convertkit' ),
+					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=2' ), get_site_url() ),
+				),
+			),
+			2 => array(
+				'name'        => __( 'Configuration', 'convertkit' ),
+				'next_button' => array(
+					'label' => __( 'Finish Setup', 'convertkit' ),
+				),
+			),
+			3 => array(
+				'name' => __( 'Done', 'convertkit' ),
+			),
+		);
+
 		// Setup API and settings classes.
 		$this->api      = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI, false, false, false, 'setup_wizard' );
 		$this->settings = new ConvertKit_Settings();
@@ -259,26 +279,6 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	 * @param   int $step   Current step.
 	 */
 	public function load_screen_data( $step ) {
-
-		// Define details for each step in the setup process.
-		$this->steps = array(
-			1 => array(
-				'name'        => __( 'Connect', 'convertkit' ),
-				'next_button' => array(
-					'label' => __( 'Connect', 'convertkit' ),
-					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=2' ), get_site_url() ),
-				),
-			),
-			2 => array(
-				'name'        => __( 'Configuration', 'convertkit' ),
-				'next_button' => array(
-					'label' => __( 'Finish Setup', 'convertkit' ),
-				),
-			),
-			3 => array(
-				'name' => __( 'Done', 'convertkit' ),
-			),
-		);
 
 		// If this wizard is being served in a modal window, change the flow.
 		if ( $this->is_modal() ) {
