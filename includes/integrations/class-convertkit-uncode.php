@@ -32,10 +32,8 @@ class ConvertKit_Uncode {
 	 * and the Page is using the Visual Composer Page Builder.
 	 *
 	 * @since   2.7.7
-	 *
-	 * @param   int $id  Page ID.
 	 */
-	public function maybe_register_restrict_content_filter( $id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+	public function maybe_register_restrict_content_filter() {
 
 		// Don't register a different filter if the Uncode theme is not active.
 		if ( ! function_exists( 'uncode_the_content' ) ) {

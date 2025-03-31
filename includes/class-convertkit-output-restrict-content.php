@@ -427,10 +427,8 @@ class ConvertKit_Output_Restrict_Content {
 		 * for Restrict Content functionality.
 		 *
 		 * @since   2.7.7
-		 *
-		 * @param   int $id    Current Page / Post ID.
 		 */
-		do_action( 'convertkit_restrict_content_register_content_filter', $id );
+		do_action( 'convertkit_restrict_content_register_content_filter' );
 
 	}
 
