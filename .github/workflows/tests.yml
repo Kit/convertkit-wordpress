@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        wp-versions: [ '6.8-beta3' ] #[ '6.1.1', 'latest' ]
+        wp-versions: [ '6.8-RC1' ] #[ '6.1.1', 'latest' ]
         php-versions: [ '8.1', '8.2', '8.3' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
