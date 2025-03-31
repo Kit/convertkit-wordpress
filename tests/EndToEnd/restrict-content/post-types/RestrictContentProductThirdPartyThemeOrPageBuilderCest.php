@@ -11,7 +11,7 @@ use Tests\Support\EndToEndTester;
  *
  * @since   2.7.7
  */
-class RestrictContentProductActionHookCest
+class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.

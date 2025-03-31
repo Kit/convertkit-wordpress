@@ -46,7 +46,7 @@ class ConvertKit_Uncode {
 		}
 
 		// Don't register a different filter if the Page is not using the Visual Composer Page Builder.
-		$the_content = uncode_get_the_content();
+		$the_content = uncode_get_the_content(); // @phpstan-ignore-line
 		if ( strpos( $the_content, '[vc_row' ) === false ) {
 			return;
 		}
