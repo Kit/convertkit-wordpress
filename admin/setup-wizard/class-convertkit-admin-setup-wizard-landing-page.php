@@ -84,19 +84,6 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 	 */
 	public function __construct() {
 
-		// Define details for each step in the setup process.
-		$this->steps = array(
-			1 => array(
-				'name'        => __( 'Setup', 'convertkit' ),
-				'next_button' => array(
-					'label' => __( 'Create', 'convertkit' ),
-				),
-			),
-			2 => array(
-				'name' => __( 'Done', 'convertkit' ),
-			),
-		);
-
 		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-landing-page-setup', array( $this, 'process_form' ) );
 		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-landing-page-setup', array( $this, 'load_screen_data' ) );
 
@@ -158,6 +145,19 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 	 * @param   int $step   Current step.
 	 */
 	public function load_screen_data( $step ) {
+
+		// Define details for each step in the setup process.
+		$this->steps = array(
+			1 => array(
+				'name'        => __( 'Setup', 'convertkit' ),
+				'next_button' => array(
+					'label' => __( 'Create', 'convertkit' ),
+				),
+			),
+			2 => array(
+				'name' => __( 'Done', 'convertkit' ),
+			),
+		);
 
 		// Show an error screen if API credentials have not been specified.
 		// This shouldn't happen, because the 'Add New Member Content' button is only displayed
