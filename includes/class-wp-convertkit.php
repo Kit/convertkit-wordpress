@@ -42,6 +42,7 @@ class WP_ConvertKit {
 
 		// Initialize Plugin classes on init, so the `_load_textdomain_just_in_time` warning isn't triggered.
 		add_action( 'init', array( $this, 'initialize' ), 1 );
+		add_action( 'init', array( $this, 'setup' ), 2 );
 
 	}
 
@@ -194,11 +195,6 @@ class WP_ConvertKit {
 		$this->classes['shortcodes']                          = new ConvertKit_Shortcodes();
 		$this->classes['widgets']                             = new ConvertKit_Widgets();
 
-		// Run the setup's update process on WordPress' init hook.
-		// Doing this sooner may result in errors with WordPress functions that are not yet
-		// available to the update routine.
-		add_action( 'init', array( $this, 'init' ) );
-
 		/**
 		 * Initialize integration classes for the frontend web site.
 		 *
@@ -215,7 +211,7 @@ class WP_ConvertKit {
 	 *
 	 * @since   1.9.7.4
 	 */
-	public function init() {
+	public function setup() {
 
 		$this->get_class( 'setup' )->initialize();
 		$this->get_class( 'setup' )->update();
