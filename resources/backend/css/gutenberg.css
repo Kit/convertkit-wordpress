@@ -12,8 +12,9 @@
 .wp-block .convertkit-no-content iframe {
 	max-width: 400px;
 }
-.wp-block .convertkit-no-content a {
+.wp-block .convertkit-no-content button.is-link {
 	display: block;
+	margin: 0 auto;
 	padding: calc(0.667em + 2px) calc(1.333em + 2px);
 }
 .wp-block .convertkit-no-content button.convertkit-block-refresh {
