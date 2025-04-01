@@ -222,11 +222,13 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentWhenEditingWithFrontendPageBuilder(EndToEndTester $I)
 	{
+		// Mark test as skipped.
+		$I->markTestSkipped('Beaver Builder throws a notice regarding translations due to incompatibility with WordPress 6.8. This test cannot reliably be run.');
+
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
 
 		// Activate Beaver Builder Lite, a frontend Page Builder.
-		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'beaver-builder-lite-version');
 
 		// Add a Page using the Gutenberg editor.
@@ -264,7 +266,6 @@ class RestrictContentProductPageCest
 
 		// Deactivate Beaver Builder Lite.
 		$I->deactivateThirdPartyPlugin($I, 'beaver-builder-lite-version');
-		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**

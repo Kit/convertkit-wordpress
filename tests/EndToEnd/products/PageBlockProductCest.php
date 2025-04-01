@@ -541,10 +541,7 @@ class PageBlockProductCest
 		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
-		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
-
-		// Wait for the refresh button to disappear, confirming that an API Key and resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+		$I->clickBlockRefreshButton($I);
 
 		// Confirm that the Product block displays instructions to the user on how to select a Product.
 		$I->seeBlockHasNoContentMessage($I, 'Select a Product using the Product option in the Gutenberg sidebar.');

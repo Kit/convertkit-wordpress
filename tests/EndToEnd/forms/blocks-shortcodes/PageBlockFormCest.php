@@ -556,10 +556,7 @@ class PageBlockFormCest
 		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
-		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
-
-		// Wait for the refresh button to disappear, confirming that an API Key and resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+		$I->clickBlockRefreshButton($I);
 
 		// Confirm that the Form block displays instructions to the user on how to select a Form.
 		$I->seeBlockHasNoContentMessage($I, 'Select a Form using the Form option in the Gutenberg sidebar.');
