@@ -853,6 +853,28 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to assert that a message is displayed in a Form block iframe sandbox preview.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $message     Message.
+	 */
+	public function seeFormBlockIFrameHasMessage($I, $message)
+	{
+		// Switch to iframe preview for the Form block.
+		$I->switchToGutenbergEditor($I);
+		$I->switchToIFrame('iframe[class="components-sandbox"]');
+
+		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
+		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
+		$I->see($message);
+
+		// Switch back to main window.
+		$I->switchToIFrame();
+	}
+
+	/**
 	 * Check that the given Page does output the Creator Network Recommendations
 	 * script.
 	 *

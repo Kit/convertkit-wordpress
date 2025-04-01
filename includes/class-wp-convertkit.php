@@ -40,6 +40,9 @@ class WP_ConvertKit {
 	 */
 	public function __construct() {
 
+		// Initialize classes that have hooked prior to the `init` hook.
+		$this->classes['widgets'] = new ConvertKit_Widgets();
+
 		// Initialize Plugin classes on init, so the `_load_textdomain_just_in_time` warning isn't triggered.
 		add_action( 'init', array( $this, 'initialize' ), 1 );
 		add_action( 'init', array( $this, 'setup' ), 2 );
@@ -193,8 +196,7 @@ class WP_ConvertKit {
 		$this->classes['preview_output']                      = new ConvertKit_Preview_Output();
 		$this->classes['setup']                               = new ConvertKit_Setup();
 		$this->classes['shortcodes']                          = new ConvertKit_Shortcodes();
-		$this->classes['widgets']                             = new ConvertKit_Widgets();
-
+		
 		/**
 		 * Initialize integration classes for the frontend web site.
 		 *

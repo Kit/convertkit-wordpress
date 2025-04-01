@@ -193,15 +193,9 @@ class WidgetFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Modal form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'] . '" selected. View on the frontend site to see the modal form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Modal form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'] . '" selected. View on the frontend site to see the modal form.');
 
 		// Confirm that the widget displays.
 		$I->seeBlockWidget($I, 'form[data-sv-form]');
@@ -227,15 +221,9 @@ class WidgetFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Slide in form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME_ONLY'] . '" selected. View on the frontend site to see the slide in form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Slide in form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME_ONLY'] . '" selected. View on the frontend site to see the slide in form.');
 
 		// Confirm that the widget displays.
 		$I->seeBlockWidget($I, 'form[data-sv-form]');
@@ -261,15 +249,9 @@ class WidgetFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Sticky bar form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'] . '" selected. View on the frontend site to see the sticky bar form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Sticky bar form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'] . '" selected. View on the frontend site to see the sticky bar form.');
 
 		// Confirm that the widget displays.
 		$I->seeBlockWidget($I, 'form[data-sv-form]');

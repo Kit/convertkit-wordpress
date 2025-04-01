@@ -153,15 +153,9 @@ class PageBlockFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Modal form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'] . '" selected. View on the frontend site to see the modal form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Modal form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'] . '" selected. View on the frontend site to see the modal form.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -207,15 +201,9 @@ class PageBlockFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Modal form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'] . '" selected. View on the frontend site to see the modal form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Modal form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'] . '" selected. View on the frontend site to see the modal form.');
 
 		// Add the block a second time for the same form, so we can test that only one script / form is output.
 		$I->addGutenbergBlock(
@@ -271,15 +259,9 @@ class PageBlockFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Slide in form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME_ONLY'] . '" selected. View on the frontend site to see the slide in form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Slide in form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME_ONLY'] . '" selected. View on the frontend site to see the slide in form.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -325,15 +307,9 @@ class PageBlockFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Slide in form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME_ONLY'] . '" selected. View on the frontend site to see the slide in form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Slide in form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME_ONLY'] . '" selected. View on the frontend site to see the slide in form.');
 
 		// Add the block a second time for the same form, so we can test that only one script / form is output.
 		$I->addGutenbergBlock(
@@ -389,15 +365,9 @@ class PageBlockFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Sticky bar form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'] . '" selected. View on the frontend site to see the sticky bar form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Sticky bar form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'] . '" selected. View on the frontend site to see the sticky bar form.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -443,15 +413,9 @@ class PageBlockFormCest
 			]
 		);
 
-		// Switch to iframe preview for the Form block.
-		$I->switchToIFrame('iframe[class="components-sandbox"]');
-
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see('Sticky bar form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'] . '" selected. View on the frontend site to see the sticky bar form.');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeFormBlockIFrameHasMessage($I, 'Sticky bar form "' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'] . '" selected. View on the frontend site to see the sticky bar form.');
 
 		// Add the block a second time for the same form, so we can test that only one script / form is output.
 		$I->addGutenbergBlock(
@@ -906,6 +870,7 @@ class PageBlockFormCest
 		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
 
 		// Configure WP Rocket.
@@ -948,6 +913,7 @@ class PageBlockFormCest
 
 		// Deactivate WP Rocket Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
@@ -965,6 +931,7 @@ class PageBlockFormCest
 		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
 
 		// Configure WP Rocket.
@@ -1007,6 +974,7 @@ class PageBlockFormCest
 
 		// Deactivate WP Rocket Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
