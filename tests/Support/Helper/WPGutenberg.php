@@ -10,6 +10,32 @@ namespace Tests\Support\Helper;
 class WPGutenberg extends \Codeception\Module
 {
 	/**
+	 * Helper method to switch to the Gutenberg editor iFrame
+	 * from WordPress 6.8+.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I  EndToEnd Tester.
+	 */
+	public function switchToGutenbergEditor($I)
+	{
+		$I->switchToIFrame('iframe[name="editor-canvas"]');
+	}
+
+	/**
+	 * Helper method to switch back to the main browser window
+	 * from WordPress 6.8+.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I  EndToEnd Tester.
+	 */
+	public function switchToMainBrowserWindow($I)
+	{
+		$I->switchToIFrame();
+	}
+
+	/**
 	 * Add a Page, Post or Custom Post Type using Gutenberg in WordPress.
 	 *
 	 * @since   1.9.7.5
@@ -22,9 +48,12 @@ class WPGutenberg extends \Codeception\Module
 	{
 		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
+		$I->waitForElementVisible('body.post-new-php');
 
 		// Define the Title.
+		$this->switchToGutenbergEditor($I);
 		$I->fillField('.editor-post-title__input', $title);
+		$this->switchToMainBrowserWindow($I);
 	}
 
 	/**
@@ -110,8 +139,10 @@ class WPGutenberg extends \Codeception\Module
 	public function addGutenbergParagraphBlock($I, $text)
 	{
 		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph');
+		$this->switchToGutenbergEditor($I);
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
+		$this->switchToMainBrowserWindow($I);
 	}
 
 	/**
@@ -127,14 +158,18 @@ class WPGutenberg extends \Codeception\Module
 	{
 		// Focus away from paragraph and then back to the paragraph, so that the block toolbar displays.
 		$I->click('div.edit-post-visual-editor__post-title-wrapper h1');
+		
+		$this->switchToGutenbergEditor($I);
+
 		$I->click('.wp-block-post-content p');
 		$I->waitForElementVisible('.wp-block-post-content p.is-selected');
-
 		// Insert link via block toolbar.
 		$this->insertGutenbergLink($I, $name);
 
 		// Confirm that the Product text exists in the paragraph.
 		$I->see($name, '.wp-block-post-content p.is-selected');
+
+		$this->switchToMainBrowserWindow($I);
 	}
 
 	/**

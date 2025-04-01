@@ -77,6 +77,8 @@ class PageBlockBroadcastsCest
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
 
+		$I->switchToGutenbergEditor($I);
+
 		// Confirm that the Broadcasts block displays instructions to the user on how to add a Broadcast in Kit.
 		$I->see(
 			'No broadcasts exist in Kit.',

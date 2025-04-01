@@ -727,6 +727,9 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false)
 	{
+		// Switch to the Block editor iFrame.
+		$I->switchToIFrame('iframe[name="editor-canvas"]');
+
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
 		$I->see(
 			'Not connected to Kit.',
@@ -755,11 +758,11 @@ class KitPlugin extends \Codeception\Module
 		// Close the popup window.
 		$I->closeTab();
 
-		// Switch back to the main browser window.
-		$I->switchToWindow();
+		// Switch to the Block editor iFrame.
+		$I->switchToIFrame('iframe[name="editor-canvas"]');
 
 		// Wait until the block changes to refreshing.
-		$I->waitForElementVisible('.' . $blockName . ' span.spinner', 30);
+		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
@@ -774,6 +777,9 @@ class KitPlugin extends \Codeception\Module
 				]
 			);
 		}
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
