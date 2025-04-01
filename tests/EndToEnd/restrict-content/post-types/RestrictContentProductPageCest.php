@@ -226,6 +226,7 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Activate Beaver Builder Lite, a frontend Page Builder.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'beaver-builder-lite-version');
 
 		// Add a Page using the Gutenberg editor.
@@ -263,6 +264,7 @@ class RestrictContentProductPageCest
 
 		// Deactivate Beaver Builder Lite.
 		$I->deactivateThirdPartyPlugin($I, 'beaver-builder-lite-version');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**

@@ -98,7 +98,10 @@ class DiviBuilder extends \Codeception\Module
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Click Divi Builder button.
+		// Switch to the Gutenberg editor.
+		$I->switchToGutenbergEditor($I);
+
+		// Click Divi Builder button inside the Gutenberg editor.
 		$I->click('Use Divi Builder');
 
 		// Reload page to dismiss modal.

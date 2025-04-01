@@ -512,15 +512,6 @@ class PageBlockProductCest
 		// Click the link to confirm it loads Kit.
 		$I->clickLinkInBlockAndAssertKitLoginScreen($I, 'Click here to create your first product.');
 
-		// Switch to next browser tab, as the link opens in a new tab.
-		$I->switchToNextTab();
-
-		// Confirm the Kit login screen loaded.
-		$I->waitForElementVisible('input[name="user[email]"]');
-
-		// Close tab.
-		$I->closeTab();
-
 		// Save page to avoid alert box when _passed() runs to deactivate the Plugin.
 		$I->publishGutenbergPage($I);
 	}
