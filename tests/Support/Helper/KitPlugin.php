@@ -731,7 +731,7 @@ class KitPlugin extends \Codeception\Module
 		$I->seeBlockHasNoContentMessage($I, 'Not connected to Kit.');
 
 		// Switch to the Block editor iFrame.
-		$I->switchToIFrame('iframe[name="editor-canvas"]');
+		$I->switchToGutenbergEditor($I);
 
 		// Click the link to confirm it loads the Plugin's setup wizard.
 		$I->click(
@@ -754,7 +754,7 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Switch to the Block editor iFrame.
-		$I->switchToIFrame('iframe[name="editor-canvas"]');
+		$I->switchToGutenbergEditor($I);
 
 		// Wait until the block changes to refreshing.
 		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
@@ -763,13 +763,13 @@ class KitPlugin extends \Codeception\Module
 		// and that resources now exist.
 		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh', 30);
 
+		// Switch back to main window.
+		$I->switchToMainBrowserWindow($I);
+
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
 			$I->seeBlockHasNoContentMessage($I, $expectedMessage);
 		}
-
-		// Switch back to main window.
-		$I->switchToIFrame();
 	}
 
 	/**
@@ -782,7 +782,7 @@ class KitPlugin extends \Codeception\Module
 	public function clickBlockRefreshButton($I)
 	{
 		// Switch to the Block editor iFrame.
-		$I->switchToIFrame('iframe[name="editor-canvas"]');
+		$I->switchToGutenbergEditor($I);
 
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
@@ -791,7 +791,7 @@ class KitPlugin extends \Codeception\Module
 		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->switchToMainBrowserWindow($I);
 	}
 
 	/**
@@ -805,7 +805,7 @@ class KitPlugin extends \Codeception\Module
 	public function seeBlockHasNoContentMessage($I, $message)
 	{
 		// Switch to the Block editor iFrame.
-		$I->switchToIFrame('iframe[name="editor-canvas"]');
+		$I->switchToGutenbergEditor($I);
 
 		$I->see(
 			$message,
@@ -830,7 +830,7 @@ class KitPlugin extends \Codeception\Module
 	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
 	{
 		// Switch to the Block editor iFrame.
-		$I->switchToIFrame('iframe[name="editor-canvas"]');
+		$I->switchToGutenbergEditor($I);
 
 		$I->click(
 			$linkText,
@@ -849,7 +849,7 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->switchToMainBrowserWindow($I);
 	}
 
 	/**
@@ -871,7 +871,7 @@ class KitPlugin extends \Codeception\Module
 		$I->see($message);
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->switchToMainBrowserWindow($I);
 	}
 
 	/**

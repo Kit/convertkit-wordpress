@@ -196,7 +196,7 @@ class WP_ConvertKit {
 		$this->classes['preview_output']                      = new ConvertKit_Preview_Output();
 		$this->classes['setup']                               = new ConvertKit_Setup();
 		$this->classes['shortcodes']                          = new ConvertKit_Shortcodes();
-		
+
 		/**
 		 * Initialize integration classes for the frontend web site.
 		 *
