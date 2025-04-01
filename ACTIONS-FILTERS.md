@@ -1025,7 +1025,7 @@ add_filter( 'convertkit_wishlist_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_type">
 						convertkit_output_restrict_content_get_resource_type
-						<code>includes/class-convertkit-output-restrict-content.php::777</code>
+						<code>includes/class-convertkit-output-restrict-content.php::802</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource Type that the visitor must be subscribed against to access this content, overriding the Post setting. Return false or an empty string to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1056,7 +1056,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_type', function( $r
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_id">
 						convertkit_output_restrict_content_get_resource_id
-						<code>includes/class-convertkit-output-restrict-content.php::815</code>
+						<code>includes/class-convertkit-output-restrict-content.php::840</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource ID that the visitor must be subscribed against to access this content, overriding the Post setting. Return 0 to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1087,7 +1087,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_id', function( $res
 </pre>
 <h3 id="convertkit_output_restrict_content_content_preview">
 						convertkit_output_restrict_content_content_preview
-						<code>includes/class-convertkit-output-restrict-content.php::1117</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1142</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1118,7 +1118,7 @@ add_filter( 'convertkit_output_restrict_content_content_preview', function( $con
 </pre>
 <h3 id="convertkit_output_restrict_content_call_to_action">
 						convertkit_output_restrict_content_call_to_action
-						<code>includes/class-convertkit-output-restrict-content.php::1131</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1156</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1149,7 +1149,7 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 </pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::1546</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1571</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
@@ -1176,7 +1176,7 @@ add_filter( 'convertkit_output_restrict_content_is_crawler_permitted_user_agent_
 </pre>
 <h3 id="convertkit_output_page_takeover_landing_page_id">
 						convertkit_output_page_takeover_landing_page_id
-						<code>includes/class-convertkit-output.php::205</code>
+						<code>includes/class-convertkit-output.php::220</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Landing Page ID to display for the given Post ID, overriding the Post settings. Return false to not display any ConvertKit Landing Page.</p><h4>Parameters</h4>
 					<table>
@@ -1207,7 +1207,7 @@ add_filter( 'convertkit_output_page_takeover_landing_page_id', function( $landin
 </pre>
 <h3 id="convertkit_output_append_form_to_content_form_id">
 						convertkit_output_append_form_to_content_form_id
-						<code>includes/class-convertkit-output.php::285</code>
+						<code>includes/class-convertkit-output.php::300</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Form ID to display for the given Post ID, overriding the Post, Category or Plugin settings. Return false to not display any ConvertKit Form.</p><h4>Parameters</h4>
 					<table>
@@ -1238,7 +1238,7 @@ add_filter( 'convertkit_output_append_form_to_content_form_id', function( $form_
 </pre>
 <h3 id="convertkit_frontend_append_form">
 						convertkit_frontend_append_form
-						<code>includes/class-convertkit-output.php::396</code>
+						<code>includes/class-convertkit-output.php::411</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the Post's Content, which includes a ConvertKit Form, immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1281,7 +1281,7 @@ add_filter( 'convertkit_frontend_append_form', function( $content, $form, $post_
 </pre>
 <h3 id="convertkit_output_scripts_footer">
 						convertkit_output_scripts_footer
-						<code>includes/class-convertkit-output.php::885</code>
+						<code>includes/class-convertkit-output.php::905</code>
 					</h3><h4>Overview</h4>
 						<p>Define an array of scripts to output in the footer of the WordPress site.</p><h4>Parameters</h4>
 					<table>
@@ -1308,7 +1308,7 @@ add_filter( 'convertkit_output_scripts_footer', function( $scripts ) {
 </pre>
 <h3 id="convertkit_output_script_footer">
 						convertkit_output_script_footer
-						<code>includes/class-convertkit-output.php::904</code>
+						<code>includes/class-convertkit-output.php::924</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the form <script> key/value pairs immediately before the script is output.</p><h4>Parameters</h4>
 					<table>
@@ -1620,6 +1620,12 @@ add_filter( 'convertkit_broadcasts_parse_broadcast_content_permitted_html_tags',
 					</tr><tr>
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_gutenberg_enqueue_styles_editor_and_frontend"><code>convertkit_gutenberg_enqueue_styles_editor_and_frontend</code></a></td>
+						<td></td>
+					</tr><tr>
+						<td colspan="3">../includes/class-convertkit-output-restrict-content.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_restrict_content_register_content_filter"><code>convertkit_restrict_content_register_content_filter</code></a></td>
 						<td></td>
 					</tr><tr>
 						<td colspan="3">../includes/class-convertkit-output.php</td>
@@ -2097,9 +2103,29 @@ do_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', function( 
 	// ... your code here
 }, 10, 0 );
 </pre>
+<h3 id="convertkit_restrict_content_register_content_filter">
+						convertkit_restrict_content_register_content_filter
+						<code>includes/class-convertkit-output-restrict-content.php::430</code>
+					</h3><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+do_action( 'convertkit_restrict_content_register_content_filter', function(  ) {
+	// ... your code here
+}, 10, 0 );
+</pre>
 <h3 id="convertkit_output_output_form">
 						convertkit_output_output_form
-						<code>includes/class-convertkit-output.php::160</code>
+						<code>includes/class-convertkit-output.php::175</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2119,7 +2145,7 @@ do_action( 'convertkit_output_output_form', function(  ) {
 </pre>
 <h3 id="convertkit_output_landing_page_before">
 						convertkit_output_landing_page_before
-						<code>includes/class-convertkit-output.php::241</code>
+						<code>includes/class-convertkit-output.php::256</code>
 					</h3><h4>Overview</h4>
 						<p>Perform any actions immediately prior to outputting the Landing Page. Caching and minification Plugins may need to hook here to prevent CSS / JS minification and lazy loading images, which can interfere with Landing Pages.</p><h4>Parameters</h4>
 					<table>
