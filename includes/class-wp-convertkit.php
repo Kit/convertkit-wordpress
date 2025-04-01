@@ -40,7 +40,7 @@ class WP_ConvertKit {
 	 */
 	public function __construct() {
 
-		// Initialize classes that have hooked prior to the `init` hook.
+		// Initialize classes that have hooks prior to the `init` hook.
 		$this->classes['widgets'] = new ConvertKit_Widgets();
 
 		// Initialize Plugin classes on init, so the `_load_textdomain_just_in_time` warning isn't triggered.
@@ -65,7 +65,7 @@ class WP_ConvertKit {
 	}
 
 	/**
-	 * Initialize classes for the WordPress Administration interface.
+	 * Initialize classes for the WordPress Administration interface
 	 *
 	 * @since   1.9.6
 	 */
