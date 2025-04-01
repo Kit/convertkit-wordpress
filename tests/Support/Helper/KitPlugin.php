@@ -926,6 +926,9 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function selectAllText($I, $selector)
 	{
+		// Switch to the Gutenberg editor.
+		$I->switchToGutenbergEditor($I);
+
 		// Determine whether to use the control or command key, depending on the OS.
 		$key = \Facebook\WebDriver\WebDriverKeys::CONTROL;
 
@@ -936,6 +939,9 @@ class KitPlugin extends \Codeception\Module
 
 		// Press Ctrl/Command + a on Keyboard.
 		$I->pressKey($selector, array( $key, 'a' ));
+
+		// Switch back to main window.
+		$I->switchToMainBrowserWindow($I);
 	}
 
 	/**

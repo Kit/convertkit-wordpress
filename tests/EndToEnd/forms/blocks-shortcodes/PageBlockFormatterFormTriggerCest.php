@@ -48,13 +48,7 @@ class PageBlockFormatterFormTriggerCest
 			]
 		);
 
-		// Add paragraph to Page.
-		$I->addGutenbergParagraphBlock($I, 'Subscribe');
-
-		// Select text.
-		$I->selectAllText($I, '.wp-block-post-content p[data-empty="false"]');
-
-		// Apply formatter to link the selected text.
+		// Select text and apply formatter to link the selected text.
 		$I->applyGutenbergFormatter(
 			$I,
 			'Kit Form Trigger',
@@ -105,10 +99,7 @@ class PageBlockFormatterFormTriggerCest
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Subscribe');
 
-		// Select text.
-		$I->selectAllText($I, '.wp-block-post-content p[data-empty="false"]');
-
-		// Apply formatter to link the selected text.
+		// Select text and apply formatter to link the selected text.
 		$I->applyGutenbergFormatter(
 			$I,
 			'Kit Form Trigger',
@@ -119,7 +110,7 @@ class PageBlockFormatterFormTriggerCest
 			]
 		);
 
-		// Apply the formatter again, this time selecting the 'None' option.
+		// Select text and apply the formatter again, this time selecting the 'None' option.
 		$I->applyGutenbergFormatter(
 			$I,
 			'Kit Form Trigger',
@@ -165,10 +156,7 @@ class PageBlockFormatterFormTriggerCest
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Subscribe');
 
-		// Select text.
-		$I->selectAllText($I, '.wp-block-post-content p[data-empty="false"]');
-
-		// Apply formatter to link the selected text.
+		// Select text and apply formatter to link the selected text.
 		$I->applyGutenbergFormatter(
 			$I,
 			'Kit Form Trigger',
