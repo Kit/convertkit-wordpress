@@ -50,9 +50,13 @@ class WPGutenberg extends \Codeception\Module
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 		$I->waitForElementVisible('body.post-new-php');
 
-		// Define the Title.
+		// Switch to the iFrame for the Gutenberg editor.
 		$this->switchToGutenbergEditor($I);
+
+		// Define the Title.
 		$I->fillField('.editor-post-title__input', $title);
+
+		// Switch back to the main browser window.
 		$this->switchToMainBrowserWindow($I);
 	}
 
@@ -139,9 +143,14 @@ class WPGutenberg extends \Codeception\Module
 	public function addGutenbergParagraphBlock($I, $text)
 	{
 		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph');
+
+		// Switch to the iFrame for the Gutenberg editor.
 		$this->switchToGutenbergEditor($I);
+
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
+
+		// Switch back to the main browser window.
 		$this->switchToMainBrowserWindow($I);
 	}
 
@@ -158,7 +167,8 @@ class WPGutenberg extends \Codeception\Module
 	{
 		// Focus away from paragraph and then back to the paragraph, so that the block toolbar displays.
 		$I->click('div.edit-post-visual-editor__post-title-wrapper h1');
-		
+
+		// Switch to the iFrame for the Gutenberg editor.
 		$this->switchToGutenbergEditor($I);
 
 		$I->click('.wp-block-post-content p');
@@ -169,6 +179,7 @@ class WPGutenberg extends \Codeception\Module
 		// Confirm that the Product text exists in the paragraph.
 		$I->see($name, '.wp-block-post-content p.is-selected');
 
+		// Switch back to the main browser window.
 		$this->switchToMainBrowserWindow($I);
 	}
 

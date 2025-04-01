@@ -500,12 +500,7 @@ class PageBlockFormCest
 		$I->addGutenbergBlock($I, 'Kit Form', 'convertkit-form');
 
 		// Confirm that the Form block displays instructions to the user on how to select a Form.
-		$I->see(
-			'Select a Form using the Form option in the Gutenberg sidebar.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'Select a Form using the Form option in the Gutenberg sidebar.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -563,20 +558,10 @@ class PageBlockFormCest
 		$I->addGutenbergBlock($I, 'Kit Form', 'convertkit-form');
 
 		// Confirm that the Form block displays instructions to the user on how to add a Form in Kit.
-		$I->see(
-			'No forms exist in Kit.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'No forms exist in Kit.');
 
 		// Click the link to confirm it loads Kit.
-		$I->click(
-			'Click here to create your first form.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->clickLinkInBlockAndAssertKitLoginScreen($I, 'Click here to create your first form.');
 
 		// Switch to next browser tab, as the link opens in a new tab.
 		$I->switchToNextTab();
@@ -622,12 +607,7 @@ class PageBlockFormCest
 		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
 
 		// Confirm that the Form block displays instructions to the user on how to select a Form.
-		$I->see(
-			'Select a Form using the Form option in the Gutenberg sidebar.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'Select a Form using the Form option in the Gutenberg sidebar.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
