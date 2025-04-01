@@ -400,6 +400,8 @@ class RestrictContentProductPageCest
 		}
 	}
 
+
+
 	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
