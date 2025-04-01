@@ -137,8 +137,8 @@ class ConvertKit_Output {
 			'output'
 		);
 
-		// If the subscriber ID is not numeric, it's a signed subscriber ID, set
-		// when using the Member Content functionality.
+		// If the subscriber ID is not numeric, it's a cryptographically-signed subscriber ID, set
+		// when using the Member Content functionality by Kit's API.
 		// Fetch the underlying subscriber ID for the tag_subscriber() method.
 		if ( ! is_numeric( $this->subscriber_id ) ) {
 			$result = $api->profile( $this->subscriber_id );
