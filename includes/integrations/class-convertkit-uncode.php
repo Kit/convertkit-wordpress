@@ -51,7 +51,7 @@ class ConvertKit_Uncode {
 
 		// If here, the Page is using the Visual Composer Page Builder, so we need to use a different content filter
 		// to correctly restrict content.
-		add_filter( 'uncode_the_content', array( WP_ConvertKit()->get_class( 'output_restrict_content' ), 'maybe_restrict_content' ) );
+		add_filter( 'uncode_single_content_final_output', array( WP_ConvertKit()->get_class( 'output_restrict_content' ), 'maybe_restrict_content' ) );
 		remove_filter( 'the_content', array( WP_ConvertKit()->get_class( 'output_restrict_content' ), 'maybe_restrict_content' ) );
 
 	}
