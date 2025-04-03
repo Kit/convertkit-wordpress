@@ -10,8 +10,12 @@ namespace Tests\Support\Helper;
 class WPGutenberg extends \Codeception\Module
 {
 	/**
-	 * Helper method to switch to the Gutenberg editor iFrame
-	 * from WordPress 6.8+.
+	 * Helper method to switch to the Gutenberg editor Iframe.
+	 * Use this method if all blocks use the Block API v3,
+	 * as this means Gutenberg will be served in an Iframe.
+	 * At present, we use v2 to provide backwards compatibility
+	 * down to WordPress 5.6:
+	 * https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
 	 *
 	 * @since   2.7.7
 	 *
@@ -20,19 +24,6 @@ class WPGutenberg extends \Codeception\Module
 	public function switchToGutenbergEditor($I)
 	{
 		$I->switchToIFrame('iframe[name="editor-canvas"]');
-	}
-
-	/**
-	 * Helper method to switch back to the main browser window
-	 * from WordPress 6.8+.
-	 *
-	 * @since   2.7.7
-	 *
-	 * @param   EndToEndTester $I  EndToEnd Tester.
-	 */
-	public function switchToMainBrowserWindow($I)
-	{
-		$I->switchToIFrame();
 	}
 
 	/**
@@ -50,14 +41,8 @@ class WPGutenberg extends \Codeception\Module
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 		$I->waitForElementVisible('body.post-new-php');
 
-		// Switch to the iFrame for the Gutenberg editor.
-		$this->switchToGutenbergEditor($I);
-
 		// Define the Title.
 		$I->fillField('.editor-post-title__input', $title);
-
-		// Switch back to the main browser window.
-		$this->switchToMainBrowserWindow($I);
 	}
 
 	/**
@@ -144,14 +129,8 @@ class WPGutenberg extends \Codeception\Module
 	{
 		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph');
 
-		// Switch to the iFrame for the Gutenberg editor.
-		$this->switchToGutenbergEditor($I);
-
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
-
-		// Switch back to the main browser window.
-		$this->switchToMainBrowserWindow($I);
 	}
 
 	/**
@@ -168,9 +147,6 @@ class WPGutenberg extends \Codeception\Module
 		// Focus away from paragraph and then back to the paragraph, so that the block toolbar displays.
 		$I->click('div.edit-post-visual-editor__post-title-wrapper h1');
 
-		// Switch to the iFrame for the Gutenberg editor.
-		$this->switchToGutenbergEditor($I);
-
 		$I->click('.wp-block-post-content p');
 		$I->waitForElementVisible('.wp-block-post-content p.is-selected');
 		// Insert link via block toolbar.
@@ -178,9 +154,6 @@ class WPGutenberg extends \Codeception\Module
 
 		// Confirm that the Product text exists in the paragraph.
 		$I->see($name, '.wp-block-post-content p.is-selected');
-
-		// Switch back to the main browser window.
-		$this->switchToMainBrowserWindow($I);
 	}
 
 	/**
