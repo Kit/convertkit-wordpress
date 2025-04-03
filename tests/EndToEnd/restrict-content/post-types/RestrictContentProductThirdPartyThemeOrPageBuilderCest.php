@@ -41,6 +41,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Activate Uncode theme and Plugins.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->useTheme('uncode');
 		$I->activateThirdPartyPlugin($I, 'uncode-core');
 		$I->activateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
@@ -81,6 +82,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
 		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
 		$I->useTheme('twentytwentyfive');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
