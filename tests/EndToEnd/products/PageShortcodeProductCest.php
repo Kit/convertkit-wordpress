@@ -448,10 +448,8 @@ class PageShortcodeProductCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testProductShortcodeWhenNoAPIKey(EndToEndTester $I)
+	public function testProductShortcodeWhenNoCredentials(EndToEndTester $I)
 	{
-		$I->markTestIncomplete();
-
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: No API Key');
 

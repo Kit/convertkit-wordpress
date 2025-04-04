@@ -119,7 +119,7 @@ class UpgradePathsCest
 		$I->haveOptionInDatabase('convertkit_version', '2.4.0');
 
 		// Activate the Plugin, as if we just upgraded to 2.5.0 or higher.
-		$I->activateKitPlugin($I);
+		$I->activateKitPlugin($I, false);
 
 		// Confirm the options table now contains an Access Token and Refresh Token.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');

@@ -24,9 +24,6 @@ class SubscriberEmailToIDOnFormSubmitCest
 		$I->activateKitPlugin($I);
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
-
-		// Clear Log, so that entries from previous tests aren't included in this test.
-		$I->clearDebugLog($I);
 	}
 
 	/**
@@ -49,11 +46,13 @@ class SubscriberEmailToIDOnFormSubmitCest
 
 		// Load the Page on the frontend site.
 		$I->amOnPage('/kit-subscriber-email-to-id-no-email');
+		$I->waitForElementVisible('body.page');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Submit Form.
+		$I->waitForElementVisible('.formkit-submit');
 		$I->click('.formkit-submit');
 
 		// Wait for JS to complete.
@@ -84,6 +83,7 @@ class SubscriberEmailToIDOnFormSubmitCest
 
 		// Load the Page on the frontend site.
 		$I->amOnPage('/kit-subscriber-email-to-id-invalid-email');
+		$I->waitForElementVisible('body.page');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -92,6 +92,7 @@ class SubscriberEmailToIDOnFormSubmitCest
 		$emailAddress = 'invalid-email';
 
 		// Submit Form.
+		$I->waitForElementVisible('input[name="email_address"]');
 		$I->fillField('email_address', $emailAddress);
 		$I->click('.formkit-submit');
 
@@ -123,6 +124,7 @@ class SubscriberEmailToIDOnFormSubmitCest
 
 		// Load the Page on the frontend site.
 		$I->amOnPage('/kit-subscriber-email-to-id-valid-email');
+		$I->waitForElementVisible('body.page');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -131,6 +133,7 @@ class SubscriberEmailToIDOnFormSubmitCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit Form.
+		$I->waitForElementVisible('input[name="email_address"]');
 		$I->fillField('email_address', $emailAddress);
 		$I->click('.formkit-submit');
 

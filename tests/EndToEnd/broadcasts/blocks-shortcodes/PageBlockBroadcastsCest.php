@@ -32,18 +32,16 @@ class PageBlockBroadcastsCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testBroadcastsBlockWhenNoAPIKey(EndToEndTester $I)
+	public function testBroadcastsBlockWhenNoCredentials(EndToEndTester $I)
 	{
-		$I->markTestIncomplete();
-
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Block: No API Key');
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Block: No Credentials');
 
 		// Add block to Page.
 		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
 
 		// Test that the popup window works.
-		$I->testBlockNoAPIKeyPopupWindow(
+		$I->testBlockNoCredentialsPopupWindow(
 			$I,
 			'convertkit-broadcasts'
 		);

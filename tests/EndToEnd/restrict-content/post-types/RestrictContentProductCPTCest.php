@@ -23,11 +23,8 @@ class RestrictContentProductCPTCest
 		// Activate Kit plugin.
 		$I->activateKitPlugin($I);
 
-		// Create a public Custom Post Type called Articles, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'article', 'Articles', 'Article');
-
-		// Create a non-public Custom Post Type called Private, using the Custom Post Type UI Plugin.
-		$I->registerCustomPostType($I, 'private', 'Private', 'Private', false);
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -104,6 +101,46 @@ class RestrictContentProductCPTCest
 			'wp-convertkit-meta-box',
 			[
 				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Article.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend($I, $url);
+	}
+
+	/**
+	 * Test that restricting content by a Product specified in the CPT Settings works when
+	 * creating and viewing a new WordPress Page, and the "Add a Tag" CPT setting does
+	 * not result in a critical error due to the use of a signed subscriber ID.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByProductWithAddTag(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
+		// Add a CPT using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product');
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'tag'              => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
@@ -337,8 +374,7 @@ class RestrictContentProductCPTCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->unregisterCustomPostType($I, 'article');
-		$I->unregisterCustomPostType($I, 'private');
+		$I->unregisterCustomPostTypes($I);
 		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);

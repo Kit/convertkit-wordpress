@@ -548,6 +548,7 @@ class PageShortcodeFormCest
 		$I->setupKitPluginResources($I);
 
 		// Activate Jetpack Boost Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'jetpack-boost');
 
 		// Enable Jetpack Boost's "Defer Non-Essential JavaScript" setting.
@@ -586,6 +587,7 @@ class PageShortcodeFormCest
 
 		// Deactivate Jetpack Boost Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'jetpack-boost');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
@@ -607,9 +609,7 @@ class PageShortcodeFormCest
 		$I->enableCachingLiteSpeedCachePlugin($I);
 
 		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
-		$I->amOnAdminPage('admin.php?page=litespeed-page_optm#settings_js');
-		$I->click('label[for=input_radio_optmjs_defer_1]');
-		$I->click('Save Changes');
+		$I->enableLiteSpeedCacheLoadJSDeferred($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: LiteSpeed Cache');

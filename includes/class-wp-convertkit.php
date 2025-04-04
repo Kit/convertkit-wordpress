@@ -47,9 +47,6 @@ class WP_ConvertKit {
 		$this->initialize_frontend();
 		$this->initialize_global();
 
-		// Load language files.
-		add_action( 'init', array( $this, 'load_language_files' ) );
-
 	}
 
 	/**
@@ -363,20 +360,6 @@ class WP_ConvertKit {
 		}
 
 		return true;
-
-	}
-
-	/**
-	 * Loads the plugin's translated strings, if available.
-	 *
-	 * @since   1.0.0
-	 */
-	public function load_language_files() {
-
-		// If the .mo file for a given language is available in WP_LANG_DIR/convertkit
-		// i.e. it's available as a translation at https://translate.wordpress.org/projects/wp-plugins/convertkit/,
-		// it will be used instead of the .mo file in convertkit/languages.
-		load_plugin_textdomain( 'convertkit', false, 'convertkit/languages' );
 
 	}
 

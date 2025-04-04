@@ -230,7 +230,9 @@ class KitRestrictContent extends \Codeception\Module
 		// Login as a Kit subscriber who has subscribed to the product.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
-		// Confirm that confirmation an email has been sent is displayed.
+		// Confirm that the CTA displays with the expected text.
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
+
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
 		if ( ! empty($options['visible_content'])) {
 			$I->see($options['visible_content']);
@@ -334,7 +336,9 @@ class KitRestrictContent extends \Codeception\Module
 		// Login.
 		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
-		// Confirm that confirmation an email has been sent is displayed.
+		// Confirm that the CTA displays with the expected text.
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
+
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
 		if ( ! empty($options['visible_content'])) {
 			$I->see($options['visible_content']);
@@ -460,7 +464,9 @@ class KitRestrictContent extends \Codeception\Module
 		// Login as a Kit subscriber who has subscribed to the form.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
 
-		// Confirm that confirmation an email has been sent is displayed.
+		// Confirm that the CTA displays with the expected text.
+		$this->seeRestrictContentSubscriberCode($I, $options['settings']['email_check_heading'], $options['settings']['email_check_text']);
+
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
 		if ( ! empty($options['visible_content'])) {
 			$I->see($options['visible_content']);
@@ -638,7 +644,10 @@ class KitRestrictContent extends \Codeception\Module
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link');
 
 		$I->see($options['settings']['email_text']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link" value="' . $options['settings']['email_button_label'] . '"');
+
+		// Some Themes may append a CSS class to the button, so we split assertions.
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link');
+		$I->seeInSource('value="' . $options['settings']['email_button_label'] . '"');
 		$I->seeInSource('<small>' . $options['settings']['email_description_text'] . '</small>');
 	}
 

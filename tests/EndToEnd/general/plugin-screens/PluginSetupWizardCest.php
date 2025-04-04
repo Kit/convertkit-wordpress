@@ -44,8 +44,11 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
-		// Confirm setup wizard does not display.
-		$I->dontSee('Welcome to the Kit Setup Wizard');
+		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
+		$I->waitForElementVisible('table.plugins tr[data-slug=convertkit].active');
+
+		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
+		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
 	}
 
 	/**
@@ -68,12 +71,22 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
+		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
+		$I->waitForElementVisible('table.plugins tr[data-slug=convertkit].active');
+
 		// Navigate to Admin Menu Editor's settings.
 		$I->amOnAdminPage('options-general.php?page=menu_editor');
+
+		// Wait for the Admin Menu Editor settings screen to load.
+		$I->waitForElementVisible('body.settings_page_menu_editor');
 
 		// Save settings. If hiding submenu items fails in the Plugin, this step
 		// will display those submenu items on subsequent page loads.
 		$I->click('Save Changes');
+
+		// Wait for the Admin Menu Editor settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+		$I->see('Settings saved.');
 
 		// Navigate to Dashboard.
 		$I->amOnAdminPage('index.php');
@@ -197,6 +210,9 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
 		// Define Plugin settings.
 		$I->setupKitPluginNoDefaultForms($I);
 
@@ -289,6 +305,9 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
 		// Define Plugin settings with a Kit account containing no forms.
 		$I->setupKitPluginCredentialsNoData($I);
 
@@ -328,6 +347,9 @@ class PluginSetupWizardCest
 		// Activate Plugin.
 		$this->_activatePlugin($I);
 
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
 		// Define Plugin settings.
 		$I->setupKitPluginNoDefaultForms($I);
 
@@ -359,6 +381,9 @@ class PluginSetupWizardCest
 		// Navigate to Plugins screen.
 		$I->amOnPluginsPage();
 
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
 		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
 		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
 
@@ -379,12 +404,19 @@ class PluginSetupWizardCest
 	 */
 	private function _activatePlugin(EndToEndTester $I)
 	{
-		$I->loginAsAdmin();
-		$I->amOnPluginsPage();
-		$I->activatePlugin('convertkit');
+		// Login as the Administrator, if we're not already logged in.
+		if ( ! $I->amLoggedInAsAdmin($I) ) {
+			$I->doLoginAsAdmin($I);
+		}
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Go to the Plugins screen in the WordPress Administration interface.
+		$I->amOnPluginsPage();
+
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
+		// Activate the Plugin.
+		$I->activatePlugin('convertkit');
 	}
 
 	/**
@@ -400,6 +432,9 @@ class PluginSetupWizardCest
 	 */
 	private function _seeExpectedSetupWizardScreen(EndToEndTester $I, $step, $title, $nextButtonIsLink = false)
 	{
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
