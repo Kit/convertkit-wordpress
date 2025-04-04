@@ -46,7 +46,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 		}                           = element;
 		const {
 			Button,
-			Dashicon,
+			Icon,
 			TextControl,
 			SelectControl,
 			ToggleControl,
@@ -54,7 +54,8 @@ function convertKitGutenbergRegisterBlock( block ) {
 			FlexItem,
 			Panel,
 			PanelBody,
-			PanelRow
+			PanelRow,
+			ProgressBar
 		}                           = components;
 
 		/**
@@ -143,9 +144,6 @@ function convertKitGutenbergRegisterBlock( block ) {
 						}
 					);
 					for ( const value of Object.keys( field.values ) ) {
-						console.log( field.values[ value ] );
-						console.log( value );
-
 						fieldOptions.push(
 							{
 								label: field.values[ value ],
@@ -434,9 +432,9 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 			// Define elements to display, based on whether the refresh button is disabled.
 			if ( buttonDisabled ) {
-				// Refresh button disabled; display a spinner and the button.
+				// Refresh button disabled; display a loading indicator and the button.
 				elements = [
-					spinner( props ),
+					loadingIndicator( props ),
 					refreshButton( props, buttonDisabled, setButtonDisabled )
 				];
 			} else {
@@ -462,37 +460,37 @@ function convertKitGutenbergRegisterBlock( block ) {
 		}
 
 		/**
-		 * Returns a spinner element, to show that a block is loading / refreshing.
+		 * Returns an indeterminate progress bar element, to show that a block is loading / refreshing.
 		 *
 		 * @since 	2.2.6
 		 *
 		 * @param   object  props   			Block properties.
-		 * @return  object          			Spinner.
+		 * @return  object          			Progress Bar.
 		 */
-		const spinner = function ( props ) {
+		const loadingIndicator = function ( props ) {
 
 			return el(
-				'span',
+				ProgressBar,
 				{
-					key: props.clientId + '-spinner',
-					className: 'spinner is-active'
+					key: props.clientId + '-progress-bar',
+					className: 'convertkit-progress-bar'
 				}
 			);
 
 		}
 
 		/**
-		 * Returns a WordPress Dashicon element.
+		 * Returns a WordPress Icon element.
 		 *
-		 * @since 	2.2.6
+		 * @since 	2.7.7
 		 *
-		 * @param   string 	iconName 	Dashicon Name.
-		 * @return  object 				Dashicon.
+		 * @param   string 	iconName 	Icon Name.
+		 * @return  object 				Icon.
 		 */
-		const dashIcon = function ( iconName ) {
+		const iconType = function ( iconName ) {
 
 			return el(
-				Dashicon,
+				Icon,
 				{
 					icon: iconName
 				}
@@ -511,22 +509,27 @@ function convertKitGutenbergRegisterBlock( block ) {
 		 */
 		const noticeLink = function ( props, setButtonDisabled ) {
 
+			// Get the URL to set the button to.
+			let url = ( ! block.has_access_token ? block.no_access_token.link : block.no_resources.link );
+
 			return el(
-				'a',
+				Button,
 				{
 					key: props.clientId + '-notice-link',
-					href: ( ! block.has_access_token ? block.no_access_token.link : block.no_resources.link ),
 					className: ( ! block.has_access_token ? 'convertkit-block-modal' : '' ),
-					target: '_blank',
+					variant: 'link',
 					onClick: function ( e ) {
 
-						// Show popup window with setup wizard if we need to define an API Key.
+						e.preventDefault();
+
+						// Show popup window with setup wizard if we need to connect via OAuth.
 						if ( ! block.has_access_token ) {
-							e.preventDefault();
-							showConvertKitPopupWindow( props, e.target, setButtonDisabled );
+							showConvertKitPopupWindow( props, url, setButtonDisabled );
+							return;
 						}
 
-						// Allow the link to load, as it's likely a link to the ConvertKit site.
+						// Allow the link to load, as it's likely a link to the Kit site.
+						window.open( url, '_blank' );
 					}
 				},
 				( ! block.has_access_token ? block.no_access_token.link_text : block.no_resources.link_text )
@@ -551,10 +554,11 @@ function convertKitGutenbergRegisterBlock( block ) {
 				Button,
 				{
 					key: props.clientId + '-refresh-button',
-					className: 'button button-secondary convertkit-block-refresh',
+					className: 'convertkit-block-refresh',
 					disabled: buttonDisabled,
 					text: 'Refresh',
-					icon: dashIcon( 'update' ),
+					icon: iconType( 'update' ),
+					variant: 'secondary',
 					onClick: function () {
 
 						// Refresh block definitions.
@@ -598,7 +602,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 					key: props.clientId + '-refresh-button',
 					className: 'button button-secondary convertkit-block-refresh',
 					disabled: buttonDisabled,
-					icon: dashIcon( 'update' ),
+					icon: iconType( 'update' ),
 					onClick: function () {
 
 						// Refresh block definitions.
@@ -621,10 +625,10 @@ function convertKitGutenbergRegisterBlock( block ) {
 		 * @since 	2.2.6
 		 *
 		 * @param 	object 	props 				Block properties.
-		 * @param 	object 	link 				Link that was clicked.
+		 * @param 	object 	url 				URL to display in the popup window.
 		 * @param 	object 	setButtonDisabled 	Function to enable or disable the refresh button.
 		 */
-		const showConvertKitPopupWindow = function ( props, link, setButtonDisabled ) {
+		const showConvertKitPopupWindow = function ( props, url, setButtonDisabled ) {
 
 			// Define popup width, height and positioning.
 			const 	width  = 640,
@@ -634,7 +638,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 			// Open popup.
 			const convertKitPopup = window.open(
-				link.href + '&convertkit-modal=1',
+				url + '&convertkit-modal=1',
 				'convertkit_popup_window',
 				'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=' + width + ',height=' + height + ',top=' + top + ',left=' + left
 			);

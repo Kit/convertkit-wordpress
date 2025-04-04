@@ -117,9 +117,9 @@ class ConvertKit_Output_Restrict_Content {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 1 );
-		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 2 );
-		add_action( 'wp', array( $this, 'register_content_filter' ), 3 );
+		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
+		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
+		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );

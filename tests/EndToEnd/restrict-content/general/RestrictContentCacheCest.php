@@ -372,6 +372,7 @@ class RestrictContentCacheCest
 	public function testRestrictContentWPRocketCache(EndToEndTester $I)
 	{
 		// Activate WP Rocket Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
 
 		// Test that the wp_rocket_cache_reject_cookies option doesn't include ck_subscriber_id, as a Restrict Content
@@ -414,6 +415,7 @@ class RestrictContentCacheCest
 
 		// Deactivate WP Super Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**

@@ -12,8 +12,9 @@
 .wp-block .convertkit-no-content iframe {
 	max-width: 400px;
 }
-.wp-block .convertkit-no-content a {
+.wp-block .convertkit-no-content button.is-link {
 	display: block;
+	margin: 0 auto;
 	padding: calc(0.667em + 2px) calc(1.333em + 2px);
 }
 .wp-block .convertkit-no-content button.convertkit-block-refresh {
@@ -22,12 +23,8 @@
 	right: 20px;
 	line-height: 22px;
 }
-.wp-block .convertkit-no-content button.convertkit-block-refresh span.dashicon {
-	display: inline-block;
-	padding: 0;
-}
-.wp-block .convertkit-no-content .spinner {
-	float: none;
+.wp-block .convertkit-no-content .convertkit-progress-bar {
+	margin: 0 auto;
 }
 .convertkit-popover .components-popover__content {
 	width: 300px;

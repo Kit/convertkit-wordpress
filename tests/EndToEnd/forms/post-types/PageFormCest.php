@@ -776,6 +776,7 @@ class PageFormCest
 		$I->setupKitPluginResources($I);
 
 		// Activate WP Rocket Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'wp-rocket');
 
 		// Configure WP Rocket.
@@ -802,6 +803,7 @@ class PageFormCest
 
 		// Deactivate WP Rocket Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**

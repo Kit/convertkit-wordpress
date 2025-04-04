@@ -17,6 +17,7 @@ function convertkit_plugin_activate( $network_wide ) {
 
 	// Initialise Plugin.
 	$convertkit = WP_ConvertKit();
+	$convertkit->initialize();
 
 	// Check if we are on a multisite install, activating network wide, or a single install.
 	if ( ! is_multisite() || ! $network_wide ) {
@@ -58,6 +59,7 @@ function convertkit_plugin_activate_new_site( $site_or_blog_id ) {
 
 	// Initialise Plugin.
 	$convertkit = WP_ConvertKit();
+	$convertkit->initialize();
 
 	// Run installation routine.
 	switch_to_blog( $site_or_blog_id );
@@ -77,6 +79,7 @@ function convertkit_plugin_deactivate( $network_wide ) {
 
 	// Initialise Plugin.
 	$convertkit = WP_ConvertKit();
+	$convertkit->initialize();
 
 	// Check if we are on a multisite install, activating network wide, or a single install.
 	if ( ! is_multisite() || ! $network_wide ) {

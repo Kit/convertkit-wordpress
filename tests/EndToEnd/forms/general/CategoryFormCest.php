@@ -58,7 +58,7 @@ class CategoryFormCest
 		);
 
 		// Save.
-		$I->click('Add New Category');
+		$I->click('Add Category');
 
 		// Confirm Category saved.
 		$I->waitForElementVisible('.notice-success');
@@ -120,7 +120,7 @@ class CategoryFormCest
 		);
 
 		// Save.
-		$I->click('Add New Category');
+		$I->click('Add Category');
 
 		// Confirm Category saved.
 		$I->waitForElementVisible('.notice-success');
@@ -311,7 +311,7 @@ class CategoryFormCest
 		$I->selectOption('wp-convertkit[form_position]', 'before');
 
 		// Save.
-		$I->click('Add New Category');
+		$I->click('Add Category');
 
 		// Confirm Category saved.
 		$I->waitForElementVisible('.notice-success');
@@ -369,7 +369,7 @@ class CategoryFormCest
 		$I->selectOption('wp-convertkit[form_position]', 'after');
 
 		// Save.
-		$I->click('Add New Category');
+		$I->click('Add Category');
 
 		// Confirm Category saved.
 		$I->waitForElementVisible('.notice-success');

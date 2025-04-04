@@ -21,6 +21,7 @@ class WooCommerceProductFormCest
 	public function _before(EndToEndTester $I)
 	{
 		$I->activateKitPlugin($I);
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'woocommerce');
 	}
 
@@ -530,6 +531,7 @@ class WooCommerceProductFormCest
 		$I->deactivateKitPlugin($I);
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 		$I->deactivateThirdPartyPlugin($I, 'woocommerce');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->resetKitPlugin($I);
 	}
 }

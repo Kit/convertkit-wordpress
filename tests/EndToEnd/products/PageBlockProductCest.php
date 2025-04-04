@@ -94,12 +94,7 @@ class PageBlockProductCest
 		$I->addGutenbergBlock($I, 'Kit Product', 'convertkit-product');
 
 		// Confirm that the Product block displays instructions to the user on how to select a Product.
-		$I->see(
-			'Select a Product using the Product option in the Gutenberg sidebar.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'Select a Product using the Product option in the Gutenberg sidebar.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -512,29 +507,10 @@ class PageBlockProductCest
 		$I->addGutenbergBlock($I, 'Kit Product', 'convertkit-product');
 
 		// Confirm that the Product block displays instructions to the user on how to add a Product in Kit.
-		$I->see(
-			'No products exist in Kit.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'No products exist in Kit.');
 
 		// Click the link to confirm it loads Kit.
-		$I->click(
-			'Click here to create your first product.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
-
-		// Switch to next browser tab, as the link opens in a new tab.
-		$I->switchToNextTab();
-
-		// Confirm the Kit login screen loaded.
-		$I->waitForElementVisible('input[name="user[email]"]');
-
-		// Close tab.
-		$I->closeTab();
+		$I->clickLinkInBlockAndAssertKitLoginScreen($I, 'Click here to create your first product.');
 
 		// Save page to avoid alert box when _passed() runs to deactivate the Plugin.
 		$I->publishGutenbergPage($I);
@@ -565,18 +541,10 @@ class PageBlockProductCest
 		$I->setupKitPluginResources($I);
 
 		// Click the refresh button.
-		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
-
-		// Wait for the refresh button to disappear, confirming that an API Key and resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+		$I->clickBlockRefreshButton($I);
 
 		// Confirm that the Product block displays instructions to the user on how to select a Product.
-		$I->see(
-			'Select a Product using the Product option in the Gutenberg sidebar.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'Select a Product using the Product option in the Gutenberg sidebar.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
