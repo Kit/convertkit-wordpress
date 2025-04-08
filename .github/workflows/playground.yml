@@ -18,6 +18,7 @@ jobs:
 
     # Define permissions for this action.
     permissions:
+      id-token: write
       contents: write
       pull-requests: write
 
