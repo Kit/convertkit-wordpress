@@ -472,6 +472,14 @@ Need to change the PHP or WordPress coding standard rules applied?  Either:
 
 **Rules can be ignored with caution**, but it's essential that rules relating to coding style and inline code commenting / docblocks remain.
 
+## Manual Testing
+
+If a build of the Plugin ZIP file is required locally, perhaps to test on a different environment or specific site, you may run the `.scripts/build.sh` script.
+
+This will create a `convertkit.zip` Plugin file, which can be installed on a WordPress web site.
+
+Note that deployments are automated when using GitHub's release system; refer to the [Deployment Guide](DEPLOYMENT.md) for more information.
+
 ## Next Steps
 
 Once your test(s) are written and successfully run locally, submit your branch via a new [Pull Request](https://github.com/ConvertKit/convertkit-wordpress/compare).
@@ -482,3 +490,37 @@ double check all tests pass.
 If the PR tests fail, you can make code changes as necessary, pushing to the same branch.  This will trigger the tests to run again.
 
 If the PR tests pass, you can publish the PR, assigning some reviewers.
+
+## Reviewing a PR
+
+For reviewers, three methods are available:
+
+### GitHub Codespaces
+
+On the PR, click the `<> Code` option, followed by the `Codespaces` tab. The option to use an existing Codespace or create a new one will be presented.
+
+![GitHub Codespaces](/.github/docs/github-codespaces.png?raw=true)
+
+After a few minutes, your development environment should be ready. 
+
+Click on the `Ports` tab, and navigate to the "Application" URL by hovering over the `Forwarded Address` and clicking the globe icon:
+
+![Ports tab](/.github/docs/dev-container-ports.png?raw=true)
+
+To access the WordPress Administration interface, append `/wp-admin` to the URL, using the following credentials:
+- Username: `vipgo`
+- Password: `password`
+
+Once logged in, navigating to the Plugins screen will show the repository Plugin installed and active, along with some other common third party Plugins:
+
+![Plugins](/.github/docs/dev-container-plugins.png?raw=true)
+
+### WordPress Playground
+
+On the PR, navigate to the comment created by the GitHub bot, and click the link to preview the PR in the Playground:
+
+![WordPress Playground Comment](/.github/docs/wordpress-playground-comment.png?raw=true)
+
+This will load a WordPress instance on playground.wordpress.net, ready to test the Plugin:
+
+![WordPress Playground](/.github/docs/wordpress-playground.png?raw=true)
