@@ -93,6 +93,46 @@ class RestrictContentProductPageCest
 
 	/**
 	 * Test that restricting content by a Product specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page, and the "Add a Tag" Page setting does
+	 * not result in a critical error due to the use of a signed subscriber ID.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByProductWithAddTag(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product');
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'tag'              => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend($I, $url);
+	}
+
+	/**
+	 * Test that restricting content by a Product specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, and that the WordPress generated Page Excerpt
 	 * is displayed when no more tag exists.
 	 *
@@ -399,6 +439,8 @@ class RestrictContentProductPageCest
 			$I->clearRestrictContentCookie($I);
 		}
 	}
+
+
 
 	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.

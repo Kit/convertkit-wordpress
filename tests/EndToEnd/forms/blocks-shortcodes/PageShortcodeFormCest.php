@@ -548,6 +548,7 @@ class PageShortcodeFormCest
 		$I->setupKitPluginResources($I);
 
 		// Activate Jetpack Boost Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'jetpack-boost');
 
 		// Enable Jetpack Boost's "Defer Non-Essential JavaScript" setting.
@@ -586,6 +587,7 @@ class PageShortcodeFormCest
 
 		// Deactivate Jetpack Boost Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'jetpack-boost');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**

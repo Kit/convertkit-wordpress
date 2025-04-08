@@ -211,7 +211,7 @@ function convertKitRefreshResources( button ) {
 function convertKitRefreshResourcesRemoveNotices() {
 
 	// If we're editing a Page, Post or Custom Post Type in Gutenberg, use wp.data.dispatch to remove the error.
-	if (typeof wp !== 'undefined' && typeof wp.blocks !== 'undefined') {
+	if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
 		// Gutenberg Editor.
 		wp.data.dispatch( 'core/notices' ).removeNotice( 'convertkit-error' );
 		return;
@@ -240,7 +240,7 @@ function convertKitRefreshResourcesOutputErrorNotice( message ) {
 	message = 'ConvertKit: ' + message;
 
 	// If we're editing a Page, Post or Custom Post Type in Gutenberg, use wp.data.dispatch to show the error.
-	if ( typeof wp !== 'undefined' && typeof wp.blocks !== 'undefined' ) {
+	if ( typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined' ) {
 		// Gutenberg Editor.
 		wp.data.dispatch( 'core/notices' ).createErrorNotice( message, { id: 'convertkit-error' } );
 		return;

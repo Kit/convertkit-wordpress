@@ -644,7 +644,10 @@ class KitRestrictContent extends \Codeception\Module
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link');
 
 		$I->see($options['settings']['email_text']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link" value="' . $options['settings']['email_button_label'] . '"');
+
+		// Some Themes may append a CSS class to the button, so we split assertions.
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link');
+		$I->seeInSource('value="' . $options['settings']['email_button_label'] . '"');
 		$I->seeInSource('<small>' . $options['settings']['email_description_text'] . '</small>');
 	}
 
