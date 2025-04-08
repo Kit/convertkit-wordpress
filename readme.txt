@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.7.2
 Requires PHP: 5.6.20
-Stable tag: 2.7.5
+Stable tag: 2.7.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -158,6 +158,18 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.7 2025-04-01
+* Added: Member Content: Support for Uncode Theme
+* Fix: Member Content: Prevent fatal error when both `Add a Tag` and `Member Content` settings defined on a Page, and the visitor has entered the Member Content code / clicked the magic link via email
+* Fix: Default Forms (Site Wide): Don't output non-inline site wide forms on 404 or search pages
+* Fix: Gutenberg / Block Editor: Improved method for block editor detection to prevent loading JS when a page builder is active
+
+### 2.7.6 2025-03-25
+* Fix: Remove `load_plugin_textdomain` call, as it's not needed since WordPress 4.6
+* Fix: Issue client ID, site-specific v4 API Access and Refresh Token when upgrading from < 2.5.0
+* Fix: Member Content: Only automatically configure caching Plugins if Member Content is used on a Page, Post or Custom Post
+* Updated: Use WordPress Libraries 2.0.7
 
 ### 2.7.5 2025-03-07
 * Fix: Member Content: Set `wordpress_ck_subscriber_id` cookie to beat WP Engine's server caching

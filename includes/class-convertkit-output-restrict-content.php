@@ -119,7 +119,7 @@ class ConvertKit_Output_Restrict_Content {
 
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 1 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 2 );
-		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
+		add_action( 'wp', array( $this, 'register_content_filter' ), 3 );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
@@ -349,9 +349,6 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! array_key_exists( 'subscriber_code', $_REQUEST ) ) {
 			return;
 		}
-		if ( ! array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
-			return;
-		}
 
 		// If a nonce was specified, validate it now.
 		// It won't be provided if clicking the link in the magic link email.
@@ -367,7 +364,6 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Store the token so it's included in the subscriber code form if verification fails.
-
 		$this->token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
 
 		// Store the post ID if this is an AJAX request.
@@ -408,6 +404,31 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! wp_doing_ajax() ) {
 			$this->redirect();
 		}
+
+	}
+
+	/**
+	 * Registers the applicable content filter for maybe restricting content, depending
+	 * on the Theme or Page Builder used.
+	 *
+	 * @since   2.7.7
+	 */
+	public function register_content_filter() {
+
+		// Use the standard `the_content` filter, which works for most Themes
+		// and Page Builders.
+		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
+
+		// Fetch some information about the current Page.
+		$id = get_the_ID();
+
+		/**
+		 * Allow specific Themes and Page Builders to use a different filter
+		 * for Restrict Content functionality.
+		 *
+		 * @since   2.7.7
+		 */
+		do_action( 'convertkit_restrict_content_register_content_filter' );
 
 	}
 

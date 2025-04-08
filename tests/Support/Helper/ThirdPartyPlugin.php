@@ -58,6 +58,12 @@ class ThirdPartyPlugin extends \Codeception\Module
 				// Go to the Plugins screen again.
 				$I->amOnPluginsPage();
 				break;
+
+			case 'uncode-wpbakery-page-builder':
+				// Go to the Plugins screen again.
+				$I->waitForElementVisible('body.toplevel_page_vc-general');
+				$I->amOnPluginsPage();
+				break;
 		}
 
 		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
