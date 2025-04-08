@@ -53,37 +53,22 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       # Create ZIP file
-      - name: Create ZIP File and blueprint.json
+      - name: Create ZIP File
         run: |
-          # Create ZIP file
           zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example"
 
-          # Create blueprint.json 
-          cat > blueprint.json << EOF
-          {
-            "landingPage": "/wp-admin/index.php",
-            "login": true,
-            "steps": [
-              {
-                "step": "installPlugin",
-                "pluginData": {
-                  "resource": "url",
-                  "url": "https://${{ env.AWS_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip"
-                }
-              }
-            ]
-          }
-          EOF
+      # Create base64 encoded version of blueprint JSON for Playground URL.
+      # See: https://wordpress.github.io/wordpress-playground/blueprints/using-blueprints#base64-encoded-blueprints
+      - name: Create Blueprint JSON, Base64 Encoded
+        id: blueprint
+        run: |
+          echo "blueprint_json_base64=$(echo -n '{"landingPage": "/wp-admin/index.php","login":true,"steps":[{"step":"installPlugin","pluginData":{"resource":"url","url":"https://${{ env.AWS_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip"}}]}' | base64 -w 0)" >> $GITHUB_OUTPUT
 
       # Upload to S3
       - name: Upload to S3
         id: upload-s3
         run: |
-          # Upload the ZIP file
           aws s3 cp ${{ env.PLUGIN_SLUG }}.zip s3://${{ env.AWS_BUCKET }}/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip
-          
-          # Upload the blueprint.json file
-          aws s3 cp blueprint.json s3://${{ env.AWS_BUCKET }}/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/blueprint.json
 
       # Add comment to PR linking to Playground
       - name: Comment on PR
@@ -99,5 +84,5 @@ jobs:
               
               :rocket: Your PR has been built and is ready for testing in WordPress Playground!
               
-              [Click here to test your changes in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://${{ env.AWS_BUCKET }}.s3.us-east-2.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/blueprint.json)`
+              [Click here to test your changes in WordPress Playground](https://playground.wordpress.net/#${{ steps.blueprint.outputs.blueprint_json_base64 }})`
             })
