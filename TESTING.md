@@ -491,7 +491,7 @@ If the PR tests fail, you can make code changes as necessary, pushing to the sam
 
 If the PR tests pass, you can publish the PR, assigning some reviewers.
 
-## Reviewing a PR
+## Reviewing a PR
 
 For reviewers, three methods are available:
 
