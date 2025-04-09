@@ -353,6 +353,9 @@ class PluginSettingsToolsCest
 		// Click the submit button.
 		$I->click('Submit');
 
+		// Wait for the tools page to load.
+		$I->waitForElementVisible('body.settings_page__wp_convertkit_settings');
+
 		// Check that document.write did not work, which confirms XSS isn't possible as the query parameter is correctly escaped.
 		$I->dontSee('/XSS/');
 	}

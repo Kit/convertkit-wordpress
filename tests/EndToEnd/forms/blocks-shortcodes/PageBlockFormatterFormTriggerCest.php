@@ -119,7 +119,7 @@ class PageBlockFormatterFormTriggerCest
 			]
 		);
 
-		// Apply the formatter again, this time selecting the 'None' option.
+		// Select text and apply the formatter again, this time selecting the 'None' option.
 		$I->applyGutenbergFormatter(
 			$I,
 			'Kit Form Trigger',
