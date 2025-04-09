@@ -493,7 +493,7 @@ If the PR tests pass, you can publish the PR, assigning some reviewers.
 
 ## Reviewing a PR
 
-For reviewers, three methods are available:
+For reviewers, two methods are available:
 
 ### GitHub Codespaces
 
