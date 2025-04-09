@@ -121,7 +121,8 @@ class ResourcePostsTest extends WPTestCase
 
 		// Run the update action as WordPress would when updating the Plugin to a newer version.
 		$convertkit = WP_ConvertKit();
-		$convertkit->init();
+		$convertkit->initialize();
+		$convertkit->setup();
 
 		// Confirm the Plugin version number matches the current version.
 		$this->assertEquals(get_option('convertkit_version'), CONVERTKIT_PLUGIN_VERSION);
@@ -153,7 +154,8 @@ class ResourcePostsTest extends WPTestCase
 
 		// Initialize Plugin, as if a request was made.
 		$convertkit = WP_ConvertKit();
-		$convertkit->init();
+		$convertkit->initialize();
+		$convertkit->setup();
 
 		// Confirm event was scheduled.
 		$this->assertEquals(

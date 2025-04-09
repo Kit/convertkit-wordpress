@@ -728,12 +728,7 @@ class KitPlugin extends \Codeception\Module
 	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false)
 	{
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
-		$I->see(
-			'Not connected to Kit.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'Not connected to Kit.');
 
 		// Click the link to confirm it loads the Plugin's setup wizard.
 		$I->click(
@@ -755,11 +750,8 @@ class KitPlugin extends \Codeception\Module
 		// Close the popup window.
 		$I->closeTab();
 
-		// Switch back to the main browser window.
-		$I->switchToWindow();
-
 		// Wait until the block changes to refreshing.
-		$I->waitForElementVisible('.' . $blockName . ' span.spinner', 30);
+		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
@@ -767,13 +759,94 @@ class KitPlugin extends \Codeception\Module
 
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
-			$I->see(
-				$expectedMessage,
-				[
-					'css' => '.convertkit-no-content',
-				]
-			);
+			$I->seeBlockHasNoContentMessage($I, $expectedMessage);
 		}
+	}
+
+	/**
+	 * Helper method to click the refresh button in a Kit Gutenberg block.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function clickBlockRefreshButton($I)
+	{
+		// Click the refresh button.
+		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
+
+		// Wait for the refresh button to disappear, confirming that credentials and resources now exist.
+		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+	}
+
+	/**
+	 * Helper method to assert that a message is displayed in a Kit Gutenberg block.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $message     Message.
+	 */
+	public function seeBlockHasNoContentMessage($I, $message)
+	{
+		$I->see(
+			$message,
+			[
+				'css' => '.convertkit-no-content',
+			]
+		);
+
+		// Switch back to main window.
+		$I->switchToIFrame();
+	}
+
+	/**
+	 * Helper method to click a link in a Kit Gutenberg block and assert that the Kit login screen
+	 * is displayed in a new tab.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $linkText    Link text.
+	 */
+	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
+	{
+		$I->click(
+			$linkText,
+			[
+				'css' => '.convertkit-no-content',
+			]
+		);
+
+		// Switch to next browser tab, as the link opens in a new tab.
+		$I->switchToNextTab();
+
+		// Confirm the Kit login screen loaded.
+		$I->waitForElementVisible('input[name="user[email]"]');
+
+		// Close tab.
+		$I->closeTab();
+	}
+
+	/**
+	 * Helper method to assert that a message is displayed in a Form block iframe sandbox preview.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $message     Message.
+	 */
+	public function seeFormBlockIFrameHasMessage($I, $message)
+	{
+		// Switch to iframe preview for the Form block.
+		$I->switchToIFrame('iframe[class="components-sandbox"]');
+
+		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
+		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
+		$I->see($message);
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**

@@ -262,6 +262,13 @@ class RestrictContentProductPageCest
 	 */
 	public function testRestrictContentWhenEditingWithFrontendPageBuilder(EndToEndTester $I)
 	{
+		// Mark test as skipped.
+		$I->clearRestrictContentCookie($I);
+		$I->deactivateThirdPartyPlugin($I, 'convertkit-actions-and-filters-tests');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('Beaver Builder throws a notice regarding translations due to incompatibility with WordPress 6.8. This test cannot reliably be run.');
+
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
 

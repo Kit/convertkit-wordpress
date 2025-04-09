@@ -40,7 +40,22 @@ class WP_ConvertKit {
 	 */
 	public function __construct() {
 
-		// Initialize class(es) to register hooks.
+		// Initialize classes that have hooks prior to the `init` hook.
+		$this->classes['widgets'] = new ConvertKit_Widgets();
+
+		// Initialize Plugin classes on init, so the `_load_textdomain_just_in_time` warning isn't triggered.
+		add_action( 'init', array( $this, 'initialize' ), 1 );
+		add_action( 'init', array( $this, 'setup' ), 2 );
+
+	}
+
+	/**
+	 * Initialize classes.
+	 *
+	 * @since   2.7.7
+	 */
+	public function initialize() {
+
 		$this->initialize_admin();
 		$this->initialize_admin_or_frontend_editor();
 		$this->initialize_cli_cron();
@@ -181,12 +196,6 @@ class WP_ConvertKit {
 		$this->classes['preview_output']                      = new ConvertKit_Preview_Output();
 		$this->classes['setup']                               = new ConvertKit_Setup();
 		$this->classes['shortcodes']                          = new ConvertKit_Shortcodes();
-		$this->classes['widgets']                             = new ConvertKit_Widgets();
-
-		// Run the setup's update process on WordPress' init hook.
-		// Doing this sooner may result in errors with WordPress functions that are not yet
-		// available to the update routine.
-		add_action( 'init', array( $this, 'init' ) );
 
 		/**
 		 * Initialize integration classes for the frontend web site.
@@ -204,7 +213,7 @@ class WP_ConvertKit {
 	 *
 	 * @since   1.9.7.4
 	 */
-	public function init() {
+	public function setup() {
 
 		$this->get_class( 'setup' )->initialize();
 		$this->get_class( 'setup' )->update();

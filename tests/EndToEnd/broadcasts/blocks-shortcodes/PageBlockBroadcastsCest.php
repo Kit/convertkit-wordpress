@@ -78,29 +78,10 @@ class PageBlockBroadcastsCest
 		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
 
 		// Confirm that the Broadcasts block displays instructions to the user on how to add a Broadcast in Kit.
-		$I->see(
-			'No broadcasts exist in Kit.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
+		$I->seeBlockHasNoContentMessage($I, 'No broadcasts exist in Kit.');
 
 		// Click the link to confirm it loads Kit.
-		$I->click(
-			'Click here to send your first broadcast.',
-			[
-				'css' => '.convertkit-no-content',
-			]
-		);
-
-		// Switch to next browser tab, as the link opens in a new tab.
-		$I->switchToNextTab();
-
-		// Confirm the Kit login screen loaded.
-		$I->waitForElementVisible('input[name="user[email]"]');
-
-		// Close tab.
-		$I->closeTab();
+		$I->clickLinkInBlockAndAssertKitLoginScreen($I, 'Click here to send your first broadcast.');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -133,11 +114,8 @@ class PageBlockBroadcastsCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Click the refresh button.
-		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
-
-		// Wait for the refresh button to disappear, confirming that an API Key and resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+		// Click the refresh button in the block.
+		$I->clickBlockRefreshButton($I);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
