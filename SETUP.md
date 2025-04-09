@@ -193,7 +193,7 @@ If you're new to this, use [GitHub Desktop](https://desktop.github.com/) or [Tow
 ### Install Docker and Visual Studio Code
 
 - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), or [Docker Engine](https://docs.docker.com/engine/) if you're developing on Linux
-- Install [Visual Studio Code]()
+- Install [Visual Studio Code](https://code.visualstudio.com/download)
 
 ### Install and Run Dev Containers
 
