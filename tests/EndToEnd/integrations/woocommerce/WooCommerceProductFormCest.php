@@ -23,6 +23,9 @@ class WooCommerceProductFormCest
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'woocommerce');
+
+		// Set Store in Live mode i.e. not in "Coming Soon" mode.
+		$I->haveOptionInDatabase( 'woocommerce_coming_soon', 'no' );
 	}
 
 	/**
