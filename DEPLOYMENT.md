@@ -16,6 +16,7 @@ Run the `.scripts/build.sh` script, which will:
 
 - Generate the `languages/convertkit.pot` file
 - Generate the [ACTIONS-FILTERS.md](ACTIONS-FILTERS.md) file
+- Produce a `convertkit.zip` Plugin file, which may be used for any manual testing on other environments
 
 ## Update the Plugin's Version Number
 

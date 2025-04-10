@@ -151,13 +151,13 @@ class ConvertKit_Admin_TinyMCE {
 
 		// Enqueue TinyMCE CSS and JS.
 		wp_enqueue_script( 'convertkit-admin-tabs', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/tabs.js', array( 'jquery' ), CONVERTKIT_PLUGIN_VERSION, true );
-		wp_enqueue_script( 'convertkit-admin-tinymce', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/tinymce.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
+		wp_enqueue_script( 'convertkit-admin-editor', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/editor.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
 		wp_enqueue_script( 'convertkit-admin-modal', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/modal.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
 		wp_enqueue_style( 'convertkit-admin-tinymce', CONVERTKIT_PLUGIN_URL . 'resources/backend/css/tinymce.css', array(), CONVERTKIT_PLUGIN_VERSION );
 
 		// Register JS variable convertkit_admin_tinymce.nonce for AJAX calls.
 		wp_localize_script(
-			'convertkit-admin-tinymce',
+			'convertkit-admin-editor',
 			'convertkit_admin_tinymce',
 			array(
 				'nonce' => wp_create_nonce( 'convertkit_admin_tinymce' ),
@@ -165,7 +165,7 @@ class ConvertKit_Admin_TinyMCE {
 		);
 
 		// Make shortcodes available as convertkit_shortcodes JS variable.
-		wp_localize_script( 'convertkit-admin-tinymce', 'convertkit_shortcodes', $shortcodes );
+		wp_localize_script( 'convertkit-admin-editor', 'convertkit_shortcodes', $shortcodes );
 
 		// Register TinyMCE Javascript Plugin.
 		foreach ( $shortcodes as $shortcode => $properties ) {
