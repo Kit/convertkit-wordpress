@@ -560,7 +560,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 }
 
 // Bootstrap.
-add_action(
+add_filter(
 	'convertkit_admin_settings_register_sections',
 	function ( $sections ) {
 
