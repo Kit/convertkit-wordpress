@@ -3,9 +3,9 @@ Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
-Tested up to: 6.7.2
+Tested up to: 6.8
 Requires PHP: 5.6.20
-Stable tag: 2.7.8
+Stable tag: 2.7.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -158,6 +158,10 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.7.9 2025-04-18
+* Fix: Fatal error `Uncaught Error: Class "ConvertKit_Admin_Bulk_Edit" not found` when using Solid Central (previously iThemes Sync)
+* Fix: Use `add_filter` for `convertkit_admin_settings_register_sections` hook
 
 ### 2.7.8 2025-04-10
 * Fix: Divi Builder: Display Visual Editor / TinyMCE buttons when Divi Builder or Divi Theme active
