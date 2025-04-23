@@ -22,7 +22,7 @@ class DiviThemeProductCest
 	{
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->useTheme('divi');
+		$I->useTheme('Divi');
 	}
 
 	/**
