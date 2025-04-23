@@ -24,4 +24,4 @@ extensions:
         - lucatume\WPBrowser\Command\DevRestart
         - lucatume\WPBrowser\Command\ChromedriverUpdate
 params:
-    - .env.testing
+    - .env.dist.testing
