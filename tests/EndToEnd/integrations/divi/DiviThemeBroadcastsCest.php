@@ -39,6 +39,9 @@ class DiviThemeBroadcastsCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
+		$I->amOnAdminPage('themes.php');
+		$I->see('xxxxxxx');
+
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Broadcasts: Divi: Backend Editor');
 
