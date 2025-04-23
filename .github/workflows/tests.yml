@@ -150,6 +150,12 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli theme install ${{ env.INSTALL_THEMES_URLS }}
 
+      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_THEME_URLS.
+      # We cannot include the URLs in this file, as they're not Themes we are permitted to distribute.
+      - name: Install Paid Third Party WordPress Themes
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli theme install ${{ secrets.CONVERTKIT_PAID_THEME_URLS }}
+
       # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
       # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
       - name: Install Paid Third Party WordPress Plugins
