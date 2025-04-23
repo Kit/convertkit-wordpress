@@ -67,6 +67,7 @@ jobs:
           'EndToEnd/forms/post-types',
           'EndToEnd/general/other',
           'EndToEnd/general/plugin-screens',
+          'EndToEnd/integrations/divi',
           'EndToEnd/integrations/other',
           'EndToEnd/integrations/wlm',
           'EndToEnd/integrations/woocommerce',
