@@ -170,8 +170,8 @@ class DiviBuilder extends \Codeception\Module
 
 		// Load the Page on the frontend site.
 		$I->waitForElementNotVisible('.et-fb-preloader');
-		$I->waitForElementVisible('.notice-success');
 		$I->wait(2);
+		$I->waitForElementVisible('.notice-success');
 		$I->click('.notice-success a');
 
 		// Wait for frontend web site to load.
