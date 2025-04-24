@@ -90,8 +90,10 @@ class WPCron extends \Codeception\Module
 
 		// Delete the event.
 		$I->click('Delete');
+		$I->acceptPopup();
 
 		// Confirm the event was deleted.
+		$I->waitForElementVisible('#crontrol-message');
 		$I->see('Deleted the cron event ' . $name );
 	}
 
