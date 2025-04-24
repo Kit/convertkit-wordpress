@@ -152,9 +152,9 @@ jobs:
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
+      # WP_DEBUG = false for Divi, Elementor and WishList Member tests, as they throw PHP warnings, deprecations and notices.
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' && matrix.test-groups != 'EndToEnd/integrations/divi' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw
