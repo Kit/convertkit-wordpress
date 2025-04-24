@@ -5,16 +5,16 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Broadcasts Divi Module using the Divi Theme.
+ * Tests for the Kit Broadcasts Divi Module using the Divi Builder Plugin.
  *
- * @since   2.8.0
+ * @since   2.5.7
  */
-class DiviThemeBroadcastsCest
+class DiviPluginBroadcastsCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   2.8.0
+	 * @since   2.5.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -22,14 +22,14 @@ class DiviThemeBroadcastsCest
 	{
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->useTheme('Divi');
+		$I->activateThirdPartyPlugin($I, 'divi-builder');
 	}
 
 	/**
 	 * Test the Broadcasts module works when added
 	 * using Divi's backend editor.
 	 *
-	 * @since   2.8.0
+	 * @since   2.5.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -38,8 +38,6 @@ class DiviThemeBroadcastsCest
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
-
-		$I->amOnAdminPage('themes.php');
 
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Broadcasts: Divi: Backend Editor');
@@ -77,7 +75,7 @@ class DiviThemeBroadcastsCest
 	 * Test the Broadcasts module works when added
 	 * using Divi's frontend editor.
 	 *
-	 * @since   2.8.0
+	 * @since   2.5.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -119,7 +117,7 @@ class DiviThemeBroadcastsCest
 	/**
 	 * Test the Broadcasts module displays the expected message when the Plugin has no credentials
 	 *
-	 * @since   2.8.0
+	 * @since   2.5.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -144,7 +142,7 @@ class DiviThemeBroadcastsCest
 	 * Test the Broadcasts module displays the expected message when the Kit account
 	 * has no broadcasts.
 	 *
-	 * @since   2.8.0
+	 * @since   2.5.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -174,13 +172,13 @@ class DiviThemeBroadcastsCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   2.8.0
+	 * @since   2.5.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->useTheme('twentytwentytwo');
+		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
