@@ -32,7 +32,7 @@ jobs:
       DB_HOST: localhost
       INSTALL_PLUGINS: "admin-menu-editor autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui elementor forminator jetpack-boost woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress" # Don't include this repository's Plugin here.
       INSTALL_PLUGINS_URLS: "https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip" # URLs to specific third party Plugins
-      INSTALL_THEMES_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip"
+      INSTALL_THEMES_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/04/Divi.zip"
       CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
@@ -67,6 +67,8 @@ jobs:
           'EndToEnd/forms/post-types',
           'EndToEnd/general/other',
           'EndToEnd/general/plugin-screens',
+          'EndToEnd/integrations/divi-builder',
+          'EndToEnd/integrations/divi-theme',
           'EndToEnd/integrations/other',
           'EndToEnd/integrations/wlm',
           'EndToEnd/integrations/woocommerce',
@@ -166,9 +168,9 @@ jobs:
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for Elementor and WishList Member tests, as WLM is not yet updated with WordPress 6.4 deprecated functions.
+      # WP_DEBUG = false for Divi, Elementor and WishList Member tests, as they throw PHP warnings, deprecations and notices.
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' && matrix.test-groups != 'EndToEnd/integrations/divi' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw

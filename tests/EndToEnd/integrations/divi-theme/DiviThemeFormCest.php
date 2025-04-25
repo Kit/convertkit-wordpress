@@ -5,16 +5,16 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Form's Divi Module.
+ * Tests for the Kit Form's Divi Module using the Divi Theme.
  *
- * @since   2.5.6
+ * @since   2.8.0
  */
-class DiviFormCest
+class DiviThemeFormCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   2.5.6
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -22,14 +22,14 @@ class DiviFormCest
 	{
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->activateThirdPartyPlugin($I, 'divi-builder');
+		$I->useTheme('Divi');
 	}
 
 	/**
 	 * Test the Form module works when a valid Form is selected
 	 * using Divi's backend editor.
 	 *
-	 * @since   2.5.6
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -66,7 +66,7 @@ class DiviFormCest
 	 * Test the Form module works when a valid Form is selected
 	 * using Divi's backend editor.
 	 *
-	 * @since   2.5.6
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -99,7 +99,7 @@ class DiviFormCest
 	/**
 	 * Test the Form module displays the expected message when the Plugin has no credentials
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -124,7 +124,7 @@ class DiviFormCest
 	 * Test the Form module displays the expected message when the Kit account
 	 * has no forms.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -152,7 +152,7 @@ class DiviFormCest
 	/**
 	 * Test the Form module works when a valid Legacy Form is selected.
 	 *
-	 * @since   2.5.6
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -193,7 +193,7 @@ class DiviFormCest
 	/**
 	 * Test the Form module works when no Form is selected.
 	 *
-	 * @since   2.5.6
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -227,13 +227,13 @@ class DiviFormCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   2.5.6
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
+		$I->useTheme('twentytwentytwo');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);

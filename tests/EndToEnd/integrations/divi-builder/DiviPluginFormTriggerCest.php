@@ -5,11 +5,11 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Form's Divi Module.
+ * Tests for the Kit Form's Divi Module using the Divi Builder Plugin.
  *
  * @since   2.5.7
  */
-class DiviFormTriggerCest
+class DiviPluginFormTriggerCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.

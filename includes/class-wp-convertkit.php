@@ -41,6 +41,9 @@ class WP_ConvertKit {
 	public function __construct() {
 
 		// Initialize classes that have hooks prior to the `init` hook.
+		// Divi Theme requires us to do this, although the Divi Builder Plugin works fine when loading
+		// our integration on `init`.
+		$this->classes['divi']    = new ConvertKit_Divi();
 		$this->classes['widgets'] = new ConvertKit_Widgets();
 
 		// Initialize Plugin classes on init, so the `_load_textdomain_just_in_time` warning isn't triggered.
@@ -187,7 +190,6 @@ class WP_ConvertKit {
 		$this->classes['pre_publish_action_broadcast_export'] = new ConvertKit_Pre_Publish_Action_Broadcast_Export();
 		$this->classes['broadcasts_exporter']                 = new ConvertKit_Broadcasts_Exporter();
 		$this->classes['broadcasts_importer']                 = new ConvertKit_Broadcasts_Importer();
-		$this->classes['divi']                                = new ConvertKit_Divi();
 		$this->classes['elementor']                           = new ConvertKit_Elementor();
 		$this->classes['gutenberg']                           = new ConvertKit_Gutenberg();
 		$this->classes['media_library']                       = new ConvertKit_Media_Library();

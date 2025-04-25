@@ -5,16 +5,16 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Product's Divi Module.
+ * Tests for the Kit Product's Divi Module using the Divi Theme.
  *
- * @since   2.5.7
+ * @since   2.8.0
  */
-class DiviProductCest
+class DiviThemeProductCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -22,14 +22,14 @@ class DiviProductCest
 	{
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->activateThirdPartyPlugin($I, 'divi-builder');
+		$I->useTheme('Divi');
 	}
 
 	/**
 	 * Test the Product module works when a valid Product is selected
 	 * using Divi's backend editor.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -65,7 +65,7 @@ class DiviProductCest
 	 * Test the Product module works when a valid Product is selected
 	 * using Divi's backend editor.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -97,7 +97,7 @@ class DiviProductCest
 	/**
 	 * Test the Product module displays the expected message when the Plugin has no credentials
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -122,7 +122,7 @@ class DiviProductCest
 	 * Test the Product module displays the expected message when the Kit account
 	 * has no products.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -150,7 +150,7 @@ class DiviProductCest
 	/**
 	 * Test the Product module works when no Product is selected.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -185,13 +185,13 @@ class DiviProductCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   2.5.7
+	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->deactivateThirdPartyPlugin($I, 'divi-builder');
+		$I->useTheme('twentytwentytwo');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);

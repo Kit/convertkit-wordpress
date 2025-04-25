@@ -48,6 +48,7 @@ class DiviBuilder extends \Codeception\Module
 		// Wait for notice to display.
 		$I->waitForElementNotVisible('.et-fb-preloader');
 		$I->waitForElementVisible('.notice-success');
+		$I->wait(2);
 
 		// Remove transient set by Divi that would show the welcome modal.
 		$I->dontHaveTransientInDatabase('et_builder_show_bfb_welcome_modal');
@@ -136,6 +137,7 @@ class DiviBuilder extends \Codeception\Module
 
 		// Insert module.
 		$I->waitForElementVisible('li.' . $programmaticName);
+		$I->wait(2);
 		$I->click('li.' . $programmaticName);
 
 		// Wait for module to load.
@@ -168,6 +170,7 @@ class DiviBuilder extends \Codeception\Module
 
 		// Load the Page on the frontend site.
 		$I->waitForElementNotVisible('.et-fb-preloader');
+		$I->wait(2);
 		$I->waitForElementVisible('.notice-success');
 		$I->click('.notice-success a');
 
