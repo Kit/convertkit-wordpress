@@ -54,7 +54,7 @@ class ConvertKit_Divi_Extension extends DiviExtension {
 		$this->plugin_dir     = CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/';
 		$this->plugin_dir_url = CONVERTKIT_PLUGIN_URL . 'includes/integrations/divi/';
 
-		// Divi Builder Plugin calls `divi_extensions_init` later, resulting in convertkit_get_blocks() containing any data.
+		// Divi Builder Plugin calls `divi_extensions_init` later, resulting in convertkit_get_blocks() containing data.
 		// Using `init` to populate _builder_js_data is too late, so we do this now.
 		$this->_builder_js_data = convertkit_get_blocks();
 
