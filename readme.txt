@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6.20
-Stable tag: 2.7.9
+Stable tag: 2.8.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -158,6 +158,9 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.8.0 2025-04-24
+* Fix: Divi Theme: Register modules correctly (Broadcasts, Form, Form Trigger, Product)
 
 ### 2.7.9 2025-04-18
 * Fix: Fatal error `Uncaught Error: Class "ConvertKit_Admin_Bulk_Edit" not found` when using Solid Central (previously iThemes Sync)
@@ -566,130 +569,6 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 * Added: Gutenberg: Option to link text or button to a Kit Product or Tip Jar
 * Added: Classic Editor: Option to link text or button to a Kit Product or Tip Jar
 * Added: Settings: Improved UI
-
-### 1.9.8.5 2022-10-03
-* Added: Broadcasts: Shortcode: Options to specify background, text and link colors
-* Added: Broadcasts: Elementor: Options to specify background, text and link colors
-* Added: Settings: General: Links added to preview Default Form for each Post Type
-
-### 1.9.8.4 2022-09-08
-* Added: Setup Wizard for new installations
-* Fix: Text Editor: Quicktag Buttons: Position and size modal window correctly to avoid scrollbars and whitespace
-* Fix: Widgets: Legacy Forms Widget: "The convertkit_form block was affected by errors and may not function properly" when attempting to add legacy form widget
-* Development: Moved /lib folder to managed repository
-
-### 1.9.8.3 2022-08-19
-* Added: Settings: Tools: Use WordPress' Site Info to populate System Info section
-* Added: Refresh button: Show error notification when refreshing fails
-* Fix: Widgets: Broadcasts Block: JSON response error when attempting to save Broadcasts Block in a Widget area
-* Fix: Classic (Visual) and Text Editor: Insert shortcode into correct editor when multiple editor instances exist (e.g. WooCommerce Products)
-
-### 1.9.8.2 2022-08-04
-* Fix: API: Show error notification when API returns HTTP 500 and 502 errors, instead of showing PHP warnings
-* Fix: Bulk and Quick Edit: `for` label attribute now matches the field ID
-
-### 1.9.8.1 2022-07-18
-* Added: Refresh button for Form, Landing Page and Tag fields to fetch latest data from Kit account
-* Fix: Bulk Edit: Don't display fields when no Pages / Posts exist
-
-### 1.9.8.0 2022-07-14
-* Added: Bulk and Quick Edit Form and Tag when viewing list of Pages/Posts
-* Fix: Performance: Don't perform API requests on every WordPress Administration screen when no Forms, Tags or Landing Pages exist
-
-### 1.9.7.9 2022-06-24
-* Fix: API: Prevent fatal error when API returns null instead of expected array
-
-### 1.9.7.8 2022-06-23
-* Added: Elementor Page Builder: Kit Broadcasts Widget
-* Fix: Integration: WishList Member: Unsubscribe email address from Kit if 'unsubscribe' configured and member level removed
-* Fix: Remove double forwardslash on some enqueued scripts and styles 
-
-### 1.9.7.7 2022-06-09
-* Added: Broadcasts: Option to enable pagination on block/shortcode
-
-### 1.9.7.6 2022-06-01
-* Added: Kit Broadcasts Block when editing Widgets using the block editor in WordPress 5.8+
-* Added: Kit Form Block when editing Widgets using the block editor in WordPress 5.8+
-* Fix: Kit Broadcasts Block/Shortcode: Fetch all Broadcasts from Kit, not just the first 50
-* Fix: Settings: Added label element for setting field names
-
-### 1.9.7.5 2022-05-12
-* Fix: PHP Warning: Cannot modify header information, caused by QuickTags modal template output
-* Fix: Text Editor: Quicktag Buttons: Block could not be found error when using a Quicktag
-
-### 1.9.7.4 2022-05-04
-* Added: Kit Broadcasts Block, to output a list of Kit broadcasts
-* Added: Kit Broadcasts Shortcode [convertkit_broadcasts], to output a list of Kit broadcasts
-* Added: Settings: Tools: Import and Export configuration
-* Fix: Page/Post: If a specific Form is selected that no longer exists in Kit, fallback to the Default Form setting
-
-### 1.9.7.3 2022-04-04
-* Added: Elementor Page Builder: Kit Form Widget
-* Fix: Default Form would not display on Posts assigned to Categories, where Categories were created prior to 1.9.6.0 and site uses PHP 8.0 or greater
-* Fix: Categories: Improved wording of Form setting on per-Category level
-
-### 1.9.7.2 2022-03-30
-* Fix: Default Form would not display on Posts due to regression in 1.9.7.1
-
-### 1.9.7.1 2022-03-23
-* Fix: Default Form would not display on Posts due to regression in 1.9.7.0
-
-### 1.9.7.0 2022-03-17
-* Fix: Kit Form Block: Order Form names alphabetically
-* Fix: Prevent Select2 styling from applying to non-Plugin elements
-
-### 1.9.6.9 2022-03-07
-* Added: Kit Form Block: When editing, display the Form Name if a non-inline form has been selected, as non-inline forms cannot be previewed in the editor
-* Fix: Include email address in API request when attempting to fetch subscriber ID by email when Kit Form is submitted with no email address
-
-### 1.9.6.8 2022-02-18
-* Fix: Performance: Don't query API to fetch subscriber ID by email when Kit Form is submitted with no email address
-
-### 1.9.6.7 2022-02-14
-* Fix: Localization: Corrected path to load language files
-
-### 1.9.6.6 2022-01-27
-* Fix: Plugin Activation: Parse error when using PHP 7.2 or below due to trailing comma in sprintf() call
-
-### 1.9.6.5 2022-01-26
-* Added: Kit Form Block for Gutenberg
-* Added: Select2 dropdown for Forms, Landing Pages and Tags with search functionality for improved UX.
-* Fix: Legacy Forms: Removed erronous <html>, <head> and <body> tags from markup 
-
-### 1.9.6.4 2022-01-11
-* Fix: Render Legacy Form when shortcode is copied from app.kit.com for a Legacy Form
-* Fix: Don't check for Landing Page when viewing any non-Page public Post Type which doesn't support Landing Pages
-* Fix: PHP Notice: Undefined index landing_page when upgrading from 1.4.6 or earlier
-* Fix: PHP Notice: Undefined index tag when upgrading from 1.4.6 or earlier
-
-### 1.9.6.3 2021-12-23
-* Fix: Render Legacy Landing Pages
-
-### 1.9.6.2 2021-12-22
-* Fix: Render Form Shortcode when a new Kit Form ID specified that does not yet exist in Plugin's cached Form Resources
-
-### 1.9.6.1 2021-12-16
-* Fix: Character encoding issue on Landing Pages
-* Fix: Removed unused .scripts directory and .MD files
-
-### 1.9.6 2021-12-15
-* Added: Kit Form Shortcode Button for Classic Editor
-* Added: Text Editor: Quicktag Buttons for inserting Kit Forms and Custom Content
-* Added: Settings: Kit: Logo and branding header
-* Added: Option to specify Kit API Key and Secret as constants `CONVERTKIT_API_KEY` and `CONVERTKIT_API_SECRET` in wp-config.php
-* Added: Settings: Kit: General: Different Default Forms can be specified for Pages and Posts
-* Added: Settings: Kit: General: Enabling Debug option will also output data to browser console and inline HTML comments
-* Added: Settings: Kit: Tools: Option to Download Log to text file
-* Added: Settings: Kit: Tools: Option to Download System Info to text file
-* Added: PHP 8.x compatibility
-* Added: Developers: Action and filter hooks.  See https://github.com/convertkit/convertkit-wordpress/blob/1.9.6/ACTIONS-FILTERS.md
-* Fix: PHP warnings on new installations when adding/editing Pages or Posts where the plugin was not yet configured
-* Fix: PHP 8.x: PHP Deprecated warnings where required parameters wrongly followed optional parameters
-* Fix: gzinflate() data error
-* Fix: Deprecated edit_category_form_fields warning
-* Fix: Integration: WishList Member: Unsubscribe Action 'Unsubscribe from all' now honored when selected and saved
-* Fix: Ensure code meets WordPress Coding Standards
-* Fix: Use WP_Filesystem instead of PHP functions to read/write log file, per WordPress Coding Standards
 
 [See changelog for all versions](https://github.com/convertkit/convertkit-wordpress/CHANGELOG.md).
 

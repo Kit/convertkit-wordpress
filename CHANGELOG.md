@@ -1,3 +1,175 @@
+### 2.8.0 2025-04-24
+* Fix: Divi Theme: Register modules correctly (Broadcasts, Form, Form Trigger, Product)
+
+### 2.7.9 2025-04-18
+* Fix: Fatal error `Uncaught Error: Class "ConvertKit_Admin_Bulk_Edit" not found` when using Solid Central (previously iThemes Sync)
+* Fix: Use `add_filter` for `convertkit_admin_settings_register_sections` hook
+
+### 2.7.8 2025-04-10
+* Fix: Divi Builder: Display Visual Editor / TinyMCE buttons when Divi Builder or Divi Theme active
+* Fix: Member Content: Improved support for Uncode Theme
+* Updated: Use WordPress Libraries 2.0.8
+
+### 2.7.7 2025-04-01
+* Added: Member Content: Support for Uncode Theme
+* Fix: Member Content: Prevent fatal error when both `Add a Tag` and `Member Content` settings defined on a Page, and the visitor has entered the Member Content code / clicked the magic link via email
+* Fix: Default Forms (Site Wide): Don't output non-inline site wide forms on 404 or search pages
+* Fix: Gutenberg / Block Editor: Improved method for block editor detection to prevent loading JS when a page builder is active
+
+### 2.7.6 2025-03-25
+* Fix: Remove `load_plugin_textdomain` call, as it's not needed since WordPress 4.6
+* Fix: Issue client ID, site-specific v4 API Access and Refresh Token when upgrading from < 2.5.0
+* Fix: Member Content: Only automatically configure caching Plugins if Member Content is used on a Page, Post or Custom Post
+* Updated: Use WordPress Libraries 2.0.7
+
+### 2.7.5 2025-03-07
+* Fix: Member Content: Set `wordpress_ck_subscriber_id` cookie to beat WP Engine's server caching
+* Fix: Settings: Forms: Check Post Type of main Post, to ensure correct form is output when multiple Posts output on a singular Post, Page or CPT
+
+### 2.7.4 2025-02-24
+* Added: Broadcasts (Beta): `convertkit-broadcast` body CSS class to Posts imported from Kit Broadcasts, to allow targeted CSS styles
+* Fix: Broadcasts (Beta): Remove table borders and background colors added by Elementor on imported Kit Broadcasts
+* Fix: Member Content: Support magic links in emails
+* Fix: Tools: Import & Export: Include Broadcasts settings
+
+### 2.7.3 2025-02-18
+* Added: Member Content: Tags: Display login link when `Require login` option enabled
+* Added: Member Content: Option to gate content by Kit Form
+* Added: Default Forms (Site Wide): Option to honor `None` setting on Page, Post and Custom Post level
+* Updated: Use WordPress Libraries 2.0.6
+
+### 2.7.2 2025-02-04
+* Added: Member Content: Option to require login when gating content by Tag. Subscribers receive an email with a magic link / code to securely access member-only content
+* Added: Broadcasts (Beta): Option to export WordPress Pages and Custom Post Types to draft Kit Broadcasts using `Create Broadcast in Kit` option in admin tables
+* Added: Settings: Intercom help integration
+* Fix: Remove `ck_subscriber_id` from URL using `replaceState`, ensuring current URL is only stored once in browser history
+
+### 2.7.1 2025-01-23
+* Added: Populate the `referrer` property in Kit when Contact Form 7 or Forminator is configured to subscribe an email address to a Kit Form
+* Added: Settings: Group Settings in UI
+* Added: Refresh resources button to update the list of Kit Forms / Products when using an applicable block or shortcode
+* Added: Member Content: Support using a signed subscriber ID when viewing content gated by Kit Tag
+* Fix: Settings: Uncaught TypeError when clicking Save Changes at Settings > Kit when a Kit account has no resources and no checkboxes are checked
+* Updated: Kit WordPress Libraries to 2.0.6
+
+### 2.7.0 2024-12-18
+* Added: Member Content: Automatically configure WP Rocket to not cache when the `ck_subscriber_id` cookie is present, to ensure Member Content correctly displays
+* Fix: Don't strip hash from URL, ensuring anchor links work
+
+### 2.6.9 2024-12-12
+* Added: Settings: Default Forms (Site Wide): Option to specify more than one non-inline site wide Form
+* Added: Settings: Member Content: Option to enable Google reCAPTCHA v3 when using Member Content by Tag functionality 
+
+### 2.6.8 2024-12-07
+* Fix: Fatal error when a non-inline Form specified in Plugin, Post or Category settings and Form Position set to `After element`
+
+### 2.6.7 2024-12-04
+* Removed: `convertkit_store_subscriber_id_in_cookie` AJAX call, as logic exists server side
+
+### 2.6.6 2024-11-27
+* Added: Categories: `None` option added to specify no Form displays on Posts assigned to the Category
+* Added: Honor Block Visibility Plugin's conditions when used on a Kit Form block set to output a non-inline Form
+* Fix: Character encoding when a Form is set to display after a specific element at `Settings > Kit > Form Position`
+* Fix: Settings: Broadcasts: Ensure `Import Now` displays
+* Fix: Broadcasts: Automatically reschedule cron event for importing Broadcasts to WordPress Posts, if removed
+
+### 2.6.5 2024-11-13
+* Added: OAuth: Issue site-specific Access and Refresh Token when using the same Kit account on multiple WordPress sites
+* Fix: Exclude Forms from WP Rocket Minification and Combine
+* Updated: ConvertKit WordPress Libraries to 2.0.5
+
+### 2.6.4 2024-11-05
+* Added: Settings: Broadcasts: Option to import images to the WordPress Media Library when importing Broadcasts to WordPress Posts
+* Added: Broadcasts: Remove heading title from content when it matches the Broadcast's title
+* Fix: Broadcasts: Retain `figure` and `figcaption` elements when importing Broadcasts to WordPress Posts
+
+### 2.6.3 2024-10-28
+* Added: Broadcasts: Exclude Polls when importing Broadcasts to WordPress Posts
+* Added: Settings: Forms: Only display Form settings if Forms exist in Kit
+* Fix: Add a Tag: Honor setting when defined on individual WordPress Pages and Posts, using the v4 API Access Token
+
+### 2.6.2 2024-10-18
+* Added: Settings: Option to output Default Forms after a given number of elements (paragraphs, headings, images)
+
+### 2.6.1 2024-10-08
+* Fix: Kit branding tweaks and secondary button colors
+
+### 2.6.0 2024-10-01
+* Fix: Landing Pages: Replace Cloudflare JS `type` prefixes, to ensure JS runs
+* Updated: Changed branding to Kit
+* Updated: Kit WordPress Libraries to 2.0.4
+
+### 2.5.9 2024-09-27
+* Added: Settings: Option to output Default Forms above, below or above and below content
+* Fix: Settings: Initialize Forms Resource class when no public Post Types (resolves PHP Uncaught Error: `Call to a member function non_inline_exist() on bool`)
+* Fix: Landing Pages: Correctly parse HTML, honoring redirect if "Redirect to an external page" defined on Landing Page in Kit
+* Fix: Query separator / question mark incorrectly appended to URLs when `ck_subscriber_id` cookie set
+* Fix: JS Uncaught TypeError: `Cannot read properties of null (reading ‘matches’)`
+* Fix: PHP Warning: `Attempt to read property “base” on null`
+* Updated: Kit WordPress Libraries to 2.0.3
+
+### 2.5.8 2024-09-18
+* Added: Remove jQuery as a dependency from some backend JS
+* Fix: Fatal error `Uncaught TypeError: Kit_API_V4::get_subscriber(): Argument #1 ($form_id) must be of type int, string given` when a blank or non-numeric `ck_subscriber_id` supplied in the URL
+
+### 2.5.7 2024-09-16
+* Added: Divi: Kit Broadcasts Module
+* Added: Divi: Kit Form Trigger Module
+* Added: Divi: Kit Product Module
+* Fix: Landing Pages: Honor redirect if "Redirect to an external page" defined on Landing Page in Kit
+* Fix: Preserve other URL query parameters when removing `ck_subscriber_id`
+
+### 2.5.6 2024-08-15
+* Added: Pages: Add New Landing Page Setup Wizard, to easily create a WordPress Page that displays a Kit Landing Page
+* Added: Divi: Kit Form Module
+* Updated: Pages: Landing Page + Member Content Wizards now display in a dropdown button
+
+### 2.5.5 2024-08-15
+* Fix: Contact Form 7: Set subscriber to `inactive` when a Kit Form is specified, honoring the Form's opt in setting.
+* Fix: Forminator: Set subscriber to `inactive` when a Kit Form is specified, honoring the Form's opt in setting.
+* Fix: WishList Member: Set subscriber to `inactive` when a Kit Form is specified, honoring the Form's opt in setting.
+
+### 2.5.4 2024-08-08
+* Added: WishList Member: Option to just subscribe email, subscribe to a Form, Tag or Sequence or unsubscribe
+* Fix: Contact Form 7: Typo on description text
+* Fix: Forminator: Typo on description text
+
+### 2.5.3 2024-08-06
+* Fix: Contact Form 7: Update description on settings screen to reflect new settings
+* Fix: Forminator: Update description on settings screen to reflect new settings
+* Fix: WishList Member: Fatal error `Uncaught TypeError: Kit_API_V4::add_subscriber_to_form(): Argument #1 ($form_id) must be of type int, string given`
+
+### 2.5.2 2024-07-25
+* Added: Contact Form 7: Option to just subscribe email, or subscribe to a Form, Tag or Sequence
+* Added: Forminator: Option to just subscribe email, or subscribe to a Form, Tag or Sequence
+
+### 2.5.1 2024-07-17
+* Fix: Landing Pages: Prevent Perfmatters lazy loading images on Landing Pages, which would result in missing images
+* Updated: Kit WordPress Libraries to 2.0.1
+
+### 2.5.0 2024-07-09
+* Added: Use Kit v4 API and OAuth
+* Updated: Kit WordPress Libraries to 2.0.0
+
+### 2.4.9.1 2024-06-20
+* Added: Categories: Option to display specified Kit Form on Category archives
+* Fix: Move "Add a Tag" logic to backend when tagging a subscriber, instead of using AJAX
+
+### 2.4.9 2024-05-13
+* Fix: Settings: Don't import Broadcasts to WordPress Posts when viewing Settings screen, for performance
+* Fix: Broadcasts (Beta): Check `DOMDocument` available to parse Broadcasts, instead of producing a fatal error
+* Fix: Autoptimize: Don't output duplicate Forms when Autoptimize's `Defer JS` option is enabled
+* Updated: Removed upgrade path from Plugin versions below 1.4.1
+
+### 2.4.8 2024-04-11
+* Fix: Member Content: Display Content when using a frontend Page Builder, such as Beaver Builder
+* Fix: Forms: Sticky Bar: Set `z-index` CSS property to ensure Sticky Bar Forms correctly display over some WordPress Theme headers and menus
+
+### 2.4.7 2024-04-08
+* Fix: WP-Rocket: Display Forms when WP-Rocket's `Delay JavaScript Execution` option is enabled
+* Fix: Perfmatters: Display Forms when Perfmatters' `Delay JavaScript` option is enabled
+* Fix: Broadcasts (Beta): Improve parsing of Broadcasts when removing unsubscribe and hidden sections
+
 ### 2.4.6 2024-03-08
 * Fix: Debug Log: Change log file location to log subfolder, with .htaccess and index.html protection
 * Fix: Debug Log: Mask email addresses, first names and signed subscriber IDs
