@@ -170,7 +170,7 @@ jobs:
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for other integraiton tests, as Elementor in PHP 8.4 throws a deprecation notice
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'EndToEnd/integrations/other' && ${{ matrix.php-versions }} != '8.4' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/integrations/other' && matrix.php-versions != '8.4' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw
