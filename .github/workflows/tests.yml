@@ -170,7 +170,7 @@ jobs:
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for Divi, Elementor and WishList Member tests, as they throw PHP warnings, deprecations and notices.
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' && matrix.test-groups != 'EndToEnd/integrations/divi' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/integrations/other' && ${{ matrix.php-versions }} != '8.4' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw
