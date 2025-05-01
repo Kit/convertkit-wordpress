@@ -56,7 +56,7 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.1', '8.2', '8.3' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.1', '8.2', '8.3', '8.4' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
@@ -168,9 +168,9 @@ jobs:
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for Divi, Elementor and WishList Member tests, as they throw PHP warnings, deprecations and notices.
+      # WP_DEBUG = false for other integraiton tests, as Elementor in PHP 8.4 throws a deprecation notice
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'EndToEnd/integrations/wlm' && matrix.test-groups != 'EndToEnd/integrations/elementor' && matrix.test-groups != 'EndToEnd/integrations/divi' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/integrations/other' && matrix.php-versions != '8.4' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set WP_DEBUG true --raw

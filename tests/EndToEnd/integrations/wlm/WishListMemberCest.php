@@ -21,6 +21,7 @@ class WishListMemberCest
 	public function _before(EndToEndTester $I)
 	{
 		$I->activateKitPlugin($I);
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'wishlist-member');
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
@@ -532,6 +533,8 @@ class WishListMemberCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		$I->deactivateThirdPartyPlugin($I, 'wishlist-member');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
