@@ -4,7 +4,7 @@ Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.8
-Requires PHP: 5.6.20
+Requires PHP: 7.1
 Stable tag: 2.8.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
