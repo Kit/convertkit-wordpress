@@ -81,6 +81,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 				// This Plugin supports GET so it is in line with WordPress' media endpoint.
 				'methods'  => array( 'GET', 'POST' ),
 				'callback' => array( $this, 'get_images' ),
+				'permission_callback' => '__return_true',
 			)
 		);
 
@@ -105,28 +106,26 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		$request->set_query_params( $params );
 
 		// Call WP_REST_Attachments_Controller get_items() method for the given REST API request.
-		$results = $this->get_items( $request );
+		$response = $this->get_items( $request );
 
 		// Restructure the image data from WP_REST_Attachments_Controller::get_items()
 		// to match the structure required for the Kit Media Source Plugin.
-		$data = $this->parse_image_data( $results->get_data() );
+		$data = $this->parse_image_data( $response->get_data() );
 
-		// Return the JSON response.
+		// Return the JSON response in the structure required by the Kit Media Source Plugin.
 		return new WP_REST_Response(
 			array(
 				// For debugging only.
-				'request'    => array(
-					'params'       => $request->get_params(),
-					'query_params' => $request->get_query_params(),
-					'headers'      => $results->get_headers(),
+				'debug'    => array(
+					'request_params'       => $request->get_params(),
+					'request_query_params' => $request->get_query_params(),
+					'response_headers'     => $response->get_headers(),
 				),
-
-				// Required by Kit Media Source Plugin.
 				'pagination' => array(
-					'has_previous_page' => false,
-					'has_next_page'     => true,
-					'start_cursor'      => 'WzEzXQ==', // previous page id.
-					'end_cursor'        => 'WzE0XQ==', // next page id.
+					'has_previous_page' => $this->has_previous_page( $request, $response ),
+					'has_next_page'     => $this->has_next_page( $request, $response ),
+					'start_cursor'      => $this->previous_page_id( $request, $response ),
+					'end_cursor'        => $this->next_page_id( $request, $response ),
 					'per_page'          => 100,
 				),
 				'data'       => $data,
@@ -134,6 +133,24 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		);
 
 	}
+
+	private function has_previous_page( WP_REST_Request $request, WP_REST_Response $response ) {
+
+		$headers = $response->get_headers();
+
+		if ( ! array_key_exists( 'X-WP-Total', $headers ) ) {
+			return false;
+		}
+
+		return $headers['X-WP-Total'] > 100;
+
+	}
+
+	private function has_next_page( WP_REST_Request $request ) {
+
+	}
+	
+	
 
 	/**
 	 * Returns the settings[query] parameter from the REST API request.
