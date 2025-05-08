@@ -859,7 +859,7 @@ class ForminatorCest
 
 		// Complete quiz.
 		$I->checkOption('answers[question-1-0]', '0');
-		$I->click('View Results');
+		$I->click('button.forminator-button-submit');
 
 		// Complete Name and Email.
 		$I->waitForElementVisible('input[name=name-1]');
