@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -158,6 +158,12 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.8.1 2025-05-07
+* Added: Member Content: Permits Apple, DuckDuckGo, OpenAI Search, Perplexity and Yandex to crawl Member Content if the Permit Search Engine Crawlers option is enabled
+* Fix: Classic Editor: Display refresh button icon
+* Updated: Require PHP 7.1 or greater
+* Updated: Use WordPress Libraries 2.0.9
 
 ### 2.8.0 2025-04-24
 * Fix: Divi Theme: Register modules correctly (Broadcasts, Form, Form Trigger, Product)

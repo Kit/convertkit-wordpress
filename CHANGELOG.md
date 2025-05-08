@@ -1,3 +1,9 @@
+### 2.8.1 2025-05-07
+* Added: Member Content: Permits Apple, DuckDuckGo, OpenAI Search, Perplexity and Yandex to crawl Member Content if the Permit Search Engine Crawlers option is enabled
+* Fix: Classic Editor: Display refresh button icon
+* Updated: Require PHP 7.1 or greater
+* Updated: Use WordPress Libraries 2.0.9
+
 ### 2.8.0 2025-04-24
 * Fix: Divi Theme: Register modules correctly (Broadcasts, Form, Form Trigger, Product)
 

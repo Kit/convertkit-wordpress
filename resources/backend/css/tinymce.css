@@ -56,6 +56,7 @@
 .convertkit-option input,
 .convertkit-option select {
 	border: 1px solid #8c8f94;
+	width: auto;
 }
 .convertkit-option input[type=color] {
 	width: 80px;
@@ -66,6 +67,18 @@
 }
 .convertkit-option p {
 	white-space: normal;
+}
+
+/**
+* Dashicons
+* - TinyMCE overrides some defaults, such as the font-family, so we redefine them here.
+*/
+form.convertkit-tinymce-popup .dashicons {
+	font-family: dashicons;
+	width: 20px;
+	height: 30px;
+	font-size: 20px;
+	line-height: 30px;
 }
 
 /**
