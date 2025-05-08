@@ -174,10 +174,6 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		// Return the JSON response in the structure required by the Kit App Media Source Plugin.
 		return new WP_REST_Response(
 			array(
-				'debug'      => array(
-					'request_params'             => $params_before,
-					'rest_api_compatible_params' => $params,
-				),
 				'pagination' => array(
 					'has_previous_page' => (bool) $this->has_previous_page( $request ),
 					'has_next_page'     => (bool) $this->has_next_page( $request, $response ),
@@ -221,7 +217,12 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		);
 
 		// Convert the results to the format required by the Kit App Media Source Plugin.
-		$data = array();
+		$data = array(
+			array(
+				'label' => __( 'All Dates', 'convertkit' ),
+				'value' => '0',
+			),
+		);
 		foreach ( $results as $result ) {
 			$data[] = array(
 				'label' => date_i18n( 'F Y', strtotime( $result->year . '-' . $result->month . '-01' ) ),
@@ -229,7 +230,11 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 			);
 		}
 
-		return new WP_REST_Response( $data );
+		return new WP_REST_Response(
+			array(
+				'options' => $data,
+			)
+		);
 
 	}
 
@@ -245,23 +250,25 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 
 		return new WP_REST_Response(
 			array(
-				array(
-					'label' => __( 'Date, Descending', 'convertkit' ),
-					'value' => 'date_desc',
+				'options' => array(
+					array(
+						'label' => __( 'Date, Ascending', 'convertkit' ),
+						'value' => 'date_asc',
+					),
+					array(
+						'label' => __( 'Date, Descending', 'convertkit' ),
+						'value' => 'date_desc',
+					),
+					array(
+						'label' => __( 'Title, Ascending', 'convertkit' ),
+						'value' => 'title_asc',
+					),
+					array(
+						'label' => __( 'Title, Descending', 'convertkit' ),
+						'value' => 'title_desc',
+					),
 				),
-				array(
-					'label' => __( 'Date, Ascending', 'convertkit' ),
-					'value' => 'date_asc',
-				),
-				array(
-					'label' => __( 'Title, Descending', 'convertkit' ),
-					'value' => 'title_desc',
-				),
-				array(
-					'label' => __( 'Title, Ascending', 'convertkit' ),
-					'value' => 'title_asc',
-				),
-			)
+			),
 		);
 
 	}
@@ -432,11 +439,13 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 			return false;
 		}
 
-		if ( is_null( $settings[ $this->date_parameter ] ) ) {
+		// empty() as date parameter might be 0 (All Dates) or yyyy-mm.
+		if ( empty( $settings[ $this->date_parameter ] ) ) {
 			return false;
 		}
 
-		return sanitize_text_field( $settings[ $this->date_parameter ] ) . '-31';
+		$date = sanitize_text_field( $settings[ $this->date_parameter ] );
+		return $date . '-' . gmdate( 't', strtotime( $date . '-01' ) );
 
 	}
 
@@ -461,7 +470,8 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 			return false;
 		}
 
-		if ( is_null( $settings[ $this->date_parameter ] ) ) {
+		// empty() as date parameter might be 0 (All Dates) or yyyy-mm.
+		if ( empty( $settings[ $this->date_parameter ] ) ) {
 			return false;
 		}
 
@@ -565,11 +575,11 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 				// Use the large size as the thumbnail, so it's a sufficient resolution for the Kit App Media Source Plugin.
 				// Sometimes an image might be so small that it does not have a 'large' size; in this case, use the source URL.
 				'thumbnail_url' => isset( $image['media_details']['sizes']['large']['source_url'] ) ? $image['media_details']['sizes']['large']['source_url'] : $image['source_url'],
-				'alt'           => $image['alt_text'],
-				'caption'       => $image['caption']['rendered'],
-				'title'         => ( ! empty( $image['title']['rendered'] ) ? $image['title']['rendered'] : $image['media_details']['sizes']['full']['file'] ),
+				'alt'           => trim( wp_strip_all_tags( $image['alt_text'] ) ),
+				'caption'       => trim( wp_strip_all_tags( $image['caption']['rendered'] ) ),
+				'title'         => trim( wp_strip_all_tags( ! empty( $image['title']['rendered'] ) ? $image['title']['rendered'] : $image['media_details']['sizes']['full']['file'] ) ),
 				'attribution'   => array(
-					'label' => $image['title']['rendered'],
+					'label' => trim( wp_strip_all_tags( $image['title']['rendered'] ) ),
 					'href'  => $image['source_url'],
 				),
 			);
