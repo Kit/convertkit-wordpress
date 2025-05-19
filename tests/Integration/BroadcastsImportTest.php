@@ -318,7 +318,8 @@ class BroadcastsImportTest extends WPTestCase
 		$this->assertEquals('hello-world-123', $this->importer->generate_permalink('Hello World 123 🌍'));
 		$this->assertEquals('hello-123-world', $this->importer->generate_permalink('Hello ❤️‍🩹 123 ❤️ World'));
 		$this->assertEquals('123-hello-world', $this->importer->generate_permalink('🩹 123 👍🏿 Hello World'));
-		$this->assertEquals('accented-test', $this->importer->generate_permalink('🩹 Accénted test 👍🏿'));
+		$this->assertEquals('cafe-deja-vu', $this->importer->generate_permalink('🩹 Café déjà-vu! 👍🏿'));
+		$this->assertEquals('cafe-deja-vu', $this->importer->generate_permalink('Café déjà-vu!'));
 	}
 
 	/**
