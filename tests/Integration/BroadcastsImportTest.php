@@ -307,6 +307,21 @@ class BroadcastsImportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the generate_permalink() function strips emojis, and runs the string
+	 * through the WordPress sanitize_title() function, which will convert the string
+	 * to lowercase and replace spaces with hyphens.
+	 *
+	 * @since   2.8.2
+	 */
+	public function testGeneratePermalinkFunction()
+	{
+		$this->assertEquals('hello-world-123', $this->importer->generate_permalink('Hello World 123 🌍'));
+		$this->assertEquals('hello-123-world', $this->importer->generate_permalink('Hello ❤️‍🩹 123 ❤️ World'));
+		$this->assertEquals('123-hello-world', $this->importer->generate_permalink('🩹 123 👍🏿 Hello World'));
+		$this->assertEquals('accented-test', $this->importer->generate_permalink('🩹 Accénted test 👍🏿'));
+	}
+
+	/**
 	 * Assert that the created Post's content is valid.
 	 *
 	 * @since   2.6.4
