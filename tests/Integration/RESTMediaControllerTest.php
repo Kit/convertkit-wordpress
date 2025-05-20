@@ -19,26 +19,6 @@ class RestMediaControllerTest extends WPRestApiTestCase
 	protected $tester;
 
 	/**
-	 * Performs actions before each test.
-	 *
-	 * @since   3.0.0
-	 */
-	public function setUp(): void
-	{
-		parent::setUp();
-	}
-
-	/**
-	 * Performs actions after each test.
-	 *
-	 * @since   3.0.0
-	 */
-	public function tearDown(): void
-	{
-		parent::tearDown();
-	}
-
-	/**
 	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is empty.
 	 *
 	 * @since   3.0.0
@@ -46,147 +26,375 @@ class RestMediaControllerTest extends WPRestApiTestCase
 	public function testEmpty()
 	{
 		$response = $this->request();
-        $this->assertPaginationStructureValid($response);
-        $this->assertDataStructureEmpty($response);
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureEmpty($response);
 	}
 
-    /**
+	/**
 	 * Test that calling `wp-json/kit/v4/media` works when the Media Library contains
-     * attachments, but no images.
+	 * attachments, but no images.
 	 *
 	 * @since   3.0.0
 	 */
 	public function testEmptyWhenNoImages()
 	{
-        $this->tester->factory()->attachment->create_upload_object( 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' );
+		$this->tester->factory()->attachment->create_upload_object( 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' );
 		$response = $this->request();
-        $this->assertPaginationStructureValid($response);
-        $this->assertDataStructureEmpty($response);
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureEmpty($response);
 	}
 
-    /**
-     * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images.
-     * 
-     * @since   3.0.0
-     */
-    public function testSearch()
-    {
-        $this->populateMediaLibrary();
-		$response = $this->request([
-            'per_page' => 1,
-        ]);
-        $this->assertPaginationStructureValid(
-            response: $response,
-            perPage: 1
-        );
-        $this->assertDataStructureValid($response, 1);
-    }
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and a matching search term is used.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testSearch()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
 
-    /**
-     * Populates the Media Library with test images and documents.
-     * 
-     * @since   3.0.0
-     */
-    private function populateMediaLibrary()
-    {
-        $this->tester->factory()->attachment->create_upload_object( 'https://placehold.co/600x400.jpg' );
-        $this->tester->factory()->attachment->create_upload_object( 'https://placehold.co/600x400.png' );
-        $this->tester->factory()->attachment->create_upload_object( 'https://placehold.co/600x400.gif' );
-        $this->tester->factory()->attachment->create_upload_object( 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' );
-    }
+		// Search using a partial title match.
+		$response = $this->request(
+			[
+				'settings' => [
+					'search' => '600x400',
+				],
+			]
+		);
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureValid($response, 1);
+	}
 
-    /**
-     * Assert that the pagination structure is valid.
-     *
-     * @since   3.0.0
-     *
-     * @param array $pagination The pagination to assert.
-     */
-    private function assertPaginationStructureValid($response, $hasPreviousPage = false, $hasNextPage = true, $startCursor = '1', $endCursor = '2', $perPage = 24)
-    {
-        $this->assertArrayHasKey('pagination', $response);
-        $pagination = $response['pagination'];
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and a non-matching search term is used.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testSearchNoResults()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
 
-        // Assert expected array keys exist.
-        $this->assertArrayHasKey('has_previous_page', $pagination);
-        $this->assertArrayHasKey('has_next_page', $pagination);
-        $this->assertArrayHasKey('start_cursor', $pagination);
-        $this->assertArrayHasKey('end_cursor', $pagination);
-        $this->assertArrayHasKey('per_page', $pagination);
+		// Search.
+		$response = $this->request(
+			[
+				'settings' => [
+					'search' => 'not a match',
+				],
+			]
+		);
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureEmpty($response);
+	}
 
-        // Assert expected values exist.
-        $this->assertEquals($hasPreviousPage, $pagination['has_previous_page']);
-        $this->assertEquals($hasNextPage, $pagination['has_next_page']);
-        $this->assertEquals($startCursor, $pagination['start_cursor']);
-        $this->assertEquals($endCursor, $pagination['end_cursor']);
-        $this->assertEquals($perPage, $pagination['per_page']);
-    }
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and a date filter is used that has images for that month and year.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testDateFilter()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
 
-    /**
-     * Assert that the data structure is empty.
-     *
-     * @since   3.0.0
-     *
-     * @param array $response The response to assert.
-     */
-    private function assertDataStructureEmpty($response)
-    {
-        $this->assertArrayHasKey('data', $response);
-        $this->assertEmpty($response['data']);
-    }
+		// Search by month and year.
+		$response = $this->request(
+			[
+				'settings' => [
+					'month_year' => date('Y-m'),
+				],
+			]
+		);
 
-    /**
-     * Assert that the image structure within the `data key is valid.
-     *
-     * @since   3.0.0
-     *
-     * @param array $response The response to assert.
-     */
-    private function assertDataStructureValid($response, $expectedItems = 1)
-    {
-        $this->assertArrayHasKey('data', $response);
-        $this->assertCount($expectedItems, $response['data']);
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureValid($response, 3);
+	}
 
-        // Fetch first image from the data array.
-        $image = $response['data'][0];
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and a date filter is used that has no images for that month and year.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testDateFilterNoResults()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
 
-        // Assert image data is as expected.
-        $this->assertArrayHasKey('id', $image);
-        $this->assertArrayHasKey('type', $image);
-        $this->assertArrayHasKey('url', $image);
-        $this->assertArrayHasKey('thumbnail_url', $image);
-        $this->assertArrayHasKey('alt', $image);
-        $this->assertArrayHasKey('caption', $image);
-        $this->assertArrayHasKey('title', $image);
-        $this->assertArrayHasKey('attribution', $image);
-        $this->assertArrayHasKey('label', $image['attribution']);
-        $this->assertArrayHasKey('href', $image['attribution']); 
-    }
+		// Search using a partial title match.
+		$response = $this->request(
+			[
+				'settings' => [
+					'month_year' => '2020-01',
+				],
+			]
+		);
 
-    /**
-     * Make a request to the Media endpoint.
-     *
-     * @since   3.0.0
-     *
-     * @param array $params The parameters to send with the request.
-     * @param string $method The HTTP method to use for the request.
-     * @return array The response body.
-     */
-    private function request($params = [], $method = 'POST', $expectedStatus = 200)
-    {
-        // Setup request.
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureEmpty($response);
+	}
+
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and an invalid date filter is used.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testInvalidDateFilter()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
+
+		// Search using a partial title match.
+		$response = $this->request(
+			[
+				'settings' => [
+					'month_year' => 'not-a-valid-date',
+				],
+			]
+		);
+
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureEmpty($response);
+	}
+
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and a sort filter is used, with the sorting honored.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testSortFilter()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
+
+		// Search using a partial title match.
+		$response = $this->request(
+			[
+				'settings' => [
+					'sort' => 'date_asc',
+				],
+			]
+		);
+
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureValid($response, 3);
+
+		// Confirm sort order is correct (date, ascending - first upload will be the first result).
+		$this->assertStringContainsString('600', $response['data'][0]['title']);
+		$this->assertStringContainsString('800', $response['data'][1]['title']);
+		$this->assertStringContainsString('1920', $response['data'][2]['title']);
+	}
+
+	/**
+	 * Test that calling `wp-json/kit/v4/media` works when the Media Library is populated with images
+	 * and an invalid sort filter is used, with sorting using the default (date_desc).
+	 *
+	 * @since   3.0.0
+	 */
+	public function testInvalidSortFilter()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
+
+		// Search using a partial title match.
+		$response = $this->request(
+			[
+				'settings' => [
+					'sort' => 'not_a_valid_sort',
+				],
+			]
+		);
+
+		$this->assertPaginationStructureValid($response);
+		$this->assertDataStructureValid($response, 3);
+
+		// Confirm sort order is original (date, descending - last upload will be the first result).
+		$this->assertStringContainsString('1920', $response['data'][0]['title']);
+		$this->assertStringContainsString('800', $response['data'][1]['title']);
+		$this->assertStringContainsString('600', $response['data'][2]['title']);
+	}
+
+	/**
+	 * Test that the pagination works correctly.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testPagination()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
+
+		// Request first page.
+		$response = $this->request(
+			[
+				'per_page' => 1,
+			]
+		);
+		$this->assertPaginationStructureValid(
+			response: $response,
+			hasPreviousPage: false,
+			hasNextPage: true,
+			startCursor: '1',
+			endCursor: '2',
+			perPage: 1
+		);
+		$this->assertDataStructureValid($response, 1);
+
+		// Request second page.
+		$response = $this->request(
+			[
+				'per_page' => 1,
+				'after'    => $response['pagination']['end_cursor'],
+			]
+		);
+		$this->assertPaginationStructureValid(
+			response: $response,
+			hasPreviousPage: true,
+			hasNextPage: true,
+			startCursor: '1',
+			endCursor: '3',
+			perPage: 1
+		);
+		$this->assertDataStructureValid($response, 1);
+
+		// Request third (final) page.
+		$response = $this->request(
+			[
+				'per_page' => 1,
+				'after'    => $response['pagination']['end_cursor'],
+			]
+		);
+		$this->assertPaginationStructureValid(
+			response: $response,
+			hasPreviousPage: true,
+			hasNextPage: false,
+			startCursor: '2',
+			endCursor: '3',
+			perPage: 1
+		);
+		$this->assertDataStructureValid($response, 1);
+	}
+
+	/**
+	 * Populates the Media Library with test images and documents.
+	 *
+	 * @since   3.0.0
+	 */
+	private function populateMediaLibrary()
+	{
+		// `create_upload_object` will define attachment metadata.
+		// Titles will automatically be set to the filename e.g. 600x400, 800x600 etc.
+		$this->tester->factory()->attachment->create_upload_object( 'https://placehold.co/600x400.jpg' );
+		$this->tester->factory()->attachment->create_upload_object( 'https://placehold.co/800x600.png' );
+		$this->tester->factory()->attachment->create_upload_object( 'https://placehold.co/1920x1080.gif' );
+		$this->tester->factory()->attachment->create_upload_object( 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' );
+	}
+
+	/**
+	 * Assert that the pagination structure is valid.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param array  $response        The response to assert.
+	 * @param bool   $hasPreviousPage Whether the previous page exists.
+	 * @param bool   $hasNextPage     Whether the next page exists.
+	 * @param string $startCursor     The start cursor.
+	 * @param string $endCursor       The end cursor.
+	 * @param int    $perPage         The number of items per page.
+	 */
+	private function assertPaginationStructureValid($response, $hasPreviousPage = false, $hasNextPage = false, $startCursor = '1', $endCursor = '1', $perPage = 24)
+	{
+		$this->assertArrayHasKey('pagination', $response);
+		$pagination = $response['pagination'];
+
+		// Assert expected array keys exist.
+		$this->assertArrayHasKey('has_previous_page', $pagination);
+		$this->assertArrayHasKey('has_next_page', $pagination);
+		$this->assertArrayHasKey('start_cursor', $pagination);
+		$this->assertArrayHasKey('end_cursor', $pagination);
+		$this->assertArrayHasKey('per_page', $pagination);
+
+		// Assert expected values exist.
+		$this->assertEquals($hasPreviousPage, $pagination['has_previous_page']);
+		$this->assertEquals($hasNextPage, $pagination['has_next_page']);
+		$this->assertEquals($startCursor, $pagination['start_cursor']);
+		$this->assertEquals($endCursor, $pagination['end_cursor']);
+		$this->assertEquals($perPage, $pagination['per_page']);
+	}
+
+	/**
+	 * Assert that the data structure is empty.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param array $response The response to assert.
+	 */
+	private function assertDataStructureEmpty($response)
+	{
+		$this->assertArrayHasKey('data', $response);
+		$this->assertEmpty($response['data']);
+	}
+
+	/**
+	 * Assert that the image structure within the `data key is valid.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param array $response         The response to assert.
+	 * @param int   $expectedItems    The number of items to assert.
+	 */
+	private function assertDataStructureValid($response, $expectedItems = 1)
+	{
+		$this->assertArrayHasKey('data', $response);
+		$this->assertCount($expectedItems, $response['data']);
+
+		// Fetch first image from the data array.
+		$image = $response['data'][0];
+
+		// Assert image data is as expected.
+		$this->assertArrayHasKey('id', $image);
+		$this->assertArrayHasKey('type', $image);
+		$this->assertArrayHasKey('url', $image);
+		$this->assertArrayHasKey('thumbnail_url', $image);
+		$this->assertArrayHasKey('alt', $image);
+		$this->assertArrayHasKey('caption', $image);
+		$this->assertArrayHasKey('title', $image);
+		$this->assertArrayHasKey('attribution', $image);
+		$this->assertArrayHasKey('label', $image['attribution']);
+		$this->assertArrayHasKey('href', $image['attribution']);
+	}
+
+	/**
+	 * Make a request to the Media endpoint.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param array  $params         The parameters to send with the request.
+	 * @param string $method         The HTTP method to use for the request.
+	 * @param int    $expectedStatus The expected status code.
+	 * @return array
+	 */
+	private function request($params = [], $method = 'POST', $expectedStatus = 200)
+	{
+		// Setup request.
 		$request = new \WP_REST_Request( $method, '/kit/v4/media' );
-        foreach( $params as $key => $value ) {
-            $request->set_param( $key, $value );
-        }
+		foreach ( $params as $key => $value ) {
+			$request->set_param( $key, $value );
+		}
 
-        // Send request.
+		// Send request.
 		$response = rest_get_server()->dispatch( $request );
 
-        // Assert that the response code is correct.
-        $this->assertSame( $expectedStatus, $response->get_status() );
+		// Assert that the response code is correct.
+		$this->assertSame( $expectedStatus, $response->get_status() );
 
-        // Return the response data.
+		// Return the response data.
 		return $response->get_data();
-    }
+	}
 }

@@ -128,7 +128,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 							),
 							'sort'       => array(
 								'type'    => 'string',
-								'default' => '',
+								'default' => 'date_desc', // Default to date descending, which is how the Media Library functions by default.
 							),
 						),
 					),
@@ -138,6 +138,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 						'sanitize_callback' => function ( $param ) {
 							return absint( $param );
 						},
+						// No need for validation; WordPress' REST API will validate if this value is out of bounds.
 					),
 					'per_page' => array(
 						'type'              => 'integer',
@@ -145,6 +146,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 						'sanitize_callback' => function ( $param ) {
 							return absint( $param );
 						},
+						// No need for validation; WordPress' REST API will validate if this value is out of bounds.
 					),
 				),
 				'permission_callback' => '__return_true',
@@ -212,14 +214,16 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		// Return the JSON response in the structure required by the Kit App Media Source Plugin.
 		return new WP_REST_Response(
 			array(
-				'pagination' => array(
+				'params'        => $params,
+				'params_before' => $params_before,
+				'pagination'    => array(
 					'has_previous_page' => (bool) $this->has_previous_page( $request ),
 					'has_next_page'     => (bool) $this->has_next_page( $request, $response ),
 					'start_cursor'      => (string) $this->previous_page( $request ),
 					'end_cursor'        => (string) $this->next_page( $request, $response ),
 					'per_page'          => (int) $params['per_page'],
 				),
-				'data'       => $data,
+				'data'          => $data,
 			)
 		);
 
@@ -370,7 +374,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 	private function next_page( WP_REST_Request $request, WP_REST_Response $response ) {
 
 		if ( ! $this->has_next_page( $request, $response ) ) {
-			return $response->get_headers()['X-WP-TotalPages'];
+			return $request->get_param( 'page' );
 		}
 
 		return ( $request->get_param( 'page' ) + 1 );
