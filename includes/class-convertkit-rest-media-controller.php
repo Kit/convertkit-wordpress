@@ -114,6 +114,46 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 				// This Plugin supports GET so it is in line with WordPress' media endpoint.
 				'methods'             => array( 'GET', 'POST' ),
 				'callback'            => array( $this, 'get_images' ),
+				'args'                => array(
+					'settings' => array(
+						'type' => 'object',
+						'properties' => array(
+							'search' => array(
+								'type' => 'string',
+								'default' => '',
+							),
+							'month_year' => array(
+								'type' => 'string',
+								'default' => '',
+							),
+							'sort' => array(
+								'type' => 'string',
+								'default' => '',
+							),
+						),
+					),
+					'page' => array(
+						'type' => 'integer',
+						'default' => 1,
+						'sanitize_callback' => function( $param, $request, $key ) {
+							return absint( $param );
+						},
+					),
+					'per_page' => array(
+						'type' => 'integer',
+						'default' => 24,
+						'sanitize_callback' => function( $param, $request, $key ) {
+							return absint( $param );
+						},
+					),
+					'after' => array(
+						'type' => 'integer',
+						'default' => 0,
+						'sanitize_callback' => function( $param, $request, $key ) {
+							return absint( $param );
+						},
+					),
+				),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -156,7 +196,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 
 		$params_before = $request->get_params();
 
-		// The incoming request frm the Kit App Media Source Plugin will use
+		// The incoming request from the Kit App Media Source Plugin will use
 		// a settings parameter with `query`, `label`, and `sort` keys.
 		// We need to convert these to WP_Query compatible parameters.
 		$params = $this->get_params( $request );
@@ -362,10 +402,10 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		// the following parameters, which we need to convert to REST API compatible parameters:
 		// https://developer.wordpress.org/rest-api/reference/media/#arguments
 		// `per_page`: Number of images to return. Defaults to 24
-		// `after`: The cursor to start the search from. The value will be the previous request's `pagination.end_cursor` value.
+		// `after`: The page number to start the search from. The value will be the previous request's `pagination.end_cursor` value.
 		$params = array(
-			'per_page'   => $request->get_param( 'per_page' ) ? $request->get_param( 'per_page' ) : 24,
-			'page'       => $request->get_param( 'after' ) ? $request->get_param( 'after' ) : 1,
+			'per_page'   => $request->get_param( 'per_page' ),
+			'page'       => $request->get_param( 'after' ),
 
 			'search'     => $this->get_search_parameter( $request ),
 
