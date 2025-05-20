@@ -341,6 +341,7 @@ class ConvertKit_Broadcasts_Importer {
 			'post_excerpt'  => ( ! is_null( $broadcast['description'] ) ? $broadcast['description'] : '' ),
 			'post_date_gmt' => gmdate( 'Y-m-d H:i:s', strtotime( $broadcast['published_at'] ) ),
 			'post_author'   => $author_id,
+			'post_name'     => $this->generate_permalink( $broadcast['title'] ),
 		);
 
 		// If a Category was supplied, assign the Post to the given Category ID when created.
@@ -371,6 +372,24 @@ class ConvertKit_Broadcasts_Importer {
 		$post_args['meta_input']['_convertkit_broadcast_id'] = $broadcast['id'];
 
 		return $post_args;
+
+	}
+
+	/**
+	 * Removes emojis from the given string.
+	 *
+	 * @since   2.8.2
+	 *
+	 * @param   string $title Broadcast Title.
+	 * @return  string
+	 */
+	public function generate_permalink( $title ) {
+
+		// Remove emojis.
+		$title = preg_replace( '/[^\p{L}\p{N}\p{P}\s]+/u', '', $title );
+
+		// Return the Permalink.
+		return sanitize_title( $title );
 
 	}
 

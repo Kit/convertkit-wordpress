@@ -363,14 +363,7 @@ class WP_ConvertKit {
 	 */
 	public function is_cron() {
 
-		if ( ! defined( 'DOING_CRON' ) ) {
-			return false;
-		}
-		if ( ! DOING_CRON ) {
-			return false;
-		}
-
-		return true;
+		return wp_doing_cron();
 
 	}
 
