@@ -57,7 +57,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search using a partial title match.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'search' => '600x400',
 				],
@@ -80,7 +80,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'search' => 'not a match',
 				],
@@ -103,7 +103,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search by month and year.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'month_year' => date('Y-m'),
 				],
@@ -127,7 +127,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search using a partial title match.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'month_year' => '2020-01',
 				],
@@ -151,7 +151,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search using a partial title match.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'month_year' => 'not-a-valid-date',
 				],
@@ -175,7 +175,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search using a partial title match.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'sort' => 'date_asc',
 				],
@@ -204,7 +204,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Search using a partial title match.
 		$response = $this->request(
-			[
+			params: [
 				'settings' => [
 					'sort' => 'not_a_valid_sort',
 				],
@@ -232,7 +232,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Request first page.
 		$response = $this->request(
-			[
+			params: [
 				'per_page' => 1,
 			]
 		);
@@ -248,7 +248,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Request second page.
 		$response = $this->request(
-			[
+			params: [
 				'per_page' => 1,
 				'after'    => $response['pagination']['end_cursor'],
 			]
@@ -265,7 +265,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 
 		// Request third (final) page.
 		$response = $this->request(
-			[
+			params: [
 				'per_page' => 1,
 				'after'    => $response['pagination']['end_cursor'],
 			]
@@ -279,6 +279,77 @@ class RestMediaControllerTest extends WPRestApiTestCase
 			perPage: 1
 		);
 		$this->assertDataStructureValid($response, 1);
+	}
+
+	/**
+	 * Test that calling `wp-json/kit/v4/media/date-options` returns the 'All Dates' option
+	 * when no Media exists in the Media Library.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetDateOptionsWhenNoMediaExists()
+	{
+		$response = $this->request(
+			endpoint: '/kit/v4/media/date-options'
+		);
+
+		$this->assertArrayHasKey('options', $response);
+		$this->assertCount(1, $response['options']);
+		$this->assertEquals('All Dates', $response['options'][0]['label']);
+		$this->assertEquals('0', $response['options'][0]['value']);
+	}
+
+	/**
+	 * Test that calling `wp-json/kit/v4/media/date-options` returns the 'All Dates' option
+	 * and the current month and year option when Media exists in the Media Library.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetDateOptions()
+	{
+		// Populate Media Library for the test.
+		$this->populateMediaLibrary();
+
+		$response = $this->request(
+			endpoint: '/kit/v4/media/date-options'
+		);
+
+		$this->assertArrayHasKey('options', $response);
+		$this->assertCount(2, $response['options']);
+
+		$this->assertEquals('All Dates', $response['options'][0]['label']);
+		$this->assertEquals('0', $response['options'][0]['value']);
+
+		$this->assertEquals(date('F Y'), $response['options'][1]['label']);
+		$this->assertEquals(date('Y-m'), $response['options'][1]['value']);
+	}
+
+	/**
+	 * Test that calling `wp-json/kit/v4/media/sort-options` returns the correct
+	 * sort options.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetSortOptions()
+	{
+		$response = $this->request(
+			endpoint: '/kit/v4/media/sort-options'
+		);
+
+		$this->assertArrayHasKey('options', $response);
+		$this->assertCount(4, $response['options']);
+
+		$this->assertEquals('Date, Ascending', $response['options'][0]['label']);
+		$this->assertEquals('date_asc', $response['options'][0]['value']);
+
+		$this->assertEquals('Date, Descending', $response['options'][1]['label']);
+		$this->assertEquals('date_desc', $response['options'][1]['value']);
+
+		$this->assertEquals('Title, Ascending', $response['options'][2]['label']);
+		$this->assertEquals('title_asc', $response['options'][2]['value']);
+
+		$this->assertEquals('Title, Descending', $response['options'][3]['label']);
+		$this->assertEquals('title_desc', $response['options'][3]['value']);
 	}
 
 	/**
@@ -376,14 +447,13 @@ class RestMediaControllerTest extends WPRestApiTestCase
 	 * @since   3.0.0
 	 *
 	 * @param array  $params         The parameters to send with the request.
-	 * @param string $method         The HTTP method to use for the request.
-	 * @param int    $expectedStatus The expected status code.
+	 * @param string $endpoint       The endpoint to use.
 	 * @return array
 	 */
-	private function request($params = [], $method = 'POST', $expectedStatus = 200)
+	private function request($params = [], $endpoint = '/kit/v4/media')
 	{
 		// Setup request.
-		$request = new \WP_REST_Request( $method, '/kit/v4/media' );
+		$request = new \WP_REST_Request( 'POST', $endpoint );
 		foreach ( $params as $key => $value ) {
 			$request->set_param( $key, $value );
 		}
@@ -392,7 +462,7 @@ class RestMediaControllerTest extends WPRestApiTestCase
 		$response = rest_get_server()->dispatch( $request );
 
 		// Assert that the response code is correct.
-		$this->assertSame( $expectedStatus, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		// Return the response data.
 		return $response->get_data();
