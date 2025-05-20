@@ -116,33 +116,33 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 				'callback'            => array( $this, 'get_images' ),
 				'args'                => array(
 					'settings' => array(
-						'type' => 'object',
+						'type'       => 'object',
 						'properties' => array(
-							'search' => array(
-								'type' => 'string',
+							'search'     => array(
+								'type'    => 'string',
 								'default' => '',
 							),
 							'month_year' => array(
-								'type' => 'string',
+								'type'    => 'string',
 								'default' => '',
 							),
-							'sort' => array(
-								'type' => 'string',
+							'sort'       => array(
+								'type'    => 'string',
 								'default' => '',
 							),
 						),
 					),
-					'after' => array(
-						'type' => 'integer',
-						'default' => 1,
-						'sanitize_callback' => function( $param, $request, $key ) {
+					'after'    => array(
+						'type'              => 'integer',
+						'default'           => 1,
+						'sanitize_callback' => function ( $param ) {
 							return absint( $param );
 						},
 					),
 					'per_page' => array(
-						'type' => 'integer',
-						'default' => 24,
-						'sanitize_callback' => function( $param, $request, $key ) {
+						'type'              => 'integer',
+						'default'           => 24,
+						'sanitize_callback' => function ( $param ) {
 							return absint( $param );
 						},
 					),
