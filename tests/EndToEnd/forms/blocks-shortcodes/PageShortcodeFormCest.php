@@ -38,7 +38,10 @@ class PageShortcodeFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Visual Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Visual Editor'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -52,11 +55,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -82,7 +85,10 @@ class PageShortcodeFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Text Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Text Editor'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -96,11 +102,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -439,7 +445,10 @@ class PageShortcodeFormCest
 		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: No Forms');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: No Forms'
+		);
 
 		// Open Visual Editor modal for the shortcode.
 		$I->openVisualEditorShortcodeModal(
@@ -500,7 +509,10 @@ class PageShortcodeFormCest
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Autoptimize');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Autoptimize'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -514,11 +526,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -556,7 +568,10 @@ class PageShortcodeFormCest
 		$I->click('#inspector-toggle-control-1');
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Jetpack Boost');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Jetpack Boost'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -570,11 +585,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -612,7 +627,10 @@ class PageShortcodeFormCest
 		$I->enableLiteSpeedCacheLoadJSDeferred($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: LiteSpeed Cache');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: LiteSpeed Cache'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -626,11 +644,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -676,7 +694,10 @@ class PageShortcodeFormCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Perfmatters');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Perfmatters'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -690,11 +711,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -730,7 +751,10 @@ class PageShortcodeFormCest
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Siteground Speed Optimizer');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Siteground Speed Optimizer'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -744,11 +768,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -784,7 +808,10 @@ class PageShortcodeFormCest
 		$I->enableWPRocketDelayJS($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: WP Rocket');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: WP Rocket'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
@@ -798,11 +825,11 @@ class PageShortcodeFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.

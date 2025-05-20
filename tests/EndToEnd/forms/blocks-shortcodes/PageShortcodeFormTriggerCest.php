@@ -38,16 +38,19 @@ class PageShortcodeFormTriggerCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Visual Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: Visual Editor'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form Trigger',
-			[
+			shortcodeName: 'Kit Form Trigger',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			],
-			'[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
+			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -72,16 +75,19 @@ class PageShortcodeFormTriggerCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Text Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: Text Editor'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-formtrigger',
-			[
+			shortcodeName: 'convertkit-formtrigger',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			],
-			'[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
+			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -136,17 +142,20 @@ class PageShortcodeFormTriggerCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Text Param');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: Text Param'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form Trigger',
-			[
+			shortcodeName: 'Kit Form Trigger',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 				'text' => [ 'input', 'Sign up' ],
 			],
-			'[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Sign up"]'
+			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Sign up"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -170,17 +179,20 @@ class PageShortcodeFormTriggerCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Blank Text Param');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: Blank Text Param'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form Trigger',
-			[
+			shortcodeName: 'Kit Form Trigger',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 				'text' => [ 'input', '' ],
 			],
-			'[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -281,12 +293,15 @@ class PageShortcodeFormTriggerCest
 	public function testFormTriggerShortcodeWhenNoCredentials(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: No Credentials');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: No Credentials'
+		);
 
 		// Open Visual Editor modal for the shortcode.
 		$I->openVisualEditorShortcodeModal(
 			$I,
-			'Kit Form Trigger'
+			shortcodeName: 'Kit Form Trigger'
 		);
 
 		// Confirm an error notice displays.
@@ -339,12 +354,15 @@ class PageShortcodeFormTriggerCest
 		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: No Forms');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: No Forms'
+		);
 
 		// Open Visual Editor modal for the shortcode.
 		$I->openVisualEditorShortcodeModal(
 			$I,
-			'Kit Form Trigger'
+			shortcodeName: 'Kit Form Trigger'
 		);
 
 		// Confirm an error notice displays.

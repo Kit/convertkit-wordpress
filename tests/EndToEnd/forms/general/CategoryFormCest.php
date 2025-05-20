@@ -45,13 +45,17 @@ class CategoryFormCest
 
 		// Create Category.
 		$I->fillField('tag-name', 'Kit: Create Category');
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependedOptions: [
 				'Default',
 				'None',
 			]
@@ -107,13 +111,17 @@ class CategoryFormCest
 
 		// Create Category.
 		$I->fillField('tag-name', 'Kit: Create Category: None');
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', 'None');
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: 'None'
+		);
 
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependedOptions: [
 				'Default',
 				'None',
 			]
@@ -187,15 +195,19 @@ class CategoryFormCest
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependedOptions: [
 				'Default',
 				'None',
 			]
 		);
 
 		// Change Form to value specified in the .env file.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Click Update.
 		$I->click('Update');
@@ -258,15 +270,19 @@ class CategoryFormCest
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependedOptions: [
 				'Default',
 				'None',
 			]
 		);
 
 		// Change Form to None.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', 'None');
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: 'None'
+		);
 
 		// Click Update.
 		$I->click('Update');
@@ -307,7 +323,11 @@ class CategoryFormCest
 
 		// Create Category.
 		$I->fillField('tag-name', 'Kit: Position: Before');
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('wp-convertkit[form_position]', 'before');
 
 		// Save.
@@ -365,7 +385,11 @@ class CategoryFormCest
 
 		// Create Category.
 		$I->fillField('tag-name', 'Kit: Position: After');
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('wp-convertkit[form_position]', 'after');
 
 		// Save.
@@ -445,15 +469,19 @@ class CategoryFormCest
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependedOptions: [
 				'Default',
 				'None',
 			]
 		);
 
 		// Change Form to value specified in the .env file.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('wp-convertkit[form_position]', 'before');
 
 		// Click Update.
@@ -526,15 +554,19 @@ class CategoryFormCest
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependedOptions: [
 				'Default',
 				'None',
 			]
 		);
 
 		// Change Form to value specified in the .env file.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('wp-convertkit[form_position]', 'after');
 
 		// Click Update.
