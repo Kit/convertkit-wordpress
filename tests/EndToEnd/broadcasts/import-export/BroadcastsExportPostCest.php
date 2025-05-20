@@ -37,7 +37,11 @@ class BroadcastsExportPostCest
 	public function testCreateBroadcastNotDisplayedWhenDisabledInPlugin(EndToEndTester $I)
 	{
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Broadcast: Export: Disabled in Plugin');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Broadcast: Export: Disabled in Plugin'
+		);
 
 		// Click the Publish button.
 		$I->click('.editor-post-publish-button__button');
@@ -71,7 +75,11 @@ class BroadcastsExportPostCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcast: Export: Disabled in Plugin');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'page',
+			title: 'Kit: Page: Broadcast: Export: Disabled in Plugin'
+		);
 
 		// Click the Publish button.
 		$I->click('.editor-post-publish-button__button');
@@ -106,7 +114,11 @@ class BroadcastsExportPostCest
 		);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Broadcast: Export: Disabled in Post');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Broadcast: Export: Disabled in Post'
+		);
 
 		// Publish Post.
 		$I->publishGutenbergPage($I);
@@ -143,7 +155,11 @@ class BroadcastsExportPostCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Page: Broadcast: Export: Enabled in Post');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Page: Broadcast: Export: Enabled in Post'
+		);
 
 		// Click the Publish button.
 		$I->click('.editor-post-publish-button__button');
