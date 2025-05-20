@@ -132,7 +132,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 							),
 						),
 					),
-					'page' => array(
+					'after' => array(
 						'type' => 'integer',
 						'default' => 1,
 						'sanitize_callback' => function( $param, $request, $key ) {
@@ -142,13 +142,6 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 					'per_page' => array(
 						'type' => 'integer',
 						'default' => 24,
-						'sanitize_callback' => function( $param, $request, $key ) {
-							return absint( $param );
-						},
-					),
-					'after' => array(
-						'type' => 'integer',
-						'default' => 0,
 						'sanitize_callback' => function( $param, $request, $key ) {
 							return absint( $param );
 						},
@@ -206,6 +199,11 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 
 		// Call WP_REST_Attachments_Controller get_items() method for the given REST API request.
 		$response = $this->get_items( $request );
+
+		// Check if an error occured e.g. pagination out of bounds.
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
 
 		// Restructure the image data from WP_REST_Attachments_Controller::get_items()
 		// to match the structure required for the Kit App Media Source Plugin.
@@ -323,8 +321,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 	 */
 	private function has_previous_page( WP_REST_Request $request ) {
 
-		$current_page = $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1;
-		return ( $current_page > 1 );
+		return ( $request->get_param( 'page' ) > 1 );
 
 	}
 
@@ -339,10 +336,7 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 	 */
 	private function has_next_page( WP_REST_Request $request, WP_REST_Response $response ) {
 
-		$total_pages  = $response->get_headers()['X-WP-TotalPages'];
-		$current_page = $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1;
-
-		return ( $current_page < $total_pages );
+		return ( $request->get_param( 'page' ) < $response->get_headers()['X-WP-TotalPages'] );
 
 	}
 
@@ -356,13 +350,11 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 	 */
 	private function previous_page( WP_REST_Request $request ) {
 
-		$current_page = $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1;
-
-		if ( $current_page === 1 ) {
+		if ( ! $this->has_previous_page( $request ) ) {
 			return 1;
 		}
 
-		return ( $current_page - 1 );
+		return ( $request->get_param( 'page' ) - 1 );
 
 	}
 
@@ -377,14 +369,11 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 	 */
 	private function next_page( WP_REST_Request $request, WP_REST_Response $response ) {
 
-		$total_pages  = $response->get_headers()['X-WP-TotalPages'];
-		$current_page = $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1;
-
-		if ( $current_page === $total_pages ) {
-			return $total_pages;
+		if ( ! $this->has_next_page( $request, $response ) ) {
+			return $response->get_headers()['X-WP-TotalPages'];
 		}
 
-		return ( $current_page + 1 );
+		return ( $request->get_param( 'page' ) + 1 );
 
 	}
 
@@ -404,8 +393,8 @@ class ConvertKit_REST_Media_Controller extends WP_REST_Attachments_Controller {
 		// `per_page`: Number of images to return. Defaults to 24
 		// `after`: The page number to start the search from. The value will be the previous request's `pagination.end_cursor` value.
 		$params = array(
-			'per_page'   => $request->get_param( 'per_page' ),
-			'page'       => $request->get_param( 'after' ),
+			'per_page'   => $request->get_param( 'per_page' ) ? $request->get_param( 'per_page' ) : 24,
+			'page'       => $request->get_param( 'after' ) ? $request->get_param( 'after' ) : 1,
 
 			'search'     => $this->get_search_parameter( $request ),
 
