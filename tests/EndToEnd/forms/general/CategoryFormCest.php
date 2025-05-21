@@ -55,7 +55,7 @@ class CategoryFormCest
 		$I->checkSelectFormOptionOrder(
 			$I,
 			selectElement: '#wp-convertkit-form',
-			prependedOptions: [
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -121,7 +121,7 @@ class CategoryFormCest
 		$I->checkSelectFormOptionOrder(
 			$I,
 			selectElement: '#wp-convertkit-form',
-			prependedOptions: [
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -196,7 +196,7 @@ class CategoryFormCest
 		$I->checkSelectFormOptionOrder(
 			$I,
 			selectElement: '#wp-convertkit-form',
-			prependedOptions: [
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -271,7 +271,7 @@ class CategoryFormCest
 		$I->checkSelectFormOptionOrder(
 			$I,
 			selectElement: '#wp-convertkit-form',
-			prependedOptions: [
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -470,7 +470,7 @@ class CategoryFormCest
 		$I->checkSelectFormOptionOrder(
 			$I,
 			selectElement: '#wp-convertkit-form',
-			prependedOptions: [
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -555,7 +555,7 @@ class CategoryFormCest
 		$I->checkSelectFormOptionOrder(
 			$I,
 			selectElement: '#wp-convertkit-form',
-			prependedOptions: [
+			prependOptions: [
 				'Default',
 				'None',
 			]
