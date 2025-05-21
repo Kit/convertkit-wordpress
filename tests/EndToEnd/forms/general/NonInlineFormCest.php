@@ -200,8 +200,8 @@ class NonInlineFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -235,13 +235,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: Specific');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Non-Inline Form: Specific'
+		);
 
 		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			]
 		);
@@ -275,13 +278,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None: Ignored');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Non-Inline Form: None: Ignored'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -316,13 +322,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: None: Honored');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Non-Inline Form: None: Honored'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -355,13 +364,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: Block');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Non-Inline Form: Block'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -369,9 +381,9 @@ class NonInlineFormCest
 		// Add Form block to the Page set to the Modal Form.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			]
 		);
@@ -405,13 +417,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Non-Inline Form: Shortcode');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Non-Inline Form: Shortcode'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -419,11 +434,11 @@ class NonInlineFormCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Form',
-			[
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			],
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
+			shortcodeContent: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -457,13 +472,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: Default');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Post: Non-Inline Form: Default'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -497,13 +515,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: Specific');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Post: Non-Inline Form: Specific'
+		);
 
 		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			]
 		);
@@ -593,13 +614,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None: Ignored');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Post: Non-Inline Form: None: Ignored'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -634,13 +658,16 @@ class NonInlineFormCest
 		);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Non-Inline Form: None: Honored');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Post: Non-Inline Form: None: Honored'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
