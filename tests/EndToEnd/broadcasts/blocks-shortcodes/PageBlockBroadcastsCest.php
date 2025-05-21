@@ -224,7 +224,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'#inspector-toggle-control-0' => [ 'toggle', true ],
 			]
 		);
@@ -266,7 +266,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'date_format' => [ 'select', 'Y-m-d' ],
 			]
 		);
@@ -316,7 +316,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'#inspector-toggle-control-0' => [ 'toggle', true ],
 				'#inspector-toggle-control-1' => [ 'toggle', true ],
 			]
@@ -360,7 +360,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'#inspector-toggle-control-2' => [ 'toggle', true ],
 			]
 		);
@@ -402,7 +402,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'#inspector-toggle-control-3' => [ 'toggle', true ],
 				'read_more_label'             => [ 'input', 'Continue reading' ],
 			]
@@ -445,7 +445,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			]
 		);
@@ -545,7 +545,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'#inspector-toggle-control-4' => [ 'toggle', true ],
 			]
@@ -582,7 +582,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'#inspector-toggle-control-4' => [ 'toggle', true ],
 				'paginate_label_prev'         => [ 'input', 'Newer' ],
@@ -621,7 +621,7 @@ class PageBlockBroadcastsCest
 			$I,
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
-			parameters: [
+			blockConfiguration: [
 				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'#inspector-toggle-control-4' => [ 'toggle', true ],
 				'paginate_label_prev'         => [ 'input', '' ],
