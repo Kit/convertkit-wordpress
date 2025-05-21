@@ -62,8 +62,8 @@ class ContactForm7FormCest
 		// Complete and submit Contact Form 7 Form.
 		$this->_contactForm7CompleteAndSubmitForm(
 			$I,
-			$pageID,
-			$emailAddress
+			pageID: $pageID,
+			emailAddress: $emailAddress
 		);
 
 		// Confirm that the email address was added to Kit.
@@ -72,9 +72,9 @@ class ContactForm7FormCest
 		// Check that the subscriber has the expected form and referrer value set.
 		$I->apiCheckSubscriberHasForm(
 			$I,
-			$subscriberID,
-			$_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID'],
-			$_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
+			subscriberID: $subscriberID,
+			formID: $_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID'],
+			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}
 
@@ -99,8 +99,8 @@ class ContactForm7FormCest
 		// Complete and submit Contact Form 7 Form.
 		$this->_contactForm7CompleteAndSubmitForm(
 			$I,
-			$pageID,
-			$emailAddress
+			pageID: $pageID,
+			emailAddress: $emailAddress
 		);
 
 		// Confirm that the email address was added to Kit.
@@ -128,15 +128,19 @@ class ContactForm7FormCest
 		// Complete and submit Contact Form 7 Form.
 		$this->_contactForm7CompleteAndSubmitForm(
 			$I,
-			$pageID,
-			$emailAddress
+			pageID: $pageID,
+			emailAddress: $emailAddress
 		);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the tag.
-		$I->apiCheckSubscriberHasTag($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+		$I->apiCheckSubscriberHasTag(
+			$I,
+			subscriberID: $subscriberID,
+			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+		);
 	}
 
 	/**
@@ -160,15 +164,19 @@ class ContactForm7FormCest
 		// Complete and submit Contact Form 7 Form.
 		$this->_contactForm7CompleteAndSubmitForm(
 			$I,
-			$pageID,
-			$emailAddress
+			pageID: $pageID,
+			emailAddress: $emailAddress
 		);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
-		$I->apiCheckSubscriberHasSequence($I, $subscriberID, $_ENV['CONVERTKIT_API_SEQUENCE_ID']);
+		$I->apiCheckSubscriberHasSequence(
+			$I,
+			subscriberID: $subscriberID,
+			sequenceID: $_ENV['CONVERTKIT_API_SEQUENCE_ID']
+		);
 	}
 
 	/**
@@ -192,8 +200,8 @@ class ContactForm7FormCest
 		// Complete and submit Contact Form 7 Form.
 		$this->_contactForm7CompleteAndSubmitForm(
 			$I,
-			$pageID,
-			$emailAddress
+			pageID: $pageID,
+			emailAddress: $emailAddress
 		);
 
 		// Confirm that the email address was not added to Kit.
@@ -221,8 +229,8 @@ class ContactForm7FormCest
 		// Complete and submit Contact Form 7 Form.
 		$this->_contactForm7CompleteAndSubmitForm(
 			$I,
-			$pageID,
-			$emailAddress
+			pageID: $pageID,
+			emailAddress: $emailAddress
 		);
 
 		// Confirm that the email address was added to Kit.

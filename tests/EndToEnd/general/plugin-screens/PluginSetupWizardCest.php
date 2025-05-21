@@ -239,7 +239,11 @@ class PluginSetupWizardCest
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
 
 		// Select a Post Form.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-posts-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-posts-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Open preview.
 		$I->click('a#convertkit-preview-form-post');
@@ -259,7 +263,11 @@ class PluginSetupWizardCest
 		$I->closeTab();
 
 		// Select a Page Form.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-pages-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-pages-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Open preview.
 		$I->click('a#convertkit-preview-form-page');
@@ -331,7 +339,11 @@ class PluginSetupWizardCest
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
 
 		// Confirm we can select a Post Form.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-posts-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-posts-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 	}
 
 	/**

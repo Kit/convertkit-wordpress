@@ -45,10 +45,10 @@ class DiviThemeProductCest
 		// Insert the Product module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Product',
-			'convertkit_product',
-			'product',
-			$_ENV['CONVERTKIT_API_PRODUCT_ID']
+			name: 'Kit Product',
+			programmaticName: 'convertkit_product',
+			fieldName: 'product',
+			fieldValue: $_ENV['CONVERTKIT_API_PRODUCT_ID']
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -81,10 +81,10 @@ class DiviThemeProductCest
 		// Insert the Product module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Product',
-			'convertkit_product',
-			'product',
-			$_ENV['CONVERTKIT_API_PRODUCT_ID']
+			name: 'Kit Product',
+			programmaticName: 'convertkit_product',
+			fieldName: 'product',
+			fieldValue: $_ENV['CONVERTKIT_API_PRODUCT_ID']
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -109,8 +109,8 @@ class DiviThemeProductCest
 		// Insert the Product module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Product',
-			'convertkit_product'
+			name: 'Kit Product',
+			programmaticName: 'convertkit_product'
 		);
 
 		// Confirm the on screen message displays.
@@ -138,8 +138,8 @@ class DiviThemeProductCest
 		// Insert the Product module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Product',
-			'convertkit_product'
+			name: 'Kit Product',
+			programmaticName: 'convertkit_product'
 		);
 
 		// Confirm the on screen message displays.
@@ -163,10 +163,10 @@ class DiviThemeProductCest
 		// Create Page with Product module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
 			$I,
-			'Kit: Product: Divi Module: No Product Param',
-			'convertkit_product',
-			'product',
-			''
+			title: 'Kit: Product: Divi Module: No Product Param',
+			programmaticName: 'convertkit_product',
+			fieldName: 'product',
+			fieldValue: ''
 		);
 
 		// Load Page.
