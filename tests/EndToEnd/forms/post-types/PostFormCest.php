@@ -61,13 +61,17 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: Default: None');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: None'
+		);
 
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selector: '#wp-convertkit-form',
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -76,8 +80,8 @@ class PostFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -104,13 +108,17 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: Default');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -144,7 +152,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: Default: Before Content');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: Before Content'
+		);
 
 		// Add paragraph to Post.
 		$I->addGutenbergParagraphBlock($I, 'Post content');
@@ -152,8 +164,8 @@ class PostFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -163,7 +175,11 @@ class PostFormCest
 
 		// Confirm that one Kit Form is output in the DOM after the Post content.
 		// This confirms that there is only one script on the post for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_content');
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'before_content'
+		);
 	}
 
 	/**
@@ -187,7 +203,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: Default: Before and After Content');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: Before and After Content'
+		);
 
 		// Add paragraph to Post.
 		$I->addGutenbergParagraphBlock($I, 'Post content');
@@ -195,8 +215,8 @@ class PostFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -205,7 +225,11 @@ class PostFormCest
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that two Kit Forms are output in the DOM before and after the Post content.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_after_content');
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'before_after_content'
+		);
 	}
 
 	/**
@@ -232,7 +256,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Post with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'post', 'Kit: Post: Form: Default: After 3rd Paragraph Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: After 3rd Paragraph Element'
+		);
 
 		// View the Post on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -241,7 +269,13 @@ class PostFormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that one Kit Form is output in the DOM after the third paragraph.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'p', 3);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_element',
+			element: 'p',
+			elementIndex: 3
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -274,7 +308,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Post with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'post', 'Kit: Post: Non-Inline Form: Default: After 3rd Paragraph Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Non-Inline Form: Default: After 3rd Paragraph Element'
+		);
 
 		// View the Page on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -317,7 +355,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Post with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'post', 'Kit: Post: Form: Default: After 2nd H2 Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: After 2nd H2 Element'
+		);
 
 		// View the Post on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -326,7 +368,13 @@ class PostFormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that one Kit Form is output in the DOM after the second <h2> element.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'h2', 2);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_element',
+			element: 'h2',
+			elementIndex: 2
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -359,7 +407,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Post with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'post', 'Kit: Post: Form: Default: After 2nd Image Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: After 2nd Image Element'
+		);
 
 		// View the Post on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -368,7 +420,13 @@ class PostFormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that one Kit Form is output in the DOM after the second <img> element.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'img', 2);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_element',
+			element: 'img',
+			elementIndex: 2
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -401,7 +459,11 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Post with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'post', 'Kit: Post: Form: Default: After 9th Paragraph Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Default: After 9th Paragraph Element'
+		);
 
 		// View the Post on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -411,7 +473,11 @@ class PostFormCest
 
 		// Confirm that one Kit Form is output in the DOM after the content, as
 		// the number of paragraphs is less than the position.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_content');
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_content'
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -442,13 +508,17 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: Legacy: Default');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: Legacy: Default'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -475,13 +545,17 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: None');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: None'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -508,13 +582,17 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -549,13 +627,17 @@ class PostFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']);
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
 			]
 		);
@@ -641,9 +723,9 @@ class PostFormCest
 		// Quick Edit the Post in the Posts WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'post',
-			$postID,
-			[
+			postType: 'post',
+			postID: $postID,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -684,9 +766,9 @@ class PostFormCest
 		// Quick Edit the Post in the Posts WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'post',
-			$postID,
-			[
+			postType: 'post',
+			postID: $postID,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -735,9 +817,9 @@ class PostFormCest
 		// Bulk Edit the Posts in the Posts WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'post',
-			$postIDs,
-			[
+			postType: 'post',
+			postIDs: $postIDs,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -789,9 +871,9 @@ class PostFormCest
 		// Bulk Edit the Posts in the Posts WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'post',
-			$postIDs,
-			[
+			postType: 'post',
+			postIDs: $postIDs,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -857,9 +939,9 @@ class PostFormCest
 		// Bulk Edit the Posts in the Posts WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'post',
-			$postIDs,
-			[
+			postType: 'post',
+			postIDs: $postIDs,
+			configuration: [
 				'form' => [ 'select', '— No Change —' ],
 			]
 		);

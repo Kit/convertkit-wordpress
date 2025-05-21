@@ -1010,9 +1010,9 @@ class PageFormCest
 		// Quick Edit the Page in the Pages WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'page',
-			$pageID,
-			[
+			postType: 'page',
+			pageID: $pageID,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -1053,9 +1053,9 @@ class PageFormCest
 		// Quick Edit the Page in the Pages WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'page',
-			$pageID,
-			[
+			postType: 'page',
+			pageID: $pageID,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -1104,9 +1104,9 @@ class PageFormCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			pageIDs: $pageIDs,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -1158,9 +1158,9 @@ class PageFormCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			pageIDs: $pageIDs,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -1226,9 +1226,9 @@ class PageFormCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			pageIDs: $pageIDs,
+			configuration: [
 				'form' => [ 'select', '— No Change —' ],
 			]
 		);

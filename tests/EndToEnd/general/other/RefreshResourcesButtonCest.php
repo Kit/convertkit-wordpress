@@ -51,8 +51,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Form resources are alphabetical, with Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -60,7 +60,11 @@ class RefreshResourcesButtonCest
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist in the Select2 field, this will fail the test.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Click the Landing Pages refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="landing_pages"]');
@@ -71,15 +75,19 @@ class RefreshResourcesButtonCest
 		// Check the order of the Landing Page resources are alphabetical, with the None option prepending the Landing Pages.
 		$I->checkSelectLandingPageOptionOrder(
 			$I,
-			'#wp-convertkit-landing_page',
-			[
+			selectElement: '#wp-convertkit-landing_page',
+			prependOptions: [
 				'None',
 			]
 		);
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist in the Select2 field, this will fail the test.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-landing_page-container', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-landing_page-container',
+			value: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
+		);
 
 		// Click the Tags refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="tags"]');
@@ -90,15 +98,19 @@ class RefreshResourcesButtonCest
 		// Check the order of the Tag resources are alphabetical, with the None option prepending the Tags.
 		$I->checkSelectTagOptionOrder(
 			$I,
-			'#wp-convertkit-tag',
-			[
+			selectElement: '#wp-convertkit-tag',
+			prependOptions: [
 				'None',
 			]
 		);
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist in the Select2 field, this will fail the test.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-tag-container', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-tag-container',
+			value: $_ENV['CONVERTKIT_API_TAG_NAME']
+		);
 
 		// Click the Restrict Content refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]');
@@ -108,11 +120,19 @@ class RefreshResourcesButtonCest
 
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('select#wp-convertkit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-restrict_content-container', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-restrict_content-container',
+			value: $_ENV['CONVERTKIT_API_TAG_NAME']
+		);
 
 		// Confirm that the expected Product is within the Products option group and selectable.
 		$I->seeElementInDOM('select#wp-convertkit-restrict_content optgroup[data-resource="products"] option[value="product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '"]');
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-restrict_content-container', $_ENV['CONVERTKIT_API_PRODUCT_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-restrict_content-container',
+			value: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+		);
 	}
 
 	/**
@@ -147,8 +167,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Form resources are alphabetical, with Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-quick-edit-form',
-			[
+			selectElement: '#wp-convertkit-quick-edit-form',
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -156,7 +176,11 @@ class RefreshResourcesButtonCest
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist, this will fail the test.
-		$I->selectOption('#wp-convertkit-quick-edit-form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-quick-edit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Click the Tags refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="tags"]');
@@ -167,8 +191,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Tag resources are alphabetical, with the None option prepending the Tags.
 		$I->checkSelectTagOptionOrder(
 			$I,
-			'#wp-convertkit-quick-edit-tag',
-			[
+			selectElement: '#wp-convertkit-quick-edit-tag',
+			prependOptions: [
 				'None',
 			]
 		);
@@ -232,8 +256,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Form resources are alphabetical, with No Change, Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-bulk-edit-form',
-			[
+			selectElement: '#wp-convertkit-bulk-edit-form',
+			prependOptions: [
 				'— No Change —',
 				'Default',
 				'None',
@@ -253,8 +277,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Tag resources are alphabetical, with the No Chage and None options prepending the Tags.
 		$I->checkSelectTagOptionOrder(
 			$I,
-			'#wp-convertkit-bulk-edit-tag',
-			[
+			selectElement: '#wp-convertkit-bulk-edit-tag',
+			prependOptions: [
 				'— No Change —',
 				'None',
 			]
@@ -303,8 +327,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -312,7 +336,11 @@ class RefreshResourcesButtonCest
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist in the Select2 field, this will fail the test.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 	}
 
 	/**
@@ -343,8 +371,8 @@ class RefreshResourcesButtonCest
 		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			'#wp-convertkit-form',
-			[
+			selectElement: '#wp-convertkit-form',
+			prependOptions: [
 				'Default',
 				'None',
 			]
@@ -352,7 +380,11 @@ class RefreshResourcesButtonCest
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist in the Select2 field, this will fail the test.
-		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 	}
 
 	/**
@@ -386,13 +418,16 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Forms: Block: Refresh Button');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Forms: Block: Refresh Button'
+		);
 
 		// Add block to Page.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Form',
-			'convertkit-form'
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form'
 		);
 
 		// Click the refresh button.
@@ -441,7 +476,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Visual Editor: Refresh Button');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Visual Editor: Refresh Button'
+		);
 
 		// Open Visual Editor shortcode modal.
 		$I->openVisualEditorShortcodeModal($I, 'Kit Form');
@@ -501,7 +539,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form: Shortcode: Text Editor: Refresh Button');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Text Editor: Refresh Button'
+		);
 
 		// Open Text Editor shortcode modal.
 		$I->openTextEditorShortcodeModal($I, 'convertkit-form');
@@ -560,13 +601,16 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Block: Refresh Button');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Block: Refresh Button'
+		);
 
 		// Add block to Page.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Form Trigger',
-			'convertkit-formtrigger'
+			blockName: 'Kit Form Trigger',
+			blockProgrammaticName: 'convertkit-formtrigger'
 		);
 
 		// Click the refresh button.
@@ -615,7 +659,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Visual Editor: Refresh Button');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: Visual Editor: Refresh Button'
+		);
 
 		// Open Visual Editor shortcode modal.
 		$I->openVisualEditorShortcodeModal($I, 'Kit Form Trigger');
@@ -675,7 +722,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Form Trigger: Shortcode: Text Editor: Refresh Button');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Shortcode: Text Editor: Refresh Button'
+		);
 
 		// Open Text Editor shortcode modal.
 		$I->openTextEditorShortcodeModal($I, 'convertkit-formtrigger');
@@ -729,13 +779,16 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Block: Refresh Button');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Product: Block: Refresh Button'
+		);
 
 		// Add block to Page.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Product',
-			'convertkit-product'
+			blockName: 'Kit Product',
+			blockProgrammaticName: 'convertkit-product'
 		);
 
 		// Click the refresh button.
@@ -779,7 +832,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Visual Editor: Refresh Button');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Product: Shortcode: Visual Editor: Refresh Button'
+		);
 
 		// Open Visual Editor shortcode modal.
 		$I->openVisualEditorShortcodeModal($I, 'Kit Product');
@@ -834,7 +890,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Product: Shortcode: Text Editor: Refresh Button');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Product: Shortcode: Text Editor: Refresh Button'
+		);
 
 		// Open Text Editor shortcode modal.
 		$I->openTextEditorShortcodeModal($I, 'convertkit-product');
@@ -908,7 +967,10 @@ class RefreshResourcesButtonCest
 		$I->setupKitPluginFakeAPIKey($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Refresh Resources: Classic Editor' );
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Refresh Resources: Classic Editor'
+		);
 
 		// Click the Forms refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="forms"]');
