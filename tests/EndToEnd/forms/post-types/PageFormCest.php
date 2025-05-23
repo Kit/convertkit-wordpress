@@ -1105,7 +1105,7 @@ class PageFormCest
 		$I->bulkEdit(
 			$I,
 			postType: 'page',
-			pageIDs: $pageIDs,
+			postIDs: $pageIDs,
 			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
@@ -1159,7 +1159,7 @@ class PageFormCest
 		$I->bulkEdit(
 			$I,
 			postType: 'page',
-			pageIDs: $pageIDs,
+			postIDs: $pageIDs,
 			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
@@ -1227,7 +1227,7 @@ class PageFormCest
 		$I->bulkEdit(
 			$I,
 			postType: 'page',
-			pageIDs: $pageIDs,
+			postIDs: $pageIDs,
 			configuration: [
 				'form' => [ 'select', '— No Change —' ],
 			]
