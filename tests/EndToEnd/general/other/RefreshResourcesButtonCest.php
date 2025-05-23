@@ -178,7 +178,6 @@ class RefreshResourcesButtonCest
 		// If the expected dropdown value does not exist, this will fail the test.
 		$I->selectOption('#wp-convertkit-quick-edit-form', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
-
 		// Click the Tags refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="tags"]');
 
