@@ -262,9 +262,9 @@ class WooCommerceProductFormCest
 		// Quick Edit the Product in the Products WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'product',
-			$productID,
-			[
+			postType: 'product',
+			postID: $productID,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -305,9 +305,9 @@ class WooCommerceProductFormCest
 		// Quick Edit the Product in the Products WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'product',
-			$productID,
-			[
+			postType: 'product',
+			postID: $productID,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);

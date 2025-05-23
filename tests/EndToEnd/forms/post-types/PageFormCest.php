@@ -1011,7 +1011,7 @@ class PageFormCest
 		$I->quickEdit(
 			$I,
 			postType: 'page',
-			pageID: $pageID,
+			postID: $pageID,
 			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
@@ -1054,7 +1054,7 @@ class PageFormCest
 		$I->quickEdit(
 			$I,
 			postType: 'page',
-			pageID: $pageID,
+			postID: $pageID,
 			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
