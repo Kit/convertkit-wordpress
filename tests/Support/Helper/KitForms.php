@@ -19,9 +19,9 @@ class KitForms extends \Codeception\Module
 	 * @param   int            $formID         Form ID.
 	 * @param   bool|string    $position       Position of the form in the DOM relative to the content.
 	 * @param   bool|string    $element        Element the form should display after.
-	 * @param   bool|string    $element_index  Number of elements before the form should display.
+	 * @param   bool|string    $elementIndex   Number of elements before the form should display.
 	 */
-	public function seeFormOutput($I, $formID, $position = false, $element = false, $element_index = 0)
+	public function seeFormOutput($I, $formID, $position = false, $element = false, $elementIndex = 0)
 	{
 		// Calculate how many times the Form should be in the DOM.
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
@@ -53,16 +53,16 @@ class KitForms extends \Codeception\Module
 				// The block editor automatically adds CSS classes to some elements.
 				switch ( $element ) {
 					case 'p':
-						$I->seeInSource('<' . $element . '>Item #' . $element_index . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+						$I->seeInSource('<' . $element . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
 						break;
 
 					case 'img':
-						$I->seeInSource('<' . $element . ' decoding="async" src="https://placehold.co/600x400" alt="Image #' . $element_index . '"><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+						$I->seeInSource('<' . $element . ' decoding="async" src="https://placehold.co/600x400" alt="Image #' . $elementIndex . '"><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
 						break;
 
 					// Headings.
 					default:
-						$I->seeInSource('<' . $element . ' class="wp-block-heading">Item #' . $element_index . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+						$I->seeInSource('<' . $element . ' class="wp-block-heading">Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
 						break;
 				}
 				break;

@@ -47,8 +47,8 @@ class DiviThemeBroadcastsCest
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Broadcasts',
-			'convertkit_broadcasts'
+			name: 'Kit Broadcasts',
+			programmaticName: 'convertkit_broadcasts'
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -93,8 +93,8 @@ class DiviThemeBroadcastsCest
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Broadcasts',
-			'convertkit_broadcasts'
+			name: 'Kit Broadcasts',
+			programmaticName: 'convertkit_broadcasts'
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -131,8 +131,8 @@ class DiviThemeBroadcastsCest
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Broadcasts',
-			'convertkit_broadcasts'
+			name: 'Kit Broadcasts',
+			programmaticName: 'convertkit_broadcasts'
 		);
 
 		// Confirm the on screen message displays.
@@ -160,8 +160,8 @@ class DiviThemeBroadcastsCest
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Broadcasts',
-			'convertkit_broadcasts'
+			name: 'Kit Broadcasts',
+			programmaticName: 'convertkit_broadcasts'
 		);
 
 		// Confirm the on screen message displays.

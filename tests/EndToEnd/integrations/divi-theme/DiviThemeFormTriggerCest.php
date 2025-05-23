@@ -45,10 +45,10 @@ class DiviThemeFormTriggerCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form Trigger',
-			'convertkit_formtrigger',
-			'form',
-			$_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']
+			name: 'Kit Form Trigger',
+			programmaticName: 'convertkit_formtrigger',
+			fieldName: 'form',
+			fieldValue: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -85,10 +85,10 @@ class DiviThemeFormTriggerCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form Trigger',
-			'convertkit_formtrigger',
-			'form',
-			$_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']
+			name: 'Kit Form Trigger',
+			programmaticName: 'convertkit_formtrigger',
+			fieldName: 'form',
+			fieldValue: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -117,8 +117,8 @@ class DiviThemeFormTriggerCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form Trigger',
-			'convertkit_formtrigger'
+			name: 'Kit Form Trigger',
+			programmaticName: 'convertkit_formtrigger'
 		);
 
 		// Confirm the on screen message displays.
@@ -146,8 +146,8 @@ class DiviThemeFormTriggerCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form Trigger',
-			'convertkit_formtrigger'
+			name: 'Kit Form Trigger',
+			programmaticName: 'convertkit_formtrigger'
 		);
 
 		// Confirm the on screen message displays.
@@ -171,10 +171,10 @@ class DiviThemeFormTriggerCest
 		// Create Page with Form module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
 			$I,
-			'Kit: Legacy Form Trigger: Divi Module: No Form Param',
-			'convertkit_formtrigger',
-			'form',
-			''
+			title: 'Kit: Legacy Form Trigger: Divi Module: No Form Param',
+			programmaticName: 'convertkit_formtrigger',
+			fieldName: 'form',
+			fieldValue: ''
 		);
 
 		// Load Page.

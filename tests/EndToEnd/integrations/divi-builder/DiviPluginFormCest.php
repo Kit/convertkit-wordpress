@@ -45,10 +45,10 @@ class DiviPluginFormCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form',
-			'convertkit_form',
-			'form',
-			$_ENV['CONVERTKIT_API_FORM_ID']
+			name: 'Kit Form',
+			programmaticName: 'convertkit_form',
+			fieldName: 'form',
+			fieldValue: $_ENV['CONVERTKIT_API_FORM_ID']
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -82,10 +82,10 @@ class DiviPluginFormCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form',
-			'convertkit_form',
-			'form',
-			$_ENV['CONVERTKIT_API_FORM_ID']
+			name: 'Kit Form',
+			programmaticName: 'convertkit_form',
+			fieldName: 'form',
+			fieldValue: $_ENV['CONVERTKIT_API_FORM_ID']
 		);
 
 		// Save Divi module and view the page on the frontend site.
@@ -111,8 +111,8 @@ class DiviPluginFormCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form',
-			'convertkit_form'
+			name: 'Kit Form',
+			programmaticName: 'convertkit_form'
 		);
 
 		// Confirm the on screen message displays.
@@ -140,8 +140,8 @@ class DiviPluginFormCest
 		// Insert the Form module.
 		$I->insertDiviRowWithModule(
 			$I,
-			'Kit Form',
-			'convertkit_form'
+			name: 'Kit Form',
+			programmaticName: 'convertkit_form'
 		);
 
 		// Confirm the on screen message displays.
@@ -174,10 +174,10 @@ class DiviPluginFormCest
 		// Create Page with Form module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
 			$I,
-			'Kit: Legacy Form: Divi Module: Valid Form Param',
-			'convertkit_form',
-			'form',
-			$_ENV['CONVERTKIT_API_LEGACY_FORM_ID']
+			title: 'Kit: Legacy Form: Divi Module: Valid Form Param',
+			programmaticName: 'convertkit_form',
+			fieldName: 'form',
+			fieldValue: $_ENV['CONVERTKIT_API_LEGACY_FORM_ID']
 		);
 
 		// Load Page.
@@ -206,10 +206,10 @@ class DiviPluginFormCest
 		// Create Page with Form module in Divi.
 		$pageID = $I->createPageWithDiviModuleProgrammatically(
 			$I,
-			'Kit: Legacy Form: Divi Module: No Form Param',
-			'convertkit_form',
-			'form',
-			''
+			title: 'Kit: Legacy Form: Divi Module: No Form Param',
+			programmaticName: 'convertkit_form',
+			fieldName: 'form',
+			fieldValue: ''
 		);
 
 		// Load Page.

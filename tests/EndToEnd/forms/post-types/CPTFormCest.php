@@ -64,7 +64,11 @@ class CPTFormCest
 	public function testNoOptionsOrOutputOnPrivateCustomPostType(EndToEndTester $I)
 	{
 		// Add a Private CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'private', 'Kit: Private: Form: None');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'private',
+			title: 'Kit: Private: Form: None'
+		);
 
 		// Check that the metabox is not displayed.
 		$I->dontSeeElementInDOM('#wp-convertkit-meta-box');
@@ -128,7 +132,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default: None');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: None'
+		);
 
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
@@ -143,8 +151,8 @@ class CPTFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -176,13 +184,17 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -217,7 +229,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default: Before Content');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: Before Content'
+		);
 
 		// Add paragraph to CPT.
 		$I->addGutenbergParagraphBlock($I, 'CPT content');
@@ -225,8 +241,8 @@ class CPTFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -261,7 +277,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Default: Before and After Content');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: Before and After Content'
+		);
 
 		// Add paragraph to CPT.
 		$I->addGutenbergParagraphBlock($I, 'CPT content');
@@ -269,8 +289,8 @@ class CPTFormCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -279,7 +299,11 @@ class CPTFormCest
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that two Kit Forms are output in the DOM before and after the CPT content.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'before_after_content');
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'before_after_content'
+		);
 	}
 
 	/**
@@ -306,7 +330,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 3rd Paragraph Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: After 3rd Paragraph Element'
+		);
 
 		// View the CPT on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -315,7 +343,13 @@ class CPTFormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that one Kit Form is output in the DOM after the third paragraph.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'p', 3);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_element',
+			element: 'p',
+			elementIndex: 3
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -348,7 +382,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup CPT with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Non-Inline Form: Default: After 3rd Paragraph Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Non-Inline Form: Default: After 3rd Paragraph Element'
+		);
 
 		// View the Page on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -391,7 +429,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 2nd H2 Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: After 2nd H2 Element'
+		);
 
 		// View the CPT on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -400,7 +442,13 @@ class CPTFormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that one Kit Form is output in the DOM after the second <h2> element.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'h2', 2);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_element',
+			element: 'h2',
+			elementIndex: 2
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -433,7 +481,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 2nd Image Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: After 2nd Image Element'
+		);
 
 		// View the CPT on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -442,7 +494,13 @@ class CPTFormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that one Kit Form is output in the DOM after the second <img> element.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_element', 'img', 2);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_element',
+			element: 'img',
+			elementIndex: 2
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -475,7 +533,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Article with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase($I, 'article', 'Kit: CPT: Form: Default: After 9th Paragraph Element');
+		$pageID = $I->addGutenbergPageToDatabase(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Default: After 9th Paragraph Element'
+		);
 
 		// View the CPT on the frontend site.
 		$I->amOnPage('?p=' . $pageID);
@@ -485,7 +547,11 @@ class CPTFormCest
 
 		// Confirm that one Kit Form is output in the DOM after the content, as
 		// the number of paragraphs is less than the position.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID'], 'after_content');
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			position: 'after_content'
+		);
 
 		// Confirm character encoding is not broken due to using DOMDocument.
 		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -516,7 +582,11 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: Legacy: Default');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: Legacy: Default'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
@@ -554,13 +624,17 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: None');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: None'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -592,13 +666,17 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -633,13 +711,17 @@ class CPTFormCest
 		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: CPT: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']);
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: CPT: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
 			]
 		);
@@ -735,9 +817,9 @@ class CPTFormCest
 		// Quick Edit the CPT in the CPTs WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'article',
-			$postID,
-			[
+			postType: 'article',
+			postID: $postID,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -783,9 +865,9 @@ class CPTFormCest
 		// Quick Edit the CPT in the CPTs WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'article',
-			$postID,
-			[
+			postType: 'article',
+			postID: $postID,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -839,9 +921,9 @@ class CPTFormCest
 		// Bulk Edit the CPTs in the CPTs WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'article',
-			$postIDs,
-			[
+			postType: 'article',
+			postIDs: $postIDs,
+			configuration: [
 				'form' => [ 'select', 'Default' ],
 			]
 		);
@@ -898,9 +980,9 @@ class CPTFormCest
 		// Bulk Edit the CPTs in the CPTs WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'article',
-			$postIDs,
-			[
+			postType: 'article',
+			postIDs: $postIDs,
+			configuration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -971,9 +1053,9 @@ class CPTFormCest
 		// Bulk Edit the CPTs in the CPTs WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'article',
-			$postIDs,
-			[
+			postType: 'article',
+			postIDs: $postIDs,
+			configuration: [
 				'form' => [ 'select', '— No Change —' ],
 			]
 		);

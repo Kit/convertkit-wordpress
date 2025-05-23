@@ -246,7 +246,11 @@ class PluginSettingsGeneralCest
 		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select Default Form for Pages, and change the Position.
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_page_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_page_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('_wp_convertkit_settings[page_form_position]', 'Before Page content');
 
 		// Open preview.
@@ -267,7 +271,11 @@ class PluginSettingsGeneralCest
 		$I->closeTab();
 
 		// Select Default Form for Posts.
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_post_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_post_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Open preview.
 		$I->click('a#convertkit-preview-form-post');
@@ -317,7 +325,11 @@ class PluginSettingsGeneralCest
 		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select the Sticky Bar Form for the Site Wide option.
-		$I->fillSelect2MultipleField($I, '#select2-_wp_convertkit_settings_non_inline_form-container', $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME']);
+		$I->fillSelect2MultipleField(
+			$I,
+			container: '#select2-_wp_convertkit_settings_non_inline_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME']
+		);
 
 		// Open preview.
 		$I->click('a#convertkit-preview-non-inline-form');
@@ -337,7 +349,11 @@ class PluginSettingsGeneralCest
 		$I->closeTab();
 
 		// Select a second Modal Form for the Site Wide option.
-		$I->fillSelect2MultipleField($I, '#select2-_wp_convertkit_settings_non_inline_form-container', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']);
+		$I->fillSelect2MultipleField(
+			$I,
+			container: '#select2-_wp_convertkit_settings_non_inline_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+		);
 
 		// Open preview.
 		$I->click('a#convertkit-preview-non-inline-form');
@@ -395,7 +411,11 @@ class PluginSettingsGeneralCest
 		$I->dontSeeElement('_wp_convertkit_settings[page_form_position_element]');
 
 		// Select Default Form for Pages, and change the Position.
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_page_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_page_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('_wp_convertkit_settings[page_form_position]', 'After element');
 
 		// Confirm the conditional fields display for Pages, now that 'After element' is selected.
@@ -410,7 +430,11 @@ class PluginSettingsGeneralCest
 		$I->dontSeeElement('select[name="_wp_convertkit_settings[post_form_position_element]"]');
 
 		// Select Default Form for Posts, and change the Position.
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_post_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_post_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 		$I->selectOption('_wp_convertkit_settings[post_form_position]', 'After element');
 
 		// Confirm the conditional fields display for Posts, now that 'After element' is selected.
@@ -482,7 +506,11 @@ class PluginSettingsGeneralCest
 		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select Default Form for Articles.
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_article_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_article_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Confirm no Default Form option is displayed for the Private CPT.
 		$I->dontSeeElementInDOM('#_wp_convertkit_settings_private_form');
