@@ -66,6 +66,9 @@ class ForminatorCest
 			emailAddress: $emailAddress
 		);
 
+		// Wait for the API to update.
+		$I->wait(2);
+
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
@@ -103,6 +106,9 @@ class ForminatorCest
 			emailAddress: $emailAddress
 		);
 
+		// Wait for the API to update.
+		$I->wait(2);
+
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
@@ -131,6 +137,9 @@ class ForminatorCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
@@ -167,6 +176,9 @@ class ForminatorCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
@@ -258,6 +270,9 @@ class ForminatorCest
 			emailAddress: $emailAddress
 		);
 
+		// Wait for the API to update.
+		$I->wait(2);
+
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
@@ -286,6 +301,9 @@ class ForminatorCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
@@ -322,6 +340,9 @@ class ForminatorCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
@@ -387,6 +408,9 @@ class ForminatorCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
