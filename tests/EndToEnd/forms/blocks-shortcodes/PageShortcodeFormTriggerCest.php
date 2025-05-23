@@ -83,7 +83,7 @@ class PageShortcodeFormTriggerCest
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			shortcodeName: 'convertkit-formtrigger',
+			shortcodeProgrammaticName: 'convertkit-formtrigger',
 			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			],

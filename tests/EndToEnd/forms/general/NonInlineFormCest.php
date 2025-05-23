@@ -438,7 +438,7 @@ class NonInlineFormCest
 			shortcodeConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			],
-			shortcodeContent: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -474,6 +474,7 @@ class NonInlineFormCest
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
 			$I,
+			postType: 'post',
 			title: 'Kit: Post: Non-Inline Form: Default'
 		);
 
@@ -517,6 +518,7 @@ class NonInlineFormCest
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
 			$I,
+			postType: 'post',
 			title: 'Kit: Post: Non-Inline Form: Specific'
 		);
 
@@ -616,6 +618,7 @@ class NonInlineFormCest
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
 			$I,
+			postType: 'post',
 			title: 'Kit: Post: Non-Inline Form: None: Ignored'
 		);
 
@@ -660,6 +663,7 @@ class NonInlineFormCest
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
 			$I,
+			postType: 'post',
 			title: 'Kit: Post: Non-Inline Form: None: Honored'
 		);
 
