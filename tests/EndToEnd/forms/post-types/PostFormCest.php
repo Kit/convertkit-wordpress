@@ -70,7 +70,7 @@ class PostFormCest
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			selector: '#wp-convertkit-form',
+			selectElement: '#wp-convertkit-form',
 			prependOptions: [
 				'Default',
 				'None',
