@@ -176,11 +176,8 @@ class RefreshResourcesButtonCest
 
 		// Change resource to value specified in the .env file, which should now be available.
 		// If the expected dropdown value does not exist, this will fail the test.
-		$I->fillSelect2Field(
-			$I,
-			container: '#select2-wp-convertkit-quick-edit-form-container',
-			value: $_ENV['CONVERTKIT_API_FORM_NAME']
-		);
+		$I->selectOption('#wp-convertkit-quick-edit-form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
 
 		// Click the Tags refresh button.
 		$I->click('button.wp-convertkit-refresh-resources[data-resource="tags"]');
