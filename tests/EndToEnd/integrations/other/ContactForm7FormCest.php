@@ -66,6 +66,9 @@ class ContactForm7FormCest
 			emailAddress: $emailAddress
 		);
 
+		// Wait for the API to update.
+		$I->wait(2);
+
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
 
@@ -103,6 +106,9 @@ class ContactForm7FormCest
 			emailAddress: $emailAddress
 		);
 
+		// Wait for the API to update.
+		$I->wait(2);
+
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
@@ -131,6 +137,9 @@ class ContactForm7FormCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
@@ -167,6 +176,9 @@ class ContactForm7FormCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
@@ -232,6 +244,9 @@ class ContactForm7FormCest
 			pageID: $pageID,
 			emailAddress: $emailAddress
 		);
+
+		// Wait for the API to update.
+		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists($I, $emailAddress);
