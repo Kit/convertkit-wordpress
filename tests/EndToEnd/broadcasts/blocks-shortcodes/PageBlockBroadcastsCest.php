@@ -35,15 +35,22 @@ class PageBlockBroadcastsCest
 	public function testBroadcastsBlockWhenNoCredentials(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Block: No Credentials');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Block: No Credentials'
+		);
 
 		// Add block to Page.
-		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
 
 		// Test that the popup window works.
 		$I->testBlockNoCredentialsPopupWindow(
 			$I,
-			'convertkit-broadcasts'
+			blockName: 'convertkit-broadcasts'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -72,13 +79,23 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: No Broadcasts');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: No Broadcasts'
+		);
 
 		// Add block to Page.
-		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
 
 		// Confirm that the Broadcasts block displays instructions to the user on how to add a Broadcast in Kit.
-		$I->seeBlockHasNoContentMessage($I, 'No broadcasts exist in Kit.');
+		$I->seeBlockHasNoContentMessage(
+			$I,
+			message: 'No broadcasts exist in Kit.'
+		);
 
 		// Click the link to confirm it loads Kit.
 		$I->clickLinkInBlockAndAssertKitLoginScreen($I, 'Click here to send your first broadcast.');
@@ -104,10 +121,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResourcesNoData($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Refresh Button');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Refresh Button'
+		);
 
 		// Add block to Page.
-		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
 
 		// Setup Plugin with a valid API Key and resources, as if the user performed the necessary steps to authenticate
 		// and created a broadcast.
@@ -143,10 +167,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Default Params');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Default Params'
+		);
 
 		// Add block to Page.
-		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -183,14 +214,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display as Grid');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Display as Grid'
+		);
 
 		// Add block to Page, setting the date format.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-0' => [ 'toggle', true ],
 			]
 		);
@@ -222,14 +256,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Date Format Param');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Date Format Param'
+		);
 
 		// Add block to Page, setting the date format.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'date_format' => [ 'select', 'Y-m-d' ],
 			]
 		);
@@ -269,14 +306,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display image');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Display image'
+		);
 
 		// Add block to Page, setting the date format.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-0' => [ 'toggle', true ],
 				'#inspector-toggle-control-1' => [ 'toggle', true ],
 			]
@@ -310,14 +350,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display description');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Display description'
+		);
 
 		// Add block to Page, setting the date format.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-2' => [ 'toggle', true ],
 			]
 		);
@@ -349,14 +392,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Display read more link');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Display read more link'
+		);
 
 		// Add block to Page, setting the date format.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-3' => [ 'toggle', true ],
 				'read_more_label'             => [ 'input', 'Continue reading' ],
 			]
@@ -389,14 +435,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Limit Param');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Limit Param'
+		);
 
 		// Add block to Page, setting the limit.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			]
 		);
@@ -433,10 +482,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Blank Limit Param');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Blank Limit Param'
+		);
 
 		// Add block to Page.
-		$I->addGutenbergBlock($I, 'Kit Broadcasts', 'convertkit-broadcasts');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
 
 		// When the sidebar appears, blank the limit parameter as the user might, by pressing the backspace key twice.
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
@@ -479,14 +535,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Pagination');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Pagination'
+		);
 
 		// Add block to Page, setting the limit.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'#inspector-toggle-control-4' => [ 'toggle', true ],
 			]
@@ -513,14 +572,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Pagination Labels');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Pagination Labels'
+		);
 
 		// Add block to Page, setting the limit.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'#inspector-toggle-control-4' => [ 'toggle', true ],
 				'paginate_label_prev'         => [ 'input', 'Newer' ],
@@ -549,14 +611,17 @@ class PageBlockBroadcastsCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Blank Pagination Labels');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Blank Pagination Labels'
+		);
 
 		// Add block to Page, setting the limit.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'#inspector-toggle-control-4' => [ 'toggle', true ],
 				'paginate_label_prev'         => [ 'input', '' ],

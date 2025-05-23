@@ -36,14 +36,16 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithDefaultParameters(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			false,
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			shortcodeName:'Kit Broadcasts',
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -77,16 +79,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithDisplayGridParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display as Grid');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display as Grid'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'display_grid' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="1" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -113,16 +118,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithDateFormatParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Date Format');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Date Format'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'date_format' => [ 'select', date('Y-m-d') ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -156,16 +164,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithDisplayImageParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display image');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display image'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'display_image' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -191,16 +202,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithDisplayDescriptionParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display description');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display description'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'display_description' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -226,17 +240,20 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithDisplayReadMoreLinkParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display read more link');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display read more link'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'display_read_more' => [ 'toggle', 'Yes' ],
 				'read_more_label'   => [ 'input', 'Continue reading' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -263,16 +280,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithLimitParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Limit');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Limit'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -304,24 +324,31 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithPaginationEnabled(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Pagination');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Pagination'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'limit'    => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Previous',
+			nextLabel: 'Next'
+		);
 	}
 
 	/**
@@ -335,26 +362,33 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithPaginationLabelParameters(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Pagination Labels');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Pagination Labels'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'limit'               => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate'            => [ 'toggle', 'Yes' ],
 				'paginate_label_prev' => [ 'input', 'Newer' ],
 				'paginate_label_next' => [ 'input', 'Older' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
 		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Older', 'Newer');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Older',
+			nextLabel: 'Newer'
+		);
 	}
 
 	/**
@@ -368,26 +402,33 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInVisualEditorWithBlankPaginationLabelParameters(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Blank Pagination Labels');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Blank Pagination Labels'
+		);
 
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'limit'               => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate'            => [ 'toggle', 'Yes' ],
 				'paginate_label_prev' => [ 'input', '' ],
 				'paginate_label_next' => [ 'input', '' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1"]'
 		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Previous',
+			nextLabel: 'Next'
+		);
 	}
 
 	/**
@@ -441,7 +482,11 @@ class PageShortcodeBroadcastsCest
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Older', 'Newer');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Older',
+			nextLabel: 'Newer'
+		);
 
 		// Confirm that link styles are still applied to refreshed data.
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
@@ -458,14 +503,16 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithDefaultParameters(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor'
+		);
 
 		// Add shortcode to Page.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			false,
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -497,16 +544,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithDisplayGridParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display as Grid');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display as Grid'
+		);
 
 		// Add shortcode to Page.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'display_grid' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="1" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -533,16 +583,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithDateFormatParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Date Format');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Date Format'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'date_format' => [ 'select', date('Y-m-d') ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -571,16 +624,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithDisplayImageParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display image');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display image'
+		);
 
 		// Add shortcode to Page.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'display_image' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -607,16 +663,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithDisplayDescriptionParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display description');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display description'
+		);
 
 		// Add shortcode to Page.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'display_description' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -643,17 +702,20 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithDisplayReadMoreLinkParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display read more link');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display read more link'
+		);
 
 		// Add shortcode to Page.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'display_read_more' => [ 'toggle', 'Yes' ],
 				'read_more_label'   => [ 'input', 'Continue reading' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -680,16 +742,19 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithLimitParameter(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Limit');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Limit'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -718,24 +783,31 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithPaginationEnabled(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Pagination');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Pagination'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'limit'    => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Previous',
+			nextLabel: 'Next'
+		);
 	}
 
 	/**
@@ -749,26 +821,33 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeInTextEditorWithPaginationLabelParameters(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Text Editor: Pagination Labels');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Pagination Labels'
+		);
 
 		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-broadcasts',
-			[
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
 				'limit'               => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate'            => [ 'toggle', 'Yes' ],
 				'paginate_label_prev' => [ 'input', 'Newer' ],
 				'paginate_label_next' => [ 'input', 'Older' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
 		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Older', 'Newer');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Older',
+			nextLabel: 'Newer'
+		);
 	}
 
 	/**
@@ -782,7 +861,10 @@ class PageShortcodeBroadcastsCest
 	public function testBroadcastsShortcodeWhenSwitchingEditors(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Broadcasts: Shortcode: Editor Switching');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Editor Switching'
+		);
 
 		// Open Text Editor modal.
 		$I->openTextEditorShortcodeModal($I, 'convertkit-broadcasts', 'content');
@@ -794,12 +876,12 @@ class PageShortcodeBroadcastsCest
 		// still works, inserting the shortcode into the Visual Editor.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Broadcasts',
-			[
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
 				'limit'    => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate' => [ 'toggle', 'Yes' ],
 			],
-			'[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -838,7 +920,11 @@ class PageShortcodeBroadcastsCest
 		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Previous',
+			nextLabel: 'Next'
+		);
 
 		// Confirm that the output is still escaped.
 		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');

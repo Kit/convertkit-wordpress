@@ -52,7 +52,11 @@ class WidgetBroadcastsCest
 	public function testBroadcastsBlockWidgetWithDefaultParameters(EndToEndTester $I)
 	{
 		// Add block widget.
-		$I->addBlockWidget($I, 'Kit Broadcasts', 'convertkit-broadcasts');
+		$I->addBlockWidget(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
 
 		// View the home page.
 		$I->amOnPage('/');
@@ -79,9 +83,9 @@ class WidgetBroadcastsCest
 		// Add block widget.
 		$I->addBlockWidget(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'date_format' => [ 'select', 'Y-m-d' ],
 			]
 		);
@@ -111,9 +115,9 @@ class WidgetBroadcastsCest
 		// Add block widget.
 		$I->addBlockWidget(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			]
 		);
@@ -140,9 +144,9 @@ class WidgetBroadcastsCest
 		// Add block widget.
 		$I->addBlockWidget(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-4' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'limit'                       => [ 'input', '2' ],
 			]
@@ -167,9 +171,9 @@ class WidgetBroadcastsCest
 		// Add block widget.
 		$I->addBlockWidget(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-4' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'limit'                       => [ 'input', '2' ],
 				'paginate_label_prev'         => [ 'input', 'Newer' ],
@@ -181,7 +185,11 @@ class WidgetBroadcastsCest
 		$I->amOnPage('/');
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Older', 'Newer');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Older',
+			nextLabel: 'Newer'
+		);
 	}
 
 	/**
@@ -196,9 +204,9 @@ class WidgetBroadcastsCest
 		// Add block widget.
 		$I->addBlockWidget(
 			$I,
-			'Kit Broadcasts',
-			'convertkit-broadcasts',
-			[
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
 				'#inspector-toggle-control-4' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'limit'                       => [ 'input', '2' ],
 				'paginate_label_prev'         => [ 'input', '' ],
@@ -210,7 +218,11 @@ class WidgetBroadcastsCest
 		$I->amOnPage('/');
 
 		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
+		$I->testBroadcastsPagination(
+			$I,
+			previousLabel: 'Previous',
+			nextLabel: 'Next'
+		);
 	}
 
 	/**
