@@ -185,7 +185,11 @@ class PageLandingPageSetupWizardCest
 		$this->_setupAndLoadAddNewLandingPageScreen($I);
 
 		// Select a landing page and enter a slug.
-		$I->fillSelect2Field($I, '#select2-landing_page-container', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-landing_page-container',
+			value: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
+		);
 		$I->fillField('post_name', 'landing-page-setup-wizard');
 
 		// Click create button.
@@ -226,7 +230,11 @@ class PageLandingPageSetupWizardCest
 		$this->_setupAndLoadAddNewLandingPageScreen($I);
 
 		// Select a landing page and enter a slug.
-		$I->fillSelect2Field($I, '#select2-landing_page-container', $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-landing_page-container',
+			value: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
+		);
 		$I->fillField('post_name', 'landing-page-setup-wizard');
 
 		// Click create button.

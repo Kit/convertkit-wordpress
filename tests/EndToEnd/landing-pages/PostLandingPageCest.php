@@ -40,7 +40,11 @@ class PostLandingPageCest
 	public function testAddNewPostDoesNotDisplayLandingPageOption(EndToEndTester $I)
 	{
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Landing Page');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Landing Page'
+		);
 
 		// Check that the metabox is displayed.
 		$I->seeElementInDOM('#wp-convertkit-meta-box');
@@ -51,8 +55,8 @@ class PostLandingPageCest
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);

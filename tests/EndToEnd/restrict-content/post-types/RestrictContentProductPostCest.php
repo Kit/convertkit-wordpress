@@ -37,11 +37,19 @@ class RestrictContentProductPostCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Restrict Content: Product'
+		);
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Post.
@@ -67,13 +75,17 @@ class RestrictContentProductPostCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Restrict Content: Product'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -81,7 +93,11 @@ class RestrictContentProductPostCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Post.
@@ -106,13 +122,17 @@ class RestrictContentProductPostCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Restrict Content: Product'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'tag'              => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
@@ -121,7 +141,11 @@ class RestrictContentProductPostCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Post.
@@ -150,13 +174,17 @@ class RestrictContentProductPostCest
 		$memberOnlyContent = 'Member-only content';
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product: Generated Excerpt');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Restrict Content: Product: Generated Excerpt'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -172,8 +200,8 @@ class RestrictContentProductPostCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByProductOnFrontend(
 			$I,
-			$url,
-			[
+			urlOrPageID: $url,
+			options: [
 				'visible_content' => $visibleContent,
 				'member_content'  => $memberOnlyContent,
 			]
@@ -201,13 +229,17 @@ class RestrictContentProductPostCest
 		];
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product: Defined Excerpt');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Restrict Content: Product: Defined Excerpt'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -258,13 +290,17 @@ class RestrictContentProductPostCest
 		$I->setupKitPlugin($I);
 
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'post', 'Kit: Post: Restrict Content: Product: Modal');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Restrict Content: Product: Modal'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -272,7 +308,11 @@ class RestrictContentProductPostCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Post.
@@ -340,9 +380,9 @@ class RestrictContentProductPostCest
 		// Quick Edit the Post in the Posts WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'post',
-			$postID,
-			[
+			postType: 'post',
+			postID: $postID,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
@@ -385,9 +425,9 @@ class RestrictContentProductPostCest
 		// Bulk Edit the Posts in the Posts WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'post',
-			$postIDs,
-			[
+			postType: 'post',
+			postIDs: $postIDs,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);

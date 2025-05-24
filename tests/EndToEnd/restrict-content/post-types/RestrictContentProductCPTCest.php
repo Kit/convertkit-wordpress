@@ -40,11 +40,19 @@ class RestrictContentProductCPTCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: Article: Restrict Content: Product'
+		);
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Article.
@@ -70,7 +78,11 @@ class RestrictContentProductCPTCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'private', 'Kit: Private: Restrict Content');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'private',
+			title: 'Kit: Private: Restrict Content'
+		);
 
 		// Check that the metabox is not displayed.
 		$I->dontSeeElementInDOM('#wp-convertkit-meta-box');
@@ -93,13 +105,17 @@ class RestrictContentProductCPTCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: Article: Restrict Content: Product'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -107,7 +123,11 @@ class RestrictContentProductCPTCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Article.
@@ -132,13 +152,17 @@ class RestrictContentProductCPTCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: Article: Restrict Content: Product'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'tag'              => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
@@ -147,7 +171,11 @@ class RestrictContentProductCPTCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Article.
@@ -176,13 +204,17 @@ class RestrictContentProductCPTCest
 		$memberOnlyContent = 'Member-only content';
 
 		// Add the CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product: Generated Excerpt');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: Article: Restrict Content: Product: Generated Excerpt'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -198,8 +230,8 @@ class RestrictContentProductCPTCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByProductOnFrontend(
 			$I,
-			$url,
-			[
+			urlOrPageID: $url,
+			options: [
 				'visible_content' => $visibleContent,
 				'member_content'  => $memberOnlyContent,
 			]
@@ -221,13 +253,17 @@ class RestrictContentProductCPTCest
 		$I->setupKitPlugin($I);
 
 		// Add the CPT using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'article', 'Kit: Article: Restrict Content: Product: Modal');
+		$I->addGutenbergPage(
+			$I,
+			postType: 'article',
+			title: 'Kit: Article: Restrict Content: Product: Modal'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -235,7 +271,11 @@ class RestrictContentProductCPTCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Article.
@@ -303,9 +343,9 @@ class RestrictContentProductCPTCest
 		// Quick Edit the CPT in the CPTs WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'article',
-			$postID,
-			[
+			postType: 'article',
+			postID: $postID,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
@@ -348,9 +388,9 @@ class RestrictContentProductCPTCest
 		// Bulk Edit the CPTs in the CPTs WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'article',
-			$postIDs,
-			[
+			postType: 'article',
+			postIDs: $postIDs,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
