@@ -353,7 +353,7 @@ class RestrictContentTagCest
 			$I,
 			urlOrPageID: $url,
 			emailAddress: $I->generateEmailAddress(),
-			options: $options
+			options: $options['settings']
 		);
 	}
 
@@ -504,7 +504,11 @@ class RestrictContentTagCest
 		// Iterate through Pages to run frontend tests.
 		foreach ($pageIDs as $pageID) {
 			// Test Restrict Content functionality.
-			$I->testRestrictedContentByTagOnFrontend($I, $pageID, $I->generateEmailAddress());
+			$I->testRestrictedContentByTagOnFrontend(
+				$I,
+				urlOrPageID: $pageID,
+				emailAddress: $I->generateEmailAddress()
+			);
 		}
 	}
 
