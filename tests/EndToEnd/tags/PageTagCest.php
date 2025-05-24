@@ -47,13 +47,16 @@ class PageTagCest
 		$subscriberID = $I->apiSubscribe($emailAddress, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Tag: None');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Tag: None'
+		);
 
 		// Check the order of the Tag resources are alphabetical, with the None option prepending the Tags.
 		$I->checkSelectTagOptionOrder(
 			$I,
-			'#wp-convertkit-tag',
-			[
+			selectElement: '#wp-convertkit-tag',
+			prependOptions:[
 				'None',
 			]
 		);
@@ -61,8 +64,8 @@ class PageTagCest
 		// Configure metabox's Tag setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'tag' => [ 'select2', 'None' ],
 			]
 		);
@@ -77,7 +80,7 @@ class PageTagCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Check that the subscriber has not been assigned to the tag.
-		$I->apiCheckSubscriberHasNoTags($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+		$I->apiCheckSubscriberHasNoTags($I, $subscriberID);
 	}
 
 	/**
@@ -99,13 +102,16 @@ class PageTagCest
 		$subscriberID = $I->apiSubscribe($emailAddress, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Tag: ' . $_ENV['CONVERTKIT_API_TAG_NAME'] );
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Tag: ' . $_ENV['CONVERTKIT_API_TAG_NAME']
+		);
 
 		// Configure metabox's Tag setting to the value specified in the .env file.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'tag' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
 		);
@@ -120,7 +126,11 @@ class PageTagCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Check that the subscriber has been assigned to the tag.
-		$I->apiCheckSubscriberHasTag($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+		$I->apiCheckSubscriberHasTag(
+			$I,
+			subscriberID: $subscriberID,
+			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+		);
 	}
 
 	/**
@@ -135,13 +145,16 @@ class PageTagCest
 	public function testAddNewPageUsingDefinedTagWithInvalidSubscriberID(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Tag: ' . $_ENV['CONVERTKIT_API_TAG_NAME'] . ': Invalid Subscriber ID' );
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Tag: ' . $_ENV['CONVERTKIT_API_TAG_NAME'] . ': Invalid Subscriber ID'
+		);
 
 		// Configure metabox's Tag setting to the value specified in the .env file.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'tag' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
 		);
@@ -184,9 +197,9 @@ class PageTagCest
 		// Quick Edit the Page in the Pages WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'page',
-			$pageID,
-			[
+			postType: 'page',
+			postID: $pageID,
+			configuration: [
 				'tag' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
 		);
@@ -198,7 +211,11 @@ class PageTagCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Check that the subscriber has been assigned to the tag.
-		$I->apiCheckSubscriberHasTag($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+		$I->apiCheckSubscriberHasTag(
+			$I,
+			subscriberID: $subscriberID,
+			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+		);
 	}
 
 	/**
@@ -230,9 +247,9 @@ class PageTagCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			postIDs: $pageIDs,
+			configuration: [
 				'tag' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
 		);
@@ -300,9 +317,9 @@ class PageTagCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			postIDs: $pageIDs,
+			configuration: [
 				'tag' => [ 'select', '— No Change —' ],
 			]
 		);
@@ -323,7 +340,11 @@ class PageTagCest
 			$I->checkNoWarningsAndNoticesOnScreen($I);
 
 			// Check that the subscriber has been assigned to the tag.
-			$I->apiCheckSubscriberHasTag($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+			$I->apiCheckSubscriberHasTag(
+				$I,
+				subscriberID: $subscriberID,
+				tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+			);
 		}
 	}
 
