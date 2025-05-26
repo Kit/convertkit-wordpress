@@ -227,12 +227,12 @@ jobs:
       - name: Exchange API Key and Secret for OAuth Tokens
         id: get-oauth-tokens
         run: |
-          response=$(curl -s -X POST "https://api.kit.com/wordpress/accounts/oauth_access_token?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&tenant_name=${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          response=$(curl -s -X POST "https://api.kit.com/wordpress/accounts/oauth_access_token?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-php-${{ matrix.php-versions }}")
           access_token=$(echo "$response" | jq -r '.oauth.access_token')
           refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
           echo "CONVERTKIT_OAUTH_ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
           echo "CONVERTKIT_OAUTH_REFRESH_TOKEN=$refresh_token" >> $GITHUB_ENV
-          response=$(curl -s -X POST "https://api.kit.com/wordpress/accounts/oauth_access_token?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&tenant_name=${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          response=$(curl -s -X POST "https://api.kit.com/wordpress/accounts/oauth_access_token?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-php-${{ matrix.php-versions }}")
           access_token=$(echo "$response" | jq -r '.oauth.access_token')
           refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
           echo "CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=$access_token" >> $GITHUB_ENV
