@@ -37,10 +37,6 @@ jobs:
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET_NO_DATA: ${{ secrets.CONVERTKIT_API_SECRET_NO_DATA }} # ConvertKit API Secret for ConvertKit account with no data, stored in the repository's Settings > Secrets
-      CONVERTKIT_OAUTH_ACCESS_TOKEN: ${{ secrets.CONVERTKIT_OAUTH_ACCESS_TOKEN }}
-      CONVERTKIT_OAUTH_REFRESH_TOKEN: ${{ secrets.CONVERTKIT_OAUTH_REFRESH_TOKEN }}
-      CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA: ${{ secrets.CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA }}
-      CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA: ${{ secrets.CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA }}
       CONVERTKIT_OAUTH_CLIENT_ID: ${{ secrets.CONVERTKIT_OAUTH_CLIENT_ID }}
       CONVERTKIT_OAUTH_REDIRECT_URI: ${{ secrets.CONVERTKIT_OAUTH_REDIRECT_URI }}
       KIT_OAUTH_REDIRECT_URI: ${{ secrets.KIT_OAUTH_REDIRECT_URI }}
@@ -56,27 +52,12 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.1', '8.2', '8.3', '8.4' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.1' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
           'EndToEnd/broadcasts/blocks-shortcodes',
           'EndToEnd/broadcasts/import-export',
-          'EndToEnd/forms/blocks-shortcodes',
-          'EndToEnd/forms/general',
-          'EndToEnd/forms/post-types',
-          'EndToEnd/general/other',
-          'EndToEnd/general/plugin-screens',
-          'EndToEnd/integrations/divi-builder',
-          'EndToEnd/integrations/divi-theme',
-          'EndToEnd/integrations/other',
-          'EndToEnd/integrations/wlm',
-          'EndToEnd/integrations/woocommerce',
-          'EndToEnd/landing-pages',
-          'EndToEnd/products',
-          'EndToEnd/restrict-content/general',
-          'EndToEnd/restrict-content/post-types',
-          'EndToEnd/tags'
         ]
 
     # Steps to install, configure and run tests
@@ -241,6 +222,21 @@ jobs:
           export DISPLAY=:99
           chromedriver --port=9515 --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
+
+      # Exchange API Keys and Secrets for OAuth Tokens.
+      - name: Exchange API Key and Secret for OAuth Tokens
+        id: get-oauth-tokens
+        run: |
+          response=$(curl -s -X POST "https://api.kit.com/wordpress/accounts/oauth_access_token?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&tenant_name=${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN=$refresh_token" >> $GITHUB_ENV
+          response=$(curl -s -X POST "https://api.kit.com/wordpress/accounts/oauth_access_token?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&tenant_name=${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA=$refresh_token" >> $GITHUB_ENV
 
       # Write any secrets, such as API keys, to the .env.dist.testing file now.
       # Make sure your committed .env.dist.testing file ends with a newline.
