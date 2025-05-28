@@ -370,9 +370,9 @@ class RestrictContentSetupCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontend(
 			$I,
-			$url,
-			$I->generateEmailAddress(),
-			[
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: [
 				'member_content' => 'The downloadable content (that is available when the visitor has paid for the Kit product) goes here.',
 			]
 		);
@@ -439,9 +439,9 @@ class RestrictContentSetupCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontend(
 			$I,
-			$url,
-			$I->generateEmailAddress(),
-			[
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: [
 				'visible_content' => 'Some introductory text about lesson 1',
 				'member_content'  => 'Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here.',
 			]

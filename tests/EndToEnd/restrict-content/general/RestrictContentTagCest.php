@@ -38,13 +38,16 @@ class RestrictContentTagCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag'
+		);
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
@@ -52,14 +55,22 @@ class RestrictContentTagCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress());
+		$I->testRestrictedContentByTagOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress()
+		);
 	}
 
 	/**
@@ -87,13 +98,16 @@ class RestrictContentTagCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Require Login');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: Require Login'
+		);
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
@@ -101,14 +115,22 @@ class RestrictContentTagCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress());
+		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled(
+			$I,
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress()
+		);
 	}
 
 	/**
@@ -142,13 +164,16 @@ class RestrictContentTagCest
 		$I->setupKitPluginRestrictContent($I, $options['settings']);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Recaptcha and Require Login');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: Recaptcha and Require Login'
+		);
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
@@ -156,14 +181,23 @@ class RestrictContentTagCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $url, $I->generateEmailAddress(), $options);
+		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled(
+			$I,
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: $options
+		);
 	}
 
 	/**
@@ -194,13 +228,16 @@ class RestrictContentTagCest
 		$I->setupKitPluginRestrictContent($I, $options['settings']);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: Login Modal');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: Login Modal'
+		);
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
@@ -208,14 +245,22 @@ class RestrictContentTagCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendUsingLoginModal($I, $url, $options);
+		$I->testRestrictedContentByTagOnFrontendUsingLoginModal(
+			$I,
+			urlOrPageID: $url,
+			options: $options
+		);
 	}
 
 	/**
@@ -276,13 +321,16 @@ class RestrictContentTagCest
 		$I->setupKitPluginRestrictContent($I, $options);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: reCAPTCHA');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: reCAPTCHA'
+		);
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
@@ -290,14 +338,23 @@ class RestrictContentTagCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $url, $I->generateEmailAddress(), $options['settings']);
+		$I->testRestrictedContentByTagOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: $options['settings']
+		);
 	}
 
 	/**
@@ -324,13 +381,16 @@ class RestrictContentTagCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Tag: reCAPTCHA High Min Score');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: reCAPTCHA High Min Score'
+		);
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
@@ -338,7 +398,11 @@ class RestrictContentTagCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
@@ -383,15 +447,19 @@ class RestrictContentTagCest
 		// Quick Edit the Page in the Pages WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'page',
-			$pageID,
-			[
+			postType: 'page',
+			postID: $pageID,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
 		);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontend($I, $pageID, $I->generateEmailAddress());
+		$I->testRestrictedContentByTagOnFrontend(
+			$I,
+			urlOrPageID: $pageID,
+			emailAddress: $I->generateEmailAddress()
+		);
 	}
 
 	/**
@@ -426,9 +494,9 @@ class RestrictContentTagCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			postIDs: $pageIDs,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			]
 		);
@@ -436,7 +504,11 @@ class RestrictContentTagCest
 		// Iterate through Pages to run frontend tests.
 		foreach ($pageIDs as $pageID) {
 			// Test Restrict Content functionality.
-			$I->testRestrictedContentByTagOnFrontend($I, $pageID, $I->generateEmailAddress());
+			$I->testRestrictedContentByTagOnFrontend(
+				$I,
+				urlOrPageID: $pageID,
+				emailAddress: $I->generateEmailAddress()
+			);
 		}
 	}
 

@@ -37,11 +37,18 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product'
+		);
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
@@ -67,13 +74,16 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -81,7 +91,11 @@ class RestrictContentProductPageCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
@@ -106,13 +120,16 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'tag'              => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
@@ -121,7 +138,11 @@ class RestrictContentProductPageCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
@@ -150,13 +171,16 @@ class RestrictContentProductPageCest
 		$memberOnlyContent = 'Member-only content';
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product: Generated Excerpt');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product: Generated Excerpt'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -172,8 +196,8 @@ class RestrictContentProductPageCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByProductOnFrontend(
 			$I,
-			$url,
-			[
+			urlOrPageID: $url,
+			options: [
 				'visible_content' => $visibleContent,
 				'member_content'  => $memberOnlyContent,
 			]
@@ -195,13 +219,16 @@ class RestrictContentProductPageCest
 		$I->setupKitPlugin($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product: Modal');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product: Modal'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -209,7 +236,11 @@ class RestrictContentProductPageCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
@@ -276,13 +307,16 @@ class RestrictContentProductPageCest
 		$I->activateThirdPartyPlugin($I, 'beaver-builder-lite-version');
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Beaver Builder');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Beaver Builder'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -338,13 +372,16 @@ class RestrictContentProductPageCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Product: Search Engines');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product: Search Engines'
+		);
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
@@ -352,7 +389,11 @@ class RestrictContentProductPageCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
@@ -389,9 +430,9 @@ class RestrictContentProductPageCest
 		// Quick Edit the Page in the Pages WP_List_Table.
 		$I->quickEdit(
 			$I,
-			'page',
-			$pageID,
-			[
+			postType: 'page',
+			postID: $pageID,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
@@ -432,9 +473,9 @@ class RestrictContentProductPageCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			postIDs: $pageIDs,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);

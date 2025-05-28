@@ -71,8 +71,8 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByProductOnFrontend(
 			$I,
-			$pageID,
-			[
+			urlOrPageID: $pageID,
+			options: [
 				'visible_content' => '',
 				'member_content'  => 'Member-only content.',
 			]
@@ -127,8 +127,8 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByProductOnFrontend(
 			$I,
-			$pageID,
-			[
+			urlOrPageID: $pageID,
+			options: [
 				'visible_content' => '',
 				'member_content'  => 'Member-only content.',
 			]

@@ -40,8 +40,16 @@ class ReviewRequestCest
 		$I->loadKitSettingsGeneralScreen($I);
 
 		// Select Default Form for Pages and Posts.
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_page_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
-		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_post_form-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_page_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_post_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
@@ -99,13 +107,16 @@ class ReviewRequestCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Test Review Request on Save with Form Specified');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Test Review Request on Save with Form Specified'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -139,13 +150,16 @@ class ReviewRequestCest
 		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Test Review Request on Save with Form Specified');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Test Review Request on Save with Landing Page Specified'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
 			]
 		);
