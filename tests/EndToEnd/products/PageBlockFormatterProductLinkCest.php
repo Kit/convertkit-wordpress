@@ -61,7 +61,7 @@ class PageBlockFormatterProductLinkCest
 		$I->applyGutenbergFormatter(
 			$I,
 			formatterName: 'Kit Product Trigger',
-			formatterProgrammaticName:'convertkit-product-link',
+			formatterProgrammaticName: 'convertkit-product-link',
 			formatterConfiguration:[
 				// Product.
 				'data-id' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
@@ -114,7 +114,7 @@ class PageBlockFormatterProductLinkCest
 		$I->applyGutenbergFormatter(
 			$I,
 			formatterName: 'Kit Product Trigger',
-			formatterProgrammaticName:'convertkit-product-link',
+			formatterProgrammaticName: 'convertkit-product-link',
 			formatterConfiguration:[
 				// Product.
 				'data-id' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
@@ -125,9 +125,9 @@ class PageBlockFormatterProductLinkCest
 		$I->applyGutenbergFormatter(
 			$I,
 			formatterName: 'Kit Product Trigger',
-			formatterProgrammaticName:'convertkit-product-link',
+			formatterProgrammaticName: 'convertkit-product-link',
 			formatterConfiguration:[
-				// Form.
+				// Product.
 				'data-id' => [ 'select', 'None' ],
 			]
 		);
@@ -177,9 +177,9 @@ class PageBlockFormatterProductLinkCest
 		$I->applyGutenbergFormatter(
 			$I,
 			formatterName: 'Kit Product Trigger',
-			formatterProgrammaticName:'convertkit-product-link',
+			formatterProgrammaticName: 'convertkit-product-link',
 			formatterConfiguration:[
-				// Form.
+				// Product.
 				'data-id' => [ 'select', 'None' ],
 			]
 		);
