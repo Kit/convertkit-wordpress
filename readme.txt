@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -160,6 +160,10 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.8.2 2025-05-28
+* Fix: Broadcasts: Remove emoijs from Permalink whem importing Broadcasts to WordPress Posts
+* Fix: Coding Standards: Use `wp_doing_cron` function, instead of `DOING_CRON` constant
 
 ### 2.8.1 2025-05-07
 * Added: Member Content: Permits Apple, DuckDuckGo, OpenAI Search, Perplexity and Yandex to crawl Member Content if the Permit Search Engine Crawlers option is enabled
