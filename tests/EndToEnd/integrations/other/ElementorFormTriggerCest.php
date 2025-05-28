@@ -36,7 +36,10 @@ class ElementorFormTriggerCest
 	public function testFormTriggerWidgetIsRegistered(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form Trigger: Elementor: Registered');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Trigger: Elementor: Registered'
+		);
 
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
@@ -65,8 +68,8 @@ class ElementorFormTriggerCest
 		// Create Page with Form Trigger widget in Elementor.
 		$pageID = $this->_createPageWithFormTriggerWidget(
 			$I,
-			'Kit: Page: Form Trigger: Elementor Widget: Valid Params',
-			[
+			title: 'Kit: Page: Form Trigger: Elementor Widget: Valid Params',
+			settings: [
 				'form' => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
 				'text' => 'Subscribe',
 			]
@@ -79,7 +82,11 @@ class ElementorFormTriggerCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the form trigger button displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe'
+		);
 	}
 
 	/**
@@ -98,8 +105,8 @@ class ElementorFormTriggerCest
 		// Create Page with Form Trigger widget in Elementor.
 		$pageID = $this->_createPageWithFormTriggerWidget(
 			$I,
-			'Kit: Page: Form Trigger: Elementor Widget: Hex Colors',
-			[
+			title: 'Kit: Page: Form Trigger: Elementor Widget: Hex Colors',
+			settings: [
 				'form'             => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
 				'text'             => 'Subscribe',
 				'background_color' => $backgroundColor,
@@ -114,7 +121,13 @@ class ElementorFormTriggerCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the form trigger button displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe', $textColor, $backgroundColor);
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe',
+			textColor: $textColor,
+			backgroundColor: $backgroundColor
+		);
 	}
 
 	/**

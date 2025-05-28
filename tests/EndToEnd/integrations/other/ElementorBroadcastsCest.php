@@ -36,7 +36,10 @@ class ElementorBroadcastsCest
 	public function testBroadcastsWidgetIsRegistered(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Broadcasts: Elementor: Registered');
+		$I->addGutenbergPage(
+			I: $I,
+			title: 'Kit: Page: Broadcasts: Elementor: Registered'
+		);
 
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
@@ -65,8 +68,8 @@ class ElementorBroadcastsCest
 		// Create Page with Broadcasts widget in Elementor.
 		$pageID = $this->_createPageWithBroadcastsWidget(
 			$I,
-			'Kit: Page: Broadcasts: Elementor Widget: Valid Params',
-			[
+			title: 'Kit: Page: Broadcasts: Elementor Widget: Valid Params',
+			settings: [
 				'date_format' => 'F j, Y',
 				'limit'       => 10,
 			]
@@ -106,8 +109,8 @@ class ElementorBroadcastsCest
 		// Create Page with Broadcasts widget in Elementor.
 		$pageID = $this->_createPageWithBroadcastsWidget(
 			$I,
-			'Kit: Page: Broadcasts: Elementor Widget: Date Format',
-			[
+			title: 'Kit: Page: Broadcasts: Elementor Widget: Date Format',
+			settings: [
 				'date_format' => 'Y-m-d',
 				'limit'       => 10,
 			]
@@ -147,8 +150,8 @@ class ElementorBroadcastsCest
 		// Create Page with Broadcasts widget in Elementor.
 		$pageID = $this->_createPageWithBroadcastsWidget(
 			$I,
-			'Kit: Page: Broadcasts: Elementor Widget: Limit',
-			[
+			title: 'Kit: Page: Broadcasts: Elementor Widget: Limit',
+			settings: [
 				'date_format' => 'F j, Y',
 				'limit'       => 2,
 			]
@@ -185,8 +188,8 @@ class ElementorBroadcastsCest
 		// Create Page with Broadcasts widget in Elementor.
 		$pageID = $this->_createPageWithBroadcastsWidget(
 			$I,
-			'Kit: Page: Broadcasts: Elementor Widget: Pagination',
-			[
+			title: 'Kit: Page: Broadcasts: Elementor Widget: Pagination',
+			settings: [
 				'date_format' => 'F j, Y',
 				'limit'       => 2,
 				'paginate'    => 1,
@@ -215,8 +218,8 @@ class ElementorBroadcastsCest
 		// Create Page with Broadcasts widget in Elementor.
 		$pageID = $this->_createPageWithBroadcastsWidget(
 			$I,
-			'Kit: Page: Broadcasts: Elementor Widget: Valid Params',
-			[
+			title: 'Kit: Page: Broadcasts: Elementor Widget: Valid Params',
+			settings: [
 				'date_format'         => 'F j, Y',
 				'limit'               => 2,
 				'paginate'            => 1,
@@ -252,8 +255,8 @@ class ElementorBroadcastsCest
 		// Create Page with Broadcasts widget in Elementor.
 		$pageID = $this->_createPageWithBroadcastsWidget(
 			$I,
-			'Kit: Page: Broadcasts: Elementor Widget: Hex Colors',
-			[
+			title: 'Kit: Page: Broadcasts: Elementor Widget: Hex Colors',
+			settings: [
 				'date_format'         => 'F j, Y',
 				'limit'               => 2,
 				'paginate'            => 1,
