@@ -37,10 +37,6 @@ jobs:
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET_NO_DATA: ${{ secrets.CONVERTKIT_API_SECRET_NO_DATA }} # ConvertKit API Secret for ConvertKit account with no data, stored in the repository's Settings > Secrets
-      CONVERTKIT_OAUTH_ACCESS_TOKEN: ${{ secrets.CONVERTKIT_OAUTH_ACCESS_TOKEN }}
-      CONVERTKIT_OAUTH_REFRESH_TOKEN: ${{ secrets.CONVERTKIT_OAUTH_REFRESH_TOKEN }}
-      CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA: ${{ secrets.CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA }}
-      CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA: ${{ secrets.CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA }}
       CONVERTKIT_OAUTH_CLIENT_ID: ${{ secrets.CONVERTKIT_OAUTH_CLIENT_ID }}
       CONVERTKIT_OAUTH_REDIRECT_URI: ${{ secrets.CONVERTKIT_OAUTH_REDIRECT_URI }}
       KIT_OAUTH_REDIRECT_URI: ${{ secrets.KIT_OAUTH_REDIRECT_URI }}
@@ -241,6 +237,21 @@ jobs:
           export DISPLAY=:99
           chromedriver --port=9515 --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
+
+      # Exchange API Keys and Secrets for OAuth Tokens.
+      - name: Exchange API Key and Secret for OAuth Tokens
+        id: get-oauth-tokens
+        run: |
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN=$refresh_token" >> $GITHUB_ENV
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA=$refresh_token" >> $GITHUB_ENV
 
       # Write any secrets, such as API keys, to the .env.dist.testing file now.
       # Make sure your committed .env.dist.testing file ends with a newline.
