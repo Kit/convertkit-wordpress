@@ -521,7 +521,7 @@ class PageShortcodeProductCest
 		// Open Visual Editor modal for the shortcode.
 		$I->openVisualEditorShortcodeModal(
 			$I,
-			shortcodeName:'Kit Product'
+			shortcodeName: 'Kit Product'
 		);
 
 		// Confirm an error notice displays.

@@ -44,7 +44,7 @@ class PageShortcodeBroadcastsCest
 		// Add shortcode to Page.
 		$I->addVisualEditorShortcode(
 			$I,
-			shortcodeName:'Kit Broadcasts',
+			shortcodeName: 'Kit Broadcasts',
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
