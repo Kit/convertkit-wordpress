@@ -314,7 +314,7 @@ jobs:
       # Build Codeception Tests.
       - name: Build Tests
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept build
+        run: php vendor/bin/codecept build -c codeception.github.yml
 
       # Run Codeception Integration Tests on the PHP 8.3 instance before the EndToEnd/tags End to End tests.
       # We run these once to avoid hitting API rate limits.
