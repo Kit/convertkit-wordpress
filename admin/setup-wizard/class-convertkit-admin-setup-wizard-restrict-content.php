@@ -42,6 +42,15 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 	public $type_label = '';
 
 	/**
+	 * Holds the ConvertKit Forms resource class.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @var     bool|ConvertKit_Resource_Forms
+	 */
+	public $forms = false;
+
+	/**
 	 * Holds the ConvertKit Products resource class.
 	 *
 	 * @since   2.1.0
@@ -260,18 +269,20 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 		// Load data depending on the current step.
 		switch ( $step ) {
 			case 1:
-				// Fetch Products and Tags.
+				// Fetch Forms, Products and Tags.
+				$this->forms    = new ConvertKit_Resource_Forms( 'restrict_content_wizard' );
 				$this->products = new ConvertKit_Resource_Products( 'restrict_content_wizard' );
 				$this->tags     = new ConvertKit_Resource_Tags( 'restrict_content_wizard' );
 
-				// Refresh Products and Tags resources, in case the user just created their first Product or Tag
+				// Refresh Forms, Products and Tags resources, in case the user just created their first Form, Product or Tag
 				// in ConvertKit.
+				$this->forms->refresh();
 				$this->products->refresh();
 				$this->tags->refresh();
 
-				// If no Products and Tags exist in ConvertKit, change the next button label and make it a link to reload
+				// If no Forms, Products and Tags exist in ConvertKit, change the next button label and make it a link to reload
 				// the screen.
-				if ( ! $this->products->exist() && ! $this->tags->exist() ) {
+				if ( ! $this->forms->exist() && ! $this->products->exist() && ! $this->tags->exist() ) {
 					unset( $this->steps[1]['next_button'] );
 					$this->current_url = add_query_arg(
 						array(
@@ -315,7 +326,8 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 						break;
 				}
 
-				// Fetch Products and Tags.
+				// Fetch Forms, Products and Tags.
+				$this->forms    = new ConvertKit_Resource_Forms( 'restrict_content_wizard' );
 				$this->products = new ConvertKit_Resource_Products( 'restrict_content_wizard' );
 				$this->tags     = new ConvertKit_Resource_Tags( 'restrict_content_wizard' );
 				break;
