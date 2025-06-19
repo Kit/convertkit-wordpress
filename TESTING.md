@@ -16,6 +16,18 @@ If you haven't yet set up your local development environment with the Kit Plugin
 
 If you haven't yet created a branch and made any code changes to the Plugin, refer to the [Development Guide](DEVELOPMENT.md)
 
+> **Familiar with wp-browser, Codeception, PHP Coding Standards and PHPStan?**  
+> Write your tests 
+> Run tests using `composer test [folder]/[cest]` or `composer test-integration [test]`
+> Run PHP Coding Standards using `composer phpcs` and `composer phpcs-tests`
+> Run static analysis using `composer phpstan`
+> [Submit a Pull Request](https://github.com/ConvertKit/convertkit-wordpress/compare).
+
+## 
+
+- Write your tests
+- `composer test
+
 ## Write (or modify) a test
 
 If your work creates new functionality, write a test.
@@ -377,6 +389,13 @@ To register your own helper function, add it to the `tests/Support/Helper/Wpunit
 
 ## Run Tests
 
+> **Quick Commands**  
+> `composer test`: Run all End to End tests
+> `composer test general`: Run all tests in the EndToEnd/general folder
+> `composer test general/ActivateDeactivatePluginCest`: Run all tests in the EndToEnd/general/ActivateDeactivatePluginCest file
+> `composer test-integration`: Run all Integration tests
+> `composer test-integration APITest`: Run the Integration/APITest tests
+
 Once you have written your code and test(s), run the tests to make sure there are no errors.
 
 If ChromeDriver isn't running, open a new Terminal window and enter the following command:
@@ -392,12 +411,14 @@ vendor/bin/codecept build
 vendor/bin/codecept run EndToEnd
 vendor/bin/codecept run Integration
 ```
-
 If a test fails, you can inspect the output and screenshot at `tests/_output`.
 
 Any errors should be corrected by making applicable code or test changes.
 
 ## Run PHP CodeSniffer
+
+> **Quick Command**  
+> `composer phpcs`: Run PHP Coding Standards on Plugin files
 
 [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) checks that all Plugin code meets the 
 [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/).
@@ -428,6 +449,9 @@ Need to change the PHP or WordPress coding standard rules applied?  Either:
 
 ## Run PHPStan
 
+> **Quick Command**  
+> `composer phpstan`: Run PHPStan static analysis on Plugin files
+
 [PHPStan](https://phpstan.org) performs static analysis on the Plugin's PHP code.  This ensures:
 
 - DocBlocks declarations are valid and uniform
@@ -448,6 +472,9 @@ Any errors should be corrected by making applicable code changes.
 False positives [can be excluded by configuring](https://phpstan.org/user-guide/ignoring-errors) the `phpstan.neon` file.
 
 ## Run PHP CodeSniffer for Tests
+
+> **Quick Command**  
+> `composer phpcs-tests`: Run PHP Coding Standards on test files
 
 In the Plugin's directory, run the following command to run PHP_CodeSniffer, which will check the code meets Coding Standards
 as defined in the `phpcs.tests.xml` configuration:

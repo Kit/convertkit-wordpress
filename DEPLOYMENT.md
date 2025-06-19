@@ -12,16 +12,6 @@ An *approved* Pull Request is when a PR passes all tests **and** has been approv
 
 In your Git client / command line, create a new branch called `release-x.x.x`, where `x.x.x` is the version number.
 
-## Generate Localization File and Action/Filter Documentation
-
-On your local machine, switch to the new release branch.
-
-Run the `.scripts/build.sh` script, which will:
-
-- Generate the `languages/convertkit.pot` file
-- Generate the [ACTIONS-FILTERS.md](ACTIONS-FILTERS.md) file
-- Produce a `convertkit.zip` Plugin file, which may be used for any manual testing on other environments
-
 ## Update the Plugin's Version Number
 
 We follow [Semantic Versioning](https://semver.org/).
@@ -43,6 +33,15 @@ Generic changelog items such as `Fix: Various bugfixes` or `Several edge-case bu
 what took place in this version.
 
 Each line in the changelog should start with `Added`, `Fix` or `Updated`.
+
+## Generate Localization File and Action/Filter Documentation
+
+On your local machine, switch to the new release branch.
+
+Run `composer create-release-assets`, which will:
+
+- Generate the `languages/convertkit.pot` file
+- Generate the [ACTIONS-FILTERS.md](ACTIONS-FILTERS.md) file
 
 ## Commit Changes
 

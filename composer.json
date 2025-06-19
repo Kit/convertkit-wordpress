@@ -1,6 +1,6 @@
 {
     "name": "convertkit/convertkit-wordpress",
-    "description": "ConvertKit WordPress Plugin",
+    "description": "Kit WordPress Plugin",
     "type": "project",
     "license": "GPLv3",
     "require": {
@@ -16,6 +16,25 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "scripts": {
+        "create-release-assets": [
+            "php -n $(which wp) i18n make-pot . languages/convertkit.pot",
+            "@php .scripts/create-actions-filters-docs.php"
+        ],
+        "create-pot": "php -n $(which wp) i18n make-pot . languages/convertkit.pot",
+        "create-dev-docs": "@php .scripts/create-actions-filters-docs.php",
+        "phpcs": "vendor/bin/phpcs ./ -s -v",
+        "phpcs-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit=1250M",
+        "test": [
+            "vendor/bin/codecept build",
+            "vendor/bin/codecept run EndToEnd @additional_args --fail-fast"
+        ],
+        "test-integration": [
+            "vendor/bin/codecept build",
+            "vendor/bin/codecept run Integration @additional_args --fail-fast"
+        ]
+    },
     "archive": {
         "exclude": [
             "!vendor/*",
