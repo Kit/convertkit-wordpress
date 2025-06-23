@@ -594,7 +594,7 @@ class RestrictContentSetupCest
 			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
 			options: [
 				'visible_content' => 'Some introductory text about lesson 1',
-				'member_content' => 'Lesson 1 member-only content goes here.',
+				'member_content'  => 'Lesson 1 member-only content goes here.',
 			]
 		);
 
