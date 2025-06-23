@@ -27,11 +27,11 @@
         "phpcs-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "test": [
-            "vendor/bin/codecept build",
+            "vendor/bin/codecept build @no_additional_args",
             "vendor/bin/codecept run EndToEnd @additional_args --fail-fast"
         ],
         "test-integration": [
-            "vendor/bin/codecept build",
+            "vendor/bin/codecept build @no_additional_args",
             "vendor/bin/codecept run Integration @additional_args --fail-fast"
         ]
     },
