@@ -223,7 +223,7 @@ class RestrictContentSetupCest
 			$I,
 			$url,
 			[
-				'member_content' => 'The downloadable content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content' => 'The downloadable member-only content goes here.',
 			]
 		);
 	}
@@ -292,7 +292,7 @@ class RestrictContentSetupCest
 			$url,
 			[
 				'visible_content' => 'Some introductory text about lesson 1',
-				'member_content'  => 'Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content'  => 'Lesson 1 member-only content goes here.',
 			]
 		);
 
@@ -301,25 +301,25 @@ class RestrictContentSetupCest
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Next Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 3/3');
 		$I->see('Some introductory text about lesson 3');
-		$I->see('Lesson 3 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 3 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 1/3');
 		$I->see('Some introductory text about lesson 1');
-		$I->see('Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 1 member-only content goes here.');
 	}
 
 	/**
@@ -373,7 +373,7 @@ class RestrictContentSetupCest
 			urlOrPageID: $url,
 			emailAddress: $I->generateEmailAddress(),
 			options: [
-				'member_content' => 'The downloadable content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content' => 'The downloadable member-only content goes here.',
 			]
 		);
 	}
@@ -443,7 +443,7 @@ class RestrictContentSetupCest
 			emailAddress: $I->generateEmailAddress(),
 			options: [
 				'visible_content' => 'Some introductory text about lesson 1',
-				'member_content'  => 'Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content'  => 'Lesson 1 member-only content goes here.',
 			]
 		);
 
@@ -452,25 +452,25 @@ class RestrictContentSetupCest
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Next Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 3/3');
 		$I->see('Some introductory text about lesson 3');
-		$I->see('Lesson 3 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 3 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 1/3');
 		$I->see('Some introductory text about lesson 1');
-		$I->see('Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 1 member-only content goes here.');
 	}
 
 	/**
@@ -522,7 +522,10 @@ class RestrictContentSetupCest
 		$I->testRestrictedContentByFormOnFrontend(
 			$I,
 			urlOrPageID: $url,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID']
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			options: [
+				'member_content' => 'The downloadable member-only content goes here.',
+			]
 		);
 	}
 
@@ -588,7 +591,11 @@ class RestrictContentSetupCest
 		$I->testRestrictedContentByFormOnFrontend(
 			$I,
 			urlOrPageID: $url,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID']
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			options: [
+				'visible_content' => 'Some introductory text about lesson 1',
+				'member_content' => 'Lesson 1 member-only content goes here.',
+			]
 		);
 
 		// Test Next / Previous links.
@@ -596,25 +603,25 @@ class RestrictContentSetupCest
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Form: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Next Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Form: 3/3');
 		$I->see('Some introductory text about lesson 3');
-		$I->see('Lesson 3 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 3 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Form: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Form: 1/3');
 		$I->see('Some introductory text about lesson 1');
-		$I->see('Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 1 member-only content goes here.');
 	}
 
 	/**
