@@ -71,7 +71,7 @@ if ( ! $this->products->exist() && ! $this->tags->exist() ) {
 				<?php esc_html_e( 'Download', 'convertkit' ); ?>
 			</a>
 			<span class="description">
-				<?php esc_html_e( 'Require visitors to purchase a Kit product, or subscribe to a Kit tag, granting access to a single Page\'s content, which includes downloadable assets.', 'convertkit' ); ?>
+				<?php esc_html_e( 'Require visitors to purchase a Kit product, or subscribe to a Kit tag or form, granting access to a single Page\'s content, which includes downloadable assets.', 'convertkit' ); ?>
 			</span>
 		</div>
 
@@ -80,7 +80,7 @@ if ( ! $this->products->exist() && ! $this->tags->exist() ) {
 				<?php esc_html_e( 'Course', 'convertkit' ); ?>
 			</a>
 			<span class="description">
-				<?php esc_html_e( 'Require visitors to purchase a Kit product, or subscribe to a Kit tag, granting access to a sequential series of Pages, such as a course, lessons or tutorials.', 'convertkit' ); ?>
+				<?php esc_html_e( 'Require visitors to purchase a Kit product, or subscribe to a Kit tag or form, granting access to a sequential series of Pages, such as a course, lessons or tutorials.', 'convertkit' ); ?>
 			</span>
 		</div>
 	</div>
