@@ -25,3 +25,4 @@ extensions:
         - lucatume\WPBrowser\Command\ChromedriverUpdate
 params:
     - .env.dist.testing
+    - .env.testing
