@@ -80,7 +80,7 @@
 				// Therefore, we use -2 to denote 'No Change', even though this setting is for the Tag, so we're at least consistent.
 				?>
 				<option value="-2" data-preserve-on-refresh="1"><?php esc_html_e( '— No Change —', 'convertkit' ); ?></option>
-				<option value="0" data-preserve-on-refresh="1"><?php esc_html_e( 'Don\'t restrict content to members only.', 'convertkit' ); ?></option>
+				<option value="0" data-preserve-on-refresh="1"><?php esc_html_e( 'Don\'t restrict content to member-only.', 'convertkit' ); ?></option>
 
 				<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>" data-resource="forms">
 					<?php

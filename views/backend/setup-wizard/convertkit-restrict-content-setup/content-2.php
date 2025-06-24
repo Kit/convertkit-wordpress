@@ -101,13 +101,13 @@ if ( $this->type === 'course' ) {
 			</optgroup>
 		</select>
 		<p class="description">
-			<?php esc_html_e( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this members only content.', 'convertkit' ); ?>
+			<?php esc_html_e( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this member-only content.', 'convertkit' ); ?>
 			<br />
 			<code><?php esc_html_e( 'Form', 'convertkit' ); ?></code>
-			<?php esc_html_e( ': Displays the Kit form. On submission, the email address will be subscribed to the selected form, granting access to the members only content. Useful to gate free content in return for an email address.', 'convertkit' ); ?>
+			<?php esc_html_e( ': Displays the Kit form. On submission, the email address will be subscribed to the selected form, granting access to the member-only content. Useful to gate free content in return for an email address.', 'convertkit' ); ?>
 			<br />
 			<code><?php esc_html_e( 'Tag', 'convertkit' ); ?></code>
-			<?php esc_html_e( ': Displays a WordPress styled subscription form. On submission, the email address will be subscribed to the selected tag, granting access to the members only content. Useful to gate free content in return for an email address.', 'convertkit' ); ?>
+			<?php esc_html_e( ': Displays a WordPress styled subscription form. On submission, the email address will be subscribed to the selected tag, granting access to the member-only content. Useful to gate free content in return for an email address.', 'convertkit' ); ?>
 			<br />
 			<code><?php esc_html_e( 'Product', 'convertkit' ); ?></code>
 			<?php esc_html_e( ': Displays a link to the Kit product, and a login form. Useful to gate content that can only be accessed by purchasing the Kit product.', 'convertkit' ); ?>

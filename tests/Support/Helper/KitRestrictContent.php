@@ -163,7 +163,7 @@ class KitRestrictContent extends \Codeception\Module
 				'post_type'    => $options['post_type'],
 				'post_title'   => $options['post_title'],
 
-				// Emulate Gutenberg content with visible and members only content sections.
+				// Emulate Gutenberg content with visible and member-only content sections.
 				'post_content' => '<!-- wp:paragraph --><p>' . $options['visible_content'] . '</p><!-- /wp:paragraph -->
 <!-- wp:more --><!--more--><!-- /wp:more -->
 <!-- wp:paragraph -->' . $options['member_content'] . '<!-- /wp:paragraph -->',
