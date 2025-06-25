@@ -24,7 +24,9 @@
         "create-pot": "php -n $(which wp) i18n make-pot . languages/convertkit.pot",
         "create-dev-docs": "@php .scripts/create-actions-filters-docs.php",
         "phpcs": "vendor/bin/phpcs ./ -s -v",
+        "phpcbf": "vendor/bin/phpcbf ./ -s -v",
         "phpcs-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
+        "phpcbf-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "test": [
             "vendor/bin/codecept build @no_additional_args",
