@@ -106,27 +106,41 @@ class ConvertKit_Admin_Restrict_Content {
 			return;
 		}
 
-		// Build query.
-		// Because WordPress stores metadata in a single serialized string for a single key, we have to search
-		// the string for the Restrict Content setting. However, other settings will also be in this serialized string,
-		// so to avoid false positives, we define our search value formatted as a serialized string comprising of the
-		// setting name and value, to be as accurate as possible.
-		$value = maybe_serialize(
-			array(
-				'restrict_content' => sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ), // phpcs:ignore WordPress.Security.NonceVerification
-			)
-		);
+		// Store Restrict Content filter value.
+		$this->restrict_content_filter = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 
-		// Strip a:1:{ and final }, as a Post's serialized settings will include other settings.
-		$value = str_replace( 'a:1:{', '', $value ); // e.g. s:16:"restrict_content";s:13:"product_36377";}.
-		$value = substr( $value, 0, strlen( $value ) - 1 ); // e.g. s:16:"restrict_content";s:13:"product_36377";.
+		switch ( $this->restrict_content_filter ) {
+			case 'all-member-only':
+				$meta_query = array(
+					'key'     => '_wp_convertkit_post_meta',
+					'value'   => '.*?(form|tag|product)_[0-9]+.*?',
+					'compare' => 'REGEXP',
+				);
+				break;
+			default:
+				// Build query.
+				// Because WordPress stores metadata in a single serialized string for a single key, we have to search
+				// the string for the Restrict Content setting. However, other settings will also be in this serialized string,
+				// so to avoid false positives, we define our search value formatted as a serialized string comprising of the
+				// setting name and value, to be as accurate as possible.
+				$value = maybe_serialize(
+					array(
+						'restrict_content' => $this->restrict_content_filter,
+					)
+				);
 
-		// Add value to query.
-		$meta_query = array(
-			'key'     => '_wp_convertkit_post_meta',
-			'value'   => $value,
-			'compare' => 'LIKE',
-		);
+				// Strip a:1:{ and final }, as a Post's serialized settings will include other settings.
+				$value = str_replace( 'a:1:{', '', $value ); // e.g. s:16:"restrict_content";s:13:"product_36377";}.
+				$value = substr( $value, 0, strlen( $value ) - 1 ); // e.g. s:16:"restrict_content";s:13:"product_36377";.
+
+				// Add value to query.
+				$meta_query = array(
+					'key'     => '_wp_convertkit_post_meta',
+					'value'   => $value,
+					'compare' => 'LIKE',
+				);
+				break;
+		}
 
 		// If the existing meta query is an array, append our query to it, so we honor
 		// any other constraints that have been defined by WordPress or third party code.
@@ -137,9 +151,6 @@ class ConvertKit_Admin_Restrict_Content {
 		} else {
 			$query->set( 'meta_query', array( $meta_query ) );
 		}
-
-		// Store Restrict Content filter value.
-		$this->restrict_content_filter = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 
 	}
 
