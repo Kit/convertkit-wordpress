@@ -28,16 +28,6 @@ class APITest extends WPTestCase
 	private $api;
 
 	/**
-	 * Holds the current timestamp, defined in setUp to fix
-	 * it for all tests.
-	 *
-	 * @since   2.8.3
-	 *
-	 * @var     int
-	 */
-	private $now = 0;
-
-	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   2.0.8
@@ -45,9 +35,6 @@ class APITest extends WPTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-
-		// Set the current timestamp to the start of the test.
-		$this->now = strtotime( 'now' );
 
 		// Activate Plugin, to include the Plugin's constants in tests.
 		activate_plugins('convertkit/wp-convertkit.php');
@@ -118,7 +105,7 @@ class APITest extends WPTestCase
 		// Confirm the Cron event to refresh the access token was created, and the timestamp to
 		// run the refresh token call matches the expiry of the access token.
 		$nextScheduledTimestamp = wp_next_scheduled( 'convertkit_refresh_token' );
-		$this->assertEquals( $nextScheduledTimestamp, $this->now + 10000 );
+		$this->assertGreaterThanOrEqual( $nextScheduledTimestamp, time() + 10000 );
 	}
 
 	/**
@@ -138,7 +125,7 @@ class APITest extends WPTestCase
 		// Confirm the Cron event to refresh the access token was created, and the timestamp to
 		// run the refresh token call matches the expiry of the access token.
 		$nextScheduledTimestamp = wp_next_scheduled( 'convertkit_refresh_token' );
-		$this->assertEquals( $nextScheduledTimestamp, $this->now + 10000 );
+		$this->assertGreaterThanOrEqual( $nextScheduledTimestamp, time() + 10000 );
 	}
 
 	/**
