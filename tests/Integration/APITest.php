@@ -28,6 +28,16 @@ class APITest extends WPTestCase
 	private $api;
 
 	/**
+	 * Holds the current timestamp, defined in setUp to fix
+	 * it for all tests.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @var     int
+	 */
+	private $now = 0;
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   2.0.8
@@ -35,6 +45,9 @@ class APITest extends WPTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		// Set the current timestamp to the start of the test.
+		$this->now = strtotime( 'now' );
 
 		// Activate Plugin, to include the Plugin's constants in tests.
 		activate_plugins('convertkit/wp-convertkit.php');
@@ -77,7 +90,7 @@ class APITest extends WPTestCase
 
 		// Filter requests to mock the token expiry and refreshing the token.
 		add_filter( 'pre_http_request', array( $this, 'mockAccessTokenExpiredResponse' ), 10, 3 );
-		add_filter( 'pre_http_request', array( $this, 'mockRefreshTokenResponse' ), 10, 3 );
+		add_filter( 'pre_http_request', array( $this, 'mockTokenResponse' ), 10, 3 );
 
 		// Run request, which will trigger the above filters as if the token expired and refreshes automatically.
 		$result = $this->api->get_account();
@@ -86,6 +99,46 @@ class APITest extends WPTestCase
 		// the tokens were refreshed.
 		$this->assertEquals( $settings->get_access_token(), $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'] );
 		$this->assertEquals( $settings->get_refresh_token(), $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'] );
+	}
+
+	/**
+	 * Test that a WordPress Cron event is created when an access token is obtained.
+	 *
+	 * @since   2.8.3
+	 */
+	public function testCronEventCreatedWhenAccessTokenObtained()
+	{
+		// Mock request as if the API returned an access and refresh token when a request
+		// was made to refresh the token.
+		add_filter( 'pre_http_request', array( $this, 'mockTokenResponse' ), 10, 3 );
+
+		// Run request, as if the access token was obtained successfully.
+		$result = $this->api->get_access_token( 'mockAuthCode' );
+
+		// Confirm the Cron event to refresh the access token was created, and the timestamp to
+		// run the refresh token call matches the expiry of the access token.
+		$nextScheduledTimestamp = wp_next_scheduled( 'convertkit_refresh_token' );
+		$this->assertEquals( $nextScheduledTimestamp, $this->now + 10000 );
+	}
+
+	/**
+	 * Test that a WordPress Cron event is created when an access token is refreshed.
+	 *
+	 * @since   2.8.3
+	 */
+	public function testCronEventCreatedWhenTokenRefreshed()
+	{
+		// Mock request as if the API returned an access and refresh token when a request
+		// was made to refresh the token.
+		add_filter( 'pre_http_request', array( $this, 'mockTokenResponse' ), 10, 3 );
+
+		// Run request, as if the token was refreshed.
+		$result = $this->api->refresh_token();
+
+		// Confirm the Cron event to refresh the access token was created, and the timestamp to
+		// run the refresh token call matches the expiry of the access token.
+		$nextScheduledTimestamp = wp_next_scheduled( 'convertkit_refresh_token' );
+		$this->assertEquals( $nextScheduledTimestamp, $this->now + 10000 );
 	}
 
 	/**
@@ -138,7 +191,7 @@ class APITest extends WPTestCase
 	 * @param   string $url            Request URL.
 	 * @return  mixed
 	 */
-	public function mockRefreshTokenResponse( $response, $parsed_args, $url )
+	public function mockTokenResponse( $response, $parsed_args, $url )
 	{
 		// Only mock requests made to the /token endpoint.
 		if ( strpos( $url, 'https://api.kit.com/oauth/token' ) === false ) {
@@ -146,7 +199,7 @@ class APITest extends WPTestCase
 		}
 
 		// Remove this filter, so we don't end up in a loop when retrying the request.
-		remove_filter( 'pre_http_request', array( $this, 'mockRefreshTokenResponse' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mockTokenResponse' ) );
 
 		// Return a mock access and refresh token for this API request, as calling
 		// refresh_token results in a new access and refresh token being provided,
@@ -158,7 +211,7 @@ class APITest extends WPTestCase
 					'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
 					'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
 					'token_type'    => 'bearer',
-					'created_at'    => strtotime( 'now' ),
+					'created_at'    => $this->now,
 					'expires_in'    => 10000,
 					'scope'         => 'public',
 				)
