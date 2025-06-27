@@ -211,8 +211,8 @@ class APITest extends WPTestCase
 					'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
 					'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
 					'token_type'    => 'bearer',
-					'created_at'    => $this->now,
-					'expires_in'    => 10000,
+					'created_at'    => 1735660800, // When the access token was created.
+					'expires_in'    => 10000, // When the access token will expire, relative to the time the request was made.
 					'scope'         => 'public',
 				)
 			),
