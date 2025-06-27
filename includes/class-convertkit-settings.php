@@ -521,7 +521,7 @@ class ConvertKit_Settings {
 			array(
 				'access_token'  => $result['access_token'],
 				'refresh_token' => $result['refresh_token'],
-				'token_expires' => ( $result['created_at'] + $result['expires_in'] ),
+				'token_expires' => ( time() + $result['expires_in'] ),
 			)
 		);
 
@@ -529,7 +529,7 @@ class ConvertKit_Settings {
 		wp_clear_scheduled_hook( 'convertkit_refresh_token' );
 
 		// Schedule a WordPress Cron event to refresh the token on expiry.
-		wp_schedule_single_event( ( $result['created_at'] + $result['expires_in'] ), 'convertkit_refresh_token' );
+		wp_schedule_single_event( ( time() + $result['expires_in'] ), 'convertkit_refresh_token' );
 
 	}
 

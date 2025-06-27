@@ -86,7 +86,7 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 			array(
 				'access_token'  => $result['access_token'],
 				'refresh_token' => $result['refresh_token'],
-				'token_expires' => ( $result['created_at'] + $result['expires_in'] ),
+				'token_expires' => ( time() + $result['expires_in'] ),
 			)
 		);
 
