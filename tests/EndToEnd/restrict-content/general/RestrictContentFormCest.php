@@ -38,7 +38,10 @@ class RestrictContentFormCest
 		$I->setupKitPluginDisableJS($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Form');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Form'
+		);
 
 		// Configure metabox's Restrict Content setting = Form name.
 		$I->configureMetaboxSettings(
@@ -52,14 +55,22 @@ class RestrictContentFormCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByFormOnFrontend($I, $url, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->testRestrictedContentByFormOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID']
+		);
 	}
 
 	/**
@@ -76,13 +87,16 @@ class RestrictContentFormCest
 		$I->setupKitPlugin($I);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Restrict Content: Form');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Form'
+		);
 
 		// Configure metabox's Restrict Content setting = Form name.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration:[
 				'form'             => [ 'select2', 'None' ],
 				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
@@ -90,14 +104,22 @@ class RestrictContentFormCest
 
 		// Add blocks.
 		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock($I, 'More', 'more');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
 		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByFormOnFrontendUsingLoginModal($I, $url, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->testRestrictedContentByFormOnFrontendUsingLoginModal(
+			$I,
+			urlOrPageID: $url,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID']
+		);
 	}
 
 	/**
@@ -164,7 +186,11 @@ class RestrictContentFormCest
 		);
 
 		// Test Restrict Content functionality.
-		$I->testRestrictedContentByFormOnFrontend($I, $pageID, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->testRestrictedContentByFormOnFrontend(
+			$I,
+			urlOrPageID: $pageID,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID']
+		);
 	}
 
 	/**
@@ -199,9 +225,9 @@ class RestrictContentFormCest
 		// Bulk Edit the Pages in the Pages WP_List_Table.
 		$I->bulkEdit(
 			$I,
-			'page',
-			$pageIDs,
-			[
+			postType: 'page',
+			postIDs: $pageIDs,
+			configuration: [
 				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -209,7 +235,11 @@ class RestrictContentFormCest
 		// Iterate through Pages to run frontend tests.
 		foreach ($pageIDs as $pageID) {
 			// Test Restrict Content functionality.
-			$I->testRestrictedContentByFormOnFrontend($I, $pageID, $_ENV['CONVERTKIT_API_FORM_ID']);
+			$I->testRestrictedContentByFormOnFrontend(
+				$I,
+				urlOrPageID: $pageID,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID']
+			);
 		}
 	}
 

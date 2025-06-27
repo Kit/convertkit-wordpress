@@ -58,17 +58,9 @@ Create a blank `test` database in MySQL, with a MySQL user who can read and writ
 
 ### Configure Testing Environment
 
-Copy the `.env.example` file to `.env.testing` in the root of this repository, changing folder and database credentials as necessary.
+Copy the `.env.example` file to `.env.testing` in the root of this repository, changing parameters to match your local development environment as necessary.
 
-### Codeception
-
-Create a `codeception.yml` file in the root of the repository, with the following contents:
-```yaml
-params:
-    - .env.testing
-```
-
-This tells Codeception to read the above `.env.testing` file when testing on the local development enviornment.
+You'll also want to include Kit credentials, such as API Keys and OAuth tokens here.  `.env.testing` is excluded from Git, to ensure these sensitive credentials are not stored in version control.
 
 ### Install Packages
 
@@ -135,21 +127,21 @@ chromedriver --url-base=/wd/hub
 
 ![ChromeDriver Screenshot](/.github/docs/chromedriver.png?raw=true)
 
-In a second Terminal window, in the Plugin's directory, build and run the tests to make sure there are no errors and that you have 
+In a second Terminal window, in the Plugin's directory, build and run the a test to make sure there are no errors and that you have 
 correctly setup your environment:
 
 ```bash
 vendor/bin/codecept build
-vendor/bin/codecept run EndToEnd
-vendor/bin/codecept run Integration
+vendor/bin/codecept run EndToEnd general/other/ActivateDeactivatePluginCest --fail-fast
+vendor/bin/codecept run Integration APITest:testAccessTokenRefreshedAndSavedWhenExpired --fail-fast
 ```
 
 ![Codeception Test Results](/.github/docs/codeception.png?raw=true)
 
 Don't worry if you don't understand these commands; if your output looks similar to the above screenshot, and no test is prefixed with `E`, 
-your environment is setup successfully.
+your environment is setup successfully. Our [Testing Guide](TESTING.md) covers this in more detail.
 
-### Running CodeSniffer
+### Running PHP CodeSniffer
 
 In the Plugin's directory, run the following command to run PHP_CodeSniffer, which will check the code meets WordPress' Coding Standards:
 

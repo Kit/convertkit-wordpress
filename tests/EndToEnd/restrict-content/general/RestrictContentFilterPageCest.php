@@ -165,7 +165,7 @@ class RestrictContentFilterPageCest
 	}
 
 	/**
-	 * Test that filtering by Form works on the Posts screen.
+	 * Test that filtering by Form works on the Pages screen.
 	 *
 	 * @since   2.7.3
 	 *
@@ -180,16 +180,16 @@ class RestrictContentFilterPageCest
 		$I->createRestrictedContentPage(
 			$I,
 			[
-				'post_type'                => 'post',
+				'post_type'                => 'page',
 				'post_title'               => 'Kit: Page: Restricted Content: Form: Filter Test',
 				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
 			]
 		);
 
-		// Navigate to Posts.
-		$I->amOnAdminPage('edit.php?post_type=post');
+		// Navigate to Pages.
+		$I->amOnAdminPage('edit.php?post_type=page');
 
-		// Wait for the WP_List_Table of Posts to load.
+		// Wait for the WP_List_Table of Pages to load.
 		$I->waitForElementVisible('tbody#the-list');
 
 		// Check that no PHP warnings or notices were output.
@@ -203,7 +203,7 @@ class RestrictContentFilterPageCest
 		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_FORM_NAME']);
 		$I->click('Filter');
 
-		// Wait for the WP_List_Table of Posts to load.
+		// Wait for the WP_List_Table of Pages to load.
 		$I->waitForElementVisible('tbody#the-list');
 
 		// Check that no PHP warnings or notices were output.
@@ -212,6 +212,93 @@ class RestrictContentFilterPageCest
 		// Confirm that the Page is still listed, and has the 'Kit Member Content' label.
 		$I->see('Kit: Page: Restricted Content: Form: Filter Test');
 		$I->see('Kit Member Content');
+	}
+
+	/**
+	 * Test that filtering by 'All member-only content' works on the Pages screen.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFilterByAllMemberOnlyContent(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Create a mix of Pages restricted and not restricted to Forms, Tags and Products.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'page',
+				'post_title'               => 'Kit: Page: Restricted Content: Form: Filter Test',
+				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
+			]
+		);
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'page',
+				'post_title'               => 'Kit: Page: Restricted Content: Tag: Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'page',
+				'post_title'               => 'Kit: Page: Restricted Content: Product: Filter Test',
+				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_type'  => 'page',
+				'post_title' => 'Kit: Page: Standard',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => '0',
+					],
+				],
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_type'  => 'page',
+				'post_title' => 'Kit: Page: Standard: No Meta',
+			]
+		);
+
+		// Navigate to Pages.
+		$I->amOnAdminPage('edit.php?post_type=page');
+
+		// Wait for the WP_List_Table of Pages to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Filter by All member-only content.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', 'All member-only content');
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Pages to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Restrict Content Pages are listed.
+		$I->see('Kit: Page: Restricted Content: Form: Filter Test');
+		$I->see('Kit: Page: Restricted Content: Tag: Filter Test');
+		$I->see('Kit: Page: Restricted Content: Product: Filter Test');
+
+		// Confirm that no non-Restrict Content Pages are not listed.
+		$I->dontSee('Kit: Page: Standard');
+		$I->dontSee('Kit: Page: Standard: No Meta');
 	}
 
 	/**

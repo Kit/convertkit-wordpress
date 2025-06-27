@@ -58,7 +58,7 @@
 		<label for="wp-convertkit-quick-edit-restrict_content">
 			<span class="title convertkit-icon-restrict-content"><?php esc_html_e( 'Member', 'convertkit' ); ?></span>
 			<select name="wp-convertkit[restrict_content]" id="wp-convertkit-quick-edit-restrict_content" size="1">
-				<option value="0" data-preserve-on-refresh="1"><?php esc_html_e( 'Don\'t restrict content to members only.', 'convertkit' ); ?></option>
+				<option value="0" data-preserve-on-refresh="1"><?php esc_html_e( 'Don\'t restrict content to member-only.', 'convertkit' ); ?></option>
 
 				<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>" data-resource="forms">
 					<?php

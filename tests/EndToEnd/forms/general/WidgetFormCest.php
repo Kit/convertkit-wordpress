@@ -61,9 +61,9 @@ class WidgetFormCest
 		// Add legacy widget, setting the Form setting to the value specified in the .env file.
 		$I->addLegacyWidget(
 			$I,
-			'Kit Form (Legacy Widget)',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form (Legacy Widget)',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -99,9 +99,9 @@ class WidgetFormCest
 		// Add legacy widget, setting the Form setting to the value specified in the .env file.
 		$I->addLegacyWidget(
 			$I,
-			'Kit Form (Legacy Widget)',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form (Legacy Widget)',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
 			]
 		);
@@ -125,9 +125,9 @@ class WidgetFormCest
 		// Add block widget, setting the Form setting to the value specified in the .env file.
 		$I->addBlockWidget(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -159,9 +159,9 @@ class WidgetFormCest
 		// Add block widget, setting the Form setting to the value specified in the .env file.
 		$I->addBlockWidget(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
 			]
 		);
@@ -186,9 +186,9 @@ class WidgetFormCest
 		// Add block widget, setting the Form setting to the value specified in the .env file.
 		$I->addBlockWidget(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
 			]
 		);
@@ -220,9 +220,9 @@ class WidgetFormCest
 		// Add block widget, setting the Form setting to the value specified in the .env file.
 		$I->addBlockWidget(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_NAME'] ],
 			]
 		);
@@ -254,9 +254,9 @@ class WidgetFormCest
 		// Add block widget, setting the Form setting to the value specified in the .env file.
 		$I->addBlockWidget(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME'] ],
 			]
 		);

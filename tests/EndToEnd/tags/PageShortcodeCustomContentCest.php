@@ -37,16 +37,19 @@ class PageShortcodeCustomContentCest
 	public function testCustomContentShortcodeInVisualEditor(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Custom Content: Shortcode: Visual Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Custom Content: Shortcode: Visual Editor'
+		);
 
 		// Add shortcode to Page, setting the Tag setting to the value specified in the .env file.
 		$I->addVisualEditorShortcode(
 			$I,
-			'Kit Custom Content',
-			[
+			shortcodeName: 'Kit Custom Content',
+			shortcodeConfiguration: [
 				'tag' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			],
-			'[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"][/convertkit_content]'
+			expectedShortcodeOutput: '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"][/convertkit_content]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -63,16 +66,19 @@ class PageShortcodeCustomContentCest
 	public function testCustomContentShortcodeInTextEditor(EndToEndTester $I)
 	{
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage($I, 'page', 'Kit: Page: Custom Content: Shortcode: Text Editor');
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Custom Content: Shortcode: Text Editor'
+		);
 
 		// Add shortcode to Page, setting the Tag setting to the value specified in the .env file.
 		$I->addTextEditorShortcode(
 			$I,
-			'convertkit-content',
-			[
+			shortcodeProgrammaticName: 'convertkit-content',
+			shortcodeConfiguration: [
 				'tag' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
 			],
-			'[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"][/convertkit_content]'
+			expectedShortcodeOutput: '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"][/convertkit_content]'
 		);
 
 		// Publish and view the Page on the frontend site.

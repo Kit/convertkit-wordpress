@@ -36,7 +36,10 @@ class ElementorProductCest
 	public function testProductWidgetIsRegistered(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Product: Elementor: Registered');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Product: Elementor: Registered'
+		);
 
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
@@ -65,8 +68,8 @@ class ElementorProductCest
 		// Create Page with Product widget in Elementor.
 		$pageID = $this->_createPageWithProductWidget(
 			$I,
-			'Kit: Page: Product: Elementor Widget: Valid Params',
-			[
+			title: 'Kit: Page: Product: Elementor Widget: Valid Params',
+			settings: [
 				'product' => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 				'text'    => 'Buy my product',
 			]
@@ -98,8 +101,8 @@ class ElementorProductCest
 		// Create Page with Product widget in Elementor.
 		$pageID = $this->_createPageWithProductWidget(
 			$I,
-			'Kit: Page: Product: Elementor Widget: Hex Colors',
-			[
+			title: 'Kit: Page: Product: Elementor Widget: Hex Colors',
+			settings: [
 				'product'          => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 				'text'             => 'Buy my product',
 				'background_color' => $backgroundColor,
@@ -114,7 +117,13 @@ class ElementorProductCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the block displays.
-		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product', $textColor, $backgroundColor);
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product',
+			textColor: $textColor,
+			backgroundColor: $backgroundColor
+		);
 	}
 
 	/**

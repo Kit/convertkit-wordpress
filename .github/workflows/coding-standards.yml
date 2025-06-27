@@ -120,6 +120,7 @@ jobs:
       # Run Coding Standards on Tests.
       - name: Run Coding Standards on Tests
         working-directory: ${{ env.PLUGIN_DIR }}
+        if: ${{ matrix.php-versions == '8.1' || matrix.php-versions == '8.2' || matrix.php-versions == '8.3' || matrix.php-versions == '8.4' }}
         run: php vendor/bin/phpcs -q --standard=phpcs.tests.xml --report=checkstyle ./tests | cs2pr
 
       # Run WordPress Coding Standards on Plugin.

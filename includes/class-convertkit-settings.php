@@ -46,6 +46,7 @@ class ConvertKit_Settings {
 		}
 
 		// Update Access Token when refreshed by the API class.
+		add_action( 'convertkit_api_get_access_token', array( $this, 'update_credentials' ), 10, 2 );
 		add_action( 'convertkit_api_refresh_token', array( $this, 'update_credentials' ), 10, 2 );
 
 	}
@@ -500,10 +501,10 @@ class ConvertKit_Settings {
 	}
 
 	/**
-	 * Saves the new access token, refresh token and its expiry when the API
-	 * class automatically refreshes an outdated access token.
+	 * Saves the new access token, refresh token and its expiry, and schedules
+	 * a WordPress Cron event to refresh the token on expiry.
 	 *
-	 * @since   2.5.0
+	 * @since   2.8.3
 	 *
 	 * @param   array  $result      New Access Token, Refresh Token and Expiry.
 	 * @param   string $client_id   OAuth Client ID used for the Access and Refresh Tokens.
@@ -511,7 +512,7 @@ class ConvertKit_Settings {
 	public function update_credentials( $result, $client_id ) {
 
 		// Don't save these credentials if they're not for this Client ID.
-		// They're for another ConvertKit Plugin that uses OAuth.
+		// They're for another Kit Plugin that uses OAuth.
 		if ( $client_id !== CONVERTKIT_OAUTH_CLIENT_ID ) {
 			return;
 		}
@@ -523,6 +524,12 @@ class ConvertKit_Settings {
 				'token_expires' => ( $result['created_at'] + $result['expires_in'] ),
 			)
 		);
+
+		// Clear any existing scheduled WordPress Cron event.
+		wp_clear_scheduled_hook( 'convertkit_refresh_token' );
+
+		// Schedule a WordPress Cron event to refresh the token on expiry.
+		wp_schedule_single_event( ( $result['created_at'] + $result['expires_in'] ), 'convertkit_refresh_token' );
 
 	}
 

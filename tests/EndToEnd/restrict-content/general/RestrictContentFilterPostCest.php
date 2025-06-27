@@ -217,6 +217,93 @@ class RestrictContentFilterPostCest
 	}
 
 	/**
+	 * Test that filtering by 'All member-only content' works on the Posts screen.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFilterByAllMemberOnlyContent(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Create a mix of Posts restricted and not restricted to Forms, Tags and Products.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'post',
+				'post_title'               => 'Kit: Post: Restricted Content: Form: Filter Test',
+				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
+			]
+		);
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'post',
+				'post_title'               => 'Kit: Post: Restricted Content: Tag: Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'post',
+				'post_title'               => 'Kit: Post: Restricted Content: Product: Filter Test',
+				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_type'  => 'post',
+				'post_title' => 'Kit: Post: Standard',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => '0',
+					],
+				],
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_type'  => 'post',
+				'post_title' => 'Kit: Post: Standard: No Meta',
+			]
+		);
+
+		// Navigate to Posts.
+		$I->amOnAdminPage('edit.php?post_type=post');
+
+		// Wait for the WP_List_Table of Posts to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Filter by All member-only content.
+		$I->selectOption('#wp-convertkit-restrict-content-filter', 'All member-only content');
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Posts to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Restrict Content Posts are listed.
+		$I->see('Kit: Post: Restricted Content: Form: Filter Test');
+		$I->see('Kit: Post: Restricted Content: Tag: Filter Test');
+		$I->see('Kit: Post: Restricted Content: Product: Filter Test');
+
+		// Confirm that no non-Restrict Content Posts are not listed.
+		$I->dontSee('Kit: Post: Standard');
+		$I->dontSee('Kit: Post: Standard: No Meta');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

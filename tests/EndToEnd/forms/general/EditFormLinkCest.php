@@ -39,13 +39,16 @@ class EditFormLinkCest
 	public function testEditFormLinkOnPage(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Default: Edit Link');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: Default: Edit Link'
+		);
 
 		// Configure metabox's Form setting = Default.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'Default' ],
 			]
 		);
@@ -77,13 +80,16 @@ class EditFormLinkCest
 	public function testEditFormLinkOnPageWithNoForm(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: None: Edit Link');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: None: Edit Link'
+		);
 
 		// Configure metabox's Form setting = None.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -174,13 +180,16 @@ class EditFormLinkCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Legacy: Edit Link');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: Legacy: Edit Link'
+		);
 
 		// Configure metabox's Form setting = Legacy.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
 			]
 		);
@@ -212,13 +221,16 @@ class EditFormLinkCest
 	public function testEditFormLinkOnPageWithFormBlock(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Edit Link');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: Block: Edit Link'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -226,9 +238,9 @@ class EditFormLinkCest
 		// Add block to Page, setting the Form setting to the value specified in the .env file.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
 			]
 		);
@@ -261,13 +273,16 @@ class EditFormLinkCest
 	public function testEditFormLinkOnPageWithFormBlockSpecifyingNonInlineForm(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', 'Kit: Page: Form: Block: Non Inline: Edit Link');
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: Block: Non Inline: Edit Link'
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
 		$I->configureMetaboxSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
 				'form' => [ 'select2', 'None' ],
 			]
 		);
@@ -275,9 +290,9 @@ class EditFormLinkCest
 		// Add block to Page, setting the Form setting to the value specified in the .env file.
 		$I->addGutenbergBlock(
 			$I,
-			'Kit Form',
-			'convertkit-form',
-			[
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
 				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME'] ],
 			]
 		);

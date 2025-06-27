@@ -223,7 +223,7 @@ class RestrictContentSetupCest
 			$I,
 			$url,
 			[
-				'member_content' => 'The downloadable content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content' => 'The downloadable member-only content goes here.',
 			]
 		);
 	}
@@ -292,7 +292,7 @@ class RestrictContentSetupCest
 			$url,
 			[
 				'visible_content' => 'Some introductory text about lesson 1',
-				'member_content'  => 'Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content'  => 'Lesson 1 member-only content goes here.',
 			]
 		);
 
@@ -301,25 +301,25 @@ class RestrictContentSetupCest
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Next Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 3/3');
 		$I->see('Some introductory text about lesson 3');
-		$I->see('Lesson 3 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 3 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: 1/3');
 		$I->see('Some introductory text about lesson 1');
-		$I->see('Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 1 member-only content goes here.');
 	}
 
 	/**
@@ -370,10 +370,10 @@ class RestrictContentSetupCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontend(
 			$I,
-			$url,
-			$I->generateEmailAddress(),
-			[
-				'member_content' => 'The downloadable content (that is available when the visitor has paid for the Kit product) goes here.',
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: [
+				'member_content' => 'The downloadable member-only content goes here.',
 			]
 		);
 	}
@@ -439,11 +439,11 @@ class RestrictContentSetupCest
 		// Test Restrict Content functionality.
 		$I->testRestrictedContentByTagOnFrontend(
 			$I,
-			$url,
-			$I->generateEmailAddress(),
-			[
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: [
 				'visible_content' => 'Some introductory text about lesson 1',
-				'member_content'  => 'Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here.',
+				'member_content'  => 'Lesson 1 member-only content goes here.',
 			]
 		);
 
@@ -452,25 +452,176 @@ class RestrictContentSetupCest
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Next Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 3/3');
 		$I->see('Some introductory text about lesson 3');
-		$I->see('Lesson 3 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 3 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 2/3');
 		$I->see('Some introductory text about lesson 2');
-		$I->see('Lesson 2 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 2 member-only content goes here.');
 
 		$I->click('Previous Lesson');
 		$I->waitForElementVisible('body.page-template-default');
 		$I->see('Kit: Member Content: Course: Tag: 1/3');
 		$I->see('Some introductory text about lesson 1');
-		$I->see('Lesson 1 content (that is available when the visitor has paid for the Kit product) goes here');
+		$I->see('Lesson 1 member-only content goes here.');
+	}
+
+	/**
+	 * Test that the Add New Member Content > Downloads generates the expected Page
+	 * and restricts content by the selected Form.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewMemberContentDownloadsByForm(EndToEndTester $I)
+	{
+		// Setup Plugin and navigate to Add New Member Content screen.
+		$this->_setupAndLoadAddNewMemberContentScreen($I);
+
+		// Click Downloads button.
+		$I->click('Download');
+
+		// Confirm the Configure Download screen is displayed.
+		$I->see('Configure Download');
+
+		// Enter a title and description.
+		$I->fillField('title', 'Kit: Member Content: Download: Form');
+		$I->fillField('description', 'Visible content.');
+
+		// Confirm that the limit option is not visible, as this is only for courses.
+		$I->dontSee('How many lessons does this course consist of?');
+
+		// Restrict by Form.
+		$I->fillSelect2Field($I, '#select2-wp-convertkit-restrict_content-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Click submit button.
+		$I->click('Submit');
+
+		// Wait for the WP_List_Table of Pages to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Confirm that one Page is listed in the WP_List_Table.
+		$I->see('Kit: Member Content: Download: Form');
+		$I->seeInSource('<span class="post-state">Kit Member Content</span>');
+
+		// Hover mouse over Post's table row.
+		$I->moveMouseOver('tr.iedit');
+
+		// Get link to Page.
+		$url = $I->grabAttributeFrom('tr.iedit span.view a', 'href');
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByFormOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			options: [
+				'member_content' => 'The downloadable member-only content goes here.',
+			]
+		);
+	}
+
+	/**
+	 * Test that the Add New Member Content > Course generates the expected Pages
+	 * and restricts content by the selected Form.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewMemberContentCourseByForm(EndToEndTester $I)
+	{
+		// Setup Plugin and navigate to Add New Member Content screen.
+		$this->_setupAndLoadAddNewMemberContentScreen($I);
+
+		// Click Course button.
+		$I->click('Course');
+
+		// Confirm the Configure Course screen is displayed.
+		$I->see('Configure Course');
+
+		// Enter a title, description and lesson count.
+		$I->fillField('title', 'Kit: Member Content: Course: Form');
+		$I->fillField('description', 'Visible content.');
+		$I->fillField('number_of_pages', '3');
+
+		// Restrict by Product.
+		$I->fillSelect2Field($I, '#select2-wp-convertkit-restrict_content-container', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Click submit button.
+		$I->click('Submit');
+
+		// Wait for the WP_List_Table of Pages to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Confirm that four Pages are listed in the WP_List_Table.
+		$I->see('Kit: Member Content: Course: Form');
+		$I->see('— Kit: Member Content: Course: Form: 1/3');
+		$I->see('— Kit: Member Content: Course: Form: 2/3');
+		$I->see('— Kit: Member Content: Course: Form: 3/3');
+		$I->see('Kit Member Content | Parent Page: Kit: Member Content: Course: Form');
+
+		// Hover mouse over Post's table row.
+		$I->moveMouseOver('tr.iedit:first-child');
+
+		// Wait for View link to be visible.
+		$I->waitForElementVisible('tr.iedit:first-child span.view a');
+
+		// Click View link.
+		$I->click('tr.iedit:first-child span.view a');
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Confirm the Start Course button exists.
+		$I->see('Start Course');
+
+		// Get URL to first restricted content page.
+		$url = $I->grabAttributeFrom('.wp-block-button a', 'href');
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByFormOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			options: [
+				'visible_content' => 'Some introductory text about lesson 1',
+				'member_content'  => 'Lesson 1 member-only content goes here.',
+			]
+		);
+
+		// Test Next / Previous links.
+		$I->click('Next Lesson');
+		$I->waitForElementVisible('body.page-template-default');
+		$I->see('Kit: Member Content: Course: Form: 2/3');
+		$I->see('Some introductory text about lesson 2');
+		$I->see('Lesson 2 member-only content goes here.');
+
+		$I->click('Next Lesson');
+		$I->waitForElementVisible('body.page-template-default');
+		$I->see('Kit: Member Content: Course: Form: 3/3');
+		$I->see('Some introductory text about lesson 3');
+		$I->see('Lesson 3 member-only content goes here.');
+
+		$I->click('Previous Lesson');
+		$I->waitForElementVisible('body.page-template-default');
+		$I->see('Kit: Member Content: Course: Form: 2/3');
+		$I->see('Some introductory text about lesson 2');
+		$I->see('Lesson 2 member-only content goes here.');
+
+		$I->click('Previous Lesson');
+		$I->waitForElementVisible('body.page-template-default');
+		$I->see('Kit: Member Content: Course: Form: 1/3');
+		$I->see('Some introductory text about lesson 1');
+		$I->see('Lesson 1 member-only content goes here.');
 	}
 
 	/**
