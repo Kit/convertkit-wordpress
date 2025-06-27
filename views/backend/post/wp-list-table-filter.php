@@ -9,6 +9,7 @@
 ?>
 <select name="convertkit_restrict_content" id="wp-convertkit-restrict-content-filter">
 	<option value="0"><?php esc_html_e( 'All content', 'convertkit' ); ?></option>
+	<option value="all-member-only"<?php selected( $this->restrict_content_filter, 'all-member-only' ); ?>><?php esc_html_e( 'All member-only content', 'convertkit' ); ?></option>
 
 	<?php
 	// Forms.
