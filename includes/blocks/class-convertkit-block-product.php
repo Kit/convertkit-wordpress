@@ -444,7 +444,7 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 				'discount_code'  => $atts['discount_code'],
 				'checkout'       => $atts['checkout'],
 				'disable_modal'  => ( $atts['disable_modal_on_mobile'] && wp_is_mobile() ),
-				'css_classes'    => $this->get_css_classes(),
+				'css_classes'    => $this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
 				'css_styles'     => ! $is_block ? $this->get_css_styles( $atts ) : array(),
 				'return_as_span' => $this->is_block_editor_request(),
 			)

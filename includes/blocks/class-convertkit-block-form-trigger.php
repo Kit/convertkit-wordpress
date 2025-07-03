@@ -386,7 +386,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		$html = $this->get_html(
 			$atts['form'],
 			$atts['text'],
-			$this->get_css_classes(),
+			$this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
 			( ! $is_block ? $this->get_css_styles( $atts ) : array() ),
 			$this->is_block_editor_request()
 		);
