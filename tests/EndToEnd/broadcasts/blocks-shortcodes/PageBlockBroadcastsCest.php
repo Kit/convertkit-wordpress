@@ -278,7 +278,8 @@ class PageBlockBroadcastsCest
 		$I->seeBroadcastsOutput(
 			$I,
 			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+				'number_posts'      => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+				'see_display_order' => 'broadcast-date',
 			]
 		);
 	}
