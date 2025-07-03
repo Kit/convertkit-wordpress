@@ -271,14 +271,17 @@ class ConvertKit_Block {
 		// Extract just the class attribute value from the wrapper attributes string.
 		$classes = array();
 		if ( preg_match( '/class="([^"]*)"/', $wrapper_attributes, $matches ) ) {
-			return explode( ' ', $matches[1] );
+			$classes = explode( ' ', $matches[1] );
+		} else {
+			$classes = array(
+				'convertkit-' . $this->get_name(),
+			);
 		}
 
-		// No class attribute exists for this block.
-		// Just return the block's name as the class.
-		return array(
-			'convertkit-' . $this->get_name(),
-		);
+		// Remove some classes WordPress adds that we don't want, as they break the layout.
+		$classes = array_diff( $classes, array( 'alignfull', 'wp-block-post-content' ) );
+
+		return $classes;
 
 	}
 
