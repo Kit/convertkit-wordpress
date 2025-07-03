@@ -368,7 +368,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 * @param   WP_Block|string|bool $block_or_shortcode   WP_Block class, Shortcode Name or false if called from a page builder.
 	 * @return  string
 	 */
-	public function render( $atts, $content, $block_or_shortcode = false ) {
+	public function render( $atts, $content = '', $block_or_shortcode = false ) {
 
 		// Gutenberg blocks pass $block_or_shortcode as a WP_Block.
 		// Shortcodes pass $block_or_shortcode as a string of the shortcode name.
