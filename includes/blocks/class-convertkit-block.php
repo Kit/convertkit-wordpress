@@ -346,6 +346,11 @@ class ConvertKit_Block {
 				continue;
 			}
 
+			// Skip empty values.
+			if ( empty( $value ) ) {
+				continue;
+			}
+
 			// Append to data string, replacing underscores with hyphens in the key name.
 			$data .= ' data-' . strtolower( str_replace( '_', '-', $key ) ) . '="' . esc_attr( $value ) . '"';
 		}
