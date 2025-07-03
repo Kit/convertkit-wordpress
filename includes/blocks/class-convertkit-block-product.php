@@ -414,10 +414,17 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 	 *
 	 * @since   1.9.8.5
 	 *
-	 * @param   array $atts   Block / Shortcode Attributes.
-	 * @return  string          Output
+	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @param   string               $content              Shortcode Content.
+	 * @param   WP_Block|string|bool $block_or_shortcode   WP_Block class, Shortcode Name or false if called from a page builder.
+	 * @return  string
 	 */
-	public function render( $atts ) {
+	public function render( $atts, $content = '', $block_or_shortcode = false ) {
+
+		// Gutenberg blocks pass $block_or_shortcode as a WP_Block.
+		// Shortcodes pass $block_or_shortcode as a string of the shortcode name.
+		// Page Builders: Let's find out!
+		$is_block = ( $block_or_shortcode instanceof WP_Block );
 
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
@@ -437,8 +444,8 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 				'discount_code'  => $atts['discount_code'],
 				'checkout'       => $atts['checkout'],
 				'disable_modal'  => ( $atts['disable_modal_on_mobile'] && wp_is_mobile() ),
-				'css_classes'    => $atts['_css_classes'],
-				'css_styles'     => $atts['_css_styles'],
+				'css_classes'    => $this->get_css_classes(),
+				'css_styles'     => ! $is_block ? $this->get_css_styles( $atts ) : array(),
 				'return_as_span' => $this->is_block_editor_request(),
 			)
 		);

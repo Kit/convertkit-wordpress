@@ -441,10 +441,17 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 *
 	 * @since   1.9.7.4
 	 *
-	 * @param   array $atts   Block / Shortcode Attributes.
-	 * @return  string          Output
+	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @param   string               $content              Shortcode Content.
+	 * @param   WP_Block|string|bool $block_or_shortcode   WP_Block class, Shortcode Name or false if called from a page builder.
+	 * @return  string
 	 */
-	public function render( $atts ) {
+	public function render( $atts, $content, $block_or_shortcode = false ) {
+
+		// Gutenberg blocks pass $block_or_shortcode as a WP_Block.
+		// Shortcodes pass $block_or_shortcode as a string of the shortcode name.
+		// Page Builders: Let's find out!
+		$is_block = ( $block_or_shortcode instanceof WP_Block );
 
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
@@ -473,17 +480,24 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		}
 
 		// Build HTML.
-		$html = $this->build_html( $posts, $atts );
+		$html = $this->build_html(
+			$posts,
+			$atts,
+			true,
+			$this->get_css_classes(),
+			( ! $is_block ? $this->get_css_styles( $atts ) : array() )
+		);
 
 		/**
 		 * Filter the block's content immediately before it is output.
 		 *
 		 * @since   1.9.7.4
 		 *
-		 * @param   string  $html   ConvertKit Broadcasts HTML.
-		 * @param   array   $atts   Block Attributes.
+		 * @param   string  $html       ConvertKit Broadcasts HTML.
+		 * @param   array   $atts       Block Attributes.
+		 * @param   bool    $is_block   Whether this is a Gutenberg block (false for shortcodes and page builders).
 		 */
-		$html = apply_filters( 'convertkit_block_broadcasts_render', $html, $atts );
+		$html = apply_filters( 'convertkit_block_broadcasts_render', $html, $atts, $is_block );
 
 		return $html;
 
@@ -550,9 +564,11 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * @param   ConvertKit_Resource_Posts $posts              ConvertKit Posts Resource class.
 	 * @param   array                     $atts               Block attributes.
 	 * @param   bool                      $include_container  Include container div in HTML.
-	 * @return  string                                          HTML
+	 * @param   array                     $css_classes        CSS classes to apply to block.
+	 * @param   array                     $css_styles         CSS inline styles to apply to block.
+	 * @return  string
 	 */
-	private function build_html( $posts, $atts, $include_container = true ) {
+	private function build_html( $posts, $atts, $include_container = true, $css_classes = array(), $css_styles = array() ) {
 
 		// Get paginated subset of Posts.
 		$broadcasts = $posts->get_paginated_subset( $atts['page'], $atts['limit'] );
@@ -565,7 +581,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		// Include container, if required.
 		if ( $include_container ) {
-			$html .= '<div class="' . implode( ' ', map_deep( $atts['_css_classes'], 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $atts['_css_styles'], 'esc_attr' ) ) . '" ' . $this->get_atts_as_html_data_attributes( $atts ) . '>';
+			$html .= '<div class="' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '" ' . $this->get_atts_as_html_data_attributes( $atts ) . '>';
 		}
 
 		// Start list.

@@ -363,10 +363,17 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   array $atts   Block / Shortcode Attributes.
-	 * @return  string          Output
+	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @param   string               $content              Shortcode Content.
+	 * @param   WP_Block|string|bool $block_or_shortcode   WP_Block class, Shortcode Name or false if called from a page builder.
+	 * @return  string
 	 */
-	public function render( $atts ) {
+	public function render( $atts, $content, $block_or_shortcode = false ) {
+
+		// Gutenberg blocks pass $block_or_shortcode as a WP_Block.
+		// Shortcodes pass $block_or_shortcode as a string of the shortcode name.
+		// Page Builders: Let's find out!
+		$is_block = ( $block_or_shortcode instanceof WP_Block );
 
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
@@ -376,7 +383,13 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		$settings = new ConvertKit_Settings();
 
 		// Build HTML.
-		$html = $this->get_html( $atts['form'], $atts['text'], $atts['_css_classes'], $atts['_css_styles'], $this->is_block_editor_request() );
+		$html = $this->get_html(
+			$atts['form'],
+			$atts['text'],
+			$this->get_css_classes(),
+			( ! $is_block ? $this->get_css_styles( $atts ) : array() ),
+			$this->is_block_editor_request()
+		);
 
 		// Bail if an error occured.
 		if ( is_wp_error( $html ) ) {
@@ -409,7 +422,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 * @param   int    $id             Form ID.
 	 * @param   string $button_text    Button Text.
 	 * @param   array  $css_classes    CSS classes to apply to link (typically included when using Gutenberg).
-	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Gutenberg).
+	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Shortcode or third party page builder module / widget).
 	 * @param   bool   $return_as_span If true, returns a <span> instead of <a>. Useful for the block editor so that the element is interactible.
 	 * @return  WP_Error|string        Button HTML
 	 */
@@ -467,7 +480,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 			$html .= '<a data-formkit-toggle="' . esc_attr( $form['uid'] ) . '" href="' . esc_url( $form['embed_url'] ) . '"';
 		}
 
-		$html .= ' class="wp-block-button__link ' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '">';
+		$html .= ' class="' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '">';
 		$html .= esc_html( $button_text );
 
 		if ( $return_as_span ) {

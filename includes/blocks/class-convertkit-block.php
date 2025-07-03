@@ -220,69 +220,8 @@ class ConvertKit_Block {
 			}
 		}
 
-		// Build CSS class(es) that might need to be added to the top level element for this block.
-		$atts['_css_classes'] = array( 'convertkit-' . $this->get_name() );
-		$atts['_css_styles']  = array();
-
-		// If the block supports a text color, and a preset color was selected, add it to the
-		// array of CSS classes.
-		if ( $atts['textColor'] ) {
-			$atts['_css_classes'][] = 'has-text-color';
-			$atts['_css_classes'][] = 'has-' . $atts['textColor'] . '-color';
-		}
-
-		// If the block supports a text color, and a custom hex color was selected, add it to the
-		// array of CSS inline styles.
-		if ( isset( $atts['style']['color'] ) && isset( $atts['style']['color']['text'] ) ) {
-			$atts['_css_classes'][]       = 'has-text-color';
-			$atts['_css_styles']['color'] = 'color:' . $atts['style']['color']['text'];
-		}
-
-		// If the shortcode supports a text color, and a custom hex color was selected, add it to the
-		// array of CSS inline styles.
-		if ( isset( $atts['text_color'] ) && ! empty( $atts['text_color'] ) ) {
-			$atts['_css_classes'][]       = 'has-text-color';
-			$atts['_css_styles']['color'] = 'color:' . $atts['text_color'];
-		}
-
-		// If the block supports a background color, and a preset color was selected, add it to the
-		// array of CSS classes.
-		if ( $atts['backgroundColor'] ) {
-			$atts['_css_classes'][] = 'has-background';
-			$atts['_css_classes'][] = 'has-' . $atts['backgroundColor'] . '-background-color';
-		}
-
-		// If the block supports a background color, and a custom hex color was selected, add it to the
-		// array of CSS inline styles.
-		if ( isset( $atts['style']['color'] ) && isset( $atts['style']['color']['background'] ) ) {
-			$atts['_css_classes'][]            = 'has-background';
-			$atts['_css_styles']['background'] = 'background-color:' . $atts['style']['color']['background'];
-		}
-
-		// If the block supports a font size, and a preset font size was selected, add it to the
-		// array of CSS classes.
-		if ( isset( $atts['fontSize'] ) && ! empty( $atts['fontSize'] ) ) {
-			$atts['_css_classes'][] = 'has-custom-font-size';
-			$atts['_css_classes'][] = 'has-' . $atts['fontSize'] . '-font-size';
-		}
-
-		// If the block supports padding, and padding is set, add it to the
-		// array of CSS inline styles.
-		if ( isset( $atts['style']['spacing'] ) && isset( $atts['style']['spacing']['padding'] ) ) {
-			foreach ( $atts['style']['spacing']['padding'] as $position => $value ) {
-				$atts['_css_styles'][ 'padding-' . $position ] = 'padding-' . $position . ':' . $value;
-			}
-		}
-
-		// If the shortcode supports a background color, and a custom hex color was selected, add it to the
-		// array of CSS inline styles.
-		if ( isset( $atts['background_color'] ) && ! empty( $atts['background_color'] ) ) {
-			$atts['_css_classes'][]            = 'has-background';
-			$atts['_css_styles']['background'] = 'background-color:' . $atts['background_color'];
-		}
-
 		// Remove some unused attributes, now they're declared above.
-		unset( $atts['style'] );
+		unset( $atts['style'], $atts['backgroundColor'], $atts['textColor'], $atts['className'] );
 
 		return $atts;
 
@@ -295,7 +234,7 @@ class ConvertKit_Block {
 	 * @since   1.9.6
 	 *
 	 * @param   array $atts   Block or shortcode attributes.
-	 * @return  array           Block or shortcode attributes
+	 * @return  array
 	 */
 	public function sanitize_atts( $atts ) {
 
@@ -308,6 +247,71 @@ class ConvertKit_Block {
 		}
 
 		return $atts;
+
+	}
+
+	/**
+	 * Builds CSS class(es) that might need to be added to the top level element's `class` attribute
+	 * when using Gutenberg, to honor the block's styles and layout settings.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @return  array
+	 */
+	public function get_css_classes() {
+
+		// Get the block wrapper attributes string.
+		$wrapper_attributes = get_block_wrapper_attributes(
+			array(
+				'class' => 'convertkit-' . $this->get_name(),
+			)
+		);
+
+		// Extract the class attribute from the wrapper attributes string, returning as an array.
+		// Extract just the class attribute value from the wrapper attributes string.
+		$classes = array();
+		if ( preg_match( '/class="([^"]*)"/', $wrapper_attributes, $matches ) ) {
+			return explode( ' ', $matches[1] );
+		}
+
+		// No class attribute exists for this block.
+		// Just return the block's name as the class.
+		return array(
+			'convertkit-' . $this->get_name(),
+		);
+
+	}
+
+	/**
+	 * Builds inline CSS style(s) that might need to be added to the top level element's `style` attribute
+	 * when using a shortcode or third party page builder module / widget.
+	 * Gutenberg will automatically build these styles for the block using get_block_wrapper_attributes().
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   array $atts   Block or shortcode attributes.
+	 * @return  array
+	 */
+	public function get_css_styles( $atts ) {
+
+		// Build inline CSS style(s) that might need to be added to the top level element when using a shortcode
+		// or third party page builder module / widget.
+		// Gutenberg will automatically build these styles for the block using get_block_wrapper_attributes().
+		$styles = array();
+
+		// If the shortcode supports a text color, and a custom hex color was selected, add it to the
+		// array of CSS inline styles.
+		if ( isset( $atts['text_color'] ) && ! empty( $atts['text_color'] ) ) {
+			$styles['color'] = 'color:' . $atts['text_color'];
+		}
+
+		// If the shortcode supports a background color, and a custom hex color was selected, add it to the
+		// array of CSS inline styles.
+		if ( isset( $atts['background_color'] ) && ! empty( $atts['background_color'] ) ) {
+			$styles['background'] = 'background-color:' . $atts['background_color'];
+		}
+
+		return $styles;
 
 	}
 
@@ -327,7 +331,6 @@ class ConvertKit_Block {
 		$skip_keys = array(
 			'backgroundColor',
 			'textColor',
-			'_css_classes',
 			'_css_styles',
 		);
 
