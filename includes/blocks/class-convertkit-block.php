@@ -256,6 +256,7 @@ class ConvertKit_Block {
 	 *
 	 * @since   2.8.3
 	 *
+	 * @param   array $additional_classes   Additional classes to add to the block.
 	 * @return  array
 	 */
 	public function get_css_classes( $additional_classes = array() ) {
@@ -263,12 +264,15 @@ class ConvertKit_Block {
 		// Get the block wrapper attributes string.
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
-				'class' => implode( ' ', array_merge(
-					array(
-						'convertkit-' . $this->get_name(),
-					),
-					$additional_classes
-				) ),
+				'class' => implode(
+					' ',
+					array_merge(
+						array(
+							'convertkit-' . $this->get_name(),
+						),
+						$additional_classes
+					)
+				),
 			)
 		);
 
