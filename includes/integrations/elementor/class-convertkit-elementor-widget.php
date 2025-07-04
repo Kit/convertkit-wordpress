@@ -262,7 +262,7 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 
 		// To avoid errors in get_block_wrapper_attributes(), tell WordPress that a block is being rendered.
 		// The attributes don't matter, as we send them to the render() function.
-		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) {
+		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
 			WP_Block_Supports::$block_to_render = array(
 				'blockName'    => 'convertkit/' . $this->get_block_name(),
 				'attrs'        => array(),
