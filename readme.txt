@@ -164,6 +164,7 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 ### 2.8.3 2025-07-03
 * Added: Member Content: `All member-only content` option added to filter dropdown in Posts and Pages tables
 * Fix: Member Content: Replace `Members only` with `member-only`
+* Fix: Automatically refresh Access Token when expired
 
 ### 2.8.2 2025-05-28
 * Fix: Broadcasts: Remove emoijs from Permalink whem importing Broadcasts to WordPress Posts
