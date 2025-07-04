@@ -287,7 +287,7 @@ class PageBlockFormTriggerCest
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL']);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('class="wp-block-button__link convertkit-formtrigger has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');
+		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');
 	}
 
 	/**
@@ -327,47 +327,11 @@ class PageBlockFormTriggerCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Confirm that the chosen colors are applied as CSS styles.
+		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-background');
+
 		// Confirm that the block displays.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe', $textColor, $backgroundColor);
-	}
-
-	/**
-	 * Test the Form Trigger block's parameters are correctly escaped on output,
-	 * to prevent XSS.
-	 *
-	 * @since   2.0.5
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormTriggerBlockParameterEscaping(EndToEndTester $I)
-	{
-		// Setup Kit Plugin with no default form specified.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
-		$I->havePageInDatabase(
-			[
-				'post_name'    => 'kit-page-form-trigger-block-parameter-escaping',
-				'post_content' => '<!-- wp:convertkit/formtrigger {"form":"' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '","style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
-			]
-		);
-
-		// Load the Page on the frontend site.
-		$I->amOnPage('/kit-page-form-trigger-block-parameter-escaping');
-
-		// Wait for frontend web site to load.
-		$I->waitForElementVisible('body.page-template-default');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the output is escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
 	/**

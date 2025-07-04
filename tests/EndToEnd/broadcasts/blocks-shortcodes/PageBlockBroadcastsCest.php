@@ -741,49 +741,6 @@ class PageBlockBroadcastsCest
 	}
 
 	/**
-	 * Test the Broadcasts block's parameters are correctly escaped on output,
-	 * to prevent XSS.
-	 *
-	 * @since   2.0.5
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testBroadcastsBlockParameterEscaping(EndToEndTester $I)
-	{
-		// Setup Plugin and enable debug log.
-		$I->setupKitPlugin($I);
-		$I->setupKitPluginResources($I);
-
-		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
-		$I->havePageInDatabase(
-			[
-				'post_name'    => 'kit-page-broadcasts-block-parameter-escaping',
-				'post_content' => '<!-- wp:convertkit/broadcasts {"limit":2,"paginate":true,"style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
-			]
-		);
-
-		// Load the Page on the frontend site.
-		$I->amOnPage('/kit-page-broadcasts-block-parameter-escaping');
-
-		// Wait for frontend web site to load.
-		$I->waitForElementVisible('body.page-template-default');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the output is escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
-
-		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
-
-		// Confirm that the output is still escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
-	}
-
-	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

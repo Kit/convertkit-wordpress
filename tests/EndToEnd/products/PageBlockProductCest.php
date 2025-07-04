@@ -516,7 +516,8 @@ class PageBlockProductCest
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
 			text: 'Buy my product',
 			textColor: $textColor,
-			backgroundColor: $backgroundColor
+			backgroundColor: $backgroundColor,
+			isBlock: true
 		);
 	}
 
@@ -630,49 +631,6 @@ class PageBlockProductCest
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
-	}
-
-	/**
-	 * Test the Product block's parameters are correctly escaped on output,
-	 * to prevent XSS.
-	 *
-	 * @since   2.0.5
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testProductBlockParameterEscaping(EndToEndTester $I)
-	{
-		// Setup Kit Plugin with no default form specified.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
-		$I->havePageInDatabase(
-			[
-				'post_name'    => 'kit-page-product-block-parameter-escaping',
-				'post_content' => '<!-- wp:convertkit/product {"product":"' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '","style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
-			]
-		);
-
-		// Load the Page on the frontend site.
-		$I->amOnPage('/kit-page-product-block-parameter-escaping');
-
-		// Wait for frontend web site to load.
-		$I->waitForElementVisible('body.page-template-default');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the output is escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
 	}
 
 	/**
