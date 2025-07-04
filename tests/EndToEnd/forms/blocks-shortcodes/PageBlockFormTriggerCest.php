@@ -328,10 +328,17 @@ class PageBlockFormTriggerCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-background');
+		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-background"');
 
 		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe', $textColor, $backgroundColor);
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe',
+			textColor: $textColor,
+			backgroundColor: $backgroundColor,
+			isBlock: true
+		);
 	}
 
 	/**
