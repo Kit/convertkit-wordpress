@@ -364,16 +364,9 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 * @since   2.2.0
 	 *
 	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
-	 * @param   string               $content              Shortcode Content.
-	 * @param   WP_Block|string|bool $block_or_shortcode   WP_Block class, Shortcode Name or false if called from a page builder.
 	 * @return  string
 	 */
-	public function render( $atts, $content = '', $block_or_shortcode = false ) {
-
-		// Gutenberg blocks pass $block_or_shortcode as a WP_Block.
-		// Shortcodes pass $block_or_shortcode as a string of the shortcode name.
-		// Page Builders: Let's find out!
-		$is_block = ( $block_or_shortcode instanceof WP_Block );
+	public function render( $atts ) {
 
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
@@ -387,7 +380,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 			$atts['form'],
 			$atts['text'],
 			$this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
-			( ! $is_block ? $this->get_css_styles( $atts ) : array() ),
+			$this->get_css_styles( $atts ),
 			$this->is_block_editor_request()
 		);
 

@@ -296,8 +296,7 @@ class ConvertKit_Block {
 
 	/**
 	 * Builds inline CSS style(s) that might need to be added to the top level element's `style` attribute
-	 * when using a shortcode or third party page builder module / widget.
-	 * Gutenberg will automatically build these styles for the block using get_block_wrapper_attributes().
+	 * when using Gutenberg, a shortcode or third party page builder module / widget.
 	 *
 	 * @since   2.8.3
 	 *
@@ -306,21 +305,23 @@ class ConvertKit_Block {
 	 */
 	public function get_css_styles( $atts ) {
 
-		// Build inline CSS style(s) that might need to be added to the top level element when using a shortcode
-		// or third party page builder module / widget.
-		// Gutenberg will automatically build these styles for the block using get_block_wrapper_attributes().
 		$styles = array();
 
-		// If the shortcode supports a text color, and a custom hex color was selected, add it to the
-		// array of CSS inline styles.
-		if ( isset( $atts['text_color'] ) && ! empty( $atts['text_color'] ) ) {
-			$styles['color'] = 'color:' . $atts['text_color'];
+		// Get the block wrapper attributes string, extracting any styles that the block has set,
+		// such as margin, padding or block spacing.
+		$wrapper_attributes = get_block_wrapper_attributes();
+		if ( preg_match( '/style="([^"]*)"/', $wrapper_attributes, $matches ) ) {
+			return array_filter( explode( ';', $matches[1] ) );
 		}
 
-		// If the shortcode supports a background color, and a custom hex color was selected, add it to the
-		// array of CSS inline styles.
+		// If here, no block styles were found.
+		// This might be a shortcode or third party page builder module / widget that has
+		// specific attributes set.
+		if ( isset( $atts['text_color'] ) && ! empty( $atts['text_color'] ) ) {
+			$styles[] = 'color:' . $atts['text_color'];
+		}
 		if ( isset( $atts['background_color'] ) && ! empty( $atts['background_color'] ) ) {
-			$styles['background'] = 'background-color:' . $atts['background_color'];
+			$styles[] = 'background-color:' . $atts['background_color'];
 		}
 
 		return $styles;

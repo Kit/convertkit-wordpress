@@ -442,16 +442,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * @since   1.9.7.4
 	 *
 	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
-	 * @param   string               $content              Shortcode Content.
-	 * @param   WP_Block|string|bool $block_or_shortcode   WP_Block class, Shortcode Name or false if called from a page builder.
 	 * @return  string
 	 */
-	public function render( $atts, $content = '', $block_or_shortcode = false ) {
-
-		// Gutenberg blocks pass $block_or_shortcode as a WP_Block.
-		// Shortcodes pass $block_or_shortcode as a string of the shortcode name.
-		// Page Builders: Let's find out!
-		$is_block = ( $block_or_shortcode instanceof WP_Block );
+	public function render( $atts ) {
 
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
@@ -485,7 +478,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			$atts,
 			true,
 			$this->get_css_classes(),
-			( ! $is_block ? $this->get_css_styles( $atts ) : array() )
+			$this->get_css_styles( $atts )
 		);
 
 		/**
@@ -495,9 +488,8 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		 *
 		 * @param   string  $html       ConvertKit Broadcasts HTML.
 		 * @param   array   $atts       Block Attributes.
-		 * @param   bool    $is_block   Whether this is a Gutenberg block (false for shortcodes and page builders).
 		 */
-		$html = apply_filters( 'convertkit_block_broadcasts_render', $html, $atts, $is_block );
+		$html = apply_filters( 'convertkit_block_broadcasts_render', $html, $atts );
 
 		return $html;
 
