@@ -243,6 +243,48 @@ class PageBlockBroadcastsCest
 	}
 
 	/**
+	 * Test the Broadcasts block's "Display order" parameter works.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsBlockWithDisplayOrderParameter(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Display Order'
+		);
+
+		// Add block to Page, setting the date format.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts',
+			blockConfiguration: [
+				'display_order' => [ 'select', 'broadcast-date' ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the block displays correctly with the expected number of Broadcasts in the grid format.
+		$I->seeBroadcastsOutput(
+			$I,
+			[
+				'number_posts'      => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+				'see_display_order' => 'broadcast-date',
+			]
+		);
+	}
+
+	/**
 	 * Test the Broadcasts block's date format parameter works.
 	 *
 	 * @since   1.9.7.4
