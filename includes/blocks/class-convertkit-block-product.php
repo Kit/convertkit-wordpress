@@ -414,7 +414,7 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 	 *
 	 * @since   1.9.8.5
 	 *
-	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @param   array $atts                 Block / Shortcode / Page Builder Module Attributes.
 	 * @return  string
 	 */
 	public function render( $atts ) {

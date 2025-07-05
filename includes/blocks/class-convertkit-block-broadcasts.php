@@ -441,7 +441,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 *
 	 * @since   1.9.7.4
 	 *
-	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @param   array $atts                 Block / Shortcode / Page Builder Module Attributes.
 	 * @return  string
 	 */
 	public function render( $atts ) {
