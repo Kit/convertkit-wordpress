@@ -260,14 +260,9 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 				// See: https://github.com/WordPress/gutenberg/issues/32417.
 				'__experimentalSkipSerialization' => true,
 			),
-			'typography' => array(
-				'fontSize' => true,
-			),
-			'spacing'    => array(
-				'padding' => array(
-					'horizontal',
-					'vertical',
-				),
+			'spacing'   => array(
+				'margin'   => true,
+				'padding'  => true,
 			),
 		);
 

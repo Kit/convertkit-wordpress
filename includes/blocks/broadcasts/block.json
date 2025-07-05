@@ -61,6 +61,10 @@
             "link": true,
             "background": true,
             "text": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
         }
     },
     "editorScript": "convertkit-gutenberg"

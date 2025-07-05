@@ -262,6 +262,10 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'background' => true,
 				'text'       => true,
 			),
+			'spacing'   => array(
+				'margin'   => true,
+				'padding'  => true,
+			),
 		);
 
 	}
