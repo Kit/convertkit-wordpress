@@ -1310,7 +1310,13 @@ class ConvertKit_Output_Restrict_Content {
 
 				// Output.
 				ob_start();
-				$button = $products->get_html( $this->resource_id, $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) );
+				$button = $products->get_html(
+					$this->resource_id,
+					$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
+					array(
+						'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
+					)
+				);
 				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
 				return trim( ob_get_clean() );
 

@@ -177,7 +177,7 @@ class ConvertKit_Resource_Products extends ConvertKit_Resource_V4 {
 		}
 
 		$html .= sprintf(
-			' class="wp-block-button__link %s" style="%s"%s>',
+			' class="%s" style="%s"%s>',
 			implode( ' ', map_deep( $options['css_classes'], 'sanitize_html_class' ) ),
 			implode( ';', map_deep( $options['css_styles'], 'esc_attr' ) ),
 			( ! $options['disable_modal'] ? ' data-commerce' : '' )

@@ -414,8 +414,8 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 	 *
 	 * @since   1.9.8.5
 	 *
-	 * @param   array $atts   Block / Shortcode Attributes.
-	 * @return  string          Output
+	 * @param   array $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @return  string
 	 */
 	public function render( $atts ) {
 
@@ -437,8 +437,8 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 				'discount_code'  => $atts['discount_code'],
 				'checkout'       => $atts['checkout'],
 				'disable_modal'  => ( $atts['disable_modal_on_mobile'] && wp_is_mobile() ),
-				'css_classes'    => $atts['_css_classes'],
-				'css_styles'     => $atts['_css_styles'],
+				'css_classes'    => $this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
+				'css_styles'     => $this->get_css_styles( $atts ),
 				'return_as_span' => $this->is_block_editor_request(),
 			)
 		);

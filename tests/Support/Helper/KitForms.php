@@ -81,8 +81,9 @@ class KitForms extends \Codeception\Module
 	 * @param   bool|string    $text           Test if the button text matches the given value.
 	 * @param   bool|string    $textColor      Test if the given text color is applied.
 	 * @param   bool|string    $backgroundColor Test is the given background color is applied.
+	 * @param   bool           $isBlock        Test if this is a form trigger block or shortcode.
 	 */
-	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false)
+	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $isBlock = false)
 	{
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
@@ -100,20 +101,32 @@ class KitForms extends \Codeception\Module
 
 		// Confirm that the text color is as expected.
 		if ($textColor !== false) {
-			$I->seeElementInDOM('a.convertkit-formtrigger.has-text-color');
-			$I->assertStringContainsString(
-				'color:' . $textColor,
-				$I->grabAttributeFrom('a.convertkit-formtrigger', 'style')
-			);
+			switch ($isBlock) {
+				case true:
+					$I->seeElementInDOM('a.convertkit-formtrigger.has-text-color');
+					break;
+				default:
+					$I->assertStringContainsString(
+						'color:' . $textColor,
+						$I->grabAttributeFrom('a.convertkit-formtrigger', 'style')
+					);
+					break;
+			}
 		}
 
 		// Confirm that the background color is as expected.
 		if ($backgroundColor !== false) {
-			$I->seeElementInDOM('a.convertkit-formtrigger.has-background');
-			$I->assertStringContainsString(
-				'background-color:' . $backgroundColor,
-				$I->grabAttributeFrom('a.convertkit-formtrigger', 'style')
-			);
+			switch ($isBlock) {
+				case true:
+					$I->seeElementInDOM('a.convertkit-formtrigger.has-background');
+					break;
+				default:
+					$I->assertStringContainsString(
+						'background-color:' . $backgroundColor,
+						$I->grabAttributeFrom('a.convertkit-formtrigger', 'style')
+					);
+					break;
+			}
 		}
 
 		// Click the button to confirm that the Kit modal displays.
