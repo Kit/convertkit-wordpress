@@ -429,12 +429,11 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 			$atts['product'],
 			$atts['text'],
 			array(
-				'discount_code'  => $atts['discount_code'],
-				'checkout'       => $atts['checkout'],
-				'disable_modal'  => ( $atts['disable_modal_on_mobile'] && wp_is_mobile() ),
-				'css_classes'    => $this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
-				'css_styles'     => $this->get_css_styles( $atts ),
-				'return_as_span' => $this->is_block_editor_request(),
+				'discount_code' => $atts['discount_code'],
+				'checkout'      => $atts['checkout'],
+				'disable_modal' => ( $atts['disable_modal_on_mobile'] && wp_is_mobile() ),
+				'css_classes'   => $this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
+				'css_styles'    => $this->get_css_styles( $atts ),
 			)
 		);
 

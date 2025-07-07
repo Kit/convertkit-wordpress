@@ -98,27 +98,24 @@ class ConvertKit_Resource_Products extends ConvertKit_Resource_V4 {
 	 *
 	 * @param   int        $id             Product ID.
 	 * @param   string     $button_text    Button Text.
+	 * @param   array      $css_classes    CSS classes to apply to link (typically included when using Gutenberg).
+	 * @param   array      $css_styles     CSS inline styles to apply to link (typically included when using Shortcode or third party page builder module / widget).
 	 * @param   bool|array $options {
 	 *     Optional. An array of settings.
 	 *
 	 *     @type bool           $disable_modal      If true, the button's link will open in a new browser window/tab, instead of a modal
 	 *     @type bool|string    $discount_code      Discount Code to include.
-	 *     @type array          $css_classes        CSS classes to apply to link (typically included when using Gutenberg).
-	 *     @type array          $css_styles         CSS inline styles to apply to link (typically included when using Gutenberg).
-	 *     @type bool           $return_as_span     If true, returns a <span> instead of <a>. Useful for the block editor so that the element is interactible.
+	 *     @type bool           $checkout           If true, the button's link will open the checkout step.
 	 * }
 	 * @return  WP_Error|string                 Button HTML
 	 */
-	public function get_html( $id, $button_text, $options = false ) {
+	public function get_html( $id, $button_text, $css_classes = array(), $css_styles = array(), $options = false ) {
 
 		// Define default options for the button.
 		$defaults = array(
-			'disable_modal'  => false,
-			'discount_code'  => false,
-			'checkout'       => false,
-			'css_classes'    => array(),
-			'css_styles'     => array(),
-			'return_as_span' => false,
+			'disable_modal' => false,
+			'discount_code' => false,
+			'checkout'      => false,
 		);
 
 		// If option are supplied, merge with defaults.
@@ -168,24 +165,25 @@ class ConvertKit_Resource_Products extends ConvertKit_Resource_V4 {
 		}
 
 		// Build button HTML.
-		$html = '<div class="convertkit-product">';
+		$html = '<div class="convertkit-button">';
 
-		if ( $options['return_as_span'] ) {
+		// If the request is for the block editor, return a span with no styles, as the block
+		// edit will apply the styles to an outer element.
+		if ( $this->is_block_editor_request() ) {
 			$html .= '<span';
 		} else {
-			$html .= '<a href="' . esc_url( $product_url ) . '"';
+			$html .= sprintf(
+				'<a href="%s" class="%s" style="%s"%s>',
+				esc_url( $product_url ),
+				implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
+				implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
+				( ! $options['disable_modal'] ? ' data-commerce' : '' )
+			);
 		}
-
-		$html .= sprintf(
-			' class="%s" style="%s"%s>',
-			implode( ' ', map_deep( $options['css_classes'], 'sanitize_html_class' ) ),
-			implode( ';', map_deep( $options['css_styles'], 'esc_attr' ) ),
-			( ! $options['disable_modal'] ? ' data-commerce' : '' )
-		);
 
 		$html .= esc_html( $button_text );
 
-		if ( $options['return_as_span'] ) {
+		if ( $this->is_block_editor_request() ) {
 			$html .= '</span>';
 		} else {
 			$html .= '</a>';

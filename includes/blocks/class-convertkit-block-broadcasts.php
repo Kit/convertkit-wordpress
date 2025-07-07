@@ -480,7 +480,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$html = $this->build_html(
 			$posts,
 			$atts,
-			true,
+			! $this->is_block_editor_request(),
 			$this->get_css_classes(),
 			$this->get_css_styles( $atts )
 		);
@@ -577,7 +577,12 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		// Include container, if required.
 		if ( $include_container ) {
-			$html .= '<div class="' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '" ' . $this->get_atts_as_html_data_attributes( $atts ) . '>';
+			$html = sprintf(
+				'<div class="%s" style="%s" %s>',
+				implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
+				implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
+				$this->get_atts_as_html_data_attributes( $atts )
+			);
 		}
 
 		// Start list.

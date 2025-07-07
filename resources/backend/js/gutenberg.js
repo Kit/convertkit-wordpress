@@ -39,10 +39,10 @@ function convertKitGutenbergRegisterBlock( block ) {
 		// Define some constants for the various items we'll use.
 		const el                    = element.createElement;
 		const { registerBlockType } = blocks;
-		const { 
+		const {
 			InspectorControls,
 			useBlockProps
-		} = editor;
+		}                           = editor;
 		const {
 			Fragment,
 			useState
