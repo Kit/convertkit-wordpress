@@ -250,8 +250,8 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 	public function get_supports() {
 
 		return array(
-			'className'  => true,
-			'color'      => array(
+			'className' => true,
+			'color'     => array(
 				'background'                      => true,
 				'text'                            => true,
 
@@ -261,8 +261,8 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 				'__experimentalSkipSerialization' => true,
 			),
 			'spacing'   => array(
-				'margin'   => true,
-				'padding'  => true,
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 

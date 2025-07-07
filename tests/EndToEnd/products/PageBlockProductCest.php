@@ -522,6 +522,49 @@ class PageBlockProductCest
 	}
 
 	/**
+	 * Test the Form Trigger block's margin and padding parameters works.
+	 *
+	 * @since   2.8.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testProductBlockWithMarginAndPaddingParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's margin and padding pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the margin and padding pickers themselves, as they are Gutenberg supplied components, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-page-product-block-margin-padding-params',
+				'post_content' => '<!-- wp:convertkit/product {"product":"36377","style":{"spacing":{"padding":{"top":"var:preset|spacing|30"},"margin":{"top":"var:preset|spacing|30"}}}} /-->',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-page-product-block-margin-padding-params');
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the block displays and has the inline styles applied.
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product',
+			styles: 'padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)',
+			isBlock: true
+		);
+	}
+
+	/**
 	 * Test the Product block displays a message with a link to the Plugin's
 	 * settings screen, when the Plugin has Not connected to Kit.
 	 *

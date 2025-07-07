@@ -227,9 +227,9 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 			'typography' => array(
 				'fontSize' => true,
 			),
-			'spacing'   => array(
-				'margin'   => true,
-				'padding'  => true,
+			'spacing'    => array(
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 

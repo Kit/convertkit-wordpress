@@ -95,10 +95,6 @@ class ConvertKit_Block {
 
 		return array(
 			'className' => true,
-			'spacing'   => array(
-				'margin'   => true,
-				'padding'  => true,
-			),
 		);
 
 	}

@@ -81,9 +81,10 @@ class KitForms extends \Codeception\Module
 	 * @param   bool|string    $text           Test if the button text matches the given value.
 	 * @param   bool|string    $textColor      Test if the given text color is applied.
 	 * @param   bool|string    $backgroundColor Test is the given background color is applied.
+	 * @param   bool|string    $styles         Test if the given styles are applied.
 	 * @param   bool           $isBlock        Test if this is a form trigger block or shortcode.
 	 */
-	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $isBlock = false)
+	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $styles = false, $isBlock = false)
 	{
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
@@ -127,6 +128,14 @@ class KitForms extends \Codeception\Module
 					);
 					break;
 			}
+		}
+
+		// Confirm that the styles are as expected.
+		if ($styles !== false) {
+			$I->assertStringContainsString(
+				$styles,
+				$I->grabAttributeFrom('a.convertkit-formtrigger', 'style')
+			);
 		}
 
 		// Click the button to confirm that the Kit modal displays.

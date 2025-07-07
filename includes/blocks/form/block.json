@@ -23,11 +23,7 @@
         }
     },
     "supports": {
-        "className": true,
-        "spacing": {
-            "margin": true,
-            "padding": true
-        }
+        "className": true
     },
     "editorScript": "convertkit-gutenberg"
 }
