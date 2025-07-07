@@ -361,7 +361,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   array                $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @param   array $atts                 Block / Shortcode / Page Builder Module Attributes.
 	 * @return  string
 	 */
 	public function render( $atts ) {
