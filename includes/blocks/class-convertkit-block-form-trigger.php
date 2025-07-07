@@ -378,7 +378,8 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 			$atts['form'],
 			$atts['text'],
 			$this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
-			$this->get_css_styles( $atts )
+			$this->get_css_styles( $atts ),
+			$this->is_block_editor_request()
 		);
 
 		// Bail if an error occured.
@@ -413,9 +414,10 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 * @param   string $button_text    Button Text.
 	 * @param   array  $css_classes    CSS classes to apply to link (typically included when using Gutenberg).
 	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Shortcode or third party page builder module / widget).
+	 * @param   bool   $return_as_span If true, returns a <span> instead of <a>. Useful for the block editor so that the element is interactible.
 	 * @return  WP_Error|string        Button HTML
 	 */
-	private function get_html( $id, $button_text, $css_classes = array(), $css_styles = array() ) {
+	private function get_html( $id, $button_text, $css_classes = array(), $css_styles = array(), $return_as_span = false ) {
 
 		// Cast ID to integer.
 		$id = absint( $id );
@@ -461,31 +463,17 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		}
 
 		// Build button HTML.
-		$html = '<div class="convertkit-button">';
-
-		// If the request is for the block editor, return a span with no styles, as the block
-		// edit will apply the styles to an outer element.
-		if ( $this->is_block_editor_request() ) {
-			$html .= '<span';
-		} else {
-			$html .= sprintf(
-				'<a data-formkit-toggle="%s" href="%s" class="%s" style="%s">',
-				esc_attr( $form['uid'] ),
-				esc_url( $form['embed_url'] ),
-				implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
-				implode( ';', map_deep( $css_styles, 'esc_attr' ) )
-			);
-		}
-
-		$html .= esc_html( $button_text );
-
-		if ( $this->is_block_editor_request() ) {
-			$html .= '</span>';
-		} else {
-			$html .= '</a>';
-		}
-
-		$html .= '</div>';
+		$tag  = $return_as_span ? 'span' : 'a';
+		$html = sprintf(
+			'<div class="convertkit-button"><%s data-formkit-toggle="%s" href="%s" class="%s" style="%s">%s</%s></div>',
+			$tag,
+			esc_attr( $form['uid'] ),
+			esc_url( $form['embed_url'] ),
+			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
+			implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
+			esc_html( $button_text ),
+			$tag
+		);
 
 		// Register the script, so it's only loaded once for this non-inline form across the entire page.
 		add_filter(
