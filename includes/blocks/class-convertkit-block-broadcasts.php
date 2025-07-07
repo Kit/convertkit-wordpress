@@ -134,7 +134,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			// Shortcode: TinyMCE / QuickTags Modal Width and Height.
 			'modal'                             => array(
 				'width'  => 650,
-				'height' => 405,
+				'height' => 455,
 			),
 
 			// Shortcode: Include a closing [/shortcode] tag when using TinyMCE or QuickTag Modals.
@@ -184,6 +184,10 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			'display_grid'         => array(
 				'type'    => 'boolean',
 				'default' => $this->get_default_value( 'display_grid' ),
+			),
+			'display_order'        => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'display_order' ),
 			),
 			'date_format'          => array(
 				'type'    => 'string',
@@ -286,6 +290,14 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'type'        => 'toggle',
 				'description' => __( 'If enabled, displays broadcasts in a grid, instead of a list.', 'convertkit' ),
 			),
+			'display_order'       => array(
+				'label'  => __( 'Display order', 'convertkit' ),
+				'type'   => 'select',
+				'values' => array(
+					'date-broadcast' => __( 'Date, Broadcast', 'convertkit' ),
+					'broadcast-date' => __( 'Broadcast, Date', 'convertkit' ),
+				),
+			),
 			'date_format'         => array(
 				'label'  => __( 'Date format', 'convertkit' ),
 				'type'   => 'select',
@@ -373,6 +385,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'display_grid',
+					'display_order',
 					'date_format',
 					'display_image',
 					'display_description',
@@ -412,6 +425,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		return array(
 			'display_grid'        => false,
+			'display_order'       => 'date-broadcast',
 			'date_format'         => 'F j, Y',
 			'display_image'       => false,
 			'display_description' => false,
