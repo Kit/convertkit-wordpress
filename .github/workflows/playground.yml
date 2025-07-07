@@ -1,15 +1,14 @@
 name: WordPress Playground PR Testing
 
-# When to run tests.
 on:
-  pull_request:
+  workflow_run:
+    workflows: ["Run Tests"]
     types:
-      - opened
-      - synchronize
+      - completed
 
 jobs:
   build-and-deploy:
-    # Name.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: WordPress Playground
 
     # Virtual Environment to use.
