@@ -39,7 +39,10 @@ function convertKitGutenbergRegisterBlock( block ) {
 		// Define some constants for the various items we'll use.
 		const el                    = element.createElement;
 		const { registerBlockType } = blocks;
-		const { InspectorControls } = editor;
+		const { 
+			InspectorControls,
+			useBlockProps
+		} = editor;
 		const {
 			Fragment,
 			useState
@@ -359,6 +362,8 @@ function convertKitGutenbergRegisterBlock( block ) {
 		 */
 		const editBlock = function ( props ) {
 
+			const blockProps = useBlockProps();
+
 			// If requesting an example of how this block looks (which is requested
 			// when the user adds a new block and hovers over this block's icon),
 			// show the preview image.
@@ -406,7 +411,11 @@ function convertKitGutenbergRegisterBlock( block ) {
 						panels
 					),
 					// Block Preview.
-					preview
+					el(
+						'div',
+						blockProps,
+						preview
+					)
 				)
 			);
 
@@ -758,6 +767,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 		registerBlockType(
 			'convertkit/' + block.name,
 			{
+				apiVersion: 2,
 				title:      block.title,
 				description:block.description,
 				category:   block.category,
