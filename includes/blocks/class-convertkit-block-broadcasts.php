@@ -480,7 +480,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$html = $this->build_html(
 			$posts,
 			$atts,
-			true,
+			! $this->is_block_editor_request(),
 			$this->get_css_classes(),
 			$this->get_css_styles( $atts )
 		);
