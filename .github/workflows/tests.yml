@@ -327,3 +327,98 @@ jobs:
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
+
+  build-and-deploy:
+    name: WordPress Playground
+
+    # Require the tests workflow to have run successfully.
+    needs: tests
+
+    # Virtual Environment to use.
+    # @see: https://github.com/actions/virtual-environments
+    runs-on: ubuntu-latest
+
+    # Define permissions for this action.
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+
+    # Environment Variables.
+    # Accessible by using ${{ env.NAME }}
+    # Use ${{ secrets.NAME }} to include any GitHub Secrets in ${{ env.NAME }}
+    # The base folder will always be /home/runner/work/github-repo-name/github-repo-name
+    env:
+      PLUGIN_SLUG: "convertkit" # The plugin's slug
+      AWS_ROLE: "arn:aws:iam::048876701201:role/KitWPPluginBuildsRole"
+      AWS_ROLE_SESSION_NAME: "kit-wordpress"
+      AWS_BUCKET: "048876701201-kit-wp-plugin-builds" # The Amazon S3 bucket name
+      AWS_REGION: "us-east-2" # The Amazon S3 region
+      CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
+      CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
+      CONVERTKIT_OAUTH_CLIENT_ID: ${{ secrets.CONVERTKIT_OAUTH_CLIENT_ID }}
+      CONVERTKIT_OAUTH_REDIRECT_URI: ${{ secrets.CONVERTKIT_OAUTH_REDIRECT_URI }}
+      
+    # Steps to build and provide the Playground URL
+    steps:
+      # Checkout (copy) this repository's Plugin to this VM.
+      - name: Checkout Plugin
+        uses: actions/checkout@v4
+
+      # Installs Kit WordPress Libraries.
+      - name: Run Composer
+        run: composer install --no-dev
+
+      # Configure AWS Credentials
+      - name: Configure AWS credentials
+        id: credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Create ZIP file
+      - name: Create ZIP File
+        run: |
+          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example"
+
+      # Exchange API Keys and Secrets for OAuth Tokens.
+      - name: Exchange API Key and Secret for OAuth Tokens
+        id: get-oauth-tokens
+        run: |
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-playground-${{ github.event.pull_request.number }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN=$refresh_token" >> $GITHUB_ENV
+          
+      # Create base64 encoded version of blueprint JSON for Playground URL.
+      # See: https://wordpress.github.io/wordpress-playground/blueprints/using-blueprints#base64-encoded-blueprints
+      - name: Create Blueprint JSON, Base64 Encoded
+        id: blueprint
+        run: |
+          echo "blueprint_json_base64=$(echo -n '{"landingPage":"/wp-admin/index.php","login":true,"features":{"networking":true},"steps":[{"step":"installPlugin","pluginData":{"resource":"url","url":"https://${{ env.AWS_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip"}},{"step":"setSiteOptions","options":{"_wp_convertkit_settings":{"access_token":"${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN }}","refresh_token":"${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN }}"}}}]}' | base64 -w 0)" >> $GITHUB_OUTPUT
+
+      # Upload to S3
+      - name: Upload to S3
+        id: upload-s3
+        run: |
+          aws s3 cp ${{ env.PLUGIN_SLUG }}.zip s3://${{ env.AWS_BUCKET }}/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip
+
+      # Add comment to PR linking to Playground
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## WordPress Playground
+              
+              :rocket: Your PR has been built and is ready for testing in WordPress Playground!
+              
+              [Click here to test your changes in WordPress Playground](https://playground.wordpress.net/#${{ steps.blueprint.outputs.blueprint_json_base64 }})`
+            })
