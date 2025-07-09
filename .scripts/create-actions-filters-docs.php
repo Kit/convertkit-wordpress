@@ -15,9 +15,9 @@ $read_actions_filters = new Read_Actions_Filters();
 $filter_docs = $read_actions_filters->run(
 	// Define Plugin folders to include in Docs.
 	array(
-		'../admin',
-		'../includes',
-		'../views',
+		'admin',
+		'includes',
+		'views',
 	),
 	true, // Extract filters.
 	false, // Extract actions.
@@ -29,9 +29,9 @@ $filter_docs = $read_actions_filters->run(
 $action_docs = $read_actions_filters->run(
 	// Define Plugin folders to include in Docs.
 	array(
-		'../admin',
-		'../includes',
-		'../views',
+		'admin',
+		'includes',
+		'views',
 	),
 	false, // Extract filters.
 	true, // Extract actions.
@@ -46,4 +46,4 @@ $html  = '<h1>Filters</h1>' . $filter_docs;
 $html .= '<h1>Actions</h1>' . $action_docs;
 
 // Write to file.
-file_put_contents( '../ACTIONS-FILTERS.md', $html ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+file_put_contents( 'ACTIONS-FILTERS.md', $html ); // phpcs:ignore WordPress.WP.AlternativeFunctions

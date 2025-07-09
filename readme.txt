@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 2.8.3
+Stable tag: 2.8.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -160,6 +160,12 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.8.4 2025-07-10
+* Added: Broadcasts Block: Display order option
+* Added: Broadcasts, Form Trigger and Product Blocks: Use `get_block_wrapper_attributes` for block `class` and `style` attributes
+* Added: Broadcasts, Form Trigger and Product Blocks: Typography options
+* Added: Broadcasts, Form Trigger and Product Blocks: Margin and padding options
 
 ### 2.8.3 2025-07-03
 * Added: Member Content: `All member-only content` option added to filter dropdown in Posts and Pages tables
