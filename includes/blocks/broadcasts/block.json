@@ -62,6 +62,10 @@
             "background": true,
             "text": true
         },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
         "spacing": {
             "margin": true,
             "padding": true
