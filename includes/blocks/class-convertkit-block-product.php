@@ -205,6 +205,9 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 			'textColor'               => array(
 				'type' => 'string',
 			),
+			'fontSize'                => array(
+				'type' => 'string',
+			),
 
 			// Always required for Gutenberg.
 			'is_gutenberg_example'    => array(
