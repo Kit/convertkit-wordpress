@@ -1,4 +1,5 @@
 .convertkit-broadcasts.has-background,
+.convertkit-broadcasts[data-background-color],
 .editor-styles-wrapper .convertkit-broadcasts.has-background {
 	padding: 20px;
 }

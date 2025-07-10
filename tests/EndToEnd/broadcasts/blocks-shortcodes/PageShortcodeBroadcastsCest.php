@@ -525,7 +525,7 @@ class PageShortcodeBroadcastsCest
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-broadcasts has-text-color has-background" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');
+		$I->seeInSource('<div class="convertkit-broadcasts" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
 
 		// Test pagination.

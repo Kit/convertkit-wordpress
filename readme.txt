@@ -2,7 +2,7 @@
 Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
-Requires at least: 5.0
+Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
 Stable tag: 2.8.4

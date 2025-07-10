@@ -470,7 +470,7 @@ class PageBlockProductCest
 		);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('class="wp-block-button__link convertkit-product has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');
+		$I->seeInSource('class="convertkit-product wp-block-button__link wp-element-button wp-block-convertkit-product has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');
 	}
 
 	/**
@@ -516,7 +516,95 @@ class PageBlockProductCest
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
 			text: 'Buy my product',
 			textColor: $textColor,
-			backgroundColor: $backgroundColor
+			backgroundColor: $backgroundColor,
+			isBlock: true
+		);
+	}
+
+	/**
+	 * Test the Form Trigger block's margin and padding parameters works.
+	 *
+	 * @since   2.8.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testProductBlockWithMarginAndPaddingParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's margin and padding pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the margin and padding pickers themselves, as they are Gutenberg supplied components, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-page-product-block-margin-padding-params',
+				'post_content' => '<!-- wp:convertkit/product {"product":"36377","style":{"spacing":{"padding":{"top":"var:preset|spacing|30"},"margin":{"top":"var:preset|spacing|30"}}}} /-->',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-page-product-block-margin-padding-params');
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the block displays and has the inline styles applied.
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product',
+			styles: 'padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)',
+			isBlock: true
+		);
+	}
+
+	/**
+	 * Test the Product block's typography parameters works.
+	 *
+	 * @since   2.8.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testProductBlockWithTypographyParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's typography pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the typography picker itself, as it's a Gutenberg supplied component, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-page-product-block-typography-params',
+				'post_content' => '<!-- wp:convertkit/product {"product":"36377","style":{"typography":{"lineHeight":"2"}},"fontSize":"large"} /-->',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-page-product-block-typography-params');
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the block displays and has the inline styles applied.
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product',
+			cssClasses: 'has-large-font-size',
+			styles: 'line-height:2',
+			isBlock: true
 		);
 	}
 
@@ -630,49 +718,6 @@ class PageBlockProductCest
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
-	}
-
-	/**
-	 * Test the Product block's parameters are correctly escaped on output,
-	 * to prevent XSS.
-	 *
-	 * @since   2.0.5
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testProductBlockParameterEscaping(EndToEndTester $I)
-	{
-		// Setup Kit Plugin with no default form specified.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
-		$I->havePageInDatabase(
-			[
-				'post_name'    => 'kit-page-product-block-parameter-escaping',
-				'post_content' => '<!-- wp:convertkit/product {"product":"' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '","style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
-			]
-		);
-
-		// Load the Page on the frontend site.
-		$I->amOnPage('/kit-page-product-block-parameter-escaping');
-
-		// Wait for frontend web site to load.
-		$I->waitForElementVisible('body.page-template-default');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the output is escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
 	}
 
 	/**
