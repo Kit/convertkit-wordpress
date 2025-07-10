@@ -395,7 +395,7 @@ jobs:
       # Create ZIP file
       - name: Create ZIP File
         run: |
-          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example"
+          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example" "*.testing" "vendor/convertkit/convertkit-wordpress-libraries/.git/*"
 
       # Exchange API Keys and Secrets for OAuth Tokens.
       - name: Exchange API Key and Secret for OAuth Tokens
@@ -412,7 +412,7 @@ jobs:
       - name: Create Blueprint JSON, Base64 Encoded
         id: blueprint
         run: |
-          echo "blueprint_json_base64=$(echo -n '{"landingPage":"/wp-admin/index.php","login":true,"features":{"networking":true},"steps":[{"step":"installPlugin","pluginData":{"resource":"url","url":"https://${{ env.AWS_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip"}},{"step":"setSiteOptions","options":{"_wp_convertkit_settings":{"access_token":"${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN }}","refresh_token":"${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN }}"}}}]}' | base64 -w 0)" >> $GITHUB_OUTPUT
+          echo "blueprint_json_base64=$(echo -n '{"landingPage":"/wp-admin/index.php","login":true,"features":{"networking":true},"steps":[{"step":"setSiteOptions","options":{"_wp_convertkit_settings":{"access_token":"${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN }}","refresh_token":"${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN }}"}}},{"step":"installPlugin","pluginData":{"resource":"url","url":"https://${{ env.AWS_BUCKET }}.s3.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PLUGIN_SLUG }}/${{ github.event.pull_request.number }}/${{ env.PLUGIN_SLUG }}.zip"}}]}' | base64 -w 0)" >> $GITHUB_OUTPUT
 
       # Upload to S3
       - name: Upload to S3
