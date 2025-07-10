@@ -45,7 +45,7 @@ class PageShortcodeBroadcastsCest
 		$I->addVisualEditorShortcode(
 			$I,
 			shortcodeName: 'Kit Broadcasts',
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -91,7 +91,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'display_grid' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -104,6 +104,53 @@ class PageShortcodeBroadcastsCest
 				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
 				'see_grid'     => true,
 			]
+		);
+	}
+
+	/**
+	 * Test the [convertkit_broadcasts] shortcode's "Display order" parameter works.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsShortcodeInVisualEditorWithDisplayOrderParameter(EndToEndTester $I)
+	{
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Display Order'
+		);
+
+		// Add shortcode to Page.
+		$I->addVisualEditorShortcode(
+			$I,
+			shortcodeName: 'Kit Broadcasts',
+			shortcodeConfiguration: [
+				'display_order' => [ 'select', 'broadcast-date' ],
+			],
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="broadcast-date" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
+		$I->seeBroadcastsOutput(
+			$I,
+			[
+				'number_posts'      => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+				'see_display_order' => 'broadcast-date',
+			]
+		);
+
+		// Confirm that the default date format is as expected.
+		$I->seeInSource('<time datetime="' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '">' . date( 'F j, Y', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '</time>');
+
+		// Confirm that the expected Broadcast name is displayed first links to the expected URL, with UTM parameters.
+		$I->assertEquals(
+			$I->grabAttributeFrom('div.convertkit-broadcasts ul.convertkit-broadcasts-list li.convertkit-broadcast:nth-child(2) a', 'href'),
+			$_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&utm_term=en_US&utm_content=convertkit'
 		);
 	}
 
@@ -130,7 +177,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'date_format' => [ 'select', date('Y-m-d') ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -176,7 +223,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'display_image' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -214,7 +261,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'display_description' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -253,7 +300,7 @@ class PageShortcodeBroadcastsCest
 				'display_read_more' => [ 'toggle', 'Yes' ],
 				'read_more_label'   => [ 'input', 'Continue reading' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -292,7 +339,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -337,7 +384,7 @@ class PageShortcodeBroadcastsCest
 				'limit'    => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -377,7 +424,7 @@ class PageShortcodeBroadcastsCest
 				'paginate_label_prev' => [ 'input', 'Newer' ],
 				'paginate_label_next' => [ 'input', 'Older' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -417,7 +464,7 @@ class PageShortcodeBroadcastsCest
 				'paginate_label_prev' => [ 'input', '' ],
 				'paginate_label_next' => [ 'input', '' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -453,7 +500,7 @@ class PageShortcodeBroadcastsCest
 		$I->havePageInDatabase(
 			[
 				'post_name'    => 'kit-page-broadcasts-shortcode-hex-color-params',
-				'post_content' => '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older" link_color="' . $linkColor . '" background_color="' . $backgroundColor . '" text_color="' . $textColor . '"]',
+				'post_content' => '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older" link_color="' . $linkColor . '" background_color="' . $backgroundColor . '" text_color="' . $textColor . '"]',
 			]
 		);
 
@@ -478,7 +525,7 @@ class PageShortcodeBroadcastsCest
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-broadcasts has-text-color has-background" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');
+		$I->seeInSource('<div class="convertkit-broadcasts" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
 
 		// Test pagination.
@@ -512,7 +559,7 @@ class PageShortcodeBroadcastsCest
 		$I->addTextEditorShortcode(
 			$I,
 			shortcodeProgrammaticName: 'convertkit-broadcasts',
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -556,7 +603,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'display_grid' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -568,6 +615,45 @@ class PageShortcodeBroadcastsCest
 			[
 				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
 				'see_grid'     => true,
+			]
+		);
+	}
+
+	/**
+	 * Test the [convertkit_broadcasts] shortcode's "Display order" parameter works
+	 * using the Text Editor.
+	 *
+	 * @since   2.8.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsShortcodeInTextEditorWithDisplayOrderParameter(EndToEndTester $I)
+	{
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Display order'
+		);
+
+		// Add shortcode to Page.
+		$I->addTextEditorShortcode(
+			$I,
+			shortcodeProgrammaticName: 'convertkit-broadcasts',
+			shortcodeConfiguration: [
+				'display_order' => [ 'select', 'broadcast-date' ],
+			],
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="broadcast-date" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
+		$I->seeBroadcastsOutput(
+			$I,
+			[
+				'number_posts'      => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+				'see_display_order' => 'broadcast-date',
 			]
 		);
 	}
@@ -595,7 +681,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'date_format' => [ 'select', date('Y-m-d') ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -636,7 +722,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'display_image' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -675,7 +761,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'display_description' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -715,7 +801,7 @@ class PageShortcodeBroadcastsCest
 				'display_read_more' => [ 'toggle', 'Yes' ],
 				'read_more_label'   => [ 'input', 'Continue reading' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -754,7 +840,7 @@ class PageShortcodeBroadcastsCest
 			shortcodeConfiguration: [
 				'limit' => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -796,7 +882,7 @@ class PageShortcodeBroadcastsCest
 				'limit'    => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -836,7 +922,7 @@ class PageShortcodeBroadcastsCest
 				'paginate_label_prev' => [ 'input', 'Newer' ],
 				'paginate_label_next' => [ 'input', 'Older' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Newer" paginate_label_next="Older"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -881,7 +967,7 @@ class PageShortcodeBroadcastsCest
 				'limit'    => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
 				'paginate' => [ 'toggle', 'Yes' ],
 			],
-			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
+			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -902,7 +988,7 @@ class PageShortcodeBroadcastsCest
 		$I->havePageInDatabase(
 			[
 				'post_name'    => 'kit-page-broadcasts-shortcode-parameter-escaping',
-				'post_content' => '[convertkit_broadcasts display_grid="0" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next" link_color=\'red" onmouseover="alert(1)"\']',
+				'post_content' => '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="1" paginate_label_prev="Previous" paginate_label_next="Next" link_color=\'red" onmouseover="alert(1)"\']',
 			]
 		);
 

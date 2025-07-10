@@ -235,8 +235,28 @@ class ResourceProductsTest extends WPTestCase
 	 */
 	public function testGetHTML()
 	{
-		$result = $this->resource->get_html($_ENV['CONVERTKIT_API_PRODUCT_ID'], 'Buy now');
-		$this->assertSame($result, '<div class="convertkit-product"><a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link " style="" data-commerce>Buy now</a></div>');
+		$result = $this->resource->get_html(
+			id: $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			button_text: 'Buy now',
+		);
+		$this->assertSame($result, '<div class="convertkit-product"><a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="" style="" data-commerce>Buy now</a></div>');
+
+		// Test with CSS classes and styles.
+		$result = $this->resource->get_html(
+			id: $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			button_text: 'Buy now',
+			options: [
+				'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
+				'css_styles'  => array(
+					'color'      => 'color:#000',
+					'background' => 'background-color:#fff',
+				),
+			]
+		);
+		$this->assertSame(
+			$result,
+			'<div class="convertkit-product"><a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link wp-element-button" style="color:#000;background-color:#fff" data-commerce>Buy now</a></div>'
+		);
 	}
 
 	/**

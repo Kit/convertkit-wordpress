@@ -1,4 +1,5 @@
 .convertkit-broadcasts.has-background,
+.convertkit-broadcasts[data-background-color],
 .editor-styles-wrapper .convertkit-broadcasts.has-background {
 	padding: 20px;
 }
@@ -28,6 +29,12 @@
 		"image text";
 	grid-template-columns: 150px auto;
 	grid-column-gap: 20px;
+}
+.convertkit-broadcasts[data-display-order="broadcast-date"] .convertkit-broadcasts-list li {
+	grid-template-areas:
+		"title date"
+		"text image";
+	grid-template-columns: auto 150px;
 }
 @media screen and (max-width: 478px) {
 	.convertkit-broadcasts-list li {
@@ -59,6 +66,14 @@
 	grid-template-columns: none;
 	grid-row-gap: 10px;
 }
+.convertkit-broadcasts[data-display-grid="1"][data-display-order="broadcast-date"] .convertkit-broadcasts-list li {
+	grid-template-areas:
+		"image"
+		"title"
+		"text"
+		"date";
+}
+
 .convertkit-broadcasts[data-display-grid="1"] .convertkit-broadcasts-list li .convertkit-broadcast-read-more {
 	margin: 10px 0 0 0;
 }
@@ -84,6 +99,12 @@
 .convertkit-broadcasts-list li time {
 	display: inline-block;
 	grid-area: date;
+}
+.convertkit-broadcasts[data-display-grid="1"][data-display-order="broadcast-date"] .convertkit-broadcasts-list li time {
+	text-align: left;
+}
+.convertkit-broadcasts[data-display-order="broadcast-date"] .convertkit-broadcasts-list li time {
+	text-align: right;
 }
 .convertkit-broadcasts-list li .convertkit-broadcast-title {
 	display: inline-block;

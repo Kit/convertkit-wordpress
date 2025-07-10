@@ -134,7 +134,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			// Shortcode: TinyMCE / QuickTags Modal Width and Height.
 			'modal'                             => array(
 				'width'  => 650,
-				'height' => 405,
+				'height' => 455,
 			),
 
 			// Shortcode: Include a closing [/shortcode] tag when using TinyMCE or QuickTag Modals.
@@ -185,6 +185,10 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'type'    => 'boolean',
 				'default' => $this->get_default_value( 'display_grid' ),
 			),
+			'display_order'        => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'display_order' ),
+			),
 			'date_format'          => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'date_format' ),
@@ -226,7 +230,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'default' => $this->get_default_value( 'paginate_label_next' ),
 			),
 
-			// get_supports() color attribute.
+			// get_supports() style, color and typography attributes.
 			'style'                => array(
 				'type' => 'object',
 			),
@@ -234,6 +238,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'type' => 'string',
 			),
 			'textColor'            => array(
+				'type' => 'string',
+			),
+			'fontSize'             => array(
 				'type' => 'string',
 			),
 
@@ -256,11 +263,19 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	public function get_supports() {
 
 		return array(
-			'className' => true,
-			'color'     => array(
+			'className'  => true,
+			'color'      => array(
 				'link'       => true,
 				'background' => true,
 				'text'       => true,
+			),
+			'typography' => array(
+				'fontSize'   => true,
+				'lineHeight' => true,
+			),
+			'spacing'    => array(
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 
@@ -285,6 +300,14 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'label'       => __( 'Display as grid', 'convertkit' ),
 				'type'        => 'toggle',
 				'description' => __( 'If enabled, displays broadcasts in a grid, instead of a list.', 'convertkit' ),
+			),
+			'display_order'       => array(
+				'label'  => __( 'Display order', 'convertkit' ),
+				'type'   => 'select',
+				'values' => array(
+					'date-broadcast' => __( 'Date, Broadcast', 'convertkit' ),
+					'broadcast-date' => __( 'Broadcast, Date', 'convertkit' ),
+				),
 			),
 			'date_format'         => array(
 				'label'  => __( 'Date format', 'convertkit' ),
@@ -373,6 +396,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'display_grid',
+					'display_order',
 					'date_format',
 					'display_image',
 					'display_description',
@@ -412,6 +436,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		return array(
 			'display_grid'        => false,
+			'display_order'       => 'date-broadcast',
 			'date_format'         => 'F j, Y',
 			'display_image'       => false,
 			'display_description' => false,
@@ -441,8 +466,8 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 *
 	 * @since   1.9.7.4
 	 *
-	 * @param   array $atts   Block / Shortcode Attributes.
-	 * @return  string          Output
+	 * @param   array $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @return  string
 	 */
 	public function render( $atts ) {
 
@@ -473,15 +498,21 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		}
 
 		// Build HTML.
-		$html = $this->build_html( $posts, $atts );
+		$html = $this->build_html(
+			$posts,
+			$atts,
+			! $this->is_block_editor_request(),
+			$this->get_css_classes(),
+			$this->get_css_styles( $atts )
+		);
 
 		/**
 		 * Filter the block's content immediately before it is output.
 		 *
 		 * @since   1.9.7.4
 		 *
-		 * @param   string  $html   ConvertKit Broadcasts HTML.
-		 * @param   array   $atts   Block Attributes.
+		 * @param   string  $html       ConvertKit Broadcasts HTML.
+		 * @param   array   $atts       Block Attributes.
 		 */
 		$html = apply_filters( 'convertkit_block_broadcasts_render', $html, $atts );
 
@@ -550,9 +581,11 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * @param   ConvertKit_Resource_Posts $posts              ConvertKit Posts Resource class.
 	 * @param   array                     $atts               Block attributes.
 	 * @param   bool                      $include_container  Include container div in HTML.
-	 * @return  string                                          HTML
+	 * @param   array                     $css_classes        CSS classes to apply to block.
+	 * @param   array                     $css_styles         CSS inline styles to apply to block.
+	 * @return  string
 	 */
-	private function build_html( $posts, $atts, $include_container = true ) {
+	private function build_html( $posts, $atts, $include_container = true, $css_classes = array(), $css_styles = array() ) {
 
 		// Get paginated subset of Posts.
 		$broadcasts = $posts->get_paginated_subset( $atts['page'], $atts['limit'] );
@@ -565,7 +598,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		// Include container, if required.
 		if ( $include_container ) {
-			$html .= '<div class="' . implode( ' ', map_deep( $atts['_css_classes'], 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $atts['_css_styles'], 'esc_attr' ) ) . '" ' . $this->get_atts_as_html_data_attributes( $atts ) . '>';
+			$html .= '<div class="' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '" ' . $this->get_atts_as_html_data_attributes( $atts ) . '>';
 		}
 
 		// Start list.

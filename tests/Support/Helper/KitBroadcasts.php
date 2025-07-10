@@ -100,6 +100,7 @@ class KitBroadcasts extends \Codeception\Module
 			'see_prev_pagination_label' => false,
 			'see_next_pagination_label' => false,
 			'see_grid'                  => false,
+			'see_display_order'         => false,
 			'see_image'                 => false,
 			'see_description'           => false,
 			'see_read_more'             => false,
@@ -129,6 +130,11 @@ class KitBroadcasts extends \Codeception\Module
 			$I->seeElementInDOM('div.convertkit-broadcasts[data-display-grid="1"]');
 		} else {
 			$I->dontSeeElementInDOM('div.convertkit-broadcasts[data-display-grid="1"]');
+		}
+
+		// If Display order is set to broadcast-date, confirm the applicable HTML exists so that CSS can style this layout.
+		if ($options['see_display_order']) {
+			$I->seeElementInDOM('div.convertkit-broadcasts[data-display-order="' . $options['see_display_order'] . '"]');
 		}
 
 		// If Display image is enabled, confirm the image is displayed.

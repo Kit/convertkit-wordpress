@@ -159,40 +159,18 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 
 			// The below are built in Gutenberg attributes registered in get_supports().
 
-			// Color.
+			// get_supports() style, color and typography attributes.
+			'style'                => array(
+				'type' => 'object',
+			),
 			'backgroundColor'      => array(
 				'type' => 'string',
 			),
 			'textColor'            => array(
 				'type' => 'string',
 			),
-
-			// Typography.
 			'fontSize'             => array(
 				'type' => 'string',
-			),
-
-			// Spacing/Dimensions > Padding.
-			'style'                => array(
-				'type'        => 'object',
-				'visualizers' => array(
-					'type'    => 'object',
-					'padding' => array(
-						'type'   => 'object',
-						'top'    => array(
-							'type' => 'boolean',
-						),
-						'bottom' => array(
-							'type' => 'boolean',
-						),
-						'left'   => array(
-							'type' => 'boolean',
-						),
-						'right'  => array(
-							'type' => 'boolean',
-						),
-					),
-				),
 			),
 
 			// Always required for Gutenberg.
@@ -225,13 +203,12 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 				'__experimentalSkipSerialization' => true,
 			),
 			'typography' => array(
-				'fontSize' => true,
+				'fontSize'   => true,
+				'lineHeight' => true,
 			),
 			'spacing'    => array(
-				'padding' => array(
-					'horizontal',
-					'vertical',
-				),
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 
@@ -363,8 +340,8 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   array $atts   Block / Shortcode Attributes.
-	 * @return  string          Output
+	 * @param   array $atts                 Block / Shortcode / Page Builder Module Attributes.
+	 * @return  string
 	 */
 	public function render( $atts ) {
 
@@ -376,7 +353,13 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		$settings = new ConvertKit_Settings();
 
 		// Build HTML.
-		$html = $this->get_html( $atts['form'], $atts['text'], $atts['_css_classes'], $atts['_css_styles'], $this->is_block_editor_request() );
+		$html = $this->get_html(
+			$atts['form'],
+			$atts['text'],
+			$this->get_css_classes( array( 'wp-block-button__link', 'wp-element-button' ) ),
+			$this->get_css_styles( $atts ),
+			$this->is_block_editor_request()
+		);
 
 		// Bail if an error occured.
 		if ( is_wp_error( $html ) ) {
@@ -409,7 +392,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 * @param   int    $id             Form ID.
 	 * @param   string $button_text    Button Text.
 	 * @param   array  $css_classes    CSS classes to apply to link (typically included when using Gutenberg).
-	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Gutenberg).
+	 * @param   array  $css_styles     CSS inline styles to apply to link (typically included when using Shortcode or third party page builder module / widget).
 	 * @param   bool   $return_as_span If true, returns a <span> instead of <a>. Useful for the block editor so that the element is interactible.
 	 * @return  WP_Error|string        Button HTML
 	 */
@@ -467,7 +450,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 			$html .= '<a data-formkit-toggle="' . esc_attr( $form['uid'] ) . '" href="' . esc_url( $form['embed_url'] ) . '"';
 		}
 
-		$html .= ' class="wp-block-button__link ' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '">';
+		$html .= ' class="' . implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ) . '" style="' . implode( ';', map_deep( $css_styles, 'esc_attr' ) ) . '">';
 		$html .= esc_html( $button_text );
 
 		if ( $return_as_span ) {
