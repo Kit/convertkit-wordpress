@@ -49,13 +49,16 @@ class KitProducts extends \Codeception\Module
 	 *
 	 * @since   1.9.8.5
 	 *
-	 * @param   EndToEndTester $I              Tester.
-	 * @param   string         $productURL     Product URL.
-	 * @param   bool|string    $text           Test if the button text matches the given value.
-	 * @param   bool|string    $textColor      Test if the given text color is applied.
+	 * @param   EndToEndTester $I               Tester.
+	 * @param   string         $productURL      Product URL.
+	 * @param   bool|string    $text            Test if the button text matches the given value.
+	 * @param   bool|string    $textColor       Test if the given text color is applied.
 	 * @param   bool|string    $backgroundColor Test is the given background color is applied.
+	 * @param   bool|string    $cssClasses      Test if the given CSS classes are applied.
+	 * @param   bool|string    $styles          Test if the given styles are applied.
+	 * @param   bool           $isBlock         Test if this is a product block or shortcode.
 	 */
-	public function seeProductOutput($I, $productURL, $text = false, $textColor = false, $backgroundColor = false)
+	public function seeProductOutput($I, $productURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
 		// Confirm that the product stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
@@ -73,18 +76,48 @@ class KitProducts extends \Codeception\Module
 
 		// Confirm that the text color is as expected.
 		if ($textColor !== false) {
-			$I->seeElementInDOM('a.convertkit-product.has-text-color');
-			$I->assertStringContainsString(
-				'color:' . $textColor,
-				$I->grabAttributeFrom('a.convertkit-product', 'style')
-			);
+			switch ($isBlock) {
+				case true:
+					$I->seeElementInDOM('a.convertkit-product.has-text-color');
+					break;
+				default:
+					$I->seeElementInDOM('a.convertkit-product');
+					$I->assertStringContainsString(
+						'color:' . $textColor,
+						$I->grabAttributeFrom('a.convertkit-product', 'style')
+					);
+					break;
+			}
 		}
 
 		// Confirm that the background color is as expected.
 		if ($backgroundColor !== false) {
-			$I->seeElementInDOM('a.convertkit-product.has-background');
+			switch ($isBlock) {
+				case true:
+					$I->seeElementInDOM('a.convertkit-product.has-text-color');
+					break;
+				default:
+					$I->seeElementInDOM('a.convertkit-product');
+					$I->assertStringContainsString(
+						'background-color:' . $backgroundColor,
+						$I->grabAttributeFrom('a.convertkit-product', 'style')
+					);
+					break;
+			}
+		}
+
+		// Confirm that the CSS classes are as expected.
+		if ($cssClasses !== false) {
 			$I->assertStringContainsString(
-				'background-color:' . $backgroundColor,
+				$cssClasses,
+				$I->grabAttributeFrom('a.convertkit-product', 'class')
+			);
+		}
+
+		// Confirm that the styles are as expected.
+		if ($styles !== false) {
+			$I->assertStringContainsString(
+				$styles,
 				$I->grabAttributeFrom('a.convertkit-product', 'style')
 			);
 		}

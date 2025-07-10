@@ -727,7 +727,7 @@ class PageBlockBroadcastsCest
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-broadcasts has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color"');
+		$I->seeInSource('<div class="convertkit-broadcasts wp-block-convertkit-broadcasts has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color"');
 	}
 
 	/**
@@ -779,33 +779,35 @@ class PageBlockBroadcastsCest
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-broadcasts has-text-color has-background" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');
+		$I->seeInSource('<div class="convertkit-broadcasts wp-block-convertkit-broadcasts has-text-color has-background"');
 	}
 
 	/**
-	 * Test the Broadcasts block's parameters are correctly escaped on output,
-	 * to prevent XSS.
+	 * Test the Broadcasts block's margin and padding parameters works.
 	 *
-	 * @since   2.0.5
+	 * @since   2.8.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testBroadcastsBlockParameterEscaping(EndToEndTester $I)
+	public function testBroadcastsBlockWithMarginAndPaddingParameters(EndToEndTester $I)
 	{
 		// Setup Plugin and enable debug log.
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Define a 'bad' block.  This is difficult to do in Gutenberg, but let's assume it's possible.
+		// It's tricky to interact with Gutenberg's margin and padding pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the margin and padding pickers themselves, as they are Gutenberg supplied components, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
 		$I->havePageInDatabase(
 			[
-				'post_name'    => 'kit-page-broadcasts-block-parameter-escaping',
-				'post_content' => '<!-- wp:convertkit/broadcasts {"limit":2,"paginate":true,"style":{"color":{"text":"red\" onmouseover=\"alert(1)\""}}} /-->',
+				'post_name'    => 'kit-page-broadcasts-block-margin-padding-params',
+				'post_content' => '<!-- wp:convertkit/broadcasts {"date_format":"m/d/Y","limit":' . $_ENV['CONVERTKIT_API_BROADCAST_COUNT'] . ',"style":{"spacing":{"padding":{"top":"var:preset|spacing|30"},"margin":{"top":"var:preset|spacing|30"}}}} /-->',
 			]
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/kit-page-broadcasts-block-parameter-escaping');
+		$I->amOnPage('/kit-page-broadcasts-block-margin-padding-params');
 
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
@@ -813,16 +815,67 @@ class PageBlockBroadcastsCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the output is escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
+		// Confirm that the block displays correctly with the expected number of Broadcasts.
+		$I->seeBroadcastsOutput(
+			$I,
+			[
+				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+			]
+		);
 
-		// Test pagination.
-		$I->testBroadcastsPagination($I, 'Previous', 'Next');
+		// Confirm that our stylesheet loaded.
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
 
-		// Confirm that the output is still escaped.
-		$I->seeInSource('style="color:red&quot; onmouseover=&quot;alert(1)&quot;"');
-		$I->dontSeeInSource('style="color:red" onmouseover="alert(1)""');
+		// Confirm that the chosen margin and padding are applied as CSS styles.
+		$I->seeInSource('<div class="convertkit-broadcasts wp-block-convertkit-broadcasts" style="padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)"');
+	}
+
+	/**
+	 * Test the Broadcasts block's typography parameters works.
+	 *
+	 * @since   2.8.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsBlockWithTypographyParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's typography pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the typography picker itself, as it's a Gutenberg supplied component, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-page-broadcasts-block-typography-params',
+				'post_content' => '<!-- wp:convertkit/broadcasts {"date_format":"m/d/Y","limit":' . $_ENV['CONVERTKIT_API_BROADCAST_COUNT'] . ',"style":{"typography":{"lineHeight":"2"}},"fontSize":"large"} /-->',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-page-broadcasts-block-typography-params');
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the block displays correctly with the expected number of Broadcasts.
+		$I->seeBroadcastsOutput(
+			$I,
+			[
+				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+			]
+		);
+
+		// Confirm that our stylesheet loaded.
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
+
+		// Confirm that the chosen typography settings are applied as CSS styles.
+		$I->seeInSource('<div class="convertkit-broadcasts wp-block-convertkit-broadcasts has-large-font-size" style="line-height:2"');
 	}
 
 	/**
