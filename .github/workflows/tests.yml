@@ -348,6 +348,9 @@ jobs:
     # Require the tests workflow to have run successfully.
     needs: tests
 
+    # Only run on pull requests, not when merging to main branch
+    if: github.event_name == 'pull_request'
+
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
