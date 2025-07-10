@@ -76,14 +76,16 @@ class KitForms extends \Codeception\Module
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   EndToEndTester $I              Tester.
-	 * @param   string         $formURL        Form URL.
-	 * @param   bool|string    $text           Test if the button text matches the given value.
-	 * @param   bool|string    $textColor      Test if the given text color is applied.
+	 * @param   EndToEndTester $I               Tester.
+	 * @param   string         $formURL         Form URL.
+	 * @param   bool|string    $text            Test if the button text matches the given value.
+	 * @param   bool|string    $textColor       Test if the given text color is applied.
 	 * @param   bool|string    $backgroundColor Test is the given background color is applied.
-	 * @param   bool           $isBlock        Test if this is a form trigger block or shortcode.
+	 * @param   bool|string    $cssClasses      Test if the given CSS classes are applied.
+	 * @param   bool|string    $styles          Test if the given styles are applied.
+	 * @param   bool           $isBlock         Test if this is a form trigger block or shortcode.
 	 */
-	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $isBlock = false)
+	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
@@ -127,6 +129,22 @@ class KitForms extends \Codeception\Module
 					);
 					break;
 			}
+		}
+
+		// Confirm that the CSS classes are as expected.
+		if ($cssClasses !== false) {
+			$I->assertStringContainsString(
+				$cssClasses,
+				$I->grabAttributeFrom('a.convertkit-formtrigger', 'class')
+			);
+		}
+
+		// Confirm that the styles are as expected.
+		if ($styles !== false) {
+			$I->assertStringContainsString(
+				$styles,
+				$I->grabAttributeFrom('a.convertkit-formtrigger', 'style')
+			);
 		}
 
 		// Click the button to confirm that the Kit modal displays.

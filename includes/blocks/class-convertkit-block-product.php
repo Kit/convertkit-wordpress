@@ -195,40 +195,18 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 
 			// The below are built in Gutenberg attributes registered in get_supports().
 
-			// Color.
+			// get_supports() style, color and typography attributes.
+			'style'                   => array(
+				'type' => 'object',
+			),
 			'backgroundColor'         => array(
 				'type' => 'string',
 			),
 			'textColor'               => array(
 				'type' => 'string',
 			),
-
-			// Typography.
 			'fontSize'                => array(
 				'type' => 'string',
-			),
-
-			// Spacing/Dimensions > Padding.
-			'style'                   => array(
-				'type'        => 'object',
-				'visualizers' => array(
-					'type'    => 'object',
-					'padding' => array(
-						'type'   => 'object',
-						'top'    => array(
-							'type' => 'boolean',
-						),
-						'bottom' => array(
-							'type' => 'boolean',
-						),
-						'left'   => array(
-							'type' => 'boolean',
-						),
-						'right'  => array(
-							'type' => 'boolean',
-						),
-					),
-				),
 			),
 
 			// Always required for Gutenberg.
@@ -261,13 +239,12 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 				'__experimentalSkipSerialization' => true,
 			),
 			'typography' => array(
-				'fontSize' => true,
+				'fontSize'   => true,
+				'lineHeight' => true,
 			),
 			'spacing'    => array(
-				'padding' => array(
-					'horizontal',
-					'vertical',
-				),
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 

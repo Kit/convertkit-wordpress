@@ -226,7 +226,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'default' => $this->get_default_value( 'paginate_label_next' ),
 			),
 
-			// get_supports() color attribute.
+			// get_supports() style, color and typography attributes.
 			'style'                => array(
 				'type' => 'object',
 			),
@@ -234,6 +234,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'type' => 'string',
 			),
 			'textColor'            => array(
+				'type' => 'string',
+			),
+			'fontSize'             => array(
 				'type' => 'string',
 			),
 
@@ -256,11 +259,19 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	public function get_supports() {
 
 		return array(
-			'className' => true,
-			'color'     => array(
+			'className'  => true,
+			'color'      => array(
 				'link'       => true,
 				'background' => true,
 				'text'       => true,
+			),
+			'typography' => array(
+				'fontSize'   => true,
+				'lineHeight' => true,
+			),
+			'spacing'    => array(
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 
@@ -476,7 +487,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$html = $this->build_html(
 			$posts,
 			$atts,
-			true,
+			! $this->is_block_editor_request(),
 			$this->get_css_classes(),
 			$this->get_css_styles( $atts )
 		);
