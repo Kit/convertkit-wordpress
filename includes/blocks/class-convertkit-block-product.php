@@ -77,6 +77,9 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 
 		wp_enqueue_style( 'convertkit-button', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/button.css', array(), CONVERTKIT_PLUGIN_VERSION );
 
+		// Enqueue the block button CSS.
+		wp_enqueue_style( 'wp-block-button' );
+
 	}
 
 	/**
