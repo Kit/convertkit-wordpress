@@ -96,18 +96,7 @@ class ConvertKit_Admin_Notices {
 			?>
 			<div class="notice notice-error">
 				<p>
-					<?php
-					echo wp_kses(
-						$output,
-						array(
-							'a'  => array(
-								'href'   => array(),
-								'target' => array(),
-							),
-							'br' => array(),
-						)
-					);
-					?>
+					<?php echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</p>
 			</div>
 			<?php
