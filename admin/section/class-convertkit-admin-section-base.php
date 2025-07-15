@@ -252,7 +252,7 @@ abstract class ConvertKit_Admin_Section_Base {
 	 */
 	public function render_container_start() {
 
-		echo $this->get_render_container_start(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->get_render_container_start();
 
 	}
 
@@ -264,7 +264,7 @@ abstract class ConvertKit_Admin_Section_Base {
 	 */
 	public function render_container_end() {
 
-		echo $this->get_render_container_end(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->get_render_container_end();
 
 	}
 

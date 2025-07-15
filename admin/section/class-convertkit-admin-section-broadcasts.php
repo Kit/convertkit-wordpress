@@ -397,12 +397,12 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	public function enable_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->enabled(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->enabled(),
+			$args['label'],
+			$args['description'],
 			array( 'convertkit-conditional-display' )
 		);
 
@@ -451,7 +451,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		// Output field.
-		echo '<div class="convertkit-select2-container">' . $select_field . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<div class="convertkit-select2-container">' . $select_field . '</div>';
 
 	}
 
@@ -477,7 +477,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		// Output field.
-		echo '<div class="convertkit-select2-container">' . $select_field . '</div>' . $this->get_description( $args['description'] ); // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<div class="convertkit-select2-container">' . $select_field . '</div>' . $this->get_description( $args['description'] );
 
 	}
 
@@ -506,7 +506,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		// Output field.
-		echo '<div class="convertkit-select2-container">' . $select_field . '</div>' . $this->get_description( $args['description'] ); // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<div class="convertkit-select2-container">' . $select_field . '</div>' . $this->get_description( $args['description'] );
 
 	}
 
@@ -520,12 +520,12 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	public function import_thumbnail_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->import_thumbnail(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->import_thumbnail(),
+			$args['label'],
+			$args['description'],
 			array(
 				'enabled',
 			)
@@ -543,12 +543,12 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	public function import_images_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->import_images(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->import_images(),
+			$args['label'],
+			$args['description'],
 			array(
 				'enabled',
 			)
@@ -566,10 +566,10 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	public function date_callback( $args ) {
 
 		// Output field.
-		echo $this->get_date_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_date_field(
 			$args['name'],
 			esc_attr( $this->settings->published_at_min_date() ),
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'],
 			array(
 				'enabled',
 			)
@@ -587,11 +587,11 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	public function enable_export_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->enabled_export(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label']  // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->enabled_export(),
+			$args['label']
 		);
 
 	}
@@ -606,11 +606,11 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	public function no_styles_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		echo $this->get_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->no_styles(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->no_styles(),
+			$args['description']
 		);
 
 	}

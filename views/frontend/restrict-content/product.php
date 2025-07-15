@@ -17,7 +17,7 @@
 
 	// Output product button, if specified.
 	if ( isset( $button ) ) {
-		echo $button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $button;
 	}
 
 	// Output a login link or form, if require login enabled.

@@ -26,7 +26,6 @@
 
 		<!--
 		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
-		<exclude name="WordPress.Security.EscapeOutput"/>
 		-->
 		<exclude name="WordPress.PHP.YodaConditions" />
 		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_query" />

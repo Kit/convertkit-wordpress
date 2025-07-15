@@ -8,7 +8,7 @@
  * @author ConvertKit
  */
 
-echo $form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+echo $form;
 ?>
 <div id="convertkit-restrict-content">
 	<?php
