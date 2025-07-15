@@ -68,7 +68,8 @@ class PageBlockProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
+			text: 'Buy my product',
+			isBlock: true
 		);
 	}
 
@@ -154,7 +155,8 @@ class PageBlockProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy Now'
+			text: 'Buy Now',
+			isBlock: true
 		);
 	}
 
@@ -195,7 +197,8 @@ class PageBlockProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
+			text: 'Buy my product',
+			isBlock: true
 		);
 	}
 
@@ -245,7 +248,8 @@ class PageBlockProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
+			text: 'Buy my product',
+			isBlock: true
 		);
 
 		// Confirm the discount code has been applied.
@@ -300,7 +304,8 @@ class PageBlockProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
+			text: 'Buy my product',
+			isBlock: true
 		);
 
 		// Confirm the discount code is not valid, but the modal displays so the user can still purchase.
@@ -356,7 +361,8 @@ class PageBlockProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
+			text: 'Buy my product',
+			isBlock: true
 		);
 
 		// Confirm the checkout step is displayed.
@@ -466,7 +472,8 @@ class PageBlockProductCest
 		// Confirm that the block displays.
 		$I->seeProductOutput(
 			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL']
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			isBlock: true
 		);
 
 		// Confirm that the chosen colors are applied as CSS styles.
