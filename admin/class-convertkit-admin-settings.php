@@ -188,8 +188,8 @@ class ConvertKit_Admin_Settings {
 	 */
 	private function get_active_section() {
 
-		if ( isset( $_GET['tab'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return sanitize_text_field( wp_unslash( $_GET['tab'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_has_var( INPUT_GET, 'tab' ) ) {
+			return filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		}
 
 		// First registered section will be the active section.

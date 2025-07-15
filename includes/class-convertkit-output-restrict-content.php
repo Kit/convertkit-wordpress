@@ -1270,7 +1270,7 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Output code form if this request is after the user entered their email address,
 		// which means we're going through the authentication flow.
-		if ( $this->in_authentication_flow() ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( $this->in_authentication_flow() ) {
 			ob_start();
 			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/code.php';
 			return trim( ob_get_clean() );

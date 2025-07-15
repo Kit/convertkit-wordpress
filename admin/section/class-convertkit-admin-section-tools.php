@@ -71,11 +71,6 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	private function maybe_perform_actions() {
 
-		// Bail if nonce is invalid.
-		if ( ! $this->verify_nonce() ) {
-			return;
-		}
-
 		$this->maybe_clear_log();
 		$this->maybe_download_log();
 		$this->maybe_download_system_info();
@@ -91,9 +86,18 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	private function maybe_clear_log() {
 
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
 		// Bail if the submit button for clearing the debug log was not clicked.
 		// Nonce verification already performed in maybe_perform_actions() which calls this function.
-		if ( ! array_key_exists( 'convertkit-clear-debug-log', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! array_key_exists( 'convertkit-clear-debug-log', $_REQUEST ) ) {
 			return;
 		}
 
@@ -116,9 +120,17 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 		global $wp_filesystem;
 
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
 		// Bail if the submit button for downloading the debug log was not clicked.
-		// Nonce verification already performed in maybe_perform_actions() which calls this function.
-		if ( ! array_key_exists( 'convertkit-download-debug-log', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! array_key_exists( 'convertkit-download-debug-log', $_REQUEST ) ) {
 			return;
 		}
 
@@ -145,9 +157,17 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 		global $wp_filesystem;
 
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
 		// Bail if the submit button for downloading the system info was not clicked.
-		// Nonce verification already performed in maybe_perform_actions() which calls this function.
-		if ( ! array_key_exists( 'convertkit-download-system-info', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! array_key_exists( 'convertkit-download-system-info', $_REQUEST ) ) {
 			return;
 		}
 
@@ -181,9 +201,17 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	private function maybe_export_configuration() {
 
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
 		// Bail if the submit button for exporting the configuration was not clicked.
-		// Nonce verification already performed in maybe_perform_actions() which calls this function.
-		if ( ! array_key_exists( 'convertkit-export', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! array_key_exists( 'convertkit-export', $_REQUEST ) ) {
 			return;
 		}
 
@@ -219,29 +247,37 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	private function maybe_import_configuration() {
 
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
 		// Allow us to easily interact with the filesystem.
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		WP_Filesystem();
 		global $wp_filesystem;
 
 		// Bail if the submit button for importing the configuration was not clicked.
-		// Nonce verification already performed in maybe_perform_actions() which calls this function.
-		if ( ! array_key_exists( 'convertkit-import', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! array_key_exists( 'convertkit-import', $_REQUEST ) ) {
 			return;
 		}
 
 		// Bail if no configuration file was supplied.
-		if ( isset( $_FILES['import']['error'] ) && $_FILES['import']['error'] !== 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( isset( $_FILES['import']['error'] ) && $_FILES['import']['error'] !== 0 ) {
 			$this->redirect_with_error_notice( 'import_configuration_upload_error' );
 		}
 
 		// Bail if the file cannot be read.
-		if ( ! isset( $_FILES['import']['tmp_name'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! isset( $_FILES['import']['tmp_name'] ) ) {
 			$this->redirect_with_error_notice( 'import_configuration_upload_error' );
 		}
 
 		// Read file.
-		$json = $wp_filesystem->get_contents( $_FILES['import']['tmp_name'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$json = $wp_filesystem->get_contents( sanitize_text_field( wp_unslash( $_FILES['import']['tmp_name'] ) ) );
 
 		// Decode.
 		$import = json_decode( $json, true );
@@ -276,25 +312,6 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 		// Redirect to Tools screen.
 		$this->redirect_with_success_notice( 'import_configuration_success' );
-
-	}
-
-	/**
-	 * Verifies if the _convertkit_settings_tools_nonce nonce was included in the request,
-	 * and if so whether the nonce action is valid.
-	 *
-	 * @since   1.9.6
-	 *
-	 * @return  bool
-	 */
-	private function verify_nonce() {
-
-		// Bail if nonce verification fails.
-		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
-			return false;
-		}
-
-		return wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' );
 
 	}
 

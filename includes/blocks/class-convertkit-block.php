@@ -387,10 +387,10 @@ class ConvertKit_Block {
 		}
 
 		// Return false if the context parameter isn't edit.
-		if ( ! array_key_exists( 'context', $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'context' ) ) {
 			return false;
 		}
-		if ( sanitize_text_field( wp_unslash( $_GET['context'] ) ) !== 'edit' ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_input( INPUT_GET, 'context', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) !== 'edit' ) {
 			return false;
 		}
 
