@@ -498,13 +498,27 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		}
 
 		// Build HTML.
-		$html = $this->build_html(
-			$posts,
-			$atts,
-			! $this->is_block_editor_request(),
-			$this->get_css_classes(),
-			$this->get_css_styles( $atts )
-		);
+		if ( $this->is_block_editor_request() ) {
+			// For the block editor, don't include compiled CSS classes and styles,
+			// as the block editor will add these to the parent container.
+			// Otherwise the block will render incorrectly with double padding, double margins etc.
+			$html = $this->build_html(
+				$posts,
+				$atts,
+				true,
+				array(
+					'convertkit-' . $this->get_name(),
+				)
+			);
+		} else {
+			$html = $this->build_html(
+				$posts,
+				$atts,
+				true,
+				$this->get_css_classes(),
+				$this->get_css_styles( $atts )
+			);
+		}
 
 		/**
 		 * Filter the block's content immediately before it is output.

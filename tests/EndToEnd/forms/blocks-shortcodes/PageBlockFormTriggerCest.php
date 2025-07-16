@@ -65,7 +65,12 @@ class PageBlockFormTriggerCest
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe',
+			isBlock: true
+		);
 	}
 
 	/**
@@ -120,7 +125,12 @@ class PageBlockFormTriggerCest
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe',
+			isBlock: true
+		);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -206,7 +216,12 @@ class PageBlockFormTriggerCest
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Sign up');
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Sign up',
+			isBlock: true
+		);
 	}
 
 	/**
@@ -243,7 +258,12 @@ class PageBlockFormTriggerCest
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe',
+			isBlock: true
+		);
 	}
 
 	/**
@@ -284,7 +304,11 @@ class PageBlockFormTriggerCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL']);
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			isBlock: true
+		);
 
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');

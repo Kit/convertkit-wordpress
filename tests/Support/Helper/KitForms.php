@@ -90,6 +90,11 @@ class KitForms extends \Codeception\Module
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
 
+		// Confirm that the block button CSS loaded.
+		if ($isBlock) {
+			$I->seeInSource('<style id="wp-block-button-inline-css">');
+		}
+
 		// Confirm that the block displays.
 		$I->seeElementInDOM('a.convertkit-formtrigger.wp-block-button__link');
 
