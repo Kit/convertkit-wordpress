@@ -120,6 +120,7 @@ class CK_Widget_Form extends WP_Widget {
 
 		// Output Form.
 		// $args already escaped as supplied by WordPress, so we don't need to escape them again.
+		// $form could be a script or legacy form with varying HTML, so we don't want to escape it.
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $args['before_widget'];
 		if ( $instance['title'] ) {
