@@ -502,7 +502,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			esc_html__( 'Disconnect', 'convertkit' )
 		);
 
-		echo $html;
+		echo wp_kses( $html, convertkit_kses_allowed_html() );
 
 	}
 
@@ -591,8 +591,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			);
 		}
 
-		// Build field.
-		$select_field = $this->forms->get_select_field_all(
+		// Output field.
+		echo '<div class="convertkit-select2-container">';
+		$this->forms->output_select_field_all(
 			$this->settings_key . '[' . $args['post_type'] . '_form]',
 			$this->settings_key . '_' . $args['post_type'] . '_form',
 			array(
@@ -609,9 +610,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			),
 			$description
 		);
-
-		// Output field.
-		echo '<div class="convertkit-select2-container">' . $select_field . '</div>';
+		echo '</div>';
 
 	}
 
@@ -624,7 +623,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	 */
 	public function default_form_position_callback( $args ) {
 
-		echo $this->get_select_field(
+		$this->output_select_field(
 			$args['post_type'] . '_form_position',
 			esc_attr( $this->settings->get_default_form_position( $args['post_type'] ) ),
 			array(
@@ -668,7 +667,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	 */
 	public function default_form_position_element_callback( $args ) {
 
-		echo $this->get_number_field(
+		$this->output_number_field(
 			$args['post_type'] . '_form_position_element_index',
 			esc_attr( (string) $this->settings->get_default_form_position_element_index( $args['post_type'] ) ),
 			1,
@@ -678,7 +677,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			array( 'after_element' )
 		);
 
-		echo $this->get_select_field(
+		$this->output_select_field(
 			$args['post_type'] . '_form_position_element',
 			esc_attr( $this->settings->get_default_form_position_element( $args['post_type'] ) ),
 			array(
@@ -721,8 +720,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			esc_html__( 'to preview how this will display.', 'convertkit' )
 		);
 
-		// Build field.
-		$select_field = $this->forms->get_select_field_non_inline(
+		// Output field.
+		echo '<div class="convertkit-select2-container">';
+		$this->forms->output_select_field_non_inline(
 			$this->settings_key . '[non_inline_form]',
 			$this->settings_key . '_non_inline_form',
 			array(
@@ -737,9 +737,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			),
 			$description
 		);
-
-		// Output field.
-		echo '<div class="convertkit-select2-container">' . $select_field . '</div>';
+		echo '</div>';
 
 	}
 
@@ -751,7 +749,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	public function non_inline_form_honor_none_setting_callback() {
 
 		// Output field.
-		echo $this->get_checkbox_field(
+		$this->output_checkbox_field(
 			'non_inline_form_honor_none_setting',
 			'on',
 			$this->settings->non_inline_form_honor_none_setting(),
@@ -768,7 +766,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	public function debug_callback() {
 
 		// Output field.
-		echo $this->get_checkbox_field(
+		$this->output_checkbox_field(
 			'debug',
 			'on',
 			$this->settings->debug_enabled(),
@@ -786,7 +784,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	public function no_scripts_callback() {
 
 		// Output field.
-		echo $this->get_checkbox_field(
+		$this->output_checkbox_field(
 			'no_scripts',
 			'on',
 			$this->settings->scripts_disabled(),
@@ -803,7 +801,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	public function no_css_callback() {
 
 		// Output field.
-		echo $this->get_checkbox_field(
+		$this->output_checkbox_field(
 			'no_css',
 			'on',
 			$this->settings->css_disabled(),

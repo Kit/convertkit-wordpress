@@ -252,11 +252,7 @@ class ConvertKit_Admin_Settings {
 					esc_html( $section->tab_text ),
 					wp_kses(
 						$section->is_beta ? $this->get_beta_tab() : '',
-						array(
-							'span' => array(
-								'class' => array(),
-							),
-						)
+						convertkit_kses_allowed_html()
 					)
 				);
 			}

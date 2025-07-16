@@ -17,7 +17,7 @@
 
 	// Output product button, if specified.
 	if ( isset( $button ) ) {
-		echo $button;
+		echo wp_kses( $button, convertkit_kses_allowed_html() );
 	}
 
 	// Output a login link or form, if require login enabled.

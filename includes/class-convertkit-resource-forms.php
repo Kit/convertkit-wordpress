@@ -183,6 +183,34 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
+	 * Outputs a <select> field populated with all forms, based on the given parameters.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name            Name.
+	 * @param   string            $id              ID.
+	 * @param   bool|array        $css_classes     <select> CSS class(es).
+	 * @param   string            $selected_option <option> value to mark as selected.
+	 * @param   bool|array        $prepend_options <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes      <select> attributes.
+	 * @param   bool|string|array $description     Description.
+	 */
+	public function output_select_field_all( $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
+
+		$this->output_select_field(
+			$this->get(),
+			$name,
+			$id,
+			$css_classes,
+			$selected_option,
+			$prepend_options,
+			$attributes,
+			$description
+		);
+
+	}
+
+	/**
 	 * Returns a <select> field populated with all non-inline forms, based on the given parameters.
 	 *
 	 * @since   2.3.9
@@ -294,6 +322,38 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
+	 * Outputs a <select> field populated with the resources, based on the given parameters.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   array             $forms           Forms.
+	 * @param   string            $name            Name.
+	 * @param   string            $id              ID.
+	 * @param   bool|array        $css_classes     <select> CSS class(es).
+	 * @param   string            $selected_option <option> value to mark as selected.
+	 * @param   bool|array        $prepend_options <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes      <select> attributes.
+	 * @param   bool|string|array $description     Description.
+	 */
+	private function output_select_field( $forms, $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
+
+		echo wp_kses(
+			$this->get_select_field(
+				$forms,
+				$name,
+				$id,
+				$css_classes,
+				$selected_option,
+				$prepend_options,
+				$attributes,
+				$description
+			),
+			convertkit_kses_allowed_html()
+		);
+
+	}
+
+	/**
 	 * Returns a <select> field populated with the resources, based on the given parameters,
 	 * that supports multiple selection.
 	 *
@@ -373,6 +433,39 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 
 		// Return description lines in a paragraph, using breaklines for each description entry in the array.
 		return $html . '<p class="description">' . implode( '<br />', $description ) . '</p>';
+
+	}
+
+	/**
+	 * Outputs a <select> field populated with the resources, based on the given parameters,
+	 * that supports multiple selection.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   array             $forms            Forms.
+	 * @param   string            $name             Name.
+	 * @param   string            $id               ID.
+	 * @param   bool|array        $css_classes      <select> CSS class(es).
+	 * @param   array             $selected_options <option> values to mark as selected.
+	 * @param   bool|array        $prepend_options  <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes       <select> attributes.
+	 * @param   bool|string|array $description      Description.
+	 */
+	private function multi_select_field( $forms, $name, $id, $css_classes, $selected_options = array(), $prepend_options = false, $attributes = false, $description = false ) {
+
+		echo wp_kses(
+			$this->get_multi_select_field(
+				$forms,
+				$name,
+				$id,
+				$css_classes,
+				$selected_option,
+				$prepend_options,
+				$attributes,
+				$description
+			),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 

@@ -960,7 +960,7 @@ class ConvertKit_Output {
 
 		// Output scripts.
 		foreach ( $output_scripts as $output_script ) {
-			echo $output_script . "\n";
+			echo $output_script . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 	}

@@ -99,13 +99,7 @@ class ConvertKit_Admin_Notices {
 					<?php
 					echo wp_kses(
 						$output,
-						array(
-							'a'  => array(
-								'href'   => array(),
-								'target' => array(),
-							),
-							'br' => array(),
-						)
+						convertkit_kses_allowed_html()
 					);
 					?>
 				</p>

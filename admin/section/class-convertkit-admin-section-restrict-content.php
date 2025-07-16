@@ -462,7 +462,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function permit_crawlers_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field(
+		$this->output_checkbox_field(
 			$args['name'],
 			'on',
 			$this->settings->permit_crawlers(),
@@ -482,7 +482,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function require_tag_login_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field(
+		$this->output_checkbox_field(
 			$args['name'],
 			'on',
 			$this->settings->require_tag_login(),
@@ -502,7 +502,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function text_callback( $args ) {
 
 		// Output field.
-		echo $this->get_text_field(
+		$this->output_text_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
 			$args['description'],
@@ -522,7 +522,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	 */
 	public function number_callback( $args ) {
 
-		echo $this->get_number_field(
+		$this->output_number_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
 			$args['min'],
@@ -546,7 +546,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function textarea_callback( $args ) {
 
 		// Output field.
-		echo $this->get_textarea_field(
+		$this->output_textarea_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
 			$args['description'],

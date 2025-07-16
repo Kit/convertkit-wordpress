@@ -640,3 +640,46 @@ function convertkit_output_intercom_messenger() {
 	<?php
 
 }
+
+/**
+ * Returns permitted HTML output when using wp_kses( ..., convertkit_kses_allowed_html()).
+ *
+ * @since   2.8.5
+ */
+function convertkit_kses_allowed_html() {
+
+	// Get WordPress' permitted HTML elements.
+	$elements = wp_kses_allowed_html( 'post' );
+
+	// Add form elements.
+	$form_elements = array(
+		'input'    => array(
+			'type'    => true,
+			'id'      => true,
+			'name'    => true,
+			'class'   => true,
+			'value'   => true,
+			'checked' => true,
+			'data-*'  => true,
+		),
+		'select'   => array(
+			'id'    => true,
+			'name'  => true,
+			'class' => true,
+			'size'  => true,
+		),
+		'option'   => array(
+			'value'    => true,
+			'selected' => true,
+		),
+		'optgroup' => array(
+			'label' => true,
+		),
+		'label'    => array(
+			'for' => true,
+		),
+	);
+
+	return array_merge( $elements, $form_elements );
+
+}
