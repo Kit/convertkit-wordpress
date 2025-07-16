@@ -242,7 +242,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	/**
 	 * Outputs a <select> field populated with all non-inline forms, based on the given parameters.
 	 *
-	 * @since   2.8.5
+	 * @since   2.3.9
 	 *
 	 * @param   string            $name             Name.
 	 * @param   string            $id               ID.
@@ -251,17 +251,15 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	 * @param   bool|array        $prepend_options  <option> elements to prepend before resources.
 	 * @param   bool|array        $attributes       <select> attributes.
 	 * @param   bool|string|array $description      Description.
-	 * @return  string                              HTML Select Field
 	 */
-	public function output_select_field_non_inline( $forms, $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
+	public function output_select_field_non_inline( $name, $id, $css_classes, $selected_options, $prepend_options = false, $attributes = false, $description = false ) {
 
 		echo wp_kses(
 			$this->get_select_field_non_inline(
-				$forms,
 				$name,
 				$id,
 				$css_classes,
-				$selected_option,
+				$selected_options,
 				$prepend_options,
 				$attributes,
 				$description

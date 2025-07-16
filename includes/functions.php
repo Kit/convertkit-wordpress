@@ -663,17 +663,21 @@ function convertkit_kses_allowed_html() {
 			'data-*'  => true,
 		),
 		'select'   => array(
-			'id'    => true,
-			'name'  => true,
-			'class' => true,
-			'size'  => true,
+			'id'       => true,
+			'name'     => true,
+			'class'    => true,
+			'size'     => true,
+			'multiple' => true,
+			'data-*'   => true,
 		),
 		'option'   => array(
 			'value'    => true,
 			'selected' => true,
+			'data-*'   => true,
 		),
 		'optgroup' => array(
-			'label' => true,
+			'label'  => true,
+			'data-*' => true,
 		),
 		'label'    => array(
 			'for' => true,
