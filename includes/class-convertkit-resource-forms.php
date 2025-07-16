@@ -467,39 +467,6 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
-	 * Outputs a <select> field populated with the resources, based on the given parameters,
-	 * that supports multiple selection.
-	 *
-	 * @since   2.8.5
-	 *
-	 * @param   array             $forms            Forms.
-	 * @param   string            $name             Name.
-	 * @param   string            $id               ID.
-	 * @param   bool|array        $css_classes      <select> CSS class(es).
-	 * @param   array             $selected_options <option> values to mark as selected.
-	 * @param   bool|array        $prepend_options  <option> elements to prepend before resources.
-	 * @param   bool|array        $attributes       <select> attributes.
-	 * @param   bool|string|array $description      Description.
-	 */
-	private function multi_select_field( $forms, $name, $id, $css_classes, $selected_options = array(), $prepend_options = false, $attributes = false, $description = false ) {
-
-		echo wp_kses(
-			$this->get_multi_select_field(
-				$forms,
-				$name,
-				$id,
-				$css_classes,
-				$selected_option,
-				$prepend_options,
-				$attributes,
-				$description
-			),
-			convertkit_kses_allowed_html()
-		);
-
-	}
-
-	/**
 	 * Returns the HTML/JS markup for the given Form ID.
 	 *
 	 * Legacy Forms will return HTML.
