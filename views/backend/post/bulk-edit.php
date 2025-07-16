@@ -19,7 +19,7 @@
 			// would result in Posts/Pages having (or not having) the Form setting updated, when the user may/may not
 			// have selected the 'Default' option.
 			// Therefore, we use -2 to denote 'No Change'.
-			echo $convertkit_forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$convertkit_forms->output_select_field_all(
 				'wp-convertkit[form]',
 				'wp-convertkit-bulk-edit-form',
 				false,

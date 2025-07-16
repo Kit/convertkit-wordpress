@@ -274,7 +274,7 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 
 		// Render using Block class' render() function.
 		// Output is already escaped in render() function.
-		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_for_display() ); // phpcs:ignore WordPress.Security.EscapeOutput
+		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_for_display() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	}
 

@@ -51,7 +51,7 @@ if ( ! $this->forms->exist() ) {
 		</label>
 
 		<?php
-		echo $this->forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$this->forms->output_select_field_all(
 			'post_form',
 			'wp-convertkit-form-posts',
 			array(
@@ -92,7 +92,7 @@ if ( ! $this->forms->exist() ) {
 		</label>
 
 		<?php
-		echo $this->forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$this->forms->output_select_field_all(
 			'page_form',
 			'wp-convertkit-form-pages',
 			array(

@@ -14,7 +14,7 @@
 			<span class="title convertkit-icon-form"><?php esc_html_e( 'Form', 'convertkit' ); ?></span>
 
 			<?php
-			echo $convertkit_forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$convertkit_forms->output_select_field_all(
 				'wp-convertkit[form]',
 				'wp-convertkit-quick-edit-form',
 				false,

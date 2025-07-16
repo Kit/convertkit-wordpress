@@ -462,12 +462,12 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function permit_crawlers_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->permit_crawlers(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->permit_crawlers(),
+			$args['label'],
+			$args['description']
 		);
 
 	}
@@ -482,12 +482,12 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function require_tag_login_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->require_tag_login(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->require_tag_login(),
+			$args['label'],
+			$args['description']
 		);
 
 	}
@@ -502,10 +502,10 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function text_callback( $args ) {
 
 		// Output field.
-		echo $this->get_text_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_text_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'],
 			array(
 				'widefat',
 			)
@@ -522,13 +522,13 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	 */
 	public function number_callback( $args ) {
 
-		echo $this->get_number_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_number_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
-			$args['min'], // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['max'], // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['step'], // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['min'],
+			$args['max'],
+			$args['step'],
+			$args['description'],
 			array(
 				'widefat',
 			)
@@ -546,10 +546,10 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function textarea_callback( $args ) {
 
 		// Output field.
-		echo $this->get_textarea_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_textarea_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'],
 			array(
 				'widefat',
 			)

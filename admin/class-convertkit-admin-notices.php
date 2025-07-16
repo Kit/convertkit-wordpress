@@ -96,7 +96,12 @@ class ConvertKit_Admin_Notices {
 			?>
 			<div class="notice notice-error">
 				<p>
-					<?php echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php
+					echo wp_kses(
+						$output,
+						convertkit_kses_allowed_html()
+					);
+					?>
 				</p>
 			</div>
 			<?php

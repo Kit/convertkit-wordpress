@@ -258,7 +258,10 @@ abstract class ConvertKit_Admin_Section_Base {
 	 */
 	public function render_container_start() {
 
-		echo $this->get_render_container_start(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses(
+			$this->get_render_container_start(),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 
@@ -270,7 +273,10 @@ abstract class ConvertKit_Admin_Section_Base {
 	 */
 	public function render_container_end() {
 
-		echo $this->get_render_container_end(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses(
+			$this->get_render_container_end(),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 
@@ -456,6 +462,32 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Outputs a masked value.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string      $value          Value.
+	 * @param   bool|string $description    Description.
+	 */
+	public function output_masked_value( $value, $description = false ) {
+
+		$html = sprintf(
+			'<code>%s</code>',
+			str_repeat( '*', strlen( $value ) - 4 ) . substr( $value, - 4 )
+		);
+
+		if ( $description ) {
+			$html .= $this->get_description( $description );
+		}
+
+		echo wp_kses(
+			$html,
+			convertkit_kses_allowed_html()
+		);
+
+	}
+
+	/**
 	 * Returns a text field.
 	 *
 	 * @since   1.9.6
@@ -478,6 +510,25 @@ abstract class ConvertKit_Admin_Section_Base {
 		);
 
 		return $html . $this->get_description( $description );
+
+	}
+
+	/**
+	 * Outputs a text field.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name           Name.
+	 * @param   string            $value          Value.
+	 * @param   bool|string|array $description    Description (false|string|array).
+	 * @param   bool|array        $css_classes    CSS Classes (false|array).
+	 */
+	public function output_text_field( $name, $value = '', $description = false, $css_classes = false ) {
+
+		echo wp_kses(
+			$this->get_text_field( $name, $value, $description, $css_classes ),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 
@@ -514,6 +565,28 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Outputs a number field.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name           Name.
+	 * @param   string            $value          Value.
+	 * @param   int|float         $min            `min` attribute value.
+	 * @param   int|float         $max            `max` attribute value.
+	 * @param   int|float         $step           `step` attribute value.
+	 * @param   bool|string|array $description    Description (false|string|array).
+	 * @param   bool|array        $css_classes    CSS Classes (false|array).
+	 */
+	public function output_number_field( $name, $value = '', $min = 0, $max = 9999, $step = 1, $description = false, $css_classes = false ) {
+
+		echo wp_kses(
+			$this->get_number_field( $name, $value, $min, $max, $step, $description, $css_classes ),
+			convertkit_kses_allowed_html()
+		);
+
+	}
+
+	/**
 	 * Returns a textarea field.
 	 *
 	 * @since   2.3.5
@@ -540,6 +613,25 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Outputs a textarea field.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name           Name.
+	 * @param   string            $value          Value.
+	 * @param   bool|string|array $description    Description (false|string|array).
+	 * @param   bool|array        $css_classes    CSS Classes (false|array).
+	 */
+	public function output_textarea_field( $name, $value = '', $description = false, $css_classes = false ) {
+
+		echo wp_kses(
+			$this->get_textarea_field( $name, $value, $description, $css_classes ),
+			convertkit_kses_allowed_html()
+		);
+
+	}
+
+	/**
 	 * Returns a date field.
 	 *
 	 * @since   2.2.8
@@ -562,6 +654,25 @@ abstract class ConvertKit_Admin_Section_Base {
 		);
 
 		return $html . $this->get_description( $description );
+
+	}
+
+	/**
+	 * Outputs a date field.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name           Name.
+	 * @param   string            $value          Value.
+	 * @param   bool|string|array $description    Description (false|string|array).
+	 * @param   bool|array        $css_classes    CSS Classes (false|array).
+	 */
+	public function output_date_field( $name, $value = '', $description = false, $css_classes = false ) {
+
+		echo wp_kses(
+			$this->get_date_field( $name, $value, $description, $css_classes ),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 
@@ -614,6 +725,27 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Outputs a select dropdown field.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string      $name            Name.
+	 * @param   string      $value           Value.
+	 * @param   array       $options         Options / Choices.
+	 * @param   bool|string $description     Description.
+	 * @param   bool|array  $css_classes     <select> CSS class(es).
+	 * @param   bool|array  $attributes      <select> attributes.
+	 */
+	public function output_select_field( $name, $value = '', $options = array(), $description = false, $css_classes = false, $attributes = false ) {
+
+		echo wp_kses(
+			$this->get_select_field( $name, $value, $options, $description, $css_classes, $attributes ),
+			convertkit_kses_allowed_html()
+		);
+
+	}
+
+	/**
 	 * Returns a checkbox field.
 	 *
 	 * @since   1.9.6
@@ -661,6 +793,66 @@ abstract class ConvertKit_Admin_Section_Base {
 
 		// Return field with description appended to it.
 		return $html . $this->get_description( $description );
+
+	}
+
+	/**
+	 * Outputs a checkbox field.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name           Name.
+	 * @param   string            $value          Value.
+	 * @param   bool              $checked        Should checkbox be checked/ticked.
+	 * @param   bool|string       $label          Label.
+	 * @param   bool|string|array $description    Description.
+	 * @param   bool|array        $css_classes    CSS class(es).
+	 */
+	public function output_checkbox_field( $name, $value, $checked = false, $label = '', $description = false, $css_classes = false ) {
+
+		echo wp_kses(
+			$this->get_checkbox_field( $name, $value, $checked, $label, $description, $css_classes ),
+			convertkit_kses_allowed_html()
+		);
+
+	}
+
+	/**
+	 * Returns a link button.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string     $url            URL.
+	 * @param   string     $label          Button Label.
+	 * @param   bool|array $css_classes    CSS class(es).
+	 * @return  string                            HTML Link Button
+	 */
+	public function get_link_button( $url, $label, $css_classes = false ) {
+
+		return sprintf(
+			'<a href="%s" class="button %s">%s</a>',
+			esc_url( $url ),
+			( is_array( $css_classes ) ? implode( ' ', $css_classes ) : '' ),
+			esc_html( $label )
+		);
+
+	}
+
+	/**
+	 * Outputs a link button.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string     $url            URL.
+	 * @param   string     $label          Button Label.
+	 * @param   bool|array $css_classes    CSS class(es).
+	 */
+	public function output_link_button( $url, $label, $css_classes = false ) {
+
+		echo wp_kses(
+			$this->get_link_button( $url, $label, $css_classes ),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 

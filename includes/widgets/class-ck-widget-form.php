@@ -78,7 +78,7 @@ class CK_Widget_Form extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'form' ) ); ?>"><?php esc_html_e( 'Form', 'convertkit' ); ?></label>
 			<?php
-			echo $forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$forms->output_select_field_all(
 				esc_attr( $this->get_field_name( 'form' ) ),
 				esc_attr( $this->get_field_id( 'form' ) ),
 				array(
@@ -120,7 +120,8 @@ class CK_Widget_Form extends WP_Widget {
 
 		// Output Form.
 		// $args already escaped as supplied by WordPress, so we don't need to escape them again.
-		// phpcs:disable WordPress.Security.EscapeOutput
+		// $form could be a script or legacy form with varying HTML, so we don't want to escape it.
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $args['before_widget'];
 		if ( $instance['title'] ) {
 			echo $args['before_title'];
