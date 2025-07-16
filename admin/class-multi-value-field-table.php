@@ -200,16 +200,16 @@ class Multi_Value_Field_Table extends WP_List_Table {
 			$data,
 			function ( $a, $b ) {
 
-				if ( empty( $_REQUEST['orderby'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				if ( ! filter_has_var( INPUT_GET, 'orderby' ) ) {
 					$orderby = 'title';
 				} else {
-					$orderby = sanitize_sql_orderby( wp_unslash( $_REQUEST['orderby'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+					$orderby = sanitize_sql_orderby( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 				}
 
-				if ( empty( $_REQUEST['order'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				if ( ! filter_has_var( INPUT_GET, 'order' ) ) {
 					$order = 'asc';
 				} else {
-					$order = sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+					$order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 				}
 				$result = strcmp( $a[ $orderby ], $b[ $orderby ] ); // Determine sort order.
 				return ( 'asc' === $order ) ? $result : -$result; // Send final sort direction to usort.

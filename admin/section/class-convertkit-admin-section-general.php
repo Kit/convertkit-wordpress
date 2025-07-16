@@ -840,7 +840,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		// prior to save, don't overwrite them with the blank setting from get_defaults().
 		// This ensures we only blank these values if we explicitly do so via $settings,
 		// as they won't be included in the Settings screen for security.
-		if ( ! array_key_exists( 'disconnect', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'disconnect' ) ) {
 			// If settings are null, no checkboxes were ticked and no other form elements
 			// were submitted i.e. the Kit account has no forms.
 			if ( is_null( $settings ) ) {

@@ -34,8 +34,8 @@ class ConvertKit_Subscriber {
 	public function get_subscriber_id() {
 
 		// If the subscriber ID is in the request URI, use it.
-		if ( isset( $_REQUEST[ $this->key ] ) && is_numeric( $_REQUEST[ $this->key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return $this->validate_and_store_subscriber_id( sanitize_text_field( wp_unslash( $_REQUEST[ $this->key ] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_has_var( INPUT_GET, $this->key ) ) {
+			return $this->validate_and_store_subscriber_id( filter_input( INPUT_GET, $this->key, FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 		}
 
 		// If the subscriber ID is in a cookie, return it.
