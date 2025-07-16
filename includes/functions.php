@@ -660,6 +660,9 @@ function convertkit_kses_allowed_html() {
 			'class'   => true,
 			'value'   => true,
 			'checked' => true,
+			'min'     => true,
+			'max'     => true,
+			'step'    => true,
 			'data-*'  => true,
 		),
 		'select'   => array(
