@@ -663,17 +663,7 @@ class PageFormCest
 		$I->activateThirdPartyPlugin($I, 'debloat');
 
 		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
-		$I->haveOptionInDatabase(
-			'debloat_options_js',
-			[
-				'defer_js'        => 'on',
-				'defer_js_inline' => 'on',
-				'minify_js'       => 'on',
-				'delay_js'        => 'on',
-				'delay_js_max'    => 5,
-				'delay_js_all'    => 'on',
-			]
-		);
+		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(

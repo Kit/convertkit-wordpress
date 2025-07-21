@@ -10,6 +10,29 @@ namespace Tests\Support\Helper;
 class WPCachePlugins extends \Codeception\Module
 {
 	/**
+	 * Helper method to enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 */
+	public function enableJSDeferDelayAllScriptsDebloatPlugin($I)
+	{
+		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
+		$I->haveOptionInDatabase(
+			'debloat_options_js',
+			[
+				'defer_js'        => 'on',
+				'defer_js_inline' => 'on',
+				'minify_js'       => 'on',
+				'delay_js'        => 'on',
+				'delay_js_max'    => 5,
+				'delay_js_all'    => 'on',
+			]
+		);
+	}
+
+	/**
 	 * Helper method to enable caching in the LiteSpeed Plugin.
 	 *
 	 * @since   2.2.2
