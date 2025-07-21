@@ -52,6 +52,10 @@ class ConvertKit_Cache_Plugins {
 		add_filter( 'convertkit_output_script_footer', array( $this, 'autoptimize_exclude_js_defer' ) );
 		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'autoptimize_exclude_js_defer' ) );
 
+		// Debloat: Exclude Forms from Delay Load JS.
+		add_filter( 'debloat/defer_js_excludes', array( $this, 'exclude_hosts_from_minification' ) );
+		add_filter( 'debloat/delay_js_excludes', array( $this, 'exclude_hosts_from_minification' ) );
+
 		// Jetpack Boost: Exclude Forms from JS defer.
 		add_filter( 'convertkit_output_script_footer', array( $this, 'jetpack_boost_exclude_js_defer' ) );
 		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'jetpack_boost_exclude_js_defer' ) );
