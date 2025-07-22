@@ -185,11 +185,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 			'form'                 => array(
 				'type' => 'string',
 			),
-
-			// The below are built in Gutenberg attributes registered in get_supports().
-			'align'                => array(
-				'type' => 'string',
-			),
 			
 			// get_supports() style, color and typography attributes.
 			'style'                => array(
@@ -218,7 +213,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	public function get_supports() {
 
 		return array(
-			'align'      => true,
 			'className'  => true,
 			'color'      => array(
 				'link'       => false,

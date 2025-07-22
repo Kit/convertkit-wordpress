@@ -23,7 +23,6 @@
         }
     },
     "supports": {
-        "align": true,
         "className": true,
         "color": {
             "link": false,
