@@ -412,7 +412,8 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 		// For the block editor, don't include compiled CSS classes and styles,
 		// as the block editor will add these to the parent container.
 		// Otherwise the block will render incorrectly with double padding, double margins etc.
-		if ( ! $this->is_block_editor_request() ) {
+		// If there's no Form HTML, it's a non-inline form, so don't render any output.
+		if ( ! $this->is_block_editor_request() && ! empty( $form ) ) {
 			$form = sprintf(
 				'<div class="%s" style="%s">%s</div>',
 				implode( ' ', map_deep( $this->get_css_classes(), 'sanitize_html_class' ) ),
