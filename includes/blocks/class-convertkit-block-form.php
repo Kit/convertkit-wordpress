@@ -185,7 +185,7 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 			'form'                 => array(
 				'type' => 'string',
 			),
-			
+
 			// get_supports() style, color and typography attributes.
 			'style'                => array(
 				'type' => 'object',
@@ -213,13 +213,13 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	public function get_supports() {
 
 		return array(
-			'className'  => true,
-			'color'      => array(
+			'className' => true,
+			'color'     => array(
 				'link'       => false,
 				'background' => true,
 				'text'       => false,
 			),
-			'spacing'    => array(
+			'spacing'   => array(
 				'margin'  => true,
 				'padding' => true,
 			),
