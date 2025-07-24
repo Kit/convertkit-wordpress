@@ -78,14 +78,17 @@ class CK_Widget_Form extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'form' ) ); ?>"><?php esc_html_e( 'Form', 'convertkit' ); ?></label>
 			<?php
-			$forms->output_select_field_all(
-				esc_attr( $this->get_field_name( 'form' ) ),
-				esc_attr( $this->get_field_id( 'form' ) ),
-				array(
-					'widefat',
-				),
-				esc_attr( $instance['form'] )
-			);
+			// Check if output_select_field_all() method exists before calling it.
+			if ( method_exists( $forms, 'output_select_field_all' ) ) {
+				$forms->output_select_field_all(
+					esc_attr( $this->get_field_name( 'form' ) ),
+					esc_attr( $this->get_field_id( 'form' ) ),
+					array(
+						'widefat',
+					),
+					esc_attr( $instance['form'] )
+				);
+			}
 			?>
 		</p>
 		<?php
