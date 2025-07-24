@@ -474,10 +474,11 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   int $id     Form ID.
+	 * @param   int $id         Form ID.
+	 * @param   int $post_id    Post ID that requested the Form.
 	 * @return  WP_Error|string
 	 */
-	public function get_html( $id ) {
+	public function get_html( $id, $post_id = 0 ) {
 
 		// Cast ID to integer.
 		$id = absint( $id );
@@ -499,12 +500,12 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			);
 		}
 
+		// Initialize Settings.
+		$settings = new ConvertKit_Settings();
+
 		// If no uid is present in the Form API data, this is a legacy form that's served by directly fetching the HTML
 		// from forms.kit.com.
 		if ( ! isset( $this->resources[ $id ]['uid'] ) ) {
-			// Initialize Settings.
-			$settings = new ConvertKit_Settings();
-
 			// Bail if no Access Token is specified in the Plugin Settings.
 			if ( ! $settings->has_access_token() ) {
 				return new WP_Error(
@@ -536,13 +537,22 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 		if ( $this->resources[ $id ]['format'] !== 'inline' ) {
 			add_filter(
 				'convertkit_output_scripts_footer',
-				function ( $scripts ) use ( $id ) {
+				function ( $scripts ) use ( $id, $post_id, $settings ) {
 
-					$scripts[] = array(
+					// Build script.
+					$script = array(
 						'async'    => true,
 						'data-uid' => $this->resources[ $id ]['uid'],
 						'src'      => $this->resources[ $id ]['embed_js'],
 					);
+
+					// If debugging is enabled, add the post ID to the script.
+					if ( $settings->debug_enabled() ) {
+						$script['data-kit-source-post-id'] = $post_id;
+					}
+
+					// Add the script to the scripts array.
+					$scripts[] = $script;
 
 					return $scripts;
 
@@ -574,6 +584,11 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			'data-uid' => $this->resources[ $id ]['uid'],
 			'src'      => $this->resources[ $id ]['embed_js'],
 		);
+
+		// If debugging is enabled, add the post ID to the script.
+		if ( $settings->debug_enabled() ) {
+			$script['data-kit-source-post-id'] = $post_id;
+		}
 
 		/**
 		 * Filter the form <script> key/value pairs immediately before the script is output.

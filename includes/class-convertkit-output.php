@@ -311,7 +311,7 @@ class ConvertKit_Output {
 		}
 
 		// Get Form HTML.
-		$form = $this->forms->get_html( $form_id );
+		$form = $this->forms->get_html( $form_id, $post_id );
 
 		// If an error occured, it could be because the specified Form ID for the Post either:
 		// - belongs to another ConvertKit account (i.e. API credentials were changed in the Plugin, but this Post's specified Form was not changed), or
@@ -335,7 +335,7 @@ class ConvertKit_Output {
 			}
 
 			// Get Form HTML.
-			$form = $this->forms->get_html( $form_id );
+			$form = $this->forms->get_html( $form_id, $post_id );
 
 			// If an error occured again, the default form doesn't exist in this ConvertKit account.
 			// Just return the Post Content, unedited.
