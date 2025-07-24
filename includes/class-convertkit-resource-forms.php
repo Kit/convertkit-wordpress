@@ -500,12 +500,12 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			);
 		}
 
+		// Initialize Settings.
+		$settings = new ConvertKit_Settings();
+
 		// If no uid is present in the Form API data, this is a legacy form that's served by directly fetching the HTML
 		// from forms.kit.com.
 		if ( ! isset( $this->resources[ $id ]['uid'] ) ) {
-			// Initialize Settings.
-			$settings = new ConvertKit_Settings();
-
 			// Bail if no Access Token is specified in the Plugin Settings.
 			if ( ! $settings->has_access_token() ) {
 				return new WP_Error(
@@ -584,6 +584,11 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			'data-uid' => $this->resources[ $id ]['uid'],
 			'src'      => $this->resources[ $id ]['embed_js'],
 		);
+
+		// If debugging is enabled, add the post ID to the script.
+		if ( $settings->debug_enabled() ) {
+			$script['data-post-id'] = $post_id;
+		}
 
 		/**
 		 * Filter the form <script> key/value pairs immediately before the script is output.
