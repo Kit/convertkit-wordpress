@@ -548,7 +548,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 
 					// If debugging is enabled, add the post ID to the script.
 					if ( $settings->debug_enabled() ) {
-						$script['data-post-id'] = $post_id;
+						$script['data-kit-source-post-id'] = $post_id;
 					}
 
 					// Add the script to the scripts array.
@@ -587,7 +587,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 
 		// If debugging is enabled, add the post ID to the script.
 		if ( $settings->debug_enabled() ) {
-			$script['data-post-id'] = $post_id;
+			$script['data-kit-source-post-id'] = $post_id;
 		}
 
 		/**
