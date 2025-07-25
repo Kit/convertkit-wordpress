@@ -200,13 +200,13 @@ class Multi_Value_Field_Table extends WP_List_Table {
 			$data,
 			function ( $a, $b ) {
 
-				if ( ! filter_has_var( INPUT_GET, 'orderby' ) ) {
+				if ( ! filter_has_var( INPUT_GET, 'orderby' ) || empty( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
 					$orderby = 'title';
 				} else {
 					$orderby = sanitize_sql_orderby( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 				}
 
-				if ( ! filter_has_var( INPUT_GET, 'order' ) ) {
+				if ( ! filter_has_var( INPUT_GET, 'order' ) || empty( filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
 					$order = 'asc';
 				} else {
 					$order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );

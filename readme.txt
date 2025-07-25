@@ -1,11 +1,11 @@
-=== Kit (formerly ConvertKit) - Email Newsletter, Email Marketing, Subscribers and Landing Pages ===
+=== Kit (formerly ConvertKit) - Email Newsletter, Email Marketing, Membership, Subscribers and Landing Pages ===
 Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 2.8.5
+Stable tag: 2.8.6.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -44,7 +44,17 @@ For greater control, Kit's email marketing subscription forms can be displayed i
 - Using the Kit Forms block in Gutenberg
 - Using the `[convertkit]` shortcode in the Classic Editor
 
-Start collecting email subscribers today and building your newsletter audience!
+Start collecting email subscribers today, building your newsletter audience and taking your email marketing to the next level.
+
+## Membership Sites and Membership Content Protection
+
+Create powerful membership sites with Kit's Membership Content feature. Require email subscribers to either purchase a [Kit Product](https://kit.com/features/commerce), or subscribe for free, to access your membership content - whether that's a course, ebook, digital download, album, presets, coaching and more. 
+
+This membership functionality transforms your WordPress site into a comprehensive membership platform. Subscribers access their membership by entering their email address, receiving a one time passcode by email and clicking the link in the email. That's it - no complex membership plugins or payment gateways to configure for your membership site.
+
+There's no limit to the number of Kit Products you can create for your membership site, and each can be assigned to one or more WordPress Pages and Posts, instantly turning them into membership-only content for your paid subscribers. Build a thriving membership community with ease.
+
+Whether you're creating a paid membership site, or offering free membership access, Kit's membership features provide the flexibility to monetize your content through membership subscriptions while growing your email subscribers list simultaneously.
 
 ## Send Email Newsletters and Email Marketing Campaigns
 
@@ -61,25 +71,15 @@ Design [landing pages](https://kit.com/features/landing-pages?utm_source=wordpre
 
 Additional landing pages can then be embedded on your WordPress web site. Simply create or edit a WordPress Page, choose the Kit landing page from the Kit meta box settings to display, and you're all set to begin growing your email subscribers list more effectively with targeted landing pages.
 
-## Sell Products
+## Sell Products and Membership Access
 
-Embed buttons (or link text) to sell your Kit Products in seconds - whether that's digital goods, paid email newsletters, music, coaching and more.
+Embed buttons (or link text) to sell your Kit Products and Tip Jars in seconds - whether that's digital goods, paid email newsletters, membership access, membership-only content, music, coaching and more. Perfect for membership sites and monetization.
 
 ## List Email Newsletters
 
-Automatically publish your past email newsletters to WordPress Posts, defining a WordPress author, category and cut-off date within the Plugin's settings to keep your newsletter subscribers informed.
+Continue your email marketing strategy by automatically publishing your past email newsletters to WordPress Posts, defining a WordPress author, category and cut-off date within the Plugin's settings to keep your newsletter subscribers informed.
 
 Prefer to just list existing broadcasts, each linked to your Kit profile? Use the Broadcasts block or shortcode to embed your existing newsletters in any WordPress Page, Post or Custom Post Type, providing more touchpoints for your email newsletter content.
-
-## Membership Sites and Membership Content Protection
-
-Create powerful membership sites with Kit's Member Content feature. Require email subscribers to either purchase a [Kit Product](https://kit.com/features/commerce), or subscribe for free, to access your membership content - whether that's a course, ebook, digital download, album, presets, coaching and more. 
-
-This membership functionality transforms your WordPress site into a comprehensive membership platform. Subscribers access their membership by entering their email address, receiving a one time passcode by email and clicking the link in the email. That's it - no complex membership plugins or payment gateways to configure for your membership site.
-
-There's no limit to the number of Kit Products you can create for your membership site, and each can be assigned to one or more WordPress Pages and Posts, instantly turning them into membership-only content for your paid subscribers. Build a thriving membership community with ease.
-
-Whether you're creating a paid membership site or offering free membership access, Kit's membership features provide the flexibility to monetize your content through membership subscriptions while growing your email subscribers list simultaneously.
 
 ## Plugin Integrations
 
@@ -160,6 +160,13 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.8.6.1 2025-07-23
+* Fix: Form Trigger: Revert running `script` tags through `wp_kses`, as WordPress.com strip the script tag
+
+### 2.8.6 2025-07-23
+* Fix: Form Block: Correctly style "No Content" message when selecting a modal form
+* Fix: Member Content: Display all Posts if filter = All content
 
 ### 2.8.5 2025-07-17
 * Fix: Broadcasts, Form Trigger and Product Blocks: Improve rendering accuracy between block editor and frontend site

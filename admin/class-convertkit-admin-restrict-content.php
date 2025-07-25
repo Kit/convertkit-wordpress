@@ -98,6 +98,11 @@ class ConvertKit_Admin_Restrict_Content {
 			return;
 		}
 
+		// Bail if the filter is empty.
+		if ( empty( filter_input( INPUT_GET, 'convertkit_restrict_content', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
+			return;
+		}
+
 		// Don't filter if we're not querying a Post Type that supports Restricted Content.
 		if ( ! in_array( $query->get( 'post_type' ), convertkit_get_supported_post_types(), true ) ) {
 			return;
