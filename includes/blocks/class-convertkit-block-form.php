@@ -186,10 +186,42 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 				'type' => 'string',
 			),
 
+			// get_supports() style, color and typography attributes.
+			'style'                => array(
+				'type' => 'object',
+			),
+			'backgroundColor'      => array(
+				'type' => 'string',
+			),
+
 			// Always required for Gutenberg.
 			'is_gutenberg_example' => array(
 				'type'    => 'boolean',
 				'default' => false,
+			),
+		);
+
+	}
+
+	/**
+	 * Returns this block's supported built-in Attributes.
+	 *
+	 * @since   1.9.7.4
+	 *
+	 * @return  array   Supports
+	 */
+	public function get_supports() {
+
+		return array(
+			'className' => true,
+			'color'     => array(
+				'link'       => false,
+				'background' => true,
+				'text'       => false,
+			),
+			'spacing'   => array(
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 
@@ -368,6 +400,20 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 			}
 
 			return '';
+		}
+
+		// Build HTML.
+		// For the block editor, don't include compiled CSS classes and styles,
+		// as the block editor will add these to the parent container.
+		// Otherwise the block will render incorrectly with double padding, double margins etc.
+		// If there's no Form HTML, it's a non-inline form, so don't render any output.
+		if ( ! $this->is_block_editor_request() && ! empty( $form ) ) {
+			$form = sprintf(
+				'<div class="%s" style="%s">%s</div>',
+				implode( ' ', map_deep( $this->get_css_classes(), 'sanitize_html_class' ) ),
+				implode( ';', map_deep( $this->get_css_styles( $atts ), 'esc_attr' ) ),
+				$form
+			);
 		}
 
 		/**

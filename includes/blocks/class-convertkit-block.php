@@ -261,6 +261,19 @@ class ConvertKit_Block {
 	 */
 	public function get_css_classes( $additional_classes = array() ) {
 
+		// To avoid errors in get_block_wrapper_attributes() in non-block themes using the shortcode,
+		// tell WordPress that a block is being rendered.
+		// The attributes don't matter, as we send them to the render() function.
+		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
+			WP_Block_Supports::$block_to_render = array(
+				'blockName'    => 'convertkit/' . $this->get_name(),
+				'attrs'        => array(),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			);
+		}
+
 		// Get the block wrapper attributes string.
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
@@ -304,6 +317,19 @@ class ConvertKit_Block {
 	 * @return  array
 	 */
 	public function get_css_styles( $atts ) {
+
+		// To avoid errors in get_block_wrapper_attributes() in non-block themes using the shortcode,
+		// tell WordPress that a block is being rendered.
+		// The attributes don't matter, as we send them to the render() function.
+		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
+			WP_Block_Supports::$block_to_render = array(
+				'blockName'    => 'convertkit/' . $this->get_name(),
+				'attrs'        => array(),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			);
+		}
 
 		$styles = array();
 
