@@ -20,9 +20,9 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @var     bool|array
+	 * @var     bool|int
 	 */
-	public $subscriber = false;
+	public $subscriber_id = false;
 
 	/**
 	 * Constructor
@@ -93,11 +93,34 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 		);
 
 		// Create subscriber.
-		$this->subscriber = $api->create_subscriber(
+		$result = $api->create_subscriber(
 			sanitize_email( wp_unslash( $_REQUEST['convertkit_email'] ) ),
 			isset( $_REQUEST['convertkit_name'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['convertkit_name'] ) ) : '',
 			'active'
 		);
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
+		// Store the subscriber ID in a cookie.
+		$subscriber = new ConvertKit_Subscriber();
+		$subscriber->set( $result['subscriber']['id'] );
+
+		// Get the redirect URL, based on whether the form is configured to redirect
+		// or not.
+		if ( array_key_exists( 'convertkit_redirect', $_REQUEST ) && wp_http_validate_url( sanitize_url( wp_unslash( $_REQUEST['convertkit_redirect'] ) ) ) ) {
+			// Redirect to the URL specified in the form.
+			$redirect = sanitize_url( wp_unslash( $_REQUEST['convertkit_redirect'] ) );
+		} else {
+			// Redirect to the Post the form was displayed on, to show a success message.
+			$redirect = get_permalink( absint( $_REQUEST['convertkit_post_id'] ) );
+		}
+
+		// Redirect.
+		wp_redirect( $redirect ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+		exit();
 
 	}
 
@@ -225,35 +248,47 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 
 		return array(
 			// Block attributes.
-			'display_name_field'   => array(
+			'display_name_field'         => array(
 				'type'    => 'boolean',
 				'default' => $this->get_default_value( 'display_name_field' ),
 			),
-			'display_labels'       => array(
+			'display_labels'             => array(
 				'type'    => 'boolean',
 				'default' => $this->get_default_value( 'display_labels' ),
 			),
-			'text'                 => array(
+			'text'                       => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'text' ),
 			),
+			'redirect'                   => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'redirect' ),
+			),
+			'display_form_if_subscribed' => array(
+				'type'    => 'boolean',
+				'default' => $this->get_default_value( 'display_form_if_subscribed' ),
+			),
+			'text_if_subscribed'         => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'text_if_subscribed' ),
+			),
 
 			// get_supports() style, color and typography attributes.
-			'style'                => array(
+			'style'                      => array(
 				'type' => 'object',
 			),
-			'backgroundColor'      => array(
+			'backgroundColor'            => array(
 				'type' => 'string',
 			),
-			'textColor'            => array(
+			'textColor'                  => array(
 				'type' => 'string',
 			),
-			'fontSize'             => array(
+			'fontSize'                   => array(
 				'type' => 'string',
 			),
 
 			// Always required for Gutenberg.
-			'is_gutenberg_example' => array(
+			'is_gutenberg_example'       => array(
 				'type'    => 'boolean',
 				'default' => false,
 			),
@@ -304,20 +339,35 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 		}
 
 		return array(
-			'display_name_field' => array(
+			'display_name_field'         => array(
 				'label'       => __( 'Display name field', 'convertkit' ),
 				'type'        => 'toggle',
 				'description' => __( 'If enabled, displays a name field in the form.', 'convertkit' ),
 			),
-			'display_labels'     => array(
+			'display_labels'             => array(
 				'label'       => __( 'Display labels', 'convertkit' ),
 				'type'        => 'toggle',
 				'description' => __( 'If enabled, displays labels above each field.', 'convertkit' ),
 			),
-			'text'               => array(
+			'text'                       => array(
 				'label'       => __( 'Button text', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The text to display on the subscribe button.', 'convertkit' ),
+			),
+			'redirect'                   => array(
+				'label'       => __( 'Redirect', 'convertkit' ),
+				'type'        => 'url',
+				'description' => __( 'The URL to redirect to after the visitor subscribes. If not specified, the visitor will be redirected to the post the form was displayed on.', 'convertkit' ),
+			),
+			'display_form_if_subscribed' => array(
+				'label'       => __( 'Display form', 'convertkit' ),
+				'type'        => 'toggle',
+				'description' => __( 'If enabled, displays the form if the visitor is already subscribed.', 'convertkit' ),
+			),
+			'text_if_subscribed'         => array(
+				'label'       => __( 'Text', 'convertkit' ),
+				'type'        => 'text',
+				'description' => __( 'The text to display if the visitor is already subscribed.', 'convertkit' ),
 			),
 		);
 
@@ -338,12 +388,25 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 		}
 
 		return array(
-			'general' => array(
+			'general'    => array(
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'display_name_field',
 					'display_labels',
 					'text',
+				),
+			),
+			'subscribe'  => array(
+				'label'  => __( 'On Subscribe', 'convertkit' ),
+				'fields' => array(
+					'redirect',
+				),
+			),
+			'subscribed' => array(
+				'label'  => __( 'After Subscribing', 'convertkit' ),
+				'fields' => array(
+					'display_form_if_subscribed',
+					'text_if_subscribed',
 				),
 			),
 		);
@@ -360,14 +423,17 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
-			'display_name_field' => false,
-			'display_labels'     => false,
-			'text'               => __( 'Subscribe', 'convertkit' ),
+			'display_name_field'         => false,
+			'display_labels'             => false,
+			'text'                       => __( 'Subscribe', 'convertkit' ),
+			'redirect'                   => '',
+			'display_form_if_subscribed' => true,
+			'text_if_subscribed'         => __( 'Thanks for subscribing!', 'convertkit' ),
 
 			// Built-in Gutenberg block attributes.
-			'style'              => '',
-			'backgroundColor'    => '',
-			'textColor'          => '',
+			'style'                      => '',
+			'backgroundColor'            => '',
+			'textColor'                  => '',
 		);
 
 	}
@@ -394,6 +460,13 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 		// Get CSS classes and styles.
 		$css_classes = $this->get_css_classes();
 		$css_styles  = $this->get_css_styles( $atts );
+
+		// Check if subscriber is already subscribed.
+		$subscriber          = new ConvertKit_Subscriber();
+		$this->subscriber_id = $subscriber->get_subscriber_id();
+
+		// Check if the form should be displayed if the visitor is already subscribed.
+		$display_form = $this->subscriber_id && ! $atts['display_form_if_subscribed'] ? false : true;
 
 		// Build HTML.
 		ob_start();

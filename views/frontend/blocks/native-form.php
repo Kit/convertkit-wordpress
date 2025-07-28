@@ -14,7 +14,10 @@ if ( ! $this->is_block_editor_request() ) {
 	<div class="<?php echo implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ); ?>" style="<?php echo implode( ';', map_deep( $css_styles, 'esc_attr' ) ); ?>">
 	<?php
 }
-?>
+
+// Display form.
+if ( $display_form ) {
+	?>
 	<form action="<?php echo esc_url( get_permalink( $post_id ) ); ?>" method="post">
 		<?php
 		if ( $atts['display_name_field'] ) {
@@ -46,11 +49,21 @@ if ( ! $this->is_block_editor_request() ) {
 		<div>
 			<input type="submit" class="wp-block-button__link wp-block-button__link" value="<?php echo esc_attr( $atts['text'] ); ?>" />
 			<input type="hidden" name="convertkit_post_id" value="<?php echo esc_attr( $post_id ); ?>" />
-			<?php wp_nonce_field( 'convertkit_native_form' ); ?>
+			<?php
+			if ( $atts['redirect'] ) {
+				?>
+				<input type="hidden" name="convertkit_redirect" value="<?php echo esc_url( $atts['redirect'] ); ?>" />
+				<?php
+			}
+			wp_nonce_field( 'convertkit_native_form' );
+			?>
 		</div>
 	</form>
+	<?php
+} else {
+	echo esc_html( $atts['text_if_subscribed'] );
+}
 
-<?php
 // Don't wrap the form in a div if it's being rendered in the block editor,
 // as the block editor will add its own wrapper.
 if ( ! $this->is_block_editor_request() ) {
