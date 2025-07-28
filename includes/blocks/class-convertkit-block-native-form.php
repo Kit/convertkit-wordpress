@@ -357,7 +357,7 @@ class ConvertKit_Block_Native_Form extends ConvertKit_Block {
 			'redirect'                   => array(
 				'label'       => __( 'Redirect', 'convertkit' ),
 				'type'        => 'url',
-				'description' => __( 'The URL to redirect to after the visitor subscribes. If not specified, the visitor will be redirected to the post the form was displayed on.', 'convertkit' ),
+				'description' => __( 'The URL to redirect to after the visitor subscribes. If not specified, the visitor will remain on the current page.', 'convertkit' ),
 			),
 			'display_form_if_subscribed' => array(
 				'label'       => __( 'Display form', 'convertkit' ),
