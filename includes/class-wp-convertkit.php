@@ -184,6 +184,7 @@ class WP_ConvertKit {
 		$this->classes['blocks_convertkit_content']           = new ConvertKit_Block_Content();
 		$this->classes['blocks_convertkit_formtrigger']       = new ConvertKit_Block_Form_Trigger();
 		$this->classes['blocks_convertkit_form']              = new ConvertKit_Block_Form();
+		$this->classes['blocks_convertkit_native_form']       = new ConvertKit_Block_Native_Form();
 		$this->classes['blocks_convertkit_product']           = new ConvertKit_Block_Product();
 		$this->classes['block_formatter_form_link']           = new ConvertKit_Block_Formatter_Form_Link();
 		$this->classes['block_formatter_product_link']        = new ConvertKit_Block_Formatter_Product_Link();

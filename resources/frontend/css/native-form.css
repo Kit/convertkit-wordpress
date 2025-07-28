@@ -1,0 +1,11 @@
+/**
+ * Define some sensible default styles for the form elements,
+ * in case a theme doesn't define them.
+ */
+.convertkit-native-form input[type=text],
+.convertkit-native-form input[type=email] {
+	width: 100%;
+	margin: 0 0 20px 0;
+	padding: 10px;
+	box-sizing: border-box;
+}
