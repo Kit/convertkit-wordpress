@@ -1,34 +1,47 @@
-const { registerBlockType } = wp.blocks;
+const { registerBlockType }          = wp.blocks;
 const { InnerBlocks, useBlockProps } = wp.blockEditor;
+const { createElement }              = wp.element;
+const convertKitFormBuilderTemplate  = [
+	[ 'core/image', {} ],
+	[ 'core/heading', { placeholder: 'Book Title' } ],
+	[ 'core/paragraph', { placeholder: 'Summary' } ],
+];
 
-registerBlockType( 'convertkit/form-builder', {
-    edit: () => {
-        const blockProps = useBlockProps();
 
-        return wp.element.createElement(
-            'div',
-            blockProps,
-            wp.element.createElement(InnerBlocks)
-        );
-    },
+registerBlockType(
+	'convertkit/form-builder',
+	{
+		edit: () => {
+			const blockProps = useBlockProps();
 
-    save: () => {
-        const blockProps = useBlockProps.save();
+			return createElement(
+				'div',
+				blockProps,
+				createElement(
+					InnerBlocks,
+					{
+						template: convertKitFormBuilderTemplate
+						// templateLock: 'all'
+					}
+				)
+			);
+		},
 
-        console.log( InnerBlocks.Content );
+		save: () => {
+			const blockProps = useBlockProps.save();
 
-        return wp.element.createElement(
-            'div',
-            blockProps,
-            wp.element.createElement(
-                'form',
-                {
-                    action: '#',
-                    method: 'POST',
-                },
-                wp.element.createElement(InnerBlocks.Content)
-            )
-        );
-    },
-} );
-
+			return createElement(
+				'div',
+				blockProps,
+				createElement(
+					'form',
+					{
+						action: '#',
+						method: 'POST',
+					},
+					createElement( InnerBlocks.Content )
+				)
+			);
+		},
+	}
+);

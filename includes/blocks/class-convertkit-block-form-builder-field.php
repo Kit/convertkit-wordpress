@@ -24,26 +24,11 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		// Register this as a Gutenberg block in the Kit Plugin.
 		add_filter( 'convertkit_blocks', array( $this, 'register' ) );
 
-		// Enqueue scripts for this Gutenberg Block in the editor view.
-		//add_action( 'convertkit_gutenberg_enqueue_scripts', array( $this, 'enqueue_scripts_editor' ) );
-
 		// Enqueue styles for this Gutenberg Block in the editor view.
-		//add_action( 'convertkit_gutenberg_enqueue_styles', array( $this, 'enqueue_styles_editor' ) );
+		// add_action( 'convertkit_gutenberg_enqueue_styles', array( $this, 'enqueue_styles_editor' ) );
 
 		// Enqueue scripts and styles for this Gutenberg Block in the editor and frontend views.
-		//add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
-
-	}
-
-	/**
-	 * Enqueues scripts for this Gutenberg Block in the editor view.
-	 *
-	 * @since   3.0.0
-	 */
-	public function enqueue_scripts_editor() {
-
-		wp_enqueue_script( 'convertkit-gutenberg-block-form-builder-field', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/gutenberg-block-form-builder-field.js', array( 'convertkit-gutenberg' ), CONVERTKIT_PLUGIN_VERSION, true );
-
+		// add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
 	}
 
 	/**
@@ -98,28 +83,28 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		$settings         = new ConvertKit_Settings();
 
 		return array(
-			'title'                             => __( 'Kit Form Builder Field', 'convertkit' ),
-			'description'                       => __( 'Add a field to the Kit Form Builder.', 'convertkit' ),
-			'icon'                              => 'resources/backend/images/block-icon-form.svg',
-			'category'                          => 'convertkit',
-			'keywords'                          => array(
+			'title'                   => __( 'Kit Form Builder Field', 'convertkit' ),
+			'description'             => __( 'Add a field to the Kit Form Builder.', 'convertkit' ),
+			'icon'                    => 'resources/backend/images/block-icon-form.svg',
+			'category'                => 'convertkit',
+			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),
 				__( 'Kit', 'convertkit' ),
 				__( 'Form Builder', 'convertkit' ),
-                __( 'Field', 'convertkit' ),
+				__( 'Field', 'convertkit' ),
 			),
 
 			// Function to call when rendering.
-			'render_callback'                   => array( $this, 'render' ),
+			'render_callback'         => array( $this, 'render' ),
 
 			// Gutenberg: Block Icon in Editor.
-			'gutenberg_icon'                    => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form.svg' ),
+			'gutenberg_icon'          => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form.svg' ),
 
 			// Gutenberg: Example image showing how this block looks when choosing it in Gutenberg.
-			'gutenberg_example_image'           => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field.png',
+			'gutenberg_example_image' => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field.png',
 
-			'has_access_token'                  => true,
-			'has_resources'                     => true,
+			'has_access_token'        => true,
+			'has_resources'           => true,
 		);
 
 	}
@@ -135,27 +120,31 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 
 		return array(
 			// Block attributes.
-			'label'   => array(
+			'label'                => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'label' ),
 			),
+			'type'                 => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'type' ),
+			),
 
 			// get_supports() style, color and typography attributes.
-			'style'                      => array(
+			'style'                => array(
 				'type' => 'object',
 			),
-			'backgroundColor'            => array(
+			'backgroundColor'      => array(
 				'type' => 'string',
 			),
-			'textColor'                  => array(
+			'textColor'            => array(
 				'type' => 'string',
 			),
-			'fontSize'                   => array(
+			'fontSize'             => array(
 				'type' => 'string',
 			),
 
 			// Always required for Gutenberg.
-			'is_gutenberg_example'       => array(
+			'is_gutenberg_example' => array(
 				'type'    => 'boolean',
 				'default' => false,
 			),
@@ -206,10 +195,18 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		}
 
 		return array(
-			'label'                       => array(
+			'label' => array(
 				'label'       => __( 'Label', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The label to display for the field.', 'convertkit' ),
+			),
+			'type'  => array(
+				'label'  => __( 'Field Type', 'convertkit' ),
+				'type'   => 'select',
+				'values' => array(
+					'text'  => __( 'Text', 'convertkit' ),
+					'email' => __( 'Email', 'convertkit' ),
+				),
 			),
 		);
 
@@ -230,10 +227,11 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		}
 
 		return array(
-			'general'    => array(
+			'general' => array(
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'label',
+					'type',
 				),
 			),
 		);
@@ -250,12 +248,13 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
-			'label' => __( 'Email address', 'convertkit' ),
+			'label'           => __( 'Email address', 'convertkit' ),
+			'type'            => 'text',
 
 			// Built-in Gutenberg block attributes.
-			'style'                      => '',
-			'backgroundColor'            => '',
-			'textColor'                  => '',
+			'style'           => '',
+			'backgroundColor' => '',
+			'textColor'       => '',
 		);
 
 	}
@@ -270,8 +269,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 */
 	public function render( $atts ) {
 
-        return 'form field';
-
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
@@ -280,20 +277,21 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		$css_classes = $this->get_css_classes();
 		$css_styles  = $this->get_css_styles( $atts );
 
-        // Define field ID.
-        $field_name = sanitize_title( $atts['label'] );
-        $field_id = 'convertkit-form-builder-field-' . sanitize_title( $atts['label'] );
+		// Define field ID.
+		$field_name = sanitize_title( $atts['label'] );
+		$field_id   = 'convertkit-form-builder-field-' . sanitize_title( $atts['label'] );
 
-  		// Build field HTML.
-        $html = sprintf(
-            '<div><label for="%s">%s</label><input type="text" id="%s" name="%s" class="%s" style="%s" /></div>',
-            esc_attr( $field_id ),
-            esc_html( $atts['label'] ),
-            esc_attr( $field_id ),
-            esc_attr( $field_name ),
-            implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
-            implode( ';', map_deep( $css_styles, 'esc_attr' ) )
-        );
+		// Build field HTML.
+		$html = sprintf(
+			'<div><label for="%s">%s</label><input type="%s" id="%s" name="%s" class="%s" style="%s" /></div>',
+			esc_attr( $field_id ),
+			esc_html( $atts['label'] ),
+			esc_attr( $atts['type'] ),
+			esc_attr( $field_id ),
+			esc_attr( $field_name ),
+			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
+			implode( ';', map_deep( $css_styles, 'esc_attr' ) )
+		);
 
 		/**
 		 * Filter the block's content immediately before it is output.

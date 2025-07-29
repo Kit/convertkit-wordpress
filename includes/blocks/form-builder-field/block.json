@@ -13,6 +13,7 @@
         "convertkit"
     ],
     "textdomain": "convertkit",
+    "parent": [ "convertkit/form-builder" ],
     "attributes": {
         "label": {
             "type": "string"
