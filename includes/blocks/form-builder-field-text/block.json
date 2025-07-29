@@ -1,24 +1,20 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 1,
-    "name": "convertkit/form-builder-field",
-    "title": "Kit Form Builder Field",
+    "name": "convertkit/form-builder-field-text",
+    "title": "Kit Form Builder: Text Field",
     "category": "kit",
-    "description": "Add a field to the Kit Form Builder.",
+    "description": "Adds a text field to the Kit Form Builder.",
     "keywords": [
-        "form",
-        "embed",
-        "subscriber",
-        "email",
-        "convertkit"
+        "convertkit",
+        "kit",
+        "text",
+        "field"
     ],
     "textdomain": "convertkit",
     "parent": [ "convertkit/form-builder" ],
     "attributes": {
         "label": {
-            "type": "string"
-        },
-        "type": {
             "type": "string"
         },
         "fontSize": {

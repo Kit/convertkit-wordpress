@@ -9,10 +9,31 @@
 /**
  * Kit Form Builder Field Block for Gutenberg.
  *
+ * This isn't a block itself, but is used as a base class for other field blocks, such as
+ * ConvertKit_Block_Form_Builder_Field_Email and ConvertKit_Block_Form_Builder_Field_Text.
+ *
  * @package ConvertKit
  * @author  ConvertKit
  */
 class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
+
+	/**
+	 * The type of field to render.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	private $field_type = 'text';
+
+	/**
+	 * Whether the field is required.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool
+	 */
+	private $field_required = false;
 
 	/**
 	 * Constructor
@@ -80,9 +101,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 */
 	public function get_overview() {
 
-		$convertkit_forms = new ConvertKit_Resource_Forms( 'block_edit' );
-		$settings         = new ConvertKit_Settings();
-
 		return array(
 			'title'                   => __( 'Kit Form Builder Field', 'convertkit' ),
 			'description'             => __( 'Add a field to the Kit Form Builder.', 'convertkit' ),
@@ -113,7 +131,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	/**
 	 * Returns this block's Attributes
 	 *
-	 * @since   1.9.6.5
+	 * @since   3.0.0
 	 *
 	 * @return  array
 	 */
@@ -124,10 +142,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 			'label'                => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'label' ),
-			),
-			'type'                 => array(
-				'type'    => 'string',
-				'default' => $this->get_default_value( 'type' ),
 			),
 
 			// get_supports() style, color and typography attributes.
@@ -201,14 +215,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 				'type'        => 'text',
 				'description' => __( 'The label to display for the field.', 'convertkit' ),
 			),
-			'type'  => array(
-				'label'  => __( 'Field Type', 'convertkit' ),
-				'type'   => 'select',
-				'values' => array(
-					'text'  => __( 'Text', 'convertkit' ),
-					'email' => __( 'Email', 'convertkit' ),
-				),
-			),
 		);
 
 	}
@@ -232,7 +238,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'label',
-					'type',
 				),
 			),
 		);
@@ -249,8 +254,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
-			'label'           => __( 'Email address', 'convertkit' ),
-			'type'            => 'text',
+			'label'           => '',
 
 			// Built-in Gutenberg block attributes.
 			'style'           => '',
@@ -275,7 +279,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		$atts = $this->sanitize_and_declare_atts( $atts );
 
 		// Get CSS classes and styles.
-		$css_classes = $this->get_css_classes();
+		$css_classes = $this->get_css_classes( array( 'wp-block-convertkit-form-builder-field', 'convertkit-form-builder-field' ) );
 		$css_styles  = $this->get_css_styles( $atts );
 
 		// Define field ID.
@@ -284,14 +288,15 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 
 		// Build field HTML.
 		$html = sprintf(
-			'<div><label for="%s">%s</label><input type="%s" id="%s" name="%s" class="%s" style="%s" /></div>',
+			'<div class="%s" style="%s"><label for="%s">%s</label><input type="%s" id="%s" name="convertkit-%s" %s /></div>',
+			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
+			implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
 			esc_attr( $field_id ),
 			esc_html( $atts['label'] ),
-			esc_attr( $atts['type'] ),
+			esc_attr( $this->field_type ),
 			esc_attr( $field_id ),
 			esc_attr( $field_name ),
-			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
-			implode( ';', map_deep( $css_styles, 'esc_attr' ) )
+			$this->field_required ? ' required' : ''
 		);
 
 		/**

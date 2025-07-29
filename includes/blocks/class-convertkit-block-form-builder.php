@@ -193,11 +193,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 			// Gutenberg: Inner blocks to use as a starting template when creating a new block.
 			'gutenberg_template'      => array(
-				'convertkit/form-builder-field' => array(
-					'label' => 'Email address',
-					'type'  => 'email',
+				'convertkit/form-builder-field-text'  => array(
+					'label' => 'First name',
 				),
-				'core/button'                   => array(
+				'convertkit/form-builder-field-email' => array(
+					'label' => 'Email address',
+				),
+				'core/button'                         => array(
 					'placeholder' => 'Subscribe',
 				),
 			),

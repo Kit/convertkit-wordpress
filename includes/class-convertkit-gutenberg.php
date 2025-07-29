@@ -102,24 +102,17 @@ class ConvertKit_Gutenberg {
 				continue;
 			}
 
-			// Define block properties.
-			$block_properties = array(
-				'attributes'    => $properties['attributes'],
-				'editor_script' => 'convertkit-gutenberg',
-			);
-
-			// If the block has a render_callback, add it to the block properties.
-			if ( array_key_exists( 'render_callback', $properties ) ) {
-				$block_properties['render_callback'] = array(
-					$properties['render_callback'][0],
-					$properties['render_callback'][1],
-				);
-			}
-
 			// Register block.
 			register_block_type(
 				CONVERTKIT_PLUGIN_PATH . '/includes/blocks/' . $block,
-				$block_properties
+				array(
+					'attributes'      => $properties['attributes'],
+					'editor_script'   => 'convertkit-gutenberg',
+					'render_callback' => array(
+						$properties['render_callback'][0],
+						$properties['render_callback'][1],
+					),
+				)
 			);
 
 		}
