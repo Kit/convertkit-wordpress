@@ -58,15 +58,18 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Bail if the nonce failed validation.
-		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_native_form' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_block_form_builder' ) ) {
 			return;
 		}
 
 		// Bail if the expected email, resource ID or Post ID are missing.
-		if ( ! array_key_exists( 'convertkit_email', $_REQUEST ) ) {
+		if ( ! array_key_exists( 'convertkit', $_REQUEST ) ) {
 			return;
 		}
-		if ( ! array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
+		if ( ! array_key_exists( 'email', $_REQUEST['convertkit'] ) ) {
+			return;
+		}
+		if ( ! array_key_exists( 'post_id', $_REQUEST['convertkit'] ) ) {
 			return;
 		}
 
@@ -85,14 +88,24 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$settings->get_access_token(),
 			$settings->get_refresh_token(),
 			$settings->debug_enabled(),
-			'native_form'
+			'block_form_builder'
 		);
+
+		// Sanitize form data.
+		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
+
+		// Build custom fields, if any were specified.
+		$custom_fields = array();
+		if ( array_key_exists( 'custom_fields', $form_data ) ) {
+			$custom_fields = $form_data['custom_fields'];
+		}
 
 		// Create subscriber.
 		$result = $api->create_subscriber(
-			sanitize_email( wp_unslash( $_REQUEST['convertkit_email'] ) ),
-			isset( $_REQUEST['convertkit_name'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['convertkit_name'] ) ) : '',
-			'active'
+			sanitize_email( $form_data['email'] ),
+			array_key_exists( 'name', $form_data ) ? $form_data['name'] : '',
+			'active',
+			$custom_fields
 		);
 
 		// Bail if an error occured.
@@ -106,12 +119,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Get the redirect URL, based on whether the form is configured to redirect
 		// or not.
-		if ( array_key_exists( 'convertkit_redirect', $_REQUEST ) && wp_http_validate_url( sanitize_url( wp_unslash( $_REQUEST['convertkit_redirect'] ) ) ) ) {
+		if ( array_key_exists( 'redirect', $form_data ) && wp_http_validate_url( sanitize_url( $form_data['redirect'] ) ) ) {
 			// Redirect to the URL specified in the form.
-			$redirect = sanitize_url( wp_unslash( $_REQUEST['convertkit_redirect'] ) );
+			$redirect = sanitize_url( $form_data['redirect'] );
 		} else {
 			// Redirect to the Post the form was displayed on, to show a success message.
-			$redirect = get_permalink( absint( $_REQUEST['convertkit_post_id'] ) );
+			$redirect = get_permalink( absint( $form_data['post_id'] ) );
 		}
 
 		// Redirect.
@@ -193,7 +206,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 			// Gutenberg: Inner blocks to use as a starting template when creating a new block.
 			'gutenberg_template'      => array(
-				'convertkit/form-builder-field-text'  => array(
+				'convertkit/form-builder-field-name'  => array(
 					'label' => 'First name',
 				),
 				'convertkit/form-builder-field-email' => array(
@@ -403,9 +416,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Wrap the inner blocks content within a form.
 		$html  = '<form action="' . esc_url( get_permalink( $post_id ) ) . '" method="post">' . $content;
-		$html .= '<input type="hidden" name="convertkit_post_id" value="' . esc_attr( $post_id ) . '" />';
-		$html .= '<input type="hidden" name="convertkit_redirect" value="' . esc_url( $atts['redirect'] ) . '" />';
-		$html .= wp_nonce_field( 'convertkit_native_form', '_wpnonce', true, false );
+		$html .= '<input type="hidden" name="convertkit[post_id]" value="' . esc_attr( $post_id ) . '" />';
+		$html .= '<input type="hidden" name="convertkit[redirect]" value="' . esc_url( $atts['redirect'] ) . '" />';
+		$html .= wp_nonce_field( 'convertkit_block_form_builder', '_wpnonce', true, false );
+		$html .= '<input type="submit" value="Subscribe" />';
 		$html .= '</form>';
 
 		/**

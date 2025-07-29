@@ -213,7 +213,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 			'label' => array(
 				'label'       => __( 'Label', 'convertkit' ),
 				'type'        => 'text',
-				'description' => __( 'The label to display for the field.', 'convertkit' ),
+				'description' => __( 'The field label.', 'convertkit' ),
 			),
 		);
 
@@ -288,14 +288,14 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 
 		// Build field HTML.
 		$html = sprintf(
-			'<div class="%s" style="%s"><label for="%s">%s</label><input type="%s" id="%s" name="convertkit-%s" %s /></div>',
+			'<div class="%s" style="%s"><label for="%s">%s</label><input type="%s" id="%s" name="convertkit[%s]" %s /></div>',
 			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
 			implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
 			esc_attr( $field_id ),
 			esc_html( $atts['label'] ),
 			esc_attr( $this->field_type ),
 			esc_attr( $field_id ),
-			esc_attr( $field_name ),
+			esc_attr( $this->field_name ),
 			$this->field_required ? ' required' : ''
 		);
 

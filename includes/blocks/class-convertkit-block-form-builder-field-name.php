@@ -12,7 +12,16 @@
  * @package ConvertKit
  * @author  ConvertKit
  */
-class ConvertKit_Block_Form_Builder_Field_Text extends ConvertKit_Block_Form_Builder_Field {
+class ConvertKit_Block_Form_Builder_Field_Name extends ConvertKit_Block_Form_Builder_Field {
+
+	/**
+	 * The field name.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	public $field_name = 'first_name';
 
 	/**
 	 * Returns this block's programmatic name, excluding the convertkit- prefix.
@@ -25,9 +34,9 @@ class ConvertKit_Block_Form_Builder_Field_Text extends ConvertKit_Block_Form_Bui
 
 		/**
 		 * This will register as:
-		 * - a Gutenberg block, with the name convertkit/form-builder-field-text.
+		 * - a Gutenberg block, with the name convertkit/form-builder-field-name.
 		 */
-		return 'form-builder-field-text';
+		return 'form-builder-field-name';
 
 	}
 
@@ -41,14 +50,14 @@ class ConvertKit_Block_Form_Builder_Field_Text extends ConvertKit_Block_Form_Bui
 	public function get_overview() {
 
 		return array(
-			'title'                   => __( 'Kit Form Builder: Text Field', 'convertkit' ),
-			'description'             => __( 'Adds a text field to the Kit Form Builder.', 'convertkit' ),
+			'title'                   => __( 'Kit Form Builder: Name Field', 'convertkit' ),
+			'description'             => __( 'Adds a name field to the Kit Form Builder.', 'convertkit' ),
 			'icon'                    => 'resources/backend/images/block-icon-form.svg',
 			'category'                => 'convertkit',
 			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),
 				__( 'Kit', 'convertkit' ),
-				__( 'Text', 'convertkit' ),
+				__( 'Name', 'convertkit' ),
 				__( 'Field', 'convertkit' ),
 			),
 

@@ -65,6 +65,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output-restric
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-post.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-preview-output.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-creator-network-recommendations.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-custom-fields.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-forms.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-landing-pages.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-posts.php';
@@ -87,8 +88,9 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-f
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-custom.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-email.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-text.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-name.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-product.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';

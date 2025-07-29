@@ -15,6 +15,15 @@
 class ConvertKit_Block_Form_Builder_Field_Email extends ConvertKit_Block_Form_Builder_Field {
 
 	/**
+	 * The field name.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	public $field_name = 'email';
+
+	/**
 	 * Returns this block's programmatic name, excluding the convertkit- prefix.
 	 *
 	 * @since   3.0.0
