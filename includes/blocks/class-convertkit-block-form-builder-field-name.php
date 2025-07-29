@@ -24,6 +24,15 @@ class ConvertKit_Block_Form_Builder_Field_Name extends ConvertKit_Block_Form_Bui
 	public $field_name = 'first_name';
 
 	/**
+	 * Whether the field is required.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool
+	 */
+	private $field_required = false;
+
+	/**
 	 * Returns this block's programmatic name, excluding the convertkit- prefix.
 	 *
 	 * @since   3.0.0

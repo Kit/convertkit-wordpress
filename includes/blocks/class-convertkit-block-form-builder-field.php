@@ -143,6 +143,10 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'label' ),
 			),
+			'required'             => array(
+				'type'    => 'boolean',
+				'default' => $this->get_default_value( 'required' ),
+			),
 
 			// get_supports() style, color and typography attributes.
 			'style'                => array(
@@ -210,10 +214,15 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		}
 
 		return array(
-			'label' => array(
+			'label'    => array(
 				'label'       => __( 'Label', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The field label.', 'convertkit' ),
+			),
+			'required' => array(
+				'label'       => __( 'Required', 'convertkit' ),
+				'type'        => 'toggle',
+				'description' => __( 'Whether the field is required.', 'convertkit' ),
 			),
 		);
 
@@ -238,6 +247,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'label',
+					'required',
 				),
 			),
 		);
@@ -255,6 +265,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 
 		return array(
 			'label'           => '',
+			'required'        => true,
 
 			// Built-in Gutenberg block attributes.
 			'style'           => '',
@@ -296,7 +307,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 			esc_attr( $this->field_type ),
 			esc_attr( $field_id ),
 			esc_attr( $this->field_name ),
-			$this->field_required ? ' required' : ''
+			$this->field_required ? ' required' : ( $atts['required'] ? ' required' : '' )
 		);
 
 		/**

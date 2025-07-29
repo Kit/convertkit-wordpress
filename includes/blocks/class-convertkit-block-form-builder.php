@@ -103,7 +103,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
-			array_key_exists( 'name', $form_data ) ? $form_data['name'] : '',
+			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
 			'active',
 			$custom_fields
 		);

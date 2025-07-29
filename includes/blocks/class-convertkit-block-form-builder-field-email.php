@@ -24,6 +24,15 @@ class ConvertKit_Block_Form_Builder_Field_Email extends ConvertKit_Block_Form_Bu
 	public $field_name = 'email';
 
 	/**
+	 * Whether the field is required.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool
+	 */
+	public $field_required = true;
+
+	/**
 	 * Returns this block's programmatic name, excluding the convertkit- prefix.
 	 *
 	 * @since   3.0.0
@@ -73,6 +82,45 @@ class ConvertKit_Block_Form_Builder_Field_Email extends ConvertKit_Block_Form_Bu
 			'has_access_token'        => true,
 			'has_resources'           => true,
 		);
+
+	}
+
+	/**
+	 * Returns this block's Attributes
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  array
+	 */
+	public function get_attributes() {
+
+		// The `required` attribute is not used for this block,
+		// as we always require an email address.
+		$attributes = parent::get_attributes();
+		unset( $attributes['required'] );
+		return $attributes;
+
+	}
+
+	/**
+	 * Returns this block's Fields
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool|array
+	 */
+	public function get_fields() {
+
+		// Bail if the request is not for the WordPress Administration or frontend editor.
+		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
+			return false;
+		}
+
+		// The `required` field is not used for this block,
+		// as we always require an email address.
+		$fields = parent::get_fields();
+		unset( $fields['required'] );
+		return $fields;
 
 	}
 
