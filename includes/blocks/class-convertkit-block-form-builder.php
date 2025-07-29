@@ -15,6 +15,16 @@
 class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 	/**
+	 * Holds the subscriber that was created
+	 * when the form was submitted.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool|int
+	 */
+	public $subscriber_id = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @since   3.0.0
@@ -28,10 +38,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		add_filter( 'convertkit_blocks', array( $this, 'register' ) );
 
 		// Enqueue styles for this Gutenberg Block in the editor view.
-		// add_action( 'convertkit_gutenberg_enqueue_styles', array( $this, 'enqueue_styles_editor' ) );
+		add_action( 'convertkit_gutenberg_enqueue_styles', array( $this, 'enqueue_styles_editor' ) );
 
 		// Enqueue scripts and styles for this Gutenberg Block in the editor and frontend views.
-		// add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
+		add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
 	}
 
 	/**
@@ -128,7 +138,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( 'convertkit-form-builder-field', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/form-builder-field.css', array(), CONVERTKIT_PLUGIN_VERSION );
+		wp_enqueue_style( 'convertkit-form-builder-field', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/form-builder.css', array(), CONVERTKIT_PLUGIN_VERSION );
 
 	}
 
@@ -183,9 +193,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 			// Gutenberg: Inner blocks to use as a starting template when creating a new block.
 			'gutenberg_template'      => array(
-				'core/heading'                  => array(
-					'placeholder' => 'Subscribe to our newsletter',
-				),
 				'convertkit/form-builder-field' => array(
 					'label' => 'Email address',
 					'type'  => 'email',

@@ -18,6 +18,9 @@
         "label": {
             "type": "string"
         },
+        "type": {
+            "type": "string"
+        },
         "fontSize": {
             "type": "string"
         },
