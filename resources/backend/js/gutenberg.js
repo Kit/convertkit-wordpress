@@ -392,6 +392,19 @@ function convertKitGutenbergRegisterBlock( block ) {
 				// This doesn't affect the output for this block on the frontend site, which will always
 				// use the block's PHP's render() function.
 				preview = window[ block.gutenberg_preview_render_callback ]( block, props );
+			} else {
+				// Use the block's PHP's render() function by calling the ServerSideRender component.
+				preview = wp.element.createElement(
+					wp.serverSideRender,
+					{
+						block: 'convertkit/' + block.name,
+						attributes: props.attributes,
+
+						// This is only output in the Gutenberg editor, so must be slightly different from the inner class name used to
+						// apply styles with i.e. convertkit-block.name.
+						className: 'convertkit-ssr-' + block.name,
+					}
+				);
 			}
 
 			// Return settings sidebar panel with fields and the block preview.

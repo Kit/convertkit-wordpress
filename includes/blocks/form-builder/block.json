@@ -1,10 +1,10 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 1,
-    "name": "convertkit/native-form",
-    "title": "Kit Native Form",
+    "name": "convertkit/form-builder",
+    "title": "Kit Form Builder",
     "category": "kit",
-    "description": "Displays a Kit Native Form.",
+    "description": "Build a subscription form that inherits your site's styles.",
     "keywords": [
         "form",
         "embed",
@@ -14,15 +14,6 @@
     ],
     "textdomain": "convertkit",
     "attributes": {
-        "display_name_field": {
-            "type": "boolean"
-        },
-        "display_labels": {
-            "type": "boolean"
-        },
-        "text": {
-            "type": "string"
-        },
         "redirect": {
             "type": "string"
         },
@@ -64,5 +55,5 @@
             "padding": true
         }
     },
-    "editorScript": "convertkit-gutenberg"
+    "editorScript": "convertkit-form-builder"
 }
