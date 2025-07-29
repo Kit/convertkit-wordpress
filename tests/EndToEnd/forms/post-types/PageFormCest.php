@@ -645,6 +645,55 @@ class PageFormCest
 	}
 
 	/**
+	 * Test that the Modal Form is output once when the Debloat Plugin is active and
+	 * its "Defer JavaScript" and "Delay All Scripts" settings are enabled.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithDebloatPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Debloat Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->activateThirdPartyPlugin($I, 'debloat');
+
+		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
+		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
+		);
+
+		// Configure metabox's Form setting = None.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form,
+		// and that Debloat hasn't moved the script embed to the footer of the site.
+		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+
+		// Deactivate Debloat Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'debloat');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+	}
+
+	/**
 	 * Test that the Modal Form is output once when the Jetpack Boost Plugin is active and
 	 * its "Defer Non-Essential JavaScript" setting is enabled.
 	 *

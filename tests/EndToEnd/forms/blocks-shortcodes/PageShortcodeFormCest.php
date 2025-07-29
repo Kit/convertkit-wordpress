@@ -546,6 +546,64 @@ class PageShortcodeFormCest
 	}
 
 	/**
+	 * Test that the Form <script> embed is output in the content once, and not the footer of the site
+	 * when the Debloat Plugin is active and its "Defer JavaScript" and "Delay All Scripts" settings are enabled.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormShortcodeWithDebloatPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Debloat Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->activateThirdPartyPlugin($I, 'debloat');
+
+		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
+		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
+
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Shortcode: Debloat'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the shortcode in the Classic Editor.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add shortcode to Page, setting the Form setting to the value specified in the .env file.
+		$I->addVisualEditorShortcode(
+			$I,
+			shortcodeName: 'Kit Form',
+			shortcodeConfiguration: [
+				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			],
+			expectedShortcodeOutput: '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
+		// It won't output if the Kit Plugin doesn't exclude scripts from Debloat.
+		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
+
+		// Deactivate Debloat Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'debloat');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+	}
+
+	/**
 	 * Test that the Form <script> embed is output in the content, and not the footer of the site
 	 * when the Jetpack Boost Plugin is active and its "Defer Non-Essential JavaScript" setting is enabled.
 	 *
