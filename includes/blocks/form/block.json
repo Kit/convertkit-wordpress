@@ -23,7 +23,16 @@
         }
     },
     "supports": {
-        "className": true
+        "className": true,
+        "color": {
+            "link": false,
+            "background": true,
+            "text": false
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
     },
     "editorScript": "convertkit-gutenberg"
 }

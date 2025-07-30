@@ -360,7 +360,7 @@ class CategoryFormCest
 		$I->seeInSource(
 			'</h1>
 
-	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
+	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
 		// Confirm that one Kit Form is output in the DOM.
@@ -421,7 +421,7 @@ class CategoryFormCest
 		// Confirm form is after closing div element.
 		$I->seeInSource(
 			'</div>
-	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
+	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
 		// Confirm that one Kit Form is output in the DOM.
@@ -506,7 +506,7 @@ class CategoryFormCest
 		$I->seeInSource(
 			'</h1>
 
-	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
+	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
 		// Confirm that one Kit Form is output in the DOM.
@@ -590,7 +590,7 @@ class CategoryFormCest
 		// Confirm form is after closing div element.
 		$I->seeInSource(
 			'</div>
-	<form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
+	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
 
 		// Confirm that one Kit Form is output in the DOM.
