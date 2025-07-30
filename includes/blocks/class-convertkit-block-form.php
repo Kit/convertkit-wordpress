@@ -323,6 +323,10 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 */
 	public function render( $atts ) {
 
+		global $post;
+
+		$post_id = is_a( $post, 'WP_Post' ) ? $post->ID : 0;
+
 		// Check if the Block Visibility Plugin permits displaying this block.
 		if ( ! $this->is_block_visible( $atts ) ) {
 			// Block should not be displayed due to Block Visibility Plugin conditions.
@@ -360,7 +364,7 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 
 		// Get Form HTML.
 		$forms = new ConvertKit_Resource_Forms( 'output_form' );
-		$form  = $forms->get_html( $form_id );
+		$form  = $forms->get_html( $form_id, $post_id );
 
 		// If an error occured, it might be that we're requesting a Form ID that exists in ConvertKit
 		// but does not yet exist in the Plugin's Form Resources.
@@ -370,7 +374,7 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 			$forms->refresh();
 
 			// Get Form HTML again.
-			$form = $forms->get_html( $form_id );
+			$form = $forms->get_html( $form_id, $post_id );
 		}
 
 		// If an error still occured, the shortcode might be from the ConvertKit App for a Legacy Form ID
