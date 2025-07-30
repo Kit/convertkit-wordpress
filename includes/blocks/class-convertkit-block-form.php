@@ -186,10 +186,42 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 				'type' => 'string',
 			),
 
+			// get_supports() style, color and typography attributes.
+			'style'                => array(
+				'type' => 'object',
+			),
+			'backgroundColor'      => array(
+				'type' => 'string',
+			),
+
 			// Always required for Gutenberg.
 			'is_gutenberg_example' => array(
 				'type'    => 'boolean',
 				'default' => false,
+			),
+		);
+
+	}
+
+	/**
+	 * Returns this block's supported built-in Attributes.
+	 *
+	 * @since   1.9.7.4
+	 *
+	 * @return  array   Supports
+	 */
+	public function get_supports() {
+
+		return array(
+			'className' => true,
+			'color'     => array(
+				'link'       => false,
+				'background' => true,
+				'text'       => false,
+			),
+			'spacing'   => array(
+				'margin'  => true,
+				'padding' => true,
 			),
 		);
 
@@ -291,6 +323,10 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 */
 	public function render( $atts ) {
 
+		global $post;
+
+		$post_id = is_a( $post, 'WP_Post' ) ? $post->ID : 0;
+
 		// Check if the Block Visibility Plugin permits displaying this block.
 		if ( ! $this->is_block_visible( $atts ) ) {
 			// Block should not be displayed due to Block Visibility Plugin conditions.
@@ -328,7 +364,7 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 
 		// Get Form HTML.
 		$forms = new ConvertKit_Resource_Forms( 'output_form' );
-		$form  = $forms->get_html( $form_id );
+		$form  = $forms->get_html( $form_id, $post_id );
 
 		// If an error occured, it might be that we're requesting a Form ID that exists in ConvertKit
 		// but does not yet exist in the Plugin's Form Resources.
@@ -338,7 +374,7 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 			$forms->refresh();
 
 			// Get Form HTML again.
-			$form = $forms->get_html( $form_id );
+			$form = $forms->get_html( $form_id, $post_id );
 		}
 
 		// If an error still occured, the shortcode might be from the ConvertKit App for a Legacy Form ID
@@ -368,6 +404,20 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 			}
 
 			return '';
+		}
+
+		// Build HTML.
+		// For the block editor, don't include compiled CSS classes and styles,
+		// as the block editor will add these to the parent container.
+		// Otherwise the block will render incorrectly with double padding, double margins etc.
+		// If there's no Form HTML, it's a non-inline form, so don't render any output.
+		if ( ! $this->is_block_editor_request() && ! empty( $form ) ) {
+			$form = sprintf(
+				'<div class="%s" style="%s">%s</div>',
+				implode( ' ', map_deep( $this->get_css_classes(), 'sanitize_html_class' ) ),
+				implode( ';', map_deep( $this->get_css_styles( $atts ), 'esc_attr' ) ),
+				$form
+			);
 		}
 
 		/**
