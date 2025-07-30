@@ -117,7 +117,7 @@ function convertKitRemoveSubscriberIDFromURL( url ) {
 
 	// Emit custom event with the removed subscriber ID.
 	convertKitEmitCustomEvent(
-		'convertkit_subscriber_id_removed_from_url',
+		'kit_subscriber_id_removed_from_url',
 		{
 			id: ck_subscriber_id
 		}
