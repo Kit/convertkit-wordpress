@@ -1323,7 +1323,7 @@ class ConvertKit_Output_Restrict_Content {
 			case 'form':
 				// Display the Form.
 				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
-				$form  = $forms->get_html( $this->resource_id );
+				$form  = $forms->get_html( $this->resource_id, $post_id );
 
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.

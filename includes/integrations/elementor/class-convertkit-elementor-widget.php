@@ -260,18 +260,6 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 			return $this->block->get_error_message();
 		}
 
-		// To avoid errors in get_block_wrapper_attributes(), tell WordPress that a block is being rendered.
-		// The attributes don't matter, as we send them to the render() function.
-		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
-			WP_Block_Supports::$block_to_render = array(
-				'blockName'    => 'convertkit/' . $this->get_block_name(),
-				'attrs'        => array(),
-				'innerBlocks'  => array(),
-				'innerHTML'    => '',
-				'innerContent' => array(),
-			);
-		}
-
 		// Render using Block class' render() function.
 		// Output is already escaped in render() function.
 		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_for_display() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

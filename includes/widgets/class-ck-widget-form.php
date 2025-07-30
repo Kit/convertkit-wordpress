@@ -78,7 +78,7 @@ class CK_Widget_Form extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'form' ) ); ?>"><?php esc_html_e( 'Form', 'convertkit' ); ?></label>
 			<?php
-			$forms->output_select_field_all(
+			echo $forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_attr( $this->get_field_name( 'form' ) ),
 				esc_attr( $this->get_field_id( 'form' ) ),
 				array(
