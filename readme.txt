@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 2.8.6.1
+Stable tag: 2.8.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -160,6 +160,14 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 2.8.7 2025-07-31
+* Added: Blocks: Form: Margin, padding and background color options
+* Added: Debug: Forms: `data-kit-source-post-id` attribute to scripts when Debugging enabled
+* Added: JS: Emit `kit_subscriber_id_removed_from_url` event when the `ck_subscriber_id` is removed from a URL
+* Fix: Debloat Plugin: Exclude Forms from Debloat's Defer and Delay JS
+* Fix: Classic Widgets: Form: Uncaught error: Call to undefined method `ConvertKit_Resource_Forms::output_select_field_all`
+* Fix: Blocks: Refactored and removed unnecessary duplicate render callback functions in the block editor
 
 ### 2.8.6.1 2025-07-23
 * Fix: Form Trigger: Revert running `script` tags through `wp_kses`, as WordPress.com strip the script tag
