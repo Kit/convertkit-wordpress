@@ -115,6 +115,14 @@ function convertKitRemoveSubscriberIDFromURL( url ) {
 	// Update history.
 	window.history.replaceState( null, title, url_object.pathname + params + url_object.hash );
 
+	// Emit custom event with the removed subscriber ID.
+	convertKitEmitCustomEvent(
+		'kit_subscriber_id_removed_from_url',
+		{
+			id: ck_subscriber_id
+		}
+	);
+
 }
 
 /**
