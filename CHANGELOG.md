@@ -1,3 +1,37 @@
+### 2.8.7 2025-07-31
+* Added: Blocks: Form: Margin, padding and background color options
+* Added: Debug: Forms: `data-kit-source-post-id` attribute to scripts when Debugging enabled
+* Added: JS: Emit `kit_subscriber_id_removed_from_url` event when the `ck_subscriber_id` is removed from a URL
+* Fix: Debloat Plugin: Exclude Forms from Debloat's Defer and Delay JS
+* Fix: Classic Widgets: Form: Uncaught error: Call to undefined method `ConvertKit_Resource_Forms::output_select_field_all`
+* Fix: Blocks: Refactored and removed unnecessary duplicate render callback functions in the block editor
+
+### 2.8.6.1 2025-07-23
+* Fix: Form Trigger: Revert running `script` tags through `wp_kses`, as WordPress.com strip the script tag
+
+### 2.8.6 2025-07-23
+* Fix: Form Block: Correctly style "No Content" message when selecting a modal form
+* Fix: Member Content: Display all Posts if filter = All content
+
+### 2.8.5 2025-07-17
+* Fix: Broadcasts, Form Trigger and Product Blocks: Improve rendering accuracy between block editor and frontend site
+* Fix: Sanitization and security enhancements
+
+### 2.8.4 2025-07-10
+* Added: Broadcasts Block: Display order option
+* Added: Broadcasts, Form Trigger and Product Blocks: Use `get_block_wrapper_attributes` for block `class` and `style` attributes
+* Added: Broadcasts, Form Trigger and Product Blocks: Typography options
+* Added: Broadcasts, Form Trigger and Product Blocks: Margin and padding options
+
+### 2.8.3 2025-07-03
+* Added: Member Content: `All member-only content` option added to filter dropdown in Posts and Pages tables
+* Fix: Member Content: Replace `Members only` with `member-only`
+* Fix: Automatically refresh Access Token when expired
+
+### 2.8.2 2025-05-28
+* Fix: Broadcasts: Remove emoijs from Permalink whem importing Broadcasts to WordPress Posts
+* Fix: Coding Standards: Use `wp_doing_cron` function, instead of `DOING_CRON` constant
+
 ### 2.8.1 2025-05-07
 * Added: Member Content: Permits Apple, DuckDuckGo, OpenAI Search, Perplexity and Yandex to crawl Member Content if the Permit Search Engine Crawlers option is enabled
 * Fix: Classic Editor: Display refresh button icon
