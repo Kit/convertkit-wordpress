@@ -41,8 +41,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 		const { registerBlockType } = blocks;
 		const {
 			InspectorControls,
-			InnerBlocks,
-			useBlockProps
+			InnerBlocks
 		}                           = editor;
 		const {
 			Fragment,
@@ -485,8 +484,6 @@ function convertKitGutenbergRegisterBlock( block ) {
 		const saveBlock = function ( props ) {
 
 			if ( typeof block.gutenberg_template !== 'undefined' ) {
-				const blockProps = useBlockProps.save();
-
 				return el(
 					'div',
 					{},
