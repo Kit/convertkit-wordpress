@@ -58,57 +58,57 @@ class PageBlockFormBuilderCest
 			blockProgrammaticName: 'convertkit-form-builder'
 		);
 
-        // Confirm the block template was used as the default.
-        $this->seeFormBuilderBlock($I);
-        $this->seeFormBuilderButtonBlock($I);
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'first_name',
-            label: 'First name',
-            container: 'div[data-type="convertkit/form-builder"]'
-        );
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'email',
-            label: 'Email address',
-            container: 'div[data-type="convertkit/form-builder"]'
-        );
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
 		// Confirm that the Form is output in the DOM.
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'first_name',
-            label: 'First name',
-            container: 'div.wp-block-convertkit-form-builder'
-        );
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'email',
-            label: 'Email address',
-            container: 'div.wp-block-convertkit-form-builder'
-        );
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
 
-        // Generate email address for this test.
+		// Generate email address for this test.
 		$emailAddress = $I->generateEmailAddress();
 
-        // Submit form.
-        $I->fillField('input[name="convertkit[first_name]"]', 'Kit');
-        $I->fillField('input[name="convertkit[email]"]', $emailAddress);
-        $I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
-        // Confirm that the email address was added to Kit.
-        $I->waitForElementVisible('body.page');
-        $I->wait(3);
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('body.page');
+		$I->wait(3);
 		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
-    /**
+	/**
 	 * Test the Form Builder block works when added with changes made to the:
-     * - Display form option,
-     * - Thanks for subscribing text.
+	 * - Display form option,
+	 * - Thanks for subscribing text.
 	 *
 	 * @since   3.0.0
 	 *
@@ -144,68 +144,66 @@ class PageBlockFormBuilderCest
 			$I,
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
-            blockConfiguration: [
-                '#inspector-toggle-control-0' => [ 'toggle', false ],
-                'text_if_subscribed' => [ 'text', 'Welcome to the newsletter!' ],
-            ]
+			blockConfiguration: [
+				'#inspector-toggle-control-0' => [ 'toggle', false ],
+				'text_if_subscribed'          => [ 'text', 'Welcome to the newsletter!' ],
+			]
 		);
 
-        // @TODO Edit form field labels.
+		// @TODO Edit form field labels.
 
-        // Confirm the block template was used as the default.
-        $this->seeFormBuilderBlock($I);
-        $this->seeFormBuilderButtonBlock($I);
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'first_name',
-            label: 'First name',
-            container: 'div[data-type="convertkit/form-builder"]'
-        );
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'email',
-            label: 'Email address',
-            container: 'div[data-type="convertkit/form-builder"]'
-        );
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
 
-        // Publish and view the Page on the frontend site.
-        $I->publishAndViewGutenbergPage($I);
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
 
-        // Confirm that the Form is output in the DOM.
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'first_name',
-            label: 'First name',
-            container: 'div.wp-block-convertkit-form-builder'
-        );
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'email',
-            label: 'Email address',
-            container: 'div.wp-block-convertkit-form-builder'
-        );
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
 
-        // Generate email address for this test.
-        $emailAddress = $I->generateEmailAddress();
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
 
-        // Submit form.
-        $I->fillField('input[name="convertkit[first_name]"]', 'Kit');
-        $I->fillField('input[name="convertkit[email]"]', $emailAddress);
-        $I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		$I->waitForElementVisible('body.page');
 
-        // Confirm that the email address was added to Kit.
-        $I->waitForElementVisible('body.page');
+		// Check that the form no longer displays and the message displays.
+		$I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
+		$I->dontSeeElementInDOM('input[name="convertkit[email]"]');
+		$I->see('Welcome to the newsletter!');
 
-        // Check that the form no longer displays and the message displays.
-        $I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
-        $I->dontSeeElementInDOM('input[name="convertkit[email]"]');
-        $I->see('Welcome to the newsletter!');
-
-        // Confirm that the email address was added to Kit.
-        $I->apiCheckSubscriberExists($I, $emailAddress);
+		// Confirm that the email address was added to Kit.
+		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
-    /**
+	/**
 	 * Test the Form Builder block works when the redirect URL is set.
 	 *
 	 * @since   3.0.0
@@ -242,86 +240,89 @@ class PageBlockFormBuilderCest
 			$I,
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
-            blockConfiguration: [
-                'redirect_url' => $_ENV['WORDPRESS_URL'],
-            ]
+			blockConfiguration: [
+				'redirect' => [ 'text', $_ENV['WORDPRESS_URL'] ],
+			]
 		);
 
-        // Confirm the block template was used as the default.
-        $this->seeFormBuilderBlock($I);
-        $this->seeFormBuilderButtonBlock($I);
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'first_name',
-            label: 'First name',
-            container: 'div[data-type="convertkit/form-builder"]'
-        );
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'email',
-            label: 'Email address',
-            container: 'div[data-type="convertkit/form-builder"]'
-        );
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
 
-        // Publish and view the Page on the frontend site.
-        $I->publishAndViewGutenbergPage($I);
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
 
-        // Confirm that the Form is output in the DOM.
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'first_name',
-            label: 'First name',
-            container: 'div.wp-block-convertkit-form-builder'
-        );
-        $this->seeFormBuilderField(
-            $I,
-            fieldName: 'email',
-            label: 'Email address',
-            container: 'div.wp-block-convertkit-form-builder'
-        );
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
 
-        // Generate email address for this test.
-        $emailAddress = $I->generateEmailAddress();
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
 
-        // Submit form.
-        $I->fillField('input[name="convertkit[first_name]"]', 'Kit');
-        $I->fillField('input[name="convertkit[email]"]', $emailAddress);
-        $I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
-        // Confirm that the email address was added to Kit.
-        $I->waitForElementVisible('body.page');
+		// Check we are on the redirect URL i.e. the home page.
+		$I->waitForElementVisible('body.home');
 
-        // Check we are on the redirect URL.
-        $I->see('xxx');
-
-        // Confirm that the email address was added to Kit.
-        $I->apiCheckSubscriberExists($I, $emailAddress);
+		// Confirm that the email address was added to Kit.
+		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
-    /**
-     * @TODO
-     */
-    public function testFormBuilderSupportsStyles(EndToEndTester $I)
-    {
+	/**
+	 * Test the Form Builder block supports various styling options
+	 * provided by the block editor.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderSupportsStyles(EndToEndTester $I)
+	{
 		// Setup Plugin and enable debug log.
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Define theme color.
-		$backgroundColor = 'accent-5';
-
-		// Create a Page as if it were create in Gutenberg with the Form block
-		// set to display an inline form.
+		// Create a Page as if it were create in Gutenberg with the Form Builder block
+		// and various styling options.
 		$pageID = $I->havePostInDatabase(
 			[
 				'post_type'    => 'page',
-				'post_title'   => 'Kit: Page: Form: Block: Theme Color',
-				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","style":{"color":{"background":"' . $backgroundColor . '"}}} /-->',
-				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","style":{"color":{"background":"' . $backgroundColor . '"}}} /-->',
-				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","style":{"spacing":{"padding":{"top":"var:preset|spacing|30"},"margin":{"top":"var:preset|spacing|30"}}}} /-->',
-				
-                
-                'meta_input'   => [
+				'post_title'   => 'Kit: Page: Form Builder: Block: Styles',
+				'post_content' => '<!-- wp:convertkit/form-builder {"align":"left","style":{"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"},"margin":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"}}},"backgroundColor":"accent-5","fontSize":"small"} -->
+<div class="wp-block-convertkit-form-builder alignleft has-accent-5-background-color has-background has-small-font-size" style="padding: var(--wp--preset--spacing--30); margin: var(--wp--preset--spacing--30);"><!-- wp:convertkit/form-builder-field-name {"label":"First name"} /-->
+
+<!-- wp:convertkit/form-builder-field-email {"label":"Email address"} /-->
+
+<!-- wp:button {"lock":{"move":true,"remove":true},"className":"convertkit-form-builder-submit-button"} -->
+<div class="wp-block-button convertkit-form-builder-submit-button"><a class="wp-block-button__link wp-element-button">Subscribe</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:convertkit/form-builder -->',
+				'meta_input'   => [
 					// Configure Kit Plugin to not display a default Form.
 					'_wp_convertkit_post_meta' => [
 						'form'         => '0',
@@ -341,17 +342,13 @@ class PageBlockFormBuilderCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
-
-		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form has-background" style="background-color:' . $backgroundColor . '"');
+		// Confirm that the chosen styles are applied.
+		$I->seeInSource('<div class="wp-block-convertkit-form-builder alignleft has-accent-5-background-color has-background has-small-font-size" style="padding: var(--wp--preset--spacing--30); margin: var(--wp--preset--spacing--30);">');
 	}
 
-    /**
+	/**
 	 * Test the Form Builder Fields (Name, Email etc.) can only be inserted to the Kit Form Builder
-     * block, and not another block in the editor.
+	 * block, and not another block in the editor.
 	 *
 	 * @since   3.0.0
 	 *
@@ -359,33 +356,33 @@ class PageBlockFormBuilderCest
 	 */
 	public function testFormBuilderFieldsCanOnlyBeInsertedToFormBuilderBlock(EndToEndTester $I)
 	{
-        // @TODO.
-    }
+		// @TODO.
+	}
 
-    /**
+	/**
 	 * Test the Form Builder block supports the core blocks.
-     * - Paragraph
-     * - Heading
-     * - List
-     * - Image
-     * - Button
-     * - Spacer
+	 * - Paragraph
+	 * - Heading
+	 * - List
+	 * - Image
+	 * - Button
+	 * - Spacer
 	 *
 	 * @since   3.0.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-    public function testFormBuilderSupportsCoreBlocks(EndToEndTester $I)
-    {
-        // @TODO.
-    }
+	public function testFormBuilderSupportsCoreBlocks(EndToEndTester $I)
+	{
+		// @TODO.
+	}
 
 	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   1.9.6.7
+	 * @since   3.0.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -395,59 +392,59 @@ class PageBlockFormBuilderCest
 		$I->resetKitPlugin($I);
 	}
 
-    /**
-     * Helper method to confirm that the Form Builder block is output in the DOM.
-     *
-     * @since   3.0.0
-     *
-     * @param   EndToEndTester $I  Tester.
-     */
-    private function seeFormBuilderBlock(EndToEndTester $I)
-    {
-        $I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
-    }
+	/**
+	 * Helper method to confirm that the Form Builder block is output in the DOM.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	private function seeFormBuilderBlock(EndToEndTester $I)
+	{
+		$I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
+	}
 
-    /**
-     * Helper method to confirm that the Form Builder button block is output in the DOM.
-     *
-     * @since   3.0.0
-     *
-     * @param   EndToEndTester $I  Tester.
-     */
-    private function seeFormBuilderButtonBlock(EndToEndTester $I)
-    {
-        $I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
-    }
+	/**
+	 * Helper method to confirm that the Form Builder button block is output in the DOM.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	private function seeFormBuilderButtonBlock(EndToEndTester $I)
+	{
+		$I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
+	}
 
-    /**
-     * Helper method to confirm that the Form Builder field is output in the DOM.
-     *
-     * @since   3.0.0
-     *
-     * @param   EndToEndTester $I  Tester.
-     * @param   string         $fieldName  Field name.
-     * @param   string         $label      Field label.
-     * @param   bool           $required   Whether the field should be marked `required`
-     * @param   string         $container  The container the field should be in.
-     */
-    private function seeFormBuilderField(EndToEndTester $I, $fieldName, $label, $required = true, $container = 'div')
-    {
-        $I->seeElementInDOM($container . ' label[for="' . $fieldName . '"]');
-        $I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"]' . $required ? '[required]' : '');
-        $I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldName . '"]'));
-    }
+	/**
+	 * Helper method to confirm that the Form Builder field is output in the DOM.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 * @param   string         $fieldName  Field name.
+	 * @param   string         $label      Field label.
+	 * @param   bool           $required   Whether the field should be marked `required`.
+	 * @param   string         $container  The container the field should be in.
+	 */
+	private function seeFormBuilderField(EndToEndTester $I, $fieldName, $label, $required = true, $container = 'div')
+	{
+		$I->seeElementInDOM($container . ' label[for="' . $fieldName . '"]');
+		$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"]' . $required ? '[required]' : '');
+		$I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldName . '"]'));
+	}
 
-    /**
-     * Helper method to confirm that the Form Builder submit button is output in the DOM.
-     *
-     * @since   3.0.0
-     *
-     * @param   EndToEndTester $I     Tester.
-     * @param   string         $text  The text to check for in the submit button.
-     */
-    private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
-    {
-        $I->seeElementInDOM('button[type="submit"]');
-        $I->assertEquals($text, $I->grabTextFrom('button[type="submit"]'));
-    }
+	/**
+	 * Helper method to confirm that the Form Builder submit button is output in the DOM.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I     Tester.
+	 * @param   string         $text  The text to check for in the submit button.
+	 */
+	private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
+	{
+		$I->seeElementInDOM('button[type="submit"]');
+		$I->assertEquals($text, $I->grabTextFrom('button[type="submit"]'));
+	}
 }
