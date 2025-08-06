@@ -77,57 +77,36 @@ class PageBlockFormBuilderCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-        $I->see('XXX');
-
 		// Confirm that the Form is output in the DOM.
-        $this->seeFormBuilderBlock($I);
         $this->seeFormBuilderField(
             $I,
             fieldName: 'first_name',
-            label: 'First name'
+            label: 'First name',
+            container: 'div.wp-block-convertkit-form-builder'
         );
         $this->seeFormBuilderField(
             $I,
             fieldName: 'email',
-            label: 'Email address'
+            label: 'Email address',
+            container: 'div.wp-block-convertkit-form-builder'
         );
-        
+
+        // Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
 
         // Submit form.
-        // @TODO.
+        $I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+        $I->fillField('input[name="convertkit[email]"]', $emailAddress);
+        $I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
-        // Confirm subscription.
-        // @TODO.
-        
+        // Confirm that the email address was added to Kit.
+        $I->waitForElementVisible('body.page');
+        $I->wait(3);
+		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
-
-    private function seeFormBuilderBlock(EndToEndTester $I)
-    {
-        $I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
-    }
-
-    private function seeFormBuilderButtonBlock(EndToEndTester $I)
-    {
-        $I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
-    }
-
-    private function seeFormBuilderField(EndToEndTester $I, $fieldName, $label, $required = true, $container = 'div')
-    {
-        $I->seeElementInDOM($container . ' label[for="' . $fieldName . '"]');
-        $I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"]' . $required ? '[required]' : '');
-        $I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldName . '"]'));
-    }
-
-    private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
-    {
-        $I->seeElementInDOM('button[type="submit"]');
-        $I->assertEquals($text, $I->grabTextFrom('button[type="submit"]'));
-    }
 
     /**
 	 * Test the Form Builder block works when added with changes made to the:
-     * - Submit button text,
-     * - Redirect URL,
      * - Display form option,
      * - Thanks for subscribing text.
 	 *
@@ -166,28 +145,64 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
             blockConfiguration: [
-                'submit_button_text' => 'Subscribe',
-                'redirect_url' => 'https://example.com',
-                'display_form' => 'true',
-                'thanks_for_subscribing_text' => 'Thanks for subscribing!',
+                '#inspector-toggle-control-0' => [ 'toggle', false ],
+                'text_if_subscribed' => [ 'text', 'Welcome to the newsletter!' ],
             ]
 		);
 
+        // @TODO Edit form field labels.
+ 
         // Confirm the block template was used as the default.
-        // @TODO.
+        $this->seeFormBuilderBlock($I);
+        $this->seeFormBuilderButtonBlock($I);
+        $this->seeFormBuilderField(
+            $I,
+            fieldName: 'first_name',
+            label: 'First name',
+            container: 'div[data-type="convertkit/form-builder"]'
+        );
+        $this->seeFormBuilderField(
+            $I,
+            fieldName: 'email',
+            label: 'Email address',
+            container: 'div[data-type="convertkit/form-builder"]'
+        );
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+        // Publish and view the Page on the frontend site.
+        $I->publishAndViewGutenbergPage($I);
 
-        $I->see('XXX');
+        // Confirm that the Form is output in the DOM.
+        $this->seeFormBuilderField(
+            $I,
+            fieldName: 'first_name',
+            label: 'First name',
+            container: 'div.wp-block-convertkit-form-builder'
+        );
+        $this->seeFormBuilderField(
+            $I,
+            fieldName: 'email',
+            label: 'Email address',
+            container: 'div.wp-block-convertkit-form-builder'
+        );
 
-		// Confirm that the Form is output in the DOM.
-        // @TODO Use function for this.
+        // Generate email address for this test.
+        $emailAddress = $I->generateEmailAddress();
 
-        // Submit.
+        // Submit form.
+        $I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+        $I->fillField('input[name="convertkit[email]"]', $emailAddress);
+        $I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
-        // Confirm subscription.
-        
+        // Confirm that the email address was added to Kit.
+        $I->waitForElementVisible('body.page');
+
+        // Check that the form no longer displays and the message displays.
+        $I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
+        $I->dontSeeElementInDOM('input[name="convertkit[email]"]');
+        $I->see('Welcome to the newsletter!');
+
+        // Confirm that the email address was added to Kit.
+        $I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
     /**
@@ -283,4 +298,27 @@ class PageBlockFormBuilderCest
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
+
+    private function seeFormBuilderBlock(EndToEndTester $I)
+    {
+        $I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
+    }
+
+    private function seeFormBuilderButtonBlock(EndToEndTester $I)
+    {
+        $I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
+    }
+
+    private function seeFormBuilderField(EndToEndTester $I, $fieldName, $label, $required = true, $container = 'div')
+    {
+        $I->seeElementInDOM($container . ' label[for="' . $fieldName . '"]');
+        $I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"]' . $required ? '[required]' : '');
+        $I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldName . '"]'));
+    }
+
+    private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
+    {
+        $I->seeElementInDOM('button[type="submit"]');
+        $I->assertEquals($text, $I->grabTextFrom('button[type="submit"]'));
+    }
 }
