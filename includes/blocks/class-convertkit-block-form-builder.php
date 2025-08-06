@@ -48,12 +48,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 	}
 
-	/**
-	 * Checks if the request is a Native Form subscribe request with an email address.
-	 * If so, subscribes the email address to the Kit account.
-	 *
-	 * @since   3.0.0
-	 */
+		/**
+		 * Checks if the request is a Native Form subscribe request with an email address.
+		 * If so, subscribes the email address to the Kit account.
+		 *
+		 * @since   3.0.0
+		 */
 	public function maybe_subscribe() {
 
 		// Bail if no nonce was specified.
@@ -98,11 +98,18 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Sanitize form data.
 		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
 
+		// Build custom fields, if any were specified.
+		$custom_fields = array();
+		if ( array_key_exists( 'custom_fields', $form_data ) ) {
+			$custom_fields = $form_data['custom_fields'];
+		}
+
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
 			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
-			'active'
+			'active',
+			$custom_fields
 		);
 
 		// Bail if an error occured.
