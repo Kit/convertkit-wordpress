@@ -489,7 +489,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 				return el(
 					'div',
-					blockProps,
+					{},
 					el( InnerBlocks.Content )
 				);
 			}

@@ -42,6 +42,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Enqueue scripts and styles for this Gutenberg Block in the editor and frontend views.
 		add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
+
+		// Replace <a> with <button type="submit"> for the core/button element within the form builder.
+		add_filter( 'render_block_core/button', array( $this, 'render_form_button' ), 10, 2 );
+
 	}
 
 	/**
@@ -213,7 +217,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					'label' => 'Email address',
 				),
 				'core/button'                         => array(
-					'placeholder' => 'Subscribe',
+					'label'     => 'Submit button',
+					'text'      => 'Subscribe',
+					'variant'   => 'primary',
+					'className' => 'convertkit-form-builder-submit-button',
+					'lock'      => array(
+						'move'   => true,
+						'remove' => true,
+					),
 				),
 			),
 
@@ -234,6 +245,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		return array(
 			// Block attributes.
+			'submit_button_text'         => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'submit_button_text' ),
+			),
 			'redirect'                   => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'redirect' ),
@@ -248,6 +263,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			),
 
 			// get_supports() style, color and typography attributes.
+			'align'                      => array(
+				'type' => 'string',
+			),
 			'style'                      => array(
 				'type' => 'object',
 			),
@@ -280,6 +298,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public function get_supports() {
 
 		return array(
+			'align'      => true,
 			'className'  => true,
 			'color'      => array(
 				'link'       => true,
@@ -313,6 +332,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		return array(
+			'submit_button_text'         => array(
+				'label'       => __( 'Submit button text', 'convertkit' ),
+				'type'        => 'text',
+				'description' => __( 'The text to display on the submit button.', 'convertkit' ),
+			),
 			'redirect'                   => array(
 				'label'       => __( 'Redirect', 'convertkit' ),
 				'type'        => 'url',
@@ -350,6 +374,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'general' => array(
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
+					'submit_button_text',
 					'redirect',
 					'display_form_if_subscribed',
 					'text_if_subscribed',
@@ -369,11 +394,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
+			'submit_button_text'         => 'Subscribe',
 			'redirect'                   => '',
-			'display_form_if_subscribed' => false,
+			'display_form_if_subscribed' => true,
 			'text_if_subscribed'         => 'Thanks for subscribing!',
 
 			// Built-in Gutenberg block attributes.
+			'align'                      => 'center',
 			'style'                      => '',
 			'backgroundColor'            => '',
 			'textColor'                  => '',
@@ -414,13 +441,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return $html;
 		}
 
-		// Wrap the inner blocks content within a form.
-		$html  = '<form action="' . esc_url( get_permalink( $post_id ) ) . '" method="post">' . $content;
-		$html .= '<input type="hidden" name="convertkit[post_id]" value="' . esc_attr( $post_id ) . '" />';
-		$html .= '<input type="hidden" name="convertkit[redirect]" value="' . esc_url( $atts['redirect'] ) . '" />';
-		$html .= wp_nonce_field( 'convertkit_block_form_builder', '_wpnonce', true, false );
-		$html .= '<input type="submit" value="Subscribe" />';
-		$html .= '</form>';
+		// Add the <form> element and hidden fields immediate inside the block's container.
+		$html = $this->add_form_to_block_content( $content, $atts, $post_id );
 
 		/**
 		 * Filter the block's content immediately before it is output.
@@ -433,6 +455,104 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$html = apply_filters( 'convertkit_block_form_builder_render', $html, $atts );
 
 		return $html;
+
+	}
+
+	/**
+	 * Replace <a> with <button type="submit"> for the core/button element within the form builder
+	 * that has the class convertkit-form-builder-submit-button, as the block editor doesn't
+	 * have a core <button> element, and registering our own just for this block would be overkill.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $block_content  Block content.
+	 * @param   array  $block          Block attributes.
+	 * @return  string
+	 */
+	public function render_form_button( $block_content, $block ) {
+
+		if ( ! isset( $block['attrs']['className'] ) ) {
+			return $block_content;
+		}
+
+		if ( strpos( $block['attrs']['className'], 'convertkit-form-builder-submit-button' ) === false ) {
+			return $block_content;
+		}
+
+		return preg_replace(
+			'/<a([^>]*)>(.*?)<\/a>/',
+			'<button type="submit"$1>$2</button>',
+			$block_content
+		);
+
+	}
+
+	/**
+	 * Wraps the block's content within a <form> element, and adds hidden fields.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $content  Block content.
+	 * @param   array  $atts     Block attributes.
+	 * @param   int    $post_id  Post ID.
+	 * @return  string
+	 */
+	private function add_form_to_block_content( $content, $atts, $post_id ) {
+
+		// Wrap content in <html>, <head> and <body> tags with an UTF-8 Content-Type meta tag.
+		// Forcibly tell DOMDocument that this HTML uses the UTF-8 charset.
+		// <meta charset="utf-8"> isn't enough, as DOMDocument still interprets the HTML as ISO-8859, which breaks character encoding
+		// Use of mb_convert_encoding() with HTML-ENTITIES is deprecated in PHP 8.2, so we have to use this method.
+		// If we don't, special characters render incorrectly.
+		$content = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>' . $content . '</body></html>';
+
+		// Load the HTML into a DOMDocument.
+		libxml_use_internal_errors( true );
+		$html = new DOMDocument();
+		$html->loadHTML( $content );
+
+		// Load DOMDocument into XPath.
+		$xpath = new DOMXPath( $html );
+
+		// Get block container.
+		$block_container = $xpath->query( '//div[contains(@class, "wp-block-convertkit-form-builder")]' )->item( 0 );
+
+		// If no block container was found, return the original content.
+		// This shouldn't happen, as the block editor supplies the container, but it's a safeguard.
+		if ( ! $block_container ) {
+			return $content;
+		}
+
+		// Create form element.
+		$form = $html->createElement( 'form' );
+		$form->setAttribute( 'action', esc_url( get_permalink( $post_id ) ) );
+		$form->setAttribute( 'method', 'post' );
+
+		// Move form builder div contents into form.
+		while ( $block_container->hasChildNodes() ) {
+			$form->appendChild( $block_container->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		// Add hidden fields.
+		$fields = array(
+			'convertkit[post_id]'  => esc_attr( $post_id ),
+			'convertkit[redirect]' => esc_url( $atts['redirect'] ),
+			'_wpnonce'             => wp_create_nonce( 'convertkit_block_form_builder' ),
+		);
+		foreach ( $fields as $name => $value ) {
+			$hidden = $html->createElement( 'input' );
+			$hidden->setAttribute( 'type', 'hidden' );
+			$hidden->setAttribute( 'name', $name );
+			$hidden->setAttribute( 'value', $value );
+			$form->appendChild( $hidden );
+		}
+
+		// Replace div contents with form.
+		$block_container->appendChild( $form );
+
+		// Return modified content in the <body> tag.
+		preg_match( '/<body[^>]*>(.*?)<\/body>/is', $html->saveHTML(), $matches );
+		return $matches[1] ?? '';
 
 	}
 

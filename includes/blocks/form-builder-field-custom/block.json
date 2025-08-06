@@ -38,6 +38,7 @@
         }
     },
     "supports": {
+        "align": true,
         "className": true,
         "color": {
             "background": true,
