@@ -185,7 +185,6 @@ class WP_ConvertKit {
 		$this->classes['blocks_convertkit_formtrigger']               = new ConvertKit_Block_Form_Trigger();
 		$this->classes['blocks_convertkit_form']                      = new ConvertKit_Block_Form();
 		$this->classes['blocks_convertkit_form_builder']              = new ConvertKit_Block_Form_Builder();
-		$this->classes['blocks_convertkit_form_builder_field_custom'] = new ConvertKit_Block_Form_Builder_Field_Custom();
 		$this->classes['blocks_convertkit_form_builder_field_email']  = new ConvertKit_Block_Form_Builder_Field_Email();
 		$this->classes['blocks_convertkit_form_builder_field_name']   = new ConvertKit_Block_Form_Builder_Field_Name();
 		$this->classes['blocks_convertkit_product']                   = new ConvertKit_Block_Product();
