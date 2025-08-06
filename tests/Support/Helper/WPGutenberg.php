@@ -100,7 +100,16 @@ class WPGutenberg extends \Codeception\Module
 						$I->selectOption($fieldID, $attributes[1]);
 						break;
 					case 'toggle':
-						if ( $attributes[1] ) {
+						// Determine if the toggle has checked the checkbox.
+						$isChecked = $I->grabAttributeFrom($field, 'checked');
+
+						// If the attribute is true, and the checkbox is not checked, click the toggle to check it.
+						if ( $attributes[1] && ! $isChecked ) {
+							$I->click($field);
+						}
+
+						// If the attribute is false, and the checkbox is checked, click the toggle to uncheck it.
+						if ( ! $attributes[1] && $isChecked ) {
 							$I->click($field);
 						}
 						break;

@@ -245,10 +245,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		return array(
 			// Block attributes.
-			'submit_button_text'         => array(
-				'type'    => 'string',
-				'default' => $this->get_default_value( 'submit_button_text' ),
-			),
 			'redirect'                   => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'redirect' ),
@@ -332,11 +328,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		return array(
-			'submit_button_text'         => array(
-				'label'       => __( 'Submit button text', 'convertkit' ),
-				'type'        => 'text',
-				'description' => __( 'The text to display on the submit button.', 'convertkit' ),
-			),
 			'redirect'                   => array(
 				'label'       => __( 'Redirect', 'convertkit' ),
 				'type'        => 'url',
@@ -374,7 +365,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'general' => array(
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
-					'submit_button_text',
 					'redirect',
 					'display_form_if_subscribed',
 					'text_if_subscribed',
@@ -394,7 +384,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
-			'submit_button_text'         => 'Subscribe',
 			'redirect'                   => '',
 			'display_form_if_subscribed' => true,
 			'text_if_subscribed'         => 'Thanks for subscribing!',
@@ -535,7 +524,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Add hidden fields.
 		$fields = array(
-			'convertkit[post_id]'  => esc_attr( $post_id ),
+			'convertkit[post_id]'  => absint( $post_id ),
 			'convertkit[redirect]' => esc_url( $atts['redirect'] ),
 			'_wpnonce'             => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);

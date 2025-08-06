@@ -105,7 +105,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 			// Define some field properties shared across all field types.
 			let fieldProperties = {
-				id:  		'convertkit_' + block.name + '_' + attribute,
+				id:  		'convertkit_' + block.name.replace( /-/g, '_' ) + '_' + attribute,
 				label: 		field.label,
 				help: 		field.description,
 				value: 		props.attributes[ attribute ],
