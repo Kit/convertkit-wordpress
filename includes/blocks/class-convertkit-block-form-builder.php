@@ -98,18 +98,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Sanitize form data.
 		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
 
-		// Build custom fields, if any were specified.
-		$custom_fields = array();
-		if ( array_key_exists( 'custom_fields', $form_data ) ) {
-			$custom_fields = $form_data['custom_fields'];
-		}
-
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
 			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
-			'active',
-			$custom_fields
+			'active'
 		);
 
 		// Bail if an error occured.

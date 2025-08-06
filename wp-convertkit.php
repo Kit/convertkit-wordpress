@@ -88,7 +88,6 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-f
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-custom.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-email.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-name.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-product.php';
