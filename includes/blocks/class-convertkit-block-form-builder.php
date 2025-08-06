@@ -528,7 +528,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Add hidden fields.
 		$fields = array(
-			'convertkit[post_id]'  => esc_attr( $post_id ),
+			'convertkit[post_id]'  => absint( $post_id ),
 			'convertkit[redirect]' => esc_url( $atts['redirect'] ),
 			'_wpnonce'             => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);

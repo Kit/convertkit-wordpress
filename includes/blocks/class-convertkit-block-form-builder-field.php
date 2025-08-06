@@ -18,6 +18,15 @@
 class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 
 	/**
+	 * The field name.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	public $field_name;
+
+	/**
 	 * The type of field to render.
 	 *
 	 * @since   3.0.0
@@ -297,19 +306,15 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		$css_classes = $this->get_css_classes( array( 'wp-block-convertkit-form-builder-field', 'convertkit-form-builder-field' ) );
 		$css_styles  = $this->get_css_styles( $atts );
 
-		// Define field ID.
-		$field_name = sanitize_title( $atts['label'] );
-		$field_id   = 'convertkit-form-builder-field-' . sanitize_title( $atts['label'] );
-
 		// Build field HTML.
 		$html = sprintf(
 			'<div class="%s" style="%s"><label for="%s">%s</label><input type="%s" id="%s" name="convertkit[%s]" %s /></div>',
 			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
 			implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
-			esc_attr( $field_id ),
+			esc_attr( sanitize_title( $this->field_name ) ),
 			esc_html( $atts['label'] ),
 			esc_attr( $this->field_type ),
-			esc_attr( $field_id ),
+			esc_attr( sanitize_title( $this->field_name ) ),
 			esc_attr( $this->field_name ),
 			$this->field_required ? ' required' : ( $atts['required'] ? ' required' : '' )
 		);
