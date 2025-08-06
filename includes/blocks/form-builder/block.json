@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 1,
+    "name": "convertkit/form-builder",
+    "title": "Kit Form Builder",
+    "category": "kit",
+    "description": "Build a subscription form that inherits your site's styles.",
+    "keywords": [
+        "form",
+        "embed",
+        "subscriber",
+        "email",
+        "convertkit"
+    ],
+    "textdomain": "convertkit",
+    "attributes": {
+        "redirect": {
+            "type": "string"
+        },
+        "display_form_if_subscribed": {
+            "type": "boolean"
+        },
+        "text_if_subscribed": {
+            "type": "string"
+        },
+        "fontSize": {
+            "type": "string"
+        },
+        "style": {
+            "type": "object"
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "is_gutenberg_example": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "align": true,
+        "className": true,
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "convertkit-gutenberg"
+}

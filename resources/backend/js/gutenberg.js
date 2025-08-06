@@ -39,7 +39,10 @@ function convertKitGutenbergRegisterBlock( block ) {
 		// Define some constants for the various items we'll use.
 		const el                    = element.createElement;
 		const { registerBlockType } = blocks;
-		const { InspectorControls } = editor;
+		const {
+			InspectorControls,
+			InnerBlocks
+		}                           = editor;
 		const {
 			Fragment,
 			useState
@@ -102,7 +105,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 			// Define some field properties shared across all field types.
 			let fieldProperties = {
-				id:  		'convertkit_' + block.name + '_' + attribute,
+				id:  		'convertkit_' + block.name.replace( /-/g, '_' ) + '_' + attribute,
 				label: 		field.label,
 				help: 		field.description,
 				value: 		props.attributes[ attribute ],
@@ -403,6 +406,29 @@ function convertKitGutenbergRegisterBlock( block ) {
 				return editBlockWithPanelsAndPreview( panels, preview );
 			}
 
+			// If no render_callback is defined, render the block.
+			if ( typeof block.gutenberg_template !== 'undefined' ) {
+				// Build template for the new block.
+				const template = [];
+				for (const templateBlockName in block.gutenberg_template) {
+					if (block.gutenberg_template.hasOwnProperty( templateBlockName )) {
+						template.push( [templateBlockName, block.gutenberg_template[templateBlockName]] );
+					}
+				}
+
+				preview = el(
+					'div',
+					{},
+					el(
+						InnerBlocks,
+						{
+							template: template
+						}
+					)
+				);
+				return editBlockWithPanelsAndPreview( panels, preview );
+			}
+
 			// Use the block's PHP's render() function by calling the ServerSideRender component.
 			preview = el(
 				wp.serverSideRender,
@@ -423,7 +449,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 		 * Display settings sidebar when the block is being edited, and save
 		 * changes that are made.
 		 *
-		 * @since   2.8.8
+		 * @since   3.0.0
 		 *
 		 * @param   object  props   Block properties.
 		 * @return  object          Block settings sidebar elements
@@ -444,6 +470,31 @@ function convertKitGutenbergRegisterBlock( block ) {
 					preview
 				)
 			);
+
+		}
+
+		/**
+		 * Save the block's content.
+		 *
+		 * @since   3.0.0
+		 *
+		 * @param   object  props   Block properties.
+		 * @return  object          Block content.
+		 */
+		const saveBlock = function ( props ) {
+
+			if ( typeof block.gutenberg_template !== 'undefined' ) {
+				return el(
+					'div',
+					{},
+					el( InnerBlocks.Content )
+				);
+			}
+
+			// Deliberate; preview in the editor is determined by the return statement in `edit` above.
+			// On the frontend site, the block's render() PHP class is always called, so we dynamically
+			// fetch the content.
+			return null;
 
 		}
 
@@ -810,14 +861,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 				edit: editBlock,
 
 				// Output.
-				save: function ( props ) {
-
-					// Deliberate; preview in the editor is determined by the return statement in `edit` above.
-					// On the frontend site, the block's render() PHP class is always called, so we dynamically
-					// fetch the content.
-					return null;
-
-				},
+				save: saveBlock
 			}
 		);
 
