@@ -325,11 +325,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		return array(
-			'submit_button_text'         => array(
-				'label'       => __( 'Submit button text', 'convertkit' ),
-				'type'        => 'text',
-				'description' => __( 'The text to display on the submit button.', 'convertkit' ),
-			),
 			'redirect'                   => array(
 				'label'       => __( 'Redirect', 'convertkit' ),
 				'type'        => 'url',
