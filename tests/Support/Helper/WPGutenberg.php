@@ -242,6 +242,71 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Asserts that the given block is not available in the Gutenberg block library.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 */
+	public function seeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
+	{
+		// Click Add Block Button.
+		$I->click('button.editor-document-tools__inserter-toggle');
+
+		// When the Blocks sidebar appears, search for the block.
+		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
+
+		// Let WordPress load any matching block patterns, which reloads the DOM elements.
+		// If we don't do this, we get stale reference errors when trying to click a block to insert.
+		$I->wait(2);
+
+		// Confirm the block is available.
+		$I->waitForElementVisible('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+
+		// Clear the search field.
+		$I->click('button[aria-label="Reset search"]');
+
+		// Close block inserter.
+		$I->click('button.editor-document-tools__inserter-toggle');
+	}
+
+	/**
+	 * Asserts that the given block is not available in the Gutenberg block library.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 */
+	public function dontSeeGutenbergBlockAvailable($I, $blockName)
+	{
+		// Click Add Block Button.
+		$I->click('button.editor-document-tools__inserter-toggle');
+
+		// When the Blocks sidebar appears, search for the block.
+		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
+
+		// Let WordPress load any matching block patterns, which reloads the DOM elements.
+		// If we don't do this, we get stale reference errors when trying to click a block to insert.
+		$I->wait(2);
+
+		// Confirm the 'No results' message is displayed.
+		$I->see('No results');
+
+		// Clear the search field.
+		$I->click('button[aria-label="Reset search"]');
+
+		// Close block inserter.
+		$I->click('button.editor-document-tools__inserter-toggle');
+	}
+
+	/**
 	 * Applies the given block formatter to the currently selected block.
 	 *
 	 * @since   2.2.0
