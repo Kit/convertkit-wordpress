@@ -378,8 +378,8 @@ class PageBlockFormBuilderCest
 		);
 
 		// Confirm the Form Field blocks cannot be added, as we are not within the Form Builder block.
-		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Name');
-		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Email');
+		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Name', 'convertkit-form-builder-field-name');
+		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Email', 'convertkit-form-builder-field-email');
 
 		// Add the Form Builder block.
 		$I->addGutenbergBlock(
