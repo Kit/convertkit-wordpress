@@ -67,7 +67,7 @@ function convertKitGutenbergFormBlockRenderPreview( block, props ) {
 					html: html,
 					title: block.name,
 					styles: [
-					'body{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; text-align:center;}',
+					'body{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; text-align:center;} form{margin: 0 auto;}',
 					],
 				}
 			)
