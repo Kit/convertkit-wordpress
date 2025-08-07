@@ -120,10 +120,6 @@ class PageBlockFormBuilderCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Setup Plugin and Resources.
-		$I->setupKitPlugin($I);
-		$I->setupKitPluginResources($I);
-
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
 			$I,
@@ -150,7 +146,17 @@ class PageBlockFormBuilderCest
 			]
 		);
 
-		// @TODO Edit form field labels.
+		// Change the labels of the form fields. These are added as inner blocks when the Form Builder block is added.
+		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
+		$I->fillField('#convertkit_form_builder_field_name_label', 'Your name');
+
+		$I->click('div[data-type="convertkit/form-builder-field-email"]');
+		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
+		$I->fillField('#convertkit_form_builder_field_email_label', 'Your email');
+
+		// Wait for the changes to show in the editor.
+		$I->wait(2);
 
 		// Confirm the block template was used as the default.
 		$this->seeFormBuilderBlock($I);
@@ -158,13 +164,13 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
-			label: 'First name',
+			label: 'Your name',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
-			label: 'Email address',
+			label: 'Your email',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 
@@ -175,13 +181,13 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
-			label: 'First name',
+			label: 'Your name',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
-			label: 'Email address',
+			label: 'Your email',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 
@@ -212,10 +218,6 @@ class PageBlockFormBuilderCest
 	 */
 	public function testFormBuilderBlockWithRedirectOption(EndToEndTester $I)
 	{
-		// Setup Plugin and Resources.
-		$I->setupKitPlugin($I);
-		$I->setupKitPluginResources($I);
-
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
@@ -356,7 +358,46 @@ class PageBlockFormBuilderCest
 	 */
 	public function testFormBuilderFieldsCanOnlyBeInsertedToFormBuilderBlock(EndToEndTester $I)
 	{
-		// @TODO.
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Form Fields'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Confirm the Form Field blocks cannot be added, as we are not within the Form Builder block.
+		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Name');
+		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Email');
+
+		// Add the Form Builder block.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Click an inner block within the Form Builder block.
+		$I->click('div[data-type="convertkit/form-builder"]');
+		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
+
+		// Confirm the Form Field blocks can be added to the Form Builder block.
+		$I->seeGutenbergBlockAvailable($I, 'Kit Form Field Name', 'convertkit-form-builder-field-name');
+		$I->seeGutenbergBlockAvailable($I, 'Kit Form Field Email', 'convertkit-form-builder-field-email');
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
 	}
 
 	/**
@@ -374,7 +415,45 @@ class PageBlockFormBuilderCest
 	 */
 	public function testFormBuilderSupportsCoreBlocks(EndToEndTester $I)
 	{
-		// @TODO.
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Core Blocks'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add the Form Builder block.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Click an inner block within the Form Builder block.
+		$I->click('div[data-type="convertkit/form-builder"]');
+		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
+
+		// Confirm some core blocks can be added to the Form Builder block.
+		$I->seeGutenbergBlockAvailable($I, 'Paragraph', 'paragraph');
+		$I->seeGutenbergBlockAvailable($I, 'Heading', 'heading');
+		$I->seeGutenbergBlockAvailable($I, 'List', 'list');
+		$I->seeGutenbergBlockAvailable($I, 'Image', 'image');
+		$I->seeGutenbergBlockAvailable($I, 'Spacer', 'spacer');
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
 	}
 
 	/**
