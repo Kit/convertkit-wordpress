@@ -281,8 +281,9 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
 	 */
-	public function dontSeeGutenbergBlockAvailable($I, $blockName)
+	public function dontSeeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
 		$I->click('button.editor-document-tools__inserter-toggle');
@@ -297,7 +298,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->wait(2);
 
 		// Confirm the 'No results' message is displayed.
-		$I->see('No results');
+		$I->dontSeeElementInDOM('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
 
 		// Clear the search field.
 		$I->click('button[aria-label="Reset search"]');
