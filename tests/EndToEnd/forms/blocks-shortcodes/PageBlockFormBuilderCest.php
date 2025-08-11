@@ -226,6 +226,111 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block works when added and a Tag is specified
+	 * to subscribe the subscriber to.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithTaggingEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Tagging Enabled'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add block to Page, setting the Form setting to the value specified in the .env file.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'tag_id' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+			]
+		);
+
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'Your name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Your email',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'Your name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Your email',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		$I->waitForElementVisible('body.page');
+
+		// Check that the form no longer displays and the message displays.
+		$I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
+		$I->dontSeeElementInDOM('input[name="convertkit[email]"]');
+		$I->see('Welcome to the newsletter!');
+
+		// Confirm that the email address was added to Kit.
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+
+		// Confirm that the subscriber has the tag.
+		$I->apiCheckSubscriberHasTag(
+			$I,
+			subscriberID: $subscriber['id'],
+			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+		);
+	}
+
+	/**
 	 * Test the Form Builder block works when a custom field is added.
 	 *
 	 * @since   3.0.0
