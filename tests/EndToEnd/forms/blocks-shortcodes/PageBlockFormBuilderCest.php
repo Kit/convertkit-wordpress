@@ -99,14 +99,18 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('body.page');
 		$I->wait(3);
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 	}
 
 	/**
@@ -203,7 +207,7 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 		$I->waitForElementVisible('body.page');
@@ -214,7 +218,11 @@ class PageBlockFormBuilderCest
 		$I->see('Welcome to the newsletter!');
 
 		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 	}
 
 	/**
@@ -304,11 +312,14 @@ class PageBlockFormBuilderCest
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('body.page');
 		$I->wait(3);
-		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 
 		// Confirm that the custom field was added to the subscriber.
-		// @TODO.
-		//$I->apiCheckSubscriberHasCustomField($I, $subscriber['id'], 'last_name', 'Last');
+		$I->assertEquals('Last', $subscriber['fields']['last_name']);
 	}
 
 	/**
@@ -390,7 +401,7 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
@@ -398,7 +409,11 @@ class PageBlockFormBuilderCest
 		$I->waitForElementVisible('body.home');
 
 		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 	}
 
 	/**
