@@ -70,12 +70,12 @@ class ContactForm7FormCest
 		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has the expected form and referrer value set.
 		$I->apiCheckSubscriberHasForm(
 			$I,
-			subscriberID: $subscriberID,
+			subscriberID: $subscriber['id'],
 			formID: $_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
@@ -142,12 +142,12 @@ class ContactForm7FormCest
 		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the tag.
 		$I->apiCheckSubscriberHasTag(
 			$I,
-			subscriberID: $subscriberID,
+			subscriberID: $subscriber['id'],
 			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
 		);
 	}
@@ -181,12 +181,12 @@ class ContactForm7FormCest
 		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
 		$I->apiCheckSubscriberHasSequence(
 			$I,
-			subscriberID: $subscriberID,
+			subscriberID: $subscriber['id'],
 			sequenceID: $_ENV['CONVERTKIT_API_SEQUENCE_ID']
 		);
 	}
