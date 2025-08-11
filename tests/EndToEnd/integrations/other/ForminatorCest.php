@@ -345,12 +345,12 @@ class ForminatorCest
 		$I->wait(2);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
 		$I->apiCheckSubscriberHasSequence(
 			$I,
-			subscriberID: $subscriberID,
+			subscriberID: $subscriber['id'],
 			sequenceID: $_ENV['CONVERTKIT_API_SEQUENCE_ID']
 		);
 	}
