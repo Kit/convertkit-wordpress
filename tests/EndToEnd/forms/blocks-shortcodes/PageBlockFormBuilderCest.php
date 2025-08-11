@@ -269,7 +269,7 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder: Custom Field',
 			blockProgrammaticName: 'convertkit-form-builder-field-custom',
 			blockConfiguration: [
-				'label' => [ 'input', 'Last name' ],
+				'label'        => [ 'input', 'Last name' ],
 				'custom_field' => [ 'select', 'Last Name' ],
 			]
 		);
@@ -299,7 +299,7 @@ class PageBlockFormBuilderCest
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
-		
+
 		// Generate email address for this test.
 		$emailAddress = $I->generateEmailAddress();
 

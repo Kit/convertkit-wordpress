@@ -15,24 +15,6 @@
 class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_Builder_Field {
 
 	/**
-	 * The field name.
-	 *
-	 * @since   3.0.0
-	 *
-	 * @var     string
-	 */
-	public $field_name = 'custom_fields';
-
-	/**
-	 * Whether the field is required.
-	 *
-	 * @since   3.0.0
-	 *
-	 * @var     bool
-	 */
-	private $field_required = false;
-
-	/**
 	 * Returns this block's programmatic name, excluding the convertkit- prefix.
 	 *
 	 * @since   3.0.0
