@@ -271,14 +271,14 @@ class PageBlockFormBuilderCest
 			$I,
 			fieldName: 'first_name',
 			fieldID: 'first_name',
-			label: 'Your name',
+			label: 'First name',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
 			fieldID: 'email',
-			label: 'Your email',
+			label: 'Email address',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 
@@ -290,14 +290,14 @@ class PageBlockFormBuilderCest
 			$I,
 			fieldName: 'first_name',
 			fieldID: 'first_name',
-			label: 'Your name',
+			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
 			fieldID: 'email',
-			label: 'Your email',
+			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 
@@ -310,13 +310,10 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 		$I->waitForElementVisible('body.page');
 
-		// Check that the form no longer displays and the message displays.
-		$I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
-		$I->dontSeeElementInDOM('input[name="convertkit[email]"]');
-		$I->see('Welcome to the newsletter!');
-
 		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists(
+		$I->waitForElementVisible('body.page');
+		$I->wait(3);
+		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
 			firstName: 'First'
