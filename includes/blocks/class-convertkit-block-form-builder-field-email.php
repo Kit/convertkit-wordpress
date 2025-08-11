@@ -24,6 +24,15 @@ class ConvertKit_Block_Form_Builder_Field_Email extends ConvertKit_Block_Form_Bu
 	public $field_name = 'email';
 
 	/**
+	 * The field ID.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	public $field_id = 'email';
+
+	/**
 	 * Whether the field is required.
 	 *
 	 * @since   3.0.0

@@ -197,6 +197,7 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 	public function render( $atts ) {
 
 		$this->field_name = 'custom_fields][' . $atts['custom_field'];
+		$this->field_id   = 'custom_fields_' . $atts['custom_field'];
 		return parent::render( $atts );
 
 	}
