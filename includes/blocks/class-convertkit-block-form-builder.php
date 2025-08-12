@@ -48,12 +48,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 	}
 
-		/**
-		 * Checks if the request is a Native Form subscribe request with an email address.
-		 * If so, subscribes the email address to the Kit account.
-		 *
-		 * @since   3.0.0
-		 */
+	/**
+	 * Checks if the request is a Native Form subscribe request with an email address.
+	 * If so, subscribes the email address to the Kit account.
+	 *
+	 * @since   3.0.0
+	 */
 	public function maybe_subscribe() {
 
 		// Bail if no nonce was specified.
@@ -120,6 +120,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Store the subscriber ID in a cookie.
 		$subscriber = new ConvertKit_Subscriber();
 		$subscriber->set( $result['subscriber']['id'] );
+
+		// If a tag was specified, add the subscriber to the tag.
+		if ( array_key_exists( 'tag_id', $form_data ) && $form_data['tag_id'] > 0 ) {
+			$api->tag_subscriber( absint( $form_data['tag_id'] ), $result['subscriber']['id'] );
+		}
 
 		// Get the redirect URL, based on whether the form is configured to redirect
 		// or not.
@@ -257,6 +262,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'text_if_subscribed' ),
 			),
+			'tag_id'                     => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'tag_id' ),
+			),
 
 			// get_supports() style, color and typography attributes.
 			'align'                      => array(
@@ -327,6 +336,15 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return false;
 		}
 
+		// Get Kit Tags.
+		$tags   = new ConvertKit_Resource_Tags( 'block_form_builder' );
+		$values = array();
+		if ( $tags->exist() ) {
+			foreach ( $tags->get() as $tag ) {
+				$values[ $tag['id'] ] = sanitize_text_field( $tag['name'] );
+			}
+		}
+
 		return array(
 			'redirect'                   => array(
 				'label'       => __( 'Redirect', 'convertkit' ),
@@ -342,6 +360,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'label'       => __( 'Text', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The text to display if the visitor is already subscribed.', 'convertkit' ),
+			),
+			'tag_id'                     => array(
+				'label'       => __( 'Tag', 'convertkit' ),
+				'type'        => 'select',
+				'description' => __( 'The Kit tag to add the subscriber to.', 'convertkit' ),
+				'values'      => $values,
 			),
 		);
 
@@ -365,6 +389,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'general' => array(
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
+					'tag_id',
 					'redirect',
 					'display_form_if_subscribed',
 					'text_if_subscribed',
@@ -384,6 +409,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
+			'tag_id'                     => '',
 			'redirect'                   => '',
 			'display_form_if_subscribed' => true,
 			'text_if_subscribed'         => 'Thanks for subscribing!',
@@ -526,6 +552,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$fields = array(
 			'convertkit[post_id]'  => absint( $post_id ),
 			'convertkit[redirect]' => esc_url( $atts['redirect'] ),
+			'convertkit[tag_id]'   => absint( $atts['tag_id'] ),
 			'_wpnonce'             => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
 		foreach ( $fields as $name => $value ) {
