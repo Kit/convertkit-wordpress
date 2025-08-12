@@ -69,6 +69,11 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				'callback' => array( $this, 'print_section_info_site_wide' ),
 				'wrap'     => true,
 			),
+			'recaptcha' => array(
+				'title'    => __( 'reCAPTCHA', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_recaptcha' ),
+				'wrap'     => true,
+			),
 			'advanced'  => array(
 				'title'    => __( 'Advanced', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_advanced' ),
@@ -378,6 +383,50 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			)
 		);
 
+		// reCAPTCHA.
+		add_settings_field(
+			'recaptcha_site_key',
+			__( 'reCAPTCHA: Site Key', 'convertkit' ),
+			array( $this, 'recaptcha_site_key_callback' ),
+			$this->settings_key,
+			$this->name . '-recaptcha',
+			array(
+				'label_for'   => 'recaptcha_site_key',
+				'description' => array(
+					__( 'Enter your Google reCAPTCHA v3 Site Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
+				),
+			)
+		);
+		add_settings_field(
+			'recaptcha_secret_key',
+			__( 'reCAPTCHA: Secret Key', 'convertkit' ),
+			array( $this, 'recaptcha_secret_key_callback' ),
+			$this->settings_key,
+			$this->name . '-recaptcha',
+			array(
+				'label_for'   => 'recaptcha_secret_key',
+				'description' => array(
+					__( 'Enter your Google reCAPTCHA v3 Secret Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
+				),
+			)
+		);
+		add_settings_field(
+			'recaptcha_minimum_score',
+			__( 'reCAPTCHA: Minimum Score', 'convertkit' ),
+			array( $this, 'recaptcha_minimum_score_callback' ),
+			$this->settings_key,
+			$this->name . '-recaptcha',
+			array(
+				'label_for'   => 'recaptcha_minimum_score',
+				'min'         => 0,
+				'max'         => 1,
+				'step'        => 0.01,
+				'description' => array(
+					__( 'Enter the minimum threshold for a subscriber to pass Google reCAPTCHA. A higher number will reduce spam signups (1.0 is very likely a good interaction, 0.0 is very likely a bot).', 'convertkit' ),
+				),
+			)
+		);
+
 		// Advanced.
 		add_settings_field(
 			'debug',
@@ -446,6 +495,17 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		<p class="description"><?php esc_html_e( 'Defines non-inline forms to display site wide, and if these forms should display on Pages / Posts that have the Kit Form setting = None.', 'convertkit' ); ?></p>
 		<?php
 
+	}
+
+	/**
+	 * Prints help info for the recaptcha section of the settings screen.
+	 *
+	 * @since   3.0.0
+	 */
+	public function print_section_info_recaptcha() {
+		?>
+		<p class="description"><?php esc_html_e( 'Configure reCAPTCHA to protect the Member Content signup form and Form Builder block from spam and abuse.', 'convertkit' ); ?></p>
+		<?php
 	}
 
 	/**
@@ -754,6 +814,72 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'on',
 			$this->settings->non_inline_form_honor_none_setting(),
 			esc_html__( 'If checked, do not display the site wide form(s) above on Pages / Posts that have their Kit Form setting = None.', 'convertkit' )
+		);
+
+	}
+
+	/**
+	 * Renders the input for the reCAPTCHA Site Key setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function recaptcha_site_key_callback( $args ) {
+
+		// Output field.
+		$this->output_text_field(
+			'recaptcha_site_key',
+			esc_attr( $this->settings->recaptcha_site_key() ),
+			$args['description'],
+			array(
+				'widefat',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the reCAPTCHA Secret Key setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function recaptcha_secret_key_callback( $args ) {
+
+		// Output field.
+		$this->output_text_field(
+			'recaptcha_secret_key',
+			esc_attr( $this->settings->recaptcha_secret_key() ),
+			$args['description'],
+			array(
+				'widefat',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the reCAPTCHA Minimum Score setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function recaptcha_minimum_score_callback( $args ) {
+
+		// Output field.
+		$this->output_number_field(
+			'recaptcha_minimum_score',
+			esc_attr( $this->settings->recaptcha_minimum_score() ),
+			$args['min'],
+			$args['max'],
+			$args['step'],
+			$args['description'],
+			array(
+				'widefat',
+			)
 		);
 
 	}
