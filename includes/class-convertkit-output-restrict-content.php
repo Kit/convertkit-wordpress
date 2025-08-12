@@ -245,7 +245,7 @@ class ConvertKit_Output_Restrict_Content {
 				// If here, require login is disabled.
 				// Check reCAPTCHA, tag subscriber and assign subscriber ID integer to cookie
 				// without email link.
-				$recaptcha = new ConvertKit_Recaptcha();
+				$recaptcha          = new ConvertKit_Recaptcha();
 				$recaptcha_response = $recaptcha->verify_recaptcha(
 					( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
 					'convertkit_restrict_content_tag'
