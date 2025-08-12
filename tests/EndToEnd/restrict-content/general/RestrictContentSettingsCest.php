@@ -102,9 +102,6 @@ class RestrictContentSettingsCest
 			'subscribe_text_tag'      => '',
 			'no_access_text_tag'      => '',
 			'require_tag_login'       => '',
-			'recaptcha_site_key'      => '',
-			'recaptcha_secret_key'    => '',
-			'recaptcha_minimum_score' => '',
 
 			// All.
 			'subscribe_button_label'  => '',
@@ -160,9 +157,6 @@ class RestrictContentSettingsCest
 			'subscribe_text_tag'      => 'Subscribe Text Tag',
 			'no_access_text_tag'      => 'No Access Text Tag',
 			'require_tag_login'       => 'on',
-			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
-			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
-			'recaptcha_minimum_score' => '0.8',
 
 			// All.
 			'subscribe_button_label'  => 'Subscribe Button Label',

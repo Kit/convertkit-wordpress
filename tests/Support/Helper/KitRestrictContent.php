@@ -55,9 +55,6 @@ class KitRestrictContent extends \Codeception\Module
 		return array(
 			// Permit Crawlers.
 			'permit_crawlers'         => '',
-			'recaptcha_site_key'      => '',
-			'recaptcha_secret_key'    => '',
-			'recaptcha_minimum_score' => '0.5',
 
 			// Restrict by Form.
 			'no_access_text_form'     => 'Your account does not have access to this content. Please use the form above to subscribe.',
@@ -270,8 +267,9 @@ class KitRestrictContent extends \Codeception\Module
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
+	 * @param   bool           $testRecaptcha        Whether to test reCAPTCHA.
 	 */
-	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false)
+	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false, $testRecaptcha = false)
 	{
 		// Setup test.
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
@@ -280,7 +278,7 @@ class KitRestrictContent extends \Codeception\Module
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
+		$this->testRestrictContentByTagHidesContentWithCTA($I, $options, $testRecaptcha);
 
 		// Set cookie with signed subscriber ID and reload the restricted content page, as if we entered the
 		// code sent in the email as a Kit subscriber who has not subscribed to the tag.
@@ -290,13 +288,13 @@ class KitRestrictContent extends \Codeception\Module
 		$this->seeRestrictContentError($I, $options['settings']['no_access_text_tag']);
 
 		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByTagHidesContentWithCTA($I, $options);
+		$this->testRestrictContentByTagHidesContentWithCTA($I, $options, $testRecaptcha);
 
 		// Enter the email address and submit the form.
 		$this->loginToRestrictContentWithEmail($I, $emailAddress);
 
 		// Wait for reCAPTCHA to fully load.
-		if ($options['settings']['recaptcha_site_key']) {
+		if ($testRecaptcha) {
 			$I->wait(3);
 		}
 
@@ -667,8 +665,9 @@ class KitRestrictContent extends \Codeception\Module
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
+	 * @param   bool           $testRecaptcha        Whether to test reCAPTCHA.
 	 */
-	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false)
+	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false, $testRecaptcha = false)
 	{
 		// Merge options with defaults.
 		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
@@ -686,7 +685,7 @@ class KitRestrictContent extends \Codeception\Module
 		$I->seeElementInDOM('#convertkit-restrict-content');
 		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading_tag'] . '</h3>');
 		$I->see($options['settings']['subscribe_text_tag']);
-		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $options['settings']['recaptcha_site_key'] ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
+		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $testRecaptcha ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
 	}
 
 	/**
