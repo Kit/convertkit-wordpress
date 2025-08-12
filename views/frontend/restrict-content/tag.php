@@ -22,10 +22,10 @@
 				<input type="email" name="convertkit_email" id="convertkit_email" value="" placeholder="<?php esc_attr_e( 'Email Address', 'convertkit' ); ?>" required />
 				<?php
 				// Output submit button, depending on whether Google reCAPTCHA is enabled.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() ) {
+				if ( $this->settings->has_recaptcha_site_and_secret_keys() ) {
 					?>
 					<input type="submit" class="wp-block-button__link wp-block-button__link g-recaptcha" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>"
-							data-sitekey="<?php echo esc_attr( $this->restrict_content_settings->get_recaptcha_site_key() ); ?>"
+							data-sitekey="<?php echo esc_attr( $this->settings->recaptcha_site_key() ); ?>"
 							data-callback="convertKitRestrictContentTagFormSubmit"
 							data-action="convertkit_restrict_content_tag" />
 					<?php

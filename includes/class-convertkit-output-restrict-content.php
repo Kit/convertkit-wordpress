@@ -247,12 +247,12 @@ class ConvertKit_Output_Restrict_Content {
 				// without email link.
 
 				// If Google reCAPTCHA is enabled, check if the submission is spam.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
+				if ( $this->settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					$response = wp_remote_post(
 						'https://www.google.com/recaptcha/api/siteverify',
 						array(
 							'body' => array(
-								'secret'   => $this->restrict_content_settings->get_recaptcha_secret_key(),
+								'secret'   => $this->settings->recaptcha_secret_key(),
 								'response' => ( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
 								'remoteip' => ( isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '' ),
 							),
@@ -290,7 +290,7 @@ class ConvertKit_Output_Restrict_Content {
 
 					// If the score is less than 0.5 (on a scale of 0.0 to 1.0, with 0.0 being a bot, 1.0 being very good),
 					// it's likely a spam submission.
-					if ( $body['score'] < $this->restrict_content_settings->get_recaptcha_minimum_score() ) {
+					if ( $body['score'] < $this->settings->recaptcha_minimum_score() ) {
 						$this->error = new WP_Error(
 							'convertkit_output_restrict_content_maybe_run_subscriber_authentication_error',
 							__( 'Google reCAPTCHA failed', 'convertkit' )
@@ -1362,7 +1362,7 @@ class ConvertKit_Output_Restrict_Content {
 				}
 
 				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
+				if ( $this->settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
 					add_filter(
 						'convertkit_output_scripts_footer',
 						function ( $scripts ) {
