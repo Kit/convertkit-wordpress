@@ -48,18 +48,18 @@ class KitPlugin extends \Codeception\Module
 	 * @param   bool|array     $options {
 	 *         Optional. An array of settings.
 	 *
-	 *     @type string $access_token       		Access Token (if specified, used instead of CONVERTKIT_OAUTH_ACCESS_TOKEN).
-	 *     @type string $refresh_token      		Refresh Token (if specified, used instead of CONVERTKIT_OAUTH_REFRESH_TOKEN).
-	 *     @type string $debug              		Enable debugging (default: on).
-	 *     @type string $no_scripts         		Disable JS (default: off).
-	 *     @type string $no_css             		Disable CSS (default: off).
-	 *     @type string $post_form          		Default Form ID for Posts (if specified, used instead of CONVERTKIT_API_FORM_ID).
-	 *     @type string $page_form          		Default Form ID for Pages (if specified, used instead of CONVERTKIT_API_FORM_ID).
-	 *     @type string $product_form       		Default Form ID for WooCommerce Products (if specified, used instead of CONVERTKIT_API_FORM_ID).
-	 *     @type string $non_inline_form    		Default Global non-inline Form ID (if specified, none if false).
-	 *     @type string $recaptcha_site_key 		reCAPTCHA Site Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SITE_KEY).
-	 *     @type string $recaptcha_secret_key 		reCAPTCHA Secret Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SECRET_KEY).
-	 *     @type string $recaptcha_minimum_score 	reCAPTCHA Minimum Score (if specified, used instead of 0.5).
+	 *     @type string $access_token               Access Token (if specified, used instead of CONVERTKIT_OAUTH_ACCESS_TOKEN).
+	 *     @type string $refresh_token              Refresh Token (if specified, used instead of CONVERTKIT_OAUTH_REFRESH_TOKEN).
+	 *     @type string $debug                      Enable debugging (default: on).
+	 *     @type string $no_scripts                 Disable JS (default: off).
+	 *     @type string $no_css                     Disable CSS (default: off).
+	 *     @type string $post_form                  Default Form ID for Posts (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $page_form                  Default Form ID for Pages (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $product_form               Default Form ID for WooCommerce Products (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $non_inline_form            Default Global non-inline Form ID (if specified, none if false).
+	 *     @type string $recaptcha_site_key         reCAPTCHA Site Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SITE_KEY).
+	 *     @type string $recaptcha_secret_key       reCAPTCHA Secret Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SECRET_KEY).
+	 *     @type string $recaptcha_minimum_score    reCAPTCHA Minimum Score (if specified, used instead of 0.5).
 	 * }
 	 */
 	public function setupKitPlugin($I, $options = false)
@@ -76,9 +76,9 @@ class KitPlugin extends \Codeception\Module
 			'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'non_inline_form'                    => array(),
 			'non_inline_form_honor_none_setting' => '',
-			'recaptcha_site_key'      			 => '',
-			'recaptcha_secret_key'    			 => '',
-			'recaptcha_minimum_score' 			 => '',
+			'recaptcha_site_key'                 => '',
+			'recaptcha_secret_key'               => '',
+			'recaptcha_minimum_score'            => '',
 		];
 
 		// If supplied options are an array, merge them with the defaults.

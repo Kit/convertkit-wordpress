@@ -872,7 +872,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		// Output field.
 		$this->output_number_field(
 			'recaptcha_minimum_score',
-			esc_attr( $this->settings->recaptcha_minimum_score() ),
+			esc_attr( (string) $this->settings->recaptcha_minimum_score() ),
 			$args['min'],
 			$args['max'],
 			$args['step'],
