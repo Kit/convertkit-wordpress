@@ -1,13 +1,13 @@
 <?php
 /**
- * Kit Form Builder Text Field Block class.
+ * Kit Form Builder Name Field Block class.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Kit Form Builder Text Field Block for Gutenberg.
+ * Kit Form Builder Name Field Block for Gutenberg.
  *
  * @package ConvertKit
  * @author  ConvertKit
