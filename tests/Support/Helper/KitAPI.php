@@ -42,10 +42,12 @@ class KitAPI extends \Codeception\Module
 	/**
 	 * Check the given email address exists as a subscriber.
 	 *
-	 * @param   EndToEndTester $I             EndToEndTester.
+	 * @param   EndToEndTester $I              EndToEndTester.
 	 * @param   string         $emailAddress   Email Address.
+	 * @param   string         $firstName      First Name (false = don't check name matches).
+	 * @return  array                          Subscriber.
 	 */
-	public function apiCheckSubscriberExists($I, $emailAddress)
+	public function apiCheckSubscriberExists($I, $emailAddress, $firstName = false)
 	{
 		// Run request.
 		$results = $this->apiRequest(
@@ -64,8 +66,13 @@ class KitAPI extends \Codeception\Module
 		$I->assertGreaterThan(0, $results['pagination']['total_count']);
 		$I->assertEquals($emailAddress, $results['subscribers'][0]['email_address']);
 
+		// If defined, check that the name matches for the subscriber.
+		if ($firstName) {
+			$I->assertEquals($firstName, $results['subscribers'][0]['first_name']);
+		}
+
 		// Return subscriber ID.
-		return $results['subscribers'][0]['id'];
+		return $results['subscribers'][0];
 	}
 
 	/**
