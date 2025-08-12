@@ -14,15 +14,32 @@
 class ConvertKit_Recaptcha {
 
 	/**
+	 * Holds the settings class.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool|ConvertKit_Settings
+	 */
+	private $settings = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since   3.0.0
+	 */
+	public function __construct() {
+
+		$this->settings = new ConvertKit_Settings();
+
+	}
+
+	/**
 	 * Enqueues the reCAPTCHA scripts if reCAPTCHA site and secret keys are set,
 	 * and scripts are enabled.
 	 *
 	 * @since   3.0.0
 	 */
 	public function enqueue_scripts() {
-
-		// Setup classes.
-		$this->settings = new ConvertKit_Settings();
 
 		// Don't run if the reCAPTCHA or scripts are disabled.
 		if ( ! $this->settings->has_recaptcha_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
@@ -56,9 +73,6 @@ class ConvertKit_Recaptcha {
 	 * @return  bool|WP_Error
 	 */
 	public function verify_recaptcha( $recaptcha_response, $plugin_action ) {
-
-		// Setup classes.
-		$this->settings = new ConvertKit_Settings();
 
 		// Don't run if the reCAPTCHA or scripts are disabled.
 		if ( ! $this->settings->has_recaptcha_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
