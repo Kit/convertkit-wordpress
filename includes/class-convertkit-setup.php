@@ -146,8 +146,6 @@ class ConvertKit_Setup {
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
 
-		die();
-
 	}
 
 	/**
@@ -171,8 +169,8 @@ class ConvertKit_Setup {
 		$convertkit_settings = new ConvertKit_Settings();
 		$convertkit_settings->save(
 			array(
-				'recaptcha_site_key' => $settings['recaptcha_site_key'],
-				'recaptcha_secret_key' => $settings['recaptcha_secret_key'],
+				'recaptcha_site_key'      => $settings['recaptcha_site_key'],
+				'recaptcha_secret_key'    => $settings['recaptcha_secret_key'],
 				'recaptcha_minimum_score' => $settings['recaptcha_minimum_score'],
 			)
 		);
@@ -183,11 +181,8 @@ class ConvertKit_Setup {
 		unset( $settings['recaptcha_minimum_score'] );
 		update_option( '_wp_convertkit_settings_restrict_content', $settings );
 
-		var_dump( get_option( '_wp_convertkit_settings' ) );
-		var_dump( get_option( '_wp_convertkit_settings_restrict_content' ) );
-		
-
 	}
+
 	/**
 	 * Change the Default value of 0 to -1 in wp_convertkit_term_meta[form], to
 	 * match how the Default value is stored in Posts.

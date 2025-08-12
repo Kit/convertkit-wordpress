@@ -151,6 +151,49 @@ class UpgradePathsCest
 	}
 
 	/**
+	 * Tests that reCAPTCHA settings are migrated from Restrict Content settings to General settings
+	 * when upgrading to 3.0.0 or later.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testMigrateRecaptchaSettings(EndToEndTester $I)
+	{
+		// Setup Restrict Content settings with reCAPTCHA settings for < 3.0.0.
+		$I->setupKitPlugin($I);
+		$I->haveOptionInDatabase(
+			'_wp_convertkit_settings_restrict_content',
+			[
+				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
+				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
+				'recaptcha_minimum_score' => '0.8',
+			]
+		);
+
+		// Define an installation version older than 3.0.0.
+		$I->haveOptionInDatabase('convertkit_version', '2.8.7');
+
+		// Activate the Plugin, as if we just upgraded to 3.0.0 or higher.
+		$I->activateKitPlugin($I, false);
+
+		// Confirm the options table now contains reCAPTCHA settings.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
+		$I->assertArrayHasKey('recaptcha_site_key', $settings);
+		$I->assertArrayHasKey('recaptcha_secret_key', $settings);
+		$I->assertArrayHasKey('recaptcha_minimum_score', $settings);
+		$I->assertEquals($settings['recaptcha_site_key'], $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->assertEquals($settings['recaptcha_secret_key'], $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->assertEquals($settings['recaptcha_minimum_score'], '0.8');
+
+		// Confirm the Restrict Content settings no longer contains reCAPTCHA settings.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings_restrict_content');
+		$I->assertArrayNotHasKey('recaptcha_site_key', $settings);
+		$I->assertArrayNotHasKey('recaptcha_secret_key', $settings);
+		$I->assertArrayNotHasKey('recaptcha_minimum_score', $settings);
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
