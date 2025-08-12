@@ -146,6 +146,8 @@ class ConvertKit_Setup {
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
 
+		die();
+
 	}
 
 	/**
@@ -160,8 +162,10 @@ class ConvertKit_Setup {
 		// methods to return the specific settings.
 		$settings = get_option( '_wp_convertkit_settings_restrict_content' );
 
-		var_dump( $settings );
-		die();
+		// If no reCAPTCHA settings exist, bail.
+		if ( ! isset( $settings['recaptcha_site_key'] ) || ! isset( $settings['recaptcha_secret_key'] ) || ! isset( $settings['recaptcha_minimum_score'] ) ) {
+			return;
+		}
 
 		// Load settings class, saving the reCAPTCHA settings to the General settings.
 		$convertkit_settings = new ConvertKit_Settings();
@@ -178,6 +182,10 @@ class ConvertKit_Setup {
 		unset( $settings['recaptcha_secret_key'] );
 		unset( $settings['recaptcha_minimum_score'] );
 		update_option( '_wp_convertkit_settings_restrict_content', $settings );
+
+		var_dump( get_option( '_wp_convertkit_settings' ) );
+		var_dump( get_option( '_wp_convertkit_settings_restrict_content' ) );
+		
 
 	}
 	/**
