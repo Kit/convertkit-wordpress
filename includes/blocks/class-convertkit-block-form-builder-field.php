@@ -27,6 +27,15 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	public $field_name;
 
 	/**
+	 * The field ID.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	public $field_id;
+
+	/**
 	 * The type of field to render.
 	 *
 	 * @since   3.0.0
@@ -311,10 +320,10 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 			'<div class="%s" style="%s"><label for="%s">%s</label><input type="%s" id="%s" name="convertkit[%s]" %s /></div>',
 			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
 			implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
-			esc_attr( sanitize_title( $this->field_name ) ),
+			esc_attr( sanitize_title( $this->field_id ) ),
 			esc_html( $atts['label'] ),
 			esc_attr( $this->field_type ),
-			esc_attr( sanitize_title( $this->field_name ) ),
+			esc_attr( sanitize_title( $this->field_id ) ),
 			esc_attr( $this->field_name ),
 			$this->field_required ? ' required' : ( $atts['required'] ? ' required' : '' )
 		);

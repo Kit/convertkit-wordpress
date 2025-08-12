@@ -64,12 +64,14 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
+			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
+			fieldID: 'email',
 			label: 'Email address',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
@@ -81,12 +83,14 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
+			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
+			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
@@ -95,14 +99,18 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('body.page');
 		$I->wait(3);
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 	}
 
 	/**
@@ -164,12 +172,14 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
+			fieldID: 'first_name',
 			label: 'Your name',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
+			fieldID: 'email',
 			label: 'Your email',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
@@ -181,12 +191,14 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
+			fieldID: 'first_name',
 			label: 'Your name',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
+			fieldID: 'email',
 			label: 'Your email',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
@@ -195,7 +207,7 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 		$I->waitForElementVisible('body.page');
@@ -206,7 +218,210 @@ class PageBlockFormBuilderCest
 		$I->see('Welcome to the newsletter!');
 
 		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+	}
+
+	/**
+	 * Test the Form Builder block works when added and a Tag is specified
+	 * to subscribe the subscriber to.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithTaggingEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Tagging Enabled'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add block to Page, setting the Form setting to the value specified in the .env file.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'tag_id' => [ 'select', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
+			]
+		);
+
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		$I->waitForElementVisible('body.page');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('body.page');
+		$I->wait(3);
+		$subscriber = $I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+
+		// Confirm that the subscriber has the tag.
+		$I->apiCheckSubscriberHasTag(
+			$I,
+			subscriberID: $subscriber['id'],
+			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+		);
+	}
+
+	/**
+	 * Test the Form Builder block works when a custom field is added.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithCustomField(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Custom Field'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
+		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+
+		// Add custom field block, mapping its data to the Last Name field in Kit.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder: Custom Field',
+			blockProgrammaticName: 'convertkit-form-builder-field-custom',
+			blockConfiguration: [
+				'label'        => [ 'input', 'Last name' ],
+				'custom_field' => [ 'select', 'Last Name' ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'custom_fields][last_name',
+			fieldID: 'custom_fields_last_name',
+			label: 'Last name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[custom_fields][last_name]"]', 'Last');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('body.page');
+		$I->wait(3);
+		$subscriber = $I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+
+		// Confirm that the custom field was added to the subscriber.
+		$I->assertEquals('Last', $subscriber['fields']['last_name']);
 	}
 
 	/**
@@ -253,12 +468,14 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
+			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
+			fieldID: 'email',
 			label: 'Email address',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
@@ -270,12 +487,14 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'first_name',
+			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 		$this->seeFormBuilderField(
 			$I,
 			fieldName: 'email',
+			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
@@ -284,7 +503,7 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'Kit');
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
@@ -292,7 +511,11 @@ class PageBlockFormBuilderCest
 		$I->waitForElementVisible('body.home');
 
 		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 	}
 
 	/**
@@ -380,6 +603,7 @@ class PageBlockFormBuilderCest
 		// Confirm the Form Field blocks cannot be added, as we are not within the Form Builder block.
 		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Name', 'convertkit-form-builder-field-name');
 		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Email', 'convertkit-form-builder-field-email');
+		$I->dontSeeGutenbergBlockAvailable($I, 'Kit Form Field Custom', 'convertkit-form-builder-field-custom');
 
 		// Add the Form Builder block.
 		$I->addGutenbergBlock(
@@ -395,6 +619,7 @@ class PageBlockFormBuilderCest
 		// Confirm the Form Field blocks can be added to the Form Builder block.
 		$I->seeGutenbergBlockAvailable($I, 'Kit Form Field Name', 'convertkit-form-builder-field-name');
 		$I->seeGutenbergBlockAvailable($I, 'Kit Form Field Email', 'convertkit-form-builder-field-email');
+		$I->seeGutenbergBlockAvailable($I, 'Kit Form Field Custom', 'convertkit-form-builder-field-custom');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -502,15 +727,16 @@ class PageBlockFormBuilderCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 * @param   string         $fieldName  Field name.
+	 * @param   string         $fieldID    Field ID.
 	 * @param   string         $label      Field label.
 	 * @param   bool           $required   Whether the field should be marked `required`.
 	 * @param   string         $container  The container the field should be in.
 	 */
-	private function seeFormBuilderField(EndToEndTester $I, $fieldName, $label, $required = true, $container = 'div')
+	private function seeFormBuilderField(EndToEndTester $I, $fieldName, $fieldID, $label, $required = true, $container = 'div')
 	{
-		$I->seeElementInDOM($container . ' label[for="' . $fieldName . '"]');
-		$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"]' . $required ? '[required]' : '');
-		$I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldName . '"]'));
+		$I->seeElementInDOM($container . ' label[for="' . $fieldID . '"]');
+		$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+		$I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldID . '"]'));
 	}
 
 	/**
