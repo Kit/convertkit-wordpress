@@ -100,7 +100,16 @@ class WPGutenberg extends \Codeception\Module
 						$I->selectOption($fieldID, $attributes[1]);
 						break;
 					case 'toggle':
-						if ( $attributes[1] ) {
+						// Determine if the toggle has checked the checkbox.
+						$isChecked = $I->grabAttributeFrom($field, 'checked');
+
+						// If the attribute is true, and the checkbox is not checked, click the toggle to check it.
+						if ( $attributes[1] && ! $isChecked ) {
+							$I->click($field);
+						}
+
+						// If the attribute is false, and the checkbox is checked, click the toggle to uncheck it.
+						if ( ! $attributes[1] && $isChecked ) {
 							$I->click($field);
 						}
 						break;
@@ -230,6 +239,72 @@ class WPGutenberg extends \Codeception\Module
 
 		// Click the Product name to create a link to it.
 		$I->click($name, '.block-editor-link-control__search-results');
+	}
+
+	/**
+	 * Asserts that the given block is not available in the Gutenberg block library.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 */
+	public function seeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
+	{
+		// Click Add Block Button.
+		$I->click('button.editor-document-tools__inserter-toggle');
+
+		// When the Blocks sidebar appears, search for the block.
+		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
+
+		// Let WordPress load any matching block patterns, which reloads the DOM elements.
+		// If we don't do this, we get stale reference errors when trying to click a block to insert.
+		$I->wait(2);
+
+		// Confirm the block is available.
+		$I->waitForElementVisible('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+
+		// Clear the search field.
+		$I->click('button[aria-label="Reset search"]');
+
+		// Close block inserter.
+		$I->click('button.editor-document-tools__inserter-toggle');
+	}
+
+	/**
+	 * Asserts that the given block is not available in the Gutenberg block library.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 */
+	public function dontSeeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
+	{
+		// Click Add Block Button.
+		$I->click('button.editor-document-tools__inserter-toggle');
+
+		// When the Blocks sidebar appears, search for the block.
+		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
+
+		// Let WordPress load any matching block patterns, which reloads the DOM elements.
+		// If we don't do this, we get stale reference errors when trying to click a block to insert.
+		$I->wait(2);
+
+		// Confirm the 'No results' message is displayed.
+		$I->dontSeeElementInDOM('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+
+		// Clear the search field.
+		$I->click('button[aria-label="Reset search"]');
+
+		// Close block inserter.
+		$I->click('button.editor-document-tools__inserter-toggle');
 	}
 
 	/**
