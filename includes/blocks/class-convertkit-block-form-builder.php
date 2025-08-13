@@ -84,7 +84,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		if ( ! $settings->has_access_and_refresh_token() ) {
 			return;
 		}
-		
+
 		// Check reCAPTCHA.
 		$recaptcha          = new ConvertKit_Recaptcha();
 		$recaptcha_response = $recaptcha->verify_recaptcha(
@@ -94,11 +94,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Bail if reCAPTCHA failed.
 		if ( is_wp_error( $recaptcha_response ) ) {
-			var_dump( $recaptcha_response );
 			return;
 		}
-
-		die('Passed reCAPTCHA');
 
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
@@ -528,8 +525,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Add reCAPTCHA attributes to button.
 		return str_replace(
-			'class="',
-			'data-sitekey="' . esc_attr( $settings->recaptcha_site_key() ) . '" data-callback="convertKitRecaptchaFormSubmit" data-action="convertkit_form_builder" class="g-recaptcha ',
+			'<button type="submit" class="',
+			'<button type="submit" data-sitekey="' . esc_attr( $settings->recaptcha_site_key() ) . '" data-callback="convertKitRecaptchaFormSubmit" data-action="convertkit_form_builder" class="g-recaptcha ',
 			$block_content
 		);
 
