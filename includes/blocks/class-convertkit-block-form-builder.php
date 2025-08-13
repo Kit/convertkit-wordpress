@@ -84,6 +84,21 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		if ( ! $settings->has_access_and_refresh_token() ) {
 			return;
 		}
+		
+		// Check reCAPTCHA.
+		$recaptcha          = new ConvertKit_Recaptcha();
+		$recaptcha_response = $recaptcha->verify_recaptcha(
+			( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
+			'convertkit_form_builder'
+		);
+
+		// Bail if reCAPTCHA failed.
+		if ( is_wp_error( $recaptcha_response ) ) {
+			var_dump( $recaptcha_response );
+			return;
+		}
+
+		die('Passed reCAPTCHA');
 
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
@@ -494,9 +509,27 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return $block_content;
 		}
 
-		return preg_replace(
+		// Change link to button.
+		$block_content = preg_replace(
 			'/<a([^>]*)>(.*?)<\/a>/',
 			'<button type="submit"$1>$2</button>',
+			$block_content
+		);
+
+		// Return the button if reCAPTCHA does not need to be used.
+		$settings = new ConvertKit_Settings();
+		if ( ! $settings->has_recaptcha_site_and_secret_keys() ) {
+			return $block_content;
+		}
+
+		// Enqueue reCAPTCHA JS.
+		$recaptcha = new ConvertKit_Recaptcha();
+		$recaptcha->enqueue_scripts();
+
+		// Add reCAPTCHA attributes to button.
+		return str_replace(
+			'class="',
+			'data-sitekey="' . esc_attr( $settings->recaptcha_site_key() ) . '" data-callback="convertKitRecaptchaFormSubmit" data-action="convertkit_form_builder" class="g-recaptcha ',
 			$block_content
 		);
 
