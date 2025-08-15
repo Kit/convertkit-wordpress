@@ -26,7 +26,7 @@
 					?>
 					<input type="submit" class="wp-block-button__link wp-block-button__link g-recaptcha" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>"
 							data-sitekey="<?php echo esc_attr( $this->settings->recaptcha_site_key() ); ?>"
-							data-callback="convertKitRestrictContentTagFormSubmit"
+							data-callback="convertKitRecaptchaFormSubmit"
 							data-action="convertkit_restrict_content_tag" />
 					<?php
 				} else {
