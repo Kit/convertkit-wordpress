@@ -138,6 +138,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$api->tag_subscriber( absint( $form_data['tag_id'] ), $result['subscriber']['id'] );
 		}
 
+		// If a sequence was specified, add the subscriber to the sequence.
+		if ( array_key_exists( 'sequence_id', $form_data ) && $form_data['sequence_id'] > 0 ) {
+			$api->add_subscriber_to_sequence( absint( $form_data['sequence_id'] ), $result['subscriber']['id'] );
+		}
+
 		// Get the redirect URL, based on whether the form is configured to redirect
 		// or not.
 		if ( array_key_exists( 'redirect', $form_data ) && wp_http_validate_url( sanitize_url( $form_data['redirect'] ) ) ) {
@@ -278,6 +283,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'tag_id' ),
 			),
+			'sequence_id'                => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'sequence_id' ),
+			),
 
 			// get_supports() style, color and typography attributes.
 			'align'                      => array(
@@ -349,11 +358,20 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Get Kit Tags.
-		$tags   = new ConvertKit_Resource_Tags( 'block_form_builder' );
-		$values = array();
+		$tags         = new ConvertKit_Resource_Tags( 'block_form_builder' );
+		$tags_options = array();
 		if ( $tags->exist() ) {
 			foreach ( $tags->get() as $tag ) {
-				$values[ $tag['id'] ] = sanitize_text_field( $tag['name'] );
+				$tags_options[ $tag['id'] ] = sanitize_text_field( $tag['name'] );
+			}
+		}
+
+		// Get Kit Sequences.
+		$sequences         = new ConvertKit_Resource_Sequences( 'block_form_builder' );
+		$sequences_options = array();
+		if ( $sequences->exist() ) {
+			foreach ( $sequences->get() as $sequence ) {
+				$sequences_options[ $sequence['id'] ] = sanitize_text_field( $sequence['name'] );
 			}
 		}
 
@@ -377,7 +395,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'label'       => __( 'Tag', 'convertkit' ),
 				'type'        => 'select',
 				'description' => __( 'The Kit tag to add the subscriber to.', 'convertkit' ),
-				'values'      => $values,
+				'values'      => $tags_options,
+			),
+			'sequence_id'                => array(
+				'label'       => __( 'Sequence', 'convertkit' ),
+				'type'        => 'select',
+				'description' => __( 'The Kit sequence to add the subscriber to.', 'convertkit' ),
+				'values'      => $sequences_options,
 			),
 		);
 
@@ -402,6 +426,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
 					'tag_id',
+					'sequence_id',
 					'redirect',
 					'display_form_if_subscribed',
 					'text_if_subscribed',
@@ -422,6 +447,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		return array(
 			'tag_id'                     => '',
+			'sequence_id'                => '',
 			'redirect'                   => '',
 			'display_form_if_subscribed' => true,
 			'text_if_subscribed'         => 'Thanks for subscribing!',
@@ -580,10 +606,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Add hidden fields.
 		$fields = array(
-			'convertkit[post_id]'  => absint( $post_id ),
-			'convertkit[redirect]' => esc_url( $atts['redirect'] ),
-			'convertkit[tag_id]'   => absint( $atts['tag_id'] ),
-			'_wpnonce'             => wp_create_nonce( 'convertkit_block_form_builder' ),
+			'convertkit[post_id]'     => absint( $post_id ),
+			'convertkit[redirect]'    => esc_url( $atts['redirect'] ),
+			'convertkit[tag_id]'      => absint( $atts['tag_id'] ),
+			'convertkit[sequence_id]' => absint( $atts['sequence_id'] ),
+			'_wpnonce'                => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
 		foreach ( $fields as $name => $value ) {
 			$hidden = $html->createElement( 'input' );
