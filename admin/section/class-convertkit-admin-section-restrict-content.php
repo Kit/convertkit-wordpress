@@ -185,53 +185,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			)
 		);
 
-		// reCAPTCHA.
-		add_settings_field(
-			'recaptcha_site_key',
-			__( 'reCAPTCHA: Site Key', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'recaptcha_site_key',
-				'label_for'   => 'recaptcha_site_key',
-				'description' => array(
-					__( 'Enter your Google reCAPTCHA v3 Site Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
-				),
-			)
-		);
-		add_settings_field(
-			'recaptcha_secret_key',
-			__( 'reCAPTCHA: Secret Key', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'recaptcha_secret_key',
-				'label_for'   => 'recaptcha_secret_key',
-				'description' => array(
-					__( 'Enter your Google reCAPTCHA v3 Secret Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
-				),
-			)
-		);
-		add_settings_field(
-			'recaptcha_minimum_score',
-			__( 'reCAPTCHA: Minimum Score', 'convertkit' ),
-			array( $this, 'number_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'recaptcha_minimum_score',
-				'label_for'   => 'recaptcha_minimum_score',
-				'min'         => 0,
-				'max'         => 1,
-				'step'        => 0.01,
-				'description' => array(
-					__( 'Enter the minimum threshold for a subscriber to pass Google reCAPTCHA. A higher number will reduce spam signups (1.0 is very likely a good interaction, 0.0 is very likely a bot).', 'convertkit' ),
-				),
-			)
-		);
-
 		// All.
 		add_settings_field(
 			'subscribe_button_label',
@@ -434,7 +387,25 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function print_section_info_tags() {
 
 		?>
-		<p class="description"><?php esc_html_e( 'Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit tag.', 'convertkit' ); ?></p>
+		<p class="description">
+			<?php esc_html_e( 'Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit tag.', 'convertkit' ); ?>
+			<br />
+			<?php
+			$url = add_query_arg(
+				array(
+					'page' => '_wp_convertkit_settings',
+					'tab'  => 'general',
+				),
+				admin_url( 'options-general.php' )
+			);
+			printf(
+				/* translators: 1: General settings screen link, 2: Closing link tag */
+				esc_html__( 'Looking for reCAPTCHA settings? They can now be found in the %1$sGeneral settings screen%2$s.', 'convertkit' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>'
+			);
+			?>
+		</p>
 		<?php
 
 	}

@@ -9,7 +9,7 @@
  * Plugin Name: Kit (formerly ConvertKit)
  * Plugin URI: https://kit.com/
  * Description: Display Kit (formerly ConvertKit) email subscription forms, landing pages, products, broadcasts and more.
- * Version: 2.8.7
+ * Version: 3.0.0
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
@@ -27,7 +27,7 @@ define( 'CONVERTKIT_PLUGIN_NAME', 'ConvertKit' ); // Used for user-agent in API 
 define( 'CONVERTKIT_PLUGIN_FILE', plugin_basename( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
-define( 'CONVERTKIT_PLUGIN_VERSION', '2.8.7' );
+define( 'CONVERTKIT_PLUGIN_VERSION', '3.0.0' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 
@@ -64,6 +64,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output-broadca
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output-restrict-content.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-post.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-preview-output.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-recaptcha.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-creator-network-recommendations.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-custom-fields.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-forms.php';

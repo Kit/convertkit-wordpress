@@ -87,33 +87,30 @@ class RestrictContentSettingsCest
 		// Define settings.
 		$settings = array(
 			// Permit Crawlers.
-			'permit_crawlers'         => '',
+			'permit_crawlers'        => '',
 
 			// Restrict by Form.
-			'no_access_text_form'     => '',
+			'no_access_text_form'    => '',
 
 			// Restrict by Product.
-			'subscribe_heading'       => '',
-			'subscribe_text'          => '',
-			'no_access_text'          => '',
+			'subscribe_heading'      => '',
+			'subscribe_text'         => '',
+			'no_access_text'         => '',
 
 			// Restrict by Tag.
-			'subscribe_heading_tag'   => '',
-			'subscribe_text_tag'      => '',
-			'no_access_text_tag'      => '',
-			'require_tag_login'       => '',
-			'recaptcha_site_key'      => '',
-			'recaptcha_secret_key'    => '',
-			'recaptcha_minimum_score' => '',
+			'subscribe_heading_tag'  => '',
+			'subscribe_text_tag'     => '',
+			'no_access_text_tag'     => '',
+			'require_tag_login'      => '',
 
 			// All.
-			'subscribe_button_label'  => '',
-			'email_text'              => '',
-			'email_button_label'      => '',
-			'email_heading'           => '',
-			'email_description_text'  => '',
-			'email_check_heading'     => '',
-			'email_check_text'        => '',
+			'subscribe_button_label' => '',
+			'email_text'             => '',
+			'email_button_label'     => '',
+			'email_heading'          => '',
+			'email_description_text' => '',
+			'email_check_heading'    => '',
+			'email_check_text'       => '',
 		);
 
 		// Save settings.
@@ -148,30 +145,27 @@ class RestrictContentSettingsCest
 		// Define settings.
 		$settings = array(
 			// Permit Crawlers.
-			'permit_crawlers'         => true,
+			'permit_crawlers'        => true,
 
 			// Restrict by Product.
-			'subscribe_heading'       => 'Subscribe Heading',
-			'subscribe_text'          => 'Subscribe Text',
-			'no_access_text'          => 'No Access Text',
+			'subscribe_heading'      => 'Subscribe Heading',
+			'subscribe_text'         => 'Subscribe Text',
+			'no_access_text'         => 'No Access Text',
 
 			// Restrict by Tag.
-			'subscribe_heading_tag'   => 'Subscribe Heading Tag',
-			'subscribe_text_tag'      => 'Subscribe Text Tag',
-			'no_access_text_tag'      => 'No Access Text Tag',
-			'require_tag_login'       => 'on',
-			'recaptcha_site_key'      => 'reCAPTCHASiteKey',
-			'recaptcha_secret_key'    => 'reCAPTCHASecretKey',
-			'recaptcha_minimum_score' => '0.8',
+			'subscribe_heading_tag'  => 'Subscribe Heading Tag',
+			'subscribe_text_tag'     => 'Subscribe Text Tag',
+			'no_access_text_tag'     => 'No Access Text Tag',
+			'require_tag_login'      => 'on',
 
 			// All.
-			'subscribe_button_label'  => 'Subscribe Button Label',
-			'email_text'              => 'Email Text',
-			'email_button_label'      => 'Email Button Label',
-			'email_heading'           => 'Email Heading',
-			'email_description_text'  => 'Email Description Text',
-			'email_check_heading'     => 'Email Check Heading',
-			'email_check_text'        => 'Email Check Text',
+			'subscribe_button_label' => 'Subscribe Button Label',
+			'email_text'             => 'Email Text',
+			'email_button_label'     => 'Email Button Label',
+			'email_heading'          => 'Email Heading',
+			'email_description_text' => 'Email Description Text',
+			'email_check_heading'    => 'Email Check Heading',
+			'email_check_text'       => 'Email Check Text',
 		);
 
 		// Save settings.

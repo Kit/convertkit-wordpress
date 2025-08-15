@@ -57,6 +57,13 @@ class ConvertKit_Setup {
 		}
 
 		/**
+		 * 3.0.0: Migrate reCAPTCHA settings from Restrict Content to General settings.
+		 */
+		if ( version_compare( $current_version, '3.0.0', '<' ) ) {
+			$this->migrate_recaptcha_settings();
+		}
+
+		/**
 		 * 2.6.6: Migrate 'Default' Form value in _wp_convertkit_term_meta[form] from 0 to -1,
 		 * to match Posts.
 		 */
@@ -138,6 +145,41 @@ class ConvertKit_Setup {
 
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
+
+	}
+
+	/**
+	 * 3.0.0: Migrate reCAPTCHA settings from Restrict Content settings to General settings.
+	 *
+	 * @since   3.0.0
+	 */
+	private function migrate_recaptcha_settings() {
+
+		// Read Restrict Content settings directly from options table,
+		// as Convertkit_Settings_Restrict_Content won't have helper
+		// methods to return the specific settings.
+		$settings = get_option( '_wp_convertkit_settings_restrict_content' );
+
+		// If no reCAPTCHA settings exist, bail.
+		if ( ! isset( $settings['recaptcha_site_key'] ) || ! isset( $settings['recaptcha_secret_key'] ) || ! isset( $settings['recaptcha_minimum_score'] ) ) {
+			return;
+		}
+
+		// Load settings class, saving the reCAPTCHA settings to the General settings.
+		$convertkit_settings = new ConvertKit_Settings();
+		$convertkit_settings->save(
+			array(
+				'recaptcha_site_key'      => $settings['recaptcha_site_key'],
+				'recaptcha_secret_key'    => $settings['recaptcha_secret_key'],
+				'recaptcha_minimum_score' => $settings['recaptcha_minimum_score'],
+			)
+		);
+
+		// Remove reCAPTCHA settings from Restrict Content settings.
+		unset( $settings['recaptcha_site_key'] );
+		unset( $settings['recaptcha_secret_key'] );
+		unset( $settings['recaptcha_minimum_score'] );
+		update_option( '_wp_convertkit_settings_restrict_content', $settings );
 
 	}
 
