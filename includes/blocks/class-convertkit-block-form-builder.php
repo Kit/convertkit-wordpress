@@ -570,23 +570,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	private function add_form_to_block_content( $content, $atts, $post_id ) {
 
-		// Wrap content in <html>, <head> and <body> tags with an UTF-8 Content-Type meta tag.
-		// Forcibly tell DOMDocument that this HTML uses the UTF-8 charset.
-		// <meta charset="utf-8"> isn't enough, as DOMDocument still interprets the HTML as ISO-8859, which breaks character encoding
-		// Use of mb_convert_encoding() with HTML-ENTITIES is deprecated in PHP 8.2, so we have to use this method.
-		// If we don't, special characters render incorrectly.
-		$content = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>' . $content . '</body></html>';
-
-		// Load the HTML into a DOMDocument.
-		libxml_use_internal_errors( true );
-		$html = new DOMDocument();
-		$html->loadHTML( $content );
-
-		// Load DOMDocument into XPath.
-		$xpath = new DOMXPath( $html );
+		// Load the content into the parser.
+		$parser = new ConvertKit_HTML_Parser( $content );
 
 		// Get block container.
-		$block_container = $xpath->query( '//div[contains(@class, "wp-block-convertkit-form-builder")]' )->item( 0 );
+		$block_container = $parser->xpath->query( '//div[contains(@class, "wp-block-convertkit-form-builder")]' )->item( 0 );
 
 		// If no block container was found, return the original content.
 		// This shouldn't happen, as the block editor supplies the container, but it's a safeguard.
@@ -595,7 +583,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Create form element.
-		$form = $html->createElement( 'form' );
+		$form = $parser->html->createElement( 'form' );
 		$form->setAttribute( 'action', esc_url( get_permalink( $post_id ) ) );
 		$form->setAttribute( 'method', 'post' );
 
@@ -613,7 +601,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'_wpnonce'                => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
 		foreach ( $fields as $name => $value ) {
-			$hidden = $html->createElement( 'input' );
+			$hidden = $parser->html->createElement( 'input' );
 			$hidden->setAttribute( 'type', 'hidden' );
 			$hidden->setAttribute( 'name', $name );
 			$hidden->setAttribute( 'value', $value );
@@ -623,9 +611,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Replace div contents with form.
 		$block_container->appendChild( $form );
 
-		// Return modified content in the <body> tag.
-		preg_match( '/<body[^>]*>(.*?)<\/body>/is', $html->saveHTML(), $matches );
-		return $matches[1] ?? '';
+		// Return modified content.
+		return $parser->get_body_html();
 
 	}
 
