@@ -1319,6 +1319,56 @@ class PageBlockFormCest
 	}
 
 	/**
+	 * Test the Form block's alignment parameter works.
+	 *
+	 * @since   2.8.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockWithAlignmentParameter(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's margin and padding pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the margin and padding pickers themselves, as they are Gutenberg supplied components, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_name'    => 'kit-page-form-block-alignment-param',
+				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","align":"right"} /-->',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Confirm that the chosen alignment is applied as a CSS class.
+		$I->seeInSource('<div class="convertkit-form alignright wp-block-convertkit-form"');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
