@@ -33,6 +33,7 @@ class ConvertKit_HTML_Parser {
 	 * @since   3.0.0
 	 *
 	 * @param   string $content HTML content to load.
+	 * @param   int    $flags   DOMDocument flags.
 	 */
 	public function __construct( $content, $flags = false ) {
 
