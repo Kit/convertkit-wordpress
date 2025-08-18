@@ -162,6 +162,24 @@ function convertKitEmitCustomEvent( eventName, detail ) {
 }
 
 /**
+ * Handles form submissions when reCAPTCHA is enabled.
+ *
+ * @param string token reCAPTCHA token.
+ */
+function convertKitRecaptchaFormSubmit( token ) {
+
+	// Find submit button with the data-callback attribute.
+	const submitButton = document.querySelector( '[type="submit"][data-callback="convertKitRecaptchaFormSubmit"]' );
+
+	// Get the parent form of the submit button.
+	const form = submitButton.closest( 'form' );
+
+	// Submit the form.
+	form.submit();
+
+}
+
+/**
  * Register events
  */
 document.addEventListener(

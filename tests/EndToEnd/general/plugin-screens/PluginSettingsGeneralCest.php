@@ -530,6 +530,55 @@ class PluginSettingsGeneralCest
 
 	/**
 	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
+	 * when the reCAPTCHA settings are saved and cleared.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRecaptchaSettings(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Fill in reCAPTCHA settings.
+		$I->fillField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->fillField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->fillField('#recaptcha_minimum_score', '0.01');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the reCAPTCHA settings were saved.
+		$I->seeInField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->seeInField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->seeInField('#recaptcha_minimum_score', '0.01');
+
+		// Clear the reCAPTCHA settings.
+		$I->clearField('#recaptcha_site_key');
+		$I->clearField('#recaptcha_secret_key');
+		$I->clearField('#recaptcha_minimum_score');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the reCAPTCHA settings were cleared.
+		$I->dontSeeInField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->dontSeeInField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->dontSeeInField('#recaptcha_minimum_score', '0.01');
+	}
+
+	/**
+	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
 	 * when Debug settings are enabled and disabled.
 	 *
 	 * @since   1.9.6
