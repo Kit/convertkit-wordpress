@@ -550,11 +550,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$recaptcha->enqueue_scripts();
 
 		// Add reCAPTCHA attributes to button.
-		return str_replace(
-			'<button type="submit" class="',
-			'<button type="submit" data-sitekey="' . esc_attr( $settings->recaptcha_site_key() ) . '" data-callback="convertKitRecaptchaFormSubmit" data-action="convertkit_form_builder" class="g-recaptcha ',
-			$block_content
-		);
+		$parser = new ConvertKit_HTML_Parser( $block_content );
+		$parser->xpath->query( '//button' )->item( 0 )->setAttribute( 'data-sitekey', esc_attr( $settings->recaptcha_site_key() ) );
+		$parser->xpath->query( '//button' )->item( 0 )->setAttribute( 'data-callback', 'convertKitRecaptchaFormSubmit' );
+		$parser->xpath->query( '//button' )->item( 0 )->setAttribute( 'data-action', 'convertkit_form_builder' );
+
+		// Return button HTML.
+		return $parser->get_body_html();
 
 	}
 
