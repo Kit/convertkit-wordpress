@@ -77,14 +77,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
-		// Initialize classes that will be used.
-		$settings = new ConvertKit_Settings();
-
-		// If the Plugin Access Token has not been configured, we can't get this subscriber's ID by email.
-		if ( ! $settings->has_access_and_refresh_token() ) {
-			return;
-		}
-
 		// Check reCAPTCHA.
 		$recaptcha          = new ConvertKit_Recaptcha();
 		$recaptcha_response = $recaptcha->verify_recaptcha(
@@ -94,6 +86,37 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Bail if reCAPTCHA failed.
 		if ( is_wp_error( $recaptcha_response ) ) {
+			return;
+		}
+
+		// Sanitize form data.
+		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
+
+		// Build custom fields, if any were specified.
+		$custom_fields = array();
+		if ( array_key_exists( 'custom_fields', $form_data ) ) {
+			$custom_fields = $form_data['custom_fields'];
+		}
+
+		// Initialize classes that will be used.
+		$settings = new ConvertKit_Settings();
+		$entries  = new ConvertKit_Form_Entries();
+
+		// If the Plugin Access Token has not been configured, we can't add a subscriber.
+		if ( ! $settings->has_access_and_refresh_token() ) {
+			// Store entry and return.
+			if ( $form_data['store_entries'] ) {
+				$entries->add(
+					$form_data['post_id'],
+					array(
+						'email'         => $form_data['email'],
+						'first_name'    => $form_data['first_name'],
+						'custom_fields' => $custom_fields,
+						'api_result'    => 'error',
+						'api_response'  => __( 'Plugin Access Token not configured', 'convertkit' ),
+					)
+				);
+			}
 			return;
 		}
 
@@ -107,15 +130,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'block_form_builder'
 		);
 
-		// Sanitize form data.
-		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
-
-		// Build custom fields, if any were specified.
-		$custom_fields = array();
-		if ( array_key_exists( 'custom_fields', $form_data ) ) {
-			$custom_fields = $form_data['custom_fields'];
-		}
-
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
@@ -126,7 +140,34 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
+			// Store entry and return.
+			if ( $form_data['store_entries'] ) {
+				$entries->add(
+					$form_data['post_id'],
+					array(
+						'email'         => $form_data['email'],
+						'first_name'    => $form_data['first_name'],
+						'custom_fields' => $custom_fields,
+						'api_result'    => 'error',
+						'api_response'  => $result->get_error_message(),
+					)
+				);
+			}
 			return;
+		}
+
+		// Store entry.
+		if ( $form_data['store_entries'] ) {
+			$entries->add(
+				$form_data['post_id'],
+				array(
+					'email'         => $form_data['email'],
+					'first_name'    => $form_data['first_name'],
+					'custom_fields' => $custom_fields,
+					'api_result'    => 'success',
+					'api_response'  => $result,
+				)
+			);
 		}
 
 		// Store the subscriber ID in a cookie.
@@ -271,6 +312,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'redirect' ),
 			),
+			'store_entries'              => array(
+				'type'    => 'boolean',
+				'default' => $this->get_default_value( 'store_entries' ),
+			),
 			'display_form_if_subscribed' => array(
 				'type'    => 'boolean',
 				'default' => $this->get_default_value( 'display_form_if_subscribed' ),
@@ -381,6 +426,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'type'        => 'url',
 				'description' => __( 'The URL to redirect to after the visitor subscribes. If not specified, the visitor will remain on the current page.', 'convertkit' ),
 			),
+			'store_entries'              => array(
+				'label'       => __( 'Store form submissions', 'convertkit' ),
+				'type'        => 'toggle',
+				'description' => __( 'If enabled, stores copies of form submissions in the WordPress database. Submissions are always sent to Kit.', 'convertkit' ),
+			),
 			'display_form_if_subscribed' => array(
 				'label'       => __( 'Display form', 'convertkit' ),
 				'type'        => 'toggle',
@@ -428,6 +478,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					'tag_id',
 					'sequence_id',
 					'redirect',
+					'store_entries',
 					'display_form_if_subscribed',
 					'text_if_subscribed',
 				),
@@ -449,6 +500,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'tag_id'                     => '',
 			'sequence_id'                => '',
 			'redirect'                   => '',
+			'store_entries'              => true,
 			'display_form_if_subscribed' => true,
 			'text_if_subscribed'         => 'Thanks for subscribing!',
 
@@ -606,11 +658,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Add hidden fields.
 		$fields = array(
-			'convertkit[post_id]'     => absint( $post_id ),
-			'convertkit[redirect]'    => esc_url( $atts['redirect'] ),
-			'convertkit[tag_id]'      => absint( $atts['tag_id'] ),
-			'convertkit[sequence_id]' => absint( $atts['sequence_id'] ),
-			'_wpnonce'                => wp_create_nonce( 'convertkit_block_form_builder' ),
+			'convertkit[post_id]'       => absint( $post_id ),
+			'convertkit[store_entries]' => $atts['store_entries'] ? '1' : '0',
+			'convertkit[redirect]'      => esc_url( $atts['redirect'] ),
+			'convertkit[tag_id]'        => absint( $atts['tag_id'] ),
+			'convertkit[sequence_id]'   => absint( $atts['sequence_id'] ),
+			'_wpnonce'                  => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
 		foreach ( $fields as $name => $value ) {
 			$hidden = $html->createElement( 'input' );

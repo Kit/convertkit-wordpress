@@ -57,6 +57,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-exp
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-importer.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cache-plugins.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cron.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-form-entries.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-gutenberg.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-media-library.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output.php';
