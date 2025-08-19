@@ -103,8 +103,14 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
-		// Confirm that the email address was added to Kit.
+		// Confirm that the message and form is displayed.
 		$I->waitForElementVisible('body.page');
+		$I->see('Thanks for subscribing!');
+		$I->seeElementInDOM('input[name="convertkit[first_name]"]');
+		$I->seeElementInDOM('input[name="convertkit[email]"]');
+		$I->seeElementInDOM('button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
 		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,

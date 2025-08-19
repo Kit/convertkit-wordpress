@@ -450,7 +450,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'sequence_id'                => '',
 			'redirect'                   => '',
 			'display_form_if_subscribed' => true,
-			'text_if_subscribed'         => 'Thanks for subscribing!',
+			'text_if_subscribed'         => __( 'Thanks for subscribing!', 'convertkit' ),
 
 			// Built-in Gutenberg block attributes.
 			'align'                      => 'center',
@@ -484,8 +484,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Check if subscriber is already subscribed, and whether the form should be displayed.
 		$subscriber          = new ConvertKit_Subscriber();
 		$this->subscriber_id = $subscriber->get_subscriber_id();
-		$subscribed          = $this->subscriber_id ? true : false;
-		$display_form        = $subscribed && ! $atts['display_form_if_subscribed'] ? false : true;
+		$display_form        = $this->subscriber_id && ! $atts['display_form_if_subscribed'] ? false : true;
 
 		// If the form should not be displayed, return the subscribed text.
 		if ( ! $display_form ) {
@@ -496,7 +495,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Add the <form> element and hidden fields immediate inside the block's container.
-		$html = $this->add_form_to_block_content( $content, $atts, $post_id, $subscribed );
+		$html = $this->add_form_to_block_content( $content, $atts, $post_id );
 
 		/**
 		 * Filter the block's content immediately before it is output.
@@ -568,13 +567,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $content  	Block content.
-	 * @param   array  $atts     	Block attributes.
-	 * @param   int    $post_id  	Post ID.
-	 * @param   bool   $subscribed  Whether the visitor subscribed i.e. submitted the form successfully.
+	 * @param   string $content     Block content.
+	 * @param   array  $atts        Block attributes.
+	 * @param   int    $post_id     Post ID.
 	 * @return  string
 	 */
-	private function add_form_to_block_content( $content, $atts, $post_id, $subscribed = false ) {
+	private function add_form_to_block_content( $content, $atts, $post_id ) {
 
 		// Load the content into the parser.
 		$parser = new ConvertKit_HTML_Parser( $content );
@@ -599,11 +597,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Add subscribed message if required.
-		if ( $subscribed ) {
-			$subscribed_message = $html->createElement( 'div' );
+		if ( $this->subscriber_id ) {
+			$subscribed_message = $parser->html->createElement( 'div' );
 			$subscribed_message->setAttribute( 'class', 'convertkit-form-builder-subscribed-message' );
-			$subscribed_message->appendChild( $html->createTextNode( $atts['text_if_subscribed'] ) );
-			$form->insertBefore( $subscribed_message, $form->firstChild );
+			$subscribed_message->appendChild( $parser->html->createTextNode( $atts['text_if_subscribed'] ) );
+			$form->insertBefore( $subscribed_message, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
 		// Add hidden fields.
