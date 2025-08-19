@@ -43,7 +43,7 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 		return array(
 			'title'                   => __( 'Kit Form Builder: Custom Field', 'convertkit' ),
 			'description'             => __( 'Adds a text field to the Kit Form Builder, whose value is stored in a Kit custom field.', 'convertkit' ),
-			'icon'                    => 'resources/backend/images/block-icon-form.svg',
+			'icon'                    => 'resources/backend/images/block-icon-form-builder-field.svg',
 			'category'                => 'convertkit',
 			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),
@@ -56,10 +56,10 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 			'render_callback'         => array( $this, 'render' ),
 
 			// Gutenberg: Block Icon in Editor.
-			'gutenberg_icon'          => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form.svg' ),
+			'gutenberg_icon'          => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form-builder-field.svg' ),
 
 			// Gutenberg: Example image showing how this block looks when choosing it in Gutenberg.
-			'gutenberg_example_image' => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field.png',
+			'gutenberg_example_image' => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field-custom.png',
 
 			'has_access_token'        => true,
 			'has_resources'           => true,
