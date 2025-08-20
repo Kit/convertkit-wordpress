@@ -914,7 +914,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'no_scripts',
 			'on',
 			$this->settings->scripts_disabled(),
-			esc_html__( 'Prevent plugin from loading JavaScript files. This will disable the custom content and tagging features of the plugin. Does not apply to landing pages. Use with caution!', 'convertkit' )
+			esc_html__( 'Prevent plugin JavaScript files loading on the frontend site. This will disable the custom content and tagging features of the plugin. Does not apply to embedding forms or landing pages. Use with caution!', 'convertkit' )
 		);
 
 	}
@@ -939,6 +939,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 					esc_url( convertkit_get_form_editor_url() ),
 					esc_html__( 'Kit form editor', 'convertkit' )
 				),
+				esc_html__( 'For creators who require form designs to follow their WordPress theme, use the Kit Form Builder block in the block editor.', 'convertkit' ),
 				sprintf(
 					'%s <a href="https://wordpress.org/plugins/contact-form-7/" target="_blank">Contact Form 7</a>, <a href="https://wordpress.org/plugins/convertkit-gravity-forms/" target="_blank">Gravity Forms</a> %s <a href="https://wordpress.org/plugins/integrate-convertkit-wpforms/" target="_blank">WPForms</a> %s',
 					esc_html__( 'For developers who require custom form designs through use of CSS, consider using the', 'convertkit' ),

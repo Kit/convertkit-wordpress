@@ -772,7 +772,14 @@ class ConvertKit_Output {
 		}
 
 		// Get ConvertKit Settings and Post's Settings.
-		$settings        = new ConvertKit_Settings();
+		$settings = new ConvertKit_Settings();
+
+		// Bail if the no scripts setting is enabled.
+		if ( $settings->scripts_disabled() ) {
+			return;
+		}
+
+		// Get ConvertKit Post's Settings.
 		$convertkit_post = new ConvertKit_Post( $post->ID );
 
 		// Register scripts that we might use.
@@ -793,11 +800,6 @@ class ConvertKit_Output {
 				'subscriber_id' => $this->subscriber_id,
 			)
 		);
-
-		// Bail if the no scripts setting is enabled.
-		if ( $settings->scripts_disabled() ) {
-			return;
-		}
 
 		// Enqueue.
 		wp_enqueue_script( 'convertkit-js' );
