@@ -111,42 +111,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	}
 
 	/**
-	 * Returns this block's Title, Icon, Categories, Keywords and properties.
-	 *
-	 * @since   3.0.0
-	 *
-	 * @return  array
-	 */
-	public function get_overview() {
-
-		return array(
-			'title'                   => __( 'Kit Form Builder Field', 'convertkit' ),
-			'description'             => __( 'Add a field to the Kit Form Builder.', 'convertkit' ),
-			'icon'                    => 'resources/backend/images/block-icon-form.svg',
-			'category'                => 'convertkit',
-			'keywords'                => array(
-				__( 'ConvertKit', 'convertkit' ),
-				__( 'Kit', 'convertkit' ),
-				__( 'Form Builder', 'convertkit' ),
-				__( 'Field', 'convertkit' ),
-			),
-
-			// Function to call when rendering.
-			'render_callback'         => array( $this, 'render' ),
-
-			// Gutenberg: Block Icon in Editor.
-			'gutenberg_icon'          => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form.svg' ),
-
-			// Gutenberg: Example image showing how this block looks when choosing it in Gutenberg.
-			'gutenberg_example_image' => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field.png',
-
-			'has_access_token'        => true,
-			'has_resources'           => true,
-		);
-
-	}
-
-	/**
 	 * Returns this block's Attributes
 	 *
 	 * @since   3.0.0
