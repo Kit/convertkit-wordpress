@@ -2,9 +2,11 @@
  * Define some sensible default styles for the form elements,
  * in case a theme doesn't define them.
  */
-.wp-block-convertkit-form-builder-field input {
+.wp-block-convertkit-form-builder-field input,
+.wp-block-convertkit-form-builder-field textarea {
 	width: 100%;
 	margin: 0 0 20px 0;
 	padding: 10px;
 	box-sizing: border-box;
+	font-family: inherit;
 }

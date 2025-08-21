@@ -42,7 +42,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 *
 	 * @var     string
 	 */
-	private $field_type = 'text';
+	public $field_type = 'text';
 
 	/**
 	 * Whether the field is required.
@@ -279,17 +279,35 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 		$css_classes = $this->get_css_classes( array( 'wp-block-convertkit-form-builder-field', 'convertkit-form-builder-field' ) );
 		$css_styles  = $this->get_css_styles( $atts );
 
+		// Build input / textarea.
+		switch ( $this->field_type ) {
+			case 'textarea':
+				$field = sprintf(
+					'<textarea id="%s" name="convertkit[%s]" %s></textarea>',
+					esc_attr( sanitize_title( $this->field_id ) ),
+					esc_attr( $this->field_name ),
+					$this->field_required ? ' required' : ( $atts['required'] ? ' required' : '' )
+				);
+				break;
+			default:
+				$field = sprintf(
+					'<input type="%s" id="%s" name="convertkit[%s]" %s />',
+					esc_attr( $this->field_type ),
+					esc_attr( sanitize_title( $this->field_id ) ),
+					esc_attr( $this->field_name ),
+					$this->field_required ? ' required' : ( $atts['required'] ? ' required' : '' )
+				);
+				break;
+		}
+
 		// Build field HTML.
 		$html = sprintf(
-			'<div class="%s" style="%s"><label for="%s">%s</label><input type="%s" id="%s" name="convertkit[%s]" %s /></div>',
+			'<div class="%s" style="%s"><label for="%s">%s</label>%s</div>',
 			implode( ' ', map_deep( $css_classes, 'sanitize_html_class' ) ),
 			implode( ';', map_deep( $css_styles, 'esc_attr' ) ),
 			esc_attr( sanitize_title( $this->field_id ) ),
 			esc_html( $atts['label'] ),
-			esc_attr( $this->field_type ),
-			esc_attr( sanitize_title( $this->field_id ) ),
-			esc_attr( $this->field_name ),
-			$this->field_required ? ' required' : ( $atts['required'] ? ' required' : '' )
+			$field
 		);
 
 		/**
