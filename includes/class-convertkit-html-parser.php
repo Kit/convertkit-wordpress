@@ -75,7 +75,8 @@ class ConvertKit_HTML_Parser {
 			$body->appendChild( $body->importNode( $child, true ) );
 		}
 
-		return $body->saveHTML();
+		// Return the HTML within the <body> tag, removing any leading or trailing whitespace / newlines.
+		return trim( $body->saveHTML() );
 
 	}
 
