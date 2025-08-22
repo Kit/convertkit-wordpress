@@ -43,7 +43,7 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 		return array(
 			'title'                   => __( 'Kit Form Builder: Custom Field', 'convertkit' ),
 			'description'             => __( 'Adds a text field to the Kit Form Builder, whose value is stored in a Kit custom field.', 'convertkit' ),
-			'icon'                    => 'resources/backend/images/block-icon-form.svg',
+			'icon'                    => 'resources/backend/images/block-icon-form-builder-field-custom.svg',
 			'category'                => 'convertkit',
 			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),
@@ -56,10 +56,10 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 			'render_callback'         => array( $this, 'render' ),
 
 			// Gutenberg: Block Icon in Editor.
-			'gutenberg_icon'          => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form.svg' ),
+			'gutenberg_icon'          => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-form-builder-field-custom.svg' ),
 
 			// Gutenberg: Example image showing how this block looks when choosing it in Gutenberg.
-			'gutenberg_example_image' => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field.png',
+			'gutenberg_example_image' => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-form-builder-field-custom.png',
 
 			'has_access_token'        => true,
 			'has_resources'           => true,
@@ -79,6 +79,10 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 		return array_merge(
 			parent::get_attributes(),
 			array(
+				'type'         => array(
+					'type'    => 'string',
+					'default' => 'text',
+				),
 				'custom_field' => array(
 					'type'    => 'string',
 					'default' => $this->get_default_value( 'custom_field' ),
@@ -115,10 +119,21 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 		return array_merge(
 			parent::get_fields(),
 			array(
+				'type'         => array(
+					'label'       => __( 'Type', 'convertkit' ),
+					'type'        => 'select',
+					'description' => __( 'The type of field to display.', 'convertkit' ),
+					'values'      => array(
+						'text'     => __( 'Text', 'convertkit' ),
+						'textarea' => __( 'Textarea', 'convertkit' ),
+						'number'   => __( 'Number', 'convertkit' ),
+						'url'      => __( 'URL', 'convertkit' ),
+					),
+				),
 				'custom_field' => array(
 					'label'       => __( 'Custom Field', 'convertkit' ),
 					'type'        => 'select',
-					'description' => __( 'The Kit custom field to store the text field\'s entered value.', 'convertkit' ),
+					'description' => __( 'The Kit custom field to store this field\'s entered value.', 'convertkit' ),
 					'values'      => $values,
 				),
 			)
@@ -144,6 +159,7 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 		$panels = parent::get_panels();
 
 		// Add attributes to the panel.
+		$panels['general']['fields'][] = 'type';
 		$panels['general']['fields'][] = 'custom_field';
 
 		return $panels;
@@ -161,6 +177,7 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 
 		return array_merge(
 			array(
+				'type'         => 'text',
 				'custom_field' => '',
 			),
 			parent::get_default_values()
@@ -180,6 +197,7 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 
 		$this->field_name = 'custom_fields][' . $atts['custom_field'];
 		$this->field_id   = 'custom_fields_' . $atts['custom_field'];
+		$this->field_type = $atts['type'];
 		return parent::render( $atts );
 
 	}

@@ -63,6 +63,7 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderButtonBlock($I);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -70,6 +71,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -82,6 +84,7 @@ class PageBlockFormBuilderCest
 		// Confirm that the Form is output in the DOM.
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -89,6 +92,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -171,6 +175,7 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderButtonBlock($I);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'Your name',
@@ -178,6 +183,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Your email',
@@ -190,6 +196,7 @@ class PageBlockFormBuilderCest
 		// Confirm that the Form is output in the DOM.
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'Your name',
@@ -197,6 +204,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Your email',
@@ -269,6 +277,7 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderButtonBlock($I);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -276,6 +285,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -288,6 +298,7 @@ class PageBlockFormBuilderCest
 		// Confirm that the Form is output in the DOM.
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -295,6 +306,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -371,6 +383,7 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderButtonBlock($I);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -378,6 +391,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -390,6 +404,7 @@ class PageBlockFormBuilderCest
 		// Confirm that the Form is output in the DOM.
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -397,6 +412,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -430,7 +446,7 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
-	 * Test the Form Builder block works when a custom field is added.
+	 * Test the Form Builder block works when custom fields are added.
 	 *
 	 * @since   3.0.0
 	 *
@@ -464,19 +480,46 @@ class PageBlockFormBuilderCest
 			blockProgrammaticName: 'convertkit-form-builder'
 		);
 
-		// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
-		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+		// Define custom fields to add to the form.
+		$customFields = [
+			'last_name'    => [
+				'label' => 'Last Name',
+				'type'  => 'text',
+				'value' => 'Last',
+			],
+			'phone_number' => [
+				'label' => 'Phone Number',
+				'type'  => 'number',
+				'value' => '1234567890',
+			],
+			'notes'        => [
+				'label' => 'Notes',
+				'type'  => 'textarea',
+				'value' => 'Notes',
+			],
+			'url'          => [
+				'label' => 'URL',
+				'type'  => 'url',
+				'value' => 'https://kit.com',
+			],
+		];
 
-		// Add custom field block, mapping its data to the Last Name field in Kit.
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'Kit Form Builder: Custom Field',
-			blockProgrammaticName: 'convertkit-form-builder-field-custom',
-			blockConfiguration: [
-				'label'        => [ 'input', 'Last name' ],
-				'custom_field' => [ 'select', 'Last Name' ],
-			]
-		);
+		foreach ( $customFields as $field ) {
+			// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
+			$I->click('div[data-type="convertkit/form-builder-field-name"]');
+
+			// Add custom field block, mapping its data to the Last Name field in Kit.
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'Kit Form Builder: Custom Field',
+				blockProgrammaticName: 'convertkit-form-builder-field-custom',
+				blockConfiguration: [
+					'label'        => [ 'input', $field['label'] ],
+					'type'         => [ 'select', $field['type'] ],
+					'custom_field' => [ 'select', $field['label'] ],
+				]
+			);
+		}
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -484,6 +527,7 @@ class PageBlockFormBuilderCest
 		// Confirm that the Form is output in the DOM.
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -491,26 +535,32 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
-			fieldName: 'custom_fields][last_name',
-			fieldID: 'custom_fields_last_name',
-			label: 'Last name',
-			container: 'div.wp-block-convertkit-form-builder'
-		);
-		$this->seeFormBuilderField(
-			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
+		foreach ( $customFields as $key => $field ) {
+			$this->seeFormBuilderField(
+				$I,
+				fieldType: $field['type'],
+				fieldName: 'custom_fields][' . $key,
+				fieldID: 'custom_fields_' . $key,
+				label: $field['label'],
+				container: 'div.wp-block-convertkit-form-builder'
+			);
+		}
 
 		// Generate email address for this test.
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
 		$I->fillField('input[name="convertkit[first_name]"]', 'First');
-		$I->fillField('input[name="convertkit[custom_fields][last_name]"]', 'Last');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		foreach ( $customFields as $key => $field ) {
+			$I->fillField('[name="convertkit[custom_fields][' . $key . ']"]', $field['value']);
+		}
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
@@ -522,8 +572,10 @@ class PageBlockFormBuilderCest
 			firstName: 'First'
 		);
 
-		// Confirm that the custom field was added to the subscriber.
-		$I->assertEquals('Last', $subscriber['fields']['last_name']);
+		// Confirm that the custom fields were added to the subscriber.
+		foreach ( $customFields as $key => $field ) {
+			$I->assertEquals($field['value'], $subscriber['fields'][ $key ]);
+		}
 	}
 
 	/**
@@ -569,6 +621,7 @@ class PageBlockFormBuilderCest
 		$this->seeFormBuilderButtonBlock($I);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -576,6 +629,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -588,6 +642,7 @@ class PageBlockFormBuilderCest
 		// Confirm that the Form is output in the DOM.
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
@@ -595,6 +650,7 @@ class PageBlockFormBuilderCest
 		);
 		$this->seeFormBuilderField(
 			$I,
+			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
@@ -958,16 +1014,26 @@ class PageBlockFormBuilderCest
 	 * @since   3.0.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
+	 * @param   string         $fieldType  Field type.
 	 * @param   string         $fieldName  Field name.
 	 * @param   string         $fieldID    Field ID.
 	 * @param   string         $label      Field label.
 	 * @param   bool           $required   Whether the field should be marked `required`.
 	 * @param   string         $container  The container the field should be in.
 	 */
-	private function seeFormBuilderField(EndToEndTester $I, $fieldName, $fieldID, $label, $required = true, $container = 'div')
+	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div')
 	{
+		// Check field exists with correct attributes.
+		switch ( $fieldType ) {
+			case 'textarea':
+				$I->seeElementInDOM($container . ' textarea[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+				break;
+			default:
+				$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][type="' . $fieldType . '"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+		}
+
+		// Check label exists with correct text.
 		$I->seeElementInDOM($container . ' label[for="' . $fieldID . '"]');
-		$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
 		$I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldID . '"]'));
 	}
 
