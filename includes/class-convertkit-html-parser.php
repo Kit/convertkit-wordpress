@@ -67,9 +67,15 @@ class ConvertKit_HTML_Parser {
 	 */
 	public function get_body_html() {
 
-		// Return modified content in the <body> tag.
-		preg_match( '/<body[^>]*>(.*?)<\/body>/is', $this->html->saveHTML(), $matches );
-		return $matches[1] ?? '';
+		// Create a new empty DOMDocument to hold the body content.
+		$body = new DOMDocument();
+
+		// Import the body content into the new DOMDocument.
+		foreach ( $this->html->getElementsByTagName( 'body' )->item( 0 )->childNodes as $child ) {
+			$body->appendChild( $body->importNode( $child, true ) );
+		}
+
+		return $body->saveHTML();
 
 	}
 
