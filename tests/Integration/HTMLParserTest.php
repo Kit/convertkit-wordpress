@@ -104,8 +104,8 @@ class HTMLParserTest extends WPTestCase
 	 */
 	public function testSpecialCharacters()
 	{
-		$content  = '<h1>Vantar &thorn;inn ungling sj&aacute;lfstraust &iacute; st&aelig;r&eth;fr&aelig;&eth;i?</h1><p>This is a test</p>';
-		$expected = '<h1>Vantar &thorn;inn ungling sj&aacute;lfstraust &iacute; st&aelig;r&eth;fr&aelig;&eth;i?</h1><p>This is a test</p><div class="convertkit-form-builder">&THORN;a&eth; er h&aelig;gt a&eth; breyta &thorn;v&iacute;! Lausnin er ekki me&eth; &thorn;v&iacute; a&eth; reikna fleiri d&aelig;mi...</div>';
+		$content  = '<h1>Vantar þinn ungling sjálfstraust í stærðfræði?</h1><p>This is a test</p>';
+		$expected = '<h1>Vantar þinn ungling sjálfstraust í stærðfræði?</h1><p>This is a test</p><div class="convertkit-form-builder">Það er hægt að breyta því! Lausnin er ekki með því að reikna fleiri dæmi...</div>';
 
 		// Initialize the class we want to test and confirm initialization didn't result in an error.
 		$parser = new \ConvertKit_HTML_Parser( $content );
