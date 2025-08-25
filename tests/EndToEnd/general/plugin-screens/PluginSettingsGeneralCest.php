@@ -540,7 +540,7 @@ class PluginSettingsGeneralCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
-		
+
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
 

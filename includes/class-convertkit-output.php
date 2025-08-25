@@ -858,9 +858,9 @@ class ConvertKit_Output {
 				function ( $scripts ) use ( $form ) {
 
 					$scripts[] = array(
-						'async'    => true,
-						'data-uid' => $form['uid'],
-						'src'      => $form['embed_js'],
+						'async'                      => true,
+						'data-uid'                   => $form['uid'],
+						'src'                        => $form['embed_js'],
 						'data-kit-limit-per-session' => true,
 					);
 
@@ -988,7 +988,7 @@ class ConvertKit_Output {
 		}
 
 		// Display script if this is the first time the visitor has seen any non-inline form.
-		return ! isset( $_COOKIE['ck_non_inline_form_displayed'] );
+		return isset( $_COOKIE['ck_non_inline_form_displayed'] );
 
 	}
 
