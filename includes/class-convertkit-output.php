@@ -763,14 +763,6 @@ class ConvertKit_Output {
 	 */
 	public function enqueue_scripts() {
 
-		// Get Post.
-		$post = get_post();
-
-		// Bail if no Post could be fetched.
-		if ( ! $post ) {
-			return;
-		}
-
 		// Get ConvertKit Settings and Post's Settings.
 		$settings = new ConvertKit_Settings();
 
@@ -778,9 +770,6 @@ class ConvertKit_Output {
 		if ( $settings->scripts_disabled() ) {
 			return;
 		}
-
-		// Get ConvertKit Post's Settings.
-		$convertkit_post = new ConvertKit_Post( $post->ID );
 
 		// Register scripts that we might use.
 		wp_register_script(
