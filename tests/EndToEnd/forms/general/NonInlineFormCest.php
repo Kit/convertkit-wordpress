@@ -683,6 +683,58 @@ class NonInlineFormCest
 		$I->dontSeeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]');
 	}
 
+	public function testNonInlineFormLimitPerSession(EndToEndTester $I)
+	{
+		// Setup Plugin with a non-inline Default Form for Site Wide,
+		// and set to limit the display of non-inline forms per session.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'non_inline_form' => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+				),
+				'non_inline_form_limit_per_session' => 'on',
+			]
+		);
+		
+		// Create a Page in the database that uses a different non-inline form.
+		$I->havePostInDatabase(
+			[
+				'post_title'  => 'Kit: Non Inline Form: Limit Per Session',
+				'post_name'   => 'kit-non-inline-form-limit-per-session',
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'meta'        => [
+					'_wp_convertkit_post_meta' => [
+						'form' => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+					],
+				],
+			]
+		);
+
+		// View the home page.
+		$I->amOnPage('/');
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+
+		// View Page.
+		$I->amOnPage('/kit-non-inline-form-limit-per-session');
+		die();
+
+		// Confirm that no Kit Form is output in the DOM, and the cookie is set, because a non-inline form was output in the previous request.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
+		$I->seeCookie('convertkit_non_inline_form_output');
+
+		// View the home page.
+		$I->amOnPage('/');
+
+		// Confirm that no Kit Form is output in the DOM, and the cookie is set, because a non-inline form was output in the previous request.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
+		$I->seeCookie('convertkit_non_inline_form_output');
+	}
+
 	/**
 	 * Test that the defined default non-inline form displays site wide
 	 * when stored as a string in the Plugin settings from older
