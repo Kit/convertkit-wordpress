@@ -926,6 +926,11 @@ class ConvertKit_Output {
 			 */
 			$script = apply_filters( 'convertkit_output_script_footer', $script );
 
+			// Skip script if it is limited by the Non-inline Form Limit per Session setting.
+			if ( $this->is_script_output_limited_by_session( $script ) ) {
+				continue;
+			}
+
 			// Build output.
 			$output = '<script';
 			foreach ( $script as $attribute => $value ) {
@@ -964,6 +969,48 @@ class ConvertKit_Output {
 		foreach ( $output_scripts as $output_script ) {
 			echo $output_script . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
+
+	}
+
+	/**
+	 * Checks if a script is limited by the Non-inline Form Limit per Session setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $script   Script.
+	 * @return  bool
+	 */
+	private function is_script_output_limited_by_session( $script ) {
+
+		// Get Settings, if they have not yet been loaded.
+		if ( ! $this->settings ) {
+			$this->settings = new ConvertKit_Settings();
+		}
+
+		// No limitation if the setting is disabled.
+		if ( ! $this->settings->non_inline_form_limit_per_session() ) {
+			return false;
+		}
+
+		// No limitation if the script does not have the data-kit-limit-per-session attribute.
+		if ( ! isset( $script['data-kit-limit-per-session'] ) ) {
+			return false;
+		}
+
+		// No limitation if the script does not have the data-kit-limit-per-session attribute set to true.
+		if ( $script['data-kit-limit-per-session'] !== true ) {
+			return false;
+		}
+
+		// No limitation if this is the first time the visitor has seen any non-inline form.
+		if ( ! isset( $_COOKIE['convertkit_non_inline_form_output'] ) ) {
+			// Set cookie, so the visitor is not limited by the setting on subsequent page loads, limited to this session only.
+			setcookie( 'convertkit_non_inline_form_output', 1, 0, '/' );
+			return false;
+		}
+
+		// Limitation if this is not the first script to be output.
+		return true;
 
 	}
 
