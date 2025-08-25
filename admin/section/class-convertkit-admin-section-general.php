@@ -65,7 +65,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				'wrap'     => true,
 			),
 			'site-wide' => array(
-				'title'    => __( 'Site Wide', 'convertkit' ),
+				'title'    => __( 'Non-inline Forms', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_site_wide' ),
 				'wrap'     => true,
 			),
@@ -386,7 +386,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		// Non-inline Form Limit per Session.
 		add_settings_field(
 			'non_inline_form_limit_per_session',
-			__( 'Limit per Session', 'convertkit' ),
+			__( 'Display Limit', 'convertkit' ),
 			array( $this, 'non_inline_form_limit_per_session_callback' ),
 			$this->settings_key,
 			$this->name . '-site-wide',
@@ -845,7 +845,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'non_inline_form_limit_per_session',
 			'on',
 			$this->settings->non_inline_form_limit_per_session(),
-			esc_html__( 'If checked, one non-inline form can only be displayed once per session. This applies to all non-inline forms across the Site Wide, Page, Post, Custom Post and Category settings.', 'convertkit' )
+			esc_html__( 'If checked, one non-inline form can only be displayed once per session. This applies to all non-inline forms defined in General Settings, Site Wide, Page / Post level Settings and Category settings.', 'convertkit' )
 		);
 
 	}
