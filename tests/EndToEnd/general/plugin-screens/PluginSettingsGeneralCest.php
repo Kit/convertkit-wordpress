@@ -530,6 +530,57 @@ class PluginSettingsGeneralCest
 
 	/**
 	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
+	 * when the Non-inline Form settings are saved and cleared.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testNonInlineFormSettings(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Define fields.
+		$I->fillSelect2MultipleField(
+			$I,
+			container: '#select2-_wp_convertkit_settings_non_inline_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME']
+		);
+		$I->fillSelect2MultipleField(
+			$I,
+			container: '#select2-_wp_convertkit_settings_non_inline_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+		);
+		$I->checkOption('#non_inline_form_honor_none_setting');
+		$I->checkOption('#non_inline_form_limit_per_session');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->waitForElementVisible('.notice-success');
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the field settings saved.
+		$I->seeInFormFields(
+			'form',
+			[
+				'_wp_convertkit_settings[non_inline_form][]' => [
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME'],
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'],
+				],
+			]
+		);
+		$I->seeCheckboxIsChecked('#non_inline_form_honor_none_setting');
+		$I->seeCheckboxIsChecked('#non_inline_form_limit_per_session');
+	}
+
+	/**
+	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
 	 * when the reCAPTCHA settings are saved and cleared.
 	 *
 	 * @since   3.0.0

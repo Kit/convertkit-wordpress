@@ -410,6 +410,19 @@ class ConvertKit_Settings {
 	}
 
 	/**
+	 * Returns whether the Non-inline Form Limit per Session setting has been set in the Plugin settings.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool
+	 */
+	public function non_inline_form_limit_per_session() {
+
+		return ( $this->settings['non_inline_form_limit_per_session'] === 'on' ? true : false );
+
+	}
+
+	/**
 	 * Returns the reCAPTCHA Site Key Plugin setting.
 	 *
 	 * @since   3.0.0
@@ -550,6 +563,7 @@ class ConvertKit_Settings {
 			// Site Wide.
 			'non_inline_form'                    => array(), // array.
 			'non_inline_form_honor_none_setting' => '', // blank|on.
+			'non_inline_form_limit_per_session'  => '', // blank|on.
 
 			// reCAPTCHA.
 			'recaptcha_site_key'                 => '', // string.
