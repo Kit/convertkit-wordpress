@@ -872,6 +872,7 @@ class ConvertKit_Output {
 						'async'    => true,
 						'data-uid' => $form['uid'],
 						'src'      => $form['embed_js'],
+						'data-kit-limit-per-session' => true,
 					);
 
 					return $scripts;
@@ -987,30 +988,18 @@ class ConvertKit_Output {
 			$this->settings = new ConvertKit_Settings();
 		}
 
-		// No limitation if the setting is disabled.
+		// Display script if the "Display Limit" setting isn't enabled.
 		if ( ! $this->settings->non_inline_form_limit_per_session() ) {
 			return false;
 		}
 
-		// No limitation if the script does not have the data-kit-limit-per-session attribute.
+		// Display script if the "Display Limit" setting should not be applied to this script.
 		if ( ! isset( $script['data-kit-limit-per-session'] ) ) {
 			return false;
 		}
 
-		// No limitation if the script does not have the data-kit-limit-per-session attribute set to true.
-		if ( $script['data-kit-limit-per-session'] !== true ) {
-			return false;
-		}
-
-		// No limitation if this is the first time the visitor has seen any non-inline form.
-		if ( ! isset( $_COOKIE['convertkit_non_inline_form_output'] ) ) {
-			// Set cookie, so the visitor is not limited by the setting on subsequent page loads, limited to this session only.
-			setcookie( 'convertkit_non_inline_form_output', 1, 0, '/' );
-			return false;
-		}
-
-		// Limitation if this is not the first script to be output.
-		return true;
+		// Display script if this is the first time the visitor has seen any non-inline form.
+		return ! isset( $_COOKIE['ck_non_inline_form_displayed'] );
 
 	}
 
