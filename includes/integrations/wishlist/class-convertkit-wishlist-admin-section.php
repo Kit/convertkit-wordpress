@@ -114,7 +114,7 @@ class ConvertKit_Wishlist_Admin_Section extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Setup WP_List_Table.
-		$table = new Multi_Value_Field_Table();
+		$table = new ConvertKit_WP_List_Table();
 		$table->add_column( 'title', __( 'WishList Membership Level', 'convertkit' ), true );
 		$table->add_column( 'add', __( 'Assign to member', 'convertkit' ), false );
 		$table->add_column( 'remove', __( 'Remove from member', 'convertkit' ), false );
