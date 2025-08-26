@@ -134,7 +134,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		$this->columns[ $key ] = $title;
 
 		if ( $sortable ) {
-			$this->sortable_columns[ $key ] = true;
+			$this->sortable_columns[ $key ] = array( $key, false );
 		}
 
 	}
