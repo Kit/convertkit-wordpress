@@ -274,7 +274,7 @@ class ConvertKit_Form_Entries {
 		}
 
 		// Run and return total records found.
-		return $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 	}
 

@@ -141,7 +141,8 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 		$table->add_column( 'name', __( 'Contact Form 7 Name Field', 'convertkit' ), false );
 		$table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
 
-		// Iterate through Contact Form 7 Forms, adding a table row for each Contact Form 7 Form.
+		// Iterate through Contact Form 7 Forms, building table array.
+		$table_rows = array();
 		foreach ( $cf7_forms as $cf7_form ) {
 			// Build row.
 			$table_row = array(
@@ -176,8 +177,15 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 			}
 
 			// Add row to table of settings.
-			$table->add_item( $table_row );
+			$table_rows[] = $table_row;
 		}
+
+		// Sort table rows.
+		$table_rows = $table->reorder( $table_rows, 'title', 'asc' );
+
+		// Set items.
+		$table->add_items( $table_rows );
+		$table->set_total_items( count( $table_rows ) );
 
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();

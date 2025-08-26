@@ -44,11 +44,13 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	private $sortable_columns = array();
 
 	/**
-	 * Holds the table rows and their data.
+	 * Holds the total number of items in the table.
 	 *
-	 * @var     array
+	 * @since   3.0.0
+	 *
+	 * @var     int
 	 */
-	private $data = array();
+	private $total_items = 0;
 
 	/**
 	 * Constructor.
@@ -132,7 +134,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		$this->columns[ $key ] = $title;
 
 		if ( $sortable ) {
-			$this->sortable_columns[ $key ] = array( $key, false );
+			$this->sortable_columns[ $key ] = true;
 		}
 
 	}
@@ -144,7 +146,25 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 */
 	public function add_item( $item ) {
 
-		array_push( $this->data, $item );
+		array_push( $this->items, $item );
+
+	}
+
+	public function add_items( $items ) {
+
+		$this->items = $items;
+
+	}
+
+	public function set_total_items( $total_items ) {
+
+		$this->total_items = $total_items;
+
+	}
+
+	public function get_total_items() {
+
+		return $this->total_items ?? count( $this->items );
 
 	}
 
@@ -165,28 +185,28 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 */
 	public function prepare_items() {
 
-		$total_items = count( $this->data );
-		$per_page    = 25;
+		$this->items = [
+			[
+				'id' => 1,
+				'title' => 'Item 1',
+			],
+			[
+				'id' => 2,
+				'title' => 'Item 2',
+			],
+		];
 
-		$columns  = $this->columns;
-		$hidden   = array();
-		$sortable = $this->sortable_columns;
 
-		$this->_column_headers = array( $columns, $hidden, $sortable );
 
-		$current_page = $this->get_pagenum();
+		var_dump( $this->items );
 
-		$sorted_data = $this->reorder( $this->data );
-
-		$data = array_slice( $sorted_data, ( ( $current_page - 1 ) * $per_page ), $per_page );
-
-		$this->items = $data;
-
+		// Define pagination.
+		$per_page = 25;
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
+				'total_items' => $this->total_items,
+				'total_pages' => ceil( $this->total_items / $per_page ),
 				'per_page'    => $per_page,
-				'total_pages' => (int) ceil( $total_items / $per_page ),
 			)
 		);
 
@@ -195,26 +215,21 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	/**
 	 * Reorder the data according to the sort parameters
 	 *
-	 * @param array $data   Row data, unsorted.
+	 * @param array  $data   			Row data, unsorted.
+	 * @param string $order_by_default 	Default order by.
+	 * @param string $order_default 	Default order direction.
+	 *
 	 * @return array Row data, sorted
 	 */
-	public function reorder( $data ) {
+	public function reorder( $data, $order_by_default = 'title', $order_default = 'asc' ) {
 
 		usort(
 			$data,
-			function ( $a, $b ) {
+			function ( $a, $b ) use ( $order_by_default, $order_default ) {
+				// Get order by and order.
+				$orderby = $this->get_order_by( $order_by_default );
+				$order = $this->get_order( $order_default );
 
-				if ( ! filter_has_var( INPUT_GET, 'orderby' ) || empty( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
-					$orderby = 'title';
-				} else {
-					$orderby = sanitize_sql_orderby( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
-				}
-
-				if ( ! filter_has_var( INPUT_GET, 'order' ) || empty( filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
-					$order = 'asc';
-				} else {
-					$order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-				}
 				$result = strcmp( $a[ $orderby ], $b[ $orderby ] ); // Determine sort order.
 				return ( 'asc' === $order ) ? $result : -$result; // Send final sort direction to usort.
 
@@ -222,6 +237,95 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		);
 
 		return $data;
+
+	}
+
+	/**
+	 * Returns whether a search has been performed on the table.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool    Search has been performed.
+	 */
+	public function is_search() {
+
+		return filter_has_var( INPUT_GET, 's' );
+
+	}
+
+	/**
+	 * Get the Search requested by the user
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_search() {
+
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 's', $_REQUEST ) ) {
+			return '';
+		}
+
+		return urldecode( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) );
+
+	}
+
+	/**
+	 * Get the Order By requested by the user
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_order_by( $default = 'title' ) {
+
+		// Don't nonce check because order by may not include a nonce if no search performed.
+		if ( ! filter_has_var( INPUT_GET, 'orderby' ) ) {
+			return $default;
+		}
+
+		return sanitize_sql_orderby( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+
+	}
+
+	/**
+	 * Get the Order requested by the user
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_order( $default = 'DESC' ) {
+
+		// Don't nonce check because order may not include a nonce if no search performed.
+		if ( ! filter_has_var( INPUT_GET, 'order' ) ) {
+			return $default;
+		}
+
+		return filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+	}
+
+	/**
+	 * Get the Pagination Page requested by the user
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_page() {
+
+		// Don't nonce check because pagination may not include a nonce if no search performed.
+		if ( ! filter_has_var( INPUT_GET, 'paged' ) ) {
+			return 1;
+		}
+
+		return absint( filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 
 	}
 

@@ -98,6 +98,8 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 	 */
 	public function render() {
 
+		$form_entries = new ConvertKit_Form_Entries();
+
 		// Render opening container.
 		$this->render_container_start();
 
@@ -106,29 +108,27 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 		<?php
 		$this->print_section_info();
 
-		// Add search filters to the table.
-		$this->table->add_search_filter(
-			'api_result',
-			__( 'Result', 'convertkit' ),
-			array(
-				'success' => __( 'Success', 'convertkit' ),
-				'error' => __( 'Error', 'convertkit' ),
-			)
-		);
-
-		// Add bulk actions to the table.
-		$this->table->add_bulk_action( 'send', __( 'Send to Kit', 'convertkit' ) );
-		$this->table->add_bulk_action( 'delete', __( 'Delete', 'convertkit' ) );
-
 		// Add columns to table.
 		$this->table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), true );
 		$this->table->add_column( 'first_name', __( 'First Name', 'convertkit' ), false );
 		$this->table->add_column( 'email', __( 'Email', 'convertkit' ), false );
 		$this->table->add_column( 'created_at', __( 'Created', 'convertkit' ), false );
         $this->table->add_column( 'updated_at', __( 'Updated', 'convertkit' ), false );
-		$this->table->add_column( 'api_request_sent', __( 'Sent to Kit', 'convertkit' ), false );
 		$this->table->add_column( 'api_result', __( 'Result', 'convertkit' ), false );
+        $this->table->add_column( 'api_error', __( 'Error', 'convertkit' ), false );
 
+		// Add form entries to table.
+		$entries = $form_entries->search(
+			$this->table->get_order_by(),
+			$this->table->get_order(),
+			$this->table->get_page(),
+			1
+		);
+		$this->table->add_items( $entries );
+
+		// Set total entries.
+		$this->table->set_total_items( $form_entries->total() );
+		
 		// Prepare and display WP_List_Table.
 		$this->table->prepare_items();
 		$this->table->search_box( __( 'Search', 'convertkit' ), 'convertkit-form-entries' );
