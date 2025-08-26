@@ -153,7 +153,7 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
 			blockConfiguration: [
-				'#inspector-toggle-control-0' => [ 'toggle', false ],
+				'#inspector-toggle-control-1' => [ 'toggle', false ],
 				'text_if_subscribed'          => [ 'text', 'Welcome to the newsletter!' ],
 			]
 		);
