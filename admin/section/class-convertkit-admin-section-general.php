@@ -65,7 +65,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				'wrap'     => true,
 			),
 			'site-wide' => array(
-				'title'    => __( 'Site Wide', 'convertkit' ),
+				'title'    => __( 'Non-inline Forms', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_site_wide' ),
 				'wrap'     => true,
 			),
@@ -380,6 +380,18 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			$this->name . '-site-wide',
 			array(
 				'label_for' => 'non_inline_form_honor_none_setting',
+			)
+		);
+
+		// Non-inline Form Limit per Session.
+		add_settings_field(
+			'non_inline_form_limit_per_session',
+			__( 'Limit Display', 'convertkit' ),
+			array( $this, 'non_inline_form_limit_per_session_callback' ),
+			$this->settings_key,
+			$this->name . '-site-wide',
+			array(
+				'label_for' => 'non_inline_form_limit_per_session',
 			)
 		);
 
@@ -814,6 +826,26 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'on',
 			$this->settings->non_inline_form_honor_none_setting(),
 			esc_html__( 'If checked, do not display the site wide form(s) above on Pages / Posts that have their Kit Form setting = None.', 'convertkit' )
+		);
+
+	}
+
+
+	/**
+	 * Renders the input for the Modal Form Limit per Session setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function non_inline_form_limit_per_session_callback( $args ) {
+
+		// Output field.
+		$this->output_checkbox_field(
+			'non_inline_form_limit_per_session',
+			'on',
+			$this->settings->non_inline_form_limit_per_session(),
+			esc_html__( 'If checked, one non-inline form will be displayed per session. This applies to all non-inline forms defined on this screen, Page / Post / Category settings, and any Form blocks or shortcodes specifying a non-inline form.', 'convertkit' )
 		);
 
 	}
