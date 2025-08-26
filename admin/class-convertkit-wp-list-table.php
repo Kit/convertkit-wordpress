@@ -23,6 +23,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class ConvertKit_WP_List_Table extends WP_List_Table {
 
 	/**
+	 * Holds the supported bulk actions.
+	 *
+	 * @var     array
+	 */
+	private $bulk_actions = array();
+
+	/**
 	 * Holds the table columns.
 	 *
 	 * @var     array
@@ -92,6 +99,17 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the bulk actions for this table
+	 *
+	 * @return array Bulk actions
+	 */
+	public function get_bulk_actions() {
+
+		return $this->bulk_actions;
+
+	}
+
+	/**
 	 * Get a list of columns
 	 *
 	 * @return array
@@ -127,6 +145,18 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	public function add_item( $item ) {
 
 		array_push( $this->data, $item );
+
+	}
+
+	/**
+	 * Add a bulk action to the table
+	 *
+	 * @param string $key  Machine-readable action name.
+	 * @param string $name Title shown to the user.
+	 */
+	public function add_bulk_action( $key, $name ) {
+
+		$this->bulk_actions[ $key ] = $name;
 
 	}
 
