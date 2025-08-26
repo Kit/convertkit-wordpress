@@ -150,18 +150,41 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 
 	}
 
+	/**
+	 * Add multiple items to the table
+	 * 
+	 * @since   3.0.0
+	 *
+	 * @param 	array 	$items 	Table rows.
+	 */
 	public function add_items( $items ) {
 
 		$this->items = $items;
 
 	}
 
+	/**
+	 * Set the total number of items available, which may
+	 * be greater than the number of items displayed.
+	 * 
+	 * @since   3.0.0
+	 *
+	 * @param 	int 	$total_items 	Total number of items.
+	 */
 	public function set_total_items( $total_items ) {
 
 		$this->total_items = $total_items;
 
 	}
 
+	/**
+	 * Get the total number of items available, which may
+	 * be greater than the number of items displayed.
+	 * 
+	 * @since   3.0.0
+	 *
+	 * @return int Total number of items.
+	 */
 	public function get_total_items() {
 
 		return $this->total_items ?? count( $this->items );
@@ -181,28 +204,15 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Prepares the items (rows) to be rendered
+	 * Define table columns and pagination for this WP_List_Table.
+	 * 
+	 * @since   3.0.0
 	 */
 	public function prepare_items() {
 
-		
-
-		/*
-
-
-
-		var_dump( $this->items );
-
-		// Define pagination.
-		$per_page = 25;
-		$this->set_pagination_args(
-			array(
-				'total_items' => $this->total_items,
-				'total_pages' => ceil( $this->total_items / $per_page ),
-				'per_page'    => $per_page,
-			)
-		);
-		*/
+		// Set column headers.
+		// If this isn't done, the table will not display.
+		$this->_column_headers = array( $this->columns, array(), $this->sortable_columns );
 
 	}
 
@@ -302,24 +312,6 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		}
 
 		return filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-
-	}
-
-	/**
-	 * Get the Pagination Page requested by the user
-	 *
-	 * @since   3.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_page() {
-
-		// Don't nonce check because pagination may not include a nonce if no search performed.
-		if ( ! filter_has_var( INPUT_GET, 'paged' ) ) {
-			return 1;
-		}
-
-		return absint( filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 
 	}
 

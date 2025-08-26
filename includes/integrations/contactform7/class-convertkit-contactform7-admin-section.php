@@ -15,15 +15,6 @@
 class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Base {
 
 	/**
-	 * Holds the WP_List_Table instance.
-	 *
-     * @since   3.0.0
-     *
-	 * @var     ConvertKit_WP_List_Table
-	 */
-	public $table;
-
-	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -47,10 +38,6 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 				'wrap'     => false,
 			),
 		);
-
-		// Setup WP_List_Table.
-		// Doing this in render() is too late - columns and items don't display.
-		$this->table = new ConvertKit_WP_List_Table();
 
 		parent::__construct();
 
@@ -147,11 +134,12 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 		$creator_network_recommendations_enabled = $creator_network_recommendations->enabled();
 
 		// Setup WP_List_Table.
-		$this->table->add_column( 'title', __( 'Contact Form 7 Form', 'convertkit' ), true );
-		$this->table->add_column( 'form', __( 'Kit', 'convertkit' ), false );
-		$this->table->add_column( 'email', __( 'Contact Form 7 Email Field', 'convertkit' ), false );
-		$this->table->add_column( 'name', __( 'Contact Form 7 Name Field', 'convertkit' ), false );
-		$this->table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
+		$table = new ConvertKit_WP_List_Table();
+		$table->add_column( 'title', __( 'Contact Form 7 Form', 'convertkit' ), true );
+		$table->add_column( 'form', __( 'Kit', 'convertkit' ), false );
+		$table->add_column( 'email', __( 'Contact Form 7 Email Field', 'convertkit' ), false );
+		$table->add_column( 'name', __( 'Contact Form 7 Name Field', 'convertkit' ), false );
+		$table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
 
 		// Iterate through Contact Form 7 Forms, building table array.
 		$table_rows = array();
@@ -193,15 +181,15 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 		}
 
 		// Sort table rows.
-		$table_rows = $this->table->reorder( $table_rows );
+		$table_rows = $table->reorder( $table_rows );
 
 		// Set items.
-		$this->table->add_items( $table_rows );
-		$this->table->set_total_items( count( $table_rows ) );
+		$table->add_items( $table_rows );
+		$table->set_total_items( count( $table_rows ) );
 
 		// Prepare and display WP_List_Table.
-		$this->table->prepare_items();
-		$this->table->display();
+		$table->prepare_items();
+		$table->display();
 
 		// Register settings field.
 		settings_fields( $this->settings_key );
