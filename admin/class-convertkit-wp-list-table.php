@@ -187,7 +187,11 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 */
 	public function get_total_items() {
 
-		return $this->total_items ?? count( $this->items );
+		if ( $this->total_items ) {
+			return $this->total_items;
+		}
+
+		return count( $this->items );
 
 	}
 

@@ -203,14 +203,14 @@ class ConvertKit_Form_Entries {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $order_by   Order Results By.
-	 * @param   string $order      Order (asc|desc).
-	 * @param   int    $page       Pagination Offset (default: 0).
-	 * @param   int    $per_page   Number of Results to Return (default: 20).
-	 * @param   mixed  $params     Query Parameters (false = all records).
+	 * @param   string     $order_by   Order Results By.
+	 * @param   string     $order      Order (asc|desc).
+	 * @param   int        $page       Pagination Offset (default: 1).
+	 * @param   int        $per_page   Number of Results to Return (default: 25).
+	 * @param   bool|array $params     Query Parameters (false = all records).
 	 * @return  array
 	 */
-	public function search( $order_by, $order, $page = 0, $per_page = 20, $params = false ) {
+	public function search( $order_by, $order, $page = 1, $per_page = 25, $params = false ) {
 
 		global $wpdb;
 
@@ -283,8 +283,8 @@ class ConvertKit_Form_Entries {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   array $params     Query Parameters (false = all records).
-	 * @return  string              WHERE SQL clause
+	 * @param   bool|array $params     Query Parameters.
+	 * @return  bool|string
 	 */
 	private function build_where_clause( $params ) {
 
@@ -297,30 +297,30 @@ class ConvertKit_Form_Entries {
 
 		// Build where clauses.
 		$where = array();
-		if ( $params !== false && is_array( $params ) && count( $params ) > 0 ) {
-			foreach ( $params as $key => $value ) {
-				// Skip blank params.
-				if ( empty( $value ) ) {
-					continue;
-				}
+		foreach ( $params as $key => $value ) {
+			// Skip blank params.
+			if ( empty( $value ) ) {
+				continue;
+			}
 
-				// Build condition based on the key.
-				switch ( $key ) {
-					default:
-						$where[] = $wpdb->prepare(
-							'%i = %s',
-							$key,
-							$value
-						);
-						break;
-				}
+			// Build condition based on the key.
+			switch ( $key ) {
+				default:
+					$where[] = $wpdb->prepare(
+						'%i = %s',
+						$key,
+						$value
+					);
+					break;
 			}
 		}
 
+		// If no where clauses, return false.
 		if ( ! count( $where ) ) {
 			return false;
 		}
 
+		// Return where clause.
 		return implode( ' AND ', $where );
 
 	}

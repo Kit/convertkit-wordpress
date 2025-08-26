@@ -60,7 +60,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		?>
 		<p>
 			<?php
-			esc_html_e( 'Displays a list of form entries from Form Builder blocks that have "store entries" enabled. Entries submitted using embedded Kit Forms or Landing Pages are not included.', 'convertkit' );
+			esc_html_e( 'Displays a list of form entries from Form Builder blocks that have "store form submissions" enabled. Entries submitted using embedded Kit Forms or Landing Pages are not included.', 'convertkit' );
 			?>
 		</p>
 		<?php
@@ -81,10 +81,9 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 	}
 
 	/**
-	 * Outputs the section as a WP_List_Table of Contact Form 7 Forms, with options to choose
-	 * a ConvertKit Form mapping for each.
+	 * Outputs the section as a WP_List_Table of Form Entries.
 	 *
-	 * @since   1.9.6
+	 * @since   3.0.0
 	 */
 	public function render() {
 
@@ -102,7 +101,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table = new ConvertKit_WP_List_Table();
 
 		// Add columns to table.
-		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), true );
+		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), false );
 		$table->add_column( 'first_name', __( 'First Name', 'convertkit' ), false );
 		$table->add_column( 'email', __( 'Email', 'convertkit' ), false );
 		$table->add_column( 'created_at', __( 'Created', 'convertkit' ), false );
@@ -114,8 +113,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$entries = $form_entries->search(
 			$table->get_order_by( 'created_at' ),
 			$table->get_order( 'DESC' ),
-			$table->get_page(),
-			1
+			$table->get_pagenum()
 		);
 		$table->add_items( $entries );
 
@@ -143,10 +141,6 @@ add_filter(
 	 * @return  array
 	 */
 	function ( $sections ) {
-
-		if ( ! class_exists( 'WP_List_Table' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-		}
 
 		// Register this class as a section at Settings > Kit.
 		$sections['form-entries'] = new ConvertKit_Admin_Section_Form_Entries();
