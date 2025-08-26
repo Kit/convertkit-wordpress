@@ -22,22 +22,7 @@ class ConvertKit_Form_Entries {
 	 *
 	 * @var     string
 	 */
-	private $table = '_kit_form_entries';
-
-	/**
-	 * Constructor
-	 *
-	 * @since   3.0.0
-	 */
-	public function __construct() {
-
-		// Actions.
-		add_filter( 'set-screen-option', array( $this, 'set_screen_options' ), 10, 3 );
-		add_action( 'current_screen', array( $this, 'run_log_table_bulk_actions' ) );
-		add_action( 'current_screen', array( $this, 'run_log_table_filters' ) );
-		add_action( 'wp_loaded', array( $this, 'export' ) );
-
-	}
+	private $table = 'kit_form_entries';
 
 	/**
 	 * Create database table.
@@ -49,9 +34,6 @@ class ConvertKit_Form_Entries {
 	public function create_database_table() {
 
 		global $wpdb;
-
-		// Enable error output if WP_DEBUG is enabled.
-		$wpdb->show_errors = true;
 
 		// Create database table.
 		$query  = $wpdb->prepare(
@@ -79,168 +61,6 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
-	 * Sets values for options displayed in the Screen Options dropdown on the Logs
-	 * WP_List_Table
-	 *
-	 * @since   3.0.0
-	 *
-	 * @param   mixed  $screen_option  The value to save instead of the option value. Default false (to skip saving the current option).
-	 * @param   string $option         The option name.
-	 * @param   string $value          The option value.
-	 * @return  string                  The option value
-	 */
-	public function set_screen_options( $screen_option, $option, $value ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-
-		return $value;
-
-	}
-
-	/**
-	 * Defines options to display in the Screen Options dropdown on the Logs
-	 * WP_List_Table
-	 *
-	 * @since   3.0.0
-	 */
-	public function add_screen_options() {
-
-		add_screen_option(
-			'per_page',
-			array(
-				'label'   => __( 'Entries per Page', 'convertkit' ),
-				'default' => 20,
-				'option'  => 'convertkit_form_builder_entries_per_page',
-			)
-		);
-
-		// Initialize Logs WP_List_Table, as this will trigger WP_List_Table to add column options.
-		$log_table = new ConvertKit_Admin_Form_Builder_Entries_Table();
-
-	}
-
-	/**
-	 * Run any bulk actions on the Log WP_List_Table
-	 *
-	 * @since   3.0.0
-	 */
-	public function run_log_table_bulk_actions() {
-
-		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-convertkit-form-builder-entries' ) ) {
-			return;
-		}
-
-		// Get bulk action from the fields that might contain it.
-		$bulk_action = array_values(
-			array_filter(
-				array(
-					( isset( $_REQUEST['bulk_action'] ) && $_REQUEST['bulk_action'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
-					( isset( $_REQUEST['bulk_action2'] ) && $_REQUEST['bulk_action2'] != -1 ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action2'] ) ) : '' ),  // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
-					( isset( $_REQUEST['bulk_action3'] ) && ! empty( $_REQUEST['bulk_action3'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['bulk_action3'] ) ) : '' ),
-				)
-			)
-		);
-
-		// Bail if no bulk action.
-		if ( ! is_array( $bulk_action ) ) {
-			return;
-		}
-		if ( ! count( $bulk_action ) ) {
-			return;
-		}
-
-		// Perform Bulk Action.
-		switch ( $bulk_action[0] ) {
-			/**
-			 * Delete Entries
-			 */
-			case 'delete':
-				// Get Post IDs.
-				if ( ! isset( $_REQUEST['ids'] ) ) {
-					WP_ConvertKit()->get_class( 'admin_notices' )->add_error_notice(
-						__( 'No entries were selected for deletion.', 'convertkit' )
-					);
-					break;
-				}
-
-				// Delete Logs by IDs.
-				$ids = array_unique( array_map( 'absint', $_REQUEST['ids'] ) );
-				$this->delete_by_ids( $ids );
-
-				// Add success notice.
-				WP_ConvertKit()->get_class( 'admin_notices' )->add_success_notice(
-					sprintf(
-						/* translators: Number of log entries deleted */
-						__( '%s Entries deleted.', 'convertkit' ),
-						count( $ids )
-					)
-				);
-				break;
-
-			/**
-			 * Delete All Logs
-			 */
-			case 'delete_all':
-				// Delete Logs.
-				$this->delete_all();
-
-				// Add success notice.
-				$this->base->get_class( 'notices' )->add_success_notice(
-					__( 'All Entries deleted.', 'convertkit' )
-				);
-				break;
-
-		}
-
-		// Redirect.
-		wp_safe_redirect( 'admin.php?page=convertkit-form-builder-entries' );
-		die();
-
-	}
-
-	/**
-	 * Redirect POST filters to a GET URL
-	 *
-	 * @since   3.0.0
-	 */
-	public function run_log_table_filters() {
-
-		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-convertkit-form-builder-entries' ) ) {
-			return;
-		}
-
-		$params = array();
-		foreach ( $this->get_filters() as $filter ) {
-			if ( ! isset( $_POST[ $filter ] ) ) {
-				continue;
-			}
-			if ( empty( $_POST[ $filter ] ) ) {
-				continue;
-			}
-
-			$params[ $filter ] = sanitize_text_field( wp_unslash( $_POST[ $filter ] ) );
-		}
-
-		// Include search parameter.
-		if ( array_key_exists( 's', $_POST ) ) {
-			$params['s'] = sanitize_text_field( wp_unslash( $_POST['s'] ) );
-		}
-
-		// If params don't exist, exit.
-		if ( ! count( $params ) ) {
-			return;
-		}
-
-		// Add nonce.
-		$params['_wpnonce'] = wp_create_nonce( 'bulk-convertkit-form-builder-entries' );
-
-		// Redirect.
-		wp_safe_redirect( 'admin.php?page=convertkit-form-builder-entries&' . http_build_query( $params ) );
-		die();
-
-	}
-
-	/**
 	 * Adds an entry for the given Post ID
 	 *
 	 * @since   3.0.0
@@ -259,11 +79,8 @@ class ConvertKit_Form_Entries {
 
 		global $wpdb;
 
-		// Enable error output if WP_DEBUG is enabled.
-		$wpdb->show_errors();
-
 		// Add Post ID to entry.
-		$log['post_id'] = absint( $post_id );
+		$entry['post_id'] = absint( $post_id );
 
 		// Insert entry.
 		$result = $wpdb->insert(
@@ -299,7 +116,7 @@ class ConvertKit_Form_Entries {
 	 * @param   int    $page       Pagination Offset (default: 0).
 	 * @param   int    $per_page   Number of Results to Return (default: 20).
 	 * @param   mixed  $params     Query Parameters (false = all records).
-	 * @return  array              Log entries
+	 * @return  array
 	 */
 	public function search( $order_by, $order, $page = 0, $per_page = 20, $params = false ) {
 
@@ -310,13 +127,8 @@ class ConvertKit_Form_Entries {
 
 		// Prepare query.
 		$query = $wpdb->prepare(
-			'SELECT * FROM %i
-            LEFT JOIN %i
-            ON %i.post_id = %i.ID',
-			$wpdb->prefix . $this->table,
-			$wpdb->posts,
-			$wpdb->prefix . $this->table,
-			$wpdb->posts
+			'SELECT * FROM %i',
+			$wpdb->prefix . $this->table
 		);
 
 		// Add where clauses.
@@ -348,7 +160,7 @@ class ConvertKit_Form_Entries {
 	 * @since   3.0.0
 	 *
 	 * @param   mixed $params     Query Parameters (false = all records).
-	 * @return  int                 Total Records
+	 * @return  int
 	 */
 	public function total( $params = false ) {
 
@@ -359,14 +171,9 @@ class ConvertKit_Form_Entries {
 
 		// Prepare query.
 		$query = $wpdb->prepare(
-			'SELECT COUNT(%i.id) FROM %i
-            LEFT JOIN %i
-            ON %i.post_id = %i.ID',
+			'SELECT COUNT(%i.id) FROM %i',
 			$wpdb->prefix . $this->table,
-			$wpdb->prefix . $this->table,
-			$wpdb->posts,
-			$wpdb->prefix . $this->table,
-			$wpdb->posts
+			$wpdb->prefix . $this->table
 		);
 
 		// Add where clauses.
@@ -407,44 +214,6 @@ class ConvertKit_Form_Entries {
 
 				// Build condition based on the key.
 				switch ( $key ) {
-					case 'post_title':
-						$where[] = $wpdb->prepare(
-							'(%i LIKE %s OR status_text LIKE %s OR result_message LIKE %s)',
-							$key,
-							'%' . $wpdb->esc_like( $value ) . '%',
-							'%' . $wpdb->esc_like( $value ) . '%',
-							'%' . $wpdb->esc_like( $value ) . '%'
-						);
-						break;
-
-					case 'request_sent_start_date':
-						if ( ! empty( $params['request_sent_end_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
-							$where[] = $wpdb->prepare(
-								'request_sent <= %s',
-								$value . ' 23:59:59'
-							);
-						} else {
-							$where[] = $wpdb->prepare(
-								'request_sent >= %s',
-								$value . ' 00:00:00'
-							);
-						}
-						break;
-
-					case 'request_sent_end_date':
-						if ( ! empty( $params['request_sent_start_date'] ) && $params['request_sent_start_date'] > $params['request_sent_end_date'] ) {
-							$where[] = $wpdb->prepare(
-								'request_sent >= %s',
-								$value . ' 00:00:00'
-							);
-						} else {
-							$where[] = $wpdb->prepare(
-								'request_sent <= %s',
-								$value . ' 23:59:59'
-							);
-						}
-						break;
-
 					default:
 						$where[] = $wpdb->prepare(
 							'%i = %s',
@@ -511,7 +280,7 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
-	 * Deletes all Log entries
+	 * Deletes all entries
 	 *
 	 * @since   3.0.0
 	 *
