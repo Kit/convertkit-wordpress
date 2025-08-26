@@ -121,7 +121,7 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 		$creator_network_recommendations_enabled = $creator_network_recommendations->enabled();
 
 		// Setup WP_List_Table.
-		$table = new Multi_Value_Field_Table();
+		$table = new ConvertKit_WP_List_Table();
 		$table->add_column( 'title', __( 'Forminator Form', 'convertkit' ), true );
 		$table->add_column( 'form', __( 'Kit', 'convertkit' ), false );
 		$table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
