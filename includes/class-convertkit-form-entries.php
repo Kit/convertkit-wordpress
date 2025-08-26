@@ -78,10 +78,16 @@ class ConvertKit_Form_Entries {
 	 *    int             $sequence_id      Sequence ID.
 	 *    string          $api_result       Result (success,error).
 	 *    string          $api_error        API Response (when $api_result is 'error').
+	 * @return  int|bool|WP_Error
 	 */
 	public function add( $entry ) {
 
 		global $wpdb;
+
+		// If no email is provided, return an error.
+		if ( ! array_key_exists( 'email', $entry ) ) {
+			return new \WP_Error( 'convertkit_form_entries_no_email', __( 'No email address provided', 'convertkit' ) );
+		}
 
 		// JSON encode custom fields, if supplied as an array.
 		if ( array_key_exists( 'custom_fields', $entry ) && is_array( $entry['custom_fields'] ) ) {
@@ -92,10 +98,13 @@ class ConvertKit_Form_Entries {
 		$entry['created_at'] = gmdate( 'Y-m-d H:i:s' );
 		$entry['updated_at'] = gmdate( 'Y-m-d H:i:s' );
 
-		return $wpdb->insert(
+		$wpdb->insert(
 			$wpdb->prefix . $this->table,
 			$entry
 		);
+
+		// Return the entry ID.
+		return $wpdb->insert_id;
 
 	}
 
@@ -114,10 +123,16 @@ class ConvertKit_Form_Entries {
 	 *    int             $sequence_id      Sequence ID.
 	 *    string          $api_result       Result (success,error).
 	 *    string          $api_error        API Response (when $api_result is 'error').
+	 * @return  int|bool|WP_Error
 	 */
 	public function update( $id, $entry ) {
 
 		global $wpdb;
+
+		// If no email is provided, return an error.
+		if ( ! array_key_exists( 'email', $entry ) ) {
+			return new \WP_Error( 'convertkit_form_entries_no_email', __( 'No email address provided', 'convertkit' ) );
+		}
 
 		// JSON encode custom fields, if supplied as an array.
 		if ( array_key_exists( 'custom_fields', $entry ) && is_array( $entry['custom_fields'] ) ) {
@@ -127,11 +142,14 @@ class ConvertKit_Form_Entries {
 		// Add updated_at timestamp.
 		$entry['updated_at'] = gmdate( 'Y-m-d H:i:s' );
 
-		return $wpdb->update(
+		$wpdb->update(
 			$wpdb->prefix . $this->table,
 			$entry,
 			array( 'id' => $id )
 		);
+
+		// Return the entry ID.
+		return $wpdb->insert_id;
 
 	}
 
@@ -149,10 +167,16 @@ class ConvertKit_Form_Entries {
 	 *    datetime        $api_request_sent Request Sent to API.
 	 *    string          $api_result       Result (success,test_mode,pending,error).
 	 *    string          $api_response     API Response.
+	 * @return  int|bool|WP_Error
 	 */
 	public function upsert( $entry ) {
 
 		global $wpdb;
+
+		// If no email is provided, return an error.
+		if ( ! array_key_exists( 'email', $entry ) ) {
+			return new \WP_Error( 'convertkit_form_entries_no_email', __( 'No email address provided', 'convertkit' ) );
+		}
 
 		// Check if an entry already exists for the given Post ID and Email.
 		$id = $wpdb->get_var(
