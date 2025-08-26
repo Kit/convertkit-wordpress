@@ -199,6 +199,133 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
+	 * Searches entries by the given key/value pairs
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $order_by   Order Results By.
+	 * @param   string $order      Order (asc|desc).
+	 * @param   int    $page       Pagination Offset (default: 0).
+	 * @param   int    $per_page   Number of Results to Return (default: 20).
+	 * @param   mixed  $params     Query Parameters (false = all records).
+	 * @return  array
+	 */
+	public function search( $order_by, $order, $page = 0, $per_page = 20, $params = false ) {
+
+		global $wpdb;
+
+		// Build where clauses.
+		$where = $this->build_where_clause( $params );
+
+		// Prepare query.
+		$query = $wpdb->prepare(
+			'SELECT * FROM %i',
+			$wpdb->prefix . $this->table
+		);
+
+		// Add where clauses.
+		if ( $where !== false ) {
+			$query .= ' WHERE ' . $where;
+		}
+
+		// Order.
+		$query .= $wpdb->prepare(
+			' ORDER BY %i.%i',
+			$wpdb->prefix . $this->table,
+			$order_by
+		);
+		$query .= ' ' . ( strtolower( $order ) === 'asc' ? 'ASC' : 'DESC' );
+
+		// Limit.
+		if ( $page > 0 && $per_page > 0 ) {
+			$query .= $wpdb->prepare( ' LIMIT %d, %d', ( ( $page - 1 ) * $per_page ), $per_page );
+		}
+
+		// Run and return query results.
+		return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+	}
+
+	/**
+	 * Gets the number of entry records found for the given query parameters
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   mixed $params     Query Parameters (false = all records).
+	 * @return  int
+	 */
+	public function total( $params = false ) {
+
+		global $wpdb;
+
+		// Build where clauses.
+		$where = $this->build_where_clause( $params );
+
+		// Prepare query.
+		$query = $wpdb->prepare(
+			'SELECT COUNT(%i.id) FROM %i',
+			$wpdb->prefix . $this->table,
+			$wpdb->prefix . $this->table
+		);
+
+		// Add where clauses.
+		if ( $where !== false ) {
+			$query .= ' WHERE ' . $where;
+		}
+
+		// Run and return total records found.
+		return $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+	}
+
+	/**
+	 * Builds a WHERE SQL clause based on the given column key/values
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $params     Query Parameters (false = all records).
+	 * @return  string              WHERE SQL clause
+	 */
+	private function build_where_clause( $params ) {
+
+		global $wpdb;
+
+		// Bail if no params.
+		if ( ! $params ) {
+			return false;
+		}
+
+		// Build where clauses.
+		$where = array();
+		if ( $params !== false && is_array( $params ) && count( $params ) > 0 ) {
+			foreach ( $params as $key => $value ) {
+				// Skip blank params.
+				if ( empty( $value ) ) {
+					continue;
+				}
+
+				// Build condition based on the key.
+				switch ( $key ) {
+					default:
+						$where[] = $wpdb->prepare(
+							'%i = %s',
+							$key,
+							$value
+						);
+						break;
+				}
+			}
+		}
+
+		if ( ! count( $where ) ) {
+			return false;
+		}
+
+		return implode( ' AND ', $where );
+
+	}
+
+	/**
 	 * Deletes a single entry for the given ID
 	 *
 	 * @since   3.0.0
