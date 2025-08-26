@@ -19,6 +19,13 @@ class FormEntriesTest extends WPTestCase
 	protected $tester;
 
 	/**
+	 * The table name.
+	 *
+	 * @var string
+	 */
+	private $table_name = 'wp_kit_form_entries';
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.0.0
@@ -53,15 +60,334 @@ class FormEntriesTest extends WPTestCase
 		parent::tearDown();
 	}
 
-    public function testAddEntry()
-    {
-        $data = [
-            'post_id' => 1,
-            'email' => 'test@example.com',
-            'first_name' => 'Test',
-        ];
-        $this->entries->add( $data );
-        $this->seeInDatabase( $this->entries->table, $data );
-    }
+	/**
+	 * Test adding an entry with the minimum required data.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testAddEntry()
+	{
+		$data = [
+			'post_id'    => 1,
+			'email'      => 'test@example.com',
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->add($data);
 
+		// Assert no error and that the entry is in the database.
+		$this->assertNotInstanceOf(\WP_Error::class, $id);
+		$this->assertNotFalse($id );
+		$this->seeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test adding an entry with custom fields, tag ID and sequence ID.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testAddEntryWithAdditionalData()
+	{
+		$data = [
+			'post_id'       => 1,
+			'email'         => 'test@example.com',
+			'first_name'    => 'Test',
+			'custom_fields' => [
+				'custom_field_1' => 'Custom Field 1',
+				'custom_field_2' => 'Custom Field 2',
+			],
+			'tag_id'        => 1,
+			'sequence_id'   => 1,
+		];
+		$id   = $this->entries->add($data);
+
+		// Assert no error and that the entry is in the database.
+		$this->assertNotInstanceOf(\WP_Error::class, $id);
+		$this->assertNotFalse($id);
+		$this->seeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test adding an entry with no email address returns a WP_Error.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testAddEntryWithNoEmail()
+	{
+		$data = [
+			'post_id'    => 1,
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->add($data);
+
+		// Assert an error and that the entry is not in the database.
+		$this->assertInstanceOf(\WP_Error::class, $id);
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test updating an entry.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testUpdateEntry()
+	{
+		// Add an entry.
+		$data = [
+			'post_id'    => 1,
+			'email'      => 'test@example.com',
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->add($data);
+
+		// Assert no error and that the entry is in the database.
+		$this->assertNotInstanceOf(\WP_Error::class, $id);
+		$this->assertNotFalse($id);
+		$this->seeInDatabase($this->table_name, $data);
+
+		// Update the entry.
+		$updatedData = array_merge(
+			$data,
+			[
+				'first_name'  => 'Updated',
+				'tag_id'      => 2,
+				'sequence_id' => 2,
+			]
+		);
+		$updatedId   = $this->entries->update($id, $updatedData);
+
+		// Assert no error, the updated entry is in the database, and the original entry is not.
+		$this->assertNotInstanceOf(\WP_Error::class, $updatedId);
+		$this->assertNotFalse($updatedId);
+		$this->assertEquals($id, $updatedId);
+		$this->seeInDatabase($this->table_name, $updatedData);
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test upserting an entry.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testUpsertEntry()
+	{
+		// Add an entry.
+		$data = [
+			'post_id'    => 1,
+			'email'      => 'test@example.com',
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->upsert( $data );
+
+		// Assert no error and that the entry is in the database.
+		$this->assertNotInstanceOf(\WP_Error::class, $id);
+		$this->assertNotFalse($id);
+		$this->seeInDatabase($this->table_name, $data);
+
+		// Update the entry.
+		$updatedData = array_merge(
+			$data,
+			[
+				'first_name'  => 'Updated',
+				'tag_id'      => 2,
+				'sequence_id' => 2,
+			]
+		);
+		$updatedId   = $this->entries->upsert($updatedData);
+
+		// Assert no error, the updated entry is in the database, and the original entry is not.
+		$this->assertNotInstanceOf(\WP_Error::class, $updatedId);
+		$this->assertNotFalse($updatedId);
+		$this->assertEquals($id, $updatedId);
+		$this->seeInDatabase($this->table_name, $updatedData);
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test upserting an entry with no email address returns a WP_Error.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testUpsertEntryWithNoEmail()
+	{
+		$data = [
+			'post_id'    => 1,
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->upsert($data);
+
+		// Assert an error and that the entry is not in the database.
+		$this->assertInstanceOf(\WP_Error::class, $id);
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test deleting an entry.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testDeleteEntry()
+	{
+		// Add entry.
+		$data = [
+			'post_id' => 1,
+			'email'   => 'test@example.com',
+		];
+		$id   = $this->entries->add($data);
+
+		// Assert no error and that the entry is in the database.
+		$this->assertNotInstanceOf(\WP_Error::class, $id);
+		$this->assertNotFalse($id );
+		$this->seeInDatabase($this->table_name, $data);
+
+		// Delete the entry.
+		$this->entries->delete_by_id($id);
+
+		// Assert the entry is not in the database.
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test deleting multiple entries.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testDeleteEntries()
+	{
+		// Add entries.
+		for ( $i = 0; $i < 3; $i++ ) {
+			$data = [
+				'post_id' => $i,
+				'email'   => 'test' . $i . '@example.com',
+			];
+			$id   = $this->entries->add($data);
+
+			// Assert no error and that the entry is in the database.
+			$this->assertNotInstanceOf(\WP_Error::class, $id);
+			$this->assertNotFalse($id);
+			$this->seeInDatabase($this->table_name, $data);
+		}
+
+		// Delete entries.
+		$this->entries->delete_by_ids([ 1, 2, 3 ]);
+
+		// Assert database table is empty.
+		$this->assertDatabaseTableIsEmpty($this->table_name);
+	}
+
+	/**
+	 * Test deleting all entries.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testDeleteAllEntries()
+	{
+		// Add entries.
+		for ( $i = 0; $i < 10; $i++ ) {
+			$data = [
+				'post_id' => $i,
+				'email'   => 'test' . $i . '@example.com',
+			];
+			$id   = $this->entries->add($data);
+
+			// Assert no error and that the entry is in the database.
+			$this->assertNotInstanceOf(\WP_Error::class, $id);
+			$this->assertNotFalse($id);
+			$this->seeInDatabase($this->table_name, $data);
+		}
+
+		// Delete all entries.
+		$this->entries->delete_all();
+
+		// Assert database table is empty.
+		$this->assertDatabaseTableIsEmpty($this->table_name);
+	}
+
+	/**
+	 * Assert that a row exists in the database table matching the given conditions.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param string $table         Table name.
+	 * @param array  $conditions    Column => value pairs to match.
+	 */
+	protected function seeInDatabase(string $table, array $conditions): void
+	{
+		global $wpdb;
+
+		// Fetch row and run assertion.
+		$this->assertNotNull(
+			$wpdb->get_row($this->buildQuery($table, $conditions)), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			"No row found in table '$table' matching conditions: " . wp_json_encode($conditions)
+		);
+	}
+
+	/**
+	 * Assert that no row exists in the database table matching the given conditions.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param string $table         Table name.
+	 * @param array  $conditions    Column => value pairs to match.
+	 */
+	protected function dontSeeInDatabase(string $table, array $conditions): void
+	{
+		global $wpdb;
+
+		// Fetch row and run assertion.
+		$this->assertNull(
+			$wpdb->get_row($this->buildQuery($table, $conditions)), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			"Row found in table '$table' matching conditions: " . wp_json_encode($conditions)
+		);
+	}
+
+	/**
+	 * Assert that the database table is empty.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param string $table Table name.
+	 */
+	protected function assertDatabaseTableIsEmpty(string $table): void
+	{
+		global $wpdb;
+		$this->assertEquals( 0, $wpdb->get_var( "SELECT COUNT(*) FROM $table" ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	}
+
+	/**
+	 * Build a SQL query for the given table and conditions.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param string $table         Table name.
+	 * @param array  $conditions    Column => value pairs to match.
+	 * @return string
+	 */
+	protected function buildQuery(string $table, array $conditions): string
+	{
+		global $wpdb;
+
+		// Fail if no conditions are provided.
+		if (empty($conditions)) {
+			$this->fail('You must provide at least one condition.');
+		}
+
+		// Build WHERE clauses.
+		$where_clauses = [];
+		$values        = [];
+		foreach ($conditions as $column => $value) {
+			// Detect integer vs string for proper placeholder.
+			$placeholder     = is_int($value) ? '%d' : '%s';
+			$where_clauses[] = "$column = $placeholder";
+
+			// If the value is an array, check for the JSON encoded value, as this is how
+			// the Form Entries class stores array valus such as custom fields.
+			$values[] = is_array($value) ? wp_json_encode($value) : $value;
+		}
+
+		// Build SQL.
+		$where_sql = implode(' AND ', $where_clauses);
+		$sql       = "SELECT * FROM $table WHERE $where_sql LIMIT 1";
+
+		return $wpdb->prepare($sql, ...$values); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
 }
