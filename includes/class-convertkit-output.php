@@ -763,14 +763,6 @@ class ConvertKit_Output {
 	 */
 	public function enqueue_scripts() {
 
-		// Get Post.
-		$post = get_post();
-
-		// Bail if no Post could be fetched.
-		if ( ! $post ) {
-			return;
-		}
-
 		// Get ConvertKit Settings and Post's Settings.
 		$settings = new ConvertKit_Settings();
 
@@ -778,9 +770,6 @@ class ConvertKit_Output {
 		if ( $settings->scripts_disabled() ) {
 			return;
 		}
-
-		// Get ConvertKit Post's Settings.
-		$convertkit_post = new ConvertKit_Post( $post->ID );
 
 		// Register scripts that we might use.
 		wp_register_script(
@@ -869,9 +858,10 @@ class ConvertKit_Output {
 				function ( $scripts ) use ( $form ) {
 
 					$scripts[] = array(
-						'async'    => true,
-						'data-uid' => $form['uid'],
-						'src'      => $form['embed_js'],
+						'async'                      => true,
+						'data-uid'                   => $form['uid'],
+						'src'                        => $form['embed_js'],
+						'data-kit-limit-per-session' => true,
 					);
 
 					return $scripts;
@@ -926,6 +916,11 @@ class ConvertKit_Output {
 			 */
 			$script = apply_filters( 'convertkit_output_script_footer', $script );
 
+			// Skip script if it is limited by the Non-inline Form Limit per Session setting.
+			if ( $this->is_script_output_limited_by_session( $script ) ) {
+				continue;
+			}
+
 			// Build output.
 			$output = '<script';
 			foreach ( $script as $attribute => $value ) {
@@ -964,6 +959,36 @@ class ConvertKit_Output {
 		foreach ( $output_scripts as $output_script ) {
 			echo $output_script . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
+
+	}
+
+	/**
+	 * Checks if a script is limited by the Non-inline Form Limit per Session setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $script   Script.
+	 * @return  bool
+	 */
+	private function is_script_output_limited_by_session( $script ) {
+
+		// Get Settings, if they have not yet been loaded.
+		if ( ! $this->settings ) {
+			$this->settings = new ConvertKit_Settings();
+		}
+
+		// Display script if the "Display Limit" setting isn't enabled.
+		if ( ! $this->settings->non_inline_form_limit_per_session() ) {
+			return false;
+		}
+
+		// Display script if the "Display Limit" setting should not be applied to this script.
+		if ( ! isset( $script['data-kit-limit-per-session'] ) ) {
+			return false;
+		}
+
+		// Display script if this is the first time the visitor has seen any non-inline form.
+		return isset( $_COOKIE['ck_non_inline_form_displayed'] );
 
 	}
 
