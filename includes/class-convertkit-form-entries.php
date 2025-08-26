@@ -84,7 +84,7 @@ class ConvertKit_Form_Entries {
 		global $wpdb;
 
 		// JSON encode custom fields, if supplied as an array.
-		if ( is_array( $entry['custom_fields'] ) ) {
+		if ( array_key_exists( 'custom_fields', $entry ) && is_array( $entry['custom_fields'] ) ) {
 			$entry['custom_fields'] = wp_json_encode( $entry['custom_fields'] );
 		}
 
@@ -120,7 +120,7 @@ class ConvertKit_Form_Entries {
 		global $wpdb;
 
 		// JSON encode custom fields, if supplied as an array.
-		if ( is_array( $entry['custom_fields'] ) ) {
+		if ( array_key_exists( 'custom_fields', $entry ) && is_array( $entry['custom_fields'] ) ) {
 			$entry['custom_fields'] = wp_json_encode( $entry['custom_fields'] );
 		}
 
