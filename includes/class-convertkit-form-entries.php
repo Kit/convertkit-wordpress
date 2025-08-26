@@ -46,9 +46,9 @@ class ConvertKit_Form_Entries {
 				`tag_id` int(11) NOT NULL,
 				`sequence_id` int(11) NOT NULL,
                 `created_at` datetime NOT NULL,
-				`api_request_sent` datetime NOT NULL,
+				`updated_at` datetime NOT NULL,
 				`api_result` varchar(191) NOT NULL DEFAULT 'success',
-				`api_response` text,
+				`api_error` text,
 				PRIMARY KEY (`id`),
 				KEY `post_id` (`post_id`),
 				KEY `first_name` (`first_name`),
@@ -74,14 +74,23 @@ class ConvertKit_Form_Entries {
 	 *    string          $first_name       First Name.
 	 *    string          $email            Email.
 	 *    array           $custom_fields    Custom Fields.
-	 *    datetime        $created_at       Created At.
-	 *    datetime        $api_request_sent Request Sent to API.
-	 *    string          $api_result       Result (success,test_mode,pending,error).
-	 *    string          $api_response     API Response.
+	 *    int             $tag_id           Tag ID.
+	 *    int             $sequence_id      Sequence ID.
+	 *    string          $api_result       Result (success,error).
+	 *    string          $api_error        API Response (when $api_result is 'error').
 	 */
 	public function add( $entry ) {
 
 		global $wpdb;
+
+		// JSON encode custom fields, if supplied as an array.
+		if ( is_array( $entry['custom_fields'] ) ) {
+			$entry['custom_fields'] = wp_json_encode( $entry['custom_fields'] );
+		}
+
+		// Add created_at and updated_at timestamps.
+		$entry['created_at'] = gmdate( 'Y-m-d H:i:s' );
+		$entry['updated_at'] = gmdate( 'Y-m-d H:i:s' );
 
 		return $wpdb->insert(
 			$wpdb->prefix . $this->table,
@@ -101,14 +110,22 @@ class ConvertKit_Form_Entries {
 	 *    string          $first_name       First Name.
 	 *    string          $email            Email.
 	 *    array           $custom_fields    Custom Fields.
-	 *    datetime        $created_at       Created At.
-	 *    datetime        $api_request_sent Request Sent to API.
-	 *    string          $api_result       Result (success,test_mode,pending,error).
-	 *    string          $api_response     API Response.
+	 *    int             $tag_id           Tag ID.
+	 *    int             $sequence_id      Sequence ID.
+	 *    string          $api_result       Result (success,error).
+	 *    string          $api_error        API Response (when $api_result is 'error').
 	 */
 	public function update( $id, $entry ) {
 
 		global $wpdb;
+
+		// JSON encode custom fields, if supplied as an array.
+		if ( is_array( $entry['custom_fields'] ) ) {
+			$entry['custom_fields'] = wp_json_encode( $entry['custom_fields'] );
+		}
+
+		// Add updated_at timestamp.
+		$entry['updated_at'] = gmdate( 'Y-m-d H:i:s' );
 
 		return $wpdb->update(
 			$wpdb->prefix . $this->table,
@@ -153,7 +170,7 @@ class ConvertKit_Form_Entries {
 		}
 
 		// Insert new entry.
-		return $this->add( $post_id, $entry );
+		return $this->add( $entry );
 
 	}
 

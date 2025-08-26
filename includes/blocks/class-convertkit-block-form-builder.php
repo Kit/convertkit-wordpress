@@ -119,7 +119,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 						'tag_id'        => $tag_id,
 						'sequence_id'   => $sequence_id,
 						'api_result'    => 'error',
-						'api_response'  => __( 'Plugin Access Token not configured', 'convertkit' ),
+						'api_error'     => __( 'Plugin Access Token not configured', 'convertkit' ),
 					)
 				);
 			}
@@ -157,7 +157,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 						'tag_id'        => $tag_id,
 						'sequence_id'   => $sequence_id,
 						'api_result'    => 'error',
-						'api_response'  => $result->get_error_message(),
+						'api_error'     => $result->get_error_message(),
 					)
 				);
 			}
@@ -175,7 +175,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					'tag_id'        => $tag_id,
 					'sequence_id'   => $sequence_id,
 					'api_result'    => 'success',
-					'api_response'  => $result,
 				)
 			);
 		}
@@ -186,12 +185,42 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a tag was specified, add the subscriber to the tag.
 		if ( $tag_id ) {
-			$api->tag_subscriber( $tag_id, $result['subscriber']['id'] );
+			$result = $api->tag_subscriber( $tag_id, $result['subscriber']['id'] );
+
+			if ( $form_data['store_entries'] ) {
+				$entries->upsert(
+					array(
+						'post_id'       => $form_data['post_id'],
+						'email'         => $form_data['email'],
+						'first_name'    => $form_data['first_name'],
+						'custom_fields' => $custom_fields,
+						'tag_id'        => $tag_id,
+						'sequence_id'   => $sequence_id,
+						'api_result'    => is_wp_error( $result ) ? 'error' : 'success',
+						'api_error'     => is_wp_error( $result ) ? $result->get_error_message() : '',
+					)
+				);
+			}
 		}
 
 		// If a sequence was specified, add the subscriber to the sequence.
 		if ( $sequence_id ) {
-			$api->add_subscriber_to_sequence( $sequence_id, $result['subscriber']['id'] );
+			$result = $api->add_subscriber_to_sequence( $sequence_id, $result['subscriber']['id'] );
+
+			if ( $form_data['store_entries'] ) {
+				$entries->upsert(
+					array(
+						'post_id'       => $form_data['post_id'],
+						'email'         => $form_data['email'],
+						'first_name'    => $form_data['first_name'],
+						'custom_fields' => $custom_fields,
+						'tag_id'        => $tag_id,
+						'sequence_id'   => $sequence_id,
+						'api_result'    => is_wp_error( $result ) ? 'error' : 'success',
+						'api_error'     => is_wp_error( $result ) ? $result->get_error_message() : '',
+					)
+				);
+			}
 		}
 
 		// Get the redirect URL, based on whether the form is configured to redirect
