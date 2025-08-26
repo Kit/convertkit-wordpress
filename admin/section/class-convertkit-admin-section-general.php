@@ -65,7 +65,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				'wrap'     => true,
 			),
 			'site-wide' => array(
-				'title'    => __( 'Site Wide', 'convertkit' ),
+				'title'    => __( 'Non-inline Forms', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_site_wide' ),
 				'wrap'     => true,
 			),
@@ -380,6 +380,18 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			$this->name . '-site-wide',
 			array(
 				'label_for' => 'non_inline_form_honor_none_setting',
+			)
+		);
+
+		// Non-inline Form Limit per Session.
+		add_settings_field(
+			'non_inline_form_limit_per_session',
+			__( 'Limit Display', 'convertkit' ),
+			array( $this, 'non_inline_form_limit_per_session_callback' ),
+			$this->settings_key,
+			$this->name . '-site-wide',
+			array(
+				'label_for' => 'non_inline_form_limit_per_session',
 			)
 		);
 
@@ -818,6 +830,26 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 	}
 
+
+	/**
+	 * Renders the input for the Modal Form Limit per Session setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function non_inline_form_limit_per_session_callback( $args ) {
+
+		// Output field.
+		$this->output_checkbox_field(
+			'non_inline_form_limit_per_session',
+			'on',
+			$this->settings->non_inline_form_limit_per_session(),
+			esc_html__( 'If checked, one non-inline form will be displayed per session. This applies to all non-inline forms defined on this screen, Page / Post / Category settings, and any Form blocks or shortcodes specifying a non-inline form.', 'convertkit' )
+		);
+
+	}
+
 	/**
 	 * Renders the input for the reCAPTCHA Site Key setting.
 	 *
@@ -914,7 +946,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'no_scripts',
 			'on',
 			$this->settings->scripts_disabled(),
-			esc_html__( 'Prevent plugin from loading JavaScript files. This will disable the custom content and tagging features of the plugin. Does not apply to landing pages. Use with caution!', 'convertkit' )
+			esc_html__( 'Prevent plugin JavaScript files loading on the frontend site. This will disable the custom content and tagging features of the plugin. Does not apply to embedding forms or landing pages. Use with caution!', 'convertkit' )
 		);
 
 	}
@@ -939,6 +971,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 					esc_url( convertkit_get_form_editor_url() ),
 					esc_html__( 'Kit form editor', 'convertkit' )
 				),
+				esc_html__( 'For creators who require form designs to follow their WordPress theme, use the Kit Form Builder block in the block editor.', 'convertkit' ),
 				sprintf(
 					'%s <a href="https://wordpress.org/plugins/contact-form-7/" target="_blank">Contact Form 7</a>, <a href="https://wordpress.org/plugins/convertkit-gravity-forms/" target="_blank">Gravity Forms</a> %s <a href="https://wordpress.org/plugins/integrate-convertkit-wpforms/" target="_blank">WPForms</a> %s',
 					esc_html__( 'For developers who require custom form designs through use of CSS, consider using the', 'convertkit' ),
