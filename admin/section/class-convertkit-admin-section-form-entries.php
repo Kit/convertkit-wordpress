@@ -12,12 +12,12 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Base {
+class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Constructor
-     * 
-     * @since   3.0.0
+	 *
+	 * @since   3.0.0
 	 */
 	public function __construct() {
 
@@ -41,8 +41,8 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 
 	/**
 	 * Register fields for this section
-     * 
-     * @since   3.0.0
+	 *
+	 * @since   3.0.0
 	 */
 	public function register_fields() {
 
@@ -52,8 +52,8 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 
 	/**
 	 * Prints help info for this section.
-     * 
-     * @since   3.0.0
+	 *
+	 * @since   3.0.0
 	 */
 	public function print_section_info() {
 
@@ -106,9 +106,9 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 		$table->add_column( 'first_name', __( 'First Name', 'convertkit' ), false );
 		$table->add_column( 'email', __( 'Email', 'convertkit' ), false );
 		$table->add_column( 'created_at', __( 'Created', 'convertkit' ), false );
-        $table->add_column( 'updated_at', __( 'Updated', 'convertkit' ), false );
+		$table->add_column( 'updated_at', __( 'Updated', 'convertkit' ), false );
 		$table->add_column( 'api_result', __( 'Result', 'convertkit' ), false );
-        $table->add_column( 'api_error', __( 'Error', 'convertkit' ), false );
+		$table->add_column( 'api_error', __( 'Error', 'convertkit' ), false );
 
 		// Add form entries to table.
 		$entries = $form_entries->search(
@@ -121,10 +121,9 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 
 		// Set total entries.
 		$table->set_total_items( $form_entries->total() );
-		
+
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();
-		$table->search_box( __( 'Search', 'convertkit' ), 'convertkit-form-entries' );
 		$table->display();
 
 		// Render closing container.
@@ -150,7 +149,7 @@ add_filter(
 		}
 
 		// Register this class as a section at Settings > Kit.
-		$sections['form-entries'] = new ConvertKit_Form_Entries_Admin_Section();
+		$sections['form-entries'] = new ConvertKit_Admin_Section_Form_Entries();
 		return $sections;
 
 	}

@@ -152,10 +152,10 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 
 	/**
 	 * Add multiple items to the table
-	 * 
+	 *
 	 * @since   3.0.0
 	 *
-	 * @param 	array 	$items 	Table rows.
+	 * @param   array $items  Table rows.
 	 */
 	public function add_items( $items ) {
 
@@ -166,10 +166,10 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	/**
 	 * Set the total number of items available, which may
 	 * be greater than the number of items displayed.
-	 * 
+	 *
 	 * @since   3.0.0
 	 *
-	 * @param 	int 	$total_items 	Total number of items.
+	 * @param   int $total_items    Total number of items.
 	 */
 	public function set_total_items( $total_items ) {
 
@@ -180,7 +180,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	/**
 	 * Get the total number of items available, which may
 	 * be greater than the number of items displayed.
-	 * 
+	 *
 	 * @since   3.0.0
 	 *
 	 * @return int Total number of items.
@@ -205,7 +205,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 
 	/**
 	 * Define table columns and pagination for this WP_List_Table.
-	 * 
+	 *
 	 * @since   3.0.0
 	 */
 	public function prepare_items() {
@@ -219,9 +219,9 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	/**
 	 * Reorder the data according to the sort parameters
 	 *
-	 * @param array  $data   			Row data, unsorted.
-	 * @param string $order_by_default 	Default order by.
-	 * @param string $order_default 	Default order direction.
+	 * @param array  $data              Row data, unsorted.
+	 * @param string $order_by_default  Default order by.
+	 * @param string $order_default     Default order direction.
 	 *
 	 * @return array Row data, sorted
 	 */
@@ -232,7 +232,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 			function ( $a, $b ) use ( $order_by_default, $order_default ) {
 				// Get order by and order.
 				$orderby = $this->get_order_by( $order_by_default );
-				$order = $this->get_order( $order_default );
+				$order   = $this->get_order( $order_default );
 
 				$result = strcmp( $a[ $orderby ], $b[ $orderby ] ); // Determine sort order.
 				return ( 'asc' === $order ) ? $result : -$result; // Send final sort direction to usort.
@@ -284,13 +284,14 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 *
 	 * @since   3.0.0
 	 *
+	 * @param   string $default_order_by  Default order by.
 	 * @return  string
 	 */
-	public function get_order_by( $default = 'title' ) {
+	public function get_order_by( $default_order_by = 'title' ) {
 
 		// Don't nonce check because order by may not include a nonce if no search performed.
 		if ( ! filter_has_var( INPUT_GET, 'orderby' ) ) {
-			return $default;
+			return $default_order_by;
 		}
 
 		return sanitize_sql_orderby( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
@@ -302,13 +303,14 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 *
 	 * @since   3.0.0
 	 *
+	 * @param   string $default_order  Default order.
 	 * @return  string
 	 */
-	public function get_order( $default = 'DESC' ) {
+	public function get_order( $default_order = 'DESC' ) {
 
 		// Don't nonce check because order may not include a nonce if no search performed.
 		if ( ! filter_has_var( INPUT_GET, 'order' ) ) {
-			return $default;
+			return $default_order;
 		}
 
 		return filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
