@@ -99,7 +99,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Get Tag and Sequence IDs, if any were specified.
-		$tag_id = array_key_exists( 'tag_id', $form_data ) ? $form_data['tag_id'] : false;
+		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? $form_data['tag_id'] : false;
 		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? $form_data['sequence_id'] : false;
 
 		// Initialize classes that will be used.
