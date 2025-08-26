@@ -203,19 +203,16 @@ class ConvertKit_Form_Entries {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string     $order_by   Order Results By.
-	 * @param   string     $order      Order (asc|desc).
-	 * @param   int        $page       Pagination Offset (default: 1).
-	 * @param   int        $per_page   Number of Results to Return (default: 25).
-	 * @param   bool|array $params     Query Parameters (false = all records).
+	 * @param   bool|string $search     Search Query.
+	 * @param   string      $order_by   Order Results By.
+	 * @param   string      $order      Order (asc|desc).
+	 * @param   int         $page       Pagination Offset (default: 1).
+	 * @param   int         $per_page   Number of Results to Return (default: 25).
 	 * @return  array
 	 */
-	public function search( $order_by, $order, $page = 1, $per_page = 25, $params = false ) {
+	public function search( $search = false, $order_by = 'created_at', $order = 'desc', $page = 1, $per_page = 25 ) {
 
 		global $wpdb;
-
-		// Build where clauses.
-		$where = $this->build_where_clause( $params );
 
 		// Prepare query.
 		$query = $wpdb->prepare(
@@ -223,9 +220,13 @@ class ConvertKit_Form_Entries {
 			$wpdb->prefix . $this->table
 		);
 
-		// Add where clauses.
-		if ( $where !== false ) {
-			$query .= ' WHERE ' . $where;
+		// Add search clause.
+		if ( $search ) {
+			$query .= $wpdb->prepare(
+				' WHERE first_name LIKE %s OR email LIKE %s',
+				'%' . $search . '%',
+				'%' . $search . '%'
+			);
 		}
 
 		// Order.
@@ -251,15 +252,12 @@ class ConvertKit_Form_Entries {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   mixed $params     Query Parameters (false = all records).
+	 * @param   bool|string $search     Search Query.
 	 * @return  int
 	 */
-	public function total( $params = false ) {
+	public function total( $search = false ) {
 
 		global $wpdb;
-
-		// Build where clauses.
-		$where = $this->build_where_clause( $params );
 
 		// Prepare query.
 		$query = $wpdb->prepare(
@@ -268,60 +266,17 @@ class ConvertKit_Form_Entries {
 			$wpdb->prefix . $this->table
 		);
 
-		// Add where clauses.
-		if ( $where !== false ) {
-			$query .= ' WHERE ' . $where;
+		// Add search clause.
+		if ( $search ) {
+			$query .= $wpdb->prepare(
+				' WHERE first_name LIKE %s OR email LIKE %s',
+				'%' . $search . '%',
+				'%' . $search . '%'
+			);
 		}
 
 		// Run and return total records found.
 		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-
-	}
-
-	/**
-	 * Builds a WHERE SQL clause based on the given column key/values
-	 *
-	 * @since   3.0.0
-	 *
-	 * @param   bool|array $params     Query Parameters.
-	 * @return  bool|string
-	 */
-	private function build_where_clause( $params ) {
-
-		global $wpdb;
-
-		// Bail if no params.
-		if ( ! $params ) {
-			return false;
-		}
-
-		// Build where clauses.
-		$where = array();
-		foreach ( $params as $key => $value ) {
-			// Skip blank params.
-			if ( empty( $value ) ) {
-				continue;
-			}
-
-			// Build condition based on the key.
-			switch ( $key ) {
-				default:
-					$where[] = $wpdb->prepare(
-						'%i = %s',
-						$key,
-						$value
-					);
-					break;
-			}
-		}
-
-		// If no where clauses, return false.
-		if ( ! count( $where ) ) {
-			return false;
-		}
-
-		// Return where clause.
-		return implode( ' AND ', $where );
 
 	}
 

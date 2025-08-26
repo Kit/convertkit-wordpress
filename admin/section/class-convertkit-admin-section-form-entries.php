@@ -110,11 +110,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_column( 'api_error', __( 'Error', 'convertkit' ), false );
 
 		// Add form entries to table.
-		$entries = $form_entries->search(
-			$table->get_order_by( 'created_at' ),
-			$table->get_order( 'DESC' ),
-			$table->get_pagenum()
-		);
+		$entries = $form_entries->search();
 		$table->add_items( $entries );
 
 		// Set total entries.
