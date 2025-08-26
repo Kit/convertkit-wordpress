@@ -15,6 +15,15 @@
 class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base {
 
 	/**
+	 * Holds the WP_List_Table instance.
+	 *
+     * @since   3.0.0
+     *
+	 * @var     ConvertKit_WP_List_Table
+	 */
+	public $table;
+
+	/**
 	 * Constructor
 	 *
 	 * @since   2.3.0
@@ -40,6 +49,10 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 				'wrap'     => false,
 			),
 		);
+
+		// Setup WP_List_Table.
+		// Doing this in render() is too late - columns and items don't display.
+		$this->table = new ConvertKit_WP_List_Table();
 
 		parent::__construct();
 
@@ -121,12 +134,12 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 		$creator_network_recommendations_enabled = $creator_network_recommendations->enabled();
 
 		// Setup WP_List_Table.
-		$table = new ConvertKit_WP_List_Table();
-		$table->add_column( 'title', __( 'Forminator Form', 'convertkit' ), true );
-		$table->add_column( 'form', __( 'Kit', 'convertkit' ), false );
-		$table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
+		$this->table->add_column( 'title', __( 'Forminator Form', 'convertkit' ), true );
+		$this->table->add_column( 'form', __( 'Kit', 'convertkit' ), false );
+		$this->table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
 
-		// Iterate through Forminator Forms, adding a table row for each Forminator Form.
+		// Iterate through Forminator Forms, building table array.
+		$table_rows = array();
 		foreach ( $forminator_forms as $forminator_form ) {
 			// Build row.
 			$table_row = array(
@@ -159,12 +172,19 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 			}
 
 			// Add row to table of settings.
-			$table->add_item( $table_row );
+			$table_rows[] = $table_row;
 		}
 
+		// Sort table rows.
+		$table_rows = $this->table->reorder( $table_rows );
+
+		// Set items.
+		$this->table->add_items( $table_rows );
+		$this->table->set_total_items( count( $table_rows ) );
+
 		// Prepare and display WP_List_Table.
-		$table->prepare_items();
-		$table->display();
+		$this->table->prepare_items();
+		$this->table->display();
 
 		// Register settings field.
 		settings_fields( $this->settings_key );

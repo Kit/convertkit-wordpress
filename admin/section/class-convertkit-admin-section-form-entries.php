@@ -47,6 +47,8 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 		// Setup WP_List_Table.
 		$this->table = new ConvertKit_WP_List_Table();
 
+		parent::__construct();
+
 	}
 
 	/**
@@ -119,8 +121,8 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 
 		// Add form entries to table.
 		$entries = $form_entries->search(
-			$this->table->get_order_by(),
-			$this->table->get_order(),
+			$this->table->get_order_by( 'created_at' ),
+			$this->table->get_order( 'DESC' ),
 			$this->table->get_page(),
 			1
 		);

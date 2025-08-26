@@ -185,16 +185,9 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 */
 	public function prepare_items() {
 
-		$this->items = [
-			[
-				'id' => 1,
-				'title' => 'Item 1',
-			],
-			[
-				'id' => 2,
-				'title' => 'Item 2',
-			],
-		];
+		
+
+		/*
 
 
 
@@ -209,6 +202,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 				'per_page'    => $per_page,
 			)
 		);
+		*/
 
 	}
 

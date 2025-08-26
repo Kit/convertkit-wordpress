@@ -15,6 +15,15 @@
 class ConvertKit_Wishlist_Admin_Section extends ConvertKit_Admin_Section_Base {
 
 	/**
+	 * Holds the WP_List_Table instance.
+	 *
+     * @since   3.0.0
+     *
+	 * @var     ConvertKit_WP_List_Table
+	 */
+	public $table;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   1.9.6
@@ -40,6 +49,10 @@ class ConvertKit_Wishlist_Admin_Section extends ConvertKit_Admin_Section_Base {
 				'wrap'     => false,
 			),
 		);
+
+		// Setup WP_List_Table.
+		// Doing this in render() is too late - columns and items don't display.
+		$this->table = new ConvertKit_WP_List_Table();
 
 		parent::__construct();
 
@@ -114,40 +127,45 @@ class ConvertKit_Wishlist_Admin_Section extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Setup WP_List_Table.
-		$table = new ConvertKit_WP_List_Table();
-		$table->add_column( 'title', __( 'WishList Membership Level', 'convertkit' ), true );
-		$table->add_column( 'add', __( 'Assign to member', 'convertkit' ), false );
-		$table->add_column( 'remove', __( 'Remove from member', 'convertkit' ), false );
+		$this->table->add_column( 'title', __( 'WishList Membership Level', 'convertkit' ), true );
+		$this->table->add_column( 'add', __( 'Assign to member', 'convertkit' ), false );
+		$this->table->add_column( 'remove', __( 'Remove from member', 'convertkit' ), false );
 
-		// Iterate through WishList Member Levels, adding a table row for each Level.
+		// Iterate through WishList Member Levels, building table array.
+		$table_rows = array();
 		foreach ( $wlm_levels as $wlm_level ) {
-			$table->add_item(
-				array(
-					'title'  => $wlm_level['name'],
-					'add'    => convertkit_get_subscription_dropdown_field(
-						'_wp_convertkit_integration_wishlistmember_settings[' . $wlm_level['id'] . '_add]',
-						(string) $this->settings->get_convertkit_add_setting_by_wishlist_member_level_id( $wlm_level['id'] ),
-						'_wp_convertkit_integration_wishlistmember_settings_' . $wlm_level['id'] . '_add',
-						'widefat',
-						'wlm'
-					),
-					'remove' => convertkit_get_subscription_dropdown_field(
-						'_wp_convertkit_integration_wishlistmember_settings[' . $wlm_level['id'] . '_remove]',
-						(string) $this->settings->get_convertkit_remove_setting_by_wishlist_member_level_id( $wlm_level['id'] ),
-						'_wp_convertkit_integration_wishlistmember_settings_' . $wlm_level['id'] . '_remove',
-						'widefat',
-						'wlm',
-						array(
-							'unsubscribe' => __( 'Unsubscribe', 'convertkit' ),
-						)
-					),
-				)
+			$table_rows[] = array(
+				'title'  => $wlm_level['name'],
+				'add'    => convertkit_get_subscription_dropdown_field(
+					'_wp_convertkit_integration_wishlistmember_settings[' . $wlm_level['id'] . '_add]',
+					(string) $this->settings->get_convertkit_add_setting_by_wishlist_member_level_id( $wlm_level['id'] ),
+					'_wp_convertkit_integration_wishlistmember_settings_' . $wlm_level['id'] . '_add',
+					'widefat',
+					'wlm'
+				),
+				'remove' => convertkit_get_subscription_dropdown_field(
+					'_wp_convertkit_integration_wishlistmember_settings[' . $wlm_level['id'] . '_remove]',
+					(string) $this->settings->get_convertkit_remove_setting_by_wishlist_member_level_id( $wlm_level['id'] ),
+					'_wp_convertkit_integration_wishlistmember_settings_' . $wlm_level['id'] . '_remove',
+					'widefat',
+					'wlm',
+					array(
+						'unsubscribe' => __( 'Unsubscribe', 'convertkit' ),
+					)
+				),
 			);
 		}
 
+		// Sort table rows.
+		$table_rows = $this->table->reorder( $table_rows );
+
+		// Set items.
+		$this->table->add_items( $table_rows );
+		$this->table->set_total_items( count( $table_rows ) );
+
 		// Prepare and display WP_List_Table.
-		$table->prepare_items();
-		$table->display();
+		$this->table->prepare_items();
+		$this->table->display();
 
 		// Register settings field.
 		settings_fields( $this->settings_key );
