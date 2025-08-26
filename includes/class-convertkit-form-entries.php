@@ -43,6 +43,8 @@ class ConvertKit_Form_Entries {
                 `first_name` varchar(191) NOT NULL DEFAULT '',
                 `email` varchar(191) NOT NULL DEFAULT '',
                 `custom_fields` text,
+				`tag_id` int(11) NOT NULL,
+				`sequence_id` int(11) NOT NULL,
                 `created_at` datetime NOT NULL,
 				`api_request_sent` datetime NOT NULL,
 				`api_result` varchar(191) NOT NULL DEFAULT 'success',
@@ -51,6 +53,8 @@ class ConvertKit_Form_Entries {
 				KEY `post_id` (`post_id`),
 				KEY `first_name` (`first_name`),
                 KEY `email` (`email`),
+				KEY `tag_id` (`tag_id`),
+				KEY `sequence_id` (`sequence_id`),
                 KEY `api_result` (`api_result`)
 			)",
 			$wpdb->prefix . $this->table
@@ -61,12 +65,12 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
-	 * Adds an entry for the given Post ID
+	 * Adds an entry
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   int   $post_id    Post ID.
 	 * @param   array $entry      Entry.
+	 *    int             $post_id          Post ID.
 	 *    string          $first_name       First Name.
 	 *    string          $email            Email.
 	 *    array           $custom_fields    Custom Fields.
@@ -75,18 +79,81 @@ class ConvertKit_Form_Entries {
 	 *    string          $api_result       Result (success,test_mode,pending,error).
 	 *    string          $api_response     API Response.
 	 */
-	public function add( $post_id, $entry ) {
+	public function add( $entry ) {
 
 		global $wpdb;
 
-		// Add Post ID to entry.
-		$entry['post_id'] = absint( $post_id );
-
-		// Insert entry.
-		$result = $wpdb->insert(
+		return $wpdb->insert(
 			$wpdb->prefix . $this->table,
 			$entry
 		);
+
+	}
+
+	/**
+	 * Updates an entry
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   int   $id           Entry ID.
+	 * @param   array $entry      Entry.
+	 *    int             $post_id          Post ID.
+	 *    string          $first_name       First Name.
+	 *    string          $email            Email.
+	 *    array           $custom_fields    Custom Fields.
+	 *    datetime        $created_at       Created At.
+	 *    datetime        $api_request_sent Request Sent to API.
+	 *    string          $api_result       Result (success,test_mode,pending,error).
+	 *    string          $api_response     API Response.
+	 */
+	public function update( $id, $entry ) {
+		
+		global $wpdb;
+
+		return $wpdb->update(
+			$wpdb->prefix . $this->table,
+			$entry,
+			array( 'id' => $id )
+		);
+
+	}
+
+	/**
+	 * Upserts an entry
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $entry      Entry.
+	 *    int             $post_id          Post ID.
+	 *    string          $first_name       First Name.
+	 *    string          $email            Email.
+	 *    array           $custom_fields    Custom Fields.
+	 *    datetime        $created_at       Created At.
+	 *    datetime        $api_request_sent Request Sent to API.
+	 *    string          $api_result       Result (success,test_mode,pending,error).
+	 *    string          $api_response     API Response.
+	 */
+	public function upsert( $entry ) {
+
+		global $wpdb;
+
+		// Check if an entry already exists for the given Post ID and Email.
+		$id = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT id FROM %i WHERE post_id = %d AND email = %s',
+				$wpdb->prefix . $this->table,
+				$entry['post_id'],
+				$entry['email']
+			)
+		);
+
+		// If an entry already exists, update it.
+		if ( $id ) {
+			return $this->update( $id, $entry );
+		}
+		
+		// Insert new entry.
+		return $this->add( $post_id, $entry );
 
 	}
 

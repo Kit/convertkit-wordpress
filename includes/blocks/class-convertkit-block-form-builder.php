@@ -98,6 +98,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$custom_fields = $form_data['custom_fields'];
 		}
 
+		// Get Tag and Sequence IDs, if any were specified.
+		$tag_id = array_key_exists( 'tag_id', $form_data ) ? $form_data['tag_id'] : false;
+		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? $form_data['sequence_id'] : false;
+
 		// Initialize classes that will be used.
 		$settings = new ConvertKit_Settings();
 		$entries  = new ConvertKit_Form_Entries();
@@ -106,12 +110,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		if ( ! $settings->has_access_and_refresh_token() ) {
 			// Store entry and return.
 			if ( $form_data['store_entries'] ) {
-				$entries->add(
-					$form_data['post_id'],
+				$entries->upsert(
 					array(
+						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
 						'first_name'    => $form_data['first_name'],
 						'custom_fields' => $custom_fields,
+						'tag_id'        => $tag_id,
+						'sequence_id'   => $sequence_id,
 						'api_result'    => 'error',
 						'api_response'  => __( 'Plugin Access Token not configured', 'convertkit' ),
 					)
@@ -142,12 +148,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		if ( is_wp_error( $result ) ) {
 			// Store entry and return.
 			if ( $form_data['store_entries'] ) {
-				$entries->add(
-					$form_data['post_id'],
+				$entries->upsert(
 					array(
+						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
 						'first_name'    => $form_data['first_name'],
 						'custom_fields' => $custom_fields,
+						'tag_id'        => $tag_id,
+						'sequence_id'   => $sequence_id,
 						'api_result'    => 'error',
 						'api_response'  => $result->get_error_message(),
 					)
@@ -158,12 +166,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Store entry.
 		if ( $form_data['store_entries'] ) {
-			$entries->add(
-				$form_data['post_id'],
+			$entries->upsert(
 				array(
+					'post_id'       => $form_data['post_id'],
 					'email'         => $form_data['email'],
 					'first_name'    => $form_data['first_name'],
 					'custom_fields' => $custom_fields,
+					'tag_id'        => $tag_id,
+					'sequence_id'   => $sequence_id,
 					'api_result'    => 'success',
 					'api_response'  => $result,
 				)
@@ -175,13 +185,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$subscriber->set( $result['subscriber']['id'] );
 
 		// If a tag was specified, add the subscriber to the tag.
-		if ( array_key_exists( 'tag_id', $form_data ) && $form_data['tag_id'] > 0 ) {
-			$api->tag_subscriber( absint( $form_data['tag_id'] ), $result['subscriber']['id'] );
+		if ( $tag_id ) {
+			$api->tag_subscriber( $tag_id, $result['subscriber']['id'] );
 		}
 
 		// If a sequence was specified, add the subscriber to the sequence.
-		if ( array_key_exists( 'sequence_id', $form_data ) && $form_data['sequence_id'] > 0 ) {
-			$api->add_subscriber_to_sequence( absint( $form_data['sequence_id'] ), $result['subscriber']['id'] );
+		if ( $sequence_id ) {
+			$api->add_subscriber_to_sequence( $sequence_id, $result['subscriber']['id'] );
 		}
 
 		// Get the redirect URL, based on whether the form is configured to redirect

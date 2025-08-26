@@ -118,8 +118,6 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizar
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-multi-value-field-table.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-broadcasts.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/form-entries/class-convertkit-admin-section-form-entries.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/form-entries/class-convertkit-admin-table-form-entries.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-general.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-oauth.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-restrict-content.php';
