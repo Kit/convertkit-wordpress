@@ -114,7 +114,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-settings.ph
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-tinymce.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-user.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizard.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-multi-value-field-table.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-wp-list-table.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-broadcasts.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-general.php';

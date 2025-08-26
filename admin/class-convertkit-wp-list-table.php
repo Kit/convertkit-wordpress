@@ -1,6 +1,6 @@
 <?php
 /**
- * ConvertKit General Settings class
+ * ConvertKit WP_List_Table class.
  *
  * @package ConvertKit
  * @author ConvertKit
@@ -14,16 +14,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * Class Multi_Value_Field_Table
+ * Displays rows of data (such as settings) in a WP_List_Table.
+ * Mainly used for Contact Form 7, Forminator and WishList Member settings screens.
+ *
+ * @package ConvertKit
+ * @author ConvertKit
  */
-class Multi_Value_Field_Table extends WP_List_Table {
-
-	/**
-	 * Holds the supported bulk actions.
-	 *
-	 * @var     array
-	 */
-	private $bulk_actions = array();
+class ConvertKit_WP_List_Table extends WP_List_Table {
 
 	/**
 	 * Holds the table columns.
@@ -95,17 +92,6 @@ class Multi_Value_Field_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the bulk actions for this table
-	 *
-	 * @return array Bulk actions
-	 */
-	public function get_bulk_actions() {
-
-		return $this->bulk_actions;
-
-	}
-
-	/**
 	 * Get a list of columns
 	 *
 	 * @return array
@@ -141,18 +127,6 @@ class Multi_Value_Field_Table extends WP_List_Table {
 	public function add_item( $item ) {
 
 		array_push( $this->data, $item );
-
-	}
-
-	/**
-	 * Add a bulk action to the table
-	 *
-	 * @param string $key  Machine-readable action name.
-	 * @param string $name Title shown to the user.
-	 */
-	public function add_bulk_action( $key, $name ) {
-
-		$this->bulk_actions[ $key ] = $name;
 
 	}
 
@@ -221,46 +195,4 @@ class Multi_Value_Field_Table extends WP_List_Table {
 
 	}
 
-	/**
-	 * Display the table without the nonce at the top.
-	 *
-	 * @since 3.1.0
-	 * @access public
-	 */
-	public function display_no_nonce() {
-
-		$singular = $this->_args['singular'];
-
-		$this->display_tablenav( 'bottom' );
-
-		$this->screen->render_screen_reader_content( 'heading_list' );
-		?>
-		<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>">
-			<thead>
-			<tr>
-				<?php $this->print_column_headers(); ?>
-			</tr>
-			</thead>
-
-			<tbody id="the-list"
-			<?php
-			if ( $singular ) {
-				echo " data-wp-lists='list:" . esc_attr( $singular ) . "'";
-			}
-			?>
-			>
-			<?php $this->display_rows_or_placeholder(); ?>
-			</tbody>
-
-			<tfoot>
-			<tr>
-				<?php $this->print_column_headers( false ); ?>
-			</tr>
-			</tfoot>
-
-		</table>
-		<?php
-		$this->display_tablenav( 'bottom' );
-
-	}
 }
