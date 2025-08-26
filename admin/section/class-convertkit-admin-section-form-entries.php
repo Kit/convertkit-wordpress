@@ -7,7 +7,7 @@
  */
 
 /**
- * Registers Form Entries Settings that can be edited at Settings > Kit > Form Entries.
+ * Registers Form Entries Settings that can be viewed, deleted and exported at Settings > Kit > Form Entries.
  *
  * @package ConvertKit
  * @author ConvertKit
@@ -32,8 +32,6 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 				'wrap'     => false,
 			),
 		);
-
-		parent::__construct();
 
 	}
 
@@ -89,7 +87,29 @@ class ConvertKit_Form_Entries_Admin_Section extends ConvertKit_Admin_Section_Bas
 		// Render opening container.
 		$this->render_container_start();
 
-        echo 'Table here';
+		echo 'Hello';
+
+		/*
+       	// Setup WP_List_Table.
+		$table = new Multi_Value_Field_Table();
+		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), true );
+		$table->add_column( 'first_name', __( 'First Name', 'convertkit' ), false );
+		$table->add_column( 'email', __( 'Email', 'convertkit' ), false );
+		$table->add_column( 'created_at', __( 'Form Submission Date', 'convertkit' ), false );
+		$table->add_column( 'api_request_sent', __( 'Sent to Kit', 'convertkit' ), false );
+		$table->add_column( 'api_result', __( 'Result', 'convertkit' ), false );
+
+		// Iterate through Form Entries.
+		$form_entries = new ConvertKit_Form_Entries();
+		$form_entries = $form_entries->get_all();
+		foreach ( $form_entries as $form_entry ) {
+			$table->add_item( $form_entry );
+		}
+
+		// Prepare and display WP_List_Table.
+		$table->prepare_items();
+		$table->display();
+		*/
 
 		// Render closing container.
 		$this->render_container_end();
