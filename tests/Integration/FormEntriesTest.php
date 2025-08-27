@@ -254,12 +254,14 @@ class FormEntriesTest extends WPTestCase
 	public function testDeleteEntries()
 	{
 		// Add entries.
+		$ids = [];
 		for ( $i = 0; $i < 3; $i++ ) {
-			$data = [
+			$data  = [
 				'post_id' => $i,
 				'email'   => 'test' . $i . '@example.com',
 			];
-			$id   = $this->entries->add($data);
+			$id    = $this->entries->add($data);
+			$ids[] = $id;
 
 			// Assert no error and that the entry is in the database.
 			$this->assertNotInstanceOf(\WP_Error::class, $id);
@@ -268,7 +270,7 @@ class FormEntriesTest extends WPTestCase
 		}
 
 		// Delete entries.
-		$this->entries->delete_by_ids([ 1, 2, 3 ]);
+		$this->entries->delete_by_ids($ids);
 
 		// Assert database table is empty.
 		$this->assertDatabaseTableIsEmpty($this->table_name);
