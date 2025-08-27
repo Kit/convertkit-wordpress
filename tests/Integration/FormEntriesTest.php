@@ -316,27 +316,42 @@ class FormEntriesTest extends WPTestCase
 		$this->assertEquals( 1, $results[1]['post_id'] );
 
 		// Run search ordered by post ID descending.
-		$results = $this->entries->search('post_id', 'desc');
+		$results = $this->entries->search(
+			order_by: 'post_id',
+			order: 'desc',
+		);
 		$this->assertEquals( 9, $results[0]['post_id'] );
 		$this->assertEquals( 8, $results[1]['post_id'] );
 
 		// Run search ordered by email ascending.
-		$results = $this->entries->search('email', 'asc');
+		$results = $this->entries->search(
+			order_by: 'email',
+			order: 'asc',
+		);
 		$this->assertEquals( 'test0@example.com', $results[0]['email'] );
 		$this->assertEquals( 'test1@example.com', $results[1]['email'] );
 
 		// Run search ordered by email descending.
-		$results = $this->entries->search('email', 'desc');
+		$results = $this->entries->search(
+			order_by: 'email',
+			order: 'desc',
+		);
 		$this->assertEquals( 'test9@example.com', $results[0]['email'] );
 		$this->assertEquals( 'test8@example.com', $results[1]['email'] );
 
 		// Run search ordered by first name ascending.
-		$results = $this->entries->search('first_name', 'asc');
+		$results = $this->entries->search(
+			order_by: 'first_name',
+			order: 'asc',
+		);
 		$this->assertEquals( 'Test 0', $results[0]['first_name'] );
 		$this->assertEquals( 'Test 1', $results[1]['first_name'] );
 
 		// Run search ordered by first name descending.
-		$results = $this->entries->search('first_name', 'desc');
+		$results = $this->entries->search(
+			order_by: 'first_name',
+			order: 'desc',
+		);
 		$this->assertEquals( 'Test 9', $results[0]['first_name'] );
 		$this->assertEquals( 'Test 8', $results[1]['first_name'] );
 	}
@@ -378,13 +393,17 @@ class FormEntriesTest extends WPTestCase
 		$this->assertEquals( 1, count( $results ) );
 		$this->assertEquals( 'test0@example.com', $results[0]['email'] );
 
-		// Run generic search on email.
+		// Run generic search on email, ordered by post ID descending.
 		$results = $this->entries->search(
 			search: 'example.com',
+			order_by: 'post_id',
+			order: 'desc',
 		);
 
 		// Assert the correct number of results are returned.
 		$this->assertEquals( 10, count( $results ) );
+		$this->assertEquals( 9, $results[0]['post_id'] );
+		$this->assertEquals( 8, $results[1]['post_id'] );
 	}
 
 	/**
