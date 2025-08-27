@@ -254,10 +254,10 @@ class FormEntriesTest extends WPTestCase
 	public function testDeleteEntries()
 	{
 		// Seed database table.
-		$this->seedDatabaseTable();
+		$ids = $this->seedDatabaseTable();
 
 		// Delete entries.
-		$this->entries->delete_by_ids([ 1, 2, 3 ]);
+		$this->entries->delete_by_ids($ids);
 
 		// Assert database table is empty.
 		$this->assertDatabaseTableIsEmpty($this->table_name);
@@ -391,6 +391,8 @@ class FormEntriesTest extends WPTestCase
 	 * Add entries to the database table.
 	 *
 	 * @since   3.0.0
+	 *
+	 * @return array
 	 */
 	protected function seedDatabaseTable()
 	{
@@ -398,19 +400,22 @@ class FormEntriesTest extends WPTestCase
 		$this->entries->delete_all();
 
 		// Add entries.
+		$ids = [];
 		for ( $i = 0; $i < 10; $i++ ) {
-			$data = [
+			$data  = [
 				'post_id'    => $i,
 				'first_name' => 'Test ' . $i,
 				'email'      => 'test' . $i . '@example.com',
 			];
-			$id   = $this->entries->add($data);
-
+			$id    = $this->entries->add($data);
+			$ids[] = $id;
 			// Assert no error and that the entry is in the database.
 			$this->assertNotInstanceOf(\WP_Error::class, $id);
 			$this->assertNotFalse($id);
 			$this->seeInDatabase($this->table_name, $data);
 		}
+
+		return $ids;
 	}
 
 	/**
