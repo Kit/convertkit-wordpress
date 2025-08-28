@@ -250,7 +250,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		// Set pagination args so WP_List_Table knows what to render.
 		$total_items = $this->get_total_items();
 		$per_page    = $this->get_items_per_page( $this->items_per_page_screen_options_key, 25 );
-		$total_pages = ceil( $total_items / $per_page );
+		$total_pages = (int) ceil( $total_items / $per_page );
 
 		$this->set_pagination_args(
 			array(

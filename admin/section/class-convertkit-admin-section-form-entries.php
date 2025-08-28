@@ -114,13 +114,16 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_column( 'api_result', __( 'Result', 'convertkit' ), false );
 		$table->add_column( 'api_error', __( 'Error', 'convertkit' ), false );
 
+		// Get user options.
+		$per_page = (int) ( ! empty( get_user_option( 'convertkit_form_entries_per_page' ) ) ? get_user_option( 'convertkit_form_entries_per_page' ) : 25 );
+
 		// Add form entries to table.
 		$entries = $form_entries->search(
 			$table->get_search(),
 			$table->get_order_by( 'created_at' ),
 			$table->get_order( 'desc' ),
 			$table->get_pagenum(),
-			$table->get_items_per_page( 'convertkit_form_entries_per_page', 25 )
+			$per_page
 		);
 		$table->add_items( $entries );
 
@@ -165,7 +168,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 	 * @param   mixed  $screen_option  The value to save instead of the option value. Default false (to skip saving the current option).
 	 * @param   string $option         The option name.
 	 * @param   string $value          The option value.
-	 * @return  string                  The option value
+	 * @return  int|string                  The option value
 	 */
 	public function set_screen_options( $screen_option, $option, $value ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 
