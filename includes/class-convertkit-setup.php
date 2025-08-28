@@ -25,6 +25,10 @@ class ConvertKit_Setup {
 		// Call any functions to e.g. schedule WordPress Cron events now.
 		$this->schedule_cron_events();
 
+		// Install entries database table.
+		$entries = new ConvertKit_Form_Entries();
+		$entries->create_database_table();
+
 	}
 
 	/**
@@ -58,9 +62,14 @@ class ConvertKit_Setup {
 
 		/**
 		 * 3.0.0: Migrate reCAPTCHA settings from Restrict Content to General settings.
+		 * Install entries database table.
 		 */
 		if ( version_compare( $current_version, '3.0.0', '<' ) ) {
 			$this->migrate_recaptcha_settings();
+
+			// Install entries database table.
+			$entries = new ConvertKit_Form_Entries();
+			$entries->create_database_table();
 		}
 
 		/**

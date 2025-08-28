@@ -194,6 +194,28 @@ class UpgradePathsCest
 	}
 
 	/**
+	 * Tests that the form entries table is created when upgrading to 3.0.0 or later.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testCreateFormEntriesTable(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
+		// Define an installation version older than 3.0.0.
+		$I->haveOptionInDatabase('convertkit_version', '2.8.7');
+
+		// Activate the Plugin, as if we just upgraded to 3.0.0 or higher.
+		$I->activateKitPlugin($I, false);
+
+		// Confirm the form entries table is created.
+		$I->seeTableInDatabase('wp_kit_form_entries');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
