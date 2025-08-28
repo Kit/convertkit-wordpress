@@ -1002,4 +1002,16 @@ class KitPlugin extends \Codeception\Module
 			]
 		);
 	}
+
+	/**
+	 * Truncates the given database table.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $table Table name.
+	 */
+	public function truncateDbTable($table)
+	{
+		$this->getModule(\lucatume\WPBrowser\Module\WPDb::class)->_getDbh()->query('TRUNCATE TABLE ' . $table);
+	}
 }
