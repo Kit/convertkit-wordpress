@@ -139,11 +139,6 @@ class ConvertKit_Form_Entries {
 			return new \WP_Error( 'convertkit_form_entries_no_email', __( 'No email address provided', 'convertkit' ) );
 		}
 
-		// If no post ID is provided, return an error.
-		if ( ! array_key_exists( 'post_id', $entry ) ) {
-			return new \WP_Error( 'convertkit_form_entries_no_post_id', __( 'No post ID provided', 'convertkit' ) );
-		}
-
 		// JSON encode custom fields, if supplied as an array.
 		if ( array_key_exists( 'custom_fields', $entry ) && is_array( $entry['custom_fields'] ) ) {
 			$entry['custom_fields'] = wp_json_encode( $entry['custom_fields'] );
