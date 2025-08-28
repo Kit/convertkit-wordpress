@@ -53,6 +53,15 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	private $total_items = 0;
 
 	/**
+	 * Holds the key for the items per page options.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     string
+	 */
+	private $items_per_page_screen_options_key = 'convertkit_form_entries_per_page';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.0.0
@@ -178,6 +187,20 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Set the key that stores the user's preference for the number of items per page
+	 * to display, defined in the Screen Options.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $items_per_page_screen_options_key  Key.
+	 */
+	public function set_items_per_page_screen_options_key( $items_per_page_screen_options_key ) {
+
+		$this->items_per_page_screen_options_key = $items_per_page_screen_options_key;
+
+	}
+
+	/**
 	 * Get the total number of items available, which may
 	 * be greater than the number of items displayed.
 	 *
@@ -217,6 +240,54 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		// Set column headers.
 		// If this isn't done, the table will not display.
 		$this->_column_headers = array( $this->columns, array(), $this->sortable_columns );
+
+		// If no items per page options key is set, return, as it means
+		// this table won't paginate.
+		if ( ! $this->items_per_page_screen_options_key ) {
+			return;
+		}
+
+		// Set pagination args so WP_List_Table knows what to render.
+		$total_items = $this->get_total_items();
+		$per_page    = $this->get_items_per_page( $this->items_per_page_screen_options_key, 25 );
+		$total_pages = ceil( $total_items / $per_page );
+
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page'    => $per_page,
+				'total_pages' => $total_pages,
+			)
+		);
+
+	}
+
+	/**
+	 * Generate the table navigation above or below the table
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $which  The location of the bulk actions: 'top' or 'bottom'.
+	 *                         This is designated as optional for backward compatibility.
+	 */
+	protected function display_tablenav( $which ) {
+
+		if ( 'top' === $which ) {
+			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
+		}
+		?>
+		<div class="tablenav <?php echo esc_attr( $which ); ?>">
+			<div class="alignleft actions bulkactions">
+				<?php $this->bulk_actions( $which ); ?>
+			</div>
+			<?php
+			$this->extra_tablenav( $which );
+			$this->pagination( $which );
+			?>
+
+			<br class="clear" />
+		</div>
+		<?php
 
 	}
 
