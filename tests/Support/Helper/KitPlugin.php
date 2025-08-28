@@ -568,6 +568,21 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to load the Plugin's Settings > Form Entries screen.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function loadKitSettingsFormEntriesScreen($I)
+	{
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=form-entries');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
 	 * Helper method to clear the Plugin's debug log.
 	 *
 	 * @since   1.9.6

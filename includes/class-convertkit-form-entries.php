@@ -199,6 +199,88 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
+	 * Searches entries by the given key/value pairs
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   bool|string $search     Search Query.
+	 * @param   string      $order_by   Order Results By.
+	 * @param   string      $order      Order (asc|desc).
+	 * @param   int         $page       Pagination Offset (default: 1).
+	 * @param   int         $per_page   Number of Results to Return (default: 25).
+	 * @return  array
+	 */
+	public function search( $search = false, $order_by = 'created_at', $order = 'desc', $page = 1, $per_page = 25 ) {
+
+		global $wpdb;
+
+		// Prepare query.
+		$query = $wpdb->prepare(
+			'SELECT * FROM %i',
+			$wpdb->prefix . $this->table
+		);
+
+		// Add search clause.
+		if ( $search ) {
+			$query .= $wpdb->prepare(
+				' WHERE first_name LIKE %s OR email LIKE %s',
+				'%' . $search . '%',
+				'%' . $search . '%'
+			);
+		}
+
+		// Order.
+		$query .= $wpdb->prepare(
+			' ORDER BY %i.%i',
+			$wpdb->prefix . $this->table,
+			$order_by
+		);
+		$query .= ' ' . ( strtolower( $order ) === 'asc' ? 'ASC' : 'DESC' );
+
+		// Limit.
+		if ( $page > 0 && $per_page > 0 ) {
+			$query .= $wpdb->prepare( ' LIMIT %d, %d', ( ( $page - 1 ) * $per_page ), $per_page );
+		}
+
+		// Run and return query results.
+		return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+	}
+
+	/**
+	 * Gets the number of entry records found for the given query parameters
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   bool|string $search     Search Query.
+	 * @return  int
+	 */
+	public function total( $search = false ) {
+
+		global $wpdb;
+
+		// Prepare query.
+		$query = $wpdb->prepare(
+			'SELECT COUNT(%i.id) FROM %i',
+			$wpdb->prefix . $this->table,
+			$wpdb->prefix . $this->table
+		);
+
+		// Add search clause.
+		if ( $search ) {
+			$query .= $wpdb->prepare(
+				' WHERE first_name LIKE %s OR email LIKE %s',
+				'%' . $search . '%',
+				'%' . $search . '%'
+			);
+		}
+
+		// Run and return total records found.
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+	}
+
+	/**
 	 * Deletes a single entry for the given ID
 	 *
 	 * @since   3.0.0
