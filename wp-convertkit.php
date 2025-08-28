@@ -57,6 +57,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-exp
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-importer.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cache-plugins.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cron.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-form-entries.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-gutenberg.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-media-library.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output.php';
@@ -114,9 +115,10 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-settings.ph
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-tinymce.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-user.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizard.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-multi-value-field-table.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-wp-list-table.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-broadcasts.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-form-entries.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-general.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-oauth.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-restrict-content.php';

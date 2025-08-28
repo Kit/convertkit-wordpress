@@ -153,7 +153,7 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
 			blockConfiguration: [
-				'#inspector-toggle-control-0' => [ 'toggle', false ],
+				'#inspector-toggle-control-1' => [ 'toggle', false ],
 				'text_if_subscribed'          => [ 'text', 'Welcome to the newsletter!' ],
 			]
 		);
@@ -945,7 +945,10 @@ class PageBlockFormBuilderCest
 		$I->addGutenbergBlock(
 			$I,
 			blockName: 'Kit Form Builder',
-			blockProgrammaticName: 'convertkit-form-builder'
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'#inspector-toggle-control-0' => [ 'toggle', true ],
+			]
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -967,6 +970,121 @@ class PageBlockFormBuilderCest
 		$I->waitForElementVisible('body.page');
 		$I->wait(3);
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
+	}
+
+	/**
+	 * Test the Form Builder block works when the Store Entries option is enabled,
+	 * with custom fields, tag and sequence settings defined.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderWithStoreEntriesEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Store Entries'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'#inspector-toggle-control-0' => [ 'toggle', true ],
+				'sequence_id'                 => [ 'select', $_ENV['CONVERTKIT_API_SEQUENCE_ID'] ],
+				'tag_id'                      => [ 'select', $_ENV['CONVERTKIT_API_TAG_ID'] ],
+			]
+		);
+
+		// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
+		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+
+		// Add custom field block, mapping its data to the Last Name field in Kit.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder: Custom Field',
+			blockProgrammaticName: 'convertkit-form-builder-field-custom',
+			blockConfiguration: [
+				'label'        => [ 'input', 'Last Name' ],
+				'type'         => [ 'select', 'text' ],
+				'custom_field' => [ 'select', 'last_name' ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[custom_fields][last_name]"]', 'Last');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('body.page');
+		$I->wait(3);
+		$subscriber = $I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+
+		// Confirm that the custom field was added to the subscriber.
+		$I->assertEquals('Last', $subscriber['fields']['last_name']);
+
+		// Confirm that the subscriber has the tag.
+		$I->apiCheckSubscriberHasTag(
+			$I,
+			subscriberID: $subscriber['id'],
+			tagID: $_ENV['CONVERTKIT_API_TAG_ID']
+		);
+
+		// Confirm that the subscriber has the sequence.
+		$I->apiCheckSubscriberHasSequence(
+			$I,
+			subscriberID: $subscriber['id'],
+			sequenceID: $_ENV['CONVERTKIT_API_SEQUENCE_ID']
+		);
+
+		// Confirm that the entry was stored in the database.
+		$I->seeInDatabase(
+			'wp_kit_form_entries',
+			[
+				'email'         => $emailAddress,
+				'first_name'    => 'First',
+				'custom_fields' => '{"last_name":"Last"}',
+				'tag_id'        => $_ENV['CONVERTKIT_API_TAG_ID'],
+				'sequence_id'   => $_ENV['CONVERTKIT_API_SEQUENCE_ID'],
+				'api_result'    => 'success',
+			]
+		);
+
+		// Confirm that the entry is displayed in the Form Entries section.
+		$I->loadKitSettingsFormEntriesScreen($I);
+		$I->seeInSource($emailAddress);
+		$I->seeInSource('First');
+		$I->seeInSource('Last');
+		$I->seeInSource('success');
 	}
 
 	/**
