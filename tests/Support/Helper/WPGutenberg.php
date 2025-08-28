@@ -100,6 +100,9 @@ class WPGutenberg extends \Codeception\Module
 						$I->selectOption($fieldID, $attributes[1]);
 						break;
 					case 'toggle':
+						// The block editor doesn't use the field ID, so we need to find the field by the label.
+						$field = "//label[normalize-space(text())='" . $field . "']/preceding-sibling::span/input";
+
 						// Determine if the toggle has checked the checkbox.
 						$isChecked = $I->grabAttributeFrom($field, 'checked');
 

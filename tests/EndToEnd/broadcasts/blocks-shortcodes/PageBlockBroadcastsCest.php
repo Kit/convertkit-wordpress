@@ -225,7 +225,7 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-0' => [ 'toggle', true ],
+				'Display as grid' => [ 'toggle', true ],
 			]
 		);
 
@@ -359,8 +359,8 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-0' => [ 'toggle', true ],
-				'#inspector-toggle-control-1' => [ 'toggle', true ],
+				'Display as grid' => [ 'toggle', true ],
+				'Display images'  => [ 'toggle', true ],
 			]
 		);
 
@@ -403,7 +403,7 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-2' => [ 'toggle', true ],
+				'Display descriptions' => [ 'toggle', true ],
 			]
 		);
 
@@ -445,8 +445,8 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-3' => [ 'toggle', true ],
-				'read_more_label'             => [ 'input', 'Continue reading' ],
+				'Display read more links' => [ 'toggle', true ],
+				'read_more_label'         => [ 'input', 'Continue reading' ],
 			]
 		);
 
@@ -588,8 +588,8 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
-				'#inspector-toggle-control-4' => [ 'toggle', true ],
+				'limit'              => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
+				'Display pagination' => [ 'toggle', true ],
 			]
 		);
 
@@ -625,10 +625,10 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
-				'#inspector-toggle-control-4' => [ 'toggle', true ],
-				'paginate_label_prev'         => [ 'input', 'Newer' ],
-				'paginate_label_next'         => [ 'input', 'Older' ],
+				'limit'               => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
+				'Display pagination'  => [ 'toggle', true ],
+				'paginate_label_prev' => [ 'input', 'Newer' ],
+				'paginate_label_next' => [ 'input', 'Older' ],
 			]
 		);
 
@@ -664,10 +664,10 @@ class PageBlockBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'limit'                       => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
-				'#inspector-toggle-control-4' => [ 'toggle', true ],
-				'paginate_label_prev'         => [ 'input', '' ],
-				'paginate_label_next'         => [ 'input', '' ],
+				'limit'               => [ 'input', '2', 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
+				'Display pagination'  => [ 'toggle', true ],
+				'paginate_label_prev' => [ 'input', '' ],
+				'paginate_label_next' => [ 'input', '' ],
 			]
 		);
 

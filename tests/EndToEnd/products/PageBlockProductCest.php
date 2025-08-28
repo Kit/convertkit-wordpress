@@ -349,8 +349,8 @@ class PageBlockProductCest
 			blockName: 'Kit Product',
 			blockProgrammaticName: 'convertkit-product',
 			blockConfiguration: [
-				'product'                     => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-				'#inspector-toggle-control-0' => [ 'toggle', true ],
+				'product'            => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+				'Load checkout step' => [ 'toggle', true ],
 			]
 		);
 
@@ -406,8 +406,8 @@ class PageBlockProductCest
 			blockName: 'Kit Product',
 			blockProgrammaticName: 'convertkit-product',
 			blockConfiguration: [
-				'product'                     => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-				'#inspector-toggle-control-1' => [ 'toggle', true ],
+				'product'                 => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+				'Disable modal on mobile' => [ 'toggle', true ],
 			]
 		);
 
