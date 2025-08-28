@@ -253,21 +253,8 @@ class FormEntriesTest extends WPTestCase
 	 */
 	public function testDeleteEntries()
 	{
-		// Add entries.
-		$ids = [];
-		for ( $i = 0; $i < 3; $i++ ) {
-			$data  = [
-				'post_id' => $i,
-				'email'   => 'test' . $i . '@example.com',
-			];
-			$id    = $this->entries->add($data);
-			$ids[] = $id;
-
-			// Assert no error and that the entry is in the database.
-			$this->assertNotInstanceOf(\WP_Error::class, $id);
-			$this->assertNotFalse($id);
-			$this->seeInDatabase($this->table_name, $data);
-		}
+		// Seed database table.
+		$ids = $this->seedDatabaseTable();
 
 		// Delete entries.
 		$this->entries->delete_by_ids($ids);
@@ -283,25 +270,171 @@ class FormEntriesTest extends WPTestCase
 	 */
 	public function testDeleteAllEntries()
 	{
-		// Add entries.
-		for ( $i = 0; $i < 10; $i++ ) {
-			$data = [
-				'post_id' => $i,
-				'email'   => 'test' . $i . '@example.com',
-			];
-			$id   = $this->entries->add($data);
-
-			// Assert no error and that the entry is in the database.
-			$this->assertNotInstanceOf(\WP_Error::class, $id);
-			$this->assertNotFalse($id);
-			$this->seeInDatabase($this->table_name, $data);
-		}
+		// Seed database table.
+		$this->seedDatabaseTable();
 
 		// Delete all entries.
 		$this->entries->delete_all();
 
 		// Assert database table is empty.
 		$this->assertDatabaseTableIsEmpty($this->table_name);
+	}
+
+	/**
+	 * Test searching for entries.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testSearchNoParameters()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Run search with no parameters.
+		$results = $this->entries->search();
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals(10, count($results));
+	}
+
+	/**
+	 * Test searching for entries with order by and order parameters.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testSearchOrderByAndOrder()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Run search ordered by post ID ascending.
+		$results = $this->entries->search(
+			order_by: 'post_id',
+			order: 'asc',
+		);
+		$this->assertEquals( 0, $results[0]['post_id'] );
+		$this->assertEquals( 1, $results[1]['post_id'] );
+
+		// Run search ordered by post ID descending.
+		$results = $this->entries->search(
+			order_by: 'post_id',
+			order: 'desc',
+		);
+		$this->assertEquals( 9, $results[0]['post_id'] );
+		$this->assertEquals( 8, $results[1]['post_id'] );
+
+		// Run search ordered by email ascending.
+		$results = $this->entries->search(
+			order_by: 'email',
+			order: 'asc',
+		);
+		$this->assertEquals( 'test0@example.com', $results[0]['email'] );
+		$this->assertEquals( 'test1@example.com', $results[1]['email'] );
+
+		// Run search ordered by email descending.
+		$results = $this->entries->search(
+			order_by: 'email',
+			order: 'desc',
+		);
+		$this->assertEquals( 'test9@example.com', $results[0]['email'] );
+		$this->assertEquals( 'test8@example.com', $results[1]['email'] );
+
+		// Run search ordered by first name ascending.
+		$results = $this->entries->search(
+			order_by: 'first_name',
+			order: 'asc',
+		);
+		$this->assertEquals( 'Test 0', $results[0]['first_name'] );
+		$this->assertEquals( 'Test 1', $results[1]['first_name'] );
+
+		// Run search ordered by first name descending.
+		$results = $this->entries->search(
+			order_by: 'first_name',
+			order: 'desc',
+		);
+		$this->assertEquals( 'Test 9', $results[0]['first_name'] );
+		$this->assertEquals( 'Test 8', $results[1]['first_name'] );
+	}
+
+	/**
+	 * Test searching for entries with search parameters.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testSearchWithSearchParameter()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Run specific search for first name.
+		$results = $this->entries->search(
+			search: 'Test 0',
+		);
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals( 1, count( $results ) );
+		$this->assertEquals( 'Test 0', $results[0]['first_name'] );
+
+		// Run specific search for email.
+		$results = $this->entries->search(
+			search: 'test0@example.com',
+		);
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals( 1, count( $results ) );
+		$this->assertEquals( 'test0@example.com', $results[0]['email'] );
+
+		// Run generic search.
+		$results = $this->entries->search(
+			search: 'test0',
+		);
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals( 1, count( $results ) );
+		$this->assertEquals( 'test0@example.com', $results[0]['email'] );
+
+		// Run generic search on email, ordered by post ID descending.
+		$results = $this->entries->search(
+			search: 'example.com',
+			order_by: 'post_id',
+			order: 'desc',
+		);
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals( 10, count( $results ) );
+		$this->assertEquals( 9, $results[0]['post_id'] );
+		$this->assertEquals( 8, $results[1]['post_id'] );
+	}
+
+	/**
+	 * Add entries to the database table.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return array
+	 */
+	protected function seedDatabaseTable()
+	{
+		// Delete all entries.
+		$this->entries->delete_all();
+
+		// Add entries.
+		$ids = [];
+		for ( $i = 0; $i < 10; $i++ ) {
+			$data  = [
+				'post_id'    => $i,
+				'first_name' => 'Test ' . $i,
+				'email'      => 'test' . $i . '@example.com',
+			];
+			$id    = $this->entries->add($data);
+			$ids[] = $id;
+			// Assert no error and that the entry is in the database.
+			$this->assertNotInstanceOf(\WP_Error::class, $id);
+			$this->assertNotFalse($id);
+			$this->seeInDatabase($this->table_name, $data);
+		}
+
+		return $ids;
 	}
 
 	/**
