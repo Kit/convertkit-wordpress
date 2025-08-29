@@ -1,0 +1,167 @@
+<?php
+
+namespace Tests\EndToEnd;
+
+use Tests\Support\EndToEndTester;
+
+/**
+ * Tests for the Settings > Kit > Form Entries screens.
+ *
+ * @since   3.0.0
+ */
+class PluginSettingsFormEntriesCest
+{
+	/**
+	 * Run common actions before running the test functions in this class.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _before(EndToEndTester $I)
+	{
+		// Activate and Setup Kit plugin.
+		$I->activateKitPlugin($I);
+	}
+
+	/**
+	 * Test the Form Entries table when no entries are present.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWhenNoEntries(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		$I->see('No items found.');
+	}
+
+	/**
+	 * Test the Form Entries table with pagination.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTable(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Confirm that the entries are displayed.
+		foreach ($items as $index => $item) {
+			if ( $index === 0 ) {
+				$selector = 'tr:first-child';
+			} else {
+				$selector = 'tr:nth-child(' . $index + 1 . ')';
+			}
+
+			$I->assertEquals($item['email'], $I->grabTextFrom('tbody#the-list ' . $selector . ' td.email'));
+			$I->assertEquals($item['first_name'], $I->grabTextFrom('tbody#the-list ' . $selector . ' td.first_name'));
+			$I->assertEquals($item['api_result'], $I->grabTextFrom('tbody#the-list ' . $selector . ' td.api_result'));
+			$I->assertEquals($item['created_at'], $I->grabTextFrom('tbody#the-list ' . $selector . ' td.created_at'));
+			$I->assertEquals($item['updated_at'], $I->grabTextFrom('tbody#the-list ' . $selector . ' td.updated_at'));
+		}
+
+		// Set pagination to 2 per page.
+		$I->click('button#show-settings-link');
+		$I->waitForElementVisible('input#convertkit_form_entries_per_page');
+		$I->fillField('#convertkit_form_entries_per_page', '2');
+		$I->click('Apply');
+		$I->waitForElementNotVisible('input#convertkit_form_entries_per_page');
+
+		// Confirm that two entries (0 and 1) are displayed.
+		$I->assertEquals($items[0]['email'], $I->grabTextFrom('tbody#the-list tr:first-child td.email'));
+		$I->assertEquals($items[0]['first_name'], $I->grabTextFrom('tbody#the-list tr:first-child td.first_name'));
+		$I->assertEquals($items[0]['api_result'], $I->grabTextFrom('tbody#the-list tr:first-child td.api_result'));
+		$I->assertEquals($items[0]['created_at'], $I->grabTextFrom('tbody#the-list tr:first-child td.created_at'));
+		$I->assertEquals($items[0]['updated_at'], $I->grabTextFrom('tbody#the-list tr:first-child td.updated_at'));
+
+		$I->assertEquals($items[1]['email'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.email'));
+		$I->assertEquals($items[1]['first_name'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.first_name'));
+		$I->assertEquals($items[1]['api_result'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.api_result'));
+		$I->assertEquals($items[1]['created_at'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.created_at'));
+		$I->assertEquals($items[1]['updated_at'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.updated_at'));
+
+		// Confirm that other entries are not displayed.
+		$I->dontSee($items[2]['email']);
+
+		// Click next page.
+		$I->click('a.next-page');
+
+		// Confirm that two entries (2 and 3) are displayed.
+		$I->assertEquals($items[2]['email'], $I->grabTextFrom('tbody#the-list tr:first-child td.email'));
+		$I->assertEquals($items[2]['first_name'], $I->grabTextFrom('tbody#the-list tr:first-child td.first_name'));
+		$I->assertEquals($items[2]['api_result'], $I->grabTextFrom('tbody#the-list tr:first-child td.api_result'));
+		$I->assertEquals($items[2]['created_at'], $I->grabTextFrom('tbody#the-list tr:first-child td.created_at'));
+		$I->assertEquals($items[2]['updated_at'], $I->grabTextFrom('tbody#the-list tr:first-child td.updated_at'));
+
+		$I->assertEquals($items[3]['email'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.email'));
+		$I->assertEquals($items[3]['first_name'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.first_name'));
+		$I->assertEquals($items[3]['api_result'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.api_result'));
+		$I->assertEquals($items[3]['created_at'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.created_at'));
+		$I->assertEquals($items[3]['updated_at'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.updated_at'));
+
+		// Confirm that other entries are not displayed.
+		$I->dontSee($items[0]['email']);
+		$I->dontSee($items[1]['email']);
+	}
+
+	/**
+	 * Helper method to insert form entries into the database.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 *
+	 * @return  array
+	 */
+	private function insertFormEntriesToDatabase(EndToEndTester $I)
+	{
+		$items = [];
+
+		for ($i = 0; $i < 10; $i++) {
+			$items[ $i ] = [
+				'post_id'    => $i,
+				'first_name' => 'First ' . $i,
+				'email'      => 'test' . $i . '@example.com',
+				'api_result' => 'success',
+				'created_at' => date('Y-m-d H:i:s', strtotime('-' . $i . ' days')),
+				'updated_at' => date('Y-m-d H:i:s', strtotime('-' . $i . ' days')),
+			];
+			$I->haveInDatabase('wp_kit_form_entries', $items[ $i ]);
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Deactivate and reset Plugin(s) after each test, if the test passes.
+	 * We don't use _after, as this would provide a screenshot of the Plugin
+	 * deactivation and not the true test error.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _passed(EndToEndTester $I)
+	{
+		$I->truncateDbTable('wp_kit_form_entries');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+	}
+}
