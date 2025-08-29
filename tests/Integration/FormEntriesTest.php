@@ -125,6 +125,24 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test adding an entry with no post ID returns a WP_Error.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testAddEntryWithNoPostID()
+	{
+		$data = [
+			'email'      => 'test@example.com',
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->add($data);
+
+		// Assert an error and that the entry is not in the database.
+		$this->assertInstanceOf(\WP_Error::class, $id);
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
 	 * Test updating an entry.
 	 *
 	 * @since   3.0.0
@@ -211,6 +229,24 @@ class FormEntriesTest extends WPTestCase
 	{
 		$data = [
 			'post_id'    => 1,
+			'first_name' => 'Test',
+		];
+		$id   = $this->entries->upsert($data);
+
+		// Assert an error and that the entry is not in the database.
+		$this->assertInstanceOf(\WP_Error::class, $id);
+		$this->dontSeeInDatabase($this->table_name, $data);
+	}
+
+	/**
+	 * Test upserting an entry with no post ID returns a WP_Error.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testUpsertEntryWithNoPostID()
+	{
+		$data = [
+			'email'      => 'test@example.com',
 			'first_name' => 'Test',
 		];
 		$id   = $this->entries->upsert($data);
