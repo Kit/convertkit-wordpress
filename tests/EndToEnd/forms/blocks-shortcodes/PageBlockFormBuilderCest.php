@@ -153,8 +153,8 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
 			blockConfiguration: [
-				'#inspector-toggle-control-1' => [ 'toggle', false ],
-				'text_if_subscribed'          => [ 'text', 'Welcome to the newsletter!' ],
+				'Display form'       => [ 'toggle', false ],
+				'text_if_subscribed' => [ 'text', 'Welcome to the newsletter!' ],
 			]
 		);
 
@@ -945,10 +945,7 @@ class PageBlockFormBuilderCest
 		$I->addGutenbergBlock(
 			$I,
 			blockName: 'Kit Form Builder',
-			blockProgrammaticName: 'convertkit-form-builder',
-			blockConfiguration: [
-				'#inspector-toggle-control-0' => [ 'toggle', true ],
-			]
+			blockProgrammaticName: 'convertkit-form-builder'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -1007,9 +1004,9 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
 			blockConfiguration: [
-				'#inspector-toggle-control-0' => [ 'toggle', true ],
-				'sequence_id'                 => [ 'select', $_ENV['CONVERTKIT_API_SEQUENCE_ID'] ],
-				'tag_id'                      => [ 'select', $_ENV['CONVERTKIT_API_TAG_ID'] ],
+				'Store form submissions' => [ 'toggle', true ],
+				'sequence_id'            => [ 'select', $_ENV['CONVERTKIT_API_SEQUENCE_ID'] ],
+				'tag_id'                 => [ 'select', $_ENV['CONVERTKIT_API_TAG_ID'] ],
 			]
 		);
 

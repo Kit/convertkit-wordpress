@@ -147,8 +147,8 @@ class WidgetBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-4' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
-				'limit'                       => [ 'input', '2' ],
+				'Display pagination' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
+				'limit'              => [ 'input', '2' ],
 			]
 		);
 
@@ -174,10 +174,10 @@ class WidgetBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-4' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
-				'limit'                       => [ 'input', '2' ],
-				'paginate_label_prev'         => [ 'input', 'Newer' ],
-				'paginate_label_next'         => [ 'input', 'Older' ],
+				'Display pagination'  => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
+				'limit'               => [ 'input', '2' ],
+				'paginate_label_prev' => [ 'input', 'Newer' ],
+				'paginate_label_next' => [ 'input', 'Older' ],
 			]
 		);
 
@@ -207,10 +207,10 @@ class WidgetBroadcastsCest
 			blockName: 'Kit Broadcasts',
 			blockProgrammaticName: 'convertkit-broadcasts',
 			blockConfiguration: [
-				'#inspector-toggle-control-4' => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
-				'limit'                       => [ 'input', '2' ],
-				'paginate_label_prev'         => [ 'input', '' ],
-				'paginate_label_next'         => [ 'input', '' ],
+				'Display pagination'  => [ 'toggle', true, 'Pagination' ], // Click the Pagination tab first before starting to complete fields.
+				'limit'               => [ 'input', '2' ],
+				'paginate_label_prev' => [ 'input', '' ],
+				'paginate_label_next' => [ 'input', '' ],
 			]
 		);
 
