@@ -27,7 +27,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @var     string
+	 * @var     bool|string
 	 */
 	private $page = false;
 
@@ -36,7 +36,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @var     string
+	 * @var     bool|string
 	 */
 	private $tab = false;
 
@@ -84,8 +84,8 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param   string $page  Page query parameter.
-	 * @param   string $tab   Tab query parameter.
+	 * @param   bool|string $page  Page query parameter.
+	 * @param   bool|string $tab   Tab query parameter.
 	 */
 	public function __construct( $page = false, $tab = false ) {
 
