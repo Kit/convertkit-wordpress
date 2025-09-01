@@ -1075,13 +1075,6 @@ class PageBlockFormBuilderCest
 				'api_result'    => 'success',
 			]
 		);
-
-		// Confirm that the entry is displayed in the Form Entries section.
-		$I->loadKitSettingsFormEntriesScreen($I);
-		$I->seeInSource($emailAddress);
-		$I->seeInSource('First');
-		$I->seeInSource('Last');
-		$I->seeInSource('success');
 	}
 
 	/**

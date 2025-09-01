@@ -35,6 +35,11 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 			),
 		);
 
+		// Register screen options.
+		if ( $this->on_settings_screen( $this->name ) ) {
+			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'add_screen_options' ) );
+		}
+
 		parent::__construct();
 
 	}
@@ -109,12 +114,22 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_column( 'api_result', __( 'Result', 'convertkit' ), false );
 		$table->add_column( 'api_error', __( 'Error', 'convertkit' ), false );
 
+		// Get user options.
+		$per_page = (int) ( ! empty( get_user_option( 'convertkit_form_entries_per_page' ) ) ? get_user_option( 'convertkit_form_entries_per_page' ) : 25 );
+
 		// Add form entries to table.
-		$entries = $form_entries->search();
+		$entries = $form_entries->search(
+			$table->get_search(),
+			$table->get_order_by( 'created_at' ),
+			$table->get_order( 'desc' ),
+			$table->get_pagenum(),
+			$per_page
+		);
 		$table->add_items( $entries );
 
-		// Set total entries.
+		// Set total entries and items per page options key.
 		$table->set_total_items( $form_entries->total() );
+		$table->set_items_per_page_screen_options_key( 'convertkit_form_entries_per_page' );
 
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();
@@ -122,6 +137,46 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 
 		// Render closing container.
 		$this->render_container_end();
+
+	}
+
+	/**
+	 * Defines options to display in the Screen Options dropdown on the Logs
+	 * WP_List_Table
+	 *
+	 * @since   3.0.0
+	 */
+	public function add_screen_options() {
+
+		add_screen_option(
+			'per_page',
+			array(
+				'label'   => __( 'Form Entries per Page', 'convertkit' ),
+				'default' => 25,
+				'option'  => 'convertkit_form_entries_per_page',
+			)
+		);
+
+	}
+
+	/**
+	 * Sets values for options displayed in the Screen Options dropdown on the
+	 * WP_List_Table
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   mixed  $screen_option  The value to save instead of the option value. Default false (to skip saving the current option).
+	 * @param   string $option         The option name.
+	 * @param   string $value          The option value.
+	 * @return  int|string                  The option value
+	 */
+	public function set_screen_options( $screen_option, $option, $value ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+
+		if ( 'convertkit_form_entries_per_page' === $option ) {
+			return (int) $value;
+		}
+
+		return $screen_option;
 
 	}
 
@@ -141,6 +196,29 @@ add_filter(
 		// Register this class as a section at Settings > Kit.
 		$sections['form-entries'] = new ConvertKit_Admin_Section_Form_Entries();
 		return $sections;
+
+	}
+);
+
+// Add support for WordPress' Screen Options.
+add_action(
+	'convertkit_initialize_admin',
+	function () {
+
+		add_filter(
+			'set-screen-option',
+			function ( $status, $option, $value ) {
+
+				if ( 'convertkit_form_entries_per_page' === $option ) {
+					return (int) $value;
+				}
+
+				return $status;
+
+			},
+			10,
+			3
+		);
 
 	}
 );
