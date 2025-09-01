@@ -158,7 +158,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		<p class="search-box">
 			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_attr( $text ); ?>:</label>
 			<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e( 'Search', 'convertkit' ); ?>" />
-			<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
+			<?php submit_button( $text, 'secondary', 'submit', false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php
 		if ( $this->page ) {
