@@ -38,6 +38,8 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		// Register screen options.
 		if ( $this->on_settings_screen( $this->name ) ) {
 			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'add_screen_options' ) );
+			add_filter( 'convertkit_admin_settings_form_method', array( $this, 'form_method' ), 10, 2 );
+			add_filter( 'convertkit_admin_settings_form_action_url', array( $this, 'form_action_url' ), 10, 2 );
 		}
 
 		parent::__construct();
@@ -103,7 +105,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$this->print_section_info();
 
 		// Setup WP_List_Table.
-		$table = new ConvertKit_WP_List_Table();
+		$table = new ConvertKit_WP_List_Table( '_wp_convertkit_settings', $this->name );
 
 		// Add columns to table.
 		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), false );
@@ -128,11 +130,19 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_items( $entries );
 
 		// Set total entries and items per page options key.
-		$table->set_total_items( $form_entries->total() );
+		$table->set_total_items( $form_entries->total( $table->get_search() ) );
 		$table->set_items_per_page_screen_options_key( 'convertkit_form_entries_per_page' );
+
+		// Display search term.
+		if ( $table->is_search() ) {
+			?>
+			<span class="subtitle left"><?php esc_html_e( 'Search results for', 'convertkit' ); ?> &#8220;<?php echo esc_html( $table->get_search() ); ?>&#8221;</span>
+			<?php
+		}
 
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();
+		$table->search_box( __( 'Search', 'convertkit' ), 'convertkit' );
 		$table->display();
 
 		// Render closing container.
@@ -177,6 +187,46 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		}
 
 		return $screen_option;
+
+	}
+
+	/**
+	 * Defines the settings form's method to 'get', to mirror how
+	 * WP_List_Table works when performing a search.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $form_method      Form method (post|get).
+	 * @param   string $active_section   Active settings section.
+	 * @return  string
+	 */
+	public function form_method( $form_method, $active_section ) {
+
+		if ( $active_section !== $this->name ) {
+			return $form_method;
+		}
+
+		return 'get';
+
+	}
+
+	/**
+	 * Defines the settings form's action URL to match the current screen,
+	 * so the search functionality doesn't load options.php, which doesn't work.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $form_action_url    URL.
+	 * @param   string $active_section     Active settings section.
+	 * @return  string
+	 */
+	public function form_action_url( $form_action_url, $active_section ) {
+
+		if ( $active_section !== $this->name ) {
+			return $form_action_url;
+		}
+
+		return 'options-general.php';
 
 	}
 
