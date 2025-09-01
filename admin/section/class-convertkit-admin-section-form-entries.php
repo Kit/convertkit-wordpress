@@ -136,13 +136,13 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		// Display search term.
 		if ( $table->is_search() ) {
 			?>
-			<span class="subtitle left"><?php esc_html_e( 'Search results for', 'convertkit' ); ?> &#8220;<?php echo esc_html( $table->get_search() ); ?>&#8221;</span>
+			<span class="subtitle left"><?php esc_html_e( 'Search results for', 'convertkit' ); ?> &quot;<?php echo esc_html( $table->get_search() ); ?>&quot;</span>
 			<?php
 		}
 
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();
-		$table->search_box( __( 'Search', 'convertkit' ), 'convertkit' );
+		$table->search_box( __( 'Search', 'convertkit' ), 'convertkit-search' );
 		$table->display();
 
 		// Render closing container.

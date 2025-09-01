@@ -122,6 +122,180 @@ class PluginSettingsFormEntriesCest
 	}
 
 	/**
+	 * Test the Form Entries table with an exact email search.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithExactEmailSearch(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Search by email.
+		$I->fillField('#convertkit-search', 'test0@example.com');
+		$I->click('#search-submit');
+
+		// Confirm that the search term is displayed.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "test0@example.com"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm search result displayed in the table.
+		$I->assertEquals($items[0]['email'], $I->grabTextFrom('tbody#the-list tr:first-child td.email'));
+	}
+
+	/**
+	 * Test the Form Entries table with a partial email search.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithPartialEmailSearch(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Search by partial email.
+		$I->fillField('#convertkit-search', 'test0@');
+		$I->click('#search-submit');
+
+		// Confirm that the search term is displayed.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "test0@"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm search result displayed in the table.
+		$I->assertEquals($items[0]['email'], $I->grabTextFrom('tbody#the-list tr:first-child td.email'));
+	}
+
+	/**
+	 * Test the Form Entries table with an exact name search.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithExactNameSearch(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Search by name.
+		$I->fillField('#convertkit-search', 'First 0');
+		$I->click('#search-submit');
+
+		// Confirm that the search term is displayed.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "First 0"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm search result displayed in the table.
+		$I->assertEquals($items[0]['first_name'], $I->grabTextFrom('tbody#the-list tr:first-child td.first_name'));
+	}
+
+	/**
+	 * Test the Form Entries table with a partial name search.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithPartialNameSearch(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Search by name.
+		$I->fillField('#convertkit-search', 'First');
+		$I->click('#search-submit');
+
+		// Confirm that the search term is displayed.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "First"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm search result displayed in the table.
+		$I->assertEquals($items[0]['first_name'], $I->grabTextFrom('tbody#the-list tr:first-child td.first_name'));
+	}
+
+	/**
+	 * Test the Form Entries table with search and pagination.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithSearchAndPagination(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Set pagination to 2 per page.
+		$I->click('button#show-settings-link');
+		$I->waitForElementVisible('input#convertkit_form_entries_per_page');
+		$I->fillField('#convertkit_form_entries_per_page', '2');
+		$I->click('Apply');
+		$I->waitForElementNotVisible('input#convertkit_form_entries_per_page');
+
+		// Search by name.
+		$I->fillField('#convertkit-search', 'First');
+		$I->click('#search-submit');
+
+		// Confirm that the search term is displayed.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "First"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm search result displayed in the table.
+		$I->assertEquals($items[0]['first_name'], $I->grabTextFrom('tbody#the-list tr:first-child td.first_name'));
+		$I->assertEquals($items[1]['first_name'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.first_name'));
+
+		// Click next page.
+		$I->click('a.next-page');
+
+		// Confirm that the search term is retained.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "First"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm search result displayed in the table.
+		$I->assertEquals($items[2]['first_name'], $I->grabTextFrom('tbody#the-list tr:first-child td.first_name'));
+		$I->assertEquals($items[3]['first_name'], $I->grabTextFrom('tbody#the-list tr:nth-child(2) td.first_name'));
+	}
+
+	/**
 	 * Helper method to insert form entries into the database.
 	 *
 	 * @since   3.0.0
