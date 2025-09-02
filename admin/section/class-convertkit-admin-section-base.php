@@ -89,6 +89,11 @@ abstract class ConvertKit_Admin_Section_Base {
 			$this->tab_text = $this->title;
 		}
 
+		// Output the Intercom messenger if we're on the Plugin's settings screen.
+		if ( $this->on_settings_screen( $this->name ) ) {
+			add_action( 'admin_footer', array( $this, 'output_intercom' ) );
+		}
+
 		// Register the settings section.
 		$this->register_section();
 

@@ -59,11 +59,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 		// Enqueue scripts.
 		add_action( 'convertkit_admin_settings_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		// Output the Intercom messenger.
-		if ( $this->on_settings_screen( $this->name ) ) {
-			add_action( 'admin_footer', array( $this, 'output_intercom' ) );
-		}
-
 		parent::__construct();
 
 	}
