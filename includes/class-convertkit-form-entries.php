@@ -209,6 +209,50 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
+	 * Gets entries by IDs
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $ids    Entry IDs.
+	 * @return  array
+	 */
+	public function get_by_ids( $ids ) {
+
+		global $wpdb;
+
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM %i WHERE id IN (%s)',
+				$wpdb->prefix . $this->table,
+				implode( ',', $ids )
+			),
+			ARRAY_A
+		);
+
+	}
+
+	/**
+	 * Returns a CSV string for the given entries
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $entries    Entries.
+	 * @return  string
+	 */
+	public function get_csv_string( $entries ) {
+
+		$csv = array(
+			'"' . implode( '","', array_keys( $entries[0] ) ) . '"',
+		);
+		foreach ( $entries as $entry ) {
+			$csv[] = '"' . implode( '","', $entry ) . '"';
+		}
+
+		return implode( "\n", $csv );
+
+	}
+
+	/**
 	 * Searches entries by the given key/value pairs
 	 *
 	 * @since   3.0.0

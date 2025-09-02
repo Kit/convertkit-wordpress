@@ -110,6 +110,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table = new ConvertKit_WP_List_Table( '_wp_convertkit_settings', $this->name );
 
 		// Add bulk actions to table.
+		$table->add_bulk_action( 'export', __( 'Export', 'convertkit' ) );
 		$table->add_bulk_action( 'delete', __( 'Delete', 'convertkit' ) );
 
 		// Add columns to table.
@@ -223,6 +224,22 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$form_entries = new ConvertKit_Form_Entries();
 
 		switch ( $bulk_action ) {
+			case 'export':
+				// Get entries.
+				$ids     = array_unique( array_map( 'absint', $_REQUEST['convertkit-items'] ) );
+				$entries = $form_entries->get_by_ids( $ids );
+
+				// Convert entries to CSV string.
+				$csv = $form_entries->get_csv_string( $entries );
+
+				// Force download with output.
+				header( 'Content-type: application/x-msdownload' );
+				header( 'Content-Disposition: attachment; filename=form-entries-export.csv' );
+				header( 'Pragma: no-cache' );
+				header( 'Expires: 0' );
+				echo $csv; // phpcs:ignore WordPress.Security.EscapeOutput
+				exit();
+
 			case 'delete':
 				// Delete entries by IDs.
 				$ids = array_unique( array_map( 'absint', $_REQUEST['convertkit-items'] ) );
