@@ -113,7 +113,6 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-refresh-res
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-restrict-content.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-tinymce.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-user.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizard.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-wp-list-table.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
