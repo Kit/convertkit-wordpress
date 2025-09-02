@@ -269,7 +269,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 
 				// Force download with output.
 				header( 'Content-type: application/x-msdownload' );
-				header( 'Content-Disposition: attachment; filename=form-entries-export.csv' );
+				header( 'Content-Disposition: attachment; filename=kit-form-entries-export.csv' );
 				header( 'Pragma: no-cache' );
 				header( 'Expires: 0' );
 				echo $csv; // phpcs:ignore WordPress.Security.EscapeOutput
