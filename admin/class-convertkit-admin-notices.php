@@ -43,6 +43,11 @@ class ConvertKit_Admin_Notices {
 	 */
 	public function output() {
 
+		// Don't output if we're on a settings screen.
+		if ( convertkit_get_current_screen( 'base' ) === 'settings_page__wp_convertkit_settings' ) {
+			return;
+		}
+
 		// Don't output if we don't have the required capabilities to fix the issue.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
