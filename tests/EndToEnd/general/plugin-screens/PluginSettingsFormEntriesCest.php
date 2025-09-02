@@ -323,8 +323,8 @@ class PluginSettingsFormEntriesCest
 		$I->click('#doaction');
 
 		// Wait for notice to be displayed.
-		$I->waitForElementVisible('div.notice');
-		$I->see('Form Entries deleted.');
+		$I->waitForElementVisible('div.notice-success');
+		$I->see('Form Entries deleted successfully.');
 
 		// Confirm that the entries are deleted.
 		$I->dontSee($items[0]['first_name']);

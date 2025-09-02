@@ -37,14 +37,35 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 
 		// Register screen options.
 		if ( $this->on_settings_screen( $this->name ) ) {
+			add_filter( 'convertkit_settings_base_register_notices', array( $this, 'register_notices' ) );
+			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_notices' ) );
 			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'add_screen_options' ) );
 			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'run_bulk_actions' ) );
-			add_filter( 'convertkit_admin_notices_output_form_entries_deleted', array( $this, 'form_entries_deleted_notice' ) );
 			add_filter( 'convertkit_admin_settings_form_method', array( $this, 'form_method' ), 10, 2 );
 			add_filter( 'convertkit_admin_settings_form_action_url', array( $this, 'form_action_url' ), 10, 2 );
 		}
 
 		parent::__construct();
+
+	}
+
+	/**
+	 * Registers success and error notices for the Form Entries screen, to be displayed
+	 * depending on the action.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $notices    Regsitered success and error notices.
+	 * @return  array
+	 */
+	public function register_notices( $notices ) {
+
+		return array_merge(
+			$notices,
+			array(
+				'form_entries_deleted_success' => __( 'Form Entries deleted successfully.', 'convertkit' ),
+			)
+		);
 
 	}
 
@@ -95,6 +116,13 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 	 * @since   3.0.0
 	 */
 	public function render() {
+
+		/**
+		 * Performs actions prior to rendering the settings form.
+		 *
+		 * @since   3.0.0
+		 */
+		do_action( 'convertkit_settings_base_render_before' );
 
 		$form_entries = new ConvertKit_Form_Entries();
 
@@ -154,6 +182,13 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 
 		// Render closing container.
 		$this->render_container_end();
+
+		/**
+		 * Performs actions after rendering of the settings form.
+		 *
+		 * @since   3.0.0
+		 */
+		do_action( 'convertkit_settings_base_render_after' );
 
 	}
 
@@ -245,37 +280,10 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 				$ids = array_unique( array_map( 'absint', $_REQUEST['convertkit-items'] ) );
 				$form_entries->delete_by_ids( $ids );
 
-				// Set notice.
-				WP_ConvertKit()->get_class( 'admin_notices' )->add( 'form_entries_deleted' );
+				// Redirect with success notice.
+				$this->redirect_with_success_notice( 'form_entries_deleted_success' );
 				break;
 		}
-
-		// Redirect back to the current page, without the action in the URL.
-		wp_safe_redirect(
-			add_query_arg(
-				array(
-					'page' => '_wp_convertkit_settings',
-					'tab'  => $this->name,
-				),
-				admin_url( 'options-general.php' )
-			)
-		);
-		exit();
-
-	}
-
-	/**
-	 * Define the notice text to display in the WordPress Administration interface
-	 * when Form Entries are deleted.
-	 *
-	 * @since   3.0.0
-	 *
-	 * @param   string $notice     Notice text.
-	 * @return  string              Notice text
-	 */
-	public function form_entries_deleted_notice( $notice ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-
-		return esc_html__( 'Form Entries deleted.', 'convertkit' );
 
 	}
 
