@@ -123,6 +123,13 @@ class PluginIntercomCest
 		$I->waitForElementVisible('iframe[data-intercom-frame="true"]');
 	}
 
+	/**
+	 * Assert that the Intercom script is not loaded.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
 	private function _dontSeeIntercomScript(EndToEndTester $I)
 	{
 		$I->dontSeeElementInDOM('.intercom-lightweight-app-launcher-icon');
