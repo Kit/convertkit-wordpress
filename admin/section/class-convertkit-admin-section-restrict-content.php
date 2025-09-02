@@ -419,7 +419,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	 */
 	public function documentation_url() {
 
-		return 'https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin';
+		return 'https://help.kit.com/en/articles/7896769-how-to-customize-your-kit-subscribers-experience-on-your-wordpress-website';
 
 	}
 
