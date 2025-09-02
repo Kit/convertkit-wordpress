@@ -314,6 +314,13 @@ class PluginSettingsFormEntriesCest
 		// Load the Form Entries screen.
 		$I->loadKitSettingsFormEntriesScreen($I);
 
+		// Set pagination to 10 per page.
+		$I->click('button#show-settings-link');
+		$I->waitForElementVisible('input#convertkit_form_entries_per_page');
+		$I->fillField('#convertkit_form_entries_per_page', '10');
+		$I->click('Apply');
+		$I->waitForElementNotVisible('input#convertkit_form_entries_per_page');
+
 		// Select the first two entries.
 		$I->checkOption('tbody#the-list tr:first-child th.check-column input[type="checkbox"]');
 		$I->checkOption('tbody#the-list tr:nth-child(2) th.check-column input[type="checkbox"]');
