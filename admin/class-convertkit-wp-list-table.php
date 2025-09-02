@@ -94,8 +94,8 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 
 		parent::__construct(
 			array(
-				'singular' => 'item',
-				'plural'   => 'items',
+				'singular' => 'convertkit-item',
+				'plural'   => 'convertkit-items',
 				'ajax'     => false,
 			)
 		);
@@ -126,8 +126,9 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	public function column_cb( $item ) {
 
 		return sprintf(
-			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
-			$this->_args['singular'],
+			'<input type="checkbox" name="%1$s[]" id="cb-select-%2$s" value="%3$s" />',
+			$this->_args['plural'],
+			$item['id'],
 			$item['id']
 		);
 

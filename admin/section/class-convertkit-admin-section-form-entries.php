@@ -38,6 +38,8 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		// Register screen options.
 		if ( $this->on_settings_screen( $this->name ) ) {
 			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'add_screen_options' ) );
+			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'run_bulk_actions' ) );
+			add_filter( 'convertkit_admin_notices_output_form_entries_deleted', array( $this, 'form_entries_deleted_notice' ) );
 			add_filter( 'convertkit_admin_settings_form_method', array( $this, 'form_method' ), 10, 2 );
 			add_filter( 'convertkit_admin_settings_form_action_url', array( $this, 'form_action_url' ), 10, 2 );
 		}
@@ -107,7 +109,11 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		// Setup WP_List_Table.
 		$table = new ConvertKit_WP_List_Table( '_wp_convertkit_settings', $this->name );
 
+		// Add bulk actions to table.
+		$table->add_bulk_action( 'delete', __( 'Delete', 'convertkit' ) );
+
 		// Add columns to table.
+		$table->add_column( 'cb', __( 'Select', 'convertkit' ), false );
 		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), false );
 		$table->add_column( 'first_name', __( 'First Name', 'convertkit' ), false );
 		$table->add_column( 'email', __( 'Email', 'convertkit' ), false );
@@ -187,6 +193,72 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		}
 
 		return $screen_option;
+
+	}
+
+	/**
+	 * Runs the bulk actions for the Form Entries table.
+	 *
+	 * @since   3.0.0
+	 */
+	public function run_bulk_actions() {
+
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-convertkit-items' ) ) {
+			return;
+		}
+
+		// Bail if no bulk action is set.
+		$bulk_action = isset( $_REQUEST['action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) : '';
+		if ( empty( $bulk_action ) ) {
+			return;
+		}
+
+		// Bail if no entries are selected.
+		if ( ! isset( $_REQUEST['convertkit-items'] ) ) {
+			return;
+		}
+
+		// Initialize Form Entries class.
+		$form_entries = new ConvertKit_Form_Entries();
+
+		switch ( $bulk_action ) {
+			case 'delete':
+				// Delete entries by IDs.
+				$ids = array_unique( array_map( 'absint', $_REQUEST['convertkit-items'] ) );
+				$form_entries->delete_by_ids( $ids );
+
+				// Set notice.
+				WP_ConvertKit()->get_class( 'admin_notices' )->add( 'form_entries_deleted' );
+				break;
+		}
+
+		// Redirect back to the current page, without the action in the URL.
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page' => '_wp_convertkit_settings',
+					'tab'  => $this->name,
+				),
+				admin_url( 'options-general.php' )
+			)
+		);
+		exit();
+
+	}
+
+	/**
+	 * Define the notice text to display in the WordPress Administration interface
+	 * when Form Entries are deleted.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $notice     Notice text.
+	 * @return  string              Notice text
+	 */
+	public function form_entries_deleted_notice( $notice ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+
+		return esc_html__( 'Form Entries deleted.', 'convertkit' );
 
 	}
 

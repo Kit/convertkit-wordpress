@@ -296,6 +296,42 @@ class PluginSettingsFormEntriesCest
 	}
 
 	/**
+	 * Test the Form Entries table delete bulk action.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableDeleteBulkAction(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Select the first two entries.
+		$I->checkOption('tbody#the-list tr:first-child th.check-column input[type="checkbox"]');
+		$I->checkOption('tbody#the-list tr:nth-child(2) th.check-column input[type="checkbox"]');
+
+		// Click Delete.
+		$I->selectOption('#bulk-action-selector-top', 'Delete');
+		$I->click('#doaction');
+
+		// Wait for notice to be displayed.
+		$I->waitForElementVisible('div.notice');
+		$I->see('Form Entries deleted.');
+
+		// Confirm that the entries are deleted.
+		$I->dontSee($items[0]['first_name']);
+		$I->dontSee($items[1]['first_name']);
+	}
+
+	/**
 	 * Helper method to insert form entries into the database.
 	 *
 	 * @since   3.0.0
