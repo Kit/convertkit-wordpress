@@ -170,7 +170,7 @@ is setup successfully.
 
 ### Connect Plugin to Kit
 
-Refer to the [Kit Help Article](https://help.kit.com/en/articles/2502591-getting-started-the-wordpress-plugin) to get started with using the WordPress Plugin.
+Refer to the [Kit Help Article](https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website) to get started with using the WordPress Plugin.
 
 ## Docker
 

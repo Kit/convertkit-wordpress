@@ -365,7 +365,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	public function documentation_url() {
 
-		return 'https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin';
+		return 'https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website';
 
 	}
 

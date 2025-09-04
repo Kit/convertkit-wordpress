@@ -47,8 +47,8 @@ class PluginSettingsGeneralCest
 		$I->seeInSource('<label for="no_css">');
 
 		// Confirm that the UTM parameters exist for the documentation links.
-		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" class="convertkit-docs" target="_blank">Help</a>');
-		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">plugin documentation</a>');
+		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" class="convertkit-docs" target="_blank">Help</a>');
+		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">plugin documentation</a>');
 	}
 
 	/**

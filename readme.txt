@@ -106,7 +106,7 @@ Kit is the go-to email marketing hub for creators that helps you grow and moneti
 
 ### Documentation
 
-Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin?utm_source=wordpress&utm_term=en_US&utm_content=readme).
+Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&utm_term=en_US&utm_content=readme).
 
 == Installation ==
 
@@ -144,7 +144,7 @@ To import your past (and future) email newsletters from Kit to WordPress:
 
 = Where can I find the Plugin's Documentation? =
 
-Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin?utm_source=wordpress&utm_content=readme).
+Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&utm_content=readme).
 
 == Screenshots ==
 
