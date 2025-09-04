@@ -93,7 +93,6 @@ class WP_ConvertKit {
 		$this->classes['admin_setup_wizard_plugin']           = new ConvertKit_Admin_Setup_Wizard_Plugin();
 		$this->classes['admin_setup_wizard_restrict_content'] = new ConvertKit_Admin_Setup_Wizard_Restrict_Content();
 		$this->classes['admin_tinymce']                       = new ConvertKit_Admin_TinyMCE();
-		$this->classes['admin_user']                          = new ConvertKit_Admin_User();
 
 		/**
 		 * Initialize integration classes for the WordPress Administration interface.
