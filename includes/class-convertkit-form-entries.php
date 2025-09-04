@@ -209,6 +209,65 @@ class ConvertKit_Form_Entries {
 	}
 
 	/**
+	 * Gets entries by IDs
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $ids    Entry IDs.
+	 * @return  array
+	 */
+	public function get_by_ids( $ids ) {
+
+		global $wpdb;
+
+		// Map IDs as integers.
+		$ids = array_map( 'absint', $ids );
+
+		// Return empty array if no IDs are provided.
+		if ( empty( $ids ) ) {
+			return array();
+		}
+
+		// Create IN clause.
+		$in_clause = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+		// Create SQL query.
+		$sql = "SELECT * FROM {$wpdb->prefix}{$this->table} WHERE id IN ($in_clause)";
+
+		return $wpdb->get_results(
+			$wpdb->prepare( $sql, $ids ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			ARRAY_A
+		);
+
+	}
+
+	/**
+	 * Returns a CSV string for the given entries
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $entries    Entries.
+	 * @return  string
+	 */
+	public function get_csv_string( $entries ) {
+
+		// Bail if no entries are provided.
+		if ( empty( $entries ) ) {
+			return '';
+		}
+
+		$csv = array(
+			'"' . implode( '","', array_keys( $entries[0] ) ) . '"',
+		);
+		foreach ( $entries as $entry ) {
+			$csv[] = '"' . implode( '","', $entry ) . '"';
+		}
+
+		return implode( "\n", $csv );
+
+	}
+
+	/**
 	 * Searches entries by the given key/value pairs
 	 *
 	 * @since   3.0.0
