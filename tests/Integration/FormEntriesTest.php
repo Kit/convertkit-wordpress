@@ -443,6 +443,71 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test getting entries by IDs.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetByIDs()
+	{
+		// Seed database table.
+		$ids = $this->seedDatabaseTable();
+
+		// Get entries by IDs.
+		$results = $this->entries->get_by_ids( [ 1, 2 ] );
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals( 2, count( $results ) );
+		$this->assertEquals( 0, $results[0]['post_id'] );
+		$this->assertEquals( 1, $results[1]['post_id'] );
+	}
+
+	/**
+	 * Test getting entries by IDs with no IDs returns an empty array.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetByIDsWithNoIDs()
+	{
+		$results = $this->entries->get_by_ids( [] );
+
+		// Assert the correct number of results are returned.
+		$this->assertEquals( 0, count( $results ) );
+	}
+
+	/**
+	 * Test getting a CSV string for the given entries.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetCSVString()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Get CSV string.
+		$csv = $this->entries->get_csv_string( $this->entries->get_by_ids( [ 1, 2 ] ) );
+
+		// Assert the CSV string is not empty.
+		$this->assertNotEmpty( $csv );
+		$this->assertStringContainsString( '"post_id","first_name","email"', $csv );
+		$this->assertStringContainsString( '"0","Test 0","test0@example.com"', $csv );
+		$this->assertStringContainsString( '"1","Test 1","test1@example.com"', $csv );
+	}
+
+	/**
+	 * Test getting a CSV string when no entries are provided.
+	 *
+	 * @since   3.0.0
+	 */
+	public function testGetCSVStringWithNoEntries()
+	{
+		$csv = $this->entries->get_csv_string( [] );
+
+		// Assert the CSV string is not empty.
+		$this->assertEmpty( $csv );
+	}
+
+	/**
 	 * Add entries to the database table.
 	 *
 	 * @since   3.0.0

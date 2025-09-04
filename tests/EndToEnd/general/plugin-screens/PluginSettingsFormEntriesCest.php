@@ -314,6 +314,13 @@ class PluginSettingsFormEntriesCest
 		// Load the Form Entries screen.
 		$I->loadKitSettingsFormEntriesScreen($I);
 
+		// Set pagination to 10 per page.
+		$I->click('button#show-settings-link');
+		$I->waitForElementVisible('input#convertkit_form_entries_per_page');
+		$I->fillField('#convertkit_form_entries_per_page', '10');
+		$I->click('Apply');
+		$I->waitForElementNotVisible('input#convertkit_form_entries_per_page');
+
 		// Select the first two entries.
 		$I->checkOption('tbody#the-list tr:first-child th.check-column input[type="checkbox"]');
 		$I->checkOption('tbody#the-list tr:nth-child(2) th.check-column input[type="checkbox"]');
@@ -329,6 +336,45 @@ class PluginSettingsFormEntriesCest
 		// Confirm that the entries are deleted.
 		$I->dontSee($items[0]['first_name']);
 		$I->dontSee($items[1]['first_name']);
+	}
+
+	/**
+	 * Test the Form Entries table export bulk action.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableExportBulkAction(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Select all entries.
+		$I->checkOption('#cb-select-all-1');
+
+		// Click Delete.
+		$I->selectOption('#bulk-action-selector-top', 'Export');
+		$I->click('#doaction');
+
+		// Wait 2 seconds for the download to complete.
+		sleep(2);
+
+		// Check downloaded file exists and contains some expected information.
+		$I->openFile($_ENV['WORDPRESS_ROOT_DIR'] . '/kit-form-entries-export.csv');
+		foreach ($items as $item) {
+			$I->seeInThisFile('"' . $item['first_name'] . '","' . $item['email'] . '"');
+		}
+
+		// Delete the file.
+		$I->deleteFile($_ENV['WORDPRESS_ROOT_DIR'] . '/kit-form-entries-export.csv');
 	}
 
 	/**
