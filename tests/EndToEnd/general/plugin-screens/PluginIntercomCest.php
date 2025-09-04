@@ -64,6 +64,18 @@ class PluginIntercomCest
 
 		// Confirm the Intercom script is loaded.
 		$this->_seeIntercomScript($I);
+
+		// Go to the Plugin's Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Confirm the Intercom script is loaded.
+		$this->_seeIntercomScript($I);
+
+		// Load a non-Plugin settings screen.
+		$I->amOnAdminPage('options-permalink.php');
+
+		// Confirm the Intercom script is not loaded.
+		$this->_dontSeeIntercomScript($I);
 	}
 
 	/**
@@ -109,6 +121,18 @@ class PluginIntercomCest
 		$I->waitForElementVisible('.intercom-lightweight-app-launcher-icon');
 		$I->click('.intercom-lightweight-app-launcher-icon');
 		$I->waitForElementVisible('iframe[data-intercom-frame="true"]');
+	}
+
+	/**
+	 * Assert that the Intercom script is not loaded.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	private function _dontSeeIntercomScript(EndToEndTester $I)
+	{
+		$I->dontSeeElementInDOM('.intercom-lightweight-app-launcher-icon');
 	}
 
 	/**
