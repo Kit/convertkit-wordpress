@@ -37,10 +37,35 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 
 		// Register screen options.
 		if ( $this->on_settings_screen( $this->name ) ) {
+			add_filter( 'convertkit_settings_base_register_notices', array( $this, 'register_notices' ) );
+			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_notices' ) );
 			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'add_screen_options' ) );
+			add_action( 'load-settings_page__wp_convertkit_settings', array( $this, 'run_bulk_actions' ) );
+			add_filter( 'convertkit_admin_settings_form_method', array( $this, 'form_method' ), 10, 2 );
+			add_filter( 'convertkit_admin_settings_form_action_url', array( $this, 'form_action_url' ), 10, 2 );
 		}
 
 		parent::__construct();
+
+	}
+
+	/**
+	 * Registers success and error notices for the Form Entries screen, to be displayed
+	 * depending on the action.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $notices    Regsitered success and error notices.
+	 * @return  array
+	 */
+	public function register_notices( $notices ) {
+
+		return array_merge(
+			$notices,
+			array(
+				'form_entries_deleted_success' => __( 'Form Entries deleted successfully.', 'convertkit' ),
+			)
+		);
 
 	}
 
@@ -92,6 +117,13 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 	 */
 	public function render() {
 
+		/**
+		 * Performs actions prior to rendering the settings form.
+		 *
+		 * @since   3.0.0
+		 */
+		do_action( 'convertkit_settings_base_render_before' );
+
 		$form_entries = new ConvertKit_Form_Entries();
 
 		// Render opening container.
@@ -103,9 +135,14 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$this->print_section_info();
 
 		// Setup WP_List_Table.
-		$table = new ConvertKit_WP_List_Table();
+		$table = new ConvertKit_WP_List_Table( '_wp_convertkit_settings', $this->name );
+
+		// Add bulk actions to table.
+		$table->add_bulk_action( 'export', __( 'Export', 'convertkit' ) );
+		$table->add_bulk_action( 'delete', __( 'Delete', 'convertkit' ) );
 
 		// Add columns to table.
+		$table->add_column( 'cb', __( 'Select', 'convertkit' ), false );
 		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), false );
 		$table->add_column( 'first_name', __( 'First Name', 'convertkit' ), false );
 		$table->add_column( 'email', __( 'Email', 'convertkit' ), false );
@@ -128,15 +165,30 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_items( $entries );
 
 		// Set total entries and items per page options key.
-		$table->set_total_items( $form_entries->total() );
+		$table->set_total_items( $form_entries->total( $table->get_search() ) );
 		$table->set_items_per_page_screen_options_key( 'convertkit_form_entries_per_page' );
+
+		// Display search term.
+		if ( $table->is_search() ) {
+			?>
+			<span class="subtitle left"><?php esc_html_e( 'Search results for', 'convertkit' ); ?> &quot;<?php echo esc_html( $table->get_search() ); ?>&quot;</span>
+			<?php
+		}
 
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();
+		$table->search_box( __( 'Search', 'convertkit' ), 'convertkit-search' );
 		$table->display();
 
 		// Render closing container.
 		$this->render_container_end();
+
+		/**
+		 * Performs actions after rendering of the settings form.
+		 *
+		 * @since   3.0.0
+		 */
+		do_action( 'convertkit_settings_base_render_after' );
 
 	}
 
@@ -177,6 +229,101 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		}
 
 		return $screen_option;
+
+	}
+
+	/**
+	 * Runs the bulk actions for the Form Entries table.
+	 *
+	 * @since   3.0.0
+	 */
+	public function run_bulk_actions() {
+
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-convertkit-items' ) ) {
+			return;
+		}
+
+		// Bail if no bulk action is set.
+		$bulk_action = isset( $_REQUEST['action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) : '';
+		if ( empty( $bulk_action ) ) {
+			return;
+		}
+
+		// Bail if no entries are selected.
+		if ( ! isset( $_REQUEST['convertkit-items'] ) ) {
+			return;
+		}
+
+		// Initialize Form Entries class.
+		$form_entries = new ConvertKit_Form_Entries();
+
+		switch ( $bulk_action ) {
+			case 'export':
+				// Get entries.
+				$ids     = array_unique( array_map( 'absint', $_REQUEST['convertkit-items'] ) );
+				$entries = $form_entries->get_by_ids( $ids );
+
+				// Convert entries to CSV string.
+				$csv = $form_entries->get_csv_string( $entries );
+
+				// Force download with output.
+				header( 'Content-type: application/x-msdownload' );
+				header( 'Content-Disposition: attachment; filename=kit-form-entries-export.csv' );
+				header( 'Pragma: no-cache' );
+				header( 'Expires: 0' );
+				echo $csv; // phpcs:ignore WordPress.Security.EscapeOutput
+				exit();
+
+			case 'delete':
+				// Delete entries by IDs.
+				$ids = array_unique( array_map( 'absint', $_REQUEST['convertkit-items'] ) );
+				$form_entries->delete_by_ids( $ids );
+
+				// Redirect with success notice.
+				$this->redirect_with_success_notice( 'form_entries_deleted_success' );
+				break;
+		}
+
+	}
+
+	/**
+	 * Defines the settings form's method to 'get', to mirror how
+	 * WP_List_Table works when performing a search.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $form_method      Form method (post|get).
+	 * @param   string $active_section   Active settings section.
+	 * @return  string
+	 */
+	public function form_method( $form_method, $active_section ) {
+
+		if ( $active_section !== $this->name ) {
+			return $form_method;
+		}
+
+		return 'get';
+
+	}
+
+	/**
+	 * Defines the settings form's action URL to match the current screen,
+	 * so the search functionality doesn't load options.php, which doesn't work.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $form_action_url    URL.
+	 * @param   string $active_section     Active settings section.
+	 * @return  string
+	 */
+	public function form_action_url( $form_action_url, $active_section ) {
+
+		if ( $active_section !== $this->name ) {
+			return $form_action_url;
+		}
+
+		return 'options-general.php';
 
 	}
 

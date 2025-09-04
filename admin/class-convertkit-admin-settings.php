@@ -149,9 +149,28 @@ class ConvertKit_Admin_Settings {
 			if ( count( $this->sections ) > 1 ) {
 				$this->display_section_nav( $active_section );
 			}
-			?>
 
-			<form method="post" action="options.php" enctype="multipart/form-data">
+			/**
+			 * Defines the settings form's method.
+			 *
+			 * @since   3.0.0
+			 *
+			 * @param   string  $form_method        The method of the form.
+			 * @param   string  $active_section     The active section.
+			 */
+			$form_method = apply_filters( 'convertkit_admin_settings_form_method', 'post', $active_section );
+
+			/**
+			 * Defines the settings form's action URL.
+			 *
+			 * @since   3.0.0
+			 *
+			 * @param   string  $form_action_url    The URL to submit the form to.
+			 * @param   string  $active_section     The active section.
+			 */
+			$form_action_url = apply_filters( 'convertkit_admin_settings_form_action_url', admin_url( 'options.php' ), $active_section );
+			?>
+			<form method="<?php echo esc_attr( $form_method ); ?>" action="<?php echo esc_url( $form_action_url ); ?>" enctype="multipart/form-data">
 				<?php
 				// Iterate through sections to find the active section to render.
 				if ( isset( $this->sections[ $active_section ] ) ) {

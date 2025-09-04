@@ -23,6 +23,24 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class ConvertKit_WP_List_Table extends WP_List_Table {
 
 	/**
+	 * Holds the page query parameter.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool|string
+	 */
+	private $page = false;
+
+	/**
+	 * Holds the tab query parameter.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @var     bool|string
+	 */
+	private $tab = false;
+
+	/**
 	 * Holds the supported bulk actions.
 	 *
 	 * @var     array
@@ -65,13 +83,19 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 * Constructor.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param   bool|string $page  Page query parameter.
+	 * @param   bool|string $tab   Tab query parameter.
 	 */
-	public function __construct() {
+	public function __construct( $page = false, $tab = false ) {
+
+		$this->page = $page;
+		$this->tab  = $tab;
 
 		parent::__construct(
 			array(
-				'singular' => 'item',
-				'plural'   => 'items',
+				'singular' => 'convertkit-item',
+				'plural'   => 'convertkit-items',
 				'ajax'     => false,
 			)
 		);
@@ -102,8 +126,9 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	public function column_cb( $item ) {
 
 		return sprintf(
-			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
-			$this->_args['singular'],
+			'<input type="checkbox" name="%1$s[]" id="cb-select-%2$s" value="%3$s" />',
+			$this->_args['plural'],
+			$item['id'],
 			$item['id']
 		);
 
@@ -117,6 +142,36 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	public function get_bulk_actions() {
 
 		return $this->bulk_actions;
+
+	}
+
+	/**
+	 * Displays the search input field.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $text        The 'submit' button label.
+	 * @param   string $input_id    ID attribute value for the search input field.
+	 */
+	public function search_box( $text, $input_id ) {
+
+		?>
+		<p class="search-box">
+			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_attr( $text ); ?>:</label>
+			<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e( 'Search', 'convertkit' ); ?>" />
+			<?php submit_button( $text, 'secondary', 'submit', false, array( 'id' => 'search-submit' ) ); ?>
+		</p>
+		<?php
+		if ( $this->page ) {
+			?>
+			<input type="hidden" name="page" value="<?php echo esc_attr( $this->page ); ?>" />
+			<?php
+		}
+		if ( $this->tab ) {
+			?>
+			<input type="hidden" name="tab" value="<?php echo esc_attr( $this->tab ); ?>" />
+			<?php
+		}
 
 	}
 
@@ -272,6 +327,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	 */
 	protected function display_tablenav( $which ) {
 
+		// Define a nonce for search submissions.
 		if ( 'top' === $which ) {
 			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
 		}
@@ -342,7 +398,7 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	public function get_search() {
 
 		// Bail if nonce is not valid.
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-wp-to-social-log' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-' . $this->_args['plural'] ) ) {
 			return '';
 		}
 
