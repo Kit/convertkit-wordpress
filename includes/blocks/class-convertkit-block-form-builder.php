@@ -450,7 +450,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'sequence_id'                => '',
 			'redirect'                   => '',
 			'display_form_if_subscribed' => true,
-			'text_if_subscribed'         => 'Thanks for subscribing!',
+			'text_if_subscribed'         => __( 'Thanks for subscribing!', 'convertkit' ),
 
 			// Built-in Gutenberg block attributes.
 			'align'                      => 'center',
@@ -567,9 +567,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   string $content  Block content.
-	 * @param   array  $atts     Block attributes.
-	 * @param   int    $post_id  Post ID.
+	 * @param   string $content     Block content.
+	 * @param   array  $atts        Block attributes.
+	 * @param   int    $post_id     Post ID.
 	 * @return  string
 	 */
 	private function add_form_to_block_content( $content, $atts, $post_id ) {
@@ -594,6 +594,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Move form builder div contents into form.
 		while ( $block_container->hasChildNodes() ) {
 			$form->appendChild( $block_container->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		// Add subscribed message if required.
+		if ( $this->subscriber_id ) {
+			$subscribed_message = $parser->html->createElement( 'div' );
+			$subscribed_message->setAttribute( 'class', 'convertkit-form-builder-subscribed-message' );
+			$subscribed_message->appendChild( $parser->html->createTextNode( $atts['text_if_subscribed'] ) );
+			$form->insertBefore( $subscribed_message, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
 		// Add hidden fields.
