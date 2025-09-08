@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 2.8.7
+Stable tag: 3.0.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -43,8 +43,26 @@ For greater control, Kit's email marketing subscription forms can be displayed i
 
 - Using the Kit Forms block in Gutenberg
 - Using the `[convertkit]` shortcode in the Classic Editor
+- Using the Form Builder block in Gutenberg, to build fully custom subscription forms directly in WordPress - perfect for following your theme's styles
 
 Start collecting email subscribers today, building your newsletter audience and taking your email marketing to the next level.
+
+## Form Builder Block
+
+Kit's Form Builder block, for the WordPress block editor, gives complete control to design and customize your own subscription and email marketing forms - directly in WordPress.
+
+With the Form Builder block, you can:
+- Add fields such as first name, email address, and custom fields
+- Apply tags and sequences to subscribers for powerful segmentation
+- Enable reCAPTCHA protection (if configured in your Kit account)
+- Style forms using block editor controls, with full support for your block theme’s CSS and styling
+
+This makes the Form Builder block ideal for:
+- Subscription forms to grow your email subscribers list
+- Contact forms that connect directly to Kit
+- Custom forms tailored to your email marketing strategy
+
+Build forms exactly how you want them, without touching a line of code, and start collecting the right email subscribers from day one.
 
 ## Membership Sites and Membership Content Protection
 
@@ -160,6 +178,17 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.0.0 2025-09-08
+* Added: Blocks: Form Builder. Create your own subscription forms with custom fields, tag and sequence support, within the block editor
+* Added: Blocks: Form: Alignment option
+* Added: Settings: Form Entries: View, search, delete and export entries submitted via Form Builder blocks
+* Added: Settings: Non-inline Forms: Option to only display one non-inline form per session
+* Fix: Settings: Improve Intercom help integration
+* Updated: Settings: Renamed `Site Wide` section to `Non-inline Forms`
+* Updated: Settings: Moved reCAPTCHA settings from Member Content to General settings, as reCAPTCHA is used for both the Form Builder and Member Content
+* Updated: Settings: Documentation links
+* Updated: Settings: Improved wording on `Disable Scripts` and `Disable CSS`, to make clearer what these settings do
 
 ### 2.8.7 2025-07-31
 * Added: Blocks: Form: Margin, padding and background color options
