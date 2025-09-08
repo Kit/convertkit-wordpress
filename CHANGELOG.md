@@ -1,3 +1,14 @@
+### 3.0.0 2025-09-08
+* Added: Blocks: Form Builder. Create your own subscription forms with custom fields, tag and sequence support, within the block editor
+* Added: Blocks: Form: Alignment option
+* Added: Settings: Form Entries: View, search, delete and export entries submitted via Form Builder blocks
+* Added: Settings: Non-inline Forms: Option to only display one non-inline form per session
+* Fix: Settings: Improve Intercom help integration
+* Updated: Settings: Renamed `Site Wide` section to `Non-inline Forms`
+* Updated: Settings: Moved reCAPTCHA settings from Member Content to General settings, as reCAPTCHA is used for both the Form Builder and Member Content
+* Updated: Settings: Documentation links
+* Updated: Settings: Improved wording on `Disable Scripts` and `Disable CSS`, to make clearer what these settings do
+
 ### 2.8.7 2025-07-31
 * Added: Blocks: Form: Margin, padding and background color options
 * Added: Debug: Forms: `data-kit-source-post-id` attribute to scripts when Debugging enabled
