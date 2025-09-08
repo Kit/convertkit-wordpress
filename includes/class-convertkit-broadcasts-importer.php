@@ -413,54 +413,42 @@ class ConvertKit_Broadcasts_Importer {
 
 		$content = $broadcast_content;
 
-		// Wrap content in <html>, <head> and <body> tags with an UTF-8 Content-Type meta tag.
-		// Forcibly tell DOMDocument that this HTML uses the UTF-8 charset.
-		// <meta charset="utf-8"> isn't enough, as DOMDocument still interprets the HTML as ISO-8859, which breaks character encoding
-		// Use of mb_convert_encoding() with HTML-ENTITIES is deprecated in PHP 8.2, so we have to use this method.
-		// If we don't, special characters render incorrectly.
-		$content = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>' . $content . '</body></html>';
-
-		// Load the HTML into a DOMDocument.
-		libxml_use_internal_errors( true );
-		$html = new DOMDocument();
-		$html->loadHTML( $content );
-
-		// Load DOMDocument into XPath.
-		$xpath = new DOMXPath( $html );
+		// Load the content into the parser.
+		$parser = new ConvertKit_HTML_Parser( $content );
 
 		// Remove certain elements and their contents, as we never want these to be included in the WordPress Post.
 		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		// Remove open tracking.
-		foreach ( $xpath->query( '//img[@src="https://preview.convertkit-mail2.com/open"]' ) as $node ) {
+		foreach ( $parser->xpath->query( '//img[@src="https://preview.convertkit-mail2.com/open"]' ) as $node ) {
 			$node->parentNode->removeChild( $node );
 		}
 
 		// Remove blank contenteditable table cells.
-		foreach ( $xpath->query( '//td[@contenteditable="false"]' ) as $node ) {
+		foreach ( $parser->xpath->query( '//td[@contenteditable="false"]' ) as $node ) {
 			$node->parentNode->removeChild( $node );
 		}
 
 		// Remove <style> elements and their contents.
-		foreach ( $xpath->query( '//style' ) as $node ) {
+		foreach ( $parser->xpath->query( '//style' ) as $node ) {
 			$node->parentNode->removeChild( $node );
 		}
 
 		// Remove ck-hide-in-public-posts and their contents.
 		// This includes the unsubscribe section.
-		foreach ( $xpath->query( '//div[contains(@class, "ck-hide-in-public-posts")]' ) as $node ) {
+		foreach ( $parser->xpath->query( '//div[contains(@class, "ck-hide-in-public-posts")]' ) as $node ) {
 			$node->parentNode->removeChild( $node );
 		}
 
 		// Remove ck-poll, as interacting with these results in an error.
-		foreach ( $xpath->query( '//table[contains(@class, "ck-poll")]' ) as $node ) {
+		foreach ( $parser->xpath->query( '//table[contains(@class, "ck-poll")]' ) as $node ) {
 			$node->parentNode->removeChild( $node );
 		}
 
 		// If a H1 through H6 heading matches the Broadcast's title, remove it from the content.
 		// The Broadcast's title will always display as the WordPress Post title.
 		for ( $i = 1; $i <= 6; $i++ ) {
-			foreach ( $xpath->query( '//h' . $i ) as $node ) {
+			foreach ( $parser->xpath->query( '//h' . $i ) as $node ) {
 				if ( $node->textContent === $broadcast_title ) {
 					$node->parentNode->removeChild( $node );
 				}
@@ -471,7 +459,7 @@ class ConvertKit_Broadcasts_Importer {
 		// If the Import Images setting is enabled, iterate through all images within the Broadcast, importing them and changing their
 		// URLs to the WordPress Media Library hosted versions.
 		if ( $import_images ) {
-			foreach ( $xpath->query( '//img' ) as $node ) {
+			foreach ( $parser->xpath->query( '//img' ) as $node ) {
 				$image = array(
 					'src' => $node->getAttribute( 'src' ), // @phpstan-ignore-line
 					'alt' => $node->getAttribute( 'alt' ), // @phpstan-ignore-line
@@ -507,7 +495,7 @@ class ConvertKit_Broadcasts_Importer {
 		}
 
 		// Save HTML to a string.
-		$content = $html->saveHTML();
+		$content = $parser->get_body_html();
 
 		// Return content with permitted HTML tags and inline styles included/excluded, depending on the setting.
 		$content = $this->get_permitted_html( $content, $disable_styles );

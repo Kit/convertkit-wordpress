@@ -107,8 +107,14 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
-		// Confirm that the email address was added to Kit.
+		// Confirm that the message and form is displayed.
 		$I->waitForElementVisible('body.page');
+		$I->see('Thanks for subscribing!');
+		$I->seeElementInDOM('input[name="convertkit[first_name]"]');
+		$I->seeElementInDOM('input[name="convertkit[email]"]');
+		$I->seeElementInDOM('button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
 		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,
@@ -147,7 +153,7 @@ class PageBlockFormBuilderCest
 			]
 		);
 
-		// Add block to Page, setting the Form setting to the value specified in the .env file.
+		// Add block to Page.
 		$I->addGutenbergBlock(
 			$I,
 			blockName: 'Kit Form Builder',
@@ -161,11 +167,11 @@ class PageBlockFormBuilderCest
 		// Change the labels of the form fields. These are added as inner blocks when the Form Builder block is added.
 		$I->click('div[data-type="convertkit/form-builder-field-name"]');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
-		$I->fillField('#convertkit_form_builder_field_name_label', 'Your name');
+		$I->fillField('#convertkit_form_builder_field_name_label', 'Nafnið þitt');
 
 		$I->click('div[data-type="convertkit/form-builder-field-email"]');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
-		$I->fillField('#convertkit_form_builder_field_email_label', 'Your email');
+		$I->fillField('#convertkit_form_builder_field_email_label', 'Netfangið þitt');
 
 		// Wait for the changes to show in the editor.
 		$I->wait(2);
@@ -178,7 +184,7 @@ class PageBlockFormBuilderCest
 			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
-			label: 'Your name',
+			label: 'Nafnið þitt',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 		$this->seeFormBuilderField(
@@ -186,7 +192,7 @@ class PageBlockFormBuilderCest
 			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
-			label: 'Your email',
+			label: 'Netfangið þitt',
 			container: 'div[data-type="convertkit/form-builder"]'
 		);
 
@@ -199,7 +205,7 @@ class PageBlockFormBuilderCest
 			fieldType: 'text',
 			fieldName: 'first_name',
 			fieldID: 'first_name',
-			label: 'Your name',
+			label: 'Nafnið þitt',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 		$this->seeFormBuilderField(
@@ -207,7 +213,7 @@ class PageBlockFormBuilderCest
 			fieldType: 'email',
 			fieldName: 'email',
 			fieldID: 'email',
-			label: 'Your email',
+			label: 'Netfangið þitt',
 			container: 'div.wp-block-convertkit-form-builder'
 		);
 
@@ -262,7 +268,7 @@ class PageBlockFormBuilderCest
 			]
 		);
 
-		// Add block to Page, setting the Form setting to the value specified in the .env file.
+		// Add block to Page.
 		$I->addGutenbergBlock(
 			$I,
 			blockName: 'Kit Form Builder',
@@ -368,7 +374,7 @@ class PageBlockFormBuilderCest
 			]
 		);
 
-		// Add block to Page, setting the Form setting to the value specified in the .env file.
+		// Add block to Page.
 		$I->addGutenbergBlock(
 			$I,
 			blockName: 'Kit Form Builder',
