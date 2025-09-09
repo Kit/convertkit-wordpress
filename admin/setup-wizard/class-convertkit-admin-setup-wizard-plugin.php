@@ -220,12 +220,12 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				}
 
 				// Bail if no authorization code is included in the request.
-				if ( ! array_key_exists( 'code', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				if ( ! array_key_exists( 'code', $_REQUEST ) ) {
 					return;
 				}
 
 				// Sanitize token.
-				$authorization_code = sanitize_text_field( wp_unslash( $_REQUEST['code'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+				$authorization_code = sanitize_text_field( wp_unslash( $_REQUEST['code'] ) );
 
 				// Exchange the authorization code and verifier for an access token.
 				$result = $this->api->get_access_token( $authorization_code );

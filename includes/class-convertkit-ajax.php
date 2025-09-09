@@ -40,7 +40,7 @@ class ConvertKit_AJAX {
 	 * Returns all ConvertKit registered blocks.
 	 *
 	 * Typically used when a refresh button in a block has been pressed when
-	 * convertKitGutenbergDisplayBlockNoticeWithLink() is called, because either
+	 * displayNoticeWithLink() is called, because either
 	 * no Access Token is specified, or no resources exist in ConvertKit.
 	 *
 	 * @since   2.2.6

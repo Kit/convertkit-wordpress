@@ -94,10 +94,12 @@ class ConvertKit_Admin_Restrict_Content {
 	public function filter_wp_list_table_output( $query ) {
 
 		// Bail if no Restrict Content filter specified.
-		if ( ! array_key_exists( 'convertkit_restrict_content', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'convertkit_restrict_content' ) ) {
 			return;
 		}
-		if ( ! sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+
+		// Bail if the filter is empty.
+		if ( empty( filter_input( INPUT_GET, 'convertkit_restrict_content', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
 			return;
 		}
 
@@ -107,7 +109,7 @@ class ConvertKit_Admin_Restrict_Content {
 		}
 
 		// Store Restrict Content filter value.
-		$this->restrict_content_filter = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_restrict_content'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$this->restrict_content_filter = filter_input( INPUT_GET, 'convertkit_restrict_content', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		switch ( $this->restrict_content_filter ) {
 			case 'all-member-only':

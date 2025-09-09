@@ -242,8 +242,14 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 			wp_die( esc_html__( 'Connect your ConvertKit account in the ConvertKit Plugin\'s settings to get started', 'convertkit' ) );
 		}
 
+		// Get the Post Type.
+		if ( filter_has_var( INPUT_GET, 'ck_post_type' ) ) {
+			$this->post_type = filter_input( INPUT_GET, 'ck_post_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		} else {
+			$this->post_type = 'page';
+		}
+
 		// Bail if the Post Type isn't supported.
-		$this->post_type = isset( $_REQUEST['ck_post_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['ck_post_type'] ) ) : 'page'; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! in_array( $this->post_type, convertkit_get_supported_post_types(), true ) ) {
 			wp_die(
 				sprintf(
@@ -314,7 +320,11 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 			case 2:
 				// Define Member Content Type.
-				$this->type = ( isset( $_REQUEST['type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['type'] ) ) : 'download' ); // phpcs:ignore WordPress.Security.NonceVerification
+				if ( filter_has_var( INPUT_GET, 'type' ) ) {
+					$this->type = filter_input( INPUT_GET, 'type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+				} else {
+					$this->type = 'download';
+				}
 
 				// Define Label for Title.
 				switch ( $this->type ) {

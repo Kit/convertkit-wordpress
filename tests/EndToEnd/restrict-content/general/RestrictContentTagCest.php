@@ -148,15 +148,19 @@ class RestrictContentTagCest
 	public function testRestrictContentByTagWithRecaptchaAndRequireLoginEnabled(EndToEndTester $I)
 	{
 		// Setup Kit Plugin.
-		$I->setupKitPlugin($I);
+		$I->setupKitPlugin(
+			$I,
+			[
+				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
+				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
+				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
+			]
+		);
 
 		// Define reCAPTCHA settings.
 		$options = [
 			'settings' => [
-				'require_tag_login'       => 'on',
-				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
-				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
-				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
+				'require_tag_login' => 'on',
 			],
 		];
 
@@ -196,14 +200,14 @@ class RestrictContentTagCest
 			$I,
 			urlOrPageID: $url,
 			emailAddress: $I->generateEmailAddress(),
-			options: $options
+			options: $options,
+			testRecaptcha: true,
 		);
 	}
 
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when:
 	 * - the Plugin is set to Require Login,
-	 * - the Plugin has its Recaptcha settings defined,
 	 * - creating and viewing a new WordPress Page,
 	 * - entering an email address displays the code verification screen
 	 * - using a signed subscriber ID that has access to the Tag displays the content.
@@ -217,7 +221,7 @@ class RestrictContentTagCest
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
 
-		// Define reCAPTCHA settings.
+		// Define Restrict Content settings.
 		$options = [
 			'settings' => [
 				'require_tag_login' => 'on',
@@ -305,20 +309,19 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaEnabled(EndToEndTester $I)
 	{
-		// Setup Kit Plugin, disabling JS.
-		$I->setupKitPluginDisableJS($I);
-
-		// Define options.
-		$options = [
-			'settings' => [
+		// Setup Kit Plugin, disabling JS and defining reCAPTCHA settings.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'no_scripts'              => 'on',
 				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
 				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
 				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
-			],
-		];
+			]
+		);
 
-		// Setup Restrict Content functionality with reCAPTCHA enabled.
-		$I->setupKitPluginRestrictContent($I, $options);
+		// Setup Restrict Content functionality.
+		$I->setupKitPluginRestrictContent($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -353,7 +356,7 @@ class RestrictContentTagCest
 			$I,
 			urlOrPageID: $url,
 			emailAddress: $I->generateEmailAddress(),
-			options: $options['settings']
+			testRecaptcha: true,
 		);
 	}
 
@@ -367,11 +370,8 @@ class RestrictContentTagCest
 	 */
 	public function testRestrictContentByTagWithRecaptchaEnabledWithHighMinimumScore(EndToEndTester $I)
 	{
-		// Setup Kit Plugin.
-		$I->setupKitPlugin($I);
-
-		// Setup Restrict Content functionality with reCAPTCHA enabled.
-		$I->setupKitPluginRestrictContent(
+		// Setup Kit Plugin with reCAPTCHA enabled.
+		$I->setupKitPlugin(
 			$I,
 			[
 				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
@@ -379,6 +379,9 @@ class RestrictContentTagCest
 				'recaptcha_minimum_score' => '0.99', // Set a high score to ensure reCAPTCHA blocks the subscriber.
 			]
 		);
+
+		// Setup Restrict Content functionality.
+		$I->setupKitPluginRestrictContent($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(

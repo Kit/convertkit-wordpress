@@ -89,7 +89,7 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 	 */
 	public function documentation_url() {
 
-		return 'https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin';
+		return 'https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website';
 
 	}
 
@@ -121,12 +121,13 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 		$creator_network_recommendations_enabled = $creator_network_recommendations->enabled();
 
 		// Setup WP_List_Table.
-		$table = new Multi_Value_Field_Table();
+		$table = new ConvertKit_WP_List_Table();
 		$table->add_column( 'title', __( 'Forminator Form', 'convertkit' ), true );
 		$table->add_column( 'form', __( 'Kit', 'convertkit' ), false );
 		$table->add_column( 'creator_network_recommendations', __( 'Enable Creator Network Recommendations', 'convertkit' ), false );
 
-		// Iterate through Forminator Forms, adding a table row for each Forminator Form.
+		// Iterate through Forminator Forms, building table array.
+		$table_rows = array();
 		foreach ( $forminator_forms as $forminator_form ) {
 			// Build row.
 			$table_row = array(
@@ -159,8 +160,15 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 			}
 
 			// Add row to table of settings.
-			$table->add_item( $table_row );
+			$table_rows[] = $table_row;
 		}
+
+		// Sort table rows.
+		$table_rows = $table->reorder( $table_rows );
+
+		// Set items.
+		$table->add_items( $table_rows );
+		$table->set_total_items( count( $table_rows ) );
 
 		// Prepare and display WP_List_Table.
 		$table->prepare_items();

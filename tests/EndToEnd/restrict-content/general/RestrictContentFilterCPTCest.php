@@ -330,6 +330,90 @@ class RestrictContentFilterCPTCest
 	}
 
 	/**
+	 * Test that no filtering takes place when the filter is set to All Content on the CPT screen.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testNoFilteringWhenAllContentSelected(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Create a mix of Posts restricted and not restricted to Forms, Tags and Products.
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'article',
+				'post_title'               => 'Kit: Article: Restricted Content: Form: No Filter Test',
+				'restrict_content_setting' => 'form_' . $_ENV['CONVERTKIT_API_FORM_ID'],
+			]
+		);
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'article',
+				'post_title'               => 'Kit: Article: Restricted Content: Tag: No Filter Test',
+				'restrict_content_setting' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			]
+		);
+		$I->createRestrictedContentPage(
+			$I,
+			[
+				'post_type'                => 'article',
+				'post_title'               => 'Kit: Article: Restricted Content: Product: No Filter Test',
+				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_type'  => 'article',
+				'post_title' => 'Kit: Article: Standard',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => '0',
+					],
+				],
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_type'  => 'article',
+				'post_title' => 'Kit: Article: Standard: No Meta',
+			]
+		);
+
+		// Navigate to Articles.
+		$I->amOnAdminPage('edit.php?post_type=article');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Click the Filter button with no changes made.
+		$I->click('Filter');
+
+		// Wait for the WP_List_Table of Articles to load.
+		$I->waitForElementVisible('tbody#the-list');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that all 5 Articles still display.
+		$I->see('Kit: Article: Restricted Content: Form: No Filter Test');
+		$I->see('Kit: Article: Restricted Content: Tag: No Filter Test');
+		$I->see('Kit: Article: Restricted Content: Product: No Filter Test');
+		$I->see('Kit: Article: Standard');
+		$I->see('Kit: Article: Standard: No Meta');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

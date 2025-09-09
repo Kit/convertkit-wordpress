@@ -185,21 +185,9 @@ class ConvertKit_Divi_Module extends ET_Builder_Module {
 	 */
 	public function render( $unprocessed_props, $content, $render_slug ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 
-		// To avoid errors in get_block_wrapper_attributes(), tell WordPress that a block is being rendered.
-		// The attributes don't matter, as we send them to the render() function.
-		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
-			WP_Block_Supports::$block_to_render = array(
-				'blockName'    => 'convertkit/' . $this->block_name,
-				'attrs'        => array(),
-				'innerBlocks'  => array(),
-				'innerHTML'    => '',
-				'innerContent' => array(),
-			);
-		}
-
 		// Render using Block class' render() function.
 		// Output is already escaped in render() function.
-		return WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->block_name )->render( $unprocessed_props ); // phpcs:ignore WordPress.Security.EscapeOutput
+		return WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->block_name )->render( $unprocessed_props );
 
 	}
 

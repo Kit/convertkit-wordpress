@@ -14,7 +14,7 @@
 	<td>
 		<div class="convertkit-select2-container convertkit-select2-container-grid">
 			<?php
-			echo $convertkit_forms->get_select_field_all( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$convertkit_forms->output_select_field_all(
 				'wp-convertkit[form]',
 				'wp-convertkit-form',
 				array(

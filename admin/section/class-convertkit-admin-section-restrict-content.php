@@ -59,11 +59,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 		// Enqueue scripts.
 		add_action( 'convertkit_admin_settings_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		// Output the Intercom messenger.
-		if ( $this->on_settings_screen( $this->name ) ) {
-			add_action( 'admin_footer', array( $this, 'output_intercom' ) );
-		}
-
 		parent::__construct();
 
 	}
@@ -182,53 +177,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 				'label_for'   => 'require_tag_login',
 				'label'       => __( 'When checked, subscribers are sent a code in an email to login after being subscribed and tagged.', 'convertkit' ),
 				'description' => '',
-			)
-		);
-
-		// reCAPTCHA.
-		add_settings_field(
-			'recaptcha_site_key',
-			__( 'reCAPTCHA: Site Key', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'recaptcha_site_key',
-				'label_for'   => 'recaptcha_site_key',
-				'description' => array(
-					__( 'Enter your Google reCAPTCHA v3 Site Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
-				),
-			)
-		);
-		add_settings_field(
-			'recaptcha_secret_key',
-			__( 'reCAPTCHA: Secret Key', 'convertkit' ),
-			array( $this, 'text_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'recaptcha_secret_key',
-				'label_for'   => 'recaptcha_secret_key',
-				'description' => array(
-					__( 'Enter your Google reCAPTCHA v3 Secret Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
-				),
-			)
-		);
-		add_settings_field(
-			'recaptcha_minimum_score',
-			__( 'reCAPTCHA: Minimum Score', 'convertkit' ),
-			array( $this, 'number_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'recaptcha_minimum_score',
-				'label_for'   => 'recaptcha_minimum_score',
-				'min'         => 0,
-				'max'         => 1,
-				'step'        => 0.01,
-				'description' => array(
-					__( 'Enter the minimum threshold for a subscriber to pass Google reCAPTCHA. A higher number will reduce spam signups (1.0 is very likely a good interaction, 0.0 is very likely a bot).', 'convertkit' ),
-				),
 			)
 		);
 
@@ -434,7 +382,25 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function print_section_info_tags() {
 
 		?>
-		<p class="description"><?php esc_html_e( 'Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit tag.', 'convertkit' ); ?></p>
+		<p class="description">
+			<?php esc_html_e( 'Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit tag.', 'convertkit' ); ?>
+			<br />
+			<?php
+			$url = add_query_arg(
+				array(
+					'page' => '_wp_convertkit_settings',
+					'tab'  => 'general',
+				),
+				admin_url( 'options-general.php' )
+			);
+			printf(
+				/* translators: 1: General settings screen link, 2: Closing link tag */
+				esc_html__( 'Looking for reCAPTCHA settings? They can now be found in the %1$sGeneral settings screen%2$s.', 'convertkit' ),
+				'<a href="' . esc_url( $url ) . '">',
+				'</a>'
+			);
+			?>
+		</p>
 		<?php
 
 	}
@@ -448,7 +414,7 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	 */
 	public function documentation_url() {
 
-		return 'https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin';
+		return 'https://help.kit.com/en/articles/7896769-how-to-customize-your-kit-subscribers-experience-on-your-wordpress-website';
 
 	}
 
@@ -462,12 +428,12 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function permit_crawlers_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->permit_crawlers(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->permit_crawlers(),
+			$args['label'],
+			$args['description']
 		);
 
 	}
@@ -482,12 +448,12 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function require_tag_login_callback( $args ) {
 
 		// Output field.
-		echo $this->get_checkbox_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_checkbox_field(
 			$args['name'],
 			'on',
-			$this->settings->require_tag_login(), // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['label'],  // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'] // phpcs:ignore WordPress.Security.EscapeOutput
+			$this->settings->require_tag_login(),
+			$args['label'],
+			$args['description']
 		);
 
 	}
@@ -502,10 +468,10 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function text_callback( $args ) {
 
 		// Output field.
-		echo $this->get_text_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_text_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'],
 			array(
 				'widefat',
 			)
@@ -522,13 +488,13 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	 */
 	public function number_callback( $args ) {
 
-		echo $this->get_number_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_number_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
-			$args['min'], // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['max'], // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['step'], // phpcs:ignore WordPress.Security.EscapeOutput
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['min'],
+			$args['max'],
+			$args['step'],
+			$args['description'],
 			array(
 				'widefat',
 			)
@@ -546,10 +512,10 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 	public function textarea_callback( $args ) {
 
 		// Output field.
-		echo $this->get_textarea_field( // phpcs:ignore WordPress.Security.EscapeOutput
+		$this->output_textarea_field(
 			$args['name'],
 			esc_attr( $this->settings->get_by_key( $args['name'] ) ),
-			$args['description'], // phpcs:ignore WordPress.Security.EscapeOutput
+			$args['description'],
 			array(
 				'widefat',
 			)

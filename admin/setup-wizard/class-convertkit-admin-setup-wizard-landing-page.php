@@ -167,8 +167,14 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 			wp_die( esc_html__( 'Connect your Kit account in the Kit Plugin\'s settings to get started', 'convertkit' ) );
 		}
 
+		// Get Post Type.
+		if ( filter_has_var( INPUT_GET, 'ck_post_type' ) ) {
+			$this->post_type = filter_input( INPUT_GET, 'ck_post_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		} else {
+			$this->post_type = 'page';
+		}
+
 		// Bail if the Post Type isn't supported.
-		$this->post_type = isset( $_REQUEST['ck_post_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['ck_post_type'] ) ) : 'page'; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! in_array( $this->post_type, convertkit_get_supported_post_types(), true ) ) {
 			wp_die(
 				sprintf(

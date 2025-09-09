@@ -111,10 +111,10 @@ class WishListMemberCest
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check subscriber assigned to tag.
-		$I->apiCheckSubscriberHasTag($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+		$I->apiCheckSubscriberHasTag($I, $subscriber['id'], $_ENV['CONVERTKIT_API_TAG_ID']);
 	}
 
 	/**
@@ -143,10 +143,10 @@ class WishListMemberCest
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
-		$I->apiCheckSubscriberHasSequence($I, $subscriberID, $_ENV['CONVERTKIT_API_SEQUENCE_ID']);
+		$I->apiCheckSubscriberHasSequence($I, $subscriber['id'], $_ENV['CONVERTKIT_API_SEQUENCE_ID']);
 	}
 
 	/**
@@ -174,7 +174,7 @@ class WishListMemberCest
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists($I, $emailAddress);
 	}
 
 	/**
@@ -279,10 +279,10 @@ class WishListMemberCest
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check subscriber assigned to tag.
-		$I->apiCheckSubscriberHasTag($I, $subscriberID, $_ENV['CONVERTKIT_API_TAG_ID']);
+		$I->apiCheckSubscriberHasTag($I, $subscriber['id'], $_ENV['CONVERTKIT_API_TAG_ID']);
 	}
 
 	/**
@@ -317,10 +317,10 @@ class WishListMemberCest
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Check that the subscriber has been assigned to the sequence.
-		$I->apiCheckSubscriberHasSequence($I, $subscriberID, $_ENV['CONVERTKIT_API_SEQUENCE_ID']);
+		$I->apiCheckSubscriberHasSequence($I, $subscriber['id'], $_ENV['CONVERTKIT_API_SEQUENCE_ID']);
 	}
 
 	/**
@@ -349,7 +349,7 @@ class WishListMemberCest
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$subscriberID = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Remove level from user.
 		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);

@@ -42,7 +42,7 @@ function convertKitGutenbergFormBlockRenderPreview( block, props ) {
 		switch ( format ) {
 			case 'modal':
 				html = block.i18n.gutenberg_form_modal.replace( '%s', form.name );
-				className.push( 'convertkit--no-content' );
+				className.push( 'convertkit-no-content' );
 				break;
 
 			case 'slide in':
@@ -67,7 +67,7 @@ function convertKitGutenbergFormBlockRenderPreview( block, props ) {
 					html: html,
 					title: block.name,
 					styles: [
-					'body{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; text-align:center;}',
+					'body{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; text-align:center;} form{margin: 0 auto;}',
 					],
 				}
 			)

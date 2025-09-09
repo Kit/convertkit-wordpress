@@ -410,6 +410,98 @@ class ConvertKit_Settings {
 	}
 
 	/**
+	 * Returns whether the Non-inline Form Limit per Session setting has been set in the Plugin settings.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool
+	 */
+	public function non_inline_form_limit_per_session() {
+
+		return ( $this->settings['non_inline_form_limit_per_session'] === 'on' ? true : false );
+
+	}
+
+	/**
+	 * Returns the reCAPTCHA Site Key Plugin setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  string
+	 */
+	public function recaptcha_site_key() {
+
+		return $this->settings['recaptcha_site_key'];
+
+	}
+
+	/**
+	 * Returns whether the reCAPTCHA Site Key has been set in the Plugin settings.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool
+	 */
+	public function has_recaptcha_site_key() {
+
+		return ! empty( $this->recaptcha_site_key() );
+
+	}
+
+	/**
+	 * Returns the reCAPTCHA Secret Key Plugin setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  string
+	 */
+	public function recaptcha_secret_key() {
+
+		return $this->settings['recaptcha_secret_key'];
+
+	}
+
+	/**
+	 * Returns whether the reCAPTCHA Secret Key has been set in the Plugin settings.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool
+	 */
+	public function has_recaptcha_secret_key() {
+
+		return ! empty( $this->recaptcha_secret_key() );
+
+	}
+
+	/**
+	 * Returns whether the reCAPTCH Site Key and Secret Key are defined
+	 * in the Plugin settings.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  bool
+	 */
+	public function has_recaptcha_site_and_secret_keys() {
+
+		return $this->has_recaptcha_site_key() && $this->has_recaptcha_secret_key();
+
+	}
+
+	/**
+	 * Returns the reCAPTCHA minimum score Plugin setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @return  float
+	 */
+	public function recaptcha_minimum_score() {
+
+		return (float) $this->settings['recaptcha_minimum_score'];
+
+	}
+
+	/**
 	 * Returns whether debugging is enabled in the Plugin settings.
 	 *
 	 * @since   1.9.6
@@ -471,6 +563,12 @@ class ConvertKit_Settings {
 			// Site Wide.
 			'non_inline_form'                    => array(), // array.
 			'non_inline_form_honor_none_setting' => '', // blank|on.
+			'non_inline_form_limit_per_session'  => '', // blank|on.
+
+			// reCAPTCHA.
+			'recaptcha_site_key'                 => '', // string.
+			'recaptcha_secret_key'               => '', // string.
+			'recaptcha_minimum_score'            => 0.5, // float.
 
 			// Advanced.
 			'debug'                              => '', // blank|on.

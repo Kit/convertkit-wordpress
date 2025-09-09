@@ -211,15 +211,15 @@ class ConvertKit_Forminator {
 
 		// If the request includes the HTTP referrer, return that URL
 		// as it will include any UTM parameters.
-		if ( array_key_exists( '_wp_http_referer', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( filter_has_var( INPUT_POST, '_wp_http_referer' ) ) {
 			// referrer is a relative path, so use home_url() to return a fully qualified URL.
-			return esc_url( home_url( sanitize_text_field( wp_unslash( $_REQUEST['_wp_http_referer'] ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return esc_url( home_url( filter_input( INPUT_POST, '_wp_http_referer', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) );
 		}
 
 		// If the request includes the current_url, return that URL.
 		// It won't include any UTM parameters, but is still an accurate URL.
-		if ( array_key_exists( 'current_url', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return esc_url( sanitize_text_field( wp_unslash( $_REQUEST['current_url'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( filter_has_var( INPUT_POST, 'current_url' ) ) {
+			return esc_url( filter_input( INPUT_POST, 'current_url', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 		}
 
 		// Return the AJAX URL.

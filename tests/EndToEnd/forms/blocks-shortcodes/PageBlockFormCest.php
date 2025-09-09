@@ -172,6 +172,9 @@ class PageBlockFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -233,6 +236,9 @@ class PageBlockFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -284,6 +290,9 @@ class PageBlockFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID'] . '"]', 1);
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -345,6 +354,9 @@ class PageBlockFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID'] . '"]', 1);
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -396,6 +408,9 @@ class PageBlockFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -457,6 +472,9 @@ class PageBlockFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -502,6 +520,9 @@ class PageBlockFormCest
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
+
+		// Confirm that the Form block container is not output.
+		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
 	}
 
 	/**
@@ -669,6 +690,64 @@ class PageBlockFormCest
 
 		// Deactivate Autoptimize Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'autoptimize');
+	}
+
+	/**
+	 * Test that the Form <script> embed is output in the content once, and not the footer of the site
+	 * when the Debloat Plugin is active and its "Defer JavaScript" and "Delay All Scripts" settings are enabled.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockWithDebloatPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Debloat Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->activateThirdPartyPlugin($I, 'debloat');
+
+		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
+		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: Block: Debloat'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add block to Page, setting the Form setting to the value specified in the .env file.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form',
+			blockConfiguration: [
+				'form' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that one Kit Form is output in the DOM within the <main> element.
+		// It won't output if the Kit Plugin doesn't exclude scripts from Debloat.
+		$I->seeNumberOfElementsInDOM('main form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', 1);
+
+		// Deactivate Debloat Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'debloat');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
@@ -1085,6 +1164,208 @@ class PageBlockFormCest
 
 		// Deactivate Block Visibility Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'block-visibility');
+	}
+
+	/**
+	 * Test the Form block's theme color parameters works.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockWithThemeColorParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Define theme color.
+		$backgroundColor = 'accent-5';
+
+		// Create a Page as if it were create in Gutenberg with the Form block
+		// set to display an inline form.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Form: Block: Theme Color',
+				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","style":{"color":{"background":"' . $backgroundColor . '"}}} /-->',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Confirm that the chosen colors are applied as CSS styles.
+		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form has-background" style="background-color:' . $backgroundColor . '"');
+	}
+
+	/**
+	 * Test the Form block's hex color parameters works.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockWithHexColorParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Define colors.
+		$backgroundColor = '#ee1616';
+
+		// Create a Page as if it were create in Gutenberg with the Form block
+		// set to display an inline form.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_name'    => 'kit-page-form-block-hex-color-params',
+				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","style":{"color":{"background":"' . $backgroundColor . '"}}} /-->',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Confirm that the chosen colors are applied as CSS styles.
+		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form has-background" style="background-color:' . $backgroundColor . '"');
+	}
+
+	/**
+	 * Test the Form block's margin and padding parameters works.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockWithMarginAndPaddingParameters(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's margin and padding pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the margin and padding pickers themselves, as they are Gutenberg supplied components, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_name'    => 'kit-page-form-block-margin-padding-params',
+				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","style":{"spacing":{"padding":{"top":"var:preset|spacing|30"},"margin":{"top":"var:preset|spacing|30"}}}} /-->',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Confirm that the chosen margin and padding are applied as CSS styles.
+		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form" style="padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)"');
+	}
+
+	/**
+	 * Test the Form block's alignment parameter works.
+	 *
+	 * @since   2.8.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockWithAlignmentParameter(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// It's tricky to interact with Gutenberg's margin and padding pickers, so we programmatically create the Page
+		// instead to then confirm the settings apply on the output.
+		// We don't need to test the margin and padding pickers themselves, as they are Gutenberg supplied components, and our
+		// other End To End tests confirm that the block can be added in Gutenberg etc.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_name'    => 'kit-page-form-block-alignment-param',
+				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '","align":"right"} /-->',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Confirm that the chosen alignment is applied as a CSS class.
+		$I->seeInSource('<div class="convertkit-form alignright wp-block-convertkit-form"');
 	}
 
 	/**

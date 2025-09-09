@@ -93,7 +93,6 @@ class WP_ConvertKit {
 		$this->classes['admin_setup_wizard_plugin']           = new ConvertKit_Admin_Setup_Wizard_Plugin();
 		$this->classes['admin_setup_wizard_restrict_content'] = new ConvertKit_Admin_Setup_Wizard_Restrict_Content();
 		$this->classes['admin_tinymce']                       = new ConvertKit_Admin_TinyMCE();
-		$this->classes['admin_user']                          = new ConvertKit_Admin_User();
 
 		/**
 		 * Initialize integration classes for the WordPress Administration interface.
@@ -179,25 +178,29 @@ class WP_ConvertKit {
 	 */
 	private function initialize_global() {
 
-		$this->classes['ajax']                                = new ConvertKit_AJAX();
-		$this->classes['blocks_convertkit_broadcasts']        = new ConvertKit_Block_Broadcasts();
-		$this->classes['blocks_convertkit_content']           = new ConvertKit_Block_Content();
-		$this->classes['blocks_convertkit_formtrigger']       = new ConvertKit_Block_Form_Trigger();
-		$this->classes['blocks_convertkit_form']              = new ConvertKit_Block_Form();
-		$this->classes['blocks_convertkit_product']           = new ConvertKit_Block_Product();
-		$this->classes['block_formatter_form_link']           = new ConvertKit_Block_Formatter_Form_Link();
-		$this->classes['block_formatter_product_link']        = new ConvertKit_Block_Formatter_Product_Link();
-		$this->classes['pre_publish_action_broadcast_export'] = new ConvertKit_Pre_Publish_Action_Broadcast_Export();
-		$this->classes['broadcasts_exporter']                 = new ConvertKit_Broadcasts_Exporter();
-		$this->classes['broadcasts_importer']                 = new ConvertKit_Broadcasts_Importer();
-		$this->classes['elementor']                           = new ConvertKit_Elementor();
-		$this->classes['gutenberg']                           = new ConvertKit_Gutenberg();
-		$this->classes['media_library']                       = new ConvertKit_Media_Library();
-		$this->classes['output_restrict_content']             = new ConvertKit_Output_Restrict_Content();
-		$this->classes['review_request']                      = new ConvertKit_Review_Request( 'Kit', 'convertkit', CONVERTKIT_PLUGIN_PATH );
-		$this->classes['preview_output']                      = new ConvertKit_Preview_Output();
-		$this->classes['setup']                               = new ConvertKit_Setup();
-		$this->classes['shortcodes']                          = new ConvertKit_Shortcodes();
+		$this->classes['ajax']                                        = new ConvertKit_AJAX();
+		$this->classes['blocks_convertkit_broadcasts']                = new ConvertKit_Block_Broadcasts();
+		$this->classes['blocks_convertkit_content']                   = new ConvertKit_Block_Content();
+		$this->classes['blocks_convertkit_formtrigger']               = new ConvertKit_Block_Form_Trigger();
+		$this->classes['blocks_convertkit_form']                      = new ConvertKit_Block_Form();
+		$this->classes['blocks_convertkit_form_builder']              = new ConvertKit_Block_Form_Builder();
+		$this->classes['blocks_convertkit_form_builder_field_email']  = new ConvertKit_Block_Form_Builder_Field_Email();
+		$this->classes['blocks_convertkit_form_builder_field_name']   = new ConvertKit_Block_Form_Builder_Field_Name();
+		$this->classes['blocks_convertkit_form_builder_field_custom'] = new ConvertKit_Block_Form_Builder_Field_Custom();
+		$this->classes['blocks_convertkit_product']                   = new ConvertKit_Block_Product();
+		$this->classes['block_formatter_form_link']                   = new ConvertKit_Block_Formatter_Form_Link();
+		$this->classes['block_formatter_product_link']                = new ConvertKit_Block_Formatter_Product_Link();
+		$this->classes['pre_publish_action_broadcast_export']         = new ConvertKit_Pre_Publish_Action_Broadcast_Export();
+		$this->classes['broadcasts_exporter']                         = new ConvertKit_Broadcasts_Exporter();
+		$this->classes['broadcasts_importer']                         = new ConvertKit_Broadcasts_Importer();
+		$this->classes['elementor']                                   = new ConvertKit_Elementor();
+		$this->classes['gutenberg']                                   = new ConvertKit_Gutenberg();
+		$this->classes['media_library']                               = new ConvertKit_Media_Library();
+		$this->classes['output_restrict_content']                     = new ConvertKit_Output_Restrict_Content();
+		$this->classes['review_request']                              = new ConvertKit_Review_Request( 'Kit', 'convertkit', CONVERTKIT_PLUGIN_PATH );
+		$this->classes['preview_output']                              = new ConvertKit_Preview_Output();
+		$this->classes['setup']                                       = new ConvertKit_Setup();
+		$this->classes['shortcodes']                                  = new ConvertKit_Shortcodes();
 
 		/**
 		 * Initialize integration classes for the frontend web site.

@@ -311,7 +311,7 @@ class ConvertKit_Output {
 		}
 
 		// Get Form HTML.
-		$form = $this->forms->get_html( $form_id );
+		$form = $this->forms->get_html( $form_id, $post_id );
 
 		// If an error occured, it could be because the specified Form ID for the Post either:
 		// - belongs to another ConvertKit account (i.e. API credentials were changed in the Plugin, but this Post's specified Form was not changed), or
@@ -335,7 +335,7 @@ class ConvertKit_Output {
 			}
 
 			// Get Form HTML.
-			$form = $this->forms->get_html( $form_id );
+			$form = $this->forms->get_html( $form_id, $post_id );
 
 			// If an error occured again, the default form doesn't exist in this ConvertKit account.
 			// Just return the Post Content, unedited.
@@ -433,26 +433,12 @@ class ConvertKit_Output {
 			return $content;
 		}
 
-		// Define the meta tag.
-		$meta_tag = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-
-		// Wrap content in <html>, <head> and <body> tags now, so we can inject the UTF-8 Content-Type meta tag.
-		$modified_content = '<html><head></head><body>' . $content . '</body></html>';
-
-		// Forcibly tell DOMDocument that this HTML uses the UTF-8 charset.
-		// <meta charset="utf-8"> isn't enough, as DOMDocument still interprets the HTML as ISO-8859, which breaks character encoding
-		// Use of mb_convert_encoding() with HTML-ENTITIES is deprecated in PHP 8.2, so we have to use this method.
-		// If we don't, special characters render incorrectly.
-		$modified_content = str_replace( '<head>', '<head>' . "\n" . $meta_tag, $modified_content );
-
-		// Load Page / Post content into DOMDocument.
-		libxml_use_internal_errors( true );
-		$html = new DOMDocument();
-		$html->loadHTML( $modified_content, LIBXML_HTML_NODEFDTD );
+		// Load the content into the parser.
+		$parser = new ConvertKit_HTML_Parser( $content, LIBXML_HTML_NODEFDTD );
 
 		// Find the element to append the form to.
 		// item() is a zero based index.
-		$element_node = $html->getElementsByTagName( $tag )->item( $index - 1 );
+		$element_node = $parser->html->getElementsByTagName( $tag )->item( $index - 1 );
 
 		// If the element could not be found, either the number of elements by tag name is less
 		// than the requested position the form be inserted in, or no element exists.
@@ -466,23 +452,10 @@ class ConvertKit_Output {
 		$form_node->loadHTML( $form, LIBXML_HTML_NODEFDTD );
 
 		// Append the form to the specific element.
-		$element_node->parentNode->insertBefore( $html->importNode( $form_node->documentElement, true ), $element_node->nextSibling ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$element_node->parentNode->insertBefore( $parser->html->importNode( $form_node->documentElement, true ), $element_node->nextSibling ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		// Fetch HTML string.
-		$modified_content = $html->saveHTML();
-
-		// Remove some HTML tags that DOMDocument adds, returning the output.
-		// We do this instead of using LIBXML_HTML_NOIMPLIED in loadHTML(), because Legacy Forms are not always contained in
-		// a single root / outer element, which is required for LIBXML_HTML_NOIMPLIED to correctly work.
-		$modified_content = str_replace( '<html>', '', $modified_content );
-		$modified_content = str_replace( '</html>', '', $modified_content );
-		$modified_content = str_replace( '<head>', '', $modified_content );
-		$modified_content = str_replace( '</head>', '', $modified_content );
-		$modified_content = str_replace( '<body>', '', $modified_content );
-		$modified_content = str_replace( '</body>', '', $modified_content );
-		$modified_content = str_replace( $meta_tag, '', $modified_content );
-
-		return $modified_content;
+		return $parser->get_body_html();
 
 	}
 
@@ -763,17 +736,13 @@ class ConvertKit_Output {
 	 */
 	public function enqueue_scripts() {
 
-		// Get Post.
-		$post = get_post();
+		// Get ConvertKit Settings and Post's Settings.
+		$settings = new ConvertKit_Settings();
 
-		// Bail if no Post could be fetched.
-		if ( ! $post ) {
+		// Bail if the no scripts setting is enabled.
+		if ( $settings->scripts_disabled() ) {
 			return;
 		}
-
-		// Get ConvertKit Settings and Post's Settings.
-		$settings        = new ConvertKit_Settings();
-		$convertkit_post = new ConvertKit_Post( $post->ID );
 
 		// Register scripts that we might use.
 		wp_register_script(
@@ -793,11 +762,6 @@ class ConvertKit_Output {
 				'subscriber_id' => $this->subscriber_id,
 			)
 		);
-
-		// Bail if the no scripts setting is enabled.
-		if ( $settings->scripts_disabled() ) {
-			return;
-		}
 
 		// Enqueue.
 		wp_enqueue_script( 'convertkit-js' );
@@ -867,9 +831,10 @@ class ConvertKit_Output {
 				function ( $scripts ) use ( $form ) {
 
 					$scripts[] = array(
-						'async'    => true,
-						'data-uid' => $form['uid'],
-						'src'      => $form['embed_js'],
+						'async'                      => true,
+						'data-uid'                   => $form['uid'],
+						'src'                        => $form['embed_js'],
+						'data-kit-limit-per-session' => true,
 					);
 
 					return $scripts;
@@ -924,6 +889,11 @@ class ConvertKit_Output {
 			 */
 			$script = apply_filters( 'convertkit_output_script_footer', $script );
 
+			// Skip script if it is limited by the Non-inline Form Limit per Session setting.
+			if ( $this->is_script_output_limited_by_session( $script ) ) {
+				continue;
+			}
+
 			// Build output.
 			$output = '<script';
 			foreach ( $script as $attribute => $value ) {
@@ -962,6 +932,36 @@ class ConvertKit_Output {
 		foreach ( $output_scripts as $output_script ) {
 			echo $output_script . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
+
+	}
+
+	/**
+	 * Checks if a script is limited by the Non-inline Form Limit per Session setting.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   array $script   Script.
+	 * @return  bool
+	 */
+	private function is_script_output_limited_by_session( $script ) {
+
+		// Get Settings, if they have not yet been loaded.
+		if ( ! $this->settings ) {
+			$this->settings = new ConvertKit_Settings();
+		}
+
+		// Display script if the "Display Limit" setting isn't enabled.
+		if ( ! $this->settings->non_inline_form_limit_per_session() ) {
+			return false;
+		}
+
+		// Display script if the "Display Limit" setting should not be applied to this script.
+		if ( ! isset( $script['data-kit-limit-per-session'] ) ) {
+			return false;
+		}
+
+		// Display script if this is the first time the visitor has seen any non-inline form.
+		return isset( $_COOKIE['ck_non_inline_form_displayed'] );
 
 	}
 

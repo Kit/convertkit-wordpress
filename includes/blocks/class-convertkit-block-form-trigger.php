@@ -27,22 +27,8 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		// Register this as a Gutenberg block in the ConvertKit Plugin.
 		add_filter( 'convertkit_blocks', array( $this, 'register' ) );
 
-		// Enqueue scripts and styles for this Gutenberg Block in the editor view.
-		add_action( 'convertkit_gutenberg_enqueue_scripts', array( $this, 'enqueue_scripts_editor' ) );
-
 		// Enqueue scripts and styles for this Gutenberg Block in the editor and frontend views.
 		add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
-
-	}
-
-	/**
-	 * Enqueues scripts for this Gutenberg Block in the editor view.
-	 *
-	 * @since   2.2.0
-	 */
-	public function enqueue_scripts_editor() {
-
-		wp_enqueue_script( 'convertkit-gutenberg-block-form-trigger', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/gutenberg-block-form-trigger.js', array( 'convertkit-gutenberg' ), CONVERTKIT_PLUGIN_VERSION, true );
 
 	}
 
@@ -54,6 +40,9 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	public function enqueue_styles() {
 
 		wp_enqueue_style( 'convertkit-button', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/button.css', array(), CONVERTKIT_PLUGIN_VERSION );
+
+		// Enqueue the block button CSS.
+		wp_enqueue_style( 'wp-block-button' );
 
 	}
 
@@ -84,57 +73,57 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		$settings         = new ConvertKit_Settings();
 
 		return array(
-			'title'                             => __( 'Kit Form Trigger', 'convertkit' ),
-			'description'                       => __( 'Displays a modal, sticky bar or slide in form to display when the button is pressed.', 'convertkit' ),
-			'icon'                              => 'resources/backend/images/block-icon-formtrigger.svg',
-			'category'                          => 'convertkit',
-			'keywords'                          => array(
+			'title'                                => __( 'Kit Form Trigger', 'convertkit' ),
+			'description'                          => __( 'Displays a modal, sticky bar or slide in form to display when the button is pressed.', 'convertkit' ),
+			'icon'                                 => 'resources/backend/images/block-icon-formtrigger.svg',
+			'category'                             => 'convertkit',
+			'keywords'                             => array(
 				__( 'ConvertKit', 'convertkit' ),
 				__( 'Kit', 'convertkit' ),
 				__( 'Form', 'convertkit' ),
 			),
 
 			// Function to call when rendering as a block or a shortcode on the frontend web site.
-			'render_callback'                   => array( $this, 'render' ),
+			'render_callback'                      => array( $this, 'render' ),
 
 			// Shortcode: TinyMCE / QuickTags Modal Width and Height.
-			'modal'                             => array(
+			'modal'                                => array(
 				'width'  => 500,
 				'height' => 282,
 			),
 
 			// Shortcode: Include a closing [/shortcode] tag when using TinyMCE or QuickTag Modals.
-			'shortcode_include_closing_tag'     => false,
+			'shortcode_include_closing_tag'        => false,
 
 			// Gutenberg: Block Icon in Editor.
-			'gutenberg_icon'                    => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-formtrigger.svg' ),
+			'gutenberg_icon'                       => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/resources/backend/images/block-icon-formtrigger.svg' ),
 
 			// Gutenberg: Example image showing how this block looks when choosing it in Gutenberg.
-			'gutenberg_example_image'           => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-formtrigger.png',
+			'gutenberg_example_image'              => CONVERTKIT_PLUGIN_URL . 'resources/backend/images/block-example-formtrigger.png',
 
 			// Help descriptions, displayed when no API key / resources exist and this block/shortcode is added.
-			'no_access_token'                   => array(
+			'no_access_token'                      => array(
 				'notice'           => __( 'Not connected to Kit.', 'convertkit' ),
 				'link'             => convertkit_get_setup_wizard_plugin_link(),
 				'link_text'        => __( 'Click here to connect your Kit account.', 'convertkit' ),
 				'instruction_text' => __( 'Connect your Kit account at Settings > Kit, and then refresh this page to select a form.', 'convertkit' ),
 			),
-			'no_resources'                      => array(
+			'no_resources'                         => array(
 				'notice'           => __( 'No modal, sticky bar or slide in forms exist in Kit.', 'convertkit' ),
 				'link'             => convertkit_get_new_form_url(),
 				'link_text'        => __( 'Click here to create a form.', 'convertkit' ),
 				'instruction_text' => __( 'Add a non-inline form to your Kit account, and then refresh this page to select a form.', 'convertkit' ),
 			),
-			'gutenberg_help_description'        => __( 'Select a Form using the Form option in the Gutenberg sidebar.', 'convertkit' ),
 
-			// Gutenberg: JS function to call when rendering the block preview in the Gutenberg editor.
-			// If not defined, render_callback above will be used.
-			'gutenberg_preview_render_callback' => 'convertKitGutenbergFormTriggerBlockRenderPreview',
+			// The attribute to check if a value exists when rendering the block in the editor,
+			// and the message to display if no value exists.
+			'gutenberg_help_description'           => __( 'Select a Form using the Form option in the Gutenberg sidebar.', 'convertkit' ),
+			'gutenberg_help_description_attribute' => 'form',
 
 			// Whether an API Key exists in the Plugin, and are the required resources (non-inline forms) available.
 			// If no API Key is specified in the Plugin's settings, render the "No API Key" output.
-			'has_access_token'                  => $settings->has_access_and_refresh_token(),
-			'has_resources'                     => $convertkit_forms->non_inline_exist(),
+			'has_access_token'                     => $settings->has_access_and_refresh_token(),
+			'has_resources'                        => $convertkit_forms->non_inline_exist(),
 		);
 
 	}

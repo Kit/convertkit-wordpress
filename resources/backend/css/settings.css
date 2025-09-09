@@ -177,3 +177,37 @@ body.settings_page__wp_convertkit_settings .wrap .postbox.convertkit-beta > p.de
 	padding-top: 30px;
 	border-top: 1px solid #e3e3e3;
 }
+
+/**
+ * Screen Options
+ */
+body.settings_page__wp_convertkit_settings #screen-meta-links {
+	position: absolute;
+	right: 0;
+}
+
+/**
+ * WP_List_Table Search
+ */
+body.settings_page__wp_convertkit_settings .wrap .subtitle.left {
+	margin: 11px 0;
+	display: flex;
+	float: left;
+	padding-left: 0;
+	line-height: 40px;
+	font-style: italic;
+}
+body.settings_page__wp_convertkit_settings .wrap .search-box input[type=search] {
+	min-height: 40px;
+}
+
+/**
+ * WP_List_Table Bulk Actions
+ */
+body.settings_page__wp_convertkit_settings .wrap .tablenav.top {
+	margin-bottom: 10px;
+}
+body.settings_page__wp_convertkit_settings .wrap .tablenav input.button.action {
+	height: 20px;
+	line-height: 20px;
+}

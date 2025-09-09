@@ -165,12 +165,12 @@ class ConvertKit_Admin_Setup_Wizard {
 
 		// If the convertkit-modal parameter exists and is 1, set the flag to denote
 		// this wizard is served in a modal.
-		if ( array_key_exists( 'convertkit-modal', $_REQUEST ) && $_REQUEST['convertkit-modal'] === '1' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( filter_has_var( INPUT_GET, 'convertkit-modal' ) && filter_input( INPUT_GET, 'convertkit-modal', FILTER_SANITIZE_NUMBER_INT ) === '1' ) {
 			$this->is_modal = true;
 		}
 
 		// Define the step the user is on in the setup process.
-		$this->step = ( isset( $_REQUEST['step'] ) ? absint( $_REQUEST['step'] ) : 1 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$this->step = ( filter_has_var( INPUT_GET, 'step' ) ? absint( filter_input( INPUT_GET, 'step', FILTER_SANITIZE_NUMBER_INT ) ) : 1 );
 
 		// Process any posted form data.
 		$this->process_form();
@@ -403,10 +403,10 @@ class ConvertKit_Admin_Setup_Wizard {
 		}
 
 		// Bail if we're not on the setup screen.
-		if ( ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'page' ) ) {
 			return false;
 		}
-		if ( sanitize_text_field( wp_unslash( $_GET['page'] ) ) !== $this->page_name ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) !== $this->page_name ) {
 			return false;
 		}
 

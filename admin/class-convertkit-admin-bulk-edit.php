@@ -163,11 +163,8 @@ class ConvertKit_Admin_Bulk_Edit {
 		if ( $bulk_action !== 'edit' ) {
 			return false;
 		}
-		if ( ! array_key_exists( 'bulk_edit', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return false;
-		}
 
-		return true;
+		return filter_has_var( INPUT_GET, 'bulk_edit' );
 
 	}
 

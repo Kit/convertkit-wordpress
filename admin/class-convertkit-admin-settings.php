@@ -149,9 +149,28 @@ class ConvertKit_Admin_Settings {
 			if ( count( $this->sections ) > 1 ) {
 				$this->display_section_nav( $active_section );
 			}
-			?>
 
-			<form method="post" action="options.php" enctype="multipart/form-data">
+			/**
+			 * Defines the settings form's method.
+			 *
+			 * @since   3.0.0
+			 *
+			 * @param   string  $form_method        The method of the form.
+			 * @param   string  $active_section     The active section.
+			 */
+			$form_method = apply_filters( 'convertkit_admin_settings_form_method', 'post', $active_section );
+
+			/**
+			 * Defines the settings form's action URL.
+			 *
+			 * @since   3.0.0
+			 *
+			 * @param   string  $form_action_url    The URL to submit the form to.
+			 * @param   string  $active_section     The active section.
+			 */
+			$form_action_url = apply_filters( 'convertkit_admin_settings_form_action_url', admin_url( 'options.php' ), $active_section );
+			?>
+			<form method="<?php echo esc_attr( $form_method ); ?>" action="<?php echo esc_url( $form_action_url ); ?>" enctype="multipart/form-data">
 				<?php
 				// Iterate through sections to find the active section to render.
 				if ( isset( $this->sections[ $active_section ] ) ) {
@@ -188,8 +207,8 @@ class ConvertKit_Admin_Settings {
 	 */
 	private function get_active_section() {
 
-		if ( isset( $_GET['tab'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return sanitize_text_field( wp_unslash( $_GET['tab'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( filter_has_var( INPUT_GET, 'tab' ) ) {
+			return filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		}
 
 		// First registered section will be the active section.
@@ -250,7 +269,10 @@ class ConvertKit_Admin_Settings {
 					),
 					( $active_section === $section->name ? 'convertkit-tab-active' : '' ),
 					esc_html( $section->tab_text ),
-					$section->is_beta ? $this->get_beta_tab() : '' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					wp_kses(
+						$section->is_beta ? $this->get_beta_tab() : '',
+						convertkit_kses_allowed_html()
+					)
 				);
 			}
 			?>
@@ -267,8 +289,7 @@ class ConvertKit_Admin_Settings {
 	}
 
 	/**
-	 * Returns a 'beta' tab wrapped in a span, using wp_kses to ensure only permitted
-	 * HTML elements are included in the output.
+	 * Returns a 'beta' tab wrapped in a span.
 	 *
 	 * @since   2.1.0
 	 *
@@ -276,14 +297,7 @@ class ConvertKit_Admin_Settings {
 	 */
 	private function get_beta_tab() {
 
-		return wp_kses(
-			'<span class="convertkit-beta-label">' . esc_html__( 'Beta', 'convertkit' ) . '</span>',
-			array(
-				'span' => array(
-					'class' => array(),
-				),
-			)
-		);
+		return '<span class="convertkit-beta-label">' . esc_html__( 'Beta', 'convertkit' ) . '</span>';
 
 	}
 

@@ -35,6 +35,9 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 		// Maybe output notices for this settings screen, and the Intercom messenger.
 		if ( $this->on_settings_screen( 'general' ) ) {
 			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_notices' ) );
+
+			// OAuth is a special case, as it'll register as the 'general' screen - so the Intercom
+			// call in ConvertKit_Admin_Section_Base's construct won't work.
 			add_action( 'admin_footer', array( $this, 'output_intercom' ) );
 		}
 
@@ -56,12 +59,12 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Bail if no authorization code is included in the request.
-		if ( ! array_key_exists( 'code', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! filter_has_var( INPUT_GET, 'code' ) ) {
 			return;
 		}
 
 		// Sanitize token.
-		$authorization_code = sanitize_text_field( wp_unslash( $_REQUEST['code'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$authorization_code = filter_input( INPUT_GET, 'code', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		// Exchange the authorization code and verifier for an access token.
 		$api    = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
@@ -152,7 +155,7 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 	 */
 	public function documentation_url() {
 
-		return 'https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin';
+		return 'https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website';
 
 	}
 

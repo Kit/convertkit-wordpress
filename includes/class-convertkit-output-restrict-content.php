@@ -245,60 +245,16 @@ class ConvertKit_Output_Restrict_Content {
 				// If here, require login is disabled.
 				// Check reCAPTCHA, tag subscriber and assign subscriber ID integer to cookie
 				// without email link.
+				$recaptcha          = new ConvertKit_Recaptcha();
+				$recaptcha_response = $recaptcha->verify_recaptcha(
+					( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
+					'convertkit_restrict_content_tag'
+				);
 
-				// If Google reCAPTCHA is enabled, check if the submission is spam.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
-					$response = wp_remote_post(
-						'https://www.google.com/recaptcha/api/siteverify',
-						array(
-							'body' => array(
-								'secret'   => $this->restrict_content_settings->get_recaptcha_secret_key(),
-								'response' => ( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
-								'remoteip' => ( isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '' ),
-							),
-						)
-					);
-
-					// Bail if an error occured.
-					if ( is_wp_error( $response ) ) {
-						$this->error = $response;
-						return;
-					}
-
-					// Inspect response.
-					$body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-					// If the request wasn't successful, throw an error.
-					if ( ! $body['success'] ) {
-						$this->error = new WP_Error(
-							'convertkit_output_restrict_content_maybe_run_subscriber_authentication_error',
-							sprintf(
-								/* translators: Error codes */
-								__( 'Google reCAPTCHA failure: %s', 'convertkit' ),
-								implode( ', ', $body['error-codes'] )
-							)
-						);
-						return;
-					}
-
-					// If the action doesn't match the Plugin action, this might not be a reCAPTCHA request
-					// for this Plugin.
-					if ( $body['action'] !== 'convertkit_restrict_content_tag' ) {
-						// Just silently return.
-						return;
-					}
-
-					// If the score is less than 0.5 (on a scale of 0.0 to 1.0, with 0.0 being a bot, 1.0 being very good),
-					// it's likely a spam submission.
-					if ( $body['score'] < $this->restrict_content_settings->get_recaptcha_minimum_score() ) {
-						$this->error = new WP_Error(
-							'convertkit_output_restrict_content_maybe_run_subscriber_authentication_error',
-							__( 'Google reCAPTCHA failed', 'convertkit' )
-						);
-						return;
-					}
-
-					// If here, the submission looks genuine. Continue the request.
+				// Bail if reCAPTCHA failed.
+				if ( is_wp_error( $recaptcha_response ) ) {
+					$this->error = $recaptcha_response;
+					return;
 				}
 
 				// Tag the subscriber.
@@ -1270,7 +1226,7 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Output code form if this request is after the user entered their email address,
 		// which means we're going through the authentication flow.
-		if ( $this->in_authentication_flow() ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( $this->in_authentication_flow() ) {
 			ob_start();
 			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/code.php';
 			return trim( ob_get_clean() );
@@ -1323,7 +1279,7 @@ class ConvertKit_Output_Restrict_Content {
 			case 'form':
 				// Display the Form.
 				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
-				$form  = $forms->get_html( $this->resource_id );
+				$form  = $forms->get_html( $this->resource_id, $post_id );
 
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
@@ -1361,21 +1317,9 @@ class ConvertKit_Output_Restrict_Content {
 					);
 				}
 
-				// Enqueue Google reCAPTCHA JS if site and secret keys specified.
-				if ( $this->restrict_content_settings->has_recaptcha_site_and_secret_keys() && ! $this->settings->scripts_disabled() ) {
-					add_filter(
-						'convertkit_output_scripts_footer',
-						function ( $scripts ) {
-
-							$scripts[] = array(
-								'src' => 'https://www.google.com/recaptcha/api.js?',
-							);
-
-							return $scripts;
-
-						}
-					);
-				}
+				// Enqueue Google reCAPTCHA JS.
+				$recaptcha = new ConvertKit_Recaptcha();
+				$recaptcha->enqueue_scripts();
 
 				// Output.
 				ob_start();

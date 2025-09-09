@@ -213,8 +213,8 @@ class ConvertKit_ContactForm7 {
 
 		// If the request includes the Post ID the form was embedded in,
 		// return that URL.
-		if ( array_key_exists( '_wpcf7_container_post', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return get_permalink( absint( $_REQUEST['_wpcf7_container_post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( filter_has_var( INPUT_POST, '_wpcf7_container_post' ) ) {
+			return get_permalink( absint( filter_input( INPUT_POST, '_wpcf7_container_post', FILTER_SANITIZE_NUMBER_INT ) ) );
 		}
 
 		// Return the AJAX URL.

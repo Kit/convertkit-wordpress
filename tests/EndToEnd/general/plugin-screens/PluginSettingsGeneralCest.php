@@ -47,8 +47,8 @@ class PluginSettingsGeneralCest
 		$I->seeInSource('<label for="no_css">');
 
 		// Confirm that the UTM parameters exist for the documentation links.
-		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" class="convertkit-docs" target="_blank">Help</a>');
-		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-the-convertkit-wordpress-plugin?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">plugin documentation</a>');
+		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" class="convertkit-docs" target="_blank">Help</a>');
+		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">plugin documentation</a>');
 	}
 
 	/**
@@ -526,6 +526,106 @@ class PluginSettingsGeneralCest
 
 		// Unregister CPTs.
 		$I->unregisterCustomPostTypes($I);
+	}
+
+	/**
+	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
+	 * when the Non-inline Form settings are saved and cleared.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testNonInlineFormSettings(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Define fields.
+		$I->fillSelect2MultipleField(
+			$I,
+			container: '#select2-_wp_convertkit_settings_non_inline_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME']
+		);
+		$I->fillSelect2MultipleField(
+			$I,
+			container: '#select2-_wp_convertkit_settings_non_inline_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+		);
+		$I->checkOption('#non_inline_form_honor_none_setting');
+		$I->checkOption('#non_inline_form_limit_per_session');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->waitForElementVisible('.notice-success');
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the field settings saved.
+		$I->seeInFormFields(
+			'form',
+			[
+				'_wp_convertkit_settings[non_inline_form][]' => [
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME'],
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'],
+				],
+			]
+		);
+		$I->seeCheckboxIsChecked('#non_inline_form_honor_none_setting');
+		$I->seeCheckboxIsChecked('#non_inline_form_limit_per_session');
+	}
+
+	/**
+	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
+	 * when the reCAPTCHA settings are saved and cleared.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRecaptchaSettings(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Fill in reCAPTCHA settings.
+		$I->fillField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->fillField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->fillField('#recaptcha_minimum_score', '0.01');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the reCAPTCHA settings were saved.
+		$I->seeInField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->seeInField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->seeInField('#recaptcha_minimum_score', '0.01');
+
+		// Clear the reCAPTCHA settings.
+		$I->clearField('#recaptcha_site_key');
+		$I->clearField('#recaptcha_secret_key');
+		$I->clearField('#recaptcha_minimum_score');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the reCAPTCHA settings were cleared.
+		$I->dontSeeInField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
+		$I->dontSeeInField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
+		$I->dontSeeInField('#recaptcha_minimum_score', '0.01');
 	}
 
 	/**

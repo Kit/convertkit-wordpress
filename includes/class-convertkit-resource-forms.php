@@ -183,6 +183,34 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
+	 * Outputs a <select> field populated with all forms, based on the given parameters.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   string            $name            Name.
+	 * @param   string            $id              ID.
+	 * @param   bool|array        $css_classes     <select> CSS class(es).
+	 * @param   string            $selected_option <option> value to mark as selected.
+	 * @param   bool|array        $prepend_options <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes      <select> attributes.
+	 * @param   bool|string|array $description     Description.
+	 */
+	public function output_select_field_all( $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
+
+		$this->output_select_field(
+			$this->get(),
+			$name,
+			$id,
+			$css_classes,
+			$selected_option,
+			$prepend_options,
+			$attributes,
+			$description
+		);
+
+	}
+
+	/**
 	 * Returns a <select> field populated with all non-inline forms, based on the given parameters.
 	 *
 	 * @since   2.3.9
@@ -207,6 +235,36 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			$prepend_options,
 			$attributes,
 			$description
+		);
+
+	}
+
+	/**
+	 * Outputs a <select> field populated with all non-inline forms, based on the given parameters.
+	 *
+	 * @since   2.3.9
+	 *
+	 * @param   string            $name             Name.
+	 * @param   string            $id               ID.
+	 * @param   bool|array        $css_classes      <select> CSS class(es).
+	 * @param   array             $selected_options <option> values to mark as selected.
+	 * @param   bool|array        $prepend_options  <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes       <select> attributes.
+	 * @param   bool|string|array $description      Description.
+	 */
+	public function output_select_field_non_inline( $name, $id, $css_classes, $selected_options, $prepend_options = false, $attributes = false, $description = false ) {
+
+		echo wp_kses(
+			$this->get_select_field_non_inline(
+				$name,
+				$id,
+				$css_classes,
+				$selected_options,
+				$prepend_options,
+				$attributes,
+				$description
+			),
+			convertkit_kses_allowed_html()
 		);
 
 	}
@@ -290,6 +348,38 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 
 		// Return description lines in a paragraph, using breaklines for each description entry in the array.
 		return $html . '<p class="description">' . implode( '<br />', $description ) . '</p>';
+
+	}
+
+	/**
+	 * Outputs a <select> field populated with the resources, based on the given parameters.
+	 *
+	 * @since   2.8.5
+	 *
+	 * @param   array             $forms           Forms.
+	 * @param   string            $name            Name.
+	 * @param   string            $id              ID.
+	 * @param   bool|array        $css_classes     <select> CSS class(es).
+	 * @param   string            $selected_option <option> value to mark as selected.
+	 * @param   bool|array        $prepend_options <option> elements to prepend before resources.
+	 * @param   bool|array        $attributes      <select> attributes.
+	 * @param   bool|string|array $description     Description.
+	 */
+	private function output_select_field( $forms, $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
+
+		echo wp_kses(
+			$this->get_select_field(
+				$forms,
+				$name,
+				$id,
+				$css_classes,
+				$selected_option,
+				$prepend_options,
+				$attributes,
+				$description
+			),
+			convertkit_kses_allowed_html()
+		);
 
 	}
 
@@ -384,10 +474,11 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   int $id     Form ID.
+	 * @param   int $id         Form ID.
+	 * @param   int $post_id    Post ID that requested the Form.
 	 * @return  WP_Error|string
 	 */
-	public function get_html( $id ) {
+	public function get_html( $id, $post_id = 0 ) {
 
 		// Cast ID to integer.
 		$id = absint( $id );
@@ -409,12 +500,12 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			);
 		}
 
+		// Initialize Settings.
+		$settings = new ConvertKit_Settings();
+
 		// If no uid is present in the Form API data, this is a legacy form that's served by directly fetching the HTML
 		// from forms.kit.com.
 		if ( ! isset( $this->resources[ $id ]['uid'] ) ) {
-			// Initialize Settings.
-			$settings = new ConvertKit_Settings();
-
 			// Bail if no Access Token is specified in the Plugin Settings.
 			if ( ! $settings->has_access_token() ) {
 				return new WP_Error(
@@ -446,13 +537,23 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 		if ( $this->resources[ $id ]['format'] !== 'inline' ) {
 			add_filter(
 				'convertkit_output_scripts_footer',
-				function ( $scripts ) use ( $id ) {
+				function ( $scripts ) use ( $id, $post_id, $settings ) {
 
-					$scripts[] = array(
-						'async'    => true,
-						'data-uid' => $this->resources[ $id ]['uid'],
-						'src'      => $this->resources[ $id ]['embed_js'],
+					// Build script.
+					$script = array(
+						'async'                      => true,
+						'data-uid'                   => $this->resources[ $id ]['uid'],
+						'src'                        => $this->resources[ $id ]['embed_js'],
+						'data-kit-limit-per-session' => $settings->non_inline_form_limit_per_session(),
 					);
+
+					// If debugging is enabled, add the post ID to the script.
+					if ( $settings->debug_enabled() ) {
+						$script['data-kit-source-post-id'] = $post_id;
+					}
+
+					// Add the script to the scripts array.
+					$scripts[] = $script;
 
 					return $scripts;
 
@@ -484,6 +585,11 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			'data-uid' => $this->resources[ $id ]['uid'],
 			'src'      => $this->resources[ $id ]['embed_js'],
 		);
+
+		// If debugging is enabled, add the post ID to the script.
+		if ( $settings->debug_enabled() ) {
+			$script['data-kit-source-post-id'] = $post_id;
+		}
 
 		/**
 		 * Filter the form <script> key/value pairs immediately before the script is output.

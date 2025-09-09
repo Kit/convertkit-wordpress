@@ -143,7 +143,21 @@ class WPWidget extends \Codeception\Module
 						$I->selectOption($fieldID, $attributes[1]);
 						break;
 					case 'toggle':
-						$I->click($field);
+						// The block editor doesn't use the field ID, so we need to find the field by the label.
+						$field = "//label[normalize-space(text())='" . $field . "']/preceding-sibling::span/input";
+
+						// Determine if the toggle has checked the checkbox.
+						$isChecked = $I->grabAttributeFrom($field, 'checked');
+
+						// If the attribute is true, and the checkbox is not checked, click the toggle to check it.
+						if ( $attributes[1] && ! $isChecked ) {
+							$I->click($field);
+						}
+
+						// If the attribute is false, and the checkbox is checked, click the toggle to uncheck it.
+						if ( ! $attributes[1] && $isChecked ) {
+							$I->click($field);
+						}
 						break;
 					default:
 						$I->fillField($fieldID, $attributes[1]);

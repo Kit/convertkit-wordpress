@@ -48,15 +48,18 @@ class KitPlugin extends \Codeception\Module
 	 * @param   bool|array     $options {
 	 *         Optional. An array of settings.
 	 *
-	 *     @type string $access_token       Access Token (if specified, used instead of CONVERTKIT_OAUTH_ACCESS_TOKEN).
-	 *     @type string $refresh_token      Refresh Token (if specified, used instead of CONVERTKIT_OAUTH_REFRESH_TOKEN).
-	 *     @type string $debug              Enable debugging (default: on).
-	 *     @type string $no_scripts         Disable JS (default: off).
-	 *     @type string $no_css             Disable CSS (default: off).
-	 *     @type string $post_form          Default Form ID for Posts (if specified, used instead of CONVERTKIT_API_FORM_ID).
-	 *     @type string $page_form          Default Form ID for Pages (if specified, used instead of CONVERTKIT_API_FORM_ID).
-	 *     @type string $product_form       Default Form ID for WooCommerce Products (if specified, used instead of CONVERTKIT_API_FORM_ID).
-	 *     @type string $non_inline_form    Default Global non-inline Form ID (if specified, none if false).
+	 *     @type string $access_token               Access Token (if specified, used instead of CONVERTKIT_OAUTH_ACCESS_TOKEN).
+	 *     @type string $refresh_token              Refresh Token (if specified, used instead of CONVERTKIT_OAUTH_REFRESH_TOKEN).
+	 *     @type string $debug                      Enable debugging (default: on).
+	 *     @type string $no_scripts                 Disable JS (default: off).
+	 *     @type string $no_css                     Disable CSS (default: off).
+	 *     @type string $post_form                  Default Form ID for Posts (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $page_form                  Default Form ID for Pages (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $product_form               Default Form ID for WooCommerce Products (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $non_inline_form            Default Global non-inline Form ID (if specified, none if false).
+	 *     @type string $recaptcha_site_key         reCAPTCHA Site Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SITE_KEY).
+	 *     @type string $recaptcha_secret_key       reCAPTCHA Secret Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SECRET_KEY).
+	 *     @type string $recaptcha_minimum_score    reCAPTCHA Minimum Score (if specified, used instead of 0.5).
 	 * }
 	 */
 	public function setupKitPlugin($I, $options = false)
@@ -73,6 +76,9 @@ class KitPlugin extends \Codeception\Module
 			'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'non_inline_form'                    => array(),
 			'non_inline_form_honor_none_setting' => '',
+			'recaptcha_site_key'                 => '',
+			'recaptcha_secret_key'               => '',
+			'recaptcha_minimum_score'            => '',
 		];
 
 		// If supplied options are an array, merge them with the defaults.
@@ -562,6 +568,21 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to load the Plugin's Settings > Form Entries screen.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function loadKitSettingsFormEntriesScreen($I)
+	{
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=form-entries');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
 	 * Helper method to clear the Plugin's debug log.
 	 *
 	 * @since   1.9.6
@@ -980,5 +1001,17 @@ class KitPlugin extends \Codeception\Module
 				],
 			]
 		);
+	}
+
+	/**
+	 * Truncates the given database table.
+	 *
+	 * @since   3.0.0
+	 *
+	 * @param   string $table Table name.
+	 */
+	public function truncateDbTable($table)
+	{
+		$this->getModule(\lucatume\WPBrowser\Module\WPDb::class)->_getDbh()->query('TRUNCATE TABLE ' . $table);
 	}
 }

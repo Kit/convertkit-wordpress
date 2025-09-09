@@ -39,7 +39,10 @@ function convertKitGutenbergRegisterBlock( block ) {
 		// Define some constants for the various items we'll use.
 		const el                    = element.createElement;
 		const { registerBlockType } = blocks;
-		const { InspectorControls } = editor;
+		const {
+			InspectorControls,
+			InnerBlocks
+		}                           = editor;
 		const {
 			Fragment,
 			useState
@@ -102,7 +105,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 
 			// Define some field properties shared across all field types.
 			let fieldProperties = {
-				id:  		'convertkit_' + block.name + '_' + attribute,
+				id:  		'convertkit_' + block.name.replace( /-/g, '_' ) + '_' + attribute,
 				label: 		field.label,
 				help: 		field.description,
 				value: 		props.attributes[ attribute ],
@@ -381,20 +384,78 @@ function convertKitGutenbergRegisterBlock( block ) {
 			// Generate Block Preview.
 			let preview = '';
 
-			// If no API Key has been defined in the Plugin, or no resources exist in ConvertKit
+			// If no access token has been defined in the Plugin, or no resources exist in Kit
 			// for this block, show a message in the block to tell the user what to do.
 			if ( ! block.has_access_token || ! block.has_resources ) {
 				return displayNoticeWithLink( props );
 			}
 
+			// If a custom callback function to render this block's preview in the Gutenberg Editor
+			// has been defined, use it.
+			// This doesn't affect the output for this block on the frontend site, which will always
+			// use the block's PHP's render() function.
 			if ( typeof block.gutenberg_preview_render_callback !== 'undefined' ) {
-				// Use a custom callback function to render this block's preview in the Gutenberg Editor.
-				// This doesn't affect the output for this block on the frontend site, which will always
-				// use the block's PHP's render() function.
 				preview = window[ block.gutenberg_preview_render_callback ]( block, props );
+				return editBlockWithPanelsAndPreview( panels, preview );
 			}
 
-			// Return settings sidebar panel with fields and the block preview.
+			// If no settings have been defined for this block, render the block with a notice
+			// with instructions on how to configure the block.
+			if ( typeof block.gutenberg_help_description_attribute !== 'undefined' && props.attributes[ block.gutenberg_help_description_attribute ] === '' ) {
+				preview = convertKitGutenbergDisplayBlockNotice( block.name, block.gutenberg_help_description );
+				return editBlockWithPanelsAndPreview( panels, preview );
+			}
+
+			// If no render_callback is defined, render the block.
+			if ( typeof block.gutenberg_template !== 'undefined' ) {
+				// Build template for the new block.
+				const template = [];
+				for (const templateBlockName in block.gutenberg_template) {
+					if (block.gutenberg_template.hasOwnProperty( templateBlockName )) {
+						template.push( [templateBlockName, block.gutenberg_template[templateBlockName]] );
+					}
+				}
+
+				preview = el(
+					'div',
+					{},
+					el(
+						InnerBlocks,
+						{
+							template: template
+						}
+					)
+				);
+				return editBlockWithPanelsAndPreview( panels, preview );
+			}
+
+			// Use the block's PHP's render() function by calling the ServerSideRender component.
+			preview = el(
+				wp.serverSideRender,
+				{
+					block: 'convertkit/' + block.name,
+					attributes: props.attributes,
+
+					// This is only output in the Gutenberg editor, so must be slightly different from the inner class name used to
+					// apply styles with i.e. convertkit-block.name.
+					className: 'convertkit-ssr-' + block.name,
+				}
+			);
+			return editBlockWithPanelsAndPreview( panels, preview );
+
+		}
+
+		/**
+		 * Display settings sidebar when the block is being edited, and save
+		 * changes that are made.
+		 *
+		 * @since   3.0.0
+		 *
+		 * @param   object  props   Block properties.
+		 * @return  object          Block settings sidebar elements
+		 */
+		const editBlockWithPanelsAndPreview = function ( panels, preview ) {
+
 			return (
 				el(
 					// Sidebar Panel with Fields.
@@ -409,6 +470,31 @@ function convertKitGutenbergRegisterBlock( block ) {
 					preview
 				)
 			);
+
+		}
+
+		/**
+		 * Save the block's content.
+		 *
+		 * @since   3.0.0
+		 *
+		 * @param   object  props   Block properties.
+		 * @return  object          Block content.
+		 */
+		const saveBlock = function ( props ) {
+
+			if ( typeof block.gutenberg_template !== 'undefined' ) {
+				return el(
+					'div',
+					{},
+					el( InnerBlocks.Content )
+				);
+			}
+
+			// Deliberate; preview in the editor is determined by the return statement in `edit` above.
+			// On the frontend site, the block's render() PHP class is always called, so we dynamically
+			// fetch the content.
+			return null;
 
 		}
 
@@ -775,14 +861,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 				edit: editBlock,
 
 				// Output.
-				save: function ( props ) {
-
-					// Deliberate; preview in the editor is determined by the return statement in `edit` above.
-					// On the frontend site, the block's render() PHP class is always called, so we dynamically
-					// fetch the content.
-					return null;
-
-				},
+				save: saveBlock
 			}
 		);
 
