@@ -32,8 +32,22 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Wait for the Plugins page to load.
 		$I->waitForElementVisible('body.plugins-php');
 
-		// Activate the Plugin.
-		$I->activatePlugin($name);
+		// Depending on the Plugin name, perform activation.
+		switch ($name) {
+			case 'woocommerce':
+				// The bulk action to activate won't be available in WordPress 6.5+ due to dependent
+				// plugins being installed.
+				// See https://core.trac.wordpress.org/ticket/60863.
+				$I->click('a#activate-' . $name);
+				break;
+
+			default:
+				// Activate the Plugin.
+				$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+				$I->selectOption('action', 'activate-selected');
+				$I->click('#doaction');
+				break;
+		}
 
 		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
@@ -88,9 +102,21 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Wait for the Plugins page to load.
 		$I->waitForElementVisible('body.plugins-php');
 
-		// Deactivate the Plugin, unless it is already deactivated.
-		if ( ! empty( $I->grabMultiple('a[id="deactivate-' . $name . '"]') ) ) {
-			$I->deactivatePlugin($name);
+		// Depending on the Plugin name, perform deactivation.
+		switch ($name) {
+			case 'woocommerce':
+				// The bulk action to deactivate won't be available in WordPress 6.5+ due to dependent
+				// plugins being installed.
+				// See https://core.trac.wordpress.org/ticket/60863.
+				$I->click('a#deactivate-' . $name);
+				break;
+
+			default:
+				// Deactivate the Plugin.
+				$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+				$I->selectOption('action', 'deactivate-selected');
+				$I->click('#doaction');
+				break;
 		}
 	}
 
