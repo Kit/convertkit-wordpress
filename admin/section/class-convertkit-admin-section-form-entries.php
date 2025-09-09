@@ -141,6 +141,16 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_bulk_action( 'export', __( 'Export', 'convertkit' ) );
 		$table->add_bulk_action( 'delete', __( 'Delete', 'convertkit' ) );
 
+		// Add filters to table.
+		$table->add_filter(
+			'api_result',
+			__( 'All Results', 'convertkit' ),
+			array(
+				'success' => __( 'Success', 'convertkit' ),
+				'error'   => __( 'Error', 'convertkit' ),
+			)
+		);
+
 		// Add columns to table.
 		$table->add_column( 'cb', __( 'Select', 'convertkit' ), false );
 		$table->add_column( 'post_id', __( 'Post ID', 'convertkit' ), false );
@@ -157,6 +167,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		// Add form entries to table.
 		$entries = $form_entries->search(
 			$table->get_search(),
+			$table->get_filter( 'api_result' ),
 			$table->get_order_by( 'created_at' ),
 			$table->get_order( 'desc' ),
 			$table->get_pagenum(),
@@ -165,7 +176,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 		$table->add_items( $entries );
 
 		// Set total entries and items per page options key.
-		$table->set_total_items( $form_entries->total( $table->get_search() ) );
+		$table->set_total_items( $form_entries->total( $table->get_search(), $table->get_filter( 'api_result' ) ) );
 		$table->set_items_per_page_screen_options_key( 'convertkit_form_entries_per_page' );
 
 		// Display search term.

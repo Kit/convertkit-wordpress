@@ -207,7 +207,7 @@ body.settings_page__wp_convertkit_settings .wrap .search-box input[type=search] 
 body.settings_page__wp_convertkit_settings .wrap .tablenav.top {
 	margin-bottom: 10px;
 }
-body.settings_page__wp_convertkit_settings .wrap .tablenav input.button.action {
+body.settings_page__wp_convertkit_settings .wrap .tablenav input.button {
 	height: 20px;
 	line-height: 20px;
 }
