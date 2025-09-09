@@ -32,20 +32,8 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Wait for the Plugins page to load.
 		$I->waitForElementVisible('body.plugins-php');
 
-		// Depending on the Plugin name, perform activation.
-		switch ($name) {
-			case 'woocommerce':
-				// The bulk action to activate won't be available in WordPress 6.5+ due to dependent
-				// plugins being installed.
-				// See https://core.trac.wordpress.org/ticket/60863.
-				$I->click('a#activate-' . $name);
-				break;
-
-			default:
-				// Activate the Plugin.
-				$I->activatePlugin($name);
-				break;
-		}
+		// Activate the Plugin.
+		$I->activatePlugin($name);
 
 		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
@@ -101,7 +89,7 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Deactivate the Plugin, unless it is already deactivated.
-		if ( $I->seePluginActivated($name) ) {
+		if ( ! empty( $I->grabMultiple('a[id="deactivate-' . $name . '"]') ) ) {
 			$I->deactivatePlugin($name);
 		}
 	}
