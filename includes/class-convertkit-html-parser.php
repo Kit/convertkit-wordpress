@@ -67,9 +67,14 @@ class ConvertKit_HTML_Parser {
 	 */
 	public function get_body_html() {
 
-		// Return modified content in the <body> tag.
-		preg_match( '/<body[^>]*>(.*?)<\/body>/is', $this->html->saveHTML(), $matches );
-		return $matches[1] ?? '';
+		$body = $this->html->getElementsByTagName( 'body' )->item( 0 );
+
+		$html = '';
+		foreach ( $body->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$html .= $this->html->saveHTML( $child );
+		}
+
+		return $html;
 
 	}
 
