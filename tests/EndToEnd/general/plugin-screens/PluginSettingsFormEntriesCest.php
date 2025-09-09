@@ -334,6 +334,46 @@ class PluginSettingsFormEntriesCest
 	}
 
 	/**
+	 * Test the Form Entries table with an API result filter and search.
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithAPIResultFilterAndSearch(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Search by name and filter by API result.
+		$I->fillField('#convertkit-search', 'First 0');
+		$I->selectOption('filters[api_result]', 'Success');
+		$I->click('#filter_action');
+
+		// Confirm that the search term is displayed.
+		$I->waitForElementVisible('span.subtitle.left');
+		$I->assertEquals('Search results for "First 0"', $I->grabTextFrom('span.subtitle.left'));
+
+		// Confirm the table displays the filtered results.
+		$I->see('1 item');
+		$I->assertNotContains(
+			'error',
+			$I->grabMultiple('td.column-api_result')
+		);
+		$I->assertContains(
+			'success',
+			$I->grabMultiple('td.column-api_result')
+		);
+	}
+
+	/**
 	 * Test the Form Entries table with an API result filter and pagination.
 	 *
 	 * @since   3.0.1
