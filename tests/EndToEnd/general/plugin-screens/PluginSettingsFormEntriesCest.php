@@ -296,6 +296,106 @@ class PluginSettingsFormEntriesCest
 	}
 
 	/**
+	 * Test the Form Entries table with an API result filter.
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithAPIResultFilter(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Filter by API result.
+		$I->selectOption('filters[api_result]', 'Success');
+		$I->click('#filter_action');
+
+		// Wait for the table to load.
+		$I->waitForElementVisible('span.subtitle.left');
+
+		// Confirm the table displays the filtered results.
+		$I->see('5 items');
+		$I->assertNotContains(
+			'error',
+			$I->grabMultiple('td.column-api_result')
+		);
+		$I->assertContains(
+			'success',
+			$I->grabMultiple('td.column-api_result')
+		);
+	}
+
+	/**
+	 * Test the Form Entries table with an API result filter and pagination.
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormEntriesTableWithAPIResultFilterAndPagination(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Enter some entries into the Form Entries table.
+		$items = $this->insertFormEntriesToDatabase($I);
+
+		// Load the Form Entries screen.
+		$I->loadKitSettingsFormEntriesScreen($I);
+
+		// Set pagination to 2 per page.
+		$I->click('button#show-settings-link');
+		$I->waitForElementVisible('input#convertkit_form_entries_per_page');
+		$I->fillField('#convertkit_form_entries_per_page', '2');
+		$I->click('Apply');
+		$I->waitForElementNotVisible('input#convertkit_form_entries_per_page');
+
+		// Filter by API result.
+		$I->selectOption('filters[api_result]', 'Error');
+		$I->click('#filter_action');
+
+		// Wait for the table to load.
+		$I->waitForElementVisible('span.subtitle.left');
+
+		// Confirm the table displays the filtered results.
+		$I->see('5 items');
+		$I->assertNotContains(
+			'success',
+			$I->grabMultiple('td.column-api_result')
+		);
+		$I->assertContains(
+			'error',
+			$I->grabMultiple('td.column-api_result')
+		);
+
+		// Click next page.
+		$I->click('a.next-page');
+
+		// Wait for the table to load.
+		$I->waitForElementVisible('span.subtitle.left');
+
+		// Confirm the table displays the filtered results.
+		$I->see('5 items');
+		$I->assertNotContains(
+			'success',
+			$I->grabMultiple('td.column-api_result')
+		);
+		$I->assertContains(
+			'error',
+			$I->grabMultiple('td.column-api_result')
+		);
+	}
+
+	/**
 	 * Test the Form Entries table delete bulk action.
 	 *
 	 * @since   3.0.0
@@ -388,6 +488,9 @@ class PluginSettingsFormEntriesCest
 	 */
 	private function insertFormEntriesToDatabase(EndToEndTester $I)
 	{
+		// Clear the table of any existing entries.
+		$I->truncateDbTable('wp_kit_form_entries');
+
 		$items = [];
 
 		for ($i = 0; $i < 10; $i++) {
@@ -395,7 +498,7 @@ class PluginSettingsFormEntriesCest
 				'post_id'    => $i,
 				'first_name' => 'First ' . $i,
 				'email'      => 'test' . $i . '@example.com',
-				'api_result' => 'success',
+				'api_result' => ( $i % 2 === 0 ? 'success' : 'error' ),
 				'created_at' => date('Y-m-d H:i:s', strtotime('-' . $i . ' days')),
 				'updated_at' => date('Y-m-d H:i:s', strtotime('-' . $i . ' days')),
 			];
