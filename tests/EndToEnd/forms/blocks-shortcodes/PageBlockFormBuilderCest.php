@@ -1148,7 +1148,12 @@ class PageBlockFormBuilderCest
 
 		// Check label exists with correct text.
 		$I->seeElementInDOM($container . ' label[for="' . $fieldID . '"]');
-		$I->assertEquals($label, $I->grabTextFrom($container . ' label[for="' . $fieldID . '"]'));
+		$I->assertEquals($label . ( $required ? ' *' : '' ), $I->grabTextFrom($container . ' label[for="' . $fieldID . '"]'));
+
+		// Check the required asterisk is displayed.
+		if ($required) {
+			$I->seeElementInDOM($container . ' label[for="' . $fieldID . '"] span.convertkit-form-builder-field-required');
+		}
 	}
 
 	/**
