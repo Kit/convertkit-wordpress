@@ -43,7 +43,9 @@ class ThirdPartyPlugin extends \Codeception\Module
 
 			default:
 				// Activate the Plugin.
-				$I->activatePlugin($name);
+				$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+				$I->selectOption('action', 'activate-selected');
+				$I->click('#doaction');
 				break;
 		}
 
@@ -111,7 +113,9 @@ class ThirdPartyPlugin extends \Codeception\Module
 
 			default:
 				// Deactivate the Plugin.
-				$I->deactivatePlugin($name);
+				$I->checkOption('//*[@data-slug="' . $name . '"]/th/input');
+				$I->selectOption('action', 'deactivate-selected');
+				$I->click('#doaction');
 				break;
 		}
 	}
