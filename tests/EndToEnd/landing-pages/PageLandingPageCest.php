@@ -338,6 +338,70 @@ class PageLandingPageCest
 
 	/**
 	 * Test that the Landing Page specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page, with Autoptimize's Lazy-load images active.
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefinedLandingPageWithAutoptimizePlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Autoptimize Plugin.
+		$I->activateThirdPartyPlugin($I, 'autoptimize');
+
+		// Enable Lazy Loading.
+		$I->haveOptionInDatabase(
+			'autoptimize_imgopt_settings',
+			[
+				'autoptimize_imgopt_checkbox_field_3' => 1,
+			]
+		);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Landing Page: Autoptimize: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
+		);
+
+		// Configure metabox's Landing Page setting to value specified in the .env file.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
+			]
+		);
+
+		// Get Landing Page ID.
+		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the basic HTML structure is correct.
+		$I->seeLandingPageOutput($I, true);
+
+		// Confirm the Kit Site Icon displays.
+		$I->seeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
+
+		// Confirm that the Kit Landing Page displays.
+		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+
+		// Confirm that Autoptimize has not lazy loaded assets.
+		$I->dontSeeElementInDOM('img[data-bg]');
+		$I->dontSeeElementInDOM('img[src*="data:image/svg+xml"]');
+
+		// Deactivate Autoptimize Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'autoptimize');
+	}
+
+	/**
+	 * Test that the Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, with Perfmatters active.
 	 *
 	 * @since   2.5.1
