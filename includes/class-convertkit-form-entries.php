@@ -273,13 +273,14 @@ class ConvertKit_Form_Entries {
 	 * @since   3.0.0
 	 *
 	 * @param   bool|string $search     Search Query.
+	 * @param   bool|string $api_result API Result.
 	 * @param   string      $order_by   Order Results By.
 	 * @param   string      $order      Order (asc|desc).
 	 * @param   int         $page       Pagination Offset (default: 1).
 	 * @param   int         $per_page   Number of Results to Return (default: 25).
 	 * @return  array
 	 */
-	public function search( $search = false, $order_by = 'created_at', $order = 'desc', $page = 1, $per_page = 25 ) {
+	public function search( $search = false, $api_result = false, $order_by = 'created_at', $order = 'desc', $page = 1, $per_page = 25 ) {
 
 		global $wpdb;
 
@@ -289,13 +290,12 @@ class ConvertKit_Form_Entries {
 			$wpdb->prefix . $this->table
 		);
 
-		// Add search clause.
-		if ( $search ) {
-			$query .= $wpdb->prepare(
-				' WHERE first_name LIKE %s OR email LIKE %s',
-				'%' . $search . '%',
-				'%' . $search . '%'
-			);
+		// Build where clauses.
+		$where_clauses = $this->build_where_clauses( $search, $api_result );
+
+		// If where clauses are provided, add them to the query.
+		if ( count( $where_clauses ) ) {
+			$query .= ' WHERE ' . implode( ' AND ', $where_clauses );
 		}
 
 		// Order.
@@ -322,9 +322,10 @@ class ConvertKit_Form_Entries {
 	 * @since   3.0.0
 	 *
 	 * @param   bool|string $search     Search Query.
+	 * @param   bool|string $api_result API Result.
 	 * @return  int
 	 */
-	public function total( $search = false ) {
+	public function total( $search = false, $api_result = false ) {
 
 		global $wpdb;
 
@@ -335,17 +336,52 @@ class ConvertKit_Form_Entries {
 			$wpdb->prefix . $this->table
 		);
 
+		// Build where clauses.
+		$where_clauses = $this->build_where_clauses( $search, $api_result );
+
+		// If where clauses are provided, add them to the query.
+		if ( count( $where_clauses ) ) {
+			$query .= ' WHERE ' . implode( ' AND ', $where_clauses );
+		}
+
+		// Run and return total records found.
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+	}
+
+	/**
+	 * Builds the where clauses for the given query parameters
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   bool|string $search     Search Query.
+	 * @param   bool|string $api_result API Result.
+	 * @return  array
+	 */
+	private function build_where_clauses( $search = false, $api_result = false ) {
+
+		global $wpdb;
+
+		$where_clauses = array();
+
 		// Add search clause.
 		if ( $search ) {
-			$query .= $wpdb->prepare(
-				' WHERE first_name LIKE %s OR email LIKE %s',
+			$where_clauses[] = $wpdb->prepare(
+				'(first_name LIKE %s OR email LIKE %s)',
 				'%' . $search . '%',
 				'%' . $search . '%'
 			);
 		}
 
-		// Run and return total records found.
-		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// Add API result clause.
+		if ( $api_result ) {
+			$where_clauses[] = $wpdb->prepare(
+				'api_result = %s',
+				$api_result
+			);
+		}
+
+		return $where_clauses;
 
 	}
 

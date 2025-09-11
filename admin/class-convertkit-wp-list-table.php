@@ -48,6 +48,15 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	private $bulk_actions = array();
 
 	/**
+	 * Holds the supported filters.
+	 *
+	 * @since   3.0.1
+	 *
+	 * @var     array
+	 */
+	private $filters = array();
+
+	/**
 	 * Holds the table columns.
 	 *
 	 * @var     array
@@ -286,6 +295,24 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Add a filter to the table
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param string $key     Filter name.
+	 * @param string $label   Filter label.
+	 * @param array  $options Filter options.
+	 */
+	public function add_filter( $key, $label, $options ) {
+
+		$this->filters[ $key ] = array(
+			'label'   => $label,
+			'options' => $options,
+		);
+
+	}
+
+	/**
 	 * Define table columns and pagination for this WP_List_Table.
 	 *
 	 * @since   3.0.0
@@ -334,14 +361,61 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 			<div class="alignleft actions bulkactions">
-				<?php $this->bulk_actions( $which ); ?>
+				<?php
+				$this->bulk_actions( $which );
+				?>
 			</div>
 			<?php
 			$this->extra_tablenav( $which );
 			$this->pagination( $which );
+			$this->filters( $which );
 			?>
 
 			<br class="clear" />
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Display the filters
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   string $which  The location of the bulk actions: 'top' or 'bottom'.
+	 */
+	public function filters( $which ) {
+
+		// Don't output filters if not on the top.
+		if ( 'top' !== $which ) {
+			return;
+		}
+
+		// Don't output filters if no filters are defined.
+		if ( ! $this->filters ) {
+			return;
+		}
+
+		?>
+		<div class="alignleft actions filters">
+			<?php
+			foreach ( $this->filters as $filter_key => $filter ) {
+				?>
+				<select name="filters[<?php echo esc_attr( $filter_key ); ?>]">
+					<option value=""><?php echo esc_html( $filter['label'] ); ?></option>
+					<?php
+					foreach ( $filter['options'] as $option_key => $option_value ) {
+						?>
+						<option value="<?php echo esc_attr( $option_key ); ?>"<?php selected( $option_key, $this->get_filter( $filter_key ) ); ?>><?php echo esc_attr( $option_value ); ?></option>
+						<?php
+					}
+					?>
+				</select>
+				<?php
+			}
+
+			submit_button( __( 'Filter', 'convertkit' ), '', 'filter_action', false );
+			?>
 		</div>
 		<?php
 
@@ -407,6 +481,29 @@ class ConvertKit_WP_List_Table extends WP_List_Table {
 		}
 
 		return urldecode( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) );
+
+	}
+
+	/**
+	 * Get the filter requested by the user
+	 *
+	 * @since   3.0.1
+	 *
+	 * @param   string $key  Filter key.
+	 * @return  string
+	 */
+	public function get_filter( $key ) {
+
+		// Bail if nonce is not valid.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-' . $this->_args['plural'] ) ) {
+			return '';
+		}
+
+		if ( ! array_key_exists( 'filters', $_REQUEST ) || ! array_key_exists( $key, $_REQUEST['filters'] ) ) {
+			return '';
+		}
+
+		return urldecode( sanitize_text_field( wp_unslash( $_REQUEST['filters'][ $key ] ) ) );
 
 	}
 
