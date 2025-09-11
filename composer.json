@@ -28,6 +28,11 @@
         "phpcs-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
         "phpcbf-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1250M",
+        "coding-standards": "vendor/bin/phpcs ./ -s -v",
+        "fix-coding-standards": "vendor/bin/phpcbf ./ -s -v",
+        "coding-standards-on-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
+        "fix-coding-standards-on-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
+        "static-analysis": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "test": [
             "vendor/bin/codecept build @no_additional_args",
             "vendor/bin/codecept run EndToEnd @additional_args --fail-fast"
