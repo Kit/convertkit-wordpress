@@ -17,7 +17,7 @@ If you haven't yet set up your local development environment with the Kit Plugin
 If you haven't yet created a branch and made any code changes to the Plugin, refer to the [Development Guide](DEVELOPMENT.md)
 
 
-### Familiar with PHP Coding Standards, PHPStan, wp-browser and Codeception
+### Familiar with PHP Coding Standards, PHPStan, wp-browser and Codeception?
 
 The following Composer commands can be used:
 
