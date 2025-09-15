@@ -26,8 +26,8 @@ The following Composer commands can be used:
 | `composer coding-standards` | Runs PHP CodeSniffer on the entire plugin codebase |
 | `composer fix-coding-standards` | Runs PHP CodeSniffer specifically on the tests directory using test-specific standards |
 | `composer coding-standards-on-tests` | Runs PHPStan static analysis with increased memory limit |
-| `composer fix-coding-standards-on-tests` | Builds and runs end-to-end tests with fail-fast enabled |
-| `composer static-analysis` | Builds and runs integration tests with fail-fast enabled |
+| `composer fix-coding-standards-on-tests` | Builds and runs end-to-end tests with `fail-fast` enabled |
+| `composer static-analysis` | Builds and runs integration tests with `fail-fast` enabled |
 
 Shorter versions of these Composer commands are also available:
 
