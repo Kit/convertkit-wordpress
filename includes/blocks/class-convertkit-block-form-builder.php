@@ -292,7 +292,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		return array(
 			'title'                   => __( 'Kit Form Builder', 'convertkit' ),
-			'description'             => __( 'Build a subcription form with Kit.', 'convertkit' ),
+			'description'             => __( 'Build a subscription form with Kit.', 'convertkit' ),
 			'icon'                    => 'resources/backend/images/block-icon-form-builder.svg',
 			'category'                => 'convertkit',
 			'keywords'                => array(
