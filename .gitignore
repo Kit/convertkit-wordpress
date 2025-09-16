@@ -5,7 +5,9 @@ codeception.yml
 composer.lock
 log
 log.txt
+package-lock.json
 phpstan.neon
+node_modules
 tests/_output
 tests/_wordpress
 tests/Support/_generated

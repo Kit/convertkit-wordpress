@@ -4,6 +4,7 @@
 /.scripts
 /.wordpress-org
 /log
+/node_modules
 /tests
 /vendor/autoload.php
 /vendor/composer
@@ -18,16 +19,17 @@
 .gitignore
 ACTIONS-FILTERS.md
 codeception.dist.yml
-codeception.yml
 composer.json
 composer.lock
 convertkit.zip
 DEPLOYMENT.md
 DEVELOPMENT.md
 LICENSE
+package-lock.json
+package.json
 log.txt
-phpcs.xml
 phpcs.tests.xml
+phpcs.xml
 phpstan-dev.neon
 phpstan.neon
 phpstan.neon.dist
