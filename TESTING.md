@@ -28,6 +28,8 @@ The following Composer commands can be used:
 | `composer fix-php-coding-standards-on-tests` | `composer phpcbf-tests` | Fix PHP files to meet PHP Coding Standards on the /tests folder |
 | `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on the entire plugin codebase |
 | `composer fix-css-coding-standards` | `composer fix-css` | Fixes CSS files to meet WordPress CSS Coding Standards |
+| `composer js-coding-standards` | `composer lint-js` | Runs WordPress JS Coding Standards on the entire plugin codebase |
+| `composer fix-js-coding-standards` | `composer fix-js` | Fixes JS files to meet WordPress JS Coding Standards |
 | `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
 | `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
 | `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
@@ -473,6 +475,27 @@ Any errors should be corrected by either:
 - (Experimental) running `npm run fix:css` to automatically fix coding standards
 
 Need to change the CSS or WordPress coding standard rules applied?  Either:
+- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output: https://stylelint.io/user-guide/ignore-code
+- edit the [.stylelintrc.json](.stylelintrc.json) file.
+
+**Rules should be ignored with caution**.
+
+## Run JS Linting
+
+> **Quick Command**  
+> `composer lint-js`: Run JS Coding Standards on Plugin files
+
+In the Plugin's directory, run the following command to run JS and WordPress Coding Standards on JavaScript, which will check the code meets WordPress' Coding Standards as defined in the `.stylelintrc.json` configuration:
+
+```bash
+npm run lint:js
+```
+
+Any errors should be corrected by either:
+- making applicable code changes
+- (Experimental) running `npm run fix:js` to automatically fix coding standards
+
+Need to change the JS or WordPress coding standard rules applied?  Either:
 - ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output: https://stylelint.io/user-guide/ignore-code
 - edit the [.stylelintrc.json](.stylelintrc.json) file.
 
