@@ -227,11 +227,24 @@ form.convertkit-restrict-content-form div#convertkit-subscriber-code-container i
 
 /* Responsive */
 @media screen and (max-width: 730px) {
+	#convertkit-restrict-content {
+		padding: 20px;
+	}
 	#convertkit-restrict-content .convertkit-restrict-content-actions {
 		padding: 10px;
 	}
 	#convertkit-restrict-content input[type=email], #convertkit-restrict-content input[type=text], #convertkit-restrict-content input#convertkit_subscriber_code {
 		width: 100%;
+	}
+	form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field {
+		grid-template-areas:
+			"email email"
+			"button button";
+		max-width: 100%;
+		height: auto;
+	}
+	form.convertkit-restrict-content-form div#convertkit-restrict-content-email-field input[type=submit] {
+		margin-top: 10px;
 	}
 	#convertkit-restrict-content-modal {
 		width: 90%;
