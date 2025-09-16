@@ -113,6 +113,11 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
 
+      # Installs WordPress scripts for CSS Coding Standards.
+      - name: Run npm install
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: npm install @wordpress/scripts --save-dev
+
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer dump-autoload

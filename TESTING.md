@@ -473,7 +473,7 @@ Any errors should be corrected by either:
 - (Experimental) running `npm run fix:css` to automatically fix coding standards
 
 Need to change the CSS or WordPress coding standard rules applied?  Either:
-- ignore a rule in the affected code, by adding ``, where {rule} is the given rule that failed in the above output.
+- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output: https://stylelint.io/user-guide/ignore-code
 - edit the [.stylelintrc.json](.stylelintrc.json) file.
 
 **Rules should be ignored with caution**.
