@@ -98,8 +98,8 @@ npm install eslint-config-prettier --save-dev
 ```
 
 This sets up:
-- JS linting with ESLint and formatting with Prettier using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/, https://developer.wordpress.org/block-editor/reference-guides/packages/packages-prettier-config/).
-- CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style).
+- JS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-js)
+- CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style)
 
 ### Configure wp-config.php
 

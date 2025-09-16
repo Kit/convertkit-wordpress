@@ -3,8 +3,8 @@
  *
  * @since   1.9.6
  *
- * @package ConvertKit
+ * @package
  * @author ConvertKit
  */
 
-convertKitTinyMCERegisterPlugin( convertkit_shortcodes['content'] );
+convertKitTinyMCERegisterPlugin(convertkit_shortcodes.content);

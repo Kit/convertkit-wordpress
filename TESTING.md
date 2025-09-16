@@ -474,8 +474,8 @@ Any errors should be corrected by either:
 - making applicable code changes
 - (Experimental) running `npm run fix:css` to automatically fix coding standards
 
-Need to change the CSS or WordPress coding standard rules applied?  Either:
-- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output: https://stylelint.io/user-guide/ignore-code
+Need to change the CSS or WordPress coding standard rules applied?  WordPress' CSS linting uses [stylelint](https://stylelint.io/user-guide/ignore-code). Either:
+- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output
 - edit the [.stylelintrc.json](.stylelintrc.json) file.
 
 **Rules should be ignored with caution**.
@@ -495,9 +495,11 @@ Any errors should be corrected by either:
 - making applicable code changes
 - (Experimental) running `npm run fix:js` to automatically fix coding standards
 
-Need to change the JS or WordPress coding standard rules applied?  Either:
-- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output: https://stylelint.io/user-guide/ignore-code
+Need to change the JS or WordPress coding standard rules applied?  WordPress' JS linting uses [eslint](https://eslint.org/docs/latest/rules/). Either:
+- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output
 - edit the [.stylelintrc.json](.stylelintrc.json) file.
+
+**Rules should be ignored with caution**.
 
 **Rules should be ignored with caution**.
 
