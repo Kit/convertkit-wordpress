@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.4' ] #[ '7.3', '7.4', '8.0', '8.1' ]
+        php-versions: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ] #[ '7.3', '7.4', '8.0', '8.1' ]
 
     # Steps to install, configure and run tests
     steps:
@@ -122,19 +122,19 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer dump-autoload
 
-      # Run Coding Standards on Tests.
-      - name: Run Coding Standards on Tests
+      # Run PHP Coding Standards on Tests.
+      - name: Run WordPress PHPCoding Standards on Tests
         working-directory: ${{ env.PLUGIN_DIR }}
         if: ${{ matrix.php-versions == '8.1' || matrix.php-versions == '8.2' || matrix.php-versions == '8.3' || matrix.php-versions == '8.4' }}
         run: php vendor/bin/phpcs -q --standard=phpcs.tests.xml --report=checkstyle ./tests | cs2pr
 
-      # Run WordPress Coding Standards on Plugin.
-      - name: Run WordPress Coding Standards
+      # Run PHP Coding Standards on Plugin.
+      - name: Run WordPress PHP Coding Standards
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/phpcs -q --standard=phpcs.xml --report=checkstyle ./ | cs2pr
 
       # Run CSS Coding Standards on Plugin.
-      - name: Run CSS Coding Standards
+      - name: Run WordPress CSS Coding Standards
         working-directory: ${{ env.PLUGIN_DIR }}
         run: npm run lint:css
 
