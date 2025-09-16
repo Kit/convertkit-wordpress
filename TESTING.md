@@ -16,19 +16,28 @@ If you haven't yet set up your local development environment with the Kit Plugin
 
 If you haven't yet created a branch and made any code changes to the Plugin, refer to the [Development Guide](DEVELOPMENT.md)
 
-> **Familiar with wp-browser, Codeception, PHP Coding Standards and PHPStan?**
-> 
-> Write your tests 
-> 
-> Run tests using `composer test [folder]/[cest]` or `composer test-integration [test]`
-> 
-> Run PHP Coding Standards using `composer coding-standards` and `composer coding-standards-tests`
-> 
-> Fix PHP Coding Standards using `composer fix-coding-standards` and `composer fix-coding-standards-tests`
-> 
-> Run static analysis using `composer static-analysis`
-> 
-> [Submit a Pull Request](https://github.com/ConvertKit/convertkit-wordpress/compare).
+
+### Familiar with PHP Coding Standards, PHPStan, wp-browser and Codeception?
+
+The following Composer commands can be used:
+
+| Command | Description |
+|---------|-------------|
+| `composer coding-standards` | Runs PHP CodeSniffer on the entire plugin codebase |
+| `composer fix-coding-standards` | Runs PHP CodeSniffer specifically on the tests directory using test-specific standards |
+| `composer coding-standards-on-tests` | Runs PHPStan static analysis with increased memory limit |
+| `composer fix-coding-standards-on-tests` | Builds and runs end-to-end tests with `fail-fast` enabled |
+| `composer static-analysis` | Builds and runs integration tests with `fail-fast` enabled |
+
+Shorter versions of these Composer commands are also available:
+
+| Command | Description |
+|---------|-------------|
+| `composer phpcs` | Runs PHP CodeSniffer on the entire plugin codebase |
+| `composer phpcs-tests` | Runs PHP CodeSniffer specifically on the tests directory using test-specific standards |
+| `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
+| `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
+| `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
 
 ## Write (or modify) a test
 
