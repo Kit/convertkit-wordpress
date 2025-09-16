@@ -2,8 +2,8 @@
   "name": "wordpress-linting-setup",
   "private": true,
   "scripts": {
-    "lint:js": "wp-scripts lint-js --max-warnings=0",
-    "lint:css": "wp-scripts lint-style --max-warnings=0"
+    "lint:css": "wp-scripts lint-style --max-warnings=0",
+    "fix:css": "wp-scripts lint-style --fix"
   },
   "prettier": "@wordpress/prettier-config",
   "devDependencies": {

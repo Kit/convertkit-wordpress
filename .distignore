@@ -17,6 +17,7 @@
 .env.testing
 .env
 .gitignore
+.stylelintrc.json
 ACTIONS-FILTERS.md
 codeception.dist.yml
 composer.json

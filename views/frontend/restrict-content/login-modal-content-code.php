@@ -18,7 +18,7 @@
 <div class="convertkit-restrict-content-actions">
 	<form id="convertkit-restrict-content-form" class="convertkit-restrict-content-form" action="<?php echo esc_attr( add_query_arg( array( 'convertkit_login' => 1 ), get_permalink( WP_ConvertKit()->get_class( 'output_restrict_content' )->post_id ) ) ); ?>" method="post">
 		<div id="convertkit-subscriber-code-container" class="<?php echo sanitize_html_class( ( is_wp_error( WP_ConvertKit()->get_class( 'output_restrict_content' )->error ) ? 'convertkit-restrict-content-error' : '' ) ); ?>">
-			<input type="text" name="subscriber_code" id="convertkit_subscriber_code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" value="" required />
+			<input type="text" name="subscriber_code" id="convertkit-subscriber-code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" value="" required />
 		</div>
 
 		<?php

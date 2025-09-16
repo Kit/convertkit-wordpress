@@ -1,0 +1,8 @@
+{
+    "extends": "@wordpress/stylelint-config",
+    "rules": {
+        "font-family-no-missing-generic-family-keyword": null,
+        "selector-class-pattern": null,
+        "declaration-property-unit-allowed-list": null
+    }
+}

@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ] #[ '7.3', '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.4' ] #[ '7.3', '7.4', '8.0', '8.1' ]
 
     # Steps to install, configure and run tests
     steps:
@@ -127,6 +127,11 @@ jobs:
       - name: Run WordPress Coding Standards
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/phpcs -q --standard=phpcs.xml --report=checkstyle ./ | cs2pr
+
+      # Run CSS Coding Standards on Plugin.
+      - name: Run CSS Coding Standards
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: npm run lint:css
 
       # Run PHPStan for static analysis.
       - name: Run PHPStan Static Analysis

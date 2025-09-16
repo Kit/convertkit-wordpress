@@ -2,7 +2,7 @@
 
 This document describes how to:
 - create and run tests for your development work,
-- ensure code meets PHP and WordPress Coding Standards, for best practices and security,
+- ensure code meets PHP, CSS and WordPress Coding Standards, for best practices and security,
 - ensure code passes static analysis, to catch potential errors that tests might miss
 
 If you're new to creating and running tests, this guide will walk you through how to do this.
@@ -16,28 +16,21 @@ If you haven't yet set up your local development environment with the Kit Plugin
 
 If you haven't yet created a branch and made any code changes to the Plugin, refer to the [Development Guide](DEVELOPMENT.md)
 
-
-### Familiar with PHP Coding Standards, PHPStan, wp-browser and Codeception?
+### Familiar with PHP/CSS Coding Standards, PHPStan, wp-browser and Codeception?
 
 The following Composer commands can be used:
 
-| Command | Description |
-|---------|-------------|
-| `composer coding-standards` | Runs PHP CodeSniffer on the entire plugin codebase |
-| `composer fix-coding-standards` | Runs PHP CodeSniffer specifically on the tests directory using test-specific standards |
-| `composer coding-standards-on-tests` | Runs PHPStan static analysis with increased memory limit |
-| `composer fix-coding-standards-on-tests` | Builds and runs end-to-end tests with `fail-fast` enabled |
-| `composer static-analysis` | Builds and runs integration tests with `fail-fast` enabled |
-
-Shorter versions of these Composer commands are also available:
-
-| Command | Description |
-|---------|-------------|
-| `composer phpcs` | Runs PHP CodeSniffer on the entire plugin codebase |
-| `composer phpcs-tests` | Runs PHP CodeSniffer specifically on the tests directory using test-specific standards |
-| `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
-| `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
-| `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
+| Command | Short Command | Description |
+|---------|---------------|-------------|
+| `composer php-coding-standards` | `composer phpcs` | Runs WordPress and PHP Coding Standards on the entire plugin codebase |
+| `composer fix-php-coding-standards` | `composer phpcbf` | Fix PHP files to meet WordPress and PHP Coding Standards |
+| `composer php-coding-standards-on-tests` | `composer phpcs-tests` | Runs PHP Coding Standards on the /tests folder |
+| `composer fix-php-coding-standards-on-tests` | `composer phpcbf-tests` | Fix PHP files to meet PHP Coding Standards on the /tests folder |
+| `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on the entire plugin codebase |
+| `composer fix-css-coding-standards` | `composer fix-css` | Fixes CSS files to meet WordPress CSS Coding Standards |
+| `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
+| `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
+| `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
 
 ## Write (or modify) a test
 
@@ -462,6 +455,28 @@ Need to change the PHP or WordPress coding standard rules applied?  Either:
 - edit the [phpcs.xml](phpcs.xml) file.
 
 **Rules should be ignored with caution**, particularly when sanitizing and escaping data.
+
+## Run CSS Linting
+
+> **Quick Command**  
+> `composer lint-css`: Run CSS Coding Standards on Plugin files
+
+In the Plugin's directory, run the following command to run CSS and WordPress Coding Standards on CSS, which will check the code meets WordPress' Coding Standards
+as defined in the `.stylelintrc.json` configuration:
+
+```bash
+npm run lint:css
+```
+
+Any errors should be corrected by either:
+- making applicable code changes
+- (Experimental) running `npm run fix:css` to automatically fix coding standards
+
+Need to change the CSS or WordPress coding standard rules applied?  Either:
+- ignore a rule in the affected code, by adding ``, where {rule} is the given rule that failed in the above output.
+- edit the [.stylelintrc.json](.stylelintrc.json) file.
+
+**Rules should be ignored with caution**.
 
 ## Run PHPStan
 

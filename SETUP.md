@@ -93,11 +93,9 @@ In the Plugin's directory, at the command line, run:
 
 ```bash
 npm install @wordpress/scripts --save-dev
-npm install @wordpress/prettier-config --save-dev
-npm install eslint-config-prettier --save-dev
 ```
 
-This sets up JS linting with ESLint and formatting with Prettier using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/, https://developer.wordpress.org/block-editor/reference-guides/packages/packages-prettier-config/).
+This sets up CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style).
 
 ### Configure wp-config.php
 

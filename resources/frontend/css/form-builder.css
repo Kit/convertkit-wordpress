@@ -10,9 +10,11 @@
 	box-sizing: border-box;
 	font-family: inherit;
 }
+
 .wp-block-convertkit-form-builder-field label span.convertkit-form-builder-field-required {
-	color: red;
+	color: #f00;
 }
+
 form .convertkit-form-builder-subscribed-message {
 	width: 100%;
 	margin: 0 0 20px 0;
