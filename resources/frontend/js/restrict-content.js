@@ -78,7 +78,7 @@ function convertKitRestrictContentFormSubmit( e ) {
 	document.querySelector( '#convertkit-restrict-content-modal-loading' ).style.display = 'block';
 
 	// Determine if this is the email or code submission.
-	let isCodeSubmission = document.querySelector( 'input#convertkit_subscriber_code' ) !== null;
+	let isCodeSubmission = document.querySelector( 'input#convertkit-subscriber-code' ) !== null;
 
 	if ( isCodeSubmission ) {
 		// Code submission.
@@ -281,7 +281,7 @@ function convertKitRestrictContentSubscriberVerification( nonce, subscriber_code
  */
 function convertKitRestrictContentOTPField() {
 
-	let otpInput = document.querySelector( '#convertkit_subscriber_code' );
+	let otpInput = document.querySelector( '#convertkit-subscriber-code' );
 
 	// Bail if the OTP input isn't displayed on screen.
 	if ( otpInput === null ) {

@@ -4,6 +4,7 @@
 body.settings_page__wp_convertkit_settings {
 	background: #f9f7f4;
 }
+
 body.settings_page__wp_convertkit_settings #wpcontent {
 	padding-left: 0;
 }
@@ -16,15 +17,17 @@ body.settings_page__wp_convertkit_settings header {
 	padding: 0 20px;
 	background: url(../images/kit-logo.svg) 30px 50% no-repeat;
 	background-size: 75px auto;
-	background-color: #ffffff;
+	background-color: #fff;
 }
+
 body.settings_page__wp_convertkit_settings h1 {
 	margin: 0;
 	padding: 0;
 	font-weight: 400;
-	color: #D2D8DD;
+	color: #d2d8dd;
 	text-indent: -9999px;
 }
+
 body.settings_page__wp_convertkit_settings header a.convertkit-docs {
 	float: right;
 	margin: 20px 20px 0 0;
@@ -35,6 +38,7 @@ body.settings_page__wp_convertkit_settings header a.convertkit-docs {
 	background: url(../images/help.svg) 0 0% no-repeat;
 	background-size: 20px 20px;
 }
+
 body.settings_page__wp_convertkit_settings .wrap {
 	margin-left: 20px;
 }
@@ -55,6 +59,7 @@ ul.convertkit-tabs {
 	list-style-type: none;
 	border-bottom: 1px solid #d0d0cf;
 }
+
 ul.convertkit-tabs li {
 	display: inline-block;
 	margin: 0;
@@ -63,6 +68,7 @@ ul.convertkit-tabs li {
 	line-height: 64px;
 	list-style-type: none;
 }
+
 ul.convertkit-tabs li a {
 	display: inline-block;
 	padding: 0 20px;
@@ -73,10 +79,12 @@ ul.convertkit-tabs li a {
 	font-weight: 600;
 	color: #565656;
 }
+
 ul.convertkit-tabs li a:hover {
 	color: #144264;
 	background: #e7e7e7;
 }
+
 ul.convertkit-tabs li a.convertkit-tab-active {
 	color: #144264;
 	border-bottom: 1px solid #4c596d;
@@ -94,6 +102,7 @@ body.settings_page__wp_convertkit_settings .wrap .postbox {
 	border-radius: 8px;
 	border: none;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .postbox h2 {
 	margin: 0 0 30px 0;
 	padding: 0 0 30px 0;
@@ -102,13 +111,16 @@ body.settings_page__wp_convertkit_settings .wrap .postbox h2 {
 	border-bottom: 1px solid #e3e3e3;
 	color: #3d3d3d;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .postbox p {
 	font-size: 14px;
 }
+
 body.settings_page__wp_convertkit_settings p.submit {
 	margin-bottom: 20px;
 	padding: 0;
 }
+
 body.settings_page__wp_convertkit_settings .button {
 	margin: 0 5px 0 0;
 	padding: 4px 12px;
@@ -120,24 +132,29 @@ body.settings_page__wp_convertkit_settings .button {
 	text-shadow: none;
 	box-shadow: none;
 }
+
 body.settings_page__wp_convertkit_settings .button-primary {
 	background: #1e1e1e;
 	border-color: #1e1e1e;
 	color: #fff;
 }
+
 body.settings_page__wp_convertkit_settings .button-primary:hover {
 	background: #3d3d3d;
 	border-color: #3d3d3d;
 }
+
 body.settings_page__wp_convertkit_settings .button-secondary {
 	background: #f0f0f0;
 	border-color: #f0f0f0;
 	color: #3d3d3d;
 }
+
 body.settings_page__wp_convertkit_settings .button-secondary:hover {
 	background: #ddd;
 	border-color: #ddd;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .postbox textarea.convertkit-monospace {
 	font-family: monospace;
 	padding: 20px;
@@ -155,6 +172,7 @@ body.settings_page__wp_convertkit_settings ul.convertkit-tabs li a span.convertk
 	font-weight: 400;
 	font-size: 12px;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .postbox.convertkit-beta span.convertkit-beta-label {
 	display: inline-block;
 	background-color: #f0fff3;
@@ -166,12 +184,14 @@ body.settings_page__wp_convertkit_settings .wrap .postbox.convertkit-beta span.c
 	vertical-align: top;
 	font-size: 12px;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .postbox.convertkit-beta > h2 {
 	display: inline-block;
 	margin: 0;
 	padding: 0;
 	border: none;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .postbox.convertkit-beta > p.description {
 	margin-top: 30px;
 	padding-top: 30px;
@@ -197,7 +217,8 @@ body.settings_page__wp_convertkit_settings .wrap .subtitle.left {
 	line-height: 40px;
 	font-style: italic;
 }
-body.settings_page__wp_convertkit_settings .wrap .search-box input[type=search] {
+
+body.settings_page__wp_convertkit_settings .wrap .search-box input[type="search"] {
 	min-height: 40px;
 }
 
@@ -207,6 +228,7 @@ body.settings_page__wp_convertkit_settings .wrap .search-box input[type=search] 
 body.settings_page__wp_convertkit_settings .wrap .tablenav.top {
 	margin-bottom: 10px;
 }
+
 body.settings_page__wp_convertkit_settings .wrap .tablenav input.button {
 	height: 20px;
 	line-height: 20px;

@@ -4,11 +4,13 @@
 
 	<!-- Exclude some directories. -->
 	<exclude-pattern>/.wordpress-org/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/tests/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	
-	<!-- Exclude minified Javascript files. -->
-	<exclude-pattern>*.min.js</exclude-pattern>
+	<!-- Exclude CSS and JS, which are linted using wp-scripts. -->
+	<exclude-pattern>*.js</exclude-pattern>
+	<exclude-pattern>*.css</exclude-pattern>
 
 	<!-- Check that code meets WordPress standards - this includes core, docs and extra. -->
 	<rule ref="WordPress">

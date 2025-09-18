@@ -113,20 +113,30 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
 
+      # Installs WordPress scripts for CSS Coding Standards.
+      - name: Run npm install
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: npm install @wordpress/scripts --save-dev
+
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer dump-autoload
 
-      # Run Coding Standards on Tests.
-      - name: Run Coding Standards on Tests
+      # Run PHP Coding Standards on Tests.
+      - name: Run WordPress PHPCoding Standards on Tests
         working-directory: ${{ env.PLUGIN_DIR }}
         if: ${{ matrix.php-versions == '8.1' || matrix.php-versions == '8.2' || matrix.php-versions == '8.3' || matrix.php-versions == '8.4' }}
         run: php vendor/bin/phpcs -q --standard=phpcs.tests.xml --report=checkstyle ./tests | cs2pr
 
-      # Run WordPress Coding Standards on Plugin.
-      - name: Run WordPress Coding Standards
+      # Run PHP Coding Standards on Plugin.
+      - name: Run WordPress PHP Coding Standards
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/phpcs -q --standard=phpcs.xml --report=checkstyle ./ | cs2pr
+
+      # Run CSS Coding Standards on Plugin.
+      - name: Run WordPress CSS Coding Standards
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: npm run lint:css
 
       # Run PHPStan for static analysis.
       - name: Run PHPStan Static Analysis

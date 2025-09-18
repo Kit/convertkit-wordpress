@@ -7,6 +7,7 @@
 	background: url(../images/logomark.svg) 10px 6px no-repeat;
 	background-size: 18px 18px;
 }
+
 #convertkit-pre-publish-actions .misc-pub-section label {
 	font-weight: 700;
 }
@@ -15,10 +16,12 @@
  * Post Metabox
  */
 @media screen and (max-width: 782px) {
+
 	/* Add spacing below label and input */
 	#wp-convertkit-meta-box table.form-table th {
 		padding-bottom: 0.5em;
 	}
+
 	#wp-convertkit-meta-box table.form-table td {
 		padding-bottom: 15px;
 	}

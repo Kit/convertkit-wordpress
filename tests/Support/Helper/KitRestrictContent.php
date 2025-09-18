@@ -815,7 +815,7 @@ class KitRestrictContent extends \Codeception\Module
 	 */
 	public function seeRestrictContentSubscriberCode($I, $heading, $text)
 	{
-		$I->waitForElementVisible('input#convertkit_subscriber_code');
+		$I->waitForElementVisible('input#convertkit-subscriber-code');
 		$I->see($heading, 'h4');
 		$I->see($text, 'p');
 	}

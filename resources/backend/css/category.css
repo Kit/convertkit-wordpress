@@ -6,7 +6,9 @@
 .convertkit-select2-container-grid {
 	max-width: 95%;
 }
+
 @media screen and (max-width: 782px) {
+
 	.convertkit-select2-container-grid {
 		max-width: 100%;
 	}
