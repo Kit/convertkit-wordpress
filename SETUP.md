@@ -34,7 +34,7 @@ Confirm that installation was successful by entering the `composer` command at t
 
 ### Node.js + npm
 
-If [npm](https://nodejs.org/en/download/current) is not installed on your local environemnt, enter the following commands at the command line to install it:
+If [npm](https://nodejs.org/en/download/current) is not installed on your local environment, install a package manager to then install node, such as nvm:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -89,13 +89,7 @@ How to use these is covered later on, and in the [Testing Guide](TESTING.md)
 
 ### Install npm Packages
 
-In the Plugin's directory, at the command line, run:
-
-```bash
-npm install @wordpress/scripts --save-dev
-npm install @wordpress/prettier-config --save-dev
-npm install eslint-config-prettier --save-dev
-```
+In the Plugin's directory, at the command line, run `npm install`.
 
 This sets up:
 - JS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-js)
