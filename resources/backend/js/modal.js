@@ -161,7 +161,9 @@ document.addEventListener('DOMContentLoaded', function () {
 // QuickTags: Setup Backbone Modal and Template.
 if (typeof wp !== 'undefined' && typeof wp.media !== 'undefined') {
 	// Declared globally, as used in this file and quicktags.js.
-	const convertKitQuickTagsModal = new wp.media.view.Modal({
+	// Setting this as const or let causes a JS error stating that `convertKitQuickTagsModal` is not defined globally.
+	// eslint-disable-next-line no-var
+	var convertKitQuickTagsModal = new wp.media.view.Modal({
 		controller: { trigger() {} },
 		className: 'convertkit-quicktags-modal',
 	});
