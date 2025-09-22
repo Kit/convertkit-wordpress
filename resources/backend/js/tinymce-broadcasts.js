@@ -3,7 +3,6 @@
  *
  * @since   1.9.6.9
  *
- * @package
  * @author ConvertKit
  */
 

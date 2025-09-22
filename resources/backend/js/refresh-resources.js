@@ -1,7 +1,6 @@
 /**
  * Refresh Resources
  *
- * @package
  * @author ConvertKit
  */
 

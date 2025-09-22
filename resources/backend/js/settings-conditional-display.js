@@ -2,7 +2,6 @@
  * Displays or hides settings in the UI, depending on which settings are enabled
  * or disabled.
  *
- * @package
  * @author ConvertKit
  */
 

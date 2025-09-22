@@ -1,7 +1,6 @@
 /**
  * Quick Edit
  *
- * @package
  * @author ConvertKit
  */
 

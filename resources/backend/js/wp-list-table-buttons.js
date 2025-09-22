@@ -2,7 +2,6 @@
  * Moves any buttons added from the filter list in a WP_List_Table
  * to be displayed next to the "Add New" button.
  *
- * @package
  * @author ConvertKit
  */
 

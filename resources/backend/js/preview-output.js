@@ -1,7 +1,6 @@
 /**
  * Preview Output Wizard
  *
- * @package
  * @author ConvertKit
  */
 

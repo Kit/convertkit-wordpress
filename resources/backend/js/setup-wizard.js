@@ -1,7 +1,6 @@
 /**
  * Setup Wizard
  *
- * @package
  * @author ConvertKit
  */
 

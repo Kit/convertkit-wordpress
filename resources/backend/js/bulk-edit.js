@@ -1,7 +1,6 @@
 /**
  * Bulk Edit
  *
- * @package
  * @author ConvertKit
  */
 

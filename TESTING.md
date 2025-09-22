@@ -485,7 +485,7 @@ Need to change the CSS or WordPress coding standard rules applied?  WordPress' C
 > **Quick Command**  
 > `composer lint-js`: Run JS Coding Standards on Plugin files
 
-In the Plugin's directory, run the following command to run JS and WordPress Coding Standards on JavaScript, which will check the code meets WordPress' Coding Standards as defined in the `.stylelintrc.json` configuration:
+In the Plugin's directory, run the following command to run JS and WordPress Coding Standards on JavaScript, which will check the code meets WordPress' Coding Standards as defined in the `.eslintrc.js` configuration:
 
 ```bash
 npm run lint:js
@@ -496,8 +496,8 @@ Any errors should be corrected by either:
 - (Experimental) running `npm run fix:js` to automatically fix coding standards
 
 Need to change the JS or WordPress coding standard rules applied?  WordPress' JS linting uses [eslint](https://eslint.org/docs/latest/rules/). Either:
-- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output
-- edit the [.stylelintrc.json](.stylelintrc.json) file.
+- ignore a rule in the affected code, by adding `/* eslint-disable {rule} */`, where {rule} is the given rule that failed in the above output
+- edit the [.eslintrc.js](.eslintrc.js) file.
 
 **Rules should be ignored with caution**.
 
