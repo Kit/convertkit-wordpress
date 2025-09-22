@@ -7,12 +7,14 @@
  * @author  ConvertKit
  */
 
+/* eslint-disable no-unused-vars */
 /**
  * Initializes tabbed interfaces.
  *
  * @since 2.2.5
  */
-function convertKitTabsInit() { // eslint-disable-line no-unused-vars
+function convertKitTabsInit() {
+	// eslint-disable-line no-unused-vars
 	// Safely call this function by destroying any previously initialized instances.
 	convertKitTabsDestroy();
 
@@ -54,6 +56,7 @@ function convertKitTabsInit() { // eslint-disable-line no-unused-vars
 			});
 		});
 }
+/* eslint-enable no-unused-vars */
 
 /**
  * For the given active tab:

@@ -7,15 +7,17 @@
  * @author ConvertKit
  */
 
+/* eslint-disable no-unused-vars */
 /**
  * Custom callback function to render the ConvertKit Form Block preview in the Gutenberg Editor.
  *
  * @since 	1.9.6.5
  *
- * @param {Object} block 	Block.
- * @param {Object} props 	Block properties.
+ * @param {Object} block Block.
+ * @param {Object} props Block properties.
  */
-function convertKitGutenbergFormBlockRenderPreview(block, props) { // eslint-disable-line no-unused-vars
+function convertKitGutenbergFormBlockRenderPreview(block, props) {
+	// eslint-disable-line no-unused-vars
 	// Get selected form.
 	const form = block.fields.form.data.forms[props.attributes.form];
 
@@ -34,13 +36,13 @@ function convertKitGutenbergFormBlockRenderPreview(block, props) { // eslint-dis
 		// Determine the Form's format (inline, sticky bar etc).
 		// This isn't available in API responses prior to Feb 2022, so check the Form object contains this property.
 		const format =
-				typeof form.format !== 'undefined' ? form.format : 'inline';
+			typeof form.format !== 'undefined' ? form.format : 'inline';
 		let html =
-				'<script async data-uid="' +
-				form.uid +
-				'" src="' +
-				form.embed_js +
-				'"></script>';
+			'<script async data-uid="' +
+			form.uid +
+			'" src="' +
+			form.embed_js +
+			'"></script>';
 		const className = ['convertkit-' + block.name];
 
 		// If the format isn't inline, define the Gutenberg Block preview's HTML to explain why the Form won't be
@@ -97,3 +99,4 @@ function convertKitGutenbergFormBlockRenderPreview(block, props) { // eslint-dis
 		className: 'convertkit-ssr-' + block.name,
 	});
 }
+/* eslint-enable no-unused-vars */

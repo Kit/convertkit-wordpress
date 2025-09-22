@@ -86,9 +86,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param  {Object} props      Block properties.
-		 * @param  {Object} field      Field attributes.
-		 * @param  {string} attribute  Attribute name to store the field's data in.
+		 * @param {Object} props     Block properties.
+		 * @param {Object} field     Field attributes.
+		 * @param {string} attribute Attribute name to store the field's data in.
 		 * @return {Object}            Field element.
 		 */
 		const getField = function (props, field, attribute) {
@@ -223,8 +223,8 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param  {Object} props Block properties.
-		 * @param  {string} panel Panel name.
+		 * @param {Object} props Block properties.
+		 * @param {string} panel Panel name.
 		 * @return {Array}        Panel rows.
 		 */
 		const getPanelRows = function (props, panel) {
@@ -261,7 +261,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param  {Object} props Block formatter properties.
+		 * @param {Object} props Block formatter properties.
 		 * @return {Array} 	      Block sidebar panels.
 		 */
 		const getPanels = function (props) {
@@ -304,7 +304,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param  {Object} props Block properties.
+		 * @param {Object} props Block properties.
 		 * @return {Object}       Block settings sidebar elements.
 		 */
 		const editBlock = function (props) {
@@ -407,8 +407,8 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   3.0.0
 		 *
-		 * @param  {Object} panels  Block panels.
-		 * @param  {Object} preview Block preview.
+		 * @param {Object} panels  Block panels.
+		 * @param {Object} preview Block preview.
 		 * @return {Object}         Block settings sidebar elements.
 		 */
 		const editBlockWithPanelsAndPreview = function (panels, preview) {
@@ -447,7 +447,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.5
 		 *
-		 * @param  {Object} props Block properties.
+		 * @param {Object} props Block properties.
 		 * @return {Object}       Notice.
 		 */
 		const DisplayNoticeWithLink = function (props) {
@@ -493,7 +493,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param  {Object} props Block properties.
+		 * @param {Object} props Block properties.
 		 * @return {Object}       Progress Bar.
 		 */
 		const loadingIndicator = function (props) {
@@ -508,7 +508,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.7.7
 		 *
-		 * @param  {string} iconName Icon Name.
+		 * @param {string} iconName Icon Name.
 		 * @return {Object} 		 Icon.
 		 */
 		const iconType = function (iconName) {
@@ -522,8 +522,8 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param  {Object}   props   			Block properties.
-		 * @param  {Function} setButtonDisabled Function to enable or disable the refresh button.
+		 * @param {Object}   props             Block properties.
+		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
 		 * @return {Object}          			Notice Link.
 		 */
 		const noticeLink = function (props, setButtonDisabled) {
@@ -569,9 +569,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param  {Object}   props 			Block properties.
-		 * @param  {boolean}  buttonDisabled 	Whether the refresh button is disabled (true) or enabled (false)
-		 * @param  {Function} setButtonDisabled Function to enable or disable the refresh button.
+		 * @param {Object}   props             Block properties.
+		 * @param {boolean}  buttonDisabled    Whether the refresh button is disabled (true) or enabled (false)
+		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
 		 * @return {Object} 					Button.
 		 */
 		const refreshButton = function (
@@ -598,7 +598,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.7.1
 		 *
-		 * @param  {Object} props Block properties.
+		 * @param {Object} props Block properties.
 		 * @return {Object} 	  Button.
 		 */
 		const inlineRefreshButton = function (props) {
@@ -610,7 +610,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.7.1
 		 *
-		 * @param  {Object} props Block properties.
+		 * @param {Object} props Block properties.
 		 * @return {Object} 	  Button.
 		 */
 		const BlockInlineRefreshButton = function (props) {
@@ -638,9 +638,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param {Object} props 				Block properties.
-		 * @param {string} url 				URL to display in the popup window.
-		 * @param {Function} setButtonDisabled 	Function to enable or disable the refresh button.
+		 * @param {Object}   props             Block properties.
+		 * @param {string}   url               URL to display in the popup window.
+		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
 		 */
 		const showConvertKitPopupWindow = function (
 			props,
@@ -696,8 +696,8 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param {Object}   props   			Block properties.
-		 * @param {Function} setButtonDisabled 	Function to enable or disable the refresh button.
+		 * @param {Object}   props             Block properties.
+		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
 		 */
 		const refreshBlocksDefinitions = function (props, setButtonDisabled) {
 			// Define data for WordPress AJAX request.
@@ -869,8 +869,8 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
  *
  * @since 	2.2.3
  *
- * @param  {string} block_name Block Name.
- * @param  {string} notice     Notice to display.
+ * @param {string} block_name Block Name.
+ * @param {string} notice     Notice to display.
  * @return {Object} 		   HTMLElement
  */
 function convertKitGutenbergDisplayBlockNotice(block_name, notice) {

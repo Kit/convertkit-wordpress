@@ -7,17 +7,16 @@
  * @author ConvertKit
  */
 
-
-
+/* eslint-disable no-unused-vars */
 /**
  * Registers the given block as a TinyMCE Plugin, with a button in
  * the Visual Editor toolbar.
  *
  * @since 	1.9.6
  *
- * @param {Object} block 	Block
+ * @param {Object} block Block
  */
-function convertKitTinyMCERegisterPlugin(block) { // eslint-disable-line no-unused-vars
+function convertKitTinyMCERegisterPlugin(block) {
 	tinymce.PluginManager.add(
 		'convertkit_' + block.name,
 		function (editor, url) {
@@ -94,6 +93,7 @@ function convertKitTinyMCERegisterPlugin(block) { // eslint-disable-line no-unus
 		}
 	);
 }
+/* eslint-enable no-unused-vars */
 
 /**
  * Listens for changes to input[type=color] inputs within a TinyMCE or QuickTags modal,

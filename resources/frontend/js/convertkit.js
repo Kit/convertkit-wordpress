@@ -140,12 +140,13 @@ function convertKitEmitCustomEvent(eventName, detail) {
 	document.dispatchEvent(event);
 }
 
+/* eslint-disable no-unused-vars */
 /**
  * Handles form submissions when reCAPTCHA is enabled.
  *
  * @param {string} token reCAPTCHA token.
  */
-function convertKitRecaptchaFormSubmit(token) { // eslint-disable-line no-unused-vars
+function convertKitRecaptchaFormSubmit(token) {
 	// Find submit button with the data-callback attribute.
 	const submitButton = document.querySelector(
 		'[type="submit"][data-callback="convertKitRecaptchaFormSubmit"]'
@@ -157,6 +158,7 @@ function convertKitRecaptchaFormSubmit(token) { // eslint-disable-line no-unused
 	// Submit the form.
 	form.submit();
 }
+/* eslint-enable no-unused-vars */
 
 /**
  * Register events

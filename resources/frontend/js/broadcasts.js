@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * @since 1.9.7.6
  *
  * @param {Object} blockContainer DOM object of the block to refresh the HTML in.
- * @param {Object} atts 		  Block attributes
+ * @param {Object} atts           Block attributes
  */
 function convertKitBroadcastsRender(blockContainer, atts) {
 	// Append action.

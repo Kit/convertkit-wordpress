@@ -135,8 +135,8 @@ function convertKitRestrictContentCloseModal() {
  *
  * @since 2.3.8
  *
- * @param {string} nonce   	    WordPress nonce.
- * @param {string} email   	    Email address.
+ * @param {string} nonce        WordPress nonce.
+ * @param {string} email        Email address.
  * @param {string} resourceType Resource Type (tag|product).
  * @param {number} resourceID   Resource ID (ConvertKit Tag or Product ID).
  * @param {number} postID       WordPress Post ID being viewed / accessed.
@@ -202,10 +202,10 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
  *
  * @since 	2.3.8
  *
- * @param {string} nonce   	       WordPress nonce.
- * @param {string} subscriberCode  OTP Subscriber Code.
- * @param {string} token           Subscriber Token.
- * @param {number} postID          WordPress Post ID being viewed / accessed.
+ * @param {string} nonce          WordPress nonce.
+ * @param {string} subscriberCode OTP Subscriber Code.
+ * @param {string} token          Subscriber Token.
+ * @param {number} postID         WordPress Post ID being viewed / accessed.
  */
 function convertKitRestrictContentSubscriberVerification(
 	nonce,

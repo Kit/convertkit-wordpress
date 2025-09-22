@@ -28,7 +28,7 @@ if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
  *
  * @since   2.2.0
  *
- * @param {Object} formatter   Block formatter.
+ * @param {Object} formatter Block formatter.
  */
 function convertKitGutenbergRegisterBlockFormatter(formatter) {
 	(function (editor, richText, element, components) {
@@ -78,7 +78,7 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param {Object} activeFormats   All active formatters applied to the selected text.
+		 * @param {Object} activeFormats All active formatters applied to the selected text.
 		 * @return {Object} Attributes.
 		 */
 		const getAttributes = function (activeFormats) {
@@ -121,9 +121,9 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param {Object} props         Block formatter properties.
-		 * @param {Object} field         Field definition.
-		 * @param {string} newValue      New value.
+		 * @param {Object} props    Block formatter properties.
+		 * @param {Object} field    Field definition.
+		 * @param {string} newValue New value.
 		 */
 		const setAttributes = function (props, field, newValue) {
 			// Define properties and functions to use.
@@ -164,9 +164,9 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param {Object} props           Block formatter properties.
-		 * @param {Function} setShowPopover  Function to toggle showing/hiding the popover.
-		 * @param {Object} attributes      Field attributes.
+		 * @param {Object}   props          Block formatter properties.
+		 * @param {Function} setShowPopover Function to toggle showing/hiding the popover.
+		 * @param {Object}   attributes     Field attributes.
 		 * @return  {Array}                   Field elements
 		 */
 		const getFields = function (props, setShowPopover, attributes) {
@@ -233,7 +233,7 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param {Object} props   Block formatter properties.
+		 * @param {Object} props Block formatter properties.
 		 * @return  {Object}          Block formatter button and modal elements
 		 */
 		const EditFormatType = function (props) {
@@ -248,7 +248,8 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 				anchorRef = useAnchorRef({ ref: contentRef, value }); // eslint-disable-line react-hooks/rules-of-hooks
 			} else {
 				// Use WordPress 6.1+ useAnchor(), as useAnchorRef() is deprecated in 6.2+.
-				anchorRef = useAnchor({ // eslint-disable-line react-hooks/rules-of-hooks
+				// eslint-disable-next-line react-hooks/rules-of-hooks
+				anchorRef = useAnchor({
 					editableContentElement: contentRef.current,
 					value,
 				});
