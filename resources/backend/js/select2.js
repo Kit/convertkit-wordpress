@@ -18,6 +18,6 @@ function convertKitSelect2Init() {
 	})(jQuery);
 }
 
-jQuery(document).ready(function ($) {
+jQuery(document).ready(function () {
 	convertKitSelect2Init();
 });

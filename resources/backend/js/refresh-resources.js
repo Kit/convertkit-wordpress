@@ -35,9 +35,8 @@ function convertKitRefreshResourcesInitEventListeners() {
  * Refresh resources when a button is clicked.
  *
  * @since 	2.4.4
- * @param button
  *
- * @param DOMObject button
+ * @param {Object} button Button element.
  */
 function convertKitRefreshResources(button) {
 	// Remove any existing error notices that might be displayed.
@@ -163,7 +162,7 @@ function convertKitRefreshResources(button) {
 									label,
 									item.id,
 									false,
-									selectedOption == item.id ? true : false
+									selectedOption === item.id ? true : false
 								)
 							);
 					});
@@ -216,9 +215,8 @@ function convertKitRefreshResourcesRemoveNotices() {
  * an error notice.
  *
  * @since 	1.9.8.3
- * @param message
  *
- * @param string  message 	Error message to display.
+ * @param {string} message Error message to display.
  */
 function convertKitRefreshResourcesOutputErrorNotice(message) {
 	// Prefix the message with the Plugin name.

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	document
 		.querySelectorAll('a.convertkit-redirect')
 		.forEach(function (element) {
-			element.addEventListener('click', function (e) {
+			element.addEventListener('click', function () {
 				// Delay the redirect, otherwise browsers will block opening the href attribute
 				// thinking it's a popup.
 				setTimeout(function () {

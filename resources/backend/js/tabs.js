@@ -12,7 +12,7 @@
  *
  * @since 2.2.5
  */
-function convertKitTabsInit() {
+function convertKitTabsInit() { // eslint-disable-line no-unused-vars
 	// Safely call this function by destroying any previously initialized instances.
 	convertKitTabsDestroy();
 

@@ -31,9 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
  * table rows related to a setting, if that setting is disabled.
  *
  * @since 	2.2.4
- * @param input
  *
- * @param object input 	Element interacted with
+ * @param {Object} input Element interacted with.
  */
 function convertKitConditionallyDisplaySettings(input) {
 	const rows = document.querySelectorAll('table.form-table tr');

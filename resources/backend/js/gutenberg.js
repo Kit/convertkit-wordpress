@@ -7,6 +7,10 @@
  * @author ConvertKit
  */
 
+/**
+ * @typedef {import('@wordpress/element').WPElement} WPElement
+ */
+
 // Register Gutenberg Blocks if the Gutenberg Editor is loaded on screen.
 // This prevents JS errors if this script is accidentally enqueued on a non-
 // Gutenberg editor screen, or the Classic Editor Plugin is active.
@@ -28,9 +32,8 @@ if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
  * Registers the given block in Gutenberg.
  *
  * @since 	1.9.6.5
- * @param block
  *
- * @param object block 	Block
+ * @param {Object} block Block.
  */
 function convertKitGutenbergRegisterBlock(block) {
 	(function (blocks, editor, element, components) {
@@ -47,7 +50,6 @@ function convertKitGutenbergRegisterBlock(block) {
 			ToggleControl,
 			Flex,
 			FlexItem,
-			Panel,
 			PanelBody,
 			PanelRow,
 			ProgressBar,
@@ -59,7 +61,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @return  element|string
+		 * @return  {WPElement|string} Either a WordPress element (RawHTML) or a dashicon string.
 		 */
 		const getIcon = function () {
 			// Return a fallback default icon if none is specified for this block.
@@ -84,13 +86,10 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param object    props           Block properties.
-		 * @param props
-		 * @param field
-		 * @param attribute
-		 * @param object    field      		Field attributes.
-		 * @param string    attribute 		Attribute name to store the field's data in.
-		 * @return  array                   Field element
+		 * @param  {Object} props      Block properties.
+		 * @param  {Object} field      Field attributes.
+		 * @param  {string} attribute  Attribute name to store the field's data in.
+		 * @return {Object}            Field element.
 		 */
 		const getField = function (props, field, attribute) {
 			// Define some field properties shared across all field types.
@@ -156,7 +155,6 @@ function convertKitGutenbergRegisterBlock(block) {
 
 					// Return field element.
 					return el(SelectControl, fieldProperties);
-					break;
 
 				case 'resource':
 					// Build options for <select> input.
@@ -195,7 +193,6 @@ function convertKitGutenbergRegisterBlock(block) {
 							el(FlexItem, {}, inlineRefreshButton(props)),
 						]
 					);
-					break;
 
 				case 'toggle':
 					// Define field properties.
@@ -203,7 +200,6 @@ function convertKitGutenbergRegisterBlock(block) {
 
 					// Return field element.
 					return el(ToggleControl, fieldProperties);
-					break;
 
 				case 'number':
 					// Define field properties.
@@ -214,12 +210,10 @@ function convertKitGutenbergRegisterBlock(block) {
 
 					// Return field element.
 					return el(TextControl, fieldProperties);
-					break;
 
 				default:
 					// Return field element.
 					return el(TextControl, fieldProperties);
-					break;
 			}
 		};
 
@@ -229,11 +223,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param props
-		 * @param panel
-		 * @param object props   Block properties.
-		 * @param string panel 	Panel name.
-		 * @return  array           Panel rows
+		 * @param  {Object} props Block properties.
+		 * @param  {string} panel Panel name.
+		 * @return {Array}        Panel rows.
 		 */
 		const getPanelRows = function (props, panel) {
 			// Build Inspector Control Panel Rows, one for each Field.
@@ -268,14 +260,13 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * is being edited.
 		 *
 		 * @since   2.2.0
-		 * @param props
 		 *
-		 * @param object props 	Block formatter properties.
-		 * @return 	array 			Block sidebar panels.
+		 * @param  {Object} props Block formatter properties.
+		 * @return {Array} 	      Block sidebar panels.
 		 */
 		const getPanels = function (props) {
-			let panels = [],
-				initialOpen = true;
+			const panels = [];
+			let initialOpen = true;
 
 			// Build Inspector Control Panels.
 			for (const panel in block.panels) {
@@ -312,10 +303,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * changes that are made.
 		 *
 		 * @since   2.2.0
-		 * @param props
 		 *
-		 * @param object props   Block properties.
-		 * @return  object          Block settings sidebar elements
+		 * @param  {Object} props Block properties.
+		 * @return {Object}       Block settings sidebar elements.
 		 */
 		const editBlock = function (props) {
 			// If requesting an example of how this block looks (which is requested
@@ -331,17 +321,17 @@ function convertKitGutenbergRegisterBlock(block) {
 				);
 			}
 
+			// If no access token has been defined in the Plugin, or no resources exist in Kit
+			// for this block, show a message in the block to tell the user what to do.
+			if (!block.has_access_token || !block.has_resources) {
+				return DisplayNoticeWithLink(props);
+			}
+
 			// Build Inspector Control Panels, which will appear in the Sidebar when editing the Block.
 			const panels = getPanels(props);
 
 			// Generate Block Preview.
 			let preview = '';
-
-			// If no access token has been defined in the Plugin, or no resources exist in Kit
-			// for this block, show a message in the block to tell the user what to do.
-			if (!block.has_access_token || !block.has_resources) {
-				return displayNoticeWithLink(props);
-			}
 
 			// If a custom callback function to render this block's preview in the Gutenberg Editor
 			// has been defined, use it.
@@ -416,11 +406,10 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * changes that are made.
 		 *
 		 * @since   3.0.0
-		 * @param panels
-		 * @param preview
 		 *
-		 * @param object  props   Block properties.
-		 * @return  object          Block settings sidebar elements
+		 * @param  {Object} panels  Block panels.
+		 * @param  {Object} preview Block preview.
+		 * @return {Object}         Block settings sidebar elements.
 		 */
 		const editBlockWithPanelsAndPreview = function (panels, preview) {
 			return el(
@@ -437,12 +426,10 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * Save the block's content.
 		 *
 		 * @since   3.0.0
-		 * @param props
 		 *
-		 * @param object props   Block properties.
-		 * @return  object          Block content.
+		 * @return {Object}       Block content.
 		 */
-		const saveBlock = function (props) {
+		const saveBlock = function () {
 			if (typeof block.gutenberg_template !== 'undefined') {
 				return el('div', {}, el(InnerBlocks.Content));
 			}
@@ -459,12 +446,11 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * or no resources (forms, products) exist in ConvertKit.
 		 *
 		 * @since 	2.2.5
-		 * @param props
 		 *
-		 * @param object props   Block properties.
-		 * @return  object          Notice.
+		 * @param  {Object} props Block properties.
+		 * @return {Object}       Notice.
 		 */
-		const displayNoticeWithLink = function (props) {
+		const DisplayNoticeWithLink = function (props) {
 			// useState to toggle the refresh button's disabled state.
 			const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -506,10 +492,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * Returns an indeterminate progress bar element, to show that a block is loading / refreshing.
 		 *
 		 * @since 	2.2.6
-		 * @param props
 		 *
-		 * @param object props   			Block properties.
-		 * @return  object          			Progress Bar.
+		 * @param  {Object} props Block properties.
+		 * @return {Object}       Progress Bar.
 		 */
 		const loadingIndicator = function (props) {
 			return el(ProgressBar, {
@@ -522,10 +507,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * Returns a WordPress Icon element.
 		 *
 		 * @since 	2.7.7
-		 * @param iconName
 		 *
-		 * @param string   iconName 	Icon Name.
-		 * @return  object 				Icon.
+		 * @param  {string} iconName Icon Name.
+		 * @return {Object} 		 Icon.
 		 */
 		const iconType = function (iconName) {
 			return el(Icon, {
@@ -534,15 +518,13 @@ function convertKitGutenbergRegisterBlock(block) {
 		};
 
 		/**
-		 * Returns the notice link for the displayNoticeWithLink element.
+		 * Returns the notice link for the DisplayNoticeWithLink element.
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param props
-		 * @param setButtonDisabled
-		 * @param object            props   			Block properties.
-		 * @param object            setButtonDisabled 	Function to enable or disable the refresh button.
-		 * @return  object          			Notice Link.
+		 * @param  {Object}   props   			Block properties.
+		 * @param  {Function} setButtonDisabled Function to enable or disable the refresh button.
+		 * @return {Object}          			Notice Link.
 		 */
 		const noticeLink = function (props, setButtonDisabled) {
 			// Get the URL to set the button to.
@@ -587,13 +569,10 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param object            props 				Block properties.
-		 * @param props
-		 * @param buttonDisabled
-		 * @param setButtonDisabled
-		 * @param bool              buttonDisabled 		Whether the refresh button is disabled (true) or enabled (false)/
-		 * @param object            setButtonDisabled 	Function to enable or disable the refresh button.
-		 * @return 	object 						Button.
+		 * @param  {Object}   props 			Block properties.
+		 * @param  {boolean}  buttonDisabled 	Whether the refresh button is disabled (true) or enabled (false)
+		 * @param  {Function} setButtonDisabled Function to enable or disable the refresh button.
+		 * @return {Object} 					Button.
 		 */
 		const refreshButton = function (
 			props,
@@ -618,25 +597,23 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * Returns an inline refresh button, used to refresh a block's resources.
 		 *
 		 * @since 	2.7.1
-		 * @param props
 		 *
-		 * @param object props 				Block properties.
-		 * @return 	object 						Button.
+		 * @param  {Object} props Block properties.
+		 * @return {Object} 	  Button.
 		 */
 		const inlineRefreshButton = function (props) {
-			return el(blockInlineRefreshButton, props);
+			return el(BlockInlineRefreshButton, props);
 		};
 
 		/**
 		 * Returns a refresh button.
 		 *
 		 * @since 	2.7.1
-		 * @param props
 		 *
-		 * @param object props 	Block properties.
-		 * @return 	object 	Button.
+		 * @param  {Object} props Block properties.
+		 * @return {Object} 	  Button.
 		 */
-		const blockInlineRefreshButton = function (props) {
+		const BlockInlineRefreshButton = function (props) {
 			const [buttonDisabled, setButtonDisabled] = useState(false);
 
 			return el(Button, {
@@ -661,12 +638,9 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param object            props 				Block properties.
-		 * @param props
-		 * @param url
-		 * @param setButtonDisabled
-		 * @param object            url 				URL to display in the popup window.
-		 * @param object            setButtonDisabled 	Function to enable or disable the refresh button.
+		 * @param {Object} props 				Block properties.
+		 * @param {string} url 				URL to display in the popup window.
+		 * @param {Function} setButtonDisabled 	Function to enable or disable the refresh button.
 		 */
 		const showConvertKitPopupWindow = function (
 			props,
@@ -704,7 +678,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			// document changes (e.g. as the user steps through a wizard), and doesn't fire when
 			// the window is closed.
 			// See https://stackoverflow.com/questions/9388380/capture-the-close-event-of-popup-window-in-javascript/48240128#48240128.
-			var convertKitPopupTimer = setInterval(function () {
+			const convertKitPopupTimer = setInterval(function () {
 				if (convertKitPopup.closed) {
 					clearInterval(convertKitPopupTimer);
 
@@ -722,11 +696,8 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.6
 		 *
-		 * @param props
-		 * @param setButtonDisabled
-		 * @param object            props   			Block properties.
-		 * @param object            setButtonDisabled 	Function to enable or disable the refresh button.
-		 * @return  object          			Notice.
+		 * @param {Object}   props   			Block properties.
+		 * @param {Function} setButtonDisabled 	Function to enable or disable the refresh button.
 		 */
 		const refreshBlocksDefinitions = function (props, setButtonDisabled) {
 			// Define data for WordPress AJAX request.
@@ -814,14 +785,12 @@ function convertKitGutenbergRegisterBlock(block) {
 /**
  * Registers pre-publish actions in Gutenberg's pre-publish checks panel.
  *
- * @since 	2.4.0
- * @param actions
+ * @since 2.4.0
  *
- * @param object  actions 	Pre-publish actions.
+ * @param {Object} actions Pre-publish actions.
  */
 function convertKitGutenbergRegisterPrePublishActions(actions) {
 	(function (plugins, editPost, element, components, data) {
-		// Define some constants for the various items we'll use.
 		const el = element.createElement;
 		const { ToggleControl } = components;
 		const { registerPlugin } = plugins;
@@ -829,50 +798,45 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
 		const { useSelect, useDispatch, select } = data;
 
 		/**
-		 * Returns a PluginPrePublishPanel for this Plugin, comprising of all
+		 * Returns a PluginPrePublishPanel for this plugin, containing all
 		 * pre-publish actions.
 		 *
-		 * @since   2.4.0
-		 *
-		 * @return  PluginPrePublishPanel
+		 * @since 2.4.0
+		 * @return {WPElement|null} Pre-publish panel element or null if not a post.
 		 */
-		const renderPanel = function () {
-			// Bail if the Post Type isn't a Post.
-			if (select('core/editor').getCurrentPostType() !== 'post') {
-				return;
+		const RenderPanel = function () {
+			// --- Hooks must be called first ---
+			const { meta } = useSelect((wpSelect) => ({
+				meta: wpSelect('core/editor').getEditedPostAttribute('meta'),
+			}));
+
+			const { editPost: wpEditPost } = useDispatch('core/editor');
+
+			const currentPostType = select('core/editor').getCurrentPostType();
+
+			// Bail early if not a 'post'
+			if (currentPostType !== 'post') {
+				return null;
 			}
 
-			// Build rows.
-			const rows = [];
-			for (const [name, action] of Object.entries(actions)) {
+			// Build rows safely using .map()
+			const rows = Object.values(actions).map((action) => {
 				const key = '_convertkit_action_' + action.name;
-				const { meta } = useSelect(function (select) {
-					return {
-						meta: select('core/editor').getEditedPostAttribute(
-							'meta'
-						),
-					};
+
+				return el(ToggleControl, {
+					key,
+					id: 'convertkit_action_' + action.name,
+					label: action.label,
+					help: action.description,
+					value: true,
+					checked: meta[key],
+					onChange(value) {
+						wpEditPost({ meta: { [key]: value } });
+					},
 				});
-				const { editPost } = useDispatch('core/editor', [meta[key]]);
+			});
 
-				// Add row.
-				rows.push(
-					el(ToggleControl, {
-						id: 'convertkit_action_' + action.name,
-						label: action.label,
-						help: action.description,
-						value: true,
-						checked: meta[key],
-						onChange(value) {
-							editPost({
-								meta: { [key]: value },
-							});
-						},
-					})
-				);
-			}
-
-			// Return actions in the pre-publish panel.
+			// Return the pre-publish panel with rows
 			return el(
 				PluginPrePublishPanel,
 				{
@@ -884,9 +848,9 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
 			);
 		};
 
-		// Register pre-publish actions.
+		// Register pre-publish actions
 		registerPlugin('convertkit-pre-publish-actions', {
-			render: renderPanel,
+			render: RenderPanel,
 		});
 	})(
 		window.wp.plugins,
@@ -905,11 +869,9 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
  *
  * @since 	2.2.3
  *
- * @param block_name
- * @param notice
- * @param string     block_name 	Block Name.
- * @param string     notice 		Notice to display.
- * @return 	object 				HTMLElement
+ * @param  {string} block_name Block Name.
+ * @param  {string} notice     Notice to display.
+ * @return {Object} 		   HTMLElement
  */
 function convertKitGutenbergDisplayBlockNotice(block_name, notice) {
 	return wp.element.createElement(

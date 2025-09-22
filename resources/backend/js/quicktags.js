@@ -16,9 +16,8 @@ for (const block in convertkit_quicktags) {
  * the Text Editor toolbar.
  *
  * @since 	1.9.6
- * @param block
  *
- * @param object block 	Block
+ * @param {Object} block Block.
  */
 function convertKitQuickTagRegister(block) {
 	QTags.addButton('convertkit-' + block.name, block.title, function () {

@@ -16,10 +16,9 @@
  * "Send subscriber to thank you page" enabled (both scenarios
  * include a ck_subscriber_id).
  *
- * @since   1.9.6
- * @param emailAddress
+ * @since 1.9.6
  *
- * @param string       emailAddress   Email Address
+ * @param {string} emailAddress Email Address
  */
 function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
 	if (convertkit.debug) {
@@ -71,25 +70,25 @@ function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
  * This function removes the parameters so a customer won't share
  * a URL with their subscriber ID in it.
  *
- * @param url
+ * @param {string} url URL.
  */
 function convertKitRemoveSubscriberIDFromURL(url) {
 	// Parse URL.
-	const url_object = new URL(url);
-	const ck_subscriber_id = url_object.searchParams.get('ck_subscriber_id');
+	const urlObject = new URL(url);
+	const subscriberID = urlObject.searchParams.get('ck_subscriber_id');
 
-	// If ck_subscriber_id is null, it's not included in the URL.
+	// If subscriberID is null, it's not included in the URL.
 	// Don't modify the URL.
-	if (ck_subscriber_id === null) {
+	if (subscriberID === null) {
 		return;
 	}
 
 	// Remove ck_subscriber_id from URL params.
-	url_object.searchParams.delete('ck_subscriber_id');
+	urlObject.searchParams.delete('ck_subscriber_id');
 
 	// Get title and string of parameters.
 	const title = document.getElementsByTagName('title')[0].innerHTML;
-	let params = url_object.searchParams.toString();
+	let params = urlObject.searchParams.toString();
 
 	// Only add '?' if there are parameters.
 	if (params.length > 0) {
@@ -100,22 +99,21 @@ function convertKitRemoveSubscriberIDFromURL(url) {
 	window.history.replaceState(
 		null,
 		title,
-		url_object.pathname + params + url_object.hash
+		urlObject.pathname + params + urlObject.hash
 	);
 
 	// Emit custom event with the removed subscriber ID.
 	convertKitEmitCustomEvent('kit_subscriber_id_removed_from_url', {
-		id: ck_subscriber_id,
+		id: subscriberID,
 	});
 }
 
 /**
  * Utility function to pause for the given number of milliseconds
  *
- * @since   1.9.6
- * @param milliseconds
+ * @since  1.9.6
  *
- * @param int          milliseconds
+ * @param {number} milliseconds Number of milliseconds to pause for.
  */
 function convertKitSleep(milliseconds) {
 	const start = new Date().getTime();
@@ -145,10 +143,9 @@ function convertKitEmitCustomEvent(eventName, detail) {
 /**
  * Handles form submissions when reCAPTCHA is enabled.
  *
- * @param string token reCAPTCHA token.
- * @param token
+ * @param {string} token reCAPTCHA token.
  */
-function convertKitRecaptchaFormSubmit(token) {
+function convertKitRecaptchaFormSubmit(token) { // eslint-disable-line no-unused-vars
 	// Find submit button with the data-callback attribute.
 	const submitButton = document.querySelector(
 		'[type="submit"][data-callback="convertKitRecaptchaFormSubmit"]'

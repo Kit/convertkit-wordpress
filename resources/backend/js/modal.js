@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // QuickTags: Setup Backbone Modal and Template.
 if (typeof wp !== 'undefined' && typeof wp.media !== 'undefined') {
 	// Declared globally, as used in this file and quicktags.js.
-	var convertKitQuickTagsModal = new wp.media.view.Modal({
+	const convertKitQuickTagsModal = new wp.media.view.Modal({
 		controller: { trigger() {} },
 		className: 'convertkit-quicktags-modal',
 	});
@@ -177,7 +177,7 @@ if (typeof wp !== 'undefined' && typeof wp.media !== 'undefined') {
 	 * code picking up data from the QuickTags modal, not the TinyMCE one, due to this 'stale'
 	 * modal remaining in the DOM, resulting in e.g. the tabbed UI not loading correctly.
 	 */
-	convertKitQuickTagsModal.on('close', function (e) {
+	convertKitQuickTagsModal.on('close', function () {
 		this.content(new convertKitQuickTagsModalContent());
 	});
 }
