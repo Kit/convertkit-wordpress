@@ -16,7 +16,7 @@
  * "Send subscriber to thank you page" enabled (both scenarios
  * include a ck_subscriber_id).
  *
- * @since 1.9.6
+ * @since   1.9.6
  *
  * @param {string} emailAddress Email Address
  */
@@ -74,21 +74,21 @@ function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
  */
 function convertKitRemoveSubscriberIDFromURL(url) {
 	// Parse URL.
-	const urlObject = new URL(url);
-	const subscriberID = urlObject.searchParams.get('ck_subscriber_id');
+	const url_object = new URL(url);
+	const ck_subscriber_id = url_object.searchParams.get('ck_subscriber_id');
 
-	// If subscriberID is null, it's not included in the URL.
+	// If ck_subscriber_id is null, it's not included in the URL.
 	// Don't modify the URL.
-	if (subscriberID === null) {
+	if (ck_subscriber_id === null) {
 		return;
 	}
 
 	// Remove ck_subscriber_id from URL params.
-	urlObject.searchParams.delete('ck_subscriber_id');
+	url_object.searchParams.delete('ck_subscriber_id');
 
 	// Get title and string of parameters.
 	const title = document.getElementsByTagName('title')[0].innerHTML;
-	let params = urlObject.searchParams.toString();
+	let params = url_object.searchParams.toString();
 
 	// Only add '?' if there are parameters.
 	if (params.length > 0) {
@@ -99,20 +99,19 @@ function convertKitRemoveSubscriberIDFromURL(url) {
 	window.history.replaceState(
 		null,
 		title,
-		urlObject.pathname + params + urlObject.hash
+		url_object.pathname + params + url_object.hash
 	);
 
 	// Emit custom event with the removed subscriber ID.
 	convertKitEmitCustomEvent('kit_subscriber_id_removed_from_url', {
-		id: subscriberID,
+		id: ck_subscriber_id,
 	});
 }
 
 /**
  * Utility function to pause for the given number of milliseconds
  *
- * @since  1.9.6
- *
+ * @since   1.9.6
  * @param {number} milliseconds Number of milliseconds to pause for.
  */
 function convertKitSleep(milliseconds) {

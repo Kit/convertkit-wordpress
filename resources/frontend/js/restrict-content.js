@@ -133,20 +133,20 @@ function convertKitRestrictContentCloseModal() {
  * - the email form view, with an error message e.g. invalid email,
  * - the code form view, where the user can enter the OTP.
  *
- * @since 2.3.8
+ * @since 	2.3.8
  *
- * @param {string} nonce        WordPress nonce.
- * @param {string} email        Email address.
- * @param {string} resourceType Resource Type (tag|product).
- * @param {number} resourceID   Resource ID (ConvertKit Tag or Product ID).
- * @param {number} postID       WordPress Post ID being viewed / accessed.
+ * @param {string} nonce         WordPress nonce.
+ * @param {string} email         Email address.  resource_type   Resource Type (tag|product).
+ * @param {string} resource_type Resource Type (tag|product).
+ * @param {string} resource_id   Resource ID (ConvertKit Tag or Product ID).
+ * @param {number} post_id       WordPress Post ID being viewed / accessed.
  */
 function convertKitRestrictContentSubscriberAuthenticationSendCode(
 	nonce,
 	email,
-	resourceType,
-	resourceID,
-	postID
+	resource_type,
+	resource_id,
+	post_id
 ) {
 	fetch(convertkit_restrict_content.ajaxurl, {
 		method: 'POST',
@@ -157,9 +157,9 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 			action: 'convertkit_subscriber_authentication_send_code',
 			_wpnonce: nonce,
 			convertkit_email: email,
-			convertkit_resource_type: resourceType,
-			convertkit_resource_id: resourceID,
-			convertkit_post_id: postID,
+			convertkit_resource_type: resource_type,
+			convertkit_resource_id: resource_id,
+			convertkit_post_id: post_id,
 		}),
 	})
 		.then(function (response) {
@@ -202,16 +202,16 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
  *
  * @since 	2.3.8
  *
- * @param {string} nonce          WordPress nonce.
- * @param {string} subscriberCode OTP Subscriber Code.
- * @param {string} token          Subscriber Token.
- * @param {number} postID         WordPress Post ID being viewed / accessed.
+ * @param {string} nonce           WordPress nonce.
+ * @param {string} subscriber_code OTP Subscriber Code.
+ * @param {string} token           Subscriber Token.
+ * @param {number} post_id         WordPress Post ID being viewed / accessed.
  */
 function convertKitRestrictContentSubscriberVerification(
 	nonce,
-	subscriberCode,
+	subscriber_code,
 	token,
-	postID
+	post_id
 ) {
 	fetch(convertkit_restrict_content.ajaxurl, {
 		method: 'POST',
@@ -221,9 +221,9 @@ function convertKitRestrictContentSubscriberVerification(
 		body: new URLSearchParams({
 			action: 'convertkit_subscriber_verification',
 			_wpnonce: nonce,
-			subscriber_code: subscriberCode,
+			subscriber_code,
 			token,
-			convertkit_post_id: postID,
+			convertkit_post_id: post_id,
 		}),
 	})
 		.then(function (response) {

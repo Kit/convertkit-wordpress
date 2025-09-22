@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * Sends an AJAX request to request HTML based on the supplied block attributes,
  * when pagination is used on a Broadcast block.
  *
- * @since 1.9.7.6
+ * @since 	1.9.7.6
  *
  * @param {Object} blockContainer DOM object of the block to refresh the HTML in.
  * @param {Object} atts           Block attributes
