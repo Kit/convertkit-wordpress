@@ -640,7 +640,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 				Button,
 				{
 					key: props.clientId + '-refresh-button',
-					className: 'convertkit-block-refresh',
+					className: 'wp-convertkit-refresh-resources',
 					disabled: buttonDisabled,
 					text: 'Refresh',
 					icon: iconType( 'update' ),
@@ -686,7 +686,7 @@ function convertKitGutenbergRegisterBlock( block ) {
 				Button,
 				{
 					key: props.clientId + '-refresh-button',
-					className: 'button button-secondary convertkit-block-refresh',
+					className: 'button button-secondary wp-convertkit-refresh-resources',
 					disabled: buttonDisabled,
 					icon: iconType( 'update' ),
 					onClick: function () {

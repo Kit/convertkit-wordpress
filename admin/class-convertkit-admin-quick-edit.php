@@ -49,6 +49,7 @@ class ConvertKit_Admin_Quick_Edit {
 
 		// Enqueue CSS.
 		wp_enqueue_style( 'convertkit-admin-bulk-quick-edit', CONVERTKIT_PLUGIN_URL . 'resources/backend/css/bulk-quick-edit.css', array(), CONVERTKIT_PLUGIN_VERSION );
+		wp_enqueue_style( 'convertkit-admin-refresh-resources', CONVERTKIT_PLUGIN_URL . 'resources/backend/css/refresh-resources.css', array(), CONVERTKIT_PLUGIN_VERSION );
 
 	}
 
