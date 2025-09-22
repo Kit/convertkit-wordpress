@@ -3,6 +3,7 @@
  *
  * @since   1.9.6.4
  *
+ * @package ConvertKit
  * @author ConvertKit
  */
 
@@ -12,11 +13,19 @@
  * @since 	1.9.6.4
  */
 function convertKitSelect2Init() {
-	(function ($) {
-		$('.convertkit-select2').select2();
-	})(jQuery);
+
+	( function ( $ ) {
+
+		$( '.convertkit-select2' ).select2();
+
+	} )( jQuery );
+
 }
 
-jQuery(document).ready(function () {
-	convertKitSelect2Init();
-});
+jQuery( document ).ready(
+	function ( $ ) {
+
+		convertKitSelect2Init();
+
+	}
+);

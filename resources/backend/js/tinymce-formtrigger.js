@@ -3,7 +3,8 @@
  *
  * @since   2.2.0
  *
+ * @package ConvertKit
  * @author ConvertKit
  */
 
-convertKitTinyMCERegisterPlugin(convertkit_shortcodes.formtrigger);
+convertKitTinyMCERegisterPlugin( convertkit_shortcodes['formtrigger'] );

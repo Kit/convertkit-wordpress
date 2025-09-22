@@ -1,6 +1,7 @@
 /**
  * Bulk Edit
  *
+ * @package ConvertKit
  * @author ConvertKit
  */
 
@@ -12,18 +13,21 @@
  *
  * @since 	1.9.8.0
  */
-document.addEventListener('DOMContentLoaded', function () {
-	const convertKitBulkEditWrapper = document.querySelector(
-			'tr#bulk-edit .inline-edit-wrapper fieldset.inline-edit-col-right'
-		),
-		convertKitBulkEdit = document.querySelector('#convertkit-bulk-edit');
+document.addEventListener(
+	'DOMContentLoaded',
+	function () {
 
-	if (convertKitBulkEditWrapper) {
-		// Move Bulk Edit fields from footer into the hidden bulk-edit table row,
-		// if a bulk-edit table row exists (it won't exist if searching returns no pages).
-		convertKitBulkEditWrapper.appendChild(convertKitBulkEdit);
+		const convertKitBulkEditWrapper = document.querySelector( 'tr#bulk-edit .inline-edit-wrapper fieldset.inline-edit-col-right' ),
+			convertKitBulkEdit          = document.querySelector( '#convertkit-bulk-edit' );
 
-		// Show the Bulk Edit fields, as they are now contained in the inline-edit row which WordPress will show/hide as necessary.
-		convertKitBulkEdit.style.display = 'block';
+		if ( convertKitBulkEditWrapper ) {
+			// Move Bulk Edit fields from footer into the hidden bulk-edit table row,
+			// if a bulk-edit table row exists (it won't exist if searching returns no pages).
+			convertKitBulkEditWrapper.appendChild( convertKitBulkEdit );
+
+			// Show the Bulk Edit fields, as they are now contained in the inline-edit row which WordPress will show/hide as necessary.
+			convertKitBulkEdit.style.display = 'block';
+		}
+
 	}
-});
+);
