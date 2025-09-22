@@ -16,6 +16,7 @@
 .env.example
 .env.testing
 .env
+.eslintrc.js
 .gitignore
 .stylelintrc.json
 ACTIONS-FILTERS.md
