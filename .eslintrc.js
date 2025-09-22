@@ -12,7 +12,6 @@ module.exports = {
 		convertkit_quicktags: 'readonly',
 		convertkit_shortcodes: 'readonly',
 	},
-	ignorePatterns: ['resources/backend/'],
 	rules: {
 		// Turn off specific rules
 		camelcase: 'off',
