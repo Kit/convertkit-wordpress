@@ -7,6 +7,10 @@
  * @author ConvertKit
  */
 
+/**
+ * @typedef {import('@wordpress/element').WPElement} WPElement
+ */
+
 // Register Gutenberg Block Toolbar formatters if the Gutenberg Editor is loaded on screen.
 // This prevents JS errors if this script is accidentally enqueued on a non-
 // Gutenberg editor screen, or the Classic Editor Plugin is active.
@@ -23,9 +27,8 @@ if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
  * Registers the given formatter in Gutenberg.
  *
  * @since   2.2.0
- * @param formatter
  *
- * @param object    formatter   Block formatter.
+ * @param {Object} formatter   Block formatter.
  */
 function convertKitGutenbergRegisterBlockFormatter(formatter) {
 	(function (editor, richText, element, components) {
@@ -38,8 +41,8 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 			useAnchorRef,
 			useAnchor,
 		} = richText;
-		const { BlockControls, RichTextToolbarButton } = editor;
-		const { Button, Popover, SelectControl } = components;
+		const { RichTextToolbarButton } = editor;
+		const { Popover, SelectControl } = components;
 
 		/**
 		 * Returns the icon to display in the block toolbar for this formatter, depending
@@ -47,7 +50,7 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @return  element|string
+		 * @return  {WPElement|string} Either a WordPress element (RawHTML) or a dashicon string.
 		 */
 		const getIcon = function () {
 			// Return a fallback default icon if none is specified for this block formatter.
@@ -74,10 +77,9 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 * selected text.
 		 *
 		 * @since   2.2.0
-		 * @param activeFormats
 		 *
-		 * @param object        activeFormats   All active formatters applied to the selected text.
-		 * @return  object
+		 * @param {Object} activeFormats   All active formatters applied to the selected text.
+		 * @return {Object} Attributes.
 		 */
 		const getAttributes = function (activeFormats) {
 			// Define the attribute object.
@@ -119,12 +121,9 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param object   props         Block formatter properties.
-		 * @param props
-		 * @param field
-		 * @param newValue
-		 * @param array    field         Field definition.
-		 * @param string   newValue      New value
+		 * @param {Object} props         Block formatter properties.
+		 * @param {Object} field         Field definition.
+		 * @param {string} newValue      New value.
 		 */
 		const setAttributes = function (props, field, newValue) {
 			// Define properties and functions to use.
@@ -165,13 +164,10 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 *
 		 * @since   2.2.0
 		 *
-		 * @param object         props           Block formatter properties.
-		 * @param props
-		 * @param setShowPopover
-		 * @param attributes
-		 * @param object         setShowPopover  Function to toggle showing/hiding the popover.
-		 * @param object         attributes      Field attributes.
-		 * @return  array                   Field elements
+		 * @param {Object} props           Block formatter properties.
+		 * @param {Function} setShowPopover  Function to toggle showing/hiding the popover.
+		 * @param {Object} attributes      Field attributes.
+		 * @return  {Array}                   Field elements
 		 */
 		const getFields = function (props, setShowPopover, attributes) {
 			// Define array of field elements.
@@ -236,12 +232,11 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 		 * changes that are made.
 		 *
 		 * @since   2.2.0
-		 * @param props
 		 *
-		 * @param object props   Block formatter properties.
-		 * @return  object          Block formatter button and modal elements
+		 * @param {Object} props   Block formatter properties.
+		 * @return  {Object}          Block formatter button and modal elements
 		 */
-		const editFormatType = function (props) {
+		const EditFormatType = function (props) {
 			// Get props.
 			const { contentRef, isActive, value } = props;
 			const { activeFormats } = value;
@@ -250,10 +245,10 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 			// Get anchor reference to the text.
 			if (typeof useAnchor === 'undefined') {
 				// Use WordPress 6.0 and lower useAnchorRef(), as useAnchor() isn't available.
-				anchorRef = useAnchorRef({ ref: contentRef, value });
+				anchorRef = useAnchorRef({ ref: contentRef, value }); // eslint-disable-line react-hooks/rules-of-hooks
 			} else {
 				// Use WordPress 6.1+ useAnchor(), as useAnchorRef() is deprecated in 6.2+.
-				anchorRef = useAnchor({
+				anchorRef = useAnchor({ // eslint-disable-line react-hooks/rules-of-hooks
 					editableContentElement: contentRef.current,
 					value,
 				});
@@ -320,7 +315,7 @@ function convertKitGutenbergRegisterBlockFormatter(formatter) {
 			tagName: formatter.tag,
 			className: 'convertkit-' + formatter.name,
 			attributes: formatter.attributes,
-			edit: editFormatType,
+			edit: EditFormatType,
 		});
 	})(
 		window.wp.blockEditor,

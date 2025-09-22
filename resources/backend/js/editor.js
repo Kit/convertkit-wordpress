@@ -7,16 +7,17 @@
  * @author ConvertKit
  */
 
+
+
 /**
  * Registers the given block as a TinyMCE Plugin, with a button in
  * the Visual Editor toolbar.
  *
  * @since 	1.9.6
- * @param block
  *
- * @param object block 	Block
+ * @param {Object} block 	Block
  */
-function convertKitTinyMCERegisterPlugin(block) {
+function convertKitTinyMCERegisterPlugin(block) { // eslint-disable-line no-unused-vars
 	tinymce.PluginManager.add(
 		'convertkit_' + block.name,
 		function (editor, url) {

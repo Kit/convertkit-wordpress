@@ -12,12 +12,10 @@
  *
  * @since 	1.9.6.5
  *
- * @param block
- * @param props
- * @param object block 	Block
- * @param obejct props 	Block properties
+ * @param {Object} block 	Block.
+ * @param {Object} props 	Block properties.
  */
-function convertKitGutenbergFormBlockRenderPreview(block, props) {
+function convertKitGutenbergFormBlockRenderPreview(block, props) { // eslint-disable-line no-unused-vars
 	// Get selected form.
 	const form = block.fields.form.data.forms[props.attributes.form];
 
@@ -35,15 +33,15 @@ function convertKitGutenbergFormBlockRenderPreview(block, props) {
 	if (typeof form.uid !== 'undefined') {
 		// Determine the Form's format (inline, sticky bar etc).
 		// This isn't available in API responses prior to Feb 2022, so check the Form object contains this property.
-		let format =
-				typeof form.format !== 'undefined' ? form.format : 'inline',
-			html =
+		const format =
+				typeof form.format !== 'undefined' ? form.format : 'inline';
+		let html =
 				'<script async data-uid="' +
 				form.uid +
 				'" src="' +
 				form.embed_js +
-				'"></script>',
-			className = ['convertkit-' + block.name];
+				'"></script>';
+		const className = ['convertkit-' + block.name];
 
 		// If the format isn't inline, define the Gutenberg Block preview's HTML to explain why the Form won't be
 		// rendered in the editor i.e because it is a Sticky Bar that is displayed at the top/bottom of the document.
