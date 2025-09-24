@@ -12,10 +12,6 @@ module.exports = {
 		convertkit_quicktags: 'readonly',
 		convertkit_shortcodes: 'readonly',
 	},
-	ignorePatterns: [
-		'resources/backend/js/gutenberg.js',
-		'resources/backend/js/gutenberg-block-formatters.js',
-	],
 	rules: {
 		// Turn off specific rules
 		camelcase: 'off',
