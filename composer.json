@@ -29,6 +29,8 @@
         "phpcbf-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
         "lint-css": "npm run lint:css",
         "fix-css": "npm run fix:css",
+        "lint-js": "npm run lint:js",
+        "fix-js": "npm run fix:js",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "php-coding-standards": "vendor/bin/phpcs ./ -s -v",
         "fix-php-coding-standards": "vendor/bin/phpcbf ./ -s -v",
@@ -36,6 +38,8 @@
         "fix-php-coding-standards-on-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
         "css-coding-standards": "npm run lint:css",
         "fix-css-coding-standards": "npm run fix:css",
+        "js-coding-standards": "npm run lint:js",
+        "fix-js-coding-standards": "npm run fix:js",
         "php-static-analysis": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "test": [
             "vendor/bin/codecept build @no_additional_args",

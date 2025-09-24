@@ -91,7 +91,9 @@ How to use these is covered later on, and in the [Testing Guide](TESTING.md)
 
 In the Plugin's directory, at the command line, run `npm install`.
 
-This will install packages used for CSS linting / coding standards, with WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style).
+This sets up:
+- JS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-js)
+- CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style)
 
 ### Configure wp-config.php
 
