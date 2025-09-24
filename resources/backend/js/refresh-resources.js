@@ -44,8 +44,9 @@ function convertKitRefreshResources(button) {
 	const resource = button.dataset.resource,
 		field = button.dataset.field;
 
-	// Disable button.
+	// Disable button and set is-refreshing class.
 	button.disabled = true;
+	button.classList.add('is-refreshing');
 
 	// Perform AJAX request to refresh resource.
 	fetch(convertkit_admin_refresh_resources.ajaxurl, {
@@ -73,8 +74,9 @@ function convertKitRefreshResources(button) {
 				// Show error notice.
 				convertKitRefreshResourcesOutputErrorNotice(response.data);
 
-				// Enable button.
+				// Enable button and remove is-refreshing class.
 				button.disabled = false;
+				button.classList.remove('is-refreshing');
 
 				return;
 			}
@@ -171,8 +173,9 @@ function convertKitRefreshResources(button) {
 			// Trigger a change event on the select field, to allow Select2 instances to repopulate their options.
 			document.querySelector(field).dispatchEvent(new Event('change'));
 
-			// Enable button.
+			// Enable button and remove is-refreshing class.
 			button.disabled = false;
+			button.classList.remove('is-refreshing');
 		})
 		.catch(function (error) {
 			if (convertkit_admin_refresh_resources.debug) {
@@ -185,8 +188,9 @@ function convertKitRefreshResources(button) {
 			// Show error notice.
 			convertKitRefreshResourcesOutputErrorNotice(error);
 
-			// Enable button.
+			// Enable button and remove is-refreshing class.
 			button.disabled = false;
+			button.classList.remove('is-refreshing');
 		});
 }
 

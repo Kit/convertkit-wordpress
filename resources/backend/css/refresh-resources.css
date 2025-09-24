@@ -14,6 +14,6 @@
 	height: 32px;
 }
 
-.wp-convertkit-refresh-resources:disabled .dashicons {
+.wp-convertkit-refresh-resources.is-refreshing .dashicons {
 	animation: kit-spin-refresh-resources-button 1s linear infinite;
 }
