@@ -113,17 +113,17 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
 
-      # Installs WordPress scripts for CSS Coding Standards.
-      - name: Run npm install
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: npm install @wordpress/scripts --save-dev
-
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer dump-autoload
 
+      # Installs WordPress scripts for CSS and JS Coding Standards.
+      - name: Run npm install
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: npm install
+
       # Run PHP Coding Standards on Tests.
-      - name: Run WordPress PHPCoding Standards on Tests
+      - name: Run WordPress PHP Coding Standards on Tests
         working-directory: ${{ env.PLUGIN_DIR }}
         if: ${{ matrix.php-versions == '8.1' || matrix.php-versions == '8.2' || matrix.php-versions == '8.3' || matrix.php-versions == '8.4' }}
         run: php vendor/bin/phpcs -q --standard=phpcs.tests.xml --report=checkstyle ./tests | cs2pr
