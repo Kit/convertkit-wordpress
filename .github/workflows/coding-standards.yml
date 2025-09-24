@@ -138,6 +138,11 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: npm run lint:css
 
+      # Run JS Coding Standards on Plugin.
+      - name: Run WordPress JS Coding Standards
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: npm run lint:js
+
       # Run PHPStan for static analysis.
       - name: Run PHPStan Static Analysis
         working-directory: ${{ env.PLUGIN_DIR }}
