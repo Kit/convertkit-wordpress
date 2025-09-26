@@ -776,7 +776,7 @@ class KitPlugin extends \Codeception\Module
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh', 30);
+		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources', 30);
 
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
@@ -794,10 +794,10 @@ class KitPlugin extends \Codeception\Module
 	public function clickBlockRefreshButton($I)
 	{
 		// Click the refresh button.
-		$I->click('div.convertkit-no-content button.convertkit-block-refresh');
+		$I->click('div.convertkit-no-content button.wp-convertkit-refresh-resources');
 
 		// Wait for the refresh button to disappear, confirming that credentials and resources now exist.
-		$I->waitForElementNotVisible('div.convertkit-no-content button.convertkit-block-refresh');
+		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources');
 	}
 
 	/**

@@ -43,11 +43,6 @@
 	text-indent: 24px;
 }
 
-.convertkit-bulk-quick-edit > div button {
-	width: 36px;
-	height: 32px;
-}
-
 @media screen and (max-width: 782px) {
 
 	.convertkit-bulk-quick-edit > div label {

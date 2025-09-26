@@ -19,12 +19,6 @@
 	margin: 0;
 }
 
-/* Set size of refresh button */
-.convertkit-select2-container button.wp-convertkit-refresh-resources {
-	width: 36px;
-	height: 32px;
-}
-
 /* Align select and refresh button onto a single row */
 .convertkit-select2-container-grid {
 	display: grid;

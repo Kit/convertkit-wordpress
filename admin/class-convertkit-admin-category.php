@@ -85,6 +85,9 @@ class ConvertKit_Admin_Category {
 		// Enqueue Category CSS.
 		wp_enqueue_style( 'convertkit-category', CONVERTKIT_PLUGIN_URL . 'resources/backend/css/category.css', array(), CONVERTKIT_PLUGIN_VERSION );
 
+		// Enqueue Refresh Resources CSS.
+		wp_enqueue_style( 'convertkit-admin-refresh-resources', CONVERTKIT_PLUGIN_URL . 'resources/backend/css/refresh-resources.css', array(), CONVERTKIT_PLUGIN_VERSION );
+
 		/**
 		 * Enqueue CSS when editing a Category that outputs
 		 * ConvertKit Plugin settings.
