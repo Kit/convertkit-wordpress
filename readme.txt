@@ -179,7 +179,7 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 
 == Changelog ==
 
-### 3.0.3 2025-09-17
+### 3.0.3 2025-09-29
 * Added: Refresh resources button: show loading indicator until refresh is complete
 * Updated: WordPress Coding Standards for JS and CSS
 * Updated: Use WordPress Libraries 2.1.0
