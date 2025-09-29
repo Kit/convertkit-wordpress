@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,11 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.0.3 2025-09-29
+* Added: Refresh resources button: show loading indicator until refresh is complete
+* Updated: WordPress Coding Standards for JS and CSS
+* Updated: Use WordPress Libraries 2.1.0
 
 ### 3.0.2 2025-09-17
 * Fix: Member Content: Improve login form layout on mobile

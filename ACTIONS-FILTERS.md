@@ -2075,7 +2075,7 @@ do_action( 'convertkit_admin_category_enqueue_scripts', function(  ) {
 </pre>
 <h3 id="convertkit_admin_category_enqueue_styles">
 						convertkit_admin_category_enqueue_styles
-						<code>admin/class-convertkit-admin-category.php::93</code>
+						<code>admin/class-convertkit-admin-category.php::96</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2115,7 +2115,7 @@ do_action( 'convertkit_admin_post_enqueue_scripts', function(  ) {
 </pre>
 <h3 id="convertkit_admin_post_enqueue_styles">
 						convertkit_admin_post_enqueue_styles
-						<code>admin/class-convertkit-admin-post.php::140</code>
+						<code>admin/class-convertkit-admin-post.php::143</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
