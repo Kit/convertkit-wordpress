@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 3.0.0
+Stable tag: 3.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,16 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.0.2 2025-09-17
+* Fix: Member Content: Improve login form layout on mobile
+* Fix: Blocks: Form Builder: Typo on block description
+
+### 3.0.1 2025-09-11
+* Added: Blocks: Form Builder: Display asterisk for required fields
+* Added: Settings: Form Entries: Filter by API result
+* Fix: Landing Pages: Prevent Autoptimize lazy loading images on Landing Pages, which would result in missing images
+* Updated: Improved HTML parsing for Broadcasts and Form Builder block
 
 ### 3.0.0 2025-09-08
 * Added: Blocks: Form Builder. Create your own subscription forms with custom fields, tag and sequence support, within the block editor

@@ -427,10 +427,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Click the refresh button.
-		$I->click('div.components-flex-item button.convertkit-block-refresh');
+		$I->click('div.components-flex-item button.wp-convertkit-refresh-resources');
 
 		// Wait for button to change its state from disabled.
-		$I->waitForElementVisible('div.components-flex-item button.convertkit-block-refresh:not(:disabled)');
+		$I->waitForElementVisible('div.components-flex-item button.wp-convertkit-refresh-resources:not(:disabled)');
 
 		// Confirm that the Form option contains all Forms by selecting a Form that wasn't in the cache
 		// and was fetched via the API.
@@ -610,10 +610,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Click the refresh button.
-		$I->click('div.components-flex-item button.convertkit-block-refresh');
+		$I->click('div.components-flex-item button.wp-convertkit-refresh-resources');
 
 		// Wait for button to change its state from disabled.
-		$I->waitForElementVisible('div.components-flex-item button.convertkit-block-refresh:not(:disabled)');
+		$I->waitForElementVisible('div.components-flex-item button.wp-convertkit-refresh-resources:not(:disabled)');
 
 		// Confirm that the Form option contains all Forms by selecting a Form that wasn't in the cache
 		// and was fetched via the API.
@@ -788,10 +788,10 @@ class RefreshResourcesButtonCest
 		);
 
 		// Click the refresh button.
-		$I->click('div.components-flex-item button.convertkit-block-refresh');
+		$I->click('div.components-flex-item button.wp-convertkit-refresh-resources');
 
 		// Wait for button to change its state from disabled.
-		$I->waitForElementVisible('div.components-flex-item button.convertkit-block-refresh:not(:disabled)');
+		$I->waitForElementVisible('div.components-flex-item button.wp-convertkit-refresh-resources:not(:disabled)');
 
 		// Confirm that the Product option contains all Products by selecting a Product that wasn't in the cache
 		// and was fetched via the API.

@@ -1,15 +1,29 @@
-.convertkit-broadcasts.has-background,
-.convertkit-broadcasts[data-background-color],
-.editor-styles-wrapper .convertkit-broadcasts.has-background {
-	padding: 20px;
+/**
+ * Pagination
+ */
+ .convertkit-broadcasts-pagination {
+	display: grid;
+	grid-template-areas: "prev next";
+	grid-template-columns: repeat(2, 1fr);
+	grid-column-gap: 20px;
+	padding: 20px 0 0 0;
 }
-.convertkit-broadcasts.convertkit-broadcasts-loading,
-.editor-styles-wrapper .convertkit-broadcasts.convertkit-broadcasts-loading {
-	background-color: #e3e3e3 !important;
-	background-image: url(../images/spinner.gif);
-	background-position: center;
-	background-repeat: no-repeat;
+
+.convertkit-broadcasts-pagination li {
+	list-style: none;
+	margin: 0;
 }
+
+.convertkit-broadcasts-pagination li.convertkit-broadcasts-pagination-prev {
+	grid-area: prev;
+	text-align: left;
+}
+
+.convertkit-broadcasts-pagination li.convertkit-broadcasts-pagination-next {
+	grid-area: next;
+	text-align: right;
+}
+
 .convertkit-broadcasts-list,
 .editor-styles-wrapper .convertkit-broadcasts-list,
 .convertkit-broadcasts-pagination,
@@ -20,9 +34,29 @@
 }
 
 /**
- * List View
+ * Broadcasts
  */
-.convertkit-broadcasts-list li {
+.convertkit-broadcasts.has-background,
+.convertkit-broadcasts[data-background-color],
+.editor-styles-wrapper .convertkit-broadcasts.has-background {
+	padding: 20px;
+}
+
+.convertkit-broadcasts.convertkit-broadcasts-loading,
+.editor-styles-wrapper .convertkit-broadcasts.convertkit-broadcasts-loading {
+	background-color: #e3e3e3 !important;
+	background-image: url(../images/spinner.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+/**
+ * Broadcast Item
+ */
+ .convertkit-broadcasts-list li {
+	list-style: none;
+	margin: 0;
+	padding: 5px 0;
 	display: grid;
 	grid-template-areas:
 		"date title"
@@ -30,13 +64,64 @@
 	grid-template-columns: 150px auto;
 	grid-column-gap: 20px;
 }
+
+.convertkit-broadcasts-list li time {
+	display: inline-block;
+	grid-area: date;
+}
+
+.convertkit-broadcasts[data-display-order="broadcast-date"] .convertkit-broadcasts-list li time {
+	text-align: right;
+}
+
+.convertkit-broadcasts[data-display-grid="1"][data-display-order="broadcast-date"] .convertkit-broadcasts-list li time {
+	text-align: left;
+}
+
+.convertkit-broadcasts-list li .convertkit-broadcast-title {
+	display: inline-block;
+	grid-area: title;
+}
+
+.convertkit-broadcasts-list li .convertkit-broadcast-image {
+	display: inline-block;
+	grid-area: image;
+}
+
+.convertkit-broadcasts-list li .convertkit-broadcast-image img {
+	max-width: 100%;
+	height: auto;
+}
+
+.convertkit-broadcasts-list li .convertkit-broadcast-text {
+	display: inline-block;
+	grid-area: text;
+	font-size: 16px;
+}
+
+.convertkit-broadcasts-list li .convertkit-broadcast-read-more {
+	display: block;
+}
+
+@media screen and (max-width: 478px) {
+
+	.convertkit-broadcasts[data-display-image="1"] .convertkit-broadcasts-list li {
+		margin: 0 0 20px 0;
+	}
+}
+
+/**
+ * List View
+ */
 .convertkit-broadcasts[data-display-order="broadcast-date"] .convertkit-broadcasts-list li {
 	grid-template-areas:
 		"title date"
 		"text image";
 	grid-template-columns: auto 150px;
 }
+
 @media screen and (max-width: 478px) {
+
 	.convertkit-broadcasts-list li {
 		grid-template-areas:
 			"image image"
@@ -57,6 +142,7 @@
 	grid-row-gap: 20px;
 	align-items: start;
 }
+
 .convertkit-broadcasts[data-display-grid="1"] .convertkit-broadcasts-list li {
 	grid-template-areas:
 		"image"
@@ -66,6 +152,7 @@
 	grid-template-columns: none;
 	grid-row-gap: 10px;
 }
+
 .convertkit-broadcasts[data-display-grid="1"][data-display-order="broadcast-date"] .convertkit-broadcasts-list li {
 	grid-template-areas:
 		"image"
@@ -77,82 +164,19 @@
 .convertkit-broadcasts[data-display-grid="1"] .convertkit-broadcasts-list li .convertkit-broadcast-read-more {
 	margin: 10px 0 0 0;
 }
+
 @media screen and (max-width: 768px) {
+
 	.convertkit-broadcasts[data-display-grid="1"] .convertkit-broadcasts-list {
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
+
 @media screen and (max-width: 478px) {
+
 	.convertkit-broadcasts[data-display-grid="1"] .convertkit-broadcasts-list {
 		grid-template-columns: repeat(1, 1fr);
 	}
-}
-
-/**
- * Broadcast Item
- */
-.convertkit-broadcasts-list li {
-	list-style: none;
-	margin: 0;
-	padding: 5px 0;
-}
-.convertkit-broadcasts-list li time {
-	display: inline-block;
-	grid-area: date;
-}
-.convertkit-broadcasts[data-display-grid="1"][data-display-order="broadcast-date"] .convertkit-broadcasts-list li time {
-	text-align: left;
-}
-.convertkit-broadcasts[data-display-order="broadcast-date"] .convertkit-broadcasts-list li time {
-	text-align: right;
-}
-.convertkit-broadcasts-list li .convertkit-broadcast-title {
-	display: inline-block;
-	grid-area: title;
-}
-.convertkit-broadcasts-list li .convertkit-broadcast-image {
-	display: inline-block;
-	grid-area: image;
-}
-.convertkit-broadcasts-list li .convertkit-broadcast-image img {
-	max-width: 100%;
-	height: auto;
-}
-.convertkit-broadcasts-list li .convertkit-broadcast-text {
-	display: inline-block;
-	grid-area: text;
-	font-size: 16px;
-}
-.convertkit-broadcasts-list li .convertkit-broadcast-read-more {
-	display: block;
-}
-@media screen and (max-width: 478px) {
-	.convertkit-broadcasts[data-display-image="1"] .convertkit-broadcasts-list li {
-		margin: 0 0 20px 0;
-	}
-}
-
-/**
- * Pagination
- */
-.convertkit-broadcasts-pagination {
-	display: grid;
-	grid-template-areas: "prev next";
-	grid-template-columns: repeat(2, 1fr);
-	grid-column-gap: 20px;
-	padding: 20px 0 0 0;
-}
-.convertkit-broadcasts-pagination li {
-	list-style: none;
-	margin: 0;
-}
-.convertkit-broadcasts-pagination li.convertkit-broadcasts-pagination-prev {
-	grid-area: prev;
-	text-align: left;
-}
-.convertkit-broadcasts-pagination li.convertkit-broadcasts-pagination-next {
-	grid-area: next;
-	text-align: right;
 }
 
 /**
@@ -162,7 +186,9 @@
 .convertkit-broadcasts {
 	margin-bottom: 20px;
 }
+
 @media only screen and (min-width: 482px) {
+
 	.convertkit-broadcasts {
 		margin-bottom: 30px;
 	}
@@ -178,7 +204,8 @@ body.convertkit-broadcast.elementor-default table tbody,
 body.convertkit-broadcast.elementor-default table tbody td {
 	border: none;
 }
-body.convertkit-broadcast.elementor-default table tbody>tr:nth-child(odd)>td,
-body.convertkit-broadcast.elementor-default table tbody>tr:nth-child(odd)>th {
+
+body.convertkit-broadcast.elementor-default table tbody > tr:nth-child(odd) > td,
+body.convertkit-broadcast.elementor-default table tbody > tr:nth-child(odd) > th {
 	background: none;
 }

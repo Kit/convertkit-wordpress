@@ -5,21 +5,18 @@
 .convertkit-select2-container .select2-container .select2-selection--single {
 	height: 32px;
 }
+
 .convertkit-select2-container .select2-container--default .select2-selection--single .select2-selection__rendered {
 	line-height: 32px;
 }
+
 .convertkit-select2-container .select2-search--dropdown .select2-search__field {
 	line-height: 1;
 	min-height: 24px;
 }
+
 .convertkit-select2-container li.select2-results__option {
 	margin: 0;
-}
-
-/* Set size of refresh button */
-.convertkit-select2-container button.wp-convertkit-refresh-resources {
-	width: 36px;
-	height: 32px;
 }
 
 /* Align select and refresh button onto a single row */
@@ -31,17 +28,21 @@
 }
 
 /**
- * Force width of Select2 dropdowns, as using JS options dropdownAutoWidth=true and width='auto'
- * result in incorrect layout on some older browsers and our tests fail.
+ * Force width of Select2 dropdowns, as using JS options
+ * dropdownAutoWidth=true and width='auto' result in incorrect
+ * layout on some older browsers and our tests fail.
  */
 .convertkit-select2-container select + .select2-container {
 	width: 50% !important;
 	min-width: 350px !important;
 }
+
 .convertkit-select2-container-grid select + .select2-container {
 	width: 100% !important;
 }
+
 @media screen and (max-width: 782px) {
+
 	.convertkit-select2-container select + .select2-container {
 		width: 100% !important;
 	}

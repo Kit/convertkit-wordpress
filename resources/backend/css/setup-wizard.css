@@ -13,6 +13,7 @@ body.convertkit {
 	margin: 0 auto;
 	padding: 20px 0;
 }
+
 #convertkit-setup-wizard .wrap {
 	margin: 10px 0;
 }
@@ -25,11 +26,12 @@ body.convertkit {
 	background: url(../images/kit-logo.svg) center no-repeat;
 	background-size: 75px auto;
 }
+
 #convertkit-setup-wizard-header h1 {
 	margin: 0;
 	padding: 0;
 	font-weight: 400;
-	color: #D2D8DD;
+	color: #d2d8dd;
 	text-indent: -9999px;
 }
 
@@ -40,11 +42,13 @@ body.convertkit {
 	text-align: center;
 	padding: 20px 0;
 }
+
 #convertkit-setup-wizard-progress ol {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
+
 #convertkit-setup-wizard-progress li {
 	position: relative;
 	display: inline-block;
@@ -52,7 +56,8 @@ body.convertkit {
 	text-align: center;
 	line-height: 3em;
 }
-#convertkit-setup-wizard-progress li:after {
+
+#convertkit-setup-wizard-progress li::after {
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -63,7 +68,8 @@ body.convertkit {
 	content: "";
 	background-color: #dfdfdf;
 }
-#convertkit-setup-wizard-progress li:before {
+
+#convertkit-setup-wizard-progress li::before {
 	position: absolute;
 	z-index: 2;
 	top: -6px;
@@ -76,14 +82,17 @@ body.convertkit {
 	content: " ";
 	background-color: #dfdfdf;
 }
-#convertkit-setup-wizard-progress li:first-child:after {
+
+#convertkit-setup-wizard-progress li:first-child::after {
 	display: none;
 }
+
 #convertkit-setup-wizard-progress li.done {
 	color: #1c9bd7;
 }
-#convertkit-setup-wizard-progress li.done:after,
-#convertkit-setup-wizard-progress li.done:before {
+
+#convertkit-setup-wizard-progress li.done::after,
+#convertkit-setup-wizard-progress li.done::before {
 	background-color: #1c9bd7;
 }
 
@@ -109,20 +118,25 @@ body.convertkit {
 #convertkit-setup-wizard-content {
 	padding: 80px 80px 0 80px;
 }
+
 #convertkit-setup-wizard-content h1 {
 	margin: 0 0 20px 0;
 }
+
 #convertkit-setup-wizard-content hr {
 	margin: 40px 0 0 0;
 	padding: 0 0 40px 0;
 	border-bottom: none;
 }
+
 #convertkit-setup-wizard-content p {
 	font-size: 16px;
 }
+
 #convertkit-setup-wizard-content p.description {
 	font-size: 13px;
 }
+
 #convertkit-setup-wizard-content a.button,
 #convertkit-setup-wizard-content button,
 #convertkit-setup-wizard-footer a.button,
@@ -139,6 +153,11 @@ body.convertkit {
 	grid-template-columns: repeat(2, 1fr);
 	column-gap: 20px;
 }
+
+#convertkit-setup-wizard-content > div {
+	margin: 0 0 40px 0;
+}
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-grid > div {
 	text-align: center;
 	padding: 20px;
@@ -147,29 +166,30 @@ body.convertkit {
 	border-radius: 5px;
 	cursor: pointer;
 }
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-grid > div span {
 	display: block;
 }
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-grid > div span.description {
 	margin: 20px 0 0 0;
 	color: #646970;
 	font-size: 13px;
 }
 
-#convertkit-setup-wizard-content > div {
-	margin: 0 0 40px 0;
-}
 #convertkit-setup-wizard-content > div label {
 	display: block;
 	margin-bottom: 10px;
 	font-size: 16px;
 	font-weight: 500;
 }
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-selection {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	column-gap: 20px;
 }
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-selection label {
 	text-align: center;
 	padding: 20px;
@@ -178,9 +198,11 @@ body.convertkit {
 	border-radius: 5px;
 	cursor: pointer;
 }
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-selection label span {
 	display: block;
 }
+
 #convertkit-setup-wizard-content .convertkit-setup-wizard-selection label span.description {
 	margin: 20px 0 0 0;
 	color: #646970;
@@ -188,7 +210,8 @@ body.convertkit {
 	font-weight: 400;
 	font-style: italic;
 }
-#convertkit-setup-wizard-content .convertkit-setup-wizard-selection label input[type=radio] {
+
+#convertkit-setup-wizard-content .convertkit-setup-wizard-selection label input[type="radio"] {
 	margin: 20px 0 0 0;
 }
 
@@ -197,14 +220,16 @@ body.convertkit {
  */
 #convertkit-setup-wizard-footer {
 	display: grid;
-	grid-template-columns: repeat(2,1fr);
+	grid-template-columns: repeat(2, 1fr);
 	grid-template-areas: "left right";
 	padding: 40px 80px;
 }
+
 #convertkit-setup-wizard-footer .left {
 	grid-area: left;
 	text-align: left;
 }
+
 #convertkit-setup-wizard-footer .right {
 	grid-area: right;
 	text-align: right;
@@ -219,6 +244,7 @@ body.convertkit {
 	text-align: center;
 	font-size: 14px;
 }
+
 #convertkit-setup-wizard-exit-link a {
 	color: #8c8f9a;
 }
@@ -226,22 +252,29 @@ body.convertkit {
 /**
  * Modal View
  */
-body.convertkit-modal { overflow: hidden; }
+body.convertkit-modal {
+	overflow: hidden;
+}
+
 body.convertkit-modal #convertkit-setup-wizard {
 	width: 100%;
 	max-width: 100%;
 	margin: 0;
 	padding: 0;
 }
+
 body.convertkit-modal #convertkit-setup-wizard .wrap {
 	margin: 0;
 }
+
 body.convertkit-modal #convertkit-setup-wizard-body {
 	box-shadow: none;
 }
+
 body.convertkit-modal #convertkit-setup-wizard-content {
 	padding: 20px 20px 0 20px;
 }
+
 body.convertkit-modal #convertkit-setup-wizard-footer {
 	padding: 0 20px 20px 20px;
 }

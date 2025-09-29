@@ -4,15 +4,17 @@
 #convertkit-modal-body #convertkit-modal-body-body {
 	background-color: #f7f7f7;
 }
+
 #convertkit-modal-body-body .notice-error {
 	background: #f5eeee;
 	border: 1px solid #c3c4c7;
 	border-left-width: 4px;
-	box-shadow: 0 1px 1px rgba(0,0,0,.04);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 	margin: 20px 20px 0 20px;
 	padding: 1px 12px;
 	border-left-color: #d63638;
 }
+
 .convertkit-option {
 	display: grid;
 	grid-template-areas: "left right";
@@ -31,9 +33,11 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 .convertkit-option:nth-child(odd) {
 	background-color: #fcfcfc;
 }
+
 .convertkit-option div.left {
 	width: 100%;
 	grid-area: left;
@@ -41,10 +45,12 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 .convertkit-option div.left *:not(input) {
 	line-height: 27px;
 	white-space: normal;
 }
+
 .convertkit-option div.right {
 	width: 100%;
 	line-height: 27px;
@@ -53,25 +59,28 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 .convertkit-option input,
 .convertkit-option select {
 	border: 1px solid #8c8f94;
 	width: auto;
 }
-.convertkit-option input[type=color] {
+
+.convertkit-option input[type="color"] {
 	width: 80px;
 	height: 27px;
 	border: none;
 	margin: 0;
 	padding: 0;
 }
+
 .convertkit-option p {
 	white-space: normal;
 }
 
 /**
-* Dashicons
-* - TinyMCE overrides some defaults, such as the font-family, so we redefine them here.
+* Dashicons: TinyMCE overrides some defaults, such as the font-family,
+* so we redefine them here.
 */
 form.convertkit-tinymce-popup .dashicons {
 	font-family: dashicons;
@@ -97,6 +106,7 @@ form.convertkit-tinymce-popup .dashicons {
 	grid-template-areas: "tabs content";
 	background: #f7f7f7;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs {
 	grid-area: tabs;
 	width: 100%;
@@ -104,11 +114,13 @@ form.convertkit-tinymce-popup .dashicons {
 	padding: 0;
 	border-right: 1px solid #e5e5e5;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab {
 	width: 100%;
 	margin: 0;
 	padding: 0;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab a {
 	position: relative;
 	display: block;
@@ -123,6 +135,7 @@ form.convertkit-tinymce-popup .dashicons {
 	background-position: 0 50%;
 	background-repeat: no-repeat;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab a.convertkit-nav-tab-vertical-active,
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab a:hover {
 	width: 181px;
@@ -136,18 +149,23 @@ form.convertkit-tinymce-popup .dashicons {
 	background-position: 20px 50%;
 	background-repeat: no-repeat;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab a.convertkit-nav-tab-vertical-active {
 	font-weight: 700;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab a:hover {
 	background-color: #fefefe;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab a:focus {
 	box-shadow: none;
 }
+
 .convertkit-vertical-tabbed-ui ul.convertkit-nav-tabs li.convertkit-nav-tab:last-child a {
 	border-bottom: none;
 }
+
 .convertkit-vertical-tabbed-ui .convertkit-nav-tabs-content {
 	grid-area: content;
 	margin: 0;
@@ -155,20 +173,24 @@ form.convertkit-tinymce-popup .dashicons {
 	background: #fff;
 	border-left: 1px solid #e5e5e5;
 }
-.convertkit-vertical-tabbed-ui .convertkit-nav-tabs-content:after {
+
+.convertkit-vertical-tabbed-ui .convertkit-nav-tabs-content::after {
 	content: "";
 	display: table;
 	clear: both;
 }
+
 .convertkit-vertical-tabbed-ui .convertkit-nav-tabs-content .postbox {
 	margin: 0;
 	padding: 0;
 	border: none;
 	background-color: transparent;
 }
+
 .convertkit-vertical-tabbed-ui .convertkit-nav-tabs-content .postbox .convertkit-option:first-child {
 	padding-top: 15px;
 }
+
 .convertkit-vertical-tabbed-ui .convertkit-nav-tabs-content .postbox .convertkit-option:last-child {
 	border-bottom: none;
 }

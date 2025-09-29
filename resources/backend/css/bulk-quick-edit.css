@@ -1,6 +1,7 @@
 #convertkit-bulk-edit {
 	display: none;
 }
+
 #convertkit-quick-edit {
 	display: none;
 }
@@ -12,40 +13,42 @@
 	align-items: end;
 	margin: 0 0 5px 0;
 }
+
 .convertkit-bulk-quick-edit > div label {
 	display: grid;
 	grid-template-columns: 78px auto;
 	margin: 0;
 }
+
 .convertkit-bulk-quick-edit > div label select {
 	width: 100%;
 	max-width: 100%;
 }
+
 .convertkit-bulk-quick-edit > div label span.title.convertkit-icon-form {
 	background: url(../images/block-icon-form.svg) 0% 50% no-repeat;
 	background-size: 20px 20px;
 	text-indent: 24px;
 }
+
 .convertkit-bulk-quick-edit > div label span.title.convertkit-icon-tag {
 	background: url(../images/tag.svg) 0% 50% no-repeat;
 	background-size: 20px 20px;
 	text-indent: 24px;
 }
+
 .convertkit-bulk-quick-edit > div label span.title.convertkit-icon-restrict-content {
 	background: url(../images/members.svg) 0% 50% no-repeat;
 	background-size: 20px 20px;
 	text-indent: 24px;
 }
 
-.convertkit-bulk-quick-edit > div button {
-	width: 36px;
-	height: 32px;
-}
-
 @media screen and (max-width: 782px) {
+
 	.convertkit-bulk-quick-edit > div label {
 		display: block;
 	}
+
 	.convertkit-bulk-quick-edit > div button {
 		width: 40px;
 		height: 40px;

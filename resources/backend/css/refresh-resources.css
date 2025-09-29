@@ -1,0 +1,19 @@
+@keyframes kit-spin-refresh-resources-button {
+
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.wp-convertkit-refresh-resources {
+	width: 36px;
+	height: 32px;
+}
+
+.wp-convertkit-refresh-resources.is-refreshing .dashicons {
+	animation: kit-spin-refresh-resources-button 1s linear infinite;
+}

@@ -2,7 +2,7 @@
 
 This document describes how to:
 - create and run tests for your development work,
-- ensure code meets PHP and WordPress Coding Standards, for best practices and security,
+- ensure code meets PHP, CSS and WordPress Coding Standards, for best practices and security,
 - ensure code passes static analysis, to catch potential errors that tests might miss
 
 If you're new to creating and running tests, this guide will walk you through how to do this.
@@ -16,17 +16,23 @@ If you haven't yet set up your local development environment with the Kit Plugin
 
 If you haven't yet created a branch and made any code changes to the Plugin, refer to the [Development Guide](DEVELOPMENT.md)
 
-> **Familiar with wp-browser, Codeception, PHP Coding Standards and PHPStan?**  
-> Write your tests 
-> Run tests using `composer test [folder]/[cest]` or `composer test-integration [test]`
-> Run PHP Coding Standards using `composer phpcs` and `composer phpcs-tests`
-> Run static analysis using `composer phpstan`
-> [Submit a Pull Request](https://github.com/ConvertKit/convertkit-wordpress/compare).
+### Familiar with PHP/CSS Coding Standards, PHPStan, wp-browser and Codeception?
 
-## 
+The following Composer commands can be used:
 
-- Write your tests
-- `composer test
+| Command | Short Command | Description |
+|---------|---------------|-------------|
+| `composer php-coding-standards` | `composer phpcs` | Runs WordPress and PHP Coding Standards on the entire plugin codebase |
+| `composer fix-php-coding-standards` | `composer phpcbf` | Fix PHP files to meet WordPress and PHP Coding Standards |
+| `composer php-coding-standards-on-tests` | `composer phpcs-tests` | Runs PHP Coding Standards on the /tests folder |
+| `composer fix-php-coding-standards-on-tests` | `composer phpcbf-tests` | Fix PHP files to meet PHP Coding Standards on the /tests folder |
+| `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on the entire plugin codebase |
+| `composer fix-css-coding-standards` | `composer fix-css` | Fixes CSS files to meet WordPress CSS Coding Standards |
+| `composer js-coding-standards` | `composer lint-js` | Runs WordPress JS Coding Standards on the entire plugin codebase |
+| `composer fix-js-coding-standards` | `composer fix-js` | Fixes JS files to meet WordPress JS Coding Standards |
+| `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
+| `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
+| `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
 
 ## Write (or modify) a test
 
@@ -389,11 +395,16 @@ To register your own helper function, add it to the `tests/Support/Helper/Wpunit
 
 ## Run Tests
 
-> **Quick Commands**  
+> **Quick Commands**
+>  
 > `composer test`: Run all End to End tests
+>
 > `composer test general`: Run all tests in the EndToEnd/general folder
+>
 > `composer test general/ActivateDeactivatePluginCest`: Run all tests in the EndToEnd/general/ActivateDeactivatePluginCest file
+>
 > `composer test-integration`: Run all Integration tests
+>
 > `composer test-integration APITest`: Run the Integration/APITest tests
 
 Once you have written your code and test(s), run the tests to make sure there are no errors.
@@ -418,7 +429,7 @@ Any errors should be corrected by making applicable code or test changes.
 ## Run PHP CodeSniffer
 
 > **Quick Command**  
-> `composer phpcs`: Run PHP Coding Standards on Plugin files
+> `composer coding-standards`: Run PHP Coding Standards on Plugin files
 
 [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) checks that all Plugin code meets the 
 [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/).
@@ -447,10 +458,55 @@ Need to change the PHP or WordPress coding standard rules applied?  Either:
 
 **Rules should be ignored with caution**, particularly when sanitizing and escaping data.
 
+## Run CSS Linting
+
+> **Quick Command**  
+> `composer lint-css`: Run CSS Coding Standards on Plugin files
+
+In the Plugin's directory, run the following command to run CSS and WordPress Coding Standards on CSS, which will check the code meets WordPress' Coding Standards
+as defined in the `.stylelintrc.json` configuration:
+
+```bash
+npm run lint:css
+```
+
+Any errors should be corrected by either:
+- making applicable code changes
+- (Experimental) running `npm run fix:css` to automatically fix coding standards
+
+Need to change the CSS or WordPress coding standard rules applied?  WordPress' CSS linting uses [stylelint](https://stylelint.io/user-guide/ignore-code). Either:
+- ignore a rule in the affected code, by adding `/* stylelint-disable {rule} */`, where {rule} is the given rule that failed in the above output
+- edit the [.stylelintrc.json](.stylelintrc.json) file.
+
+**Rules should be ignored with caution**.
+
+## Run JS Linting
+
+> **Quick Command**  
+> `composer lint-js`: Run JS Coding Standards on Plugin files
+
+In the Plugin's directory, run the following command to run JS and WordPress Coding Standards on JavaScript, which will check the code meets WordPress' Coding Standards as defined in the `.eslintrc.js` configuration:
+
+```bash
+npm run lint:js
+```
+
+Any errors should be corrected by either:
+- making applicable code changes
+- (Experimental) running `npm run fix:js` to automatically fix coding standards
+
+Need to change the JS or WordPress coding standard rules applied?  WordPress' JS linting uses [eslint](https://eslint.org/docs/latest/rules/). Either:
+- ignore a rule in the affected code, by adding `/* eslint-disable {rule} */`, where {rule} is the given rule that failed in the above output
+- edit the [.eslintrc.js](.eslintrc.js) file.
+
+**Rules should be ignored with caution**.
+
+**Rules should be ignored with caution**.
+
 ## Run PHPStan
 
 > **Quick Command**  
-> `composer phpstan`: Run PHPStan static analysis on Plugin files
+> `composer static-analysis`: Run PHPStan static analysis on Plugin files
 
 [PHPStan](https://phpstan.org) performs static analysis on the Plugin's PHP code.  This ensures:
 
@@ -474,7 +530,7 @@ False positives [can be excluded by configuring](https://phpstan.org/user-guide/
 ## Run PHP CodeSniffer for Tests
 
 > **Quick Command**  
-> `composer phpcs-tests`: Run PHP Coding Standards on test files
+> `composer coding-standards-tests`: Run PHP Coding Standards on test files
 
 In the Plugin's directory, run the following command to run PHP_CodeSniffer, which will check the code meets Coding Standards
 as defined in the `phpcs.tests.xml` configuration:

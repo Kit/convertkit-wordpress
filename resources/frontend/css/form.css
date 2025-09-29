@@ -7,7 +7,9 @@ form.formkit-form[data-format="inline"] {
 	margin-right: auto;
 	margin-bottom: 20px;
 }
+
 @media only screen and (min-width: 482px) {
+
 	form.formkit-form[data-format="inline"] {
 		margin-bottom: 30px;
 	}

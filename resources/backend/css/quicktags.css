@@ -4,23 +4,28 @@
 	top: 50%;
 	transform: translate(-50%, -50%);
 }
+
 .convertkit-quicktags-modal .media-modal .media-frame-title {
 	left: 0;
 	height: 60px;
 }
+
 .convertkit-quicktags-modal .media-modal .media-frame-content {
 	left: 0;
 	top: 54px;
 	bottom: 54px; /* 34px + .media-toolbar top and bottom padding */
 }
+
 .convertkit-quicktags-modal .media-modal .media-frame-content p {
 	line-height: normal;
 }
+
 .convertkit-quicktags-modal .media-modal .media-frame-toolbar {
 	left: 0;
 	bottom: 47px;
 	background: #fff;
 }
+
 .convertkit-quicktags-modal .media-modal .media-frame-toolbar .media-toolbar {
 	padding: 10px;
 }

@@ -631,7 +631,7 @@ add_filter( 'convertkit_block_content_render', function( $content, $atts, $subsc
 </pre>
 <h3 id="convertkit_block_form_builder_field_render">
 						convertkit_block_form_builder_field_render
-						<code>includes/blocks/class-convertkit-block-form-builder-field.php::320</code>
+						<code>includes/blocks/class-convertkit-block-form-builder-field.php::324</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1837,7 +1837,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-admin-section-form-entries.php::190</code>
+						<code>admin/section/class-convertkit-admin-section-form-entries.php::201</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

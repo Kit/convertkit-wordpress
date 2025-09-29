@@ -32,6 +32,16 @@ sudo mv composer.phar /usr/local/bin/composer
 
 Confirm that installation was successful by entering the `composer` command at the command line
 
+### Node.js + npm
+
+If [npm](https://nodejs.org/en/download/current) is not installed on your local environment, install a package manager to then install node, such as nvm:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 24
+```
+
 ### Clone Repository
 
 Using your preferred Git client or command line, clone this repository into the `wp-content/plugins/` folder of your local WordPress installation.
@@ -76,6 +86,14 @@ This will install two types of packages:
 -- PHP_CodeSniffer
 
 How to use these is covered later on, and in the [Testing Guide](TESTING.md)
+
+### Install npm Packages
+
+In the Plugin's directory, at the command line, run `npm install`.
+
+This sets up:
+- JS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-js)
+- CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style)
 
 ### Configure wp-config.php
 
