@@ -43,6 +43,7 @@ class ConvertKit_Form_Entries {
                 `first_name` varchar(191) NOT NULL DEFAULT '',
                 `email` varchar(191) NOT NULL DEFAULT '',
                 `custom_fields` text,
+				`form_id` int(11) NOT NULL,
 				`tag_id` int(11) NOT NULL,
 				`sequence_id` int(11) NOT NULL,
                 `created_at` datetime NOT NULL,
@@ -53,6 +54,7 @@ class ConvertKit_Form_Entries {
 				KEY `post_id` (`post_id`),
 				KEY `first_name` (`first_name`),
                 KEY `email` (`email`),
+				KEY `form_id` (`form_id`),
 				KEY `tag_id` (`tag_id`),
 				KEY `sequence_id` (`sequence_id`),
                 KEY `api_result` (`api_result`)
@@ -74,6 +76,7 @@ class ConvertKit_Form_Entries {
 	 *    string          $first_name       First Name.
 	 *    string          $email            Email.
 	 *    array           $custom_fields    Custom Fields.
+	 *    int             $form_id          Form ID.
 	 *    int             $tag_id           Tag ID.
 	 *    int             $sequence_id      Sequence ID.
 	 *    string          $api_result       Result (success,error).
@@ -124,6 +127,7 @@ class ConvertKit_Form_Entries {
 	 *    string          $first_name       First Name.
 	 *    string          $email            Email.
 	 *    array           $custom_fields    Custom Fields.
+	 *    int             $form_id          Form ID.
 	 *    int             $tag_id           Tag ID.
 	 *    int             $sequence_id      Sequence ID.
 	 *    string          $api_result       Result (success,error).
@@ -168,6 +172,9 @@ class ConvertKit_Form_Entries {
 	 *    string          $first_name       First Name.
 	 *    string          $email            Email.
 	 *    array           $custom_fields    Custom Fields.
+	 *    int             $form_id          Form ID.
+	 *    int             $tag_id           Tag ID.
+	 *    int             $sequence_id      Sequence ID.
 	 *    datetime        $created_at       Created At.
 	 *    datetime        $api_request_sent Request Sent to API.
 	 *    string          $api_result       Result (success,test_mode,pending,error).

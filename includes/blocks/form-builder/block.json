@@ -17,10 +17,22 @@
         "redirect": {
             "type": "string"
         },
+        "store_entries": {
+            "type": "boolean"
+        },
         "display_form_if_subscribed": {
             "type": "boolean"
         },
         "text_if_subscribed": {
+            "type": "string"
+        },
+        "form_id": {
+            "type": "string"
+        },
+        "tag_id": {
+            "type": "string"
+        },
+        "sequence_id": {
             "type": "string"
         },
         "fontSize": {

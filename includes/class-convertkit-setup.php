@@ -61,6 +61,13 @@ class ConvertKit_Setup {
 		}
 
 		/**
+		 * 3.0.4: Add form_id to entries database table.
+		 */
+		if ( version_compare( $current_version, '3.0.4', '<' ) ) {
+			$this->add_form_id_column_and_key_to_form_entries_database_table();
+		}
+
+		/**
 		 * 3.0.0: Migrate reCAPTCHA settings from Restrict Content to General settings.
 		 * Install entries database table.
 		 */
@@ -154,6 +161,46 @@ class ConvertKit_Setup {
 
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
+
+	}
+
+	/**
+	 * Adds form_id column and key to form entries database table.
+	 *
+	 * @since   3.0.4
+	 */
+	private function add_form_id_column_and_key_to_form_entries_database_table() {
+
+		global $wpdb;
+
+		// Fetch columns.
+		$columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $wpdb->prefix . 'kit_form_entries' );
+
+		// Bail if no columns found.
+		if ( ! is_array( $columns ) || count( $columns ) === 0 ) {
+			return true;
+		}
+
+		// Check if the form_id column exists.
+		$column_exists = array_filter(
+			$columns,
+			function ( $column ) {
+				return $column->Field === 'form_id'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			}
+		);
+
+		// If the array isn't empty, the column exists.
+		if ( count( $column_exists ) > 0 ) {
+			return;
+		}
+
+		// Add the form_id column and key.
+		$wpdb->query(
+			$wpdb->prepare( 'ALTER TABLE %i ADD COLUMN `form_id` int(11) NOT NULL AFTER `custom_fields`', $wpdb->prefix . 'kit_form_entries' )
+		);
+		$wpdb->query(
+			$wpdb->prepare( 'ALTER TABLE %i ADD KEY `form_id` (`form_id`)', $wpdb->prefix . 'kit_form_entries' )
+		);
 
 	}
 
