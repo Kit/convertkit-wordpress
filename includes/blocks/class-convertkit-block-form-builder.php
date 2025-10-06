@@ -481,7 +481,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$forms_options = array();
 		if ( $forms->exist() ) {
 			foreach ( $forms->get() as $form ) {
-				$forms_options[ $form['id'] ] = sanitize_text_field( $form['name'] );
+				// Legacy forms don't include a `format` key, so define them as inline.
+				$forms_options[ $form['id'] ] = sprintf(
+					'%s [%s]',
+					sanitize_text_field( $form['name'] ),
+					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
+				);
 			}
 		}
 
