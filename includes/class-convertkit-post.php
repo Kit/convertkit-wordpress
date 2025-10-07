@@ -298,7 +298,20 @@ class ConvertKit_Post {
 	 */
 	public function save( $meta ) {
 
-		return update_post_meta( $this->post_id, self::POST_META_KEY, $meta );
+		// Save settings.
+		$result = update_post_meta( $this->post_id, self::POST_META_KEY, $meta );
+
+		/**
+		 * Action hook to run when a Post's settings are saved.
+		 *
+		 * @since   3.0.4
+		 *
+		 * @param   int     $post_id    Post ID.
+		 * @param   array   $meta       Settings.
+		 */
+		do_action( 'convertkit_post_save', $this->post_id, $meta );
+
+		return $result;
 
 	}
 
