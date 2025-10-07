@@ -91,7 +91,7 @@ class ConvertKit_Admin_Restrict_Content {
 		add_action( 'restrict_manage_posts', array( $this, 'output_wp_list_table_filters' ) );
 
 		// Update whether any Pages, Posts or CPTs are configured to use Restrict Content when a Page, Post or CPT is created, edited, trashed or deleted.
-		add_action( 'convertkit_post_save', array( $this, 'update_restrict_content_enabled' ) );
+		add_action( 'wp_insert_post', array( $this, 'update_restrict_content_enabled' ) );
 		add_action( 'trashed_post', array( $this, 'update_restrict_content_enabled' ) );
 		add_action( 'delete_post', array( $this, 'update_restrict_content_enabled' ) );
 
