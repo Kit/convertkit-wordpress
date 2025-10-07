@@ -102,8 +102,6 @@ class ConvertKit_Admin_Restrict_Content {
 	 * Page, Post or CPT is created, edited or deleted.
 	 *
 	 * @since   3.0.4
-	 *
-	 * @return  bool
 	 */
 	public function update_restrict_content_enabled() {
 
@@ -137,9 +135,6 @@ class ConvertKit_Admin_Restrict_Content {
 
 		// Update option.
 		update_option( $this->restrict_content_enabled_key, $restrict_content_enabled );
-
-		// Return.
-		return $restrict_content_enabled;
 
 	}
 
