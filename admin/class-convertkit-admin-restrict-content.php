@@ -126,7 +126,7 @@ class ConvertKit_Admin_Restrict_Content {
 				" . $wpdb->posts . ".post_type IN ('" . implode( "', '", convertkit_get_supported_post_types() ) . "') LIMIT 1;", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration
 				'%' . $wpdb->esc_like( '"restrict_content";' ) . '%',
 				'%' . $wpdb->esc_like( '"restrict_content";s:0:' ) . '%',
-				'%' . $wpdb->esc_like( '"restrict_content";s:1:"0"' ) . '%',
+				'%' . $wpdb->esc_like( '"restrict_content";s:1:"0"' ) . '%'
 			)
 		);
 
