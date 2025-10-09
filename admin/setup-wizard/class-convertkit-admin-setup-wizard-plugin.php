@@ -262,8 +262,9 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				$settings = new ConvertKit_Settings();
 				$settings->save(
 					array(
-						'post_form' => ( isset( $_POST['post_form'] ) ? sanitize_text_field( wp_unslash( $_POST['post_form'] ) ) : '0' ),
-						'page_form' => ( isset( $_POST['page_form'] ) ? sanitize_text_field( wp_unslash( $_POST['page_form'] ) ) : '0' ),
+						'post_form'      => ( isset( $_POST['post_form'] ) ? sanitize_text_field( wp_unslash( $_POST['post_form'] ) ) : '0' ),
+						'page_form'      => ( isset( $_POST['page_form'] ) ? sanitize_text_field( wp_unslash( $_POST['page_form'] ) ) : '0' ),
+						'usage_tracking' => ( isset( $_POST['usage_tracking'] ) ? 'on' : '' ),
 					)
 				);
 				break;
