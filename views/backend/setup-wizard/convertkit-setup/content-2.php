@@ -134,5 +134,23 @@ if ( ! $this->forms->exist() ) {
 			?>
 		</p>
 	</div>
+
+	<div>
+		<label for="wp-convertkit-usage-tracking">
+			<?php esc_html_e( 'Usage tracking', 'convertkit' ); ?>
+		</label>
+
+		<input type="checkbox" name="usage_tracking" id="wp-convertkit-usage-tracking" value="on" checked />
+
+		<p class="description">
+			<?php
+			printf(
+				'%s <a href="https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website" target="_blank">%s</a>',
+				esc_html__( 'By allowing us to collect usage data, we can better understand which WordPress configurations, themes and plugins we should test. Complete documentation on usage tracking can be found', 'convertkit' ),
+				esc_html__( 'here', 'convertkit' )
+			);
+			?>
+		</p>
+	</div>
 	<?php
 }

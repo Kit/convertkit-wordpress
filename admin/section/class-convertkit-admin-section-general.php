@@ -472,6 +472,17 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			)
 		);
 
+		add_settings_field(
+			'usage_tracking',
+			__( 'Usage Tracking', 'convertkit' ),
+			array( $this, 'usage_tracking_callback' ),
+			$this->settings_key,
+			$this->name . '-advanced',
+			array(
+				'label_for' => 'usage_tracking',
+			)
+		);
+
 	}
 
 	/**
@@ -976,6 +987,31 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 					esc_html__( 'For developers who require custom form designs through use of CSS, consider using the', 'convertkit' ),
 					esc_html__( 'or', 'convertkit' ),
 					esc_html__( 'integrations.', 'convertkit' )
+				),
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Usage Tracking setting.
+	 *
+	 * @since   3.0.4
+	 */
+	public function usage_tracking_callback() {
+
+		// Output field.
+		$this->output_checkbox_field(
+			'usage_tracking',
+			'on',
+			$this->settings->usage_tracking(),
+			esc_html__( 'By allowing us to collect usage data, we can better understand which WordPress configurations, themes and plugins we should test.', 'convertkit' ),
+			array(
+				sprintf(
+					'%s <a href="%s" target="_blank">%s</a>',
+					esc_html__( 'Complete documentation on usage tracking can be found', 'convertkit' ),
+					$this->documentation_url(),
+					esc_html__( 'here', 'convertkit' )
 				),
 			)
 		);
