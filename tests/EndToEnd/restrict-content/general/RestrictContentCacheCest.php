@@ -50,14 +50,33 @@ class RestrictContentCacheCest
 		$I->waitForElementVisible('body.index-php');
 		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to LiteSpeed Cache\'s "Do Not Cache Cookies" setting by clicking here.');
 
-		// Create Restricted Content Page.
-		$pageID = $I->createRestrictedContentPage(
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
 			$I,
-			[
-				'post_title'               => 'Kit: Restrict Content: Product: LiteSpeed Cache',
-				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			title: 'Kit: Restrict Content: Product: LiteSpeed Cache'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is configured.
@@ -77,7 +96,7 @@ class RestrictContentCacheCest
 		$I->logOut();
 
 		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+		$I->amOnUrl($url);
 
 		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
 		// to confirm caching does not show member-only content.
@@ -88,7 +107,7 @@ class RestrictContentCacheCest
 		$I->setRestrictContentCookieAndReload(
 			$I,
 			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
-			urlOrPageID: $pageID
+			urlOrPageID: $url
 		);
 		$I->testRestrictContentDisplaysContent($I);
 
@@ -119,14 +138,33 @@ class RestrictContentCacheCest
 		$I->waitForElementVisible('body.index-php');
 		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to W3 Total Cache\'s "Rejected Cookies" setting by clicking here.');
 
-		// Create Restricted Content Page.
-		$pageID = $I->createRestrictedContentPage(
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
 			$I,
-			[
-				'post_title'               => 'Kit: Restrict Content: Product: W3 Total Cache',
-				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			title: 'Kit: Restrict Content: Product: W3 Total Cache'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is configured.
@@ -146,7 +184,7 @@ class RestrictContentCacheCest
 		$I->logOut();
 
 		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+		$I->amOnUrl($url);
 
 		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
 		// to confirm caching does not show member-only content.
@@ -157,7 +195,7 @@ class RestrictContentCacheCest
 		$I->setRestrictContentCookieAndReload(
 			$I,
 			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
-			urlOrPageID: $pageID
+			urlOrPageID: $url
 		);
 		$I->testRestrictContentDisplaysContent($I);
 
@@ -194,14 +232,33 @@ class RestrictContentCacheCest
 			$I->grabOptionFromDatabase('WpFastestCacheExclude')
 		);
 
-		// Create Restricted Content Page.
-		$pageID = $I->createRestrictedContentPage(
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
 			$I,
-			[
-				'post_title'               => 'Kit: Restrict Content: Product: WP Fastest Cache',
-				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			title: 'Kit: Restrict Content: Product: WP Fastest Cache'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Load the Dashboard.
 		$I->amOnAdminPage('index.php');
@@ -224,7 +281,7 @@ class RestrictContentCacheCest
 		$I->logOut();
 
 		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+		$I->amOnUrl($url);
 
 		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
 		// to confirm caching does not show member-only content.
@@ -235,7 +292,7 @@ class RestrictContentCacheCest
 		$I->setRestrictContentCookieAndReload(
 			$I,
 			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
-			urlOrPageID: $pageID
+			urlOrPageID: $url
 		);
 		$I->testRestrictContentDisplaysContent($I);
 
@@ -268,14 +325,33 @@ class RestrictContentCacheCest
 			$config['cache_exception_cookies'][0]
 		);
 
-		// Create Restricted Content Page.
-		$pageID = $I->createRestrictedContentPage(
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
 			$I,
-			[
-				'post_title'               => 'Kit: Restrict Content: Product: WP-Optimize',
-				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			title: 'Kit: Restrict Content: Product: WP-Optimize'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Load the Dashboard.
 		$I->amOnAdminPage('index.php');
@@ -293,7 +369,7 @@ class RestrictContentCacheCest
 		$I->logOut();
 
 		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+		$I->amOnUrl($url);
 
 		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
 		// to confirm caching does not show member-only content.
@@ -304,7 +380,7 @@ class RestrictContentCacheCest
 		$I->setRestrictContentCookieAndReload(
 			$I,
 			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
-			urlOrPageID: $pageID
+			urlOrPageID: $url
 		);
 		$I->testRestrictContentDisplaysContent($I);
 
@@ -335,14 +411,33 @@ class RestrictContentCacheCest
 		$I->waitForElementVisible('body.index-php');
 		$I->dontSee('Kit: Member Content: Please add ck_subscriber_id to WP Super Cache\'s "Rejected Cookies" setting by clicking here.');
 
-		// Create Restricted Content Page.
-		$pageID = $I->createRestrictedContentPage(
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
 			$I,
-			[
-				'post_title'               => 'Kit: Restrict Content: Product: WP Super Cache',
-				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			title: 'Kit: Restrict Content: Product: WP Super Cache'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Test that a notice is displayed in the WordPress Administration interface, as a Restrict Content
 		// page is configured.
@@ -362,7 +457,7 @@ class RestrictContentCacheCest
 		$I->logOut();
 
 		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+		$I->amOnUrl($url);
 
 		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
 		// to confirm caching does not show member-only content.
@@ -373,7 +468,7 @@ class RestrictContentCacheCest
 		$I->setRestrictContentCookieAndReload(
 			$I,
 			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
-			urlOrPageID: $pageID
+			urlOrPageID: $url
 		);
 		$I->testRestrictContentDisplaysContent($I);
 
@@ -400,14 +495,33 @@ class RestrictContentCacheCest
 		$config = $I->grabOptionFromDatabase('wp_rocket_settings');
 		$I->assertNotContains('ck_subscriber_id', $config['cache_reject_cookies']);
 
-		// Create Restricted Content Page.
-		$pageID = $I->createRestrictedContentPage(
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
 			$I,
-			[
-				'post_title'               => 'Kit: Restrict Content: Product: WP Rocket',
-				'restrict_content_setting' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			title: 'Kit: Restrict Content: Product: WP Rocket'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
 			]
 		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Load the Dashboard.
 		$I->amOnAdminPage('index.php');
@@ -422,7 +536,7 @@ class RestrictContentCacheCest
 		$I->logOut();
 
 		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+		$I->amOnUrl($url);
 
 		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
 		// to confirm caching does not show member-only content.
@@ -433,7 +547,7 @@ class RestrictContentCacheCest
 		$I->setRestrictContentCookieAndReload(
 			$I,
 			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
-			urlOrPageID: $pageID
+			urlOrPageID: $url
 		);
 		$I->testRestrictContentDisplaysContent($I);
 
