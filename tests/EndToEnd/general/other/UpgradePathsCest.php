@@ -216,6 +216,58 @@ class UpgradePathsCest
 	}
 
 	/**
+	 * Tests that the form_id column is added to the form entries table when upgrading to 3.0.4 or later.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testUpdateFormEntriesTableAddsFormIDColumn(EndToEndTester $I)
+	{
+		// Create the form entries table as if it were created in 3.0.3 or older,
+		// without the form_id column.
+		$I->importSql(
+			[
+				"CREATE TABLE IF NOT EXISTS wp_kit_form_entries (
+				`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+				`post_id` int(11) NOT NULL,
+				`first_name` varchar(191) NOT NULL DEFAULT '',
+				`email` varchar(191) NOT NULL DEFAULT '',
+				`custom_fields` text,
+				`tag_id` int(11) NOT NULL,
+				`sequence_id` int(11) NOT NULL,
+				`created_at` datetime NOT NULL,
+				`updated_at` datetime NOT NULL,
+				`api_result` varchar(191) NOT NULL DEFAULT 'success',
+				`api_error` text,
+				PRIMARY KEY (`id`),
+				KEY `post_id` (`post_id`),
+				KEY `first_name` (`first_name`),
+				KEY `email` (`email`),
+				KEY `tag_id` (`tag_id`),
+				KEY `sequence_id` (`sequence_id`),
+				KEY `api_result` (`api_result`)
+			) AUTO_INCREMENT=1",
+			]
+		);
+
+		// Confirm the form entries table is created.
+		$I->seeTableInDatabase('wp_kit_form_entries');
+
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
+		// Define an installation version older than 3.0.3.
+		$I->haveOptionInDatabase('convertkit_version', '3.0.0');
+
+		// Activate the Plugin.
+		$I->activateKitPlugin($I, false);
+
+		// Confirm the form entries table now has the form_id column.
+		$I->seeColumnInDatabase('wp_kit_form_entries', 'form_id');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
