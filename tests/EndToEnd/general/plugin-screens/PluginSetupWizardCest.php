@@ -300,6 +300,89 @@ class PluginSetupWizardCest
 	}
 
 	/**
+	 * Test that the Setup Wizard > Usage Tracking setting is honored.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSetupWizardUsageTrackingSetting(EndToEndTester $I)
+	{
+		// Activate Plugin.
+		$this->_activatePlugin($I);
+
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
+		// Define Plugin settings.
+		$I->setupKitPluginNoDefaultForms($I);
+
+		// Create a Page and a Post, so that preview links display.
+		$I->havePostInDatabase(
+			[
+				'post_title'  => 'Kit: Setup Wizard: Page',
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+			]
+		);
+		$I->havePostInDatabase(
+			[
+				'post_title'  => 'Kit: Setup Wizard: Post',
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			]
+		);
+
+		// Load Step 2/3.
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+
+		// Confirm expected setup wizard screen is displayed.
+		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+
+		// Uncheck Usage Tracking setting.
+		$I->uncheckOption('#wp-convertkit-usage-tracking');
+
+		// Click Finish Setup button.
+		$I->click('Finish Setup');
+
+		// Confirm expected setup wizard screen is displayed.
+		$this->_seeExpectedSetupWizardScreen($I, 3, 'Setup complete');
+
+		// Click Plugin Settings.
+		$I->click('Plugin Settings');
+
+		// Confirm that Plugin Settings screen contains no errors.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Usage Tracking setting is unticked on the Plugin Settings screen.
+		$I->dontSeeCheckboxIsChecked('#usage_tracking');
+
+		// Load Step 2/3 on the Setup Wizard screen again.
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+
+		// Confirm expected setup wizard screen is displayed.
+		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+
+		// Check Usage Tracking setting.
+		$I->checkOption('#wp-convertkit-usage-tracking');
+
+		// Click Finish Setup button.
+		$I->click('Finish Setup');
+
+		// Confirm expected setup wizard screen is displayed.
+		$this->_seeExpectedSetupWizardScreen($I, 3, 'Setup complete');
+
+		// Click Plugin Settings.
+		$I->click('Plugin Settings');
+
+		// Confirm that Plugin Settings screen contains no errors.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Usage Tracking setting is ticked on the Plugin Settings screen.
+		$I->seeCheckboxIsChecked('#usage_tracking');
+	}
+
+	/**
 	 * Test that the Setup Wizard > Form Configuration screen works as expected
 	 * when API credentials are supplied for a Kit account that contains
 	 * no forms.

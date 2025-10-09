@@ -45,6 +45,7 @@ class PluginSettingsGeneralCest
 		$I->seeInSource('<label for="debug">');
 		$I->seeInSource('<label for="no_scripts">');
 		$I->seeInSource('<label for="no_css">');
+		$I->seeInSource('<label for="usage_tracking">');
 
 		// Confirm that the UTM parameters exist for the documentation links.
 		$I->seeInSource('<a href="https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" class="convertkit-docs" target="_blank">Help</a>');
@@ -771,6 +772,48 @@ class PluginSettingsGeneralCest
 
 	/**
 	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
+	 * when the Usage Tracking settings is unchecked, and that CSS is output
+	 * on the frontend web site.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testEnableAndDisableUsageTrackingSetting(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Tick field.
+		$I->checkOption('#usage_tracking');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the field remains ticked.
+		$I->seeCheckboxIsChecked('#usage_tracking');
+
+		// Untick field.
+		$I->uncheckOption('#usage_tracking');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the field remains unticked.
+		$I->dontSeeCheckboxIsChecked('#usage_tracking');
+	}
+
+	/**
+	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
 	 * when using a Kit account with no resources, and that the applicable Form settings
 	 * fields do not display.
 	 *
@@ -808,6 +851,7 @@ class PluginSettingsGeneralCest
 		$I->checkOption('#debug');
 		$I->checkOption('#no_scripts');
 		$I->checkOption('#no_css');
+		$I->checkOption('#usage_tracking');
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
@@ -819,11 +863,13 @@ class PluginSettingsGeneralCest
 		$I->seeCheckboxIsChecked('#debug');
 		$I->seeCheckboxIsChecked('#no_scripts');
 		$I->seeCheckboxIsChecked('#no_css');
+		$I->seeCheckboxIsChecked('#usage_tracking');
 
 		// Untick fields.
 		$I->uncheckOption('#debug');
 		$I->uncheckOption('#no_scripts');
 		$I->uncheckOption('#no_css');
+		$I->uncheckOption('#usage_tracking');
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
@@ -835,6 +881,7 @@ class PluginSettingsGeneralCest
 		$I->dontSeeCheckboxIsChecked('#debug');
 		$I->dontSeeCheckboxIsChecked('#no_scripts');
 		$I->dontSeeCheckboxIsChecked('#no_css');
+		$I->dontSeeCheckboxIsChecked('#usage_tracking');
 	}
 
 	/**

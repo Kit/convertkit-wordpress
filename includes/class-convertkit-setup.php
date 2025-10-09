@@ -173,24 +173,22 @@ class ConvertKit_Setup {
 
 		global $wpdb;
 
-		// Fetch columns.
-		$columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $wpdb->prefix . 'kit_form_entries' );
-
-		// Bail if no columns found.
-		if ( ! is_array( $columns ) || count( $columns ) === 0 ) {
-			return true;
-		}
-
-		// Check if the form_id column exists.
-		$column_exists = array_filter(
-			$columns,
-			function ( $column ) {
-				return $column->Field === 'form_id'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			}
+		// Check if the column exists.
+		$exists = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME
+			FROM INFORMATION_SCHEMA.COLUMNS
+			WHERE table_name = %s
+			AND table_schema = %s
+			AND column_name = %s',
+				$wpdb->prefix . 'kit_form_entries',
+				$wpdb->dbname,
+				'form_id'
+			)
 		);
 
-		// If the array isn't empty, the column exists.
-		if ( count( $column_exists ) > 0 ) {
+		// If the column exists, don't add it again.
+		if ( $exists === 'form_id' ) {
 			return;
 		}
 
