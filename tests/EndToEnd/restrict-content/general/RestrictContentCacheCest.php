@@ -570,5 +570,7 @@ class RestrictContentCacheCest
 		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
+		$I->truncateDbTable('wp_posts');
+		$I->truncateDbTable('wp_postmeta');
 	}
 }
