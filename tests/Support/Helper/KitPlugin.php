@@ -1016,4 +1016,27 @@ class KitPlugin extends \Codeception\Module
 	{
 		$this->getModule(\lucatume\WPBrowser\Module\WPDb::class)->_getDbh()->query('TRUNCATE TABLE ' . $table);
 	}
+
+	/**
+	 * Helper method to assert that the given column exists in the given table.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   string $table Table name.
+	 * @param   string $column Column name.
+	 */
+	public function seeColumnInDatabase(string $table, string $column): void
+	{
+		$wpDb = $this->getModule(\lucatume\WPBrowser\Module\WPDb::class);
+		$dbh  = $wpDb->_getDbh();
+
+		$stmt = $dbh->prepare("SHOW COLUMNS FROM {$table} LIKE ?");
+		$stmt->execute([ $column ]);
+		$result = $stmt->fetch();
+
+		$this->assertNotEmpty(
+			$result,
+			"Failed asserting that column '{$column}' exists in table '{$table}'."
+		);
+	}
 }
