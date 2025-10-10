@@ -537,6 +537,9 @@ class KitPlugin extends \Codeception\Module
 
 		// Upgrades.
 		$I->dontHaveOptionInDatabase('_wp_convertkit_upgrade_posts');
+
+		// Cache.
+		$I->dontHaveOptionInDatabase('convertkit_restrict_content_enabled');
 	}
 
 	/**
