@@ -56,7 +56,7 @@ class ConvertKit_Admin_Cache_Plugins {
 
 		// If no Pages, Posts or CPTs are configured to use Restrict Content, don't
 		// configure any caching plugins.
-		if ( ! $this->restrict_content_enabled() ) {
+		if ( ! WP_ConvertKit()->get_class( 'admin_restrict_content' )->restrict_content_enabled() ) {
 			return;
 		}
 
@@ -66,41 +66,6 @@ class ConvertKit_Admin_Cache_Plugins {
 		$this->wp_optimize();
 		$this->wp_rocket();
 		$this->wp_super_cache();
-
-	}
-
-	/**
-	 * Check if any Pages, Posts or CPTs are configured to use Restrict Content.
-	 *
-	 * @since   2.7.6
-	 *
-	 * @return  bool
-	 */
-	private function restrict_content_enabled() {
-
-		// Check if any Pages, Posts or CPTs are configured to use Restrict Content.
-		$query = new WP_Query(
-			array(
-				'post_type'      => convertkit_get_supported_post_types(),
-				'post_status'    => 'publish',
-				'meta_query'     => array(
-					array(
-						'key'     => '_wp_convertkit_post_meta',
-						'value'   => '"restrict_content";',
-						'compare' => 'LIKE',
-					),
-					array(
-						'key'     => '_wp_convertkit_post_meta',
-						'value'   => '"restrict_content";s:1:"0"',
-						'compare' => 'NOT LIKE',
-					),
-				),
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-			)
-		);
-
-		return $query->have_posts();
 
 	}
 
