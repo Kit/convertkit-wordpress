@@ -175,6 +175,11 @@ class ConvertKit_AJAX {
 		// Run subscriber authentication.
 		$output_restrict_content->maybe_run_subscriber_authentication();
 
+		// Fetch Post ID, Resource Type and Resource ID for the view.
+		$post_id       = $output_restrict_content->post_id;
+		$resource_type = $output_restrict_content->resource_type;
+		$resource_id   = $output_restrict_content->resource_id;
+
 		// If an error occured, build the email form view with the error message.
 		if ( is_wp_error( $output_restrict_content->error ) ) {
 			ob_start();
@@ -205,6 +210,11 @@ class ConvertKit_AJAX {
 
 		// Run subscriber authentication.
 		$output_restrict_content->maybe_run_subscriber_verification();
+
+		// Fetch Post ID, Resource Type and Resource ID for the view.
+		$post_id       = $output_restrict_content->post_id;
+		$resource_type = $output_restrict_content->resource_type;
+		$resource_id   = $output_restrict_content->resource_id;
 
 		// If an error occured, build the code form view with the error message.
 		if ( is_wp_error( $output_restrict_content->error ) ) {
