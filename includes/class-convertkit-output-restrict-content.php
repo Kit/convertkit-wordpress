@@ -1231,7 +1231,7 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Get resource type and id.
 		$resource_type = $this->resource_type;
-		$resource_id = $this->resource_id;
+		$resource_id   = $this->resource_id;
 
 		// This is deliberately a switch statement, because we will likely add in support
 		// for restrict by tag and form later.
