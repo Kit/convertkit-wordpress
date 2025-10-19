@@ -154,6 +154,62 @@ class PageBlockBroadcastsCest
 	}
 
 	/**
+	 * Test the Broadcasts block's conditional fields work.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsBlockConditionalFields(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Conditional Fields'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Broadcasts',
+			blockProgrammaticName: 'convertkit-broadcasts'
+		);
+
+		// Confirm conditional fields are not displayed.
+		$I->dontSeeElementInDOM('#convertkit_broadcasts_read_more_label');
+		$I->dontSeeElementInDOM('#convertkit_broadcasts_paginate_label_prev');
+		$I->dontSeeElementInDOM('#convertkit_broadcasts_paginate_label_next');
+
+		// Enable 'Display read more links' and confirm the conditional field displays.
+		$I->click("//label[normalize-space(text())='Display read more links']/preceding-sibling::span/input");
+		$I->waitForElementVisible('#convertkit_broadcasts_read_more_label');
+
+		// Disable 'Display read more links' to confirm the conditional field is hidden.
+		$I->click("//label[normalize-space(text())='Display read more links']/preceding-sibling::span/input");
+		$I->waitForElementNotVisible('#convertkit_broadcasts_read_more_label');
+
+		// Click Pagination Tab to show settings.
+		$I->click('Pagination', '.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
+
+		// Enable 'Display pagination' and confirm the conditional fields display.
+		$I->click("//label[normalize-space(text())='Display pagination']/preceding-sibling::span/input");
+		$I->waitForElementVisible('#convertkit_broadcasts_paginate_label_prev');
+		$I->waitForElementVisible('#convertkit_broadcasts_paginate_label_next');
+
+		// Disable 'Display pagination' to confirm the conditional fields are hidden.
+		$I->click("//label[normalize-space(text())='Display pagination']/preceding-sibling::span/input");
+		$I->waitForElementNotVisible('#convertkit_broadcasts_paginate_label_prev');
+		$I->waitForElementNotVisible('#convertkit_broadcasts_paginate_label_next');
+
+		// Publish Page, so no browser warnings are displayed about unsaved changes.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
 	 * Test the Broadcasts block works when using the default parameters.
 	 *
 	 * @since   1.9.7.4
