@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 3.0.5
+Stable tag: 3.0.5.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -179,7 +179,7 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 
 == Changelog ==
 
-### 3.0.5 2025-10-19
+### 3.0.5.1 2025-10-19
 * Fix: Member Content: Use correct Post ID and include correct Post URL in subscriber verification email
 
 ### 3.0.4.1 2025-10-10
