@@ -26,6 +26,63 @@ class PageShortcodeBroadcastsCest
 	}
 
 	/**
+	 * Test the Broadcasts shortcode's conditional fields work.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsShortcodeInVisualEditorConditionalFields(EndToEndTester $I)
+	{
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Visual Editor: Conditional Fields'
+		);
+
+		// Open Visual Editor shortcode modal.
+		$I->openVisualEditorShortcodeModal($I, 'Kit Broadcasts', 'content');
+
+		// Wait for the modal's form to load.
+		$I->waitForElementVisible('#convertkit-modal-body form.convertkit-tinymce-popup');
+
+		// Confirm conditional fields are not displayed.
+		$I->waitForElementNotVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="read_more_label"]');
+		$I->waitForElementNotVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="paginate_label_prev"]');
+		$I->waitForElementNotVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="paginate_label_next"]');
+
+		// Enable 'Display read more links' and confirm the conditional field displays.
+		$I->selectOption('#convertkit-modal-body form.convertkit-tinymce-popup select[name="display_read_more"]', 'Yes');
+		$I->waitForElementVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="read_more_label"]');
+
+		// Disable 'Display read more links' to confirm the conditional field is hidden.
+		$I->selectOption('#convertkit-modal-body form.convertkit-tinymce-popup select[name="display_read_more"]', 'No');
+		$I->waitForElementNotVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="read_more_label"]');
+
+		// Click Pagination Tab to show settings.
+		$I->click('a[href="#broadcasts-pagination"]', '#convertkit-modal-body form.convertkit-tinymce-popup');
+
+		// Enable 'Display pagination' and confirm the conditional fields display.
+		$I->selectOption('#convertkit-modal-body form.convertkit-tinymce-popup select[name="paginate"]', 'Yes');
+		$I->waitForElementVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="paginate_label_prev"]');
+		$I->waitForElementVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="paginate_label_next"]');
+
+		// Disable 'Display pagination' to confirm the conditional fields are hidden.
+		$I->selectOption('#convertkit-modal-body form.convertkit-tinymce-popup select[name="paginate"]', 'No');
+		$I->waitForElementNotVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="paginate_label_prev"]');
+		$I->waitForElementNotVisible('#convertkit-modal-body form.convertkit-tinymce-popup input[name="paginate_label_next"]');
+
+		// Click the Insert button.
+		$I->click('#convertkit-modal-body div.mce-insert button');
+
+		// Confirm the modal closes.
+		$I->waitForElementNotVisible('#convertkit-modal-body');
+
+		// Publish Page, so no browser warnings are displayed about unsaved changes.
+		$I->publishClassicEditorPage($I);
+	}
+
+	/**
 	 * Test the [convertkit_broadcasts] shortcode works when using the default parameters,
 	 * using the Classic Editor (TinyMCE / Visual).
 	 *
@@ -537,6 +594,63 @@ class PageShortcodeBroadcastsCest
 
 		// Confirm that link styles are still applied to refreshed data.
 		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
+	}
+
+	/**
+	 * Test the Broadcasts shortcode's conditional fields work, using the Text Editor.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsShortcodeInTextEditorConditionalFields(EndToEndTester $I)
+	{
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Broadcasts: Shortcode: Text Editor: Conditional Fields'
+		);
+
+		// Open Visual Editor shortcode modal.
+		$I->openTextEditorShortcodeModal($I, 'convertkit-broadcasts', 'content');
+
+		// Wait for the modal's form to load.
+		$I->waitForElementVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup');
+
+		// Confirm conditional fields are not displayed.
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="read_more_label"]');
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="paginate_label_prev"]');
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="paginate_label_next"]');
+
+		// Enable 'Display read more links' and confirm the conditional field displays.
+		$I->selectOption('#convertkit-quicktags-modal form.convertkit-tinymce-popup select[name="display_read_more"]', 'Yes');
+		$I->waitForElementVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="read_more_label"]');
+
+		// Disable 'Display read more links' to confirm the conditional field is hidden.
+		$I->selectOption('#convertkit-quicktags-modal form.convertkit-tinymce-popup select[name="display_read_more"]', 'No');
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="read_more_label"]');
+
+		// Click Pagination Tab to show settings.
+		$I->click('a[href="#broadcasts-pagination"]', '#convertkit-quicktags-modal form.convertkit-tinymce-popup');
+
+		// Enable 'Display pagination' and confirm the conditional fields display.
+		$I->selectOption('#convertkit-quicktags-modal form.convertkit-tinymce-popup select[name="paginate"]', 'Yes');
+		$I->waitForElementVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="paginate_label_prev"]');
+		$I->waitForElementVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="paginate_label_next"]');
+
+		// Disable 'Display pagination' to confirm the conditional fields are hidden.
+		$I->selectOption('#convertkit-quicktags-modal form.convertkit-tinymce-popup select[name="paginate"]', 'No');
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="paginate_label_prev"]');
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal form.convertkit-tinymce-popup input[name="paginate_label_next"]');
+
+		// Click the Insert button.
+		$I->click('#convertkit-quicktags-modal button.button-primary');
+
+		// Confirm the modal closes.
+		$I->waitForElementNotVisible('#convertkit-quicktags-modal');
+
+		// Publish Page, so no browser warnings are displayed about unsaved changes.
+		$I->publishClassicEditorPage($I);
 	}
 
 	/**

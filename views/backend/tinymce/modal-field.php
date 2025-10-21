@@ -19,6 +19,7 @@ switch ( $field['type'] ) {
 				value="<?php echo esc_attr( isset( $shortcode['attributes'][ $field_name ]['default'] ) ? $shortcode['attributes'][ $field_name ]['default'] : '' ); ?>" 
 				data-shortcode="<?php echo esc_attr( $field_name ); ?>"
 				placeholder="<?php echo esc_attr( isset( $field['placeholder'] ) ? $field['placeholder'] : '' ); ?>"
+				<?php echo ( array_key_exists( 'display_if', $field ) ? ' data-display-if="' . esc_attr( $field['display_if']['key'] ) . '" data-display-if-value="' . esc_attr( $field['display_if']['value'] ) . '"' : '' ); ?>
 				class="widefat" />
 		<?php
 		break;
@@ -36,6 +37,7 @@ switch ( $field['type'] ) {
 				min="<?php echo esc_attr( $field['min'] ); ?>" 
 				max="<?php echo esc_attr( $field['max'] ); ?>" 
 				step="<?php echo esc_attr( $field['step'] ); ?>"
+				<?php echo ( array_key_exists( 'display_if', $field ) ? ' data-display-if="' . esc_attr( $field['display_if']['key'] ) . '" data-display-if-value="' . esc_attr( $field['display_if']['value'] ) . '"' : '' ); ?>
 				class="widefat" />
 		<?php
 		break;
@@ -50,6 +52,7 @@ switch ( $field['type'] ) {
 				id="tinymce_modal_<?php echo esc_attr( $field_name ); ?>"
 				data-shortcode="<?php echo esc_attr( $field_name ); ?>"
 				size="1"
+				<?php echo ( array_key_exists( 'display_if', $field ) ? ' data-display-if="' . esc_attr( $field['display_if']['key'] ) . '" data-display-if-value="' . esc_attr( $field['display_if']['value'] ) . '"' : '' ); ?>
 				class="widefat">
 			<?php
 			$field['default_value'] = ( isset( $shortcode['attributes'][ $field_name ]['default'] ) ? $shortcode['attributes'][ $field_name ]['default'] : '' );
@@ -90,6 +93,7 @@ switch ( $field['type'] ) {
 				id="tinymce_modal_<?php echo esc_attr( $field_name ); ?>"
 				data-shortcode="<?php echo esc_attr( $field_name ); ?>"
 				size="1"
+				<?php echo ( array_key_exists( 'display_if', $field ) ? ' data-display-if="' . esc_attr( $field['display_if']['key'] ) . '" data-display-if-value="' . esc_attr( $field['display_if']['value'] ) . '"' : '' ); ?>
 				class="widefat">
 			<?php
 			$field['default_value'] = ( isset( $shortcode['attributes'][ $field_name ]['default'] ) ? $shortcode['attributes'][ $field_name ]['default'] : '' );
@@ -111,7 +115,8 @@ switch ( $field['type'] ) {
 				value="<?php echo esc_attr( isset( $shortcode['attributes'][ $field_name ]['default'] ) ? $shortcode['attributes'][ $field_name ]['default'] : '' ); ?>" 
 				data-value="<?php echo esc_attr( isset( $shortcode['attributes'][ $field_name ]['default'] ) ? $shortcode['attributes'][ $field_name ]['default'] : '' ); ?>" 
 				data-shortcode="<?php echo esc_attr( $field_name ); ?>"
-				placeholder="<?php echo esc_attr( isset( $field['placeholder'] ) ? $field['placeholder'] : '' ); ?>" />
+				placeholder="<?php echo esc_attr( isset( $field['placeholder'] ) ? $field['placeholder'] : '' ); ?>"
+				<?php echo ( array_key_exists( 'display_if', $field ) ? ' data-display-if="' . esc_attr( $field['display_if']['key'] ) . '" data-display-if-value="' . esc_attr( $field['display_if']['value'] ) . '"' : '' ); ?>
 		<?php
 		break;
 }
