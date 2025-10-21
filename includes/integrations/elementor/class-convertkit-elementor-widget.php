@@ -178,6 +178,18 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 			'desc'        => ( isset( $field['description'] ) ? $field['description'] : '' ),
 		);
 
+		// Add conditional field, if defined.
+		if ( isset( $field['display_if'] ) ) {
+			$control = array_merge(
+				$control,
+				array(
+					'condition' => array(
+						$field['display_if']['key'] => $field['display_if']['value'] ? 'yes' : 'no',
+					),
+				)
+			);
+		}
+
 		// Add control depending on the field type.
 		switch ( $field['type'] ) {
 			/**
