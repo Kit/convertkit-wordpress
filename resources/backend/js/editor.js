@@ -126,9 +126,11 @@ function convertKitColorInputInit() {
  */
 function convertKitConditionalFieldsInit() {
 	document
-		.querySelectorAll('form.convertkit-tinymce-popup select, form.convertkit-tinymce-popup input')
+		.querySelectorAll(
+			'form.convertkit-tinymce-popup select, form.convertkit-tinymce-popup input'
+		)
 		.forEach(function (field) {
-			field.addEventListener('change', function (event) {
+			field.addEventListener('change', function () {
 				convertKitConditionallyDisplayTinyMCEModalFields();
 			});
 		});
@@ -144,10 +146,17 @@ function convertKitConditionallyDisplayTinyMCEModalFields() {
 		.querySelectorAll('form.convertkit-tinymce-popup [data-display-if]')
 		.forEach(function (field) {
 			// Get field that controls whether this field should be displayed.
-			const controllingField = document.querySelector('form.convertkit-tinymce-popup select[name="' + field.dataset.displayIf + '"]');
-			
+			const controllingField = document.querySelector(
+				'form.convertkit-tinymce-popup select[name="' +
+					field.dataset.displayIf +
+					'"]'
+			);
+
 			// If the value of the field that should be displayed is the same as the value of the controlling field, show/hide the containing div.
 			const container = field.closest('.convertkit-option');
-			container.style.display = (field.dataset.displayIfValue === controllingField.value) ? 'grid' : 'none';
+			container.style.display =
+				field.dataset.displayIfValue === controllingField.value
+					? 'grid'
+					: 'none';
 		});
 }
