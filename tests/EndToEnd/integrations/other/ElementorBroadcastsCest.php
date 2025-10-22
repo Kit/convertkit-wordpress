@@ -78,11 +78,6 @@ class ElementorBroadcastsCest
 		$I->waitForElementVisible('#elementor-fatal-error-dialog');
 		$I->click('#elementor-fatal-error-dialog button.dialog-confirm-ok');
 
-		// Dismiss announcement.
-		$I->wait(2);
-		$I->waitForElementVisible('.announcements-container button.close-button');
-		$I->click('.announcements-container button.close-button');
-
 		// Search for the Kit Broadcasts block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Broadcasts');
