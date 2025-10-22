@@ -75,6 +75,12 @@ function convertKitQuickTagRegister(block) {
 				// Listen for color input changes.
 				convertKitColorInputInit();
 
+				// Initialize conditional fields.
+				convertKitConditionallyDisplayTinyMCEModalFields();
+
+				// Listen for field changes.
+				convertKitConditionalFieldsInit();
+
 				// Bind refresh resource event listeners.
 				convertKitRefreshResourcesInitEventListeners();
 			})
