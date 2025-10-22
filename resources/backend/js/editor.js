@@ -147,9 +147,7 @@ function convertKitConditionallyDisplayTinyMCEModalFields() {
 		.forEach(function (field) {
 			// Get field that controls whether this field should be displayed.
 			const controllingField = document.querySelector(
-				'form.convertkit-tinymce-popup select[name="' +
-					field.dataset.displayIf +
-					'"]'
+				`form.convertkit-tinymce-popup select[name="${field.dataset.displayIf}"]`
 			);
 
 			// If the value of the field that should be displayed is the same as the value of the controlling field, show/hide the containing div.
