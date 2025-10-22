@@ -24,6 +24,47 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block's conditional fields work.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockConditionalFields(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Conditional Fields'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Confirm conditional fields are not displayed.
+		$I->dontSeeElementInDOM('#convertkit_form_builder_text_if_subscribed');
+
+		// Disable 'Display form' and confirm the conditional field displays.
+		$I->click("//label[normalize-space(text())='Display form']/preceding-sibling::span/input");
+		$I->waitForElementVisible('#convertkit_form_builder_text_if_subscribed');
+
+		// Enable 'Display form' to confirm the conditional field is hidden.
+		$I->click("//label[normalize-space(text())='Display form']/preceding-sibling::span/input");
+		$I->waitForElementNotVisible('#convertkit_form_builder_text_if_subscribed');
+
+		// Publish Page, so no browser warnings are displayed about unsaved changes.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
 	 * Test the Form Builder block works when added with no changes to its configuration.
 	 *
 	 * @since   3.0.0

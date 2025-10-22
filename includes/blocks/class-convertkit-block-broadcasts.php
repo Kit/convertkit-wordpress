@@ -317,6 +317,10 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'label'       => __( 'Read more label', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The label to display for the "read more" link below each broadcast.', 'convertkit' ),
+				'display_if'  => array(
+					'key'   => 'display_read_more',
+					'value' => 1,
+				),
 			),
 			'limit'               => array(
 				'label' => __( 'Number of posts', 'convertkit' ),
@@ -334,11 +338,19 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'label'       => __( 'Newer posts label', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The label to display for the link to newer broadcasts.', 'convertkit' ),
+				'display_if'  => array(
+					'key'   => 'paginate',
+					'value' => 1,
+				),
 			),
 			'paginate_label_next' => array(
 				'label'       => __( 'Older posts label', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The label to display for the link to older broadcasts.', 'convertkit' ),
+				'display_if'  => array(
+					'key'   => 'paginate',
+					'value' => 1,
+				),
 			),
 
 			// These fields will only display on the shortcode, and are deliberately not registered in get_attributes(),

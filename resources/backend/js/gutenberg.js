@@ -91,6 +91,47 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @return {Object}            Field element.
 		 */
 		const getField = function (props, field, attribute) {
+			// If this field is conditionally displayed, check if the field should be displayed.
+			if (typeof field.display_if !== 'undefined') {
+				// Assume the condition has not been met for this field to be displayed.
+				let display_field = false;
+
+				// Assert whether the condition is met based on the field type.
+				switch (block.fields[field.display_if.key].type) {
+					case 'toggle':
+						// Field's condition value will be 0 or 1.
+						// Attributes field value will be false or true.
+						display_field =
+							Boolean(Number(field.display_if.value)) ===
+							props.attributes[field.display_if.key];
+						break;
+
+					default:
+						// Assert based on the condition's value type (array, string, number).
+						switch (typeof field.display_if.value) {
+							case 'object':
+								display_field = Object.values(
+									field.display_if.value
+								).includes(
+									props.attributes[field.display_if.key]
+								);
+								break;
+
+							default:
+								display_field =
+									field.display_if.value ===
+									props.attributes[field.display_if.key];
+								break;
+						}
+						break;
+				}
+
+				// Skip this field if the condition is not met.
+				if (!display_field) {
+					return false;
+				}
+			}
+
 			// Define some field properties shared across all field types.
 			const fieldProperties = {
 				id:

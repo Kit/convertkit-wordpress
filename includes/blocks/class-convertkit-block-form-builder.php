@@ -532,6 +532,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'label'       => __( 'Text', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The text to display if the visitor is already subscribed.', 'convertkit' ),
+				'display_if'  => array(
+					'key'   => 'display_form_if_subscribed',
+					'value' => 0,
+				),
 			),
 			'form_id'                    => array(
 				'label'       => __( 'Form', 'convertkit' ),
