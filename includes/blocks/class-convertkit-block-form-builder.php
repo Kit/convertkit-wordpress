@@ -348,6 +348,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				),
 				'convertkit/form-builder-field-email' => array(
 					'label' => 'Email address',
+					'lock'  => array(
+						'move'   => false,
+						'remove' => true,
+					),
 				),
 				'core/button'                         => array(
 					'label'     => 'Submit button',
