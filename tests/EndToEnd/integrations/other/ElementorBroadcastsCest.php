@@ -57,6 +57,71 @@ class ElementorBroadcastsCest
 	}
 
 	/**
+	 * Test the Broadcasts widget's conditional fields work.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsWidgetConditionalFields(EndToEndTester $I)
+	{
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			I: $I,
+			title: 'Kit: Page: Broadcasts: Elementor: Conditional Fields'
+		);
+
+		// Click Edit with Elementor button.
+		$I->click('#elementor-switch-mode-button');
+
+		// When Elementor loads, dismiss the browser incompatibility message.
+		$I->waitForElementVisible('#elementor-fatal-error-dialog');
+		$I->click('#elementor-fatal-error-dialog button.dialog-confirm-ok');
+
+		// Search for the Kit Broadcasts block.
+		$I->waitForElementVisible('#elementor-panel-elements-search-input');
+		$I->fillField('#elementor-panel-elements-search-input', 'Kit Broadcasts');
+
+		// Insert the Broadcasts widget.
+		$I->seeElementInDOM('#elementor-panel-elements .elementor-element');
+		$I->click('#elementor-panel-elements .elementor-element');
+
+		// Confirm conditional fields are not displayed.
+		$I->waitForElementNotVisible('input[data-setting="read_more_label"]');
+
+		// Enable 'Display read more links' and confirm the conditional field displays.
+		$I->click('//input[@data-setting="display_read_more"]/ancestor::label[contains(@class, "elementor-switch")]');
+		$I->waitForElementVisible('input[data-setting="read_more_label"]');
+
+		// Disable 'Display read more links' to confirm the conditional field is hidden.
+		$I->click('//input[@data-setting="display_read_more"]/ancestor::label[contains(@class, "elementor-switch")]');
+		$I->waitForElementNotVisible('input[data-setting="read_more_label"]');
+
+		// Click Pagination Tab to show settings.
+		$I->click('Pagination');
+
+		// Confirm conditional fields are not displayed.
+		$I->waitForElementNotVisible('input[data-setting="paginate_label_prev"]');
+		$I->waitForElementNotVisible('input[data-setting="paginate_label_next"]');
+
+		// Enable 'Display pagination' and confirm the conditional fields display.
+		$I->click('//input[@data-setting="paginate"]/ancestor::label[contains(@class, "elementor-switch")]');
+		$I->waitForElementVisible('input[data-setting="paginate_label_prev"]');
+		$I->waitForElementVisible('input[data-setting="paginate_label_next"]');
+
+		// Disable 'Display pagination' to confirm the conditional fields are hidden.
+		$I->click('//input[@data-setting="paginate"]/ancestor::label[contains(@class, "elementor-switch")]');
+		$I->waitForElementNotVisible('input[data-setting="paginate_label_prev"]');
+		$I->waitForElementNotVisible('input[data-setting="paginate_label_next"]');
+
+		// Publish Page.
+		$I->click('Publish');
+
+		// Wait for Publish button to be disabled, which confirms save completed.
+		$I->waitForElementVisible('button.MuiButtonGroup-firstButton:disabled');
+	}
+
+	/**
 	 * Test the Broadcasts block works when using valid parameters.
 	 *
 	 * @since   1.9.7.8
