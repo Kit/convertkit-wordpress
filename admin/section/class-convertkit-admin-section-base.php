@@ -109,6 +109,11 @@ abstract class ConvertKit_Admin_Section_Base {
 	 */
 	public function on_settings_screen( $tab ) {
 
+		// Bail if this is an AJAX or Cron request.
+		if ( wp_doing_ajax() || wp_doing_cron() ) {
+			return false;
+		}
+
 		// Bail if we're not on the settings screen.
 		if ( ! filter_has_var( INPUT_GET, 'page' ) ) {
 			return false;
