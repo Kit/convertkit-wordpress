@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.0.5\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-19T03:21:45+00:00\n"
+"POT-Creation-Date: 2025-10-23T03:44:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -369,10 +369,10 @@ msgid "General Settings"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:58
-#: includes/blocks/class-convertkit-block-broadcasts.php:378
+#: includes/blocks/class-convertkit-block-broadcasts.php:390
 #: includes/blocks/class-convertkit-block-content.php:147
 #: includes/blocks/class-convertkit-block-form-builder-field.php:233
-#: includes/blocks/class-convertkit-block-form-builder.php:570
+#: includes/blocks/class-convertkit-block-form-builder.php:578
 #: includes/blocks/class-convertkit-block-form-trigger.php:282
 #: includes/blocks/class-convertkit-block-form.php:295
 #: includes/blocks/class-convertkit-block-product.php:324
@@ -958,7 +958,7 @@ msgid "Displays a modal, sticky bar or slide in form to display when the link is
 msgstr ""
 
 #: includes/block-formatters/class-convertkit-block-formatter-form-link.php:143
-#: includes/blocks/class-convertkit-block-form-builder.php:533
+#: includes/blocks/class-convertkit-block-form-builder.php:541
 #: includes/blocks/class-convertkit-block-form-trigger.php:83
 #: includes/blocks/class-convertkit-block-form-trigger.php:238
 #: includes/blocks/class-convertkit-block-form.php:113
@@ -1098,71 +1098,71 @@ msgstr ""
 msgid "The label to display for the \"read more\" link below each broadcast."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:322
+#: includes/blocks/class-convertkit-block-broadcasts.php:326
 msgid "Number of posts"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:329
+#: includes/blocks/class-convertkit-block-broadcasts.php:333
 msgid "Display pagination"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:331
+#: includes/blocks/class-convertkit-block-broadcasts.php:335
 msgid "If the number of broadcasts exceeds the \"Number of posts\" settings above, previous/next pagination links will be displayed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:334
+#: includes/blocks/class-convertkit-block-broadcasts.php:338
 msgid "Newer posts label"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:336
+#: includes/blocks/class-convertkit-block-broadcasts.php:340
 msgid "The label to display for the link to newer broadcasts."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:339
+#: includes/blocks/class-convertkit-block-broadcasts.php:347
 msgid "Older posts label"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:341
+#: includes/blocks/class-convertkit-block-broadcasts.php:349
 msgid "The label to display for the link to older broadcasts."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:347
+#: includes/blocks/class-convertkit-block-broadcasts.php:359
 msgid "Link color"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:351
+#: includes/blocks/class-convertkit-block-broadcasts.php:363
 #: includes/blocks/class-convertkit-block-form-trigger.php:253
 #: includes/blocks/class-convertkit-block-product.php:295
 msgid "Background color"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:355
+#: includes/blocks/class-convertkit-block-broadcasts.php:367
 #: includes/blocks/class-convertkit-block-form-trigger.php:257
 #: includes/blocks/class-convertkit-block-product.php:299
 msgid "Text color"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:390
+#: includes/blocks/class-convertkit-block-broadcasts.php:402
 msgid "Pagination"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:399
+#: includes/blocks/class-convertkit-block-broadcasts.php:411
 msgid "Styles"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:426
+#: includes/blocks/class-convertkit-block-broadcasts.php:438
 msgid "Read more"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:429
+#: includes/blocks/class-convertkit-block-broadcasts.php:441
 msgid "Previous"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:430
+#: includes/blocks/class-convertkit-block-broadcasts.php:442
 msgid "Next"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:476
+#: includes/blocks/class-convertkit-block-broadcasts.php:488
 msgid "No Broadcasts exist in Kit."
 msgstr ""
 
@@ -1179,7 +1179,7 @@ msgid "Content"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-content.php:123
-#: includes/blocks/class-convertkit-block-form-builder.php:539
+#: includes/blocks/class-convertkit-block-form-builder.php:547
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:88
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:75
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:72
@@ -1217,7 +1217,7 @@ msgid "The type of field to display."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:127
-#: includes/blocks/class-convertkit-block-form-builder.php:528
+#: includes/blocks/class-convertkit-block-form-builder.php:532
 msgid "Text"
 msgstr ""
 
@@ -1293,54 +1293,54 @@ msgstr ""
 msgid "Form Builder"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:513
+#: includes/blocks/class-convertkit-block-form-builder.php:517
 msgid "Redirect"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:515
+#: includes/blocks/class-convertkit-block-form-builder.php:519
 msgid "The URL to redirect to after the visitor subscribes. If not specified, the visitor will remain on the current page."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:518
+#: includes/blocks/class-convertkit-block-form-builder.php:522
 msgid "Store form submissions"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:520
+#: includes/blocks/class-convertkit-block-form-builder.php:524
 msgid "If enabled, stores copies of form submissions in the WordPress database. Submissions are always sent to Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:523
+#: includes/blocks/class-convertkit-block-form-builder.php:527
 msgid "Display form"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:525
+#: includes/blocks/class-convertkit-block-form-builder.php:529
 msgid "If enabled, displays the form if the visitor is already subscribed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:530
+#: includes/blocks/class-convertkit-block-form-builder.php:534
 msgid "The text to display if the visitor is already subscribed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:535
+#: includes/blocks/class-convertkit-block-form-builder.php:543
 msgid "The Kit form to add the subscriber to. Useful if you want to send an incentive email."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:541
+#: includes/blocks/class-convertkit-block-form-builder.php:549
 msgid "The Kit tag to add the subscriber to."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:545
+#: includes/blocks/class-convertkit-block-form-builder.php:553
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:90
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:77
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:74
 msgid "Sequence"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:547
+#: includes/blocks/class-convertkit-block-form-builder.php:555
 msgid "The Kit sequence to add the subscriber to."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:601
+#: includes/blocks/class-convertkit-block-form-builder.php:609
 msgid "Thanks for subscribing!"
 msgstr ""
 
@@ -1775,28 +1775,28 @@ msgstr ""
 msgid "paid Kit Plan"
 msgstr ""
 
-#: includes/integrations/divi/class-convertkit-divi-module.php:148
+#: includes/integrations/divi/class-convertkit-divi-module.php:162
 msgid "(None)"
 msgstr ""
 
-#: includes/integrations/divi/class-convertkit-divi-module.php:161
+#: includes/integrations/divi/class-convertkit-divi-module.php:175
 #: views/backend/term/fields-add.php:54
 #: views/backend/term/fields-edit.php:58
-#: views/backend/tinymce/modal-field.php:97
+#: views/backend/tinymce/modal-field.php:101
 msgid "No"
 msgstr ""
 
-#: includes/integrations/divi/class-convertkit-divi-module.php:162
-#: views/backend/tinymce/modal-field.php:98
+#: includes/integrations/divi/class-convertkit-divi-module.php:176
+#: views/backend/tinymce/modal-field.php:102
 msgid "Yes"
 msgstr ""
 
-#: includes/integrations/elementor/class-convertkit-elementor-widget.php:283
+#: includes/integrations/elementor/class-convertkit-elementor-widget.php:295
 msgid "No blocks are registered. Register blocks using the `convertkit_blocks` filter."
 msgstr ""
 
 #. translators: %1$s: Block name, %2$s: Elementor Widget name
-#: includes/integrations/elementor/class-convertkit-elementor-widget.php:292
+#: includes/integrations/elementor/class-convertkit-elementor-widget.php:304
 #, php-format
 msgid "Block %1$s is not registered. Register using the `convertkit_blocks` filter, and ensure the Elementor Widget for this block has its `slug` property set to %2$s."
 msgstr ""
@@ -2401,7 +2401,7 @@ msgid "Whether to display the Form on this Category's archive page, above or bel
 msgstr ""
 
 #. translators: Resource Type (Forms, Products, Tags etc).
-#: views/backend/tinymce/modal-field.php:70
+#: views/backend/tinymce/modal-field.php:73
 #, php-format
 msgid "Refresh %s from Kit account"
 msgstr ""
