@@ -115,6 +115,20 @@ class ConvertKit_Divi_Module extends ET_Builder_Module {
 				'toggle_slug' => 'main_content',
 			);
 
+			// Add field condition, if defined.
+			if ( isset( $field['display_if'] ) ) {
+				// Define value as 'on' or 'off' if it's 1 or 0 and the comparison field is a toggle field.
+				$value = $field['display_if']['value'];
+				if ( $this->block['fields'][ $field['display_if']['key'] ]['type'] === 'toggle' ) {
+					$value = ( ( $value === '1' ) || ( $value === 1 ) ? 'on' : 'off' );
+				}
+
+				// Add the comparison condition.
+				$fields[ $field_name ]['show_if'] = array(
+					$field['display_if']['key'] => $value,
+				);
+			}
+
 			// Add/change field parameters depending on the field's type.
 			switch ( $field['type'] ) {
 				/**

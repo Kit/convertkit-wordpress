@@ -26,6 +26,60 @@ class DiviThemeBroadcastsCest
 	}
 
 	/**
+	 * Test the Broadcasts module's conditional fields work.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsModuleInBackendEditorConditionalFields(EndToEndTester $I)
+	{
+		// Setup Plugin, without defining default Forms.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create a Divi Page in the backend editor.
+		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Broadcasts: Divi: Backend Editor: Conditional Fields');
+
+		// Insert the Broadcasts module.
+		$I->insertDiviRowWithModule(
+			$I,
+			name: 'Kit Broadcasts',
+			programmaticName:'convertkit_broadcasts'
+		);
+
+		// Confirm conditional fields are not displayed.
+		$I->dontSeeElementInDOM('#read_more_label');
+		$I->dontSeeElementInDOM('#paginate_label_prev');
+		$I->dontSeeElementInDOM('#paginate_label_next');
+
+		// Enable 'Display read more links' and confirm the conditional field displays.
+		$I->wait(1);
+		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
+		$I->waitForElementVisible('input[name="read_more_label"]');
+
+		// Disable 'Display read more links' to confirm the conditional field is hidden.
+		$I->wait(1);
+		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
+		$I->waitForElementNotVisible('input[name="read_more_label"]');
+
+		// Enable 'Display pagination' and confirm the conditional fields display.
+		$I->wait(1);
+		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
+		$I->waitForElementVisible('input[name="paginate_label_prev"]');
+		$I->waitForElementVisible('input[name="paginate_label_next"]');
+
+		// Disable 'Display pagination' to confirm the conditional fields are hidden.
+		$I->wait(1);
+		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
+		$I->waitForElementNotVisible('input[name="paginate_label_prev"]');
+		$I->waitForElementNotVisible('input[name="paginate_label_next"]');
+
+		// Save Divi module and view the page on the frontend site.
+		$I->saveDiviModuleInBackendEditorAndViewPage($I);
+	}
+
+	/**
 	 * Test the Broadcasts module works when added
 	 * using Divi's backend editor.
 	 *
@@ -71,6 +125,61 @@ class DiviThemeBroadcastsCest
 
 		// Deactivate Classic Editor.
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+	}
+
+	/**
+	 * Test the Broadcasts module's conditional fields work when added
+	 * using Divi's frontend editor.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsModuleInFrontendEditorConditionalFields(EndToEndTester $I)
+	{
+		// Setup Plugin, without defining default Forms.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create a Divi Page in the frontend editor.
+		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend Editor: Conditional Fields');
+
+		// Insert the Broadcasts module.
+		$I->insertDiviRowWithModule(
+			$I,
+			name: 'Kit Broadcasts',
+			programmaticName:'convertkit_broadcasts'
+		);
+
+		// Confirm conditional fields are not displayed.
+		$I->dontSeeElementInDOM('#read_more_label');
+		$I->dontSeeElementInDOM('#paginate_label_prev');
+		$I->dontSeeElementInDOM('#paginate_label_next');
+
+		// Enable 'Display read more links' and confirm the conditional field displays.
+		$I->wait(1);
+		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
+		$I->waitForElementVisible('input[name="read_more_label"]');
+
+		// Disable 'Display read more links' to confirm the conditional field is hidden.
+		$I->wait(1);
+		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
+		$I->waitForElementNotVisible('input[name="read_more_label"]');
+
+		// Enable 'Display pagination' and confirm the conditional fields display.
+		$I->wait(1);
+		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
+		$I->waitForElementVisible('input[name="paginate_label_prev"]');
+		$I->waitForElementVisible('input[name="paginate_label_next"]');
+
+		// Disable 'Display pagination' to confirm the conditional fields are hidden.
+		$I->wait(1);
+		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
+		$I->waitForElementNotVisible('input[name="paginate_label_prev"]');
+		$I->waitForElementNotVisible('input[name="paginate_label_next"]');
+
+		// Save Divi module and view the page on the frontend site.
+		$I->saveDiviModuleInFrontendEditorAndViewPage($I, $url);
 	}
 
 	/**
