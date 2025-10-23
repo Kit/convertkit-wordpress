@@ -279,7 +279,7 @@ add_filter( 'convertkit_admin_notices_output_  notice', function( $output ) {
 </pre>
 <h3 id="convertkit_settings_base_register_notices">
 						convertkit_settings_base_register_notices
-						<code>admin/section/class-convertkit-admin-section-base.php::203</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::208</code>
 					</h3><h4>Overview</h4>
 						<p>Register success and error notices for settings screens.</p><h4>Parameters</h4>
 					<table>
@@ -693,7 +693,7 @@ add_filter( 'convertkit_block_product_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_broadcasts_render">
 						convertkit_block_broadcasts_render
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::650</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::662</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -724,7 +724,7 @@ add_filter( 'convertkit_block_broadcasts_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_broadcasts_render_ajax">
 						convertkit_block_broadcasts_render_ajax
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::563</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::575</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's inner content immediately before it is output by AJAX, which occurs when pagination was clicked.</p><h4>Parameters</h4>
 					<table>
@@ -755,7 +755,7 @@ add_filter( 'convertkit_block_broadcasts_render_ajax', function( $html, $atts ) 
 </pre>
 <h3 id="convertkit_block_broadcasts_build_html_list_item">
 						convertkit_block_broadcasts_build_html_list_item
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::731</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::743</code>
 					</h3><h4>Overview</h4>
 						<p>Defines the HTML for an individual broadcast item in the Broadcasts block.</p><h4>Parameters</h4>
 					<table>
@@ -790,7 +790,7 @@ add_filter( 'convertkit_block_broadcasts_build_html_list_item', function( $html,
 </pre>
 <h3 id="convertkit_block_form_builder_render">
 						convertkit_block_form_builder_render
-						<code>includes/blocks/class-convertkit-block-form-builder.php::655</code>
+						<code>includes/blocks/class-convertkit-block-form-builder.php::663</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1937,7 +1937,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-admin-section-base.php::238</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::243</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1957,7 +1957,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-admin-section-base.php::253</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::258</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1977,7 +1977,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-admin-section-base.php::925</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::930</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

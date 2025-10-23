@@ -1,4 +1,12 @@
-### 3.0.5 2025-10-19
+### 3.0.6 2025-10-23
+* Added: Blocks: Form Builder: Settings: Display fields conditionally based on configuration
+* Added: Blocks: Broadcasts: Settings: Display fields conditionally based on configuration
+* Added: Classic Editor: Broadcasts: Settings: Display fields conditionally based on configuration
+* Added: Divi: Broadcasts: Settings: Display fields conditionally based on configuration
+* Added: Elementor: Broadcasts: Settings: Display fields conditionally based on configuration
+* Fix: Settings: Don't refresh resources via API when request is AJAX or CRON
+
+### 3.0.5.1 2025-10-19
 * Fix: Member Content: Use correct Post ID and include correct Post URL in subscriber verification email
 
 ### 3.0.4.1 2025-10-10
