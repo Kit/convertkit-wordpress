@@ -226,8 +226,6 @@ function convertKitRefreshResourcesOutputErrorNotice(message) {
 	message = 'ConvertKit: ' + message;
 
 	// If we're editing a Page, Post or Custom Post Type in Gutenberg, use wp.data.dispatch to show the error.
-	// wp.blockEditor is available in WordPress 6.9, even when using the Classic Editor - so it's not a reliable indicator of whether we're in Gutenberg.
-	// wp.editPost is only available in Gutenberg, and is a better indicator of whether we're in Gutenberg.
 	if (typeof wp !== 'undefined' && typeof wp.editPost !== 'undefined') {
 		// Gutenberg Editor.
 		wp.data

@@ -19,11 +19,13 @@ if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
 		convertKitGutenbergRegisterBlock(convertkit_blocks[block]);
 	}
 
-	// Register ConvertKit Pre-publish actions in Gutenberg.
-	if (typeof convertkit_pre_publish_actions !== 'undefined') {
-		convertKitGutenbergRegisterPrePublishActions(
-			convertkit_pre_publish_actions
-		);
+	// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
+	if ( typeof wp.editPost !== 'undefined' ) {
+		if (typeof convertkit_pre_publish_actions !== 'undefined') {
+			convertKitGutenbergRegisterPrePublishActions(
+				convertkit_pre_publish_actions
+			);
+		}
 	}
 }
 
