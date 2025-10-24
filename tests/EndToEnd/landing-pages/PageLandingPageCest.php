@@ -529,7 +529,7 @@ class PageLandingPageCest
 		$I->seeInSource('<link rel="stylesheet" type="text/css" href="https://pages.convertkit.com/templates/shared.css">');
 		$I->seeInSource('<link rel="stylesheet" type="text/css" href="https://pages.convertkit.com/templates/abbey/abbey.css">');
 		$I->seeInSource('<script src="https://pages.convertkit.com/templates/abbey/abbey.js"></script>');
-		
+
 		// Confirm that WP Rocket has not attempted to lazy load images.
 		$I->dontSeeElementInDOM('.rocket-lazyload');
 
