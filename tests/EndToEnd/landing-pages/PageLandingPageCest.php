@@ -524,8 +524,12 @@ class PageLandingPageCest
 		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that WP Rocket has not minified any CSS or JS assets.
-		$I->dontSeeElementInDOM('script[data-minify="1"]');
-
+		// WP Rocket now always includes a minified file for its own Plugin, so we can't reliably check for data-minify="1"
+		// not existing.
+		$I->seeInSource('<link rel="stylesheet" type="text/css" href="https://pages.convertkit.com/templates/shared.css">');
+		$I->seeInSource('<link rel="stylesheet" type="text/css" href="https://pages.convertkit.com/templates/abbey/abbey.css">');
+		$I->seeInSource('<script src="https://pages.convertkit.com/templates/abbey/abbey.js"></script>');
+		
 		// Confirm that WP Rocket has not attempted to lazy load images.
 		$I->dontSeeElementInDOM('.rocket-lazyload');
 
