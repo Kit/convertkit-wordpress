@@ -226,7 +226,7 @@ function convertKitRefreshResourcesOutputErrorNotice(message) {
 	message = 'ConvertKit: ' + message;
 
 	// If we're editing a Page, Post or Custom Post Type in Gutenberg, use wp.data.dispatch to show the error.
-	if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
+	if (typeof wp !== 'undefined' && typeof wp.editPost !== 'undefined') {
 		// Gutenberg Editor.
 		wp.data
 			.dispatch('core/notices')
