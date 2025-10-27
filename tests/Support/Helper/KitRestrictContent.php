@@ -193,8 +193,9 @@ class KitRestrictContent extends \Codeception\Module
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
+	 * @param   bool           $checkNoWarningsAndNotices       Whether to check for errors.
 	 */
-	public function testRestrictedContentByProductOnFrontend($I, $urlOrPageID, $options = false)
+	public function testRestrictedContentByProductOnFrontend($I, $urlOrPageID, $options = false, $checkNoWarningsAndNotices = true)
 	{
 		// Setup test.
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
@@ -203,7 +204,7 @@ class KitRestrictContent extends \Codeception\Module
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-restrict-content-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/restrict-content.css');
 
 		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
+		$this->testRestrictContentByProductHidesContentWithCTA($I, $options, $checkNoWarningsAndNotices);
 
 		// Login as a Kit subscriber who does not exist in Kit.
 		$this->loginToRestrictContentWithEmail($I, 'fail@kit.com');
@@ -212,7 +213,7 @@ class KitRestrictContent extends \Codeception\Module
 		$this->seeRestrictContentError($I, 'invalid: Email address is invalid');
 
 		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
+		$this->testRestrictContentByProductHidesContentWithCTA($I, $options, $checkNoWarningsAndNotices);
 
 		// Set cookie with signed subscriber ID and reload the restricted content page, as if we entered the
 		// code sent in the email as a Kit subscriber who has not subscribed to the product.
@@ -222,7 +223,7 @@ class KitRestrictContent extends \Codeception\Module
 		$this->seeRestrictContentError($I, $options['settings']['no_access_text']);
 
 		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByProductHidesContentWithCTA($I, $options);
+		$this->testRestrictContentByProductHidesContentWithCTA($I, $options, $checkNoWarningsAndNotices);
 
 		// Login as a Kit subscriber who has subscribed to the product.
 		$this->loginToRestrictContentWithEmail($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL']);
@@ -618,14 +619,17 @@ class KitRestrictContent extends \Codeception\Module
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
+	 * @param   bool           $checkNoWarningsAndNotices Whether to check for errors.
 	 */
-	public function testRestrictContentByProductHidesContentWithCTA($I, $options = false)
+	public function testRestrictContentByProductHidesContentWithCTA($I, $options = false, $checkNoWarningsAndNotices = true)
 	{
 		// Merge options with defaults.
 		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		if ($checkNoWarningsAndNotices) {
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+		}
 
 		// Confirm that the visible text displays, hidden text does not display and the CTA displays.
 		if ( ! empty($options['visible_content'])) {
