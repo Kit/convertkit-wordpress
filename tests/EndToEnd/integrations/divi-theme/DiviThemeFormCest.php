@@ -119,8 +119,9 @@ class DiviThemeFormCest
 		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('Not connected to Kit');
-		$I->seeInSource('Connect your Kit account at Settings > Kit, and then refresh this page to select a form.', 'div.convertkit-divi-module');
+		$I->waitForElementVisible('div.convertkit-divi-module');
+		$I->see('Not connected to Kit', 'div.convertkit-divi-module');
+		$I->see('Connect your Kit account at Settings > Kit, and then refresh this page to select a form.', 'div.convertkit-divi-module');
 
 		// Switch back to main window.
 		$I->switchToIFrame();
