@@ -168,13 +168,13 @@ class DiviBuilder extends \Codeception\Module
 		// Update page.
 		$I->click('Update');
 
-		// Load the Page on the frontend site.
+		// Wait for the save to complete.
+		$I->waitForElementVisible('#message');
+		$I->see('Page updated.', '#message');
 		$I->waitForElementNotVisible('.et-fb-preloader');
-		$I->wait(2);
-		$I->waitForElementVisible('.notice-success');
-		$I->click('.notice-success a');
 
-		// Wait for frontend web site to load.
+		// Load the Page on the frontend site.
+		$I->click('.notice-success a');
 		$I->waitForElementVisible('body');
 
 		// Check that no PHP warnings or notices were output.
