@@ -564,9 +564,10 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	public function account_name_callback() {
 
 		// Output Account Name.
+		// If account is an error, check_credentials() will output an error above the settings section.
 		$html = sprintf(
 			'<p>%s</p>',
-			isset( $this->account['account']['name'] ) ? esc_attr( $this->account['account']['name'] ) : esc_html__( '(Not specified)', 'convertkit' )
+			! is_wp_error( $this->account ) && isset( $this->account['account']['name'] ) ? esc_attr( $this->account['account']['name'] ) : esc_html__( '(Not specified)', 'convertkit' )
 		);
 
 		// Display an option to disconnect.
