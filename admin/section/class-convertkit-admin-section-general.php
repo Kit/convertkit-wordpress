@@ -491,8 +491,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	public function print_section_info() {
 
 		?>
-		<p><?php esc_html_e( 'Choosing a default form will embed it at the top, bottom or top and bottom of every post or page (in single view only) across your site.', 'convertkit' ); ?></p>
-		<p><?php esc_html_e( 'If you wish to turn off form embedding or select a different form for an individual post or page, you can do so using the Kit meta box on the edit page.', 'convertkit' ); ?></p>
+		<p><?php esc_html_e( 'Forms can be embedded before and/or after (or following number of elements) on every post or page (in single view only) across your site by using the settings below.', 'convertkit' ); ?>
+		<p><?php esc_html_e( 'You can also configure non-inline forms to display site wide under the "Non-inline Forms" section below.', 'convertkit' ); ?></p>
+		<p><?php esc_html_e( 'These default form settings can be overridden using the Kit meta box on a page or post\'s edit screen. For site wide non-inline forms to respect when a post/page has forms disabled, enable the "Behavior" option in the "Non-inline Forms" section below.', 'convertkit' ); ?></p>
 		<p>
 			<?php
 			printf(
