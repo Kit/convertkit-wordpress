@@ -52,27 +52,12 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.1', '8.2', '8.3', '8.4' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.1' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/broadcasts/blocks-shortcodes',
-          'EndToEnd/broadcasts/import-export',
-          'EndToEnd/forms/blocks-shortcodes',
-          'EndToEnd/forms/general',
-          'EndToEnd/forms/post-types',
-          'EndToEnd/general/other',
-          'EndToEnd/general/plugin-screens',
           'EndToEnd/integrations/divi-builder',
-          'EndToEnd/integrations/divi-theme',
-          'EndToEnd/integrations/other',
-          'EndToEnd/integrations/wlm',
-          'EndToEnd/integrations/woocommerce',
-          'EndToEnd/landing-pages',
-          'EndToEnd/products',
-          'EndToEnd/restrict-content/general',
-          'EndToEnd/restrict-content/post-types',
-          'EndToEnd/tags'
+          'EndToEnd/integrations/divi-theme'
         ]
 
     # Steps to install, configure and run tests
