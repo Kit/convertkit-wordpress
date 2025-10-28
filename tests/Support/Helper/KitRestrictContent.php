@@ -249,7 +249,7 @@ class KitRestrictContent extends \Codeception\Module
 		// Test that the restricted content displays when a valid signed subscriber ID is used,
 		// as if we entered the code sent in the email.
 		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $urlOrPageID);
-		$this->testRestrictContentDisplaysContent($I, $options);
+		$this->testRestrictContentDisplaysContent($I, $options, $checkNoWarningsAndNotices);
 	}
 
 	/**
@@ -754,14 +754,17 @@ class KitRestrictContent extends \Codeception\Module
 	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
 	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
 	 * }
+	 * @param   bool           $checkNoWarningsAndNotices Whether to check for errors.
 	 */
-	public function testRestrictContentDisplaysContent($I, $options = false)
+	public function testRestrictContentDisplaysContent($I, $options = false, $checkNoWarningsAndNotices = true)
 	{
 		// Merge options with defaults.
 		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		if ($checkNoWarningsAndNotices) {
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+		}
 
 		// Confirm that the visible and hidden text displays.
 		if ( ! empty($options['visible_content'])) {
