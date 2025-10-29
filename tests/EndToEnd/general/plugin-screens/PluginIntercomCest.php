@@ -118,9 +118,11 @@ class PluginIntercomCest
 	 */
 	private function _seeIntercomScript(EndToEndTester $I)
 	{
-		$I->waitForElementVisible('.intercom-lightweight-app-launcher-icon');
-		$I->click('.intercom-lightweight-app-launcher-icon');
-		$I->waitForElementVisible('iframe[data-intercom-frame="true"]');
+		$I->seeInSource("const KIT_INTERCOM_APP_ID = 'e4n3xtxz';");
+		$I->seeInSource('window.intercomSettings = {');
+		$I->seeInSource("api_base: 'https://api-iam.intercom.io',");
+		$I->seeInSource('app_id: KIT_INTERCOM_APP_ID');
+		$I->seeInSource('(function(){var w=window;var ic=w.Intercom;');
 	}
 
 	/**
