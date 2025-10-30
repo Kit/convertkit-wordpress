@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 3.0.6
+Stable tag: 3.0.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,10 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.0.7 2025-10-30
+* Added: Settings: Improve override description wording to make clearer how it operates
+* Fix: Settings: Handle `WP_Error` gracefully when attempting to fetch Kit account information
 
 ### 3.0.6 2025-10-23
 * Added: Blocks: Form Builder: Settings: Display fields conditionally based on configuration
