@@ -251,6 +251,60 @@ class RestrictContentProductPageCest
 	}
 
 	/**
+	 * Test that restricting content by a Product specified in the Page Settings displays
+	 * an inline error message when the subscriber logged in to view content gated
+	 * by a Kit Form, and then views content gated by a Kit Product where the subscriber does
+	 * not have access to the Product.
+	 *
+	 * @since   3.0.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentDisplaysNoticeWhenNoAccess(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Product: No Access'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Set cookie with signed subscriber ID, as if we logged in before to e.g. content gated by a Kit Form.
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS'], $url);
+
+		// View page.
+		$I->amOnUrl($url);
+
+		// Confirm an inline error message is displayed.
+		$options = $I->getRestrictedContentOptionsWithDefaultsMerged();
+		$I->seeRestrictContentError($I, $options['settings']['no_access_text']);
+	}
+
+	/**
 	 * Test that restricting content by a Product that does not exist does not output
 	 * a fatal error and instead displays all of the Page's content.
 	 *
