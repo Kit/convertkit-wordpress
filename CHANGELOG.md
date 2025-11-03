@@ -1,3 +1,7 @@
+### 3.0.7 2025-10-30
+* Added: Settings: Improve override description wording to make clearer how it operates
+* Fix: Settings: Handle `WP_Error` gracefully when attempting to fetch Kit account information
+
 ### 3.0.6 2025-10-23
 * Added: Blocks: Form Builder: Settings: Display fields conditionally based on configuration
 * Added: Blocks: Broadcasts: Settings: Display fields conditionally based on configuration
