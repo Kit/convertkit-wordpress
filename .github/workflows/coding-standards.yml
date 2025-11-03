@@ -35,7 +35,7 @@ jobs:
     # Defines the WordPress and PHP Versions matrix to run tests on.
     strategy:
       matrix:
-        wp-versions: [ '6.9-beta1' ] #[ 'latest', '6.9-beta1' ]
+        wp-versions: [ '6.9-beta2' ] #[ 'latest', '6.9-beta1' ]
         php-versions: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ] #[ '7.3', '7.4', '8.0', '8.1' ]
 
     # Steps to install, configure and run tests
