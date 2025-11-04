@@ -13,7 +13,7 @@
 // Register Gutenberg Blocks if the Gutenberg Editor is loaded on screen.
 // This prevents JS errors if this script is accidentally enqueued on a non-
 // Gutenberg editor screen, or the Classic Editor Plugin is active.
-if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
+if (convertKitGutenbergEnabled()) {
 	// Register each ConvertKit Block in Gutenberg.
 	for (const block in convertkit_blocks) {
 		convertKitGutenbergRegisterBlock(convertkit_blocks[block]);
@@ -941,4 +941,18 @@ function convertKitGutenbergDisplayBlockNotice(block_name, notice) {
 function convertKitEditingPostInGutenberg() {
 	// If the user is editing a post in the block editor, wp.editPost will be defined.
 	return typeof wp !== 'undefined' && typeof wp.editPost !== 'undefined';
+}
+
+/**
+ * Checks if the Gutenberg editor is loaded on screen.
+ *
+ * Returns true when editing a Post, Page or Custom Post Type in the block editor,
+ * or using the site editor.
+ *
+ * @since   3.0.8
+ *
+ * @return {boolean} Block editor is loaded
+ */
+function convertKitGutenbergEnabled() {
+	return typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined';
 }
