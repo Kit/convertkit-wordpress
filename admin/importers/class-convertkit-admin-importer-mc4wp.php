@@ -79,7 +79,7 @@ class ConvertKit_Admin_Importer_MC4WP extends ConvertKit_Admin_Importer {
 		);
 
 		if ( ! $posts->post_count ) {
-			return false;
+			return array();
 		}
 
 		$forms = array();

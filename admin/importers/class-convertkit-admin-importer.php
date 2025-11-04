@@ -15,6 +15,50 @@
 class ConvertKit_Admin_Importer {
 
 	/**
+	 * Holds the shortcode name for the third party Form plugin.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @var     string
+	 */
+	public $shortcode_name = '';
+
+	/**
+	 * Holds the ID attribute name for the third party Form plugin.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @var     string
+	 */
+	public $shortcode_id_attribute = '';
+
+	/**
+	 * Returns an array of third party form IDs and titles.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  array
+	 */
+	public function get_forms() {
+
+		return array();
+
+	}
+
+	/**
+	 * Returns an array of post IDs that contain the third party form shortcode.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  array
+	 */
+	public function get_forms_in_posts() {
+
+		return array();
+
+	}
+
+	/**
 	 * Returns whether any third party forms exist.
 	 *
 	 * @since   3.1.0
@@ -98,7 +142,7 @@ class ConvertKit_Admin_Importer {
 			. '[^\]]*?'                                      // Match any characters that are not a closing square bracket, non-greedy.
 			. '\b' . preg_quote( $this->shortcode_id_attribute, '/' ) // Match the id attribute word boundary and escape as needed.
 			. '\s*=\s*'                                      // Match optional whitespace around an equals sign.
-			. '(?:"' . preg_quote( $third_party_form_id, '/' ) . '"|' . preg_quote( $third_party_form_id, '/' ) . ')' // Match the form ID, quoted or unquoted.
+			. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|' . preg_quote( (string) $third_party_form_id, '/' ) . ')' // Match the form ID, quoted or unquoted.
 			. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
 
 		return preg_replace(
