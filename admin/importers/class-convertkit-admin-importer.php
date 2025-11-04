@@ -93,12 +93,16 @@ class ConvertKit_Admin_Importer {
 	 */
 	public function replace_shortcodes_in_content( $content, $third_party_form_id, $form_id ) {
 
+		$pattern = '/\['                                     // Start regex with an opening square bracket.
+			. preg_quote( $this->shortcode_name, '/' )       // Match the shortcode name, escaping any regex special chars.
+			. '[^\]]*?'                                      // Match any characters that are not a closing square bracket, non-greedy.
+			. '\b' . preg_quote( $this->shortcode_id_attribute, '/' ) // Match the id attribute word boundary and escape as needed.
+			. '\s*=\s*'                                      // Match optional whitespace around an equals sign.
+			. '(?:"' . preg_quote( $third_party_form_id, '/' ) . '"|' . preg_quote( $third_party_form_id, '/' ) . ')' // Match the form ID, quoted or unquoted.
+			. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
+
 		return preg_replace(
-			'/\[' . preg_quote( $this->shortcode_name, '/' ) .
-			'\s+[^\]]*?' .
-			'\b' . preg_quote( $this->shortcode_id_attribute, '/' ) .
-			'\s*=\s*(?:"' . preg_quote( $third_party_form_id, '/' ) . '"|' . preg_quote( $third_party_form_id, '/' ) . ')' .
-			'[^\]]*?\]/i',
+			$pattern,
 			'[convertkit_form id="' . $form_id . '"]',
 			$content
 		);
