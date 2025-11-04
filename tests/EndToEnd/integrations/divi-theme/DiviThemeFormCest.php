@@ -115,16 +115,12 @@ class DiviThemeFormCest
 			programmaticName: 'convertkit_form'
 		);
 
-		// Switch to Divi Builder iframe.
-		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
-
 		// Confirm the on screen message displays.
-		$I->waitForElementVisible('div.convertkit-divi-module');
-		$I->see('Not connected to Kit', 'div.convertkit-divi-module');
-		$I->see('Connect your Kit account at Settings > Kit, and then refresh this page to select a form.', 'div.convertkit-divi-module');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'Not connected to Kit',
+			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to select a form.'
+		);
 	}
 
 	/**
@@ -151,16 +147,12 @@ class DiviThemeFormCest
 			programmaticName: 'convertkit_form'
 		);
 
-		// Switch to Divi Builder iframe.
-		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
-
 		// Confirm the on screen message displays.
-		$I->waitForElementVisible('div.convertkit-divi-module');
-		$I->see('No forms exist in Kit', 'div.convertkit-divi-module');
-		$I->see('Add a form to your Kit account, and then refresh this page to select a form.', 'div.convertkit-divi-module');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'No forms exist in Kit',
+			text: 'Add a form to your Kit account, and then refresh this page to select a form.'
+		);
 	}
 
 	/**

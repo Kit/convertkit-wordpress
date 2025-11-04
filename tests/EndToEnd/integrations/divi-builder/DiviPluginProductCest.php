@@ -113,16 +113,12 @@ class DiviPluginProductCest
 			programmaticName: 'convertkit_product'
 		);
 
-		// Switch to Divi Builder iframe.
-		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
-
 		// Confirm the on screen message displays.
-		$I->waitForElementVisible('div.convertkit-divi-module');
-		$I->see('Not connected to Kit', 'div.convertkit-divi-module');
-		$I->see('Connect your Kit account at Settings > Kit, and then refresh this page to select a product.', 'div.convertkit-divi-module');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'Not connected to Kit',
+			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to select a product.'
+		);
 	}
 
 	/**
@@ -149,16 +145,12 @@ class DiviPluginProductCest
 			programmaticName: 'convertkit_product'
 		);
 
-		// Switch to Divi Builder iframe.
-		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
-
 		// Confirm the on screen message displays.
-		$I->waitForElementVisible('div.convertkit-divi-module');
-		$I->see('No products exist in Kit', 'div.convertkit-divi-module');
-		$I->see('Add a product to your Kit account, and then refresh this page to select a product.', 'div.convertkit-divi-module');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'No products exist in Kit',
+			text: 'Add a product to your Kit account, and then refresh this page to select a product.'
+		);
 	}
 
 	/**
