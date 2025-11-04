@@ -120,7 +120,7 @@ jobs:
       # Installs WordPress scripts for CSS and JS Coding Standards.
       - name: Run npm install
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: npm installtes
+        run: npm install
 
       # Run PHP Coding Standards on Tests.
       - name: Run WordPress PHP Coding Standards on Tests
