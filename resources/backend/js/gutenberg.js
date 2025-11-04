@@ -20,7 +20,7 @@ if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
 	}
 
 	// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
-	if (typeof wp.editPost !== 'undefined') {
+	if (convertKitEditingPostInGutenberg()) {
 		if (typeof convertkit_pre_publish_actions !== 'undefined') {
 			convertKitGutenbergRegisterPrePublishActions(
 				convertkit_pre_publish_actions
@@ -929,4 +929,16 @@ function convertKitGutenbergDisplayBlockNotice(block_name, notice) {
 		},
 		notice
 	);
+}
+
+/**
+ * Checks if the user is editing a post in the block editor.
+ *
+ * @since   3.0.8
+ *
+ * @return {boolean} User is editing in the block editor
+ */
+function convertKitEditingPostInGutenberg() {
+	// If the user is editing a post in the block editor, wp.editPost will be defined.
+	return typeof wp !== 'undefined' && typeof wp.editPost !== 'undefined';
 }
