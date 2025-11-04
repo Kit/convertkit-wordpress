@@ -60,15 +60,22 @@ class ConvertKit_Admin_Importer {
 
 		// Iterate through Posts and replace the third party Form Shortcode with the Kit Form Shortcode.
 		foreach ( $posts as $post_id ) {
-			var_dump( $post_id );
-
+			// Get Post content.
 			$post_content = get_post_field( 'post_content', $post_id );
-			var_dump( $post_content );
 
+			// Replace the third party Form Shortcode with the Kit Form Shortcode.
 			$post_content = $this->replace_shortcodes_in_content( $post_content, $third_party_form_id, $form_id );
-			var_dump( $post_content );
 
-			// wp_update_post( array( 'ID' => $post_id, 'post_content' => $post_content ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.wp_update_post_post_content
+			// Update the Post content.
+			wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_content' => $post_content,
+				),
+				false,
+				false // Don't fire after action hooks.
+			);
+
 		}
 
 	}
@@ -87,9 +94,13 @@ class ConvertKit_Admin_Importer {
 	public function replace_shortcodes_in_content( $content, $third_party_form_id, $form_id ) {
 
 		return preg_replace(
-			'/\[' . preg_quote( $this->shortcode_name, '/' ) . '\s+([^\]]*?\b' . preg_quote( $this->shortcode_id_attribute, '/' ) . '="' . preg_quote( $third_party_form_id, '/' ) . '"[^\]]*?)\]/i',
+			'/\[' . preg_quote( $this->shortcode_name, '/' ) .
+			'\s+[^\]]*?' .
+			'\b' . preg_quote( $this->shortcode_id_attribute, '/' ) .
+			'\s*=\s*(?:"' . preg_quote( $third_party_form_id, '/' ) . '"|' . preg_quote( $third_party_form_id, '/' ) . ')' .
+			'[^\]]*?\]/i',
 			'[convertkit_form id="' . $form_id . '"]',
-			$post_content
+			$content
 		);
 
 	}

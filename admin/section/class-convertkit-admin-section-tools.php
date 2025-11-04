@@ -57,6 +57,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 				'import_configuration_invalid_file_type' => __( 'The uploaded configuration file isn\'t valid.', 'convertkit' ),
 				'import_configuration_empty'             => __( 'The uploaded configuration file contains no settings.', 'convertkit' ),
 				'import_configuration_success'           => __( 'Configuration imported successfully.', 'convertkit' ),
+				'migrate_mc4wp_configuration_success'    => __( 'MC4WP forms migrated successfully.', 'convertkit' ),
 			)
 		);
 
@@ -332,8 +333,21 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		var_dump( $_REQUEST );
-		die();
+		// Bail if no MC4WP Form IDs were submitted.
+		if ( ! isset( $_REQUEST['_wp_convertkit_integration_mc4wp_settings'] ) ) {
+			return;
+		}
+
+		// Initialise the importer.
+		$mc4wp = new ConvertKit_Admin_Importer_MC4WP();
+
+		// Iterate through the MC4WP Form IDs and replace the shortcodes with the Kit Form Shortcodes.
+		foreach ( $_REQUEST['_wp_convertkit_integration_mc4wp_settings'] as $mc4wp_form_id => $kit_form_id ) {
+			$mc4wp->replace_shortcodes_in_posts( (int) $mc4wp_form_id, (int) $kit_form_id );
+		}
+
+		// Redirect to Tools screen.
+		$this->redirect_with_success_notice( 'migrate_mc4wp_configuration_success' );
 
 	}
 
