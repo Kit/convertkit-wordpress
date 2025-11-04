@@ -75,6 +75,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		$this->maybe_download_system_info();
 		$this->maybe_export_configuration();
 		$this->maybe_import_configuration();
+		$this->maybe_migrate_mc4wp_configuration();
 
 	}
 
@@ -314,6 +315,22 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 	}
 
+	private function maybe_migrate_mc4wp_configuration() {
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+	
+		var_dump( $_REQUEST );
+		die();
+	
+	}
+
 	/**
 	 * Outputs the Debug Log and System Info view.
 	 *
@@ -331,6 +348,12 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		// Get Log and System Info.
 		$log         = new ConvertKit_Log( CONVERTKIT_PLUGIN_PATH );
 		$system_info = $this->get_system_info();
+
+		// Get Forms.
+		$forms     = new ConvertKit_Resource_Forms();
+
+		// Get Importers.
+		$mc4wp = new ConvertKit_Admin_Importer_MC4WP();
 
 		// Output view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/settings/tools.php';
