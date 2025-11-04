@@ -315,6 +315,12 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 	}
 
+	/**
+	 * Replaces MC4WP Form Shortcodes with Kit Form Shortcodes, if the user submitted the
+	 * MC4WP Migrate Configuration section.
+	 *
+	 * @since   3.1.0
+	 */
 	private function maybe_migrate_mc4wp_configuration() {
 
 		// Bail if nonce verification fails.
@@ -325,10 +331,10 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
 			return;
 		}
-	
+
 		var_dump( $_REQUEST );
 		die();
-	
+
 	}
 
 	/**
@@ -350,7 +356,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		$system_info = $this->get_system_info();
 
 		// Get Forms.
-		$forms     = new ConvertKit_Resource_Forms();
+		$forms = new ConvertKit_Resource_Forms();
 
 		// Get Importers.
 		$mc4wp = new ConvertKit_Admin_Importer_MC4WP();

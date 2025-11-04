@@ -121,7 +121,8 @@
 				</thead>
 				<tbody>
 					<?php
-					foreach ( $mc4wp->get_forms() as $mc4wp_form_id => $mc4wp_form_title ) { ?>
+					foreach ( $mc4wp->get_forms() as $mc4wp_form_id => $mc4wp_form_title ) {
+						?>
 						<tr>
 							<td><?php echo esc_html( $mc4wp_form_title ); ?></td>
 							<td>
@@ -136,7 +137,7 @@
 								</select>
 							</td>
 						</tr>
-					<?php
+						<?php
 					}
 					?>
 				</tbody>
