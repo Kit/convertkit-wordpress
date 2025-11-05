@@ -21,12 +21,8 @@ class PluginSettingsToolsImporterMC4WPCest
 	 */
 	public function _before(EndToEndTester $I)
 	{
-		// Activate and Setup Kit plugin.
+		// Activate Plugins.
 		$I->activateKitPlugin($I);
-		$I->setupKitPlugin($I);
-		$I->setupKitPluginResources($I);
-
-		// Activate Mailchimp for WordPress Plugin.
 		$I->activateThirdPartyPlugin($I, 'mailchimp-for-wp');
 	}
 
@@ -39,6 +35,10 @@ class PluginSettingsToolsImporterMC4WPCest
 	 */
 	public function testMC4WPImport(EndToEndTester $I)
 	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
 		// Create Mailchimp Forms.
 		$mailchimpFormIDs = $this->_createMailchimpForms($I);
 
@@ -76,6 +76,10 @@ class PluginSettingsToolsImporterMC4WPCest
 	 */
 	public function testMC4WPImportWhenNoMailchimpForms(EndToEndTester $I)
 	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
 		// Navigate to the Tools screen.
 		$I->loadKitSettingsToolsScreen($I);
 
@@ -93,6 +97,10 @@ class PluginSettingsToolsImporterMC4WPCest
 	 */
 	public function testMC4WPImportWhenNoMailchimpShortcodesInContent(EndToEndTester $I)
 	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
 		// Create Mailchimp Forms.
 		$mailchimpFormIDs = $this->_createMailchimpForms($I);
 
@@ -113,7 +121,16 @@ class PluginSettingsToolsImporterMC4WPCest
 	 */
 	public function testMC4WPImportWhenNoKitForms(EndToEndTester $I)
 	{
-		// @TODO.
+		// Setup Plugin.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Confirm no MC4WP: Migrate Configuration section is displayed, as there are no
+		// Mailchimp Form Shortcodes in the content.
+		$I->dontSeeElementInDOM('#import-mc4wp');
 	}
 
 	/**
