@@ -168,13 +168,13 @@ class DiviBuilder extends \Codeception\Module
 		// Update page.
 		$I->click('Update');
 
-		// Load the Page on the frontend site.
+		// Wait for the save to complete.
+		$I->waitForElementVisible('#message');
+		$I->see('Page updated.', '#message');
 		$I->waitForElementNotVisible('.et-fb-preloader');
-		$I->wait(2);
-		$I->waitForElementVisible('.notice-success');
-		$I->click('.notice-success a');
 
-		// Wait for frontend web site to load.
+		// Load the Page on the frontend site.
+		$I->click('.notice-success a');
 		$I->waitForElementVisible('body');
 
 		// Check that no PHP warnings or notices were output.
@@ -209,6 +209,29 @@ class DiviBuilder extends \Codeception\Module
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
+	 * Helper method to see specific text is displayed in a Divi module.
+	 *
+	 * @since   3.0.8
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 * @param   string         $title  Title of the module.
+	 * @param   string         $text   Text to confirm is displayed.
+	 */
+	public function seeTextInDiviModule($I, $title, $text)
+	{
+		// Switch to Divi Builder iframe.
+		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
+
+		// Confirm the on screen message displays.
+		$I->waitForElementVisible('div.convertkit-divi-module');
+		$I->see($title, 'div.convertkit-divi-module');
+		$I->see($text, 'div.convertkit-divi-module');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
