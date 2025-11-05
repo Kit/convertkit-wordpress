@@ -116,8 +116,11 @@ class DiviPluginFormCest
 		);
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('Not connected to Kit');
-		$I->seeInSource('Connect your Kit account at Settings > Kit, and then refresh this page to select a form.');
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'Not connected to Kit',
+			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to select a form.'
+		);
 	}
 
 	/**
@@ -145,8 +148,11 @@ class DiviPluginFormCest
 		);
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('No forms exist in Kit');
-		$I->seeInSource('Add a form to your Kit account, and then refresh this page to select a form.');
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'No forms exist in Kit',
+			text: 'Add a form to your Kit account, and then refresh this page to select a form.'
+		);
 	}
 
 	/**

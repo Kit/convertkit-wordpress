@@ -245,8 +245,11 @@ class DiviThemeBroadcastsCest
 		);
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('Not connected to Kit');
-		$I->seeInSource('Connect your Kit account at Settings > Kit, and then refresh this page to configure broadcasts to display.');
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'Not connected to Kit',
+			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to configure broadcasts to display.'
+		);
 	}
 
 	/**
@@ -274,8 +277,11 @@ class DiviThemeBroadcastsCest
 		);
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('No broadcasts exist in Kit');
-		$I->seeInSource('Add a broadcast to your Kit account, and then refresh this page to configure broadcasts to display.');
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'No broadcasts exist in Kit',
+			text: 'Add a broadcast to your Kit account, and then refresh this page to configure broadcasts to display.'
+		);
 	}
 
 	/**
