@@ -244,16 +244,12 @@ class DiviThemeBroadcastsCest
 			programmaticName: 'convertkit_broadcasts'
 		);
 
-		// Switch to Divi Builder iframe.
-		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
-
 		// Confirm the on screen message displays.
-		$I->waitForElementVisible('div.convertkit-divi-module');
-		$I->see('Not connected to Kit', 'div.convertkit-divi-module');
-		$I->see('Connect your Kit account at Settings > Kit, and then refresh this page to configure broadcasts to display.', 'div.convertkit-divi-module');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'Not connected to Kit',
+			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to configure broadcasts to display.'
+		);
 	}
 
 	/**
@@ -280,16 +276,12 @@ class DiviThemeBroadcastsCest
 			programmaticName: 'convertkit_broadcasts'
 		);
 
-		// Switch to Divi Builder iframe.
-		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
-
 		// Confirm the on screen message displays.
-		$I->waitForElementVisible('div.convertkit-divi-module');
-		$I->see('No broadcasts exist in Kit', 'div.convertkit-divi-module');
-		$I->see('Add a broadcast to your Kit account, and then refresh this page to configure broadcasts to display.', 'div.convertkit-divi-module');
-
-		// Switch back to main window.
-		$I->switchToIFrame();
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'No broadcasts exist in Kit',
+			text: 'Add a broadcast to your Kit account, and then refresh this page to configure broadcasts to display.'
+		);
 	}
 
 	/**

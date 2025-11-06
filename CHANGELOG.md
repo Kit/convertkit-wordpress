@@ -1,3 +1,6 @@
+### 3.0.8 2025-11-05
+* Fix: Member Content: Product: Display 'no access' notice when logged in and no access
+
 ### 3.0.7 2025-10-30
 * Added: Settings: Improve override description wording to make clearer how it operates
 * Fix: Settings: Handle `WP_Error` gracefully when attempting to fetch Kit account information

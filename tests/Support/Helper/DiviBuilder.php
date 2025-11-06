@@ -212,6 +212,29 @@ class DiviBuilder extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to see specific text is displayed in a Divi module.
+	 *
+	 * @since   3.0.8
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 * @param   string         $title  Title of the module.
+	 * @param   string         $text   Text to confirm is displayed.
+	 */
+	public function seeTextInDiviModule($I, $title, $text)
+	{
+		// Switch to Divi Builder iframe.
+		$I->switchToIFrame('iframe[id="et-fb-app-frame"]');
+
+		// Confirm the on screen message displays.
+		$I->waitForElementVisible('div.convertkit-divi-module');
+		$I->see($title, 'div.convertkit-divi-module');
+		$I->see($text, 'div.convertkit-divi-module');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
+	}
+
+	/**
 	 * Create a Page in the database comprising of Divi Page Builder data
 	 * containing a Kit module.
 	 *
