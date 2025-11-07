@@ -114,8 +114,11 @@ class DiviThemeProductCest
 		);
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('Not connected to Kit');
-		$I->seeInSource('Connect your Kit account at Settings > Kit, and then refresh this page to select a product.');
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'Not connected to Kit',
+			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to select a product.'
+		);
 	}
 
 	/**
@@ -143,8 +146,11 @@ class DiviThemeProductCest
 		);
 
 		// Confirm the on screen message displays.
-		$I->seeInSource('No products exist in Kit');
-		$I->seeInSource('Add a product to your Kit account, and then refresh this page to select a product.');
+		$I->seeTextInDiviModule(
+			$I,
+			title: 'No products exist in Kit',
+			text: 'Add a product to your Kit account, and then refresh this page to select a product.'
+		);
 	}
 
 	/**
