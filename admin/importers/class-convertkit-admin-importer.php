@@ -12,7 +12,7 @@
  * @package ConvertKit
  * @author ConvertKit
  */
-class ConvertKit_Admin_Importer {
+abstract class ConvertKit_Admin_Importer {
 
 	/**
 	 * Holds the shortcode name for the third party Form plugin.
@@ -39,11 +39,7 @@ class ConvertKit_Admin_Importer {
 	 *
 	 * @return  array
 	 */
-	public function get_forms() {
-
-		return array();
-
-	}
+	abstract public function get_forms();
 
 	/**
 	 * Returns an array of post IDs that contain the third party form shortcode.
@@ -52,11 +48,7 @@ class ConvertKit_Admin_Importer {
 	 *
 	 * @return  array
 	 */
-	public function get_forms_in_posts() {
-
-		return array();
-
-	}
+	abstract public function get_forms_in_posts();
 
 	/**
 	 * Returns whether any third party forms exist.
