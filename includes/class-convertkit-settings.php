@@ -634,6 +634,9 @@ class ConvertKit_Settings {
 			return;
 		}
 
+		// Remove any existing persistent notice.
+		WP_ConvertKit()->get_class( 'admin_notices' )->delete( 'authorization_failed' );
+
 		$this->save(
 			array(
 				'access_token'  => $result['access_token'],
@@ -670,6 +673,10 @@ class ConvertKit_Settings {
 			return;
 		}
 
+		// Persist an error notice in the WordPress Administration until the user fixes the problem.
+		WP_ConvertKit()->get_class( 'admin_notices' )->add( 'authorization_failed' );
+
+		// Delete the credentials from the Plugin settings.
 		$this->delete_credentials();
 
 	}
