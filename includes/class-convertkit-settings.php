@@ -51,8 +51,8 @@ class ConvertKit_Settings {
 
 		// Delete credentials if the API class fails to refresh the token or uses a invalid access token.
 		// This prevents the Plugin making repetitive API requests that will 401.
-		add_action( 'convertkit_api_request_error_access_token_invalid', array( $this, 'maybe_delete_credentials' ), 10, 1 );
-		add_action( 'convertkit_api_request_error_refresh_token_failed', array( $this, 'maybe_delete_credentials' ), 10, 1 );
+		add_action( 'convertkit_api_access_token_invalid', array( $this, 'maybe_delete_credentials' ), 10, 2 );
+		add_action( 'convertkit_api_refresh_token_error', array( $this, 'maybe_delete_credentials' ), 10, 2 );
 
 	}
 
@@ -659,9 +659,10 @@ class ConvertKit_Settings {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   string $client_id   OAuth Client ID used for the Access and Refresh Tokens.
+	 * @param   WP_Error $result      Error result.
+	 * @param   string   $client_id   OAuth Client ID used for the Access and Refresh Tokens.
 	 */
-	public function maybe_delete_credentials( $client_id ) {
+	public function maybe_delete_credentials( $result, $client_id ) {
 
 		// Don't delete these credentials if they're not for this Client ID.
 		// They're for another Kit Plugin that uses OAuth.
