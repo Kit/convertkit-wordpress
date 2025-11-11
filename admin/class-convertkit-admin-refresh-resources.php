@@ -55,7 +55,7 @@ class ConvertKit_Admin_Refresh_Resources {
 	 * @since   1.9.8.0
 	 *
 	 * @param   WP_REST_Request $request    Request object.
-	 * @return  WP_REST_Response                Response object.
+	 * @return  WP_REST_Response|WP_Error               Response object.
 	 */
 	public function refresh_resources( $request ) {
 
