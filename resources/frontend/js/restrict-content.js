@@ -147,13 +147,12 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 	resource_id,
 	post_id
 ) {
-	fetch(convertkit_restrict_content.ajaxurl, {
+	fetch(convertkit_restrict_content.subscriber_authentication_url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
 		body: new URLSearchParams({
-			action: 'convertkit_subscriber_authentication_send_code',
 			_wpnonce: nonce,
 			convertkit_email: email,
 			convertkit_resource_type: resource_type,
@@ -176,7 +175,7 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 			// Output response, which will be a form with/without an error message.
 			document.querySelector(
 				'#convertkit-restrict-content-modal-content'
-			).innerHTML = result.data;
+			).innerHTML = result;
 
 			// Hide loading overlay.
 			document.querySelector(
@@ -212,13 +211,12 @@ function convertKitRestrictContentSubscriberVerification(
 	token,
 	post_id
 ) {
-	fetch(convertkit_restrict_content.ajaxurl, {
+	fetch(convertkit_restrict_content.subscriber_verification_url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
 		body: new URLSearchParams({
-			action: 'convertkit_subscriber_verification',
 			_wpnonce: nonce,
 			subscriber_code,
 			token,
@@ -241,7 +239,7 @@ function convertKitRestrictContentSubscriberVerification(
 			if (!result.success) {
 				document.querySelector(
 					'#convertkit-restrict-content-modal-content'
-				).innerHTML = result.data;
+				).innerHTML = result;
 
 				// Hide loading overlay.
 				document.querySelector(
@@ -254,7 +252,7 @@ function convertKitRestrictContentSubscriberVerification(
 			}
 
 			// Code entered is valid; load the URL in the response data.
-			window.location = result.data;
+			window.location = result;
 		})
 		.catch(function (error) {
 			if (convertkit_restrict_content.debug) {

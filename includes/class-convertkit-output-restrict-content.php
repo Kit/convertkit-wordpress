@@ -117,6 +117,7 @@ class ConvertKit_Output_Restrict_Content {
 			return;
 		}
 
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
@@ -125,6 +126,84 @@ class ConvertKit_Output_Restrict_Content {
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
 		add_filter( 'get_next_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
 
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.0
+	 */
+	public function register_routes() {
+
+		// Register route to run subscriber authentication.
+		register_rest_route(
+			'kit/v1',
+			'/restrict-content/subscriber-authentication',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => function() {
+					// Load Restrict Content class.
+					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
+
+					// Run subscriber authentication.
+					$output_restrict_content->maybe_run_subscriber_authentication();
+
+					// Fetch Post ID, Resource Type and Resource ID for the view.
+					$post_id       = $output_restrict_content->post_id;
+					$resource_type = $output_restrict_content->resource_type;
+					$resource_id   = $output_restrict_content->resource_id;
+
+					// If an error occured, build the email form view with the error message.
+					if ( is_wp_error( $output_restrict_content->error ) ) {
+						ob_start();
+						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-email.php';
+						$output = trim( ob_get_clean() );
+						return rest_ensure_response( $output );
+					}
+
+					// Build authentication code view to return for output.
+					ob_start();
+					include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
+					$output = trim( ob_get_clean() );
+					return rest_ensure_response( $output );
+				},
+				'permission_callback' => '__return_true',
+			)
+		);
+
+		// Register route to run subscriber verification.
+		register_rest_route(
+			'kit/v1',
+			'/restrict-content/subscriber-verification',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => function() {
+					// Load Restrict Content class.
+					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
+
+					// Run subscriber authentication.
+					$output_restrict_content->maybe_run_subscriber_verification();
+
+					// Fetch Post ID, Resource Type and Resource ID for the view.
+					$post_id       = $output_restrict_content->post_id;
+					$resource_type = $output_restrict_content->resource_type;
+					$resource_id   = $output_restrict_content->resource_id;
+
+					// If an error occured, build the code form view with the error message.
+					if ( is_wp_error( $output_restrict_content->error ) ) {
+						ob_start();
+						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
+						$output = trim( ob_get_clean() );
+						wp_send_json_error( $output );
+					}
+
+					// Return success with the URL to the Post, including the `ck-cache-bust` parameter.
+					// JS will load the given URL to show the restricted content.
+					wp_send_json_success( $output_restrict_content->get_url( true ) );
+				},
+				'permission_callback' => '__return_true',
+			)
+		);
 	}
 
 	/**
@@ -1214,7 +1293,8 @@ class ConvertKit_Output_Restrict_Content {
 				'convertkit-restrict-content',
 				'convertkit_restrict_content',
 				array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'subscriber_authentication_url' => rest_url( 'kit/v1/restrict-content/subscriber-authentication' ),
+					'subscriber_verification_url' => rest_url( 'kit/v1/restrict-content/subscriber-verification' ),
 					'debug'   => $this->settings->debug_enabled(),
 				)
 			);
