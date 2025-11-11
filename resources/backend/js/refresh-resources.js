@@ -54,7 +54,7 @@ function convertKitRefreshResources(button) {
 		headers: {
 			'Content-Type': 'application/json',
 			'X-WP-Nonce': convertkit_admin_refresh_resources.nonce,
-		}
+		},
 	})
 		.then(function (response) {
 			// Convert response JSON string to object.
