@@ -544,7 +544,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 						'async'                      => true,
 						'data-uid'                   => $this->resources[ $id ]['uid'],
 						'src'                        => $this->resources[ $id ]['embed_js'],
-						'data-kit-limit-per-session' => $settings->non_inline_form_limit_per_session(),
+						'data-kit-limit-per-session' => $settings->non_inline_form_limit_per_session() ? '1' : '0',
 					);
 
 					// If debugging is enabled, add the post ID to the script.

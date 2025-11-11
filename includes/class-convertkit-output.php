@@ -812,6 +812,9 @@ class ConvertKit_Output {
 			return;
 		}
 
+		// Determine if the Non-inline Form Limit per Session setting is enabled.
+		$limit_per_session = $this->settings->non_inline_form_limit_per_session();
+
 		// Get form.
 		$convertkit_forms = new ConvertKit_Resource_Forms();
 
@@ -828,13 +831,13 @@ class ConvertKit_Output {
 			// Add the form to the scripts array so it is included in the output.
 			add_filter(
 				'convertkit_output_scripts_footer',
-				function ( $scripts ) use ( $form ) {
+				function ( $scripts ) use ( $form, $limit_per_session ) {
 
 					$scripts[] = array(
 						'async'                      => true,
 						'data-uid'                   => $form['uid'],
 						'src'                        => $form['embed_js'],
-						'data-kit-limit-per-session' => true,
+						'data-kit-limit-per-session' => $limit_per_session ? '1' : '0',
 					);
 
 					return $scripts;
