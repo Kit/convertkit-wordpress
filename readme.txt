@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 3.0.2
+Stable tag: 3.0.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,34 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.0.8 2025-11-05
+* Fix: Member Content: Product: Display 'no access' notice when logged in and no access
+
+### 3.0.7 2025-10-30
+* Added: Settings: Improve override description wording to make clearer how it operates
+* Fix: Settings: Handle `WP_Error` gracefully when attempting to fetch Kit account information
+
+### 3.0.6 2025-10-23
+* Added: Blocks: Form Builder: Settings: Display fields conditionally based on configuration
+* Added: Blocks: Broadcasts: Settings: Display fields conditionally based on configuration
+* Added: Classic Editor: Broadcasts: Settings: Display fields conditionally based on configuration
+* Added: Divi: Broadcasts: Settings: Display fields conditionally based on configuration
+* Added: Elementor: Broadcasts: Settings: Display fields conditionally based on configuration
+* Fix: Settings: Don't refresh resources via API when request is AJAX or CRON
+
+### 3.0.5.1 2025-10-19
+* Fix: Member Content: Use correct Post ID and include correct Post URL in subscriber verification email
+
+### 3.0.4.1 2025-10-10
+* Added: Blocks: Form Builder: Option to subscribe to Kit Form, to trigger incentive email
+* Added: Settings: Advanced: Option to opt in to usage reports
+* Fix: Member Content: Improve performance in admin UI by optimising query and only running query when Posts created/edited/deleted
+
+### 3.0.3 2025-09-29
+* Added: Refresh resources button: show loading indicator until refresh is complete
+* Updated: WordPress Coding Standards for JS and CSS
+* Updated: Use WordPress Libraries 2.1.0
 
 ### 3.0.2 2025-09-17
 * Fix: Member Content: Improve login form layout on mobile

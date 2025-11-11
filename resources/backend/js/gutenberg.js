@@ -13,17 +13,19 @@
 // Register Gutenberg Blocks if the Gutenberg Editor is loaded on screen.
 // This prevents JS errors if this script is accidentally enqueued on a non-
 // Gutenberg editor screen, or the Classic Editor Plugin is active.
-if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
+if (convertKitGutenbergEnabled()) {
 	// Register each ConvertKit Block in Gutenberg.
 	for (const block in convertkit_blocks) {
 		convertKitGutenbergRegisterBlock(convertkit_blocks[block]);
 	}
 
-	// Register ConvertKit Pre-publish actions in Gutenberg.
-	if (typeof convertkit_pre_publish_actions !== 'undefined') {
-		convertKitGutenbergRegisterPrePublishActions(
-			convertkit_pre_publish_actions
-		);
+	// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
+	if (convertKitEditingPostInGutenberg()) {
+		if (typeof convertkit_pre_publish_actions !== 'undefined') {
+			convertKitGutenbergRegisterPrePublishActions(
+				convertkit_pre_publish_actions
+			);
+		}
 	}
 }
 
@@ -91,6 +93,47 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @return {Object}            Field element.
 		 */
 		const getField = function (props, field, attribute) {
+			// If this field is conditionally displayed, check if the field should be displayed.
+			if (typeof field.display_if !== 'undefined') {
+				// Assume the condition has not been met for this field to be displayed.
+				let display_field = false;
+
+				// Assert whether the condition is met based on the field type.
+				switch (block.fields[field.display_if.key].type) {
+					case 'toggle':
+						// Field's condition value will be 0 or 1.
+						// Attributes field value will be false or true.
+						display_field =
+							Boolean(Number(field.display_if.value)) ===
+							props.attributes[field.display_if.key];
+						break;
+
+					default:
+						// Assert based on the condition's value type (array, string, number).
+						switch (typeof field.display_if.value) {
+							case 'object':
+								display_field = Object.values(
+									field.display_if.value
+								).includes(
+									props.attributes[field.display_if.key]
+								);
+								break;
+
+							default:
+								display_field =
+									field.display_if.value ===
+									props.attributes[field.display_if.key];
+								break;
+						}
+						break;
+				}
+
+				// Skip this field if the condition is not met.
+				if (!display_field) {
+					return false;
+				}
+			}
+
 			// Define some field properties shared across all field types.
 			const fieldProperties = {
 				id:
@@ -886,4 +929,30 @@ function convertKitGutenbergDisplayBlockNotice(block_name, notice) {
 		},
 		notice
 	);
+}
+
+/**
+ * Checks if the user is editing a post in the block editor.
+ *
+ * @since   3.0.8
+ *
+ * @return {boolean} User is editing in the block editor
+ */
+function convertKitEditingPostInGutenberg() {
+	// If the user is editing a post in the block editor, wp.editPost will be defined.
+	return typeof wp !== 'undefined' && typeof wp.editPost !== 'undefined';
+}
+
+/**
+ * Checks if the Gutenberg editor is loaded on screen.
+ *
+ * Returns true when editing a Post, Page or Custom Post Type in the block editor,
+ * or using the site editor.
+ *
+ * @since   3.0.8
+ *
+ * @return {boolean} Block editor is loaded
+ */
+function convertKitGutenbergEnabled() {
+	return typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined';
 }

@@ -28,6 +28,11 @@ parameters:
     # Don't report unmatched ignored errors on older PHP versions (7.2, 7.3)
     reportUnmatchedIgnoredErrors: false
 
+    # Ignore the following errors, as PHPStan and PHPStan for WordPress haven't correctly registered symbols,
+    # so they're false positives.
+    ignoreErrors:
+        - '#Anonymous function has an unused use#'
+
     # Should not need to edit anything below here
     # Rule Level: https://phpstan.org/user-guide/rule-levels
     level: 5

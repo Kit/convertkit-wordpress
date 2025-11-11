@@ -125,7 +125,7 @@ jobs:
       # Run PHP Coding Standards on Tests.
       - name: Run WordPress PHP Coding Standards on Tests
         working-directory: ${{ env.PLUGIN_DIR }}
-        if: ${{ matrix.php-versions == '8.1' || matrix.php-versions == '8.2' || matrix.php-versions == '8.3' || matrix.php-versions == '8.4' }}
+        if: ${{ contains('8.1 8.2 8.3 8.4', matrix.php-versions) }}
         run: php vendor/bin/phpcs -q --standard=phpcs.tests.xml --report=checkstyle ./tests | cs2pr
 
       # Run PHP Coding Standards on Plugin.
@@ -146,4 +146,5 @@ jobs:
       # Run PHPStan for static analysis.
       - name: Run PHPStan Static Analysis
         working-directory: ${{ env.PLUGIN_DIR }}
+        if: ${{ contains('8.0 8.1 8.2 8.3 8.4', matrix.php-versions) }}
         run: php vendor/bin/phpstan analyse --memory-limit=1250M

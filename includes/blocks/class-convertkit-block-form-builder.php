@@ -98,7 +98,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$custom_fields = $form_data['custom_fields'];
 		}
 
-		// Get Tag and Sequence IDs, if any were specified.
+		// Get Form, Tag and Sequence IDs, if any were specified.
+		$form_id     = array_key_exists( 'form_id', $form_data ) ? $form_data['form_id'] : false;
 		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? $form_data['tag_id'] : false;
 		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? $form_data['sequence_id'] : false;
 
@@ -116,6 +117,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 						'email'         => $form_data['email'],
 						'first_name'    => $form_data['first_name'],
 						'custom_fields' => $custom_fields,
+						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
 						'sequence_id'   => $sequence_id,
 						'api_result'    => 'error',
@@ -154,6 +156,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 						'email'         => $form_data['email'],
 						'first_name'    => $form_data['first_name'],
 						'custom_fields' => $custom_fields,
+						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
 						'sequence_id'   => $sequence_id,
 						'api_result'    => 'error',
@@ -172,6 +175,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					'email'         => $form_data['email'],
 					'first_name'    => $form_data['first_name'],
 					'custom_fields' => $custom_fields,
+					'form_id'       => $form_id,
 					'tag_id'        => $tag_id,
 					'sequence_id'   => $sequence_id,
 					'api_result'    => 'success',
@@ -182,6 +186,31 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Store the subscriber ID in a cookie.
 		$subscriber = new ConvertKit_Subscriber();
 		$subscriber->set( $result['subscriber']['id'] );
+
+		// If a form was specified, add the subscriber to the form.
+		if ( $form_id ) {
+			$result = $api->add_subscriber_to_form(
+				$form_id,
+				$result['subscriber']['id'],
+				get_permalink( absint( $form_data['post_id'] ) )
+			);
+
+			if ( $form_data['store_entries'] ) {
+				$entries->upsert(
+					array(
+						'post_id'       => $form_data['post_id'],
+						'email'         => $form_data['email'],
+						'first_name'    => $form_data['first_name'],
+						'custom_fields' => $custom_fields,
+						'form_id'       => $form_id,
+						'tag_id'        => $tag_id,
+						'sequence_id'   => $sequence_id,
+						'api_result'    => is_wp_error( $result ) ? 'error' : 'success',
+						'api_error'     => is_wp_error( $result ) ? $result->get_error_message() : '',
+					)
+				);
+			}
+		}
 
 		// If a tag was specified, add the subscriber to the tag.
 		if ( $tag_id ) {
@@ -194,6 +223,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 						'email'         => $form_data['email'],
 						'first_name'    => $form_data['first_name'],
 						'custom_fields' => $custom_fields,
+						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
 						'sequence_id'   => $sequence_id,
 						'api_result'    => is_wp_error( $result ) ? 'error' : 'success',
@@ -214,6 +244,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 						'email'         => $form_data['email'],
 						'first_name'    => $form_data['first_name'],
 						'custom_fields' => $custom_fields,
+						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
 						'sequence_id'   => $sequence_id,
 						'api_result'    => is_wp_error( $result ) ? 'error' : 'success',
@@ -317,6 +348,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				),
 				'convertkit/form-builder-field-email' => array(
 					'label' => 'Email address',
+					'lock'  => array(
+						'move'   => false,
+						'remove' => true,
+					),
 				),
 				'core/button'                         => array(
 					'label'     => 'Submit button',
@@ -362,6 +397,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'text_if_subscribed'         => array(
 				'type'    => 'string',
 				'default' => $this->get_default_value( 'text_if_subscribed' ),
+			),
+			'form_id'                    => array(
+				'type'    => 'string',
+				'default' => $this->get_default_value( 'form_id' ),
 			),
 			'tag_id'                     => array(
 				'type'    => 'string',
@@ -441,6 +480,20 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return false;
 		}
 
+		// Get Kit Forms.
+		$forms         = new ConvertKit_Resource_Forms( 'block_form_builder' );
+		$forms_options = array();
+		if ( $forms->exist() ) {
+			foreach ( $forms->get() as $form ) {
+				// Legacy forms don't include a `format` key, so define them as inline.
+				$forms_options[ $form['id'] ] = sprintf(
+					'%s [%s]',
+					sanitize_text_field( $form['name'] ),
+					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
+				);
+			}
+		}
+
 		// Get Kit Tags.
 		$tags         = new ConvertKit_Resource_Tags( 'block_form_builder' );
 		$tags_options = array();
@@ -479,6 +532,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				'label'       => __( 'Text', 'convertkit' ),
 				'type'        => 'text',
 				'description' => __( 'The text to display if the visitor is already subscribed.', 'convertkit' ),
+				'display_if'  => array(
+					'key'   => 'display_form_if_subscribed',
+					'value' => 0,
+				),
+			),
+			'form_id'                    => array(
+				'label'       => __( 'Form', 'convertkit' ),
+				'type'        => 'select',
+				'description' => __( 'The Kit form to add the subscriber to. Useful if you want to send an incentive email.', 'convertkit' ),
+				'values'      => $forms_options,
 			),
 			'tag_id'                     => array(
 				'label'       => __( 'Tag', 'convertkit' ),
@@ -514,6 +577,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'general' => array(
 				'label'  => __( 'General', 'convertkit' ),
 				'fields' => array(
+					'form_id',
 					'tag_id',
 					'sequence_id',
 					'redirect',
@@ -536,6 +600,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public function get_default_values() {
 
 		return array(
+			'form_id'                    => '',
 			'tag_id'                     => '',
 			'sequence_id'                => '',
 			'redirect'                   => '',
@@ -700,6 +765,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'convertkit[post_id]'       => absint( $post_id ),
 			'convertkit[store_entries]' => $atts['store_entries'] ? '1' : '0',
 			'convertkit[redirect]'      => esc_url( $atts['redirect'] ),
+			'convertkit[form_id]'       => absint( $atts['form_id'] ),
 			'convertkit[tag_id]'        => absint( $atts['tag_id'] ),
 			'convertkit[sequence_id]'   => absint( $atts['sequence_id'] ),
 			'_wpnonce'                  => wp_create_nonce( 'convertkit_block_form_builder' ),

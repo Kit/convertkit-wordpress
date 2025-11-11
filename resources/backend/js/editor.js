@@ -82,6 +82,12 @@ function convertKitTinyMCERegisterPlugin(block) {
 						// Listen for color input changes.
 						convertKitColorInputInit();
 
+						// Initialize conditional fields.
+						convertKitConditionallyDisplayTinyMCEModalFields();
+
+						// Listen for field changes.
+						convertKitConditionalFieldsInit();
+
 						// Bind refresh resource event listeners.
 						convertKitRefreshResourcesInitEventListeners();
 					})
@@ -110,5 +116,45 @@ function convertKitColorInputInit() {
 			colorPicker.addEventListener('change', function (event) {
 				event.target.dataset.value = event.target.value;
 			});
+		});
+}
+
+/**
+ * Initializes the conditional fields functionality.
+ *
+ * @since   3.0.6
+ */
+function convertKitConditionalFieldsInit() {
+	document
+		.querySelectorAll(
+			'form.convertkit-tinymce-popup select, form.convertkit-tinymce-popup input'
+		)
+		.forEach(function (field) {
+			field.addEventListener('change', function () {
+				convertKitConditionallyDisplayTinyMCEModalFields();
+			});
+		});
+}
+
+/**
+ * Conditionally display the TinyMCE modal fields.
+ *
+ * @since   3.0.6
+ */
+function convertKitConditionallyDisplayTinyMCEModalFields() {
+	document
+		.querySelectorAll('form.convertkit-tinymce-popup [data-display-if]')
+		.forEach(function (field) {
+			// Get field that controls whether this field should be displayed.
+			const controllingField = document.querySelector(
+				`form.convertkit-tinymce-popup select[name="${field.dataset.displayIf}"]`
+			);
+
+			// If the value of the field that should be displayed is the same as the value of the controlling field, show/hide the containing div.
+			const container = field.closest('.convertkit-option');
+			container.style.display =
+				field.dataset.displayIfValue === controllingField.value
+					? 'grid'
+					: 'none';
 		});
 }

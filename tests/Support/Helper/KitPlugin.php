@@ -60,6 +60,7 @@ class KitPlugin extends \Codeception\Module
 	 *     @type string $recaptcha_site_key         reCAPTCHA Site Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SITE_KEY).
 	 *     @type string $recaptcha_secret_key       reCAPTCHA Secret Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SECRET_KEY).
 	 *     @type string $recaptcha_minimum_score    reCAPTCHA Minimum Score (if specified, used instead of 0.5).
+	 *     @type string $usage_tracking             Usage Tracking (if specified, used instead of on).
 	 * }
 	 */
 	public function setupKitPlugin($I, $options = false)
@@ -71,6 +72,7 @@ class KitPlugin extends \Codeception\Module
 			'debug'                              => 'on',
 			'no_scripts'                         => '',
 			'no_css'                             => '',
+			'usage_tracking'                     => '',
 			'post_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'page_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -535,6 +537,9 @@ class KitPlugin extends \Codeception\Module
 
 		// Upgrades.
 		$I->dontHaveOptionInDatabase('_wp_convertkit_upgrade_posts');
+
+		// Cache.
+		$I->dontHaveOptionInDatabase('convertkit_restrict_content_enabled');
 	}
 
 	/**
@@ -1013,5 +1018,28 @@ class KitPlugin extends \Codeception\Module
 	public function truncateDbTable($table)
 	{
 		$this->getModule(\lucatume\WPBrowser\Module\WPDb::class)->_getDbh()->query('TRUNCATE TABLE ' . $table);
+	}
+
+	/**
+	 * Helper method to assert that the given column exists in the given table.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   string $table Table name.
+	 * @param   string $column Column name.
+	 */
+	public function seeColumnInDatabase(string $table, string $column): void
+	{
+		$wpDb = $this->getModule(\lucatume\WPBrowser\Module\WPDb::class);
+		$dbh  = $wpDb->_getDbh();
+
+		$stmt = $dbh->prepare("SHOW COLUMNS FROM {$table} LIKE ?");
+		$stmt->execute([ $column ]);
+		$result = $stmt->fetch();
+
+		$this->assertNotEmpty(
+			$result,
+			"Failed asserting that column '{$column}' exists in table '{$table}'."
+		);
 	}
 }

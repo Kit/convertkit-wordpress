@@ -24,6 +24,47 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block's conditional fields work.
+	 *
+	 * @since   3.0.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockConditionalFields(EndToEndTester $I)
+	{
+		// Setup Plugin and enable debug log.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Conditional Fields'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Confirm conditional fields are not displayed.
+		$I->dontSeeElementInDOM('#convertkit_form_builder_text_if_subscribed');
+
+		// Disable 'Display form' and confirm the conditional field displays.
+		$I->click("//label[normalize-space(text())='Display form']/preceding-sibling::span/input");
+		$I->waitForElementVisible('#convertkit_form_builder_text_if_subscribed');
+
+		// Enable 'Display form' to confirm the conditional field is hidden.
+		$I->click("//label[normalize-space(text())='Display form']/preceding-sibling::span/input");
+		$I->waitForElementNotVisible('#convertkit_form_builder_text_if_subscribed');
+
+		// Publish Page, so no browser warnings are displayed about unsaved changes.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
 	 * Test the Form Builder block works when added with no changes to its configuration.
 	 *
 	 * @since   3.0.0
@@ -236,6 +277,113 @@ class PageBlockFormBuilderCest
 			$I,
 			emailAddress: $emailAddress,
 			firstName: 'First'
+		);
+	}
+
+	/**
+	 * Test the Form Builder block works when added and a Form is specified
+	 * to subscribe the subscriber to.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithFormEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Form Enabled'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form' => [ 'select2', 'None' ],
+			]
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			]
+		);
+
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'text',
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'email',
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'text',
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'email',
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder'
+		);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+		$I->waitForElementVisible('body.page');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('body.page');
+		$I->wait(3);
+		$subscriber = $I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+
+		// Confirm that the subscriber has the form.
+		$I->apiCheckSubscriberHasForm(
+			$I,
+			subscriberID: $subscriber['id'],
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}
 

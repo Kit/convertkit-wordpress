@@ -375,9 +375,6 @@ class ConvertKit_Output_Restrict_Content {
 		// and Page Builders.
 		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 
-		// Fetch some information about the current Page.
-		$id = get_the_ID();
-
 		/**
 		 * Allow specific Themes and Page Builders to use a different filter
 		 * for Restrict Content functionality.
@@ -1232,9 +1229,13 @@ class ConvertKit_Output_Restrict_Content {
 			return trim( ob_get_clean() );
 		}
 
+		// Get resource type and id.
+		$resource_type = $this->resource_type;
+		$resource_id   = $this->resource_id;
+
 		// This is deliberately a switch statement, because we will likely add in support
 		// for restrict by tag and form later.
-		switch ( $this->resource_type ) {
+		switch ( $resource_type ) {
 			case 'product':
 				// Get header and text from settings for Products.
 				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading' );
@@ -1243,7 +1244,7 @@ class ConvertKit_Output_Restrict_Content {
 				// Output product restricted message and email form.
 				// Get Product.
 				$products = new ConvertKit_Resource_Products( 'restrict_content' );
-				$product  = $products->get_by_id( $this->resource_id );
+				$product  = $products->get_by_id( $resource_id );
 
 				// Get commerce.js URL and enqueue.
 				$url = $products->get_commerce_js_url();
@@ -1256,7 +1257,7 @@ class ConvertKit_Output_Restrict_Content {
 				if ( ! $this->settings->scripts_disabled() ) {
 					add_action(
 						'wp_footer',
-						function () {
+						function () use ( $post_id, $resource_id, $resource_type ) {
 
 							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 
@@ -1267,7 +1268,7 @@ class ConvertKit_Output_Restrict_Content {
 				// Output.
 				ob_start();
 				$button = $products->get_html(
-					$this->resource_id,
+					$resource_id,
 					$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
 					array(
 						'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
@@ -1279,14 +1280,14 @@ class ConvertKit_Output_Restrict_Content {
 			case 'form':
 				// Display the Form.
 				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
-				$form  = $forms->get_html( $this->resource_id, $post_id );
+				$form  = $forms->get_html( $resource_id, $post_id );
 
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
 				if ( ! $this->settings->scripts_disabled() ) {
 					add_action(
 						'wp_footer',
-						function () {
+						function () use ( $post_id, $resource_id, $resource_type ) {
 
 							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 
@@ -1309,7 +1310,7 @@ class ConvertKit_Output_Restrict_Content {
 				if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
 					add_action(
 						'wp_footer',
-						function () {
+						function () use ( $post_id, $resource_id, $resource_type ) {
 
 							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
 

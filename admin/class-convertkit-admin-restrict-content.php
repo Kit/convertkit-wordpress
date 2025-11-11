@@ -64,6 +64,15 @@ class ConvertKit_Admin_Restrict_Content {
 	public $restrict_content_filter = 0;
 
 	/**
+	 * Holds the key for the restrict content enabled flag in the WordPress options table.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @var     string
+	 */
+	public $restrict_content_enabled_key = 'convertkit_restrict_content_enabled';
+
+	/**
 	 * Registers action and filter hooks.
 	 *
 	 * @since   2.1.0
@@ -80,6 +89,65 @@ class ConvertKit_Admin_Restrict_Content {
 		// Filter WP_List_Table by Restrict Content setting.
 		add_action( 'pre_get_posts', array( $this, 'filter_wp_list_table_output' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'output_wp_list_table_filters' ) );
+
+		// Update whether any Pages, Posts or CPTs are configured to use Restrict Content when a Page, Post or CPT is created, edited, trashed or deleted.
+		add_action( 'wp_insert_post', array( $this, 'update_restrict_content_enabled' ) );
+		add_action( 'trashed_post', array( $this, 'update_restrict_content_enabled' ) );
+		add_action( 'delete_post', array( $this, 'update_restrict_content_enabled' ) );
+
+	}
+
+	/**
+	 * Update whether any Pages, Posts or CPTs are configured to use Restrict Content when a
+	 * Page, Post or CPT is created, edited or deleted.
+	 *
+	 * @since   3.0.4
+	 */
+	public function update_restrict_content_enabled() {
+
+		global $wpdb;
+
+		// We don't use WP_Query, as it's expensive on sites with many Pages/Posts/CPTs.
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT ' . $wpdb->posts . '.ID
+				FROM ' . $wpdb->postmeta . '
+				LEFT JOIN ' . $wpdb->posts . ' ON ' . $wpdb->postmeta . '.post_id = ' . $wpdb->posts . ".ID
+				WHERE ( 
+				(meta_key = '_wp_convertkit_post_meta' AND meta_value LIKE %s) 
+				AND 
+				(meta_key = '_wp_convertkit_post_meta' AND meta_value NOT LIKE %s)
+				AND
+				(meta_key = '_wp_convertkit_post_meta' AND meta_value NOT LIKE %s)
+				)
+				AND
+				" . $wpdb->posts . ".post_status = 'publish'
+				AND
+				" . $wpdb->posts . ".post_type IN ('" . implode( "', '", convertkit_get_supported_post_types() ) . "') LIMIT 1;", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration
+				'%' . $wpdb->esc_like( '"restrict_content";' ) . '%',
+				'%' . $wpdb->esc_like( '"restrict_content";s:0:' ) . '%',
+				'%' . $wpdb->esc_like( '"restrict_content";s:1:"0"' ) . '%'
+			)
+		);
+
+		// If results are not empty, a Page, Post or CPT is configured to use Restrict Content.
+		$restrict_content_enabled = ! empty( $results );
+
+		// Update option.
+		update_option( $this->restrict_content_enabled_key, $restrict_content_enabled );
+
+	}
+
+	/**
+	 * Returns whether any Pages, Posts or CPTs are configured to use Restrict Content.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @return  bool
+	 */
+	public function restrict_content_enabled() {
+
+		return (bool) get_option( $this->restrict_content_enabled_key, false );
 
 	}
 

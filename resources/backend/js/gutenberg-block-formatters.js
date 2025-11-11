@@ -13,7 +13,7 @@
 // Register Gutenberg Block Toolbar formatters if the Gutenberg Editor is loaded on screen.
 // This prevents JS errors if this script is accidentally enqueued on a non-
 // Gutenberg editor screen, or the Classic Editor Plugin is active.
-if (typeof wp !== 'undefined' && typeof wp.blockEditor !== 'undefined') {
+if (convertKitGutenbergEnabled()) {
 	// Register each ConvertKit formatter in Gutenberg.
 	for (const formatter in convertkit_block_formatters) {
 		convertKitGutenbergRegisterBlockFormatter(

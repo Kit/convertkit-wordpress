@@ -622,7 +622,7 @@ class KitRestrictContent extends \Codeception\Module
 	public function testRestrictContentByProductHidesContentWithCTA($I, $options = false)
 	{
 		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+		$options = $this->getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -671,7 +671,7 @@ class KitRestrictContent extends \Codeception\Module
 	public function testRestrictContentByTagHidesContentWithCTA($I, $options = false, $testRecaptcha = false)
 	{
 		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+		$options = $this->getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -710,7 +710,7 @@ class KitRestrictContent extends \Codeception\Module
 	public function testRestrictContentByFormHidesContentWithCTA($I, $formID, $options = false)
 	{
 		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+		$options = $this->getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -754,7 +754,7 @@ class KitRestrictContent extends \Codeception\Module
 	public function testRestrictContentDisplaysContent($I, $options = false)
 	{
 		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+		$options = $this->getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -789,7 +789,7 @@ class KitRestrictContent extends \Codeception\Module
 	public function setupRestrictContentTest($I, $options, $urlOrPageID)
 	{
 		// Merge options with defaults.
-		$options = $this->_getRestrictedContentOptionsWithDefaultsMerged($options);
+		$options = $this->getRestrictedContentOptionsWithDefaultsMerged($options);
 
 		// Clear any existing cookie from a previous test and reload.
 		$I->clearRestrictContentCookie($I);
@@ -952,7 +952,7 @@ class KitRestrictContent extends \Codeception\Module
 	 *     @type array  $settings                 Restrict content settings. If not defined, uses expected defaults.
 	 * }
 	 */
-	private function _getRestrictedContentOptionsWithDefaultsMerged($options = false)
+	public function getRestrictedContentOptionsWithDefaultsMerged($options = false)
 	{
 		// Define default options for Restrict Content tests.
 		$defaults = [

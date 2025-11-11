@@ -212,8 +212,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// Set a cookie if any scripts with data-kit-limit-per-session attribute exist.
 	if (
-		document.querySelectorAll('script[data-kit-limit-per-session]').length >
-		0
+		document.querySelectorAll('script[data-kit-limit-per-session="1"]')
+			.length > 0
 	) {
 		document.cookie = 'ck_non_inline_form_displayed=1; path=/';
 		if (convertkit.debug) {
