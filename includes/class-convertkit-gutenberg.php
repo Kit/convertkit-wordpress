@@ -198,6 +198,7 @@ class ConvertKit_Gutenberg {
 			'convertkit-gutenberg',
 			'convertkit_gutenberg',
 			array(
+				'ajaxurl' => rest_url( 'kit/v1/blocks' ),
 				'get_blocks_nonce' => wp_create_nonce( 'wp_rest' ),
 			)
 		);

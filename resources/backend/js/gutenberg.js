@@ -752,7 +752,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			}
 
 			// Send AJAX request.
-			fetch('/wp-json/kit/v1/blocks', {
+			fetch(convertkit_gutenberg.ajaxurl, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
