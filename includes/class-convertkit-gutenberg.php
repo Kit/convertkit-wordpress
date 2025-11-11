@@ -32,6 +32,47 @@ class ConvertKit_Gutenberg {
 		// Register Gutenberg Blocks.
 		add_action( 'init', array( $this, 'add_blocks' ) );
 
+		// Register REST API routes.
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.0
+	 */
+	public function register_routes() {
+
+		// Register route to return all blocks registered by the Plugin.
+		register_rest_route(
+			'kit/v1',
+			'/blocks',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+
+				// Refresh resources and return blocks.
+				'callback'            => function () {
+					// Refresh resources from the API, to reflect any changes.
+					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
+					$forms->refresh();
+
+					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
+					$posts->refresh();
+
+					$products = new ConvertKit_Resource_Products( 'block_edit' );
+					$products->refresh();
+
+					// Return blocks.
+					return rest_ensure_response( convertkit_get_blocks() );
+				},
+
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
+
 	}
 
 	/**
@@ -157,7 +198,7 @@ class ConvertKit_Gutenberg {
 			'convertkit-gutenberg',
 			'convertkit_gutenberg',
 			array(
-				'get_blocks_nonce' => wp_create_nonce( 'convertkit_get_blocks' ),
+				'get_blocks_nonce' => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 
