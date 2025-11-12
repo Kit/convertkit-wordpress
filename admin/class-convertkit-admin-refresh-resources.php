@@ -22,8 +22,30 @@ class ConvertKit_Admin_Refresh_Resources {
 	 */
 	public function __construct() {
 
-		add_action( 'wp_ajax_convertkit_admin_refresh_resources', array( $this, 'refresh_resources' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.0
+	 */
+	public function register_routes() {
+
+		// Register route to return all blocks registered by the Plugin.
+		register_rest_route(
+			'kit/v1',
+			'/resources/refresh/(?P<resource>[a-zA-Z0-9-_]+)',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'refresh_resources' ),
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
 
 	}
 
@@ -31,14 +53,14 @@ class ConvertKit_Admin_Refresh_Resources {
 	 * Refreshes resources (forms, landing pages or tags) from the API, returning them as a JSON string.
 	 *
 	 * @since   1.9.8.0
+	 *
+	 * @param   WP_REST_Request $request    Request object.
+	 * @return  WP_REST_Response|WP_Error               Response object.
 	 */
-	public function refresh_resources() {
-
-		// Check nonce.
-		check_ajax_referer( 'convertkit_admin_refresh_resources', 'nonce' );
+	public function refresh_resources( $request ) {
 
 		// Get resource type.
-		$resource = ( isset( $_REQUEST['resource'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['resource'] ) ) : '' );
+		$resource = $request->get_param( 'resource' );
 
 		// Fetch resources.
 		switch ( $resource ) {
@@ -74,7 +96,7 @@ class ConvertKit_Admin_Refresh_Resources {
 
 				// Bail if an error occured.
 				if ( is_wp_error( $results_tags ) ) {
-					wp_send_json_error( $results_tags->get_error_message() );
+					return rest_ensure_response( $results_tags );
 				}
 
 				// Fetch Products.
@@ -83,17 +105,16 @@ class ConvertKit_Admin_Refresh_Resources {
 
 				// Bail if an error occured.
 				if ( is_wp_error( $results_products ) ) {
-					wp_send_json_error( $results_products->get_error_message() );
+					return rest_ensure_response( $results_products );
 				}
 
 				// Return resources.
-				wp_send_json_success(
+				return rest_ensure_response(
 					array(
 						'tags'     => array_values( $results_tags ),
 						'products' => array_values( $results_products ),
 					)
 				);
-				// no break as wp_send_json_success terminates.
 
 			default:
 				$results = new WP_Error(
@@ -108,11 +129,11 @@ class ConvertKit_Admin_Refresh_Resources {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $results ) ) {
-			wp_send_json_error( $results->get_error_message() );
+			return rest_ensure_response( $results );
 		}
 
 		// Return resources as a zero based sequential array, so that JS retains the order of resources.
-		wp_send_json_success( array_values( $results ) );
+		return rest_ensure_response( array_values( $results ) );
 
 	}
 
@@ -144,10 +165,9 @@ class ConvertKit_Admin_Refresh_Resources {
 			'convertkit-admin-refresh-resources',
 			'convertkit_admin_refresh_resources',
 			array(
-				'action'  => 'convertkit_admin_refresh_resources',
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'ajaxurl' => rest_url( 'kit/v1/resources/refresh/' ),
 				'debug'   => $settings->debug_enabled(),
-				'nonce'   => wp_create_nonce( 'convertkit_admin_refresh_resources' ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 
