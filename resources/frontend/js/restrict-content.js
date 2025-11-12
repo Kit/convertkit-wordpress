@@ -77,7 +77,7 @@ function convertKitRestrictContentFormSubmit(e) {
 	if (isCodeSubmission) {
 		// Code submission.
 		convertKitRestrictContentSubscriberVerification(
-			e.target.querySelector('input[name="_wpnonce"]').value,
+			convertkit_restrict_content.nonce,
 			e.target.querySelector('input[name="subscriber_code"]').value,
 			e.target.querySelector('input[name="token"]').value,
 			e.target.querySelector('input[name="convertkit_post_id"]').value
@@ -88,7 +88,7 @@ function convertKitRestrictContentFormSubmit(e) {
 
 	// Email submission.
 	convertKitRestrictContentSubscriberAuthenticationSendCode(
-		e.target.querySelector('input[name="_wpnonce"]').value,
+		convertkit_restrict_content.nonce,
 		e.target.querySelector('input[name="convertkit_email"]').value,
 		e.target.querySelector('input[name="convertkit_resource_type"]').value,
 		e.target.querySelector('input[name="convertkit_resource_id"]').value,
@@ -151,9 +151,9 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			'X-WP-Nonce': nonce,
 		},
 		body: new URLSearchParams({
-			_wpnonce: nonce,
 			convertkit_email: email,
 			convertkit_resource_type: resource_type,
 			convertkit_resource_id: resource_id,
@@ -172,10 +172,17 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 				console.log(result);
 			}
 
-			// Output response, which will be a form with/without an error message.
-			document.querySelector(
-				'#convertkit-restrict-content-modal-content'
-			).innerHTML = result;
+			// Output error message if the response contains a code.
+			if (typeof result.code !== 'undefined') {
+				document.querySelector(
+					'#convertkit-restrict-content-modal-content'
+				).innerHTML = result.message;
+			} else {
+				// Output response, which will be a form with/without an error message.
+				document.querySelector(
+					'#convertkit-restrict-content-modal-content'
+				).innerHTML = result.data;
+			}
 
 			// Hide loading overlay.
 			document.querySelector(
@@ -215,9 +222,9 @@ function convertKitRestrictContentSubscriberVerification(
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			'X-WP-Nonce': nonce,
 		},
 		body: new URLSearchParams({
-			_wpnonce: nonce,
 			subscriber_code,
 			token,
 			convertkit_post_id: post_id,
@@ -239,7 +246,7 @@ function convertKitRestrictContentSubscriberVerification(
 			if (!result.success) {
 				document.querySelector(
 					'#convertkit-restrict-content-modal-content'
-				).innerHTML = result;
+				).innerHTML = result.data;
 
 				// Hide loading overlay.
 				document.querySelector(
@@ -252,7 +259,7 @@ function convertKitRestrictContentSubscriberVerification(
 			}
 
 			// Code entered is valid; load the URL in the response data.
-			window.location = result;
+			window.location = result.url;
 		})
 		.catch(function (error) {
 			if (convertkit_restrict_content.debug) {

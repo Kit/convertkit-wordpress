@@ -110,14 +110,16 @@ class ConvertKit_Output_Restrict_Content {
 		$this->settings                  = new ConvertKit_Settings();
 		$this->restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
 
-		// Don't register any hooks if this is an AJAX request, otherwise
+		// Register REST API routes.
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+		// Don't register any hooks if this is a WP REST API request, otherwise
 		// maybe_run_subscriber_authentication() and maybe_run_subscriber_verification() will run
-		// twice in an AJAX request (once here, and once when called by the ConvertKit_AJAX class).
-		if ( wp_doing_ajax() ) {
+		// twice in a WP REST API request (once here, and once when called by WP REST API).
+		if ( $this->is_rest_request() || array_key_exists( 'HTTP_X_WP_NONCE', $_SERVER ) ) {
 			return;
 		}
 
-		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
@@ -141,7 +143,7 @@ class ConvertKit_Output_Restrict_Content {
 			'/restrict-content/subscriber-authentication',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => function() {
+				'callback'            => function () {
 					// Load Restrict Content class.
 					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
 
@@ -158,14 +160,24 @@ class ConvertKit_Output_Restrict_Content {
 						ob_start();
 						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-email.php';
 						$output = trim( ob_get_clean() );
-						return rest_ensure_response( $output );
+						return rest_ensure_response(
+							array(
+								'success' => false,
+								'data'    => $output,
+							)
+						);
 					}
 
 					// Build authentication code view to return for output.
 					ob_start();
 					include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
 					$output = trim( ob_get_clean() );
-					return rest_ensure_response( $output );
+					return rest_ensure_response(
+						array(
+							'success' => true,
+							'data'    => $output,
+						)
+					);
 				},
 				'permission_callback' => '__return_true',
 			)
@@ -177,7 +189,7 @@ class ConvertKit_Output_Restrict_Content {
 			'/restrict-content/subscriber-verification',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => function() {
+				'callback'            => function () {
 					// Load Restrict Content class.
 					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
 
@@ -194,12 +206,21 @@ class ConvertKit_Output_Restrict_Content {
 						ob_start();
 						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
 						$output = trim( ob_get_clean() );
-						wp_send_json_error( $output );
+						return rest_ensure_response(
+							array(
+								'success' => false,
+								'data'    => $output,
+							)
+						);
 					}
 
 					// Return success with the URL to the Post, including the `ck-cache-bust` parameter.
-					// JS will load the given URL to show the restricted content.
-					wp_send_json_success( $output_restrict_content->get_url( true ) );
+					return rest_ensure_response(
+						array(
+							'success' => true,
+							'url'     => $output_restrict_content->get_url( false ),
+						)
+					);
 				},
 				'permission_callback' => '__return_true',
 			)
@@ -217,14 +238,23 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function maybe_run_subscriber_authentication() {
 
-		// Bail if no nonce was specified.
-		if ( ! array_key_exists( '_wpnonce', $_REQUEST ) ) {
+		// Bail if no nonce was specified via form submission or the WP REST API.
+		if ( ! array_key_exists( '_wpnonce', $_REQUEST ) && ! array_key_exists( 'HTTP_X_WP_NONCE', $_SERVER ) ) {
 			return;
 		}
 
-		// Bail if the nonce failed validation.
-		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_login' ) ) {
-			return;
+		// Bail if the request is a form submission and the nonce failed validation.
+		if ( array_key_exists( '_wpnonce', $_REQUEST ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_login' ) ) {
+				return;
+			}
+		}
+
+		// Bail if the request is a WP REST API request and the nonce failed validation.
+		if ( array_key_exists( 'HTTP_X_WP_NONCE', $_SERVER ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $_SERVER['HTTP_X_WP_NONCE'] ), 'wp_rest' ) ) {
+				return;
+			}
 		}
 
 		// Bail if the expected email, resource ID or Post ID are missing.
@@ -290,7 +320,7 @@ class ConvertKit_Output_Restrict_Content {
 				// If require login is enabled, show the login screen.
 				if ( $this->restrict_content_settings->require_tag_login() ) {
 					// Tag the subscriber, unless this is an AJAX request.
-					if ( ! wp_doing_ajax() ) {
+					if ( ! $this->is_rest_request() ) {
 						$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
 						// Bail if an error occured.
@@ -356,7 +386,7 @@ class ConvertKit_Output_Restrict_Content {
 				$this->store_subscriber_id_in_cookie( $subscriber_id );
 
 				// If this isn't an AJAX request, redirect now to reload the Post.
-				if ( ! wp_doing_ajax() ) {
+				if ( ! $this->is_rest_request() ) {
 					$this->redirect();
 				}
 				break;
@@ -389,6 +419,11 @@ class ConvertKit_Output_Restrict_Content {
 		// It won't be provided if clicking the link in the magic link email.
 		if ( array_key_exists( '_wpnonce', $_REQUEST ) ) {
 			if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_subscriber_code' ) ) {
+				return;
+			}
+		}
+		if ( array_key_exists( 'HTTP_X_WP_NONCE', $_SERVER ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( $_SERVER['HTTP_X_WP_NONCE'] ), 'wp_rest' ) ) {
 				return;
 			}
 		}
@@ -436,7 +471,7 @@ class ConvertKit_Output_Restrict_Content {
 		$this->store_subscriber_id_in_cookie( $subscriber_id );
 
 		// If this isn't an AJAX request, redirect now to reload the Post.
-		if ( ! wp_doing_ajax() ) {
+		if ( ! $this->is_rest_request() ) {
 			$this->redirect();
 		}
 
@@ -1293,9 +1328,10 @@ class ConvertKit_Output_Restrict_Content {
 				'convertkit-restrict-content',
 				'convertkit_restrict_content',
 				array(
+					'nonce'                         => wp_create_nonce( 'wp_rest' ),
 					'subscriber_authentication_url' => rest_url( 'kit/v1/restrict-content/subscriber-authentication' ),
-					'subscriber_verification_url' => rest_url( 'kit/v1/restrict-content/subscriber-verification' ),
-					'debug'   => $this->settings->debug_enabled(),
+					'subscriber_verification_url'   => rest_url( 'kit/v1/restrict-content/subscriber-verification' ),
+					'debug'                         => $this->settings->debug_enabled(),
 				)
 			);
 
@@ -1411,6 +1447,19 @@ class ConvertKit_Output_Restrict_Content {
 				return '';
 
 		}
+
+	}
+
+	/**
+	 * Determines if the request is a WordPress REST API request.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  bool
+	 */
+	private function is_rest_request() {
+
+		return defined( 'REST_REQUEST' ) && REST_REQUEST;
 
 	}
 
