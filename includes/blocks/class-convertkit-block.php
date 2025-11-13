@@ -396,6 +396,32 @@ class ConvertKit_Block {
 	}
 
 	/**
+	 * Determines if the request is a WordPress REST API request.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  bool
+	 */
+	public function is_rest_request() {
+
+		return defined( 'REST_REQUEST' ) && REST_REQUEST;
+
+	}
+
+	/**
+	 * Determines if the request is for the WordPress Administration, frontend editor or REST API request.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  bool
+	 */
+	public function is_admin_frontend_editor_or_rest_request() {
+
+		return WP_ConvertKit()->is_admin_or_frontend_editor() || $this->is_rest_request();
+
+	}
+
+	/**
 	 * Determines if the request for the block is from the block editor or the frontend site.
 	 *
 	 * @since   1.9.8.5
@@ -405,10 +431,7 @@ class ConvertKit_Block {
 	public function is_block_editor_request() {
 
 		// Return false if not a WordPress REST API request, which Gutenberg uses.
-		if ( ! defined( 'REST_REQUEST' ) ) {
-			return false;
-		}
-		if ( REST_REQUEST !== true ) {
+		if ( ! $this->is_rest_request() ) {
 			return false;
 		}
 
