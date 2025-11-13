@@ -49,10 +49,9 @@ class ConvertKit_Settings {
 		add_action( 'convertkit_api_get_access_token', array( $this, 'update_credentials' ), 10, 2 );
 		add_action( 'convertkit_api_refresh_token', array( $this, 'update_credentials' ), 10, 2 );
 
-		// Delete credentials if the API class fails to refresh the token or uses a invalid access token.
+		// Delete credentials if the API class uses a invalid access token.
 		// This prevents the Plugin making repetitive API requests that will 401.
 		add_action( 'convertkit_api_access_token_invalid', array( $this, 'maybe_delete_credentials' ), 10, 2 );
-		add_action( 'convertkit_api_refresh_token_error', array( $this, 'maybe_delete_credentials' ), 10, 2 );
 
 	}
 
