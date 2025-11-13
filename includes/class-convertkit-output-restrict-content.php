@@ -512,7 +512,7 @@ class ConvertKit_Output_Restrict_Content {
 		$new_where = 'p.post_parent = ' . $post->post_parent . ' AND p.menu_order < ' . $post->menu_order;
 
 		// Replace existing where statement with new statement.
-		$where = 'WHERE ' . $new_where . ' ' . substr( $where, strpos( $where, 'AND' ) );
+		$where = 'WHERE ' . $new_where . ' ' . substr( $where, strpos( $where, 'AND p.post_type = \'' . $post->post_type . '\' ' ) );
 
 		// Return.
 		return $where;
@@ -551,7 +551,7 @@ class ConvertKit_Output_Restrict_Content {
 		$new_where = 'p.post_parent = ' . $post->post_parent . ' AND p.menu_order > ' . $post->menu_order;
 
 		// Replace existing where statement with new statement.
-		$where = 'WHERE ' . $new_where . ' ' . substr( $where, strpos( $where, 'AND' ) );
+		$where = 'WHERE ' . $new_where . ' ' . substr( $where, strpos( $where, 'AND p.post_type = \'' . $post->post_type . '\' ' ) );
 
 		// Return.
 		return $where;
