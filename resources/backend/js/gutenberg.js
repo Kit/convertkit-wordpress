@@ -746,30 +746,43 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
 		 */
 		const refreshBlocksDefinitions = function (props, setButtonDisabled) {
-			// Define data for WordPress AJAX request.
-			const data = new FormData();
-			data.append('action', 'convertkit_get_blocks');
-			data.append('nonce', convertkit_gutenberg.get_blocks_nonce);
-
 			// Disable the button.
 			if (typeof setButtonDisabled !== 'undefined') {
 				setButtonDisabled(true);
 			}
 
 			// Send AJAX request.
-			fetch(ajaxurl, {
-				method: 'POST',
-				credentials: 'same-origin',
-				body: data,
+			fetch(convertkit_gutenberg.ajaxurl, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': convertkit_gutenberg.get_blocks_nonce,
+				},
 			})
 				.then(function (response) {
 					// Convert response JSON string to object.
 					return response.json();
 				})
 				.then(function (response) {
+					// If the response includes a code, show an error notice.
+					if (typeof response.code !== 'undefined') {
+						// Show an error in the Gutenberg editor.
+						wp.data
+							.dispatch('core/notices')
+							.createErrorNotice('Kit: ' + response.message, {
+								id: 'convertkit-error',
+							});
+
+						// Enable refresh button.
+						if (typeof setButtonDisabled !== 'undefined') {
+							setButtonDisabled(false);
+						}
+						return;
+					}
+
 					// Update global ConvertKit Blocks object, so that any updated resources
 					// are reflected when adding new ConvertKit Blocks.
-					convertkit_blocks = response.data;
+					convertkit_blocks = response;
 
 					// Update this block's properties, so that has_access_token, has_resources
 					// and the resources properties are updated.
@@ -790,12 +803,14 @@ function convertKitGutenbergRegisterBlock(block) {
 					// Show an error in the Gutenberg editor.
 					wp.data
 						.dispatch('core/notices')
-						.createErrorNotice('ConvertKit: ' + error, {
+						.createErrorNotice('Kit: ' + error, {
 							id: 'convertkit-error',
 						});
 
 					// Enable refresh button.
-					setButtonDisabled(false);
+					if (typeof setButtonDisabled !== 'undefined') {
+						setButtonDisabled(false);
+					}
 				});
 		};
 

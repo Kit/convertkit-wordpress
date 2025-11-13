@@ -475,8 +475,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
+		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
+		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
 			return false;
 		}
 
@@ -568,8 +568,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	public function get_panels() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
+		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
+		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
 			return false;
 		}
 
