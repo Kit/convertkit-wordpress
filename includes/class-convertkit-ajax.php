@@ -20,9 +20,6 @@ class ConvertKit_AJAX {
 	 */
 	public function __construct() {
 
-		add_action( 'wp_ajax_nopriv_convertkit_store_subscriber_id_in_cookie', array( $this, 'store_subscriber_id_in_cookie' ) );
-		add_action( 'wp_ajax_convertkit_store_subscriber_id_in_cookie', array( $this, 'store_subscriber_id_in_cookie' ) );
-
 		add_action( 'wp_ajax_nopriv_convertkit_store_subscriber_email_as_id_in_cookie', array( $this, 'store_subscriber_email_as_id_in_cookie' ) );
 		add_action( 'wp_ajax_convertkit_store_subscriber_email_as_id_in_cookie', array( $this, 'store_subscriber_email_as_id_in_cookie' ) );
 
@@ -31,49 +28,6 @@ class ConvertKit_AJAX {
 
 		add_action( 'wp_ajax_nopriv_convertkit_subscriber_verification', array( $this, 'subscriber_verification' ) );
 		add_action( 'wp_ajax_convertkit_subscriber_verification', array( $this, 'subscriber_verification' ) );
-
-	}
-
-	/**
-	 * Stores the ConvertKit Subscriber's ID in a cookie.
-	 *
-	 * Typically performed when the user subscribes via a ConvertKit Form on the web site
-	 * that is set to "Send subscriber to thank you page", and the Plugin's JavaScript is not
-	 * disabled, permitting convertkit.js to run.
-	 *
-	 * @since   1.9.6
-	 */
-	public function store_subscriber_id_in_cookie() {
-
-		// Check nonce.
-		check_ajax_referer( 'convertkit', 'convertkit_nonce' );
-
-		// Bail if required request parameters not submitted.
-		if ( ! isset( $_REQUEST['subscriber_id'] ) ) {
-			wp_send_json_error( __( 'Kit: Required parameter `subscriber_id` not included in AJAX request.', 'convertkit' ) );
-		}
-
-		// Bail if no subscriber ID provided.
-		$id = absint( sanitize_text_field( wp_unslash( $_REQUEST['subscriber_id'] ) ) );
-		if ( empty( $id ) ) {
-			wp_send_json_error( __( 'Kit: Required parameter `subscriber_id` empty in AJAX request.', 'convertkit' ) );
-		}
-
-		// Get subscriber ID.
-		$subscriber    = new ConvertKit_Subscriber();
-		$subscriber_id = $subscriber->validate_and_store_subscriber_id( $id );
-
-		// Bail if an error occured i.e. API hasn't been configured, subscriber ID does not exist in ConvertKit etc.
-		if ( is_wp_error( $subscriber_id ) ) {
-			wp_send_json_error( $subscriber_id->get_error_message() );
-		}
-
-		// Return the subscriber ID.
-		wp_send_json_success(
-			array(
-				'id' => $subscriber_id,
-			)
-		);
 
 	}
 
