@@ -22,6 +22,6 @@ class Email extends \Codeception\Module
 	 */
 	public function generateEmailAddress($domain = 'kit.com')
 	{
-		return 'wordpress-' . date( 'Y-m-d-H-i-s' ) . '-php-' . PHP_VERSION_ID . '@' . $domain;
+		return 'wordpress-' . microtime() . '-php-' . PHP_VERSION_ID . '@' . $domain;
 	}
 }
