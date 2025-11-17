@@ -68,7 +68,10 @@ class ThirdPartyPlugin extends \Codeception\Module
 				break;
 		}
 
-		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
+		// Confirm the Plugin is activated.
 		$I->waitForElementVisible('table.plugins tr[data-slug=' . $name . '].active');
 
 		// Some Plugins throw warnings / errors on activation, so we can't reliably check for errors.
