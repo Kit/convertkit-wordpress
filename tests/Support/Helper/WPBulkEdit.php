@@ -43,12 +43,15 @@ class WPBulkEdit extends \Codeception\Module
 			}
 		}
 
-		// Wait, because WooCommerce will scroll back to the top of the page.
+		// Wait, because some bulk edit screens (WooCommerce) hijack the UI and scroll back to the top of the page.
 		$I->wait(2);
 
 		// Scroll so that the Update button is in the viewport.
-		$I->scrollTo('#woocommerce-fields-bulk');
-		
+		$I->scrollTo('#bulk-edit .inline-edit-wrapper:last-child');
+
+		// Scroll so that the Update button is in the viewport.
+		// $I->scrollTo('#woocommerce-fields-bulk');
+
 		// Click Update.
 		$I->click('#bulk_edit');
 
