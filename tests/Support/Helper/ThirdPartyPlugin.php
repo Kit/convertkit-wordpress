@@ -154,12 +154,15 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->waitForElementVisible('#user_login');
 		$I->waitForElementVisible('#user_pass');
 		$I->waitForElementVisible('#wp-submit');
+		$I->waitForElementVisible('#backtoblog');
 
 		// Fill in the login form.
 		$I->click('#user_login');
 		$I->fillField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
+		$I->seeInField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
 		$I->click('#user_pass');
 		$I->fillField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
+		$I->seeInField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
 
 		// Submit.
 		$I->click('#wp-submit');
