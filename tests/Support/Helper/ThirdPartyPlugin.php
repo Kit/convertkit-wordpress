@@ -56,20 +56,15 @@ class ThirdPartyPlugin extends \Codeception\Module
 				if ( $wizardExpectsToDisplay ) {
 					$I->waitForElementVisible('body.convertkit');
 				}
-
-				// Go to the Plugins screen again.
-				$I->amOnPluginsPage();
 				break;
 
 			case 'uncode-wpbakery-page-builder':
-				// Go to the Plugins screen again.
 				$I->waitForElementVisible('body.toplevel_page_vc-general');
-				$I->amOnPluginsPage();
 				break;
 		}
 
-		// Wait for the Plugins page to load.
-		$I->waitForElementVisible('body.plugins-php');
+		// Go to the Plugins screen again.
+		$I->amOnPluginsPage();
 
 		// Confirm the Plugin is activated.
 		$I->waitForElementVisible('table.plugins tr[data-slug=' . $name . '].active');
