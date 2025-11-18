@@ -82,10 +82,58 @@ class APITest extends WPTestCase
 		// Run request, which will trigger the above filters as if the token expired and refreshes automatically.
 		$result = $this->api->get_account();
 
+		// Confirm no WP_Error is returned.
+		$this->assertNotInstanceOf( 'WP_Error', $result );
+		$this->assertIsArray( $result );
+
 		// Confirm "new" tokens now exist in the Plugin's settings, which confirms the `convertkit_api_refresh_token` hook was called when
 		// the tokens were refreshed.
 		$this->assertEquals( $settings->get_access_token(), $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'] );
 		$this->assertEquals( $settings->get_refresh_token(), $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'] );
+	}
+
+	/**
+	 * Test that the Access Token, Refresh Token and Token Expiry are deleted from the Plugin's settings
+	 * when the Access Token used is invalid.
+	 *
+	 * @since   3.1.0
+	 */
+	public function testAccessTokenDeletedWhenInvalid()
+	{
+		// Save an invalid access token and refresh token in the Plugin's settings.
+		$settings = new \ConvertKit_Settings();
+		$settings->save(
+			array(
+				'access_token'  => 'invalidAccessToken',
+				'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
+				'token_expires' => time() + 10000,
+			)
+		);
+
+		// Confirm the tokens saved.
+		$this->assertEquals( $settings->get_access_token(), 'invalidAccessToken' );
+		$this->assertEquals( $settings->get_refresh_token(), $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'] );
+
+		// Initialize the API using the invalid refresh token.
+		$api = new \ConvertKit_API_V4(
+			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+			$_ENV['KIT_OAUTH_REDIRECT_URI'],
+			$settings->get_access_token(),
+			$settings->get_refresh_token()
+		);
+
+		// Run request.
+		$result = $api->get_account();
+
+		// Confirm a WP_Error is returned.
+		$this->assertInstanceOf( 'WP_Error', $result );
+		$this->assertEquals( $result->get_error_code(), 'convertkit_api_error' );
+		$this->assertEquals( $result->get_error_message(), 'The access token is invalid' );
+
+		// Confirm tokens removed from the Plugin's settings, which confirms the `convertkit_api_access_token_invalid` hook was called when the tokens were deleted.
+		$this->assertEmpty( $settings->get_access_token() );
+		$this->assertEmpty( $settings->get_refresh_token() );
+		$this->assertEmpty( $settings->get_token_expiry() );
 	}
 
 	/**
