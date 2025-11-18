@@ -301,6 +301,112 @@ class RESTAPITest extends WPRestApiTestCase
 		$this->assertArrayHasKeys( $data['products'][0], [ 'id', 'name', 'url', 'published' ] );
 	}
 
+	public function testRestrictContentSubscriberAuthenticationForm()
+	{
+		// Build request.
+		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
+		$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
+		$request->set_body_params([
+			'convertkit_email'          => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+			'convertkit_resource_type'  => 'form',
+			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'convertkit_post_id'        => 1,
+		]);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertTrue( $data['success'] );
+		$this->assertArrayHasKey( 'data', $data );
+	}
+
+	public function testRestrictContentSubscriberAuthenticationFormInvalidEmail()
+	{
+		// Build request.
+		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
+		//$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
+		$request->set_body_params([
+			'convertkit_email'          => 'fail@kit.com',
+			'convertkit_resource_type'  => 'form',
+			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'convertkit_post_id'        => 1,
+		]);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		//$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		var_dump( $data );
+		die();
+		$this->assertIsArray( $data );
+		$this->assertTrue( $data['success'] );
+		$this->assertArrayHasKey( 'data', $data );
+	}
+
+	public function testRestrictContentSubscriberAuthenticationTag()
+	{
+		// Build request.
+		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
+		$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
+		$request->set_body_params([
+			'convertkit_email'          => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+			'convertkit_resource_type'  => 'tag',
+			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_TAG_ID'],
+			'convertkit_post_id'        => 1,
+		]);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertTrue( $data['success'] );
+		$this->assertArrayHasKey( 'data', $data );
+	}
+
+	public function testRestrictContentSubscriberAuthenticationProduct()
+	{
+		// Build request.
+		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
+		$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
+		$request->set_body_params([
+			'convertkit_email'          => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+			'convertkit_resource_type'  => 'product',
+			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			'convertkit_post_id'        => 1,
+		]);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertTrue( $data['success'] );
+		$this->assertArrayHasKey( 'data', $data );
+	}
+
 	/**
 	 * Act as an editor user.
 	 *
