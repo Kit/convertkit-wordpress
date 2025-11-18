@@ -49,6 +49,10 @@ class ConvertKit_Settings {
 		add_action( 'convertkit_api_get_access_token', array( $this, 'update_credentials' ), 10, 2 );
 		add_action( 'convertkit_api_refresh_token', array( $this, 'update_credentials' ), 10, 2 );
 
+		// Delete credentials if the API class uses a invalid access token.
+		// This prevents the Plugin making repetitive API requests that will 401.
+		add_action( 'convertkit_api_access_token_invalid', array( $this, 'maybe_delete_credentials' ), 10, 2 );
+
 	}
 
 	/**
@@ -629,6 +633,9 @@ class ConvertKit_Settings {
 			return;
 		}
 
+		// Remove any existing persistent notice.
+		WP_ConvertKit()->get_class( 'admin_notices' )->delete( 'authorization_failed' );
+
 		$this->save(
 			array(
 				'access_token'  => $result['access_token'],
@@ -646,7 +653,36 @@ class ConvertKit_Settings {
 	}
 
 	/**
-	 * Deletes any existing access token, refresh token and its expiry from the Plugin settings.
+	 * Deletes the stored access token, refresh token and its expiry from the Plugin settings,
+	 * and clears any existing scheduled WordPress Cron event to refresh the token on expiry,
+	 * when either:
+	 * - The access token is invalid
+	 * - The access token expired, and refreshing failed
+	 *
+	 * @since   3.1.0
+	 *
+	 * @param   WP_Error $result      Error result.
+	 * @param   string   $client_id   OAuth Client ID used for the Access and Refresh Tokens.
+	 */
+	public function maybe_delete_credentials( $result, $client_id ) {
+
+		// Don't delete these credentials if they're not for this Client ID.
+		// They're for another Kit Plugin that uses OAuth.
+		if ( $client_id !== CONVERTKIT_OAUTH_CLIENT_ID ) {
+			return;
+		}
+
+		// Persist an error notice in the WordPress Administration until the user fixes the problem.
+		WP_ConvertKit()->get_class( 'admin_notices' )->add( 'authorization_failed' );
+
+		// Delete the credentials from the Plugin settings.
+		$this->delete_credentials();
+
+	}
+
+	/**
+	 * Deletes any existing access token, refresh token and its expiry from the Plugin settings,
+	 * and clears any existing scheduled WordPress Cron event to refresh the token on expiry.
 	 *
 	 * @since   2.5.0
 	 */
@@ -659,6 +695,9 @@ class ConvertKit_Settings {
 				'token_expires' => '',
 			)
 		);
+
+		// Clear any existing scheduled WordPress Cron event.
+		wp_clear_scheduled_hook( 'convertkit_refresh_token' );
 
 	}
 
