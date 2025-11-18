@@ -106,11 +106,8 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function __construct() {
 
-		// Initialize classes that will be used.
-		$this->settings                  = new ConvertKit_Settings();
-		$this->restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
-
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		add_action( 'init', array( $this, 'initialize_classes' ) );
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
@@ -127,6 +124,9 @@ class ConvertKit_Output_Restrict_Content {
 	 * @since   3.1.0
 	 */
 	public function register_routes() {
+
+		// Initialize classes that will be used.
+		$this->initialize_classes();
 
 		// Register route to run subscriber authentication.
 		register_rest_route(
@@ -145,9 +145,7 @@ class ConvertKit_Output_Restrict_Content {
 					// Run subscriber authentication.
 					$result = $this->run_subscriber_authentication(
 						$email,
-						$post_id,
-						$resource_type,
-						$resource_id
+						$post_id
 					);
 
 					// If an error occured, build the email form view with the error message.
@@ -237,6 +235,26 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
+	 * Initialize classes that will be used.
+	 *
+	 * @since   3.1.0
+	 */
+	public function initialize_classes() {
+
+		$this->settings                  = new ConvertKit_Settings();
+		$this->restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
+		$this->api                       = new ConvertKit_API_V4(
+			CONVERTKIT_OAUTH_CLIENT_ID,
+			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
+			$this->settings->get_access_token(),
+			$this->settings->get_refresh_token(),
+			$this->settings->debug_enabled(),
+			'restrict_content'
+		);
+
+	}
+
+	/**
 	 * If the user isn't using JavaScript, or the Plugin's Disable JS is enabled, checks if the request is a Restrict Content request with an email address.
 	 * Also runs if restrict content by tag and require login is disabled, as we immediately tag and redirect if this is the case.
 	 * If so, calls the API depending on the Restrict Content resource that's required:
@@ -276,16 +294,6 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! $this->settings->has_access_and_refresh_token() ) {
 			return;
 		}
-
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'restrict_content'
-		);
 
 		// Sanitize inputs.
 		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
@@ -410,16 +418,6 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function run_subscriber_authentication( $email, $post_id ) {
 
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'restrict_content'
-		);
-
 		// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 		$token = $this->api->subscriber_authentication_send_code(
 			$email,
@@ -452,16 +450,6 @@ class ConvertKit_Output_Restrict_Content {
 	 * @return WP_Error|string          Error or Signed Subscriber ID.
 	 */
 	public function run_subscriber_verification( $post_id, $token, $subscriber_code ) {
-
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'restrict_content'
-		);
 
 		// Verify the token and subscriber code.
 		$subscriber_id = $this->api->subscriber_authentication_verify( $token, $subscriber_code );
@@ -984,16 +972,6 @@ class ConvertKit_Output_Restrict_Content {
 	 * @return  bool                        Can view restricted content
 	 */
 	private function subscriber_has_access( $subscriber_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'restrict_content'
-		);
 
 		// Depending on the resource type, determine if the subscriber has access to it.
 		// This is deliberately a switch statement, because we will likely add in support
