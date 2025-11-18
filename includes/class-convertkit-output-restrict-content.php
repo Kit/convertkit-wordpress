@@ -151,11 +151,8 @@ class ConvertKit_Output_Restrict_Content {
 					$resource_type = $request->get_param('convertkit_resource_type');
 					$resource_id   = $request->get_param('convertkit_resource_id');
 
-					// Load Restrict Content class.
-					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
-
 					// Run subscriber authentication.
-					$output_restrict_content->run_subscriber_authentication(
+					$result = $this->run_subscriber_authentication(
 						$email,
 						$post_id,
 						$resource_type,
@@ -163,7 +160,11 @@ class ConvertKit_Output_Restrict_Content {
 					);
 
 					// If an error occured, build the email form view with the error message.
-					if ( is_wp_error( $output_restrict_content->error ) ) {
+					if ( is_wp_error( $result ) ) {
+						// Set error to display on screen.
+						$this->error = $result;
+
+						// Build email form view to return for output with error message.
 						ob_start();
 						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-email.php';
 						$output = trim( ob_get_clean() );
@@ -174,6 +175,10 @@ class ConvertKit_Output_Restrict_Content {
 							)
 						);
 					}
+
+					// Set token and Post ID for authentication code view.
+					$this->token = $result;
+					$this->post_id = $post_id;
 
 					// Build authentication code view to return for output.
 					ob_start();
@@ -203,14 +208,19 @@ class ConvertKit_Output_Restrict_Content {
 					$token         = $request->get_param('token');
 					$subscriber_code = $request->get_param('subscriber_code');
 
-					// Load Restrict Content class.
-					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
-
 					// Run subscriber authentication.
-					$result = $output_restrict_content->run_subscriber_verification( $post_id, $token, $subscriber_code );
+					$result = $this->run_subscriber_verification( $post_id, $token, $subscriber_code );
 
 					// If an error occured, build the code form view with the error message.
 					if ( is_wp_error( $result ) ) {
+						// Set error to display on screen.
+						$this->error = $result;
+
+						// Set token and post ID for authentication code view.
+						$this->token = $token;
+						$this->post_id = $post_id;
+
+						// Build code form view to return for output with error message.
 						ob_start();
 						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-code.php';
 						$output = trim( ob_get_clean() );
@@ -226,7 +236,7 @@ class ConvertKit_Output_Restrict_Content {
 					return rest_ensure_response(
 						array(
 							'success' => true,
-							'url'     => $output_restrict_content->get_url( $post_id, false ), /// @TODO Check you have post id.
+							'url'     => $this->get_url( $post_id, false ), // @TODO Check cache busting by enabling.
 						)
 					);
 				},
@@ -236,7 +246,7 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
-	 * Checks if the request is a Restrict Content request with an email address and the user isn't using JS.
+	 * If the user isn't using JavaScript, or the Plugin's Disable JS is enabled, checks if the request is a Restrict Content request with an email address.
 	 * If so, calls the API depending on the Restrict Content resource that's required:
 	 * - tag: subscribes the email address to the tag, storing the subscriber ID in a cookie and redirecting
 	 * - product: calls the API to send the subscriber a magic link by email containing a code. See maybe_run_subscriber_verification()
@@ -281,16 +291,6 @@ class ConvertKit_Output_Restrict_Content {
 		$this->resource_id   = absint( $_REQUEST['convertkit_resource_id'] );
 		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
 
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'restrict_content'
-		);
-
 		// Run subscriber authentication.
 		$result = $this->run_subscriber_authentication( $email, $this->post_id, $this->resource_type, $this->resource_id );
 
@@ -303,14 +303,13 @@ class ConvertKit_Output_Restrict_Content {
 		// Store the token so it's included in the subscriber code form.
 		$this->token = $result;
 
-		// Redirect now to reload the Post.
-		// $this->redirect( $post_id );
-
 	}
 
 	/**
-	 * Checks if the request contains a token and subscriber_code i.e. the subscriber clicked
-	 * the link in the email sent by the maybe_run_subscriber_authentication() function above.
+	 * If the user isn't using JavaScript, or the Plugin's Disable JS is enabled, checks if the request contains a token and subscriber_code,
+	 * which happens when the subscriber either:
+	 * - clicked the link in the email sent by run_subscriber_authentication(), or
+	 * - entered the code from the email on the screen
 	 *
 	 * This calls the API to verify the token and subscriber code, which tells us that the email
 	 * address supplied truly belongs to the user, and that we can safely trust their subscriber ID
@@ -330,7 +329,7 @@ class ConvertKit_Output_Restrict_Content {
 
 		// If a nonce was specified, validate it now.
 		// It won't be provided if clicking the link in the magic link email.
-		if ( array_key_exists( '_wpnonce', $_REQUEST ) ) {
+		if ( array_key_exists( '_wpnonce', $_REQUEST ) && ! is_null( $_REQUEST['_wpnonce'] ) ) {
 			if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_subscriber_code' ) ) {
 				return;
 			}
@@ -354,7 +353,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Run subscriber verification.
-		$subscriber_id = $this->run_subscriber_verification( $this->post_id, $this->token, $this->subscriber_code );
+		$subscriber_id = $this->run_subscriber_verification( $this->post_id, sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ), sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) ) );
 
 		// Bail if an error occured.
 		if ( is_wp_error( $subscriber_id ) ) {
@@ -363,7 +362,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Redirect now to reload the Post.
-		$this->redirect();
+		$this->redirect( $this->post_id );
 
 	}
 
@@ -380,6 +379,23 @@ class ConvertKit_Output_Restrict_Content {
 	 * @return WP_Error|string 	Error or Token.
 	 */
 	public function run_subscriber_authentication( $email, $post_id, $resource_type, $resource_id ) {
+		
+		error_log( 'run_subscriber_authentication' );
+
+		error_log($email);
+		error_log($post_id);
+		error_log($resource_type);
+		error_log($resource_id);
+
+		// Initialize the API.
+		$this->api = new ConvertKit_API_V4(
+			CONVERTKIT_OAUTH_CLIENT_ID,
+			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
+			$this->settings->get_access_token(),
+			$this->settings->get_refresh_token(),
+			$this->settings->debug_enabled(),
+			'restrict_content'
+		);
 
 		// Run subscriber authentication / subscription depending on the resource type.
 		switch ( $resource_type ) {
