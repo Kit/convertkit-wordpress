@@ -110,16 +110,7 @@ class ConvertKit_Output_Restrict_Content {
 		$this->settings                  = new ConvertKit_Settings();
 		$this->restrict_content_settings = new ConvertKit_Settings_Restrict_Content();
 
-		// Register REST API routes.
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
-
-		// Don't register any hooks if this is a WP REST API request, otherwise
-		// maybe_run_subscriber_authentication() and maybe_run_subscriber_verification() will run
-		// twice in a WP REST API request (once here, and once when called by WP REST API).
-		if ( $this->is_rest_request() || array_key_exists( 'HTTP_X_WP_NONCE', $_SERVER ) ) {
-			return;
-		}
-
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
@@ -1461,19 +1452,6 @@ class ConvertKit_Output_Restrict_Content {
 				return '';
 
 		}
-
-	}
-
-	/**
-	 * Determines if the request is a WordPress REST API request.
-	 *
-	 * @since   3.1.0
-	 *
-	 * @return  bool
-	 */
-	private function is_rest_request() {
-
-		return defined( 'REST_REQUEST' ) && REST_REQUEST;
 
 	}
 
