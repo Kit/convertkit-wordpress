@@ -303,6 +303,19 @@ class ConvertKit_Output_Restrict_Content {
 
 		// If Restrict Content is by tag, tag the subscriber.
 		if ( $this->resource_type === 'tag' ) {
+			// Check reCAPTCHA.
+			$recaptcha          = new ConvertKit_Recaptcha();
+			$recaptcha_response = $recaptcha->verify_recaptcha(
+				( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
+				'convertkit_restrict_content_tag'
+			);
+
+			// Bail if reCAPTCHA failed.
+			if ( is_wp_error( $recaptcha_response ) ) {
+				$this->error = $recaptcha_response;
+				return;
+			}
+
 			// Tag subscriber.
 			$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
