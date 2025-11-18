@@ -146,10 +146,10 @@ class ConvertKit_Output_Restrict_Content {
 				'callback'            => function ( $request ) {
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
-					$email         = $request->get_param('convertkit_email');
-					$post_id       = $request->get_param('convertkit_post_id');
-					$resource_type = $request->get_param('convertkit_resource_type');
-					$resource_id   = $request->get_param('convertkit_resource_id');
+					$email         = $request->get_param( 'convertkit_email' );
+					$post_id       = $request->get_param( 'convertkit_post_id' );
+					$resource_type = $request->get_param( 'convertkit_resource_type' );
+					$resource_id   = $request->get_param( 'convertkit_resource_id' );
 
 					// Run subscriber authentication.
 					$result = $this->run_subscriber_authentication(
@@ -204,9 +204,9 @@ class ConvertKit_Output_Restrict_Content {
 				'callback'            => function ( $request ) {
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
-					$post_id       = $request->get_param('convertkit_post_id');
-					$token         = $request->get_param('token');
-					$subscriber_code = $request->get_param('subscriber_code');
+					$post_id       = $request->get_param( 'convertkit_post_id' );
+					$token         = $request->get_param( 'token' );
+					$subscriber_code = $request->get_param( 'subscriber_code' );
 
 					// Run subscriber authentication.
 					$result = $this->run_subscriber_verification( $post_id, $token, $subscriber_code );
@@ -236,7 +236,7 @@ class ConvertKit_Output_Restrict_Content {
 					return rest_ensure_response(
 						array(
 							'success' => true,
-							'url'     => $this->get_url( $post_id, false ), // @TODO Check cache busting by enabling.
+							'url'     => $this->get_url( $post_id, true ),
 						)
 					);
 				},
@@ -247,6 +247,7 @@ class ConvertKit_Output_Restrict_Content {
 
 	/**
 	 * If the user isn't using JavaScript, or the Plugin's Disable JS is enabled, checks if the request is a Restrict Content request with an email address.
+	 * Also runs if restrict content by tag and require login is disabled, as we immediately tag and redirect if this is the case.
 	 * If so, calls the API depending on the Restrict Content resource that's required:
 	 * - tag: subscribes the email address to the tag, storing the subscriber ID in a cookie and redirecting
 	 * - product: calls the API to send the subscriber a magic link by email containing a code. See maybe_run_subscriber_verification()
@@ -265,7 +266,7 @@ class ConvertKit_Output_Restrict_Content {
 		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_restrict_content_login' ) ) {
 			return;
 		}
-		
+
 		// Bail if the expected email, resource type, resource ID or Post ID are missing from the request.
 		if ( ! array_key_exists( 'convertkit_email', $_REQUEST ) ) {
 			return;
@@ -285,14 +286,54 @@ class ConvertKit_Output_Restrict_Content {
 			return;
 		}
 
+		// Initialize the API.
+		$this->api = new ConvertKit_API_V4(
+			CONVERTKIT_OAUTH_CLIENT_ID,
+			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
+			$this->settings->get_access_token(),
+			$this->settings->get_refresh_token(),
+			$this->settings->debug_enabled(),
+			'restrict_content'
+		);
+
 		// Sanitize inputs.
 		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
 		$this->resource_type = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) );
 		$this->resource_id   = absint( $_REQUEST['convertkit_resource_id'] );
 		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
 
+		// If Restrict Content is by tag, tag the subscriber.
+		if ( $this->resource_type === 'tag' ) {
+			// Tag subscriber.
+			$result = $this->api->tag_subscribe( $this->resource_id, $email );
+
+			// Bail if an error occured.
+			if ( is_wp_error( $result ) ) {
+				$this->error = $result;
+				return;
+			}
+
+			// If require login is disabled, return now.
+			if ( ! $this->restrict_content_settings->require_tag_login() ) {
+				// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
+				$subscriber = new ConvertKit_Subscriber();
+				$subscriber->forget();
+
+				// Fetch the subscriber ID from the result.
+				$subscriber_id = $result['subscriber']['id'];
+
+				// Store subscriber ID in cookie.
+				$this->store_subscriber_id_in_cookie( $subscriber_id );
+
+				// Redirect.
+				$this->redirect( $this->post_id );
+				return;
+			}
+		}
+
+		// If here, require login is enabled for tags or this is a product/form.
 		// Run subscriber authentication.
-		$result = $this->run_subscriber_authentication( $email, $this->post_id, $this->resource_type, $this->resource_id );
+		$result = $this->run_subscriber_authentication( $email, $this->post_id );
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
@@ -373,19 +414,10 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * @param   string $email         Email address.
 	 * @param   int    $post_id       Post ID.
-	 * @param   string $resource_type Resource type.
-	 * @param   int    $resource_id   Resource ID.
-	 * 
-	 * @return WP_Error|string 	Error or Token.
+	 *
+	 * @return WP_Error|string        Error or Token.
 	 */
-	public function run_subscriber_authentication( $email, $post_id, $resource_type, $resource_id ) {
-		
-		error_log( 'run_subscriber_authentication' );
-
-		error_log($email);
-		error_log($post_id);
-		error_log($resource_type);
-		error_log($resource_id);
+	public function run_subscriber_authentication( $email, $post_id ) {
 
 		// Initialize the API.
 		$this->api = new ConvertKit_API_V4(
@@ -397,98 +429,37 @@ class ConvertKit_Output_Restrict_Content {
 			'restrict_content'
 		);
 
-		// Run subscriber authentication / subscription depending on the resource type.
-		switch ( $resource_type ) {
-			case 'product':
-			case 'form':
-				// Send email to subscriber with a link to authenticate they have access to the email address submitted.
-				$token = $this->api->subscriber_authentication_send_code(
-					$email,
-					$this->get_url( $post_id )
-				);
+		// Send email to subscriber with a link to authenticate they have access to the email address submitted.
+		$token = $this->api->subscriber_authentication_send_code(
+			$email,
+			$this->get_url( $post_id )
+		);
 
-				// Bail if an error occured.
-				if ( is_wp_error( $token ) ) {
-					return $token;
-				}
-
-				// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
-				$subscriber = new ConvertKit_Subscriber();
-				$subscriber->forget();
-
-				// Return the token.
-				return $token;
-
-			case 'tag':
-				// If require login is enabled, show the login screen.
-				if ( $this->restrict_content_settings->require_tag_login() ) {
-					// Tag the subscriber, unless this is an AJAX request.
-					// @TODO Check.
-					if ( ! $this->is_rest_request() ) {
-						$result = $this->api->tag_subscribe( $resource_id, $email );
-
-						// Bail if an error occured.
-						if ( is_wp_error( $result ) ) {
-							return $result;
-						}
-					}
-
-					// Send email to subscriber with a link to authenticate they have access to the email address submitted.
-					$token = $this->api->subscriber_authentication_send_code(
-						$email,
-						$this->get_url( $post_id )
-					);
-
-					// Bail if an error occured.
-					if ( is_wp_error( $token ) ) {
-						return $token;
-					}
-
-					// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
-					$subscriber = new ConvertKit_Subscriber();
-					$subscriber->forget();
-
-					// Return the token.
-					return $token;
-				}
-
-				// If here, require login is disabled.
-				// Check reCAPTCHA, tag subscriber and assign subscriber ID integer to cookie
-				// without email link.
-				$recaptcha          = new ConvertKit_Recaptcha();
-				$recaptcha_response = $recaptcha->verify_recaptcha(
-					( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
-					'convertkit_restrict_content_tag'
-				);
-
-				// Bail if reCAPTCHA failed.
-				if ( is_wp_error( $recaptcha_response ) ) {
-					return $recaptcha_response;
-				}
-
-				// Tag the subscriber.
-				$result = $this->api->tag_subscribe( $this->resource_id, $email );
-
-				// Bail if an error occured.
-				if ( is_wp_error( $result ) ) {
-					return $result;
-				}
-
-				// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
-				$subscriber = new ConvertKit_Subscriber();
-				$subscriber->forget();
-
-				// Fetch the subscriber ID from the result.
-				$subscriber_id = $result['subscriber']['id'];
-
-				// Store subscriber ID in cookie.
-				$this->store_subscriber_id_in_cookie( $subscriber_id );
-				break;
-
+		// Bail if an error occured.
+		if ( is_wp_error( $token ) ) {
+			return $token;
 		}
+
+		// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
+		$subscriber = new ConvertKit_Subscriber();
+		$subscriber->forget();
+
+		// Return the token.
+		return $token;
 
 	}
 
+	/**
+	 * Runs subscriber verification.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @param   int    $post_id         Post ID.
+	 * @param   string $token           Token.
+	 * @param   string $subscriber_code Subscriber code.
+	 *
+	 * @return WP_Error|string          Error or Signed Subscriber ID.
+	 */
 	public function run_subscriber_verification( $post_id, $token, $subscriber_code ) {
 
 		// Initialize the API.
@@ -502,10 +473,7 @@ class ConvertKit_Output_Restrict_Content {
 		);
 
 		// Verify the token and subscriber code.
-		$subscriber_id = $this->api->subscriber_authentication_verify(
-			sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ),
-			sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) )
-		);
+		$subscriber_id = $this->api->subscriber_authentication_verify( $token, $subscriber_code );
 
 		// Bail if an error occured.
 		if ( is_wp_error( $subscriber_id ) ) {
@@ -515,6 +483,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Store subscriber ID in cookie.
 		$this->store_subscriber_id_in_cookie( $subscriber_id );
 
+		// Return signed subscriber ID.
 		return $subscriber_id;
 
 	}
@@ -768,9 +737,9 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * @since   2.3.7
 	 *
-	 * @param   int    $post_id      Post ID.
+	 * @param   int $post_id      Post ID.
 	 */
-	private function redirect( $post_id) {
+	private function redirect( $post_id ) {
 
 		// Redirect to the Post, appending a query parameter to the URL to prevent caching plugins and
 		// aggressive cache hosting configurations from serving a cached page, which would
@@ -786,9 +755,9 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * @since   2.1.0
 	 *
-	 * @param   int    $post_id        Post ID.
-	 * @param   bool   $cache_bust     Include `ck-cache-bust` parameter in URL.
-	 * @return  string  		       URL.
+	 * @param   int  $post_id        Post ID.
+	 * @param   bool $cache_bust     Include `ck-cache-bust` parameter in URL.
+	 * @return  string                 URL.
 	 */
 	public function get_url( $post_id, $cache_bust = false ) {
 
