@@ -56,19 +56,17 @@ class ThirdPartyPlugin extends \Codeception\Module
 				if ( $wizardExpectsToDisplay ) {
 					$I->waitForElementVisible('body.convertkit');
 				}
-
-				// Go to the Plugins screen again.
-				$I->amOnPluginsPage();
 				break;
 
 			case 'uncode-wpbakery-page-builder':
-				// Go to the Plugins screen again.
 				$I->waitForElementVisible('body.toplevel_page_vc-general');
-				$I->amOnPluginsPage();
 				break;
 		}
 
-		// Wait for the Plugins page to load with the Plugin activated, to confirm it activated.
+		// Go to the Plugins screen again.
+		$I->amOnPluginsPage();
+
+		// Confirm the Plugin is activated.
 		$I->waitForElementVisible('table.plugins tr[data-slug=' . $name . '].active');
 
 		// Some Plugins throw warnings / errors on activation, so we can't reliably check for errors.
@@ -156,12 +154,15 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->waitForElementVisible('#user_login');
 		$I->waitForElementVisible('#user_pass');
 		$I->waitForElementVisible('#wp-submit');
+		$I->waitForElementVisible('#backtoblog');
 
 		// Fill in the login form.
 		$I->click('#user_login');
 		$I->fillField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
+		$I->seeInField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
 		$I->click('#user_pass');
 		$I->fillField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
+		$I->seeInField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
 
 		// Submit.
 		$I->click('#wp-submit');

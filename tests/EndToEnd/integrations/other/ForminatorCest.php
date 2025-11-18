@@ -524,6 +524,9 @@ class ForminatorCest
 		$I->waitForElementVisible('.formkit-modal');
 		$I->switchToIFrame('.formkit-modal iframe');
 		$I->waitForElementVisible('main[data-component="Page"]');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
