@@ -301,18 +301,28 @@ class RESTAPITest extends WPRestApiTestCase
 		$this->assertArrayHasKeys( $data['products'][0], [ 'id', 'name', 'url', 'published' ] );
 	}
 
+	/**
+	 * Test that the /wp-json/kit/v1/restrict-content/subscriber-authentication REST API route when
+	 * requesting the subscriber authentication email to be sent for a given Form ID and subscriber
+	 *
+	 * @since   3.1.0
+	 */
 	public function testRestrictContentSubscriberAuthenticationForm()
 	{
+		// Create a Post.
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Test Post' ] );
+
 		// Build request.
-		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
 		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
-		$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
-		$request->set_body_params([
-			'convertkit_email'          => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
-			'convertkit_resource_type'  => 'form',
-			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_FORM_ID'],
-			'convertkit_post_id'        => 1,
-		]);
+		$request->set_body_params(
+			[
+				'convertkit_email'         => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+				'convertkit_resource_type' => 'form',
+				'convertkit_resource_id'   => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'convertkit_post_id'       => $post_id,
+			]
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
@@ -327,46 +337,64 @@ class RESTAPITest extends WPRestApiTestCase
 		$this->assertArrayHasKey( 'data', $data );
 	}
 
+	/**
+	 * Test that the /wp-json/kit/v1/restrict-content/subscriber-authentication REST API route when
+	 * requesting the subscriber authentication email to be sent for a given Form ID and an invalid subscriber email is given
+	 *
+	 * @since   3.1.0
+	 */
 	public function testRestrictContentSubscriberAuthenticationFormInvalidEmail()
 	{
+		// Create a Post.
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Test Post' ] );
+
 		// Build request.
-		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
 		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
-		//$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
-		$request->set_body_params([
-			'convertkit_email'          => 'fail@kit.com',
-			'convertkit_resource_type'  => 'form',
-			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_FORM_ID'],
-			'convertkit_post_id'        => 1,
-		]);
+		$request->set_body_params(
+			[
+				'convertkit_email'         => 'fail@kit.com',
+				'convertkit_resource_type' => 'form',
+				'convertkit_resource_id'   => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'convertkit_post_id'       => $post_id,
+			]
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
 
 		// Assert response is successful.
-		//$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		// Assert response data has the expected keys and data.
 		$data = $response->get_data();
-		var_dump( $data );
-		die();
 		$this->assertIsArray( $data );
-		$this->assertTrue( $data['success'] );
+		$this->assertFalse( $data['success'] );
 		$this->assertArrayHasKey( 'data', $data );
 	}
 
+	/**
+	 * Test that the /wp-json/kit/v1/restrict-content/subscriber-authentication REST API route when
+	 * requesting the subscriber authentication email to be sent for a given Tag ID and subscriber
+	 *
+	 * @since   3.1.0
+	 */
 	public function testRestrictContentSubscriberAuthenticationTag()
 	{
+		// Create a Post.
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Test Post' ] );
+
 		// Build request.
-		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
 		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
-		$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
-		$request->set_body_params([
-			'convertkit_email'          => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
-			'convertkit_resource_type'  => 'tag',
-			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_TAG_ID'],
-			'convertkit_post_id'        => 1,
-		]);
+		$request->set_body_params(
+			[
+				'convertkit_email'         => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+				'convertkit_resource_type' => 'tag',
+				'convertkit_resource_id'   => $_ENV['CONVERTKIT_API_TAG_ID'],
+				'convertkit_post_id'       => $post_id,
+			]
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
@@ -381,18 +409,64 @@ class RESTAPITest extends WPRestApiTestCase
 		$this->assertArrayHasKey( 'data', $data );
 	}
 
+	/**
+	 * Test that the /wp-json/kit/v1/restrict-content/subscriber-authentication REST API route when
+	 * requesting the subscriber authentication email to be sent for a given Tag ID and an invalid subscriber email is given
+	 *
+	 * @since   3.1.0
+	 */
+	public function testRestrictContentSubscriberAuthenticationTagInvalidEmail()
+	{
+		// Create a Post.
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Test Post' ] );
+
+		// Build request.
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
+		$request->set_body_params(
+			[
+				'convertkit_email'         => 'fail@kit.com',
+				'convertkit_resource_type' => 'tag',
+				'convertkit_resource_id'   => $_ENV['CONVERTKIT_API_TAG_ID'],
+				'convertkit_post_id'       => $post_id,
+			]
+		);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertFalse( $data['success'] );
+		$this->assertArrayHasKey( 'data', $data );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/restrict-content/subscriber-authentication REST API route when
+	 * requesting the subscriber authentication email to be sent for a given Product ID and subscriber
+	 *
+	 * @since   3.1.0
+	 */
 	public function testRestrictContentSubscriberAuthenticationProduct()
 	{
+		// Create a Post.
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Test Post' ] );
+
 		// Build request.
-		$request  = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
 		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
-		$request->set_header( 'X-WP-Nonce', \wp_create_nonce( 'wp_rest' ) );
-		$request->set_body_params([
-			'convertkit_email'          => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
-			'convertkit_resource_type'  => 'product',
-			'convertkit_resource_id'    => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
-			'convertkit_post_id'        => 1,
-		]);
+		$request->set_body_params(
+			[
+				'convertkit_email'         => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+				'convertkit_resource_type' => 'product',
+				'convertkit_resource_id'   => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+				'convertkit_post_id'       => $post_id,
+			]
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
@@ -404,6 +478,42 @@ class RESTAPITest extends WPRestApiTestCase
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
 		$this->assertTrue( $data['success'] );
+		$this->assertArrayHasKey( 'data', $data );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/restrict-content/subscriber-authentication REST API route when
+	 * requesting the subscriber authentication email to be sent for a given Product ID and an invalid subscriber email is given
+	 *
+	 * @since   3.1.0
+	 */
+	public function testRestrictContentSubscriberAuthenticationProductInvalidEmail()
+	{
+		// Create a Post.
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Test Post' ] );
+
+		// Build request.
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/restrict-content/subscriber-authentication' );
+		$request->set_header( 'Content-Type', 'application/x-www-form-urlencoded' );
+		$request->set_body_params(
+			[
+				'convertkit_email'         => 'fail@kit.com',
+				'convertkit_resource_type' => 'product',
+				'convertkit_resource_id'   => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+				'convertkit_post_id'       => $post_id,
+			]
+		);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertFalse( $data['success'] );
 		$this->assertArrayHasKey( 'data', $data );
 	}
 
