@@ -125,9 +125,6 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function register_routes() {
 
-		// Initialize classes that will be used.
-		$this->initialize_classes();
-
 		// Register route to run subscriber authentication.
 		register_rest_route(
 			'kit/v1',
@@ -135,6 +132,9 @@ class ConvertKit_Output_Restrict_Content {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => function ( $request ) {
+
+					// Initialize classes that will be used.
+					$this->initialize_classes();
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
 					$email         = $request->get_param( 'convertkit_email' );
@@ -191,6 +191,9 @@ class ConvertKit_Output_Restrict_Content {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => function ( $request ) {
+
+					// Initialize classes that will be used.
+					$this->initialize_classes();
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
 					$post_id       = $request->get_param( 'convertkit_post_id' );
