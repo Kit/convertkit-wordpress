@@ -56,7 +56,7 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'Integration/RestAPITest:RestrictContentSubscriberAuthenticationForm'
+          'Integration'
         ]
 
     # Steps to install, configure and run tests
