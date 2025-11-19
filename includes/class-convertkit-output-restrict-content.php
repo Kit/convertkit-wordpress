@@ -134,7 +134,7 @@ class ConvertKit_Output_Restrict_Content {
 				'callback'            => function ( $request ) {
 
 					// Initialize classes that will be used.
-					$this->initialize_classes();
+					WP_ConvertKit()->get_class( 'output_restrict_content' )->initialize_classes();
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
 					$email         = $request->get_param( 'convertkit_email' );
@@ -193,7 +193,7 @@ class ConvertKit_Output_Restrict_Content {
 				'callback'            => function ( $request ) {
 
 					// Initialize classes that will be used.
-					$this->initialize_classes();
+					WP_ConvertKit()->get_class( 'output_restrict_content' )->initialize_classes();
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
 					$post_id       = $request->get_param( 'convertkit_post_id' );
