@@ -195,11 +195,17 @@ class ReviewRequestCest
 		$I->amOnAdminPage('index.php');
 
 		// Confirm the review displays.
-		$I->seeElementInDOM('div.review-convertkit');
+		$I->waitForElementVisible('div.review-convertkit');
 
 		// Confirm links are correct.
-		$I->seeInSource('<a href="https://wordpress.org/support/plugin/convertkit/reviews/?filter=5#new-post" class="button button-primary" rel="noopener" target="_blank">');
-		$I->seeInSource('<a href="https://kit.com/support" class="button" rel="noopener" target="_blank">');
+		$I->assertEquals(
+			$I->grabAttributeFrom('div.review-convertkit a.button-primary', 'href'),
+			'https://wordpress.org/support/plugin/convertkit/reviews/?filter=5#new-post'
+		);
+		$I->assertEquals(
+			$I->grabAttributeFrom('div.review-convertkit a.button:not(.button-primary)', 'href'),
+			'https://kit.com/support'
+		);
 	}
 
 	/**

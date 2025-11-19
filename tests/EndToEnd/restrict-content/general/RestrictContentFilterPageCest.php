@@ -104,11 +104,11 @@ class RestrictContentFilterPageCest
 		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_PRODUCT_NAME']);
 		$I->click('Filter');
 
-		// Wait for the WP_List_Table of Pages to load.
-		$I->waitForElementVisible('tbody#the-list');
-
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the filter dropdown is set to the selected value.
+		$I->seeOptionIsSelected('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_PRODUCT_NAME']);
 
 		// Confirm that the Page is still listed, and has the 'Kit Member Content' label.
 		$I->see('Kit: Page: Restricted Content: Product: Filter Test');
@@ -153,11 +153,11 @@ class RestrictContentFilterPageCest
 		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_TAG_NAME']);
 		$I->click('Filter');
 
-		// Wait for the WP_List_Table of Pages to load.
-		$I->waitForElementVisible('tbody#the-list');
-
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the filter dropdown is set to the selected value.
+		$I->seeOptionIsSelected('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_TAG_NAME']);
 
 		// Confirm that the Page is still listed, and has the 'Kit Member Content' label.
 		$I->see('Kit: Page: Restricted Content: Tag: Filter Test');
@@ -203,11 +203,11 @@ class RestrictContentFilterPageCest
 		$I->selectOption('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_FORM_NAME']);
 		$I->click('Filter');
 
-		// Wait for the WP_List_Table of Pages to load.
-		$I->waitForElementVisible('tbody#the-list');
-
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the filter dropdown is set to the selected value.
+		$I->seeOptionIsSelected('#wp-convertkit-restrict-content-filter', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
 		// Confirm that the Page is still listed, and has the 'Kit Member Content' label.
 		$I->see('Kit: Page: Restricted Content: Form: Filter Test');
@@ -285,11 +285,11 @@ class RestrictContentFilterPageCest
 		$I->selectOption('#wp-convertkit-restrict-content-filter', 'All member-only content');
 		$I->click('Filter');
 
-		// Wait for the WP_List_Table of Pages to load.
-		$I->waitForElementVisible('tbody#the-list');
-
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the filter dropdown is set to the selected value.
+		$I->seeOptionIsSelected('#wp-convertkit-restrict-content-filter', 'All member-only content');
 
 		// Confirm that the Restrict Content Pages are listed.
 		$I->see('Kit: Page: Restricted Content: Form: Filter Test');
@@ -370,9 +370,6 @@ class RestrictContentFilterPageCest
 
 		// Click the Filter button with no changes made.
 		$I->click('Filter');
-
-		// Wait for the WP_List_Table of Pages to load.
-		$I->waitForElementVisible('tbody#the-list');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
