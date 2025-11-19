@@ -256,6 +256,9 @@ class PageBlockProductCest
 		$I->switchToIFrame('iframe[data-active]');
 		$I->waitForElementVisible('.formkit-main');
 		$I->see('$0.00');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
@@ -312,6 +315,9 @@ class PageBlockProductCest
 		$I->switchToIFrame('iframe[data-active]');
 		$I->waitForElementVisible('.formkit-main');
 		$I->see('The coupon is not valid.');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
@@ -369,6 +375,9 @@ class PageBlockProductCest
 		$I->switchToIFrame('iframe[data-active]');
 		$I->waitForElementVisible('.formkit-main');
 		$I->see('Order Summary');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
