@@ -22,8 +22,14 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function _before(EndToEndTester $I)
 	{
-		// Activate Kit plugin.
+		// Activate Kit Plugin and third party Plugins.
 		$I->activateKitPlugin($I);
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->useTheme('uncode');
+		$I->activateThirdPartyPlugin($I, 'uncode-core');
+
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
 	}
 
 	/**
@@ -37,13 +43,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function testRestrictContentByProductWithUncodeThemeAndVisualComposer(EndToEndTester $I)
 	{
-		// Setup Kit Plugin, disabling JS.
-		$I->setupKitPluginDisableJS($I);
-
-		// Activate Uncode theme and Plugins.
-		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-		$I->useTheme('uncode');
-		$I->activateThirdPartyPlugin($I, 'uncode-core');
+		// Activate Visual Composer Page Builder.
 		$I->activateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
 
 		// Programmatically create a Page using the Visual Composer Page Builder.
@@ -78,11 +78,8 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			]
 		);
 
-		// Deactivate Uncode theme and Plugins.
+		// Deactivate Visual Composer Page Builder.
 		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
-		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
@@ -96,13 +93,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
 	{
-		// Setup Kit Plugin, disabling JS.
-		$I->setupKitPluginDisableJS($I);
-
-		// Activate Uncode theme and Plugins.
-		$I->useTheme('uncode');
-		$I->activateThirdPartyPlugin($I, 'uncode-core');
-
 		// Programmatically create a Page using the Visual Composer Page Builder.
 		$pageID = $I->havePostInDatabase(
 			[
@@ -133,10 +123,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 				'member_content'  => 'Member-only content.',
 			]
 		);
-
-		// Deactivate Uncode theme and Plugins.
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
 	}
 
 	/**
@@ -150,6 +136,12 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		// Deactivate Plugins and revert to default theme.
+		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
+		$I->useTheme('twentytwentyfive');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+
+		// Deactivate and reset Kit Plugin.
 		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
