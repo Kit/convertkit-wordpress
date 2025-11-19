@@ -531,6 +531,9 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('convertkit_tags');
 		$I->dontHaveOptionInDatabase('convertkit_tags_last_queried');
 
+		// Persistent notices.
+		$I->dontHaveOptionInDatabase('convertkit-admin-notices');
+
 		// Review Request.
 		$I->dontHaveOptionInDatabase('convertkit-review-request');
 		$I->dontHaveOptionInDatabase('convertkit-review-dismissed');

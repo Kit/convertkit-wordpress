@@ -57,7 +57,7 @@ class ActivateDeactivatePluginCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Deactivate Plugins.
-		$I->deactivateKitPlugin($I);
 		$I->deactivateThirdPartyPlugin($I, 'convertkit-for-woocommerce');
+		$I->deactivateKitPlugin($I);
 	}
 }

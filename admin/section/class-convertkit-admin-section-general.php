@@ -133,7 +133,17 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if no access and refresh token exist.
 		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return;
+			// Redirect to General screen, which will now show the ConvertKit_Admin_Section_OAuth screen, because
+			// the Plugin has no access token.
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'page' => $this->settings_key,
+					),
+					'options-general.php'
+				)
+			);
+			exit();
 		}
 
 		// Initialize the API.
@@ -152,37 +162,11 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// If the request succeeded, no need to perform further actions.
 		if ( ! is_wp_error( $this->account ) ) {
-			// Remove any existing persistent notice.
-			WP_ConvertKit()->get_class( 'admin_notices' )->delete( 'authorization_failed' );
-
 			return;
 		}
 
-		// Depending on the error code, maybe persist a notice in the WordPress Administration until the user
+		// Depending on the error code, display an error notice in the settings screen until the user
 		// fixes the problem.
-		switch ( $this->account->get_error_data( $this->account->get_error_code() ) ) {
-			case 401:
-				// Access token either expired or was revoked in ConvertKit.
-				// Remove from settings.
-				$this->settings->delete_credentials();
-
-				// Display a site wide notice.
-				WP_ConvertKit()->get_class( 'admin_notices' )->add( 'authorization_failed' );
-
-				// Redirect to General screen, which will now show the ConvertKit_Admin_Section_OAuth screen, because
-				// the Plugin has no access token.
-				wp_safe_redirect(
-					add_query_arg(
-						array(
-							'page' => $this->settings_key,
-						),
-						'options-general.php'
-					)
-				);
-				exit();
-		}
-
-		// Output a non-401 error now.
 		$this->output_error( $this->account->get_error_message() );
 
 	}
