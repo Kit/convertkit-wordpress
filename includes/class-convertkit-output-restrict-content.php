@@ -134,7 +134,8 @@ class ConvertKit_Output_Restrict_Content {
 				'callback'            => function ( $request ) {
 
 					// Initialize classes that will be used.
-					WP_ConvertKit()->get_class( 'output_restrict_content' )->initialize_classes();
+					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
+					$output_restrict_content->initialize_classes();
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
 					$email         = $request->get_param( 'convertkit_email' );
@@ -143,7 +144,7 @@ class ConvertKit_Output_Restrict_Content {
 					$resource_id   = $request->get_param( 'convertkit_resource_id' );
 
 					// Run subscriber authentication.
-					$result = $this->run_subscriber_authentication(
+					$result = $output_restrict_content->run_subscriber_authentication(
 						$email,
 						$post_id
 					);
@@ -151,7 +152,7 @@ class ConvertKit_Output_Restrict_Content {
 					// If an error occured, build the email form view with the error message.
 					if ( is_wp_error( $result ) ) {
 						// Set error to display on screen.
-						$this->error = $result;
+						$output_restrict_content->error = $result;
 
 						// Build email form view to return for output with error message.
 						ob_start();
@@ -167,8 +168,8 @@ class ConvertKit_Output_Restrict_Content {
 					}
 
 					// Set token and Post ID for authentication code view.
-					$this->token = $result;
-					$this->post_id = $post_id;
+					$output_restrict_content->token = $result;
+					$output_restrict_content->post_id = $post_id;
 
 					// Build authentication code view to return for output.
 					ob_start();
@@ -194,7 +195,8 @@ class ConvertKit_Output_Restrict_Content {
 				'callback'            => function ( $request ) {
 
 					// Initialize classes that will be used.
-					WP_ConvertKit()->get_class( 'output_restrict_content' )->initialize_classes();
+					$output_restrict_content = WP_ConvertKit()->get_class( 'output_restrict_content' );
+					$output_restrict_content->initialize_classes();
 
 					// Fetch Post ID, Resource Type and Resource ID for the view.
 					$post_id       = $request->get_param( 'convertkit_post_id' );
@@ -202,16 +204,16 @@ class ConvertKit_Output_Restrict_Content {
 					$subscriber_code = $request->get_param( 'subscriber_code' );
 
 					// Run subscriber authentication.
-					$result = $this->run_subscriber_verification( $post_id, $token, $subscriber_code );
+					$result = $output_restrict_content->run_subscriber_verification( $post_id, $token, $subscriber_code );
 
 					// If an error occured, build the code form view with the error message.
 					if ( is_wp_error( $result ) ) {
 						// Set error to display on screen.
-						$this->error = $result;
+						$output_restrict_content->error = $result;
 
 						// Set token and post ID for authentication code view.
-						$this->token = $token;
-						$this->post_id = $post_id;
+						$output_restrict_content->token = $token;
+						$output_restrict_content->post_id = $post_id;
 
 						// Build code form view to return for output with error message.
 						ob_start();
@@ -221,6 +223,7 @@ class ConvertKit_Output_Restrict_Content {
 							array(
 								'success' => false,
 								'data'    => $output,
+								'error'   => $result->get_error_message(),
 							)
 						);
 					}
@@ -229,7 +232,7 @@ class ConvertKit_Output_Restrict_Content {
 					return rest_ensure_response(
 						array(
 							'success' => true,
-							'url'     => $this->get_url( $post_id, true ),
+							'url'     => $output_restrict_content->get_url( $post_id, true ),
 						)
 					);
 				},
