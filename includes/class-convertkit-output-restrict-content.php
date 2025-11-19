@@ -162,7 +162,6 @@ class ConvertKit_Output_Restrict_Content {
 							array(
 								'success' => false,
 								'data'    => $output,
-								'error'   => $result->get_error_message(),
 							)
 						);
 					}
@@ -223,7 +222,6 @@ class ConvertKit_Output_Restrict_Content {
 							array(
 								'success' => false,
 								'data'    => $output,
-								'error'   => $result->get_error_message(),
 							)
 						);
 					}
