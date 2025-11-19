@@ -93,9 +93,12 @@ class RESTAPITest extends WPRestApiTestCase
 
 		// Assert response data has the expected keys and data.
 		$data = $response->get_data();
+		var_dump( $data );
+		die();
 		$this->assertIsArray( $data );
 		$this->assertTrue( $data['success'] );
 		$this->assertArrayHasKey( 'data', $data );
+		$this->assertStringContainsString( 'authentication code', $data['data'] );
 	}
 
 	/**
