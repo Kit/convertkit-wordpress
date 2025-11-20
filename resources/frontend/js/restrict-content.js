@@ -77,7 +77,7 @@ function convertKitRestrictContentFormSubmit(e) {
 	if (isCodeSubmission) {
 		// Code submission.
 		convertKitRestrictContentSubscriberVerification(
-			e.target.querySelector('input[name="_wpnonce"]').value,
+			convertkit_restrict_content.nonce,
 			e.target.querySelector('input[name="subscriber_code"]').value,
 			e.target.querySelector('input[name="token"]').value,
 			e.target.querySelector('input[name="convertkit_post_id"]').value
@@ -88,7 +88,7 @@ function convertKitRestrictContentFormSubmit(e) {
 
 	// Email submission.
 	convertKitRestrictContentSubscriberAuthenticationSendCode(
-		e.target.querySelector('input[name="_wpnonce"]').value,
+		convertkit_restrict_content.nonce,
 		e.target.querySelector('input[name="convertkit_email"]').value,
 		e.target.querySelector('input[name="convertkit_resource_type"]').value,
 		e.target.querySelector('input[name="convertkit_resource_id"]').value,
@@ -127,17 +127,17 @@ function convertKitRestrictContentCloseModal() {
 }
 
 /**
- * Submits the given email address to maybe_run_subscriber_authentication(), which
- * will return either:
+ * Submits the given email address to the WP REST API kit/v1/restrict-content/subscriber-authentication
+ * endpoint, which will return either:
  * - the email form view, with an error message e.g. invalid email,
  * - the code form view, where the user can enter the OTP.
  *
  * @since 	2.3.8
  *
  * @param {string} nonce         WordPress nonce.
- * @param {string} email         Email address.  resource_type   Resource Type (tag|product).
- * @param {string} resource_type Resource Type (tag|product).
- * @param {string} resource_id   Resource ID (ConvertKit Tag or Product ID).
+ * @param {string} email         Email address.
+ * @param {string} resource_type Resource Type (form|tag|product).
+ * @param {string} resource_id   Resource ID (Kit Form,Tag or Product ID).
  * @param {number} post_id       WordPress Post ID being viewed / accessed.
  */
 function convertKitRestrictContentSubscriberAuthenticationSendCode(
@@ -147,14 +147,13 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 	resource_id,
 	post_id
 ) {
-	fetch(convertkit_restrict_content.ajaxurl, {
+	fetch(convertkit_restrict_content.subscriber_authentication_url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			'X-WP-Nonce': nonce,
 		},
 		body: new URLSearchParams({
-			action: 'convertkit_subscriber_authentication_send_code',
-			_wpnonce: nonce,
 			convertkit_email: email,
 			convertkit_resource_type: resource_type,
 			convertkit_resource_id: resource_id,
@@ -173,10 +172,19 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 				console.log(result);
 			}
 
-			// Output response, which will be a form with/without an error message.
-			document.querySelector(
-				'#convertkit-restrict-content-modal-content'
-			).innerHTML = result.data;
+			// Output error message if the response contains a code.
+			if (typeof result.code !== 'undefined') {
+				document.querySelector(
+					'#convertkit-restrict-content-modal-content'
+				).innerHTML = result.message;
+			} else {
+				// Output response, which will be either:
+				// - the email form view, with an error message e.g. invalid email,
+				// - the code form view, where the user can enter the OTP.
+				document.querySelector(
+					'#convertkit-restrict-content-modal-content'
+				).innerHTML = result.data;
+			}
 
 			// Hide loading overlay.
 			document.querySelector(
@@ -194,8 +202,8 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 }
 
 /**
- * Submits the given email address to maybe_run_subscriber_verification(), which
- * will return either:
+ * Submits the given email address to the WP REST API kit/v1/restrict-content/subscriber-verification
+ * endpoint, which will return either:
  * - the code form view, with an error message e.g. invalid code entered,
  * - the Post's URL, with a `ck-cache-bust` parameter appended, which can then be loaded to show the content.
  *
@@ -212,14 +220,13 @@ function convertKitRestrictContentSubscriberVerification(
 	token,
 	post_id
 ) {
-	fetch(convertkit_restrict_content.ajaxurl, {
+	fetch(convertkit_restrict_content.subscriber_verification_url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			'X-WP-Nonce': nonce,
 		},
 		body: new URLSearchParams({
-			action: 'convertkit_subscriber_verification',
-			_wpnonce: nonce,
 			subscriber_code,
 			token,
 			convertkit_post_id: post_id,
@@ -254,7 +261,7 @@ function convertKitRestrictContentSubscriberVerification(
 			}
 
 			// Code entered is valid; load the URL in the response data.
-			window.location = result.data;
+			window.location = result.url;
 		})
 		.catch(function (error) {
 			if (convertkit_restrict_content.debug) {
