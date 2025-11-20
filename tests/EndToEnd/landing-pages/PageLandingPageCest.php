@@ -542,7 +542,7 @@ class PageLandingPageCest
 	 * Test that the Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, with the Rocket LazyLoad
 	 * Plugin active (https://wordpress.org/plugins/rocket-lazy-load/).
-	 * 
+	 *
 	 * This differs from the WP-Rocket Plugin.
 	 *
 	 * @since   3.1.0
@@ -558,7 +558,7 @@ class PageLandingPageCest
 		$I->haveOptionInDatabase(
 			'rocket_lazyload_options',
 			[
-				'images' => 1,
+				'images'  => 1,
 				'iframes' => 1,
 			]
 		);
