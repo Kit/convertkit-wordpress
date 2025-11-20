@@ -144,7 +144,7 @@ class ConvertKit_Output_Restrict_Content {
 					$resource_id   = $request->get_param( 'convertkit_resource_id' );
 
 					// Run subscriber authentication.
-					$result = $output_restrict_content->run_subscriber_authentication(
+					$result = $output_restrict_content->subscriber_authentication_send_code(
 						$email,
 						$post_id
 					);
@@ -203,7 +203,7 @@ class ConvertKit_Output_Restrict_Content {
 					$subscriber_code = $request->get_param( 'subscriber_code' );
 
 					// Run subscriber authentication.
-					$result = $output_restrict_content->run_subscriber_verification( $post_id, $token, $subscriber_code );
+					$result = $output_restrict_content->subscriber_authentication_verify( $post_id, $token, $subscriber_code );
 
 					// If an error occured, build the code form view with the error message.
 					if ( is_wp_error( $result ) ) {
@@ -350,7 +350,7 @@ class ConvertKit_Output_Restrict_Content {
 
 		// If here, require login is enabled for tags or this is a product/form.
 		// Run subscriber authentication.
-		$result = $this->run_subscriber_authentication( $email, $this->post_id );
+		$result = $this->subscriber_authentication_send_code( $email, $this->post_id );
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
@@ -411,7 +411,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Run subscriber verification.
-		$subscriber_id = $this->run_subscriber_verification( $this->post_id, sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ), sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) ) );
+		$subscriber_id = $this->subscriber_authentication_verify( $this->post_id, sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ), sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) ) );
 
 		// Bail if an error occured.
 		if ( is_wp_error( $subscriber_id ) ) {
@@ -425,7 +425,7 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
-	 * Runs subscriber authentication / subscription depending on the resource type.
+	 * Sends an email to the subscriber with a code and link to authenticate they have access to the email address submitted.
 	 *
 	 * @since   3.1.0
 	 *
@@ -434,7 +434,7 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * @return WP_Error|string        Error or Token.
 	 */
-	public function run_subscriber_authentication( $email, $post_id ) {
+	public function subscriber_authentication_send_code( $email, $post_id ) {
 
 		// Send email to subscriber with a link to authenticate they have access to the email address submitted.
 		$token = $this->api->subscriber_authentication_send_code(
@@ -457,7 +457,9 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
-	 * Runs subscriber verification.
+	 * Verifies the token and subscriber code, which tells us that the email
+	 * address supplied truly belongs to the user, and that we can safely
+	 * trust their subscriber ID to be valid.
 	 *
 	 * @since   3.1.0
 	 *
@@ -467,7 +469,7 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * @return WP_Error|string          Error or Signed Subscriber ID.
 	 */
-	public function run_subscriber_verification( $post_id, $token, $subscriber_code ) {
+	public function subscriber_authentication_verify( $post_id, $token, $subscriber_code ) {
 
 		// Verify the token and subscriber code.
 		$subscriber_id = $this->api->subscriber_authentication_verify( $token, $subscriber_code );
