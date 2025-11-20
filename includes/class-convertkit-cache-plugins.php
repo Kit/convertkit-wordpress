@@ -15,7 +15,8 @@
 class ConvertKit_Cache_Plugins {
 
 	/**
-	 * Holds external hosts to exclude from CSS and JS minification.
+	 * Holds external hosts to exclude from CSS and JS minification
+	 * and lazy loading of images.
 	 *
 	 * @since   2.4.6
 	 *
@@ -27,6 +28,7 @@ class ConvertKit_Cache_Plugins {
 		'kit.com',
 		'pages.convertkit.com',
 		'convertkit.com',
+		'filekitcdn.com',
 	);
 
 	/**
@@ -54,8 +56,8 @@ class ConvertKit_Cache_Plugins {
 		add_filter( 'autoptimize_filter_imgopt_should_lazyload', array( $this, 'disable_image_lazy_loading_on_landing_pages' ) );
 
 		// Debloat: Exclude Forms from Delay Load JS.
-		add_filter( 'debloat/defer_js_excludes', array( $this, 'exclude_hosts_from_minification' ) );
-		add_filter( 'debloat/delay_js_excludes', array( $this, 'exclude_hosts_from_minification' ) );
+		add_filter( 'debloat/defer_js_excludes', array( $this, 'exclude_hosts' ) );
+		add_filter( 'debloat/delay_js_excludes', array( $this, 'exclude_hosts' ) );
 
 		// Jetpack Boost: Exclude Forms from JS defer.
 		add_filter( 'convertkit_output_script_footer', array( $this, 'jetpack_boost_exclude_js_defer' ) );
@@ -74,11 +76,14 @@ class ConvertKit_Cache_Plugins {
 		add_filter( 'convertkit_output_script_footer', array( $this, 'siteground_speed_optimizer_exclude_js_combine' ) );
 		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'siteground_speed_optimizer_exclude_js_combine' ) );
 
+		// Rocket LazyLoad: Exclude images from lazy loading.
+		add_filter( 'rocket_lazyload_excluded_src', array( $this, 'exclude_hosts' ) );
+
 		// WP Rocket: Disable Caching and Minification on Landing Pages.
 		add_action( 'convertkit_output_landing_page_before', array( $this, 'wp_rocket_disable_caching_and_minification_on_landing_pages' ) );
 
 		// WP Rocket: Exclude Forms from JS minification and combine.
-		add_filter( 'rocket_minify_excluded_external_js', array( $this, 'exclude_hosts_from_minification' ) );
+		add_filter( 'rocket_minify_excluded_external_js', array( $this, 'exclude_hosts' ) );
 
 		// WP Rocket: Exclude Forms from Delay JavaScript execution.
 		add_filter( 'convertkit_output_script_footer', array( $this, 'wp_rocket_exclude_delay_js_execution' ) );
@@ -238,10 +243,9 @@ class ConvertKit_Cache_Plugins {
 	 */
 	public function wp_rocket_disable_caching_and_minification_on_landing_pages() {
 
-		add_filter( 'rocket_minify_excluded_external_js', array( $this, 'exclude_hosts_from_minification' ) );
-		add_filter( 'rocket_exclude_css', array( $this, 'exclude_hosts_from_minification' ) );
+		add_filter( 'rocket_minify_excluded_external_js', array( $this, 'exclude_hosts' ) );
+		add_filter( 'rocket_exclude_css', array( $this, 'exclude_hosts' ) );
 		add_filter( 'rocket_exclude_js', array( $this, 'exclude_local_js_from_minification' ) );
-		add_filter( 'do_rocket_lazyload', '__return_false' );
 
 	}
 
@@ -276,6 +280,22 @@ class ConvertKit_Cache_Plugins {
 	 * @return  array
 	 */
 	public function exclude_hosts_from_minification( $hosts ) {
+
+		_doing_it_wrong( __FUNCTION__, 'Use exclude_hosts() instead.', '3.1.0' );
+
+		return $this->exclude_hosts( $hosts );
+
+	}
+
+	/**
+	 * Appends the $exclude_hosts property to an array of existing hosts.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @param   array $hosts  External hosts to ignore.
+	 * @return  array
+	 */
+	public function exclude_hosts( $hosts ) {
 
 		return array_merge( $hosts, $this->exclude_hosts );
 

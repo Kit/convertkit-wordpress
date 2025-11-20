@@ -539,6 +539,75 @@ class PageLandingPageCest
 	}
 
 	/**
+	 * Test that the Landing Page specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page, with the Rocket LazyLoad
+	 * Plugin active (https://wordpress.org/plugins/rocket-lazy-load/).
+	 *
+	 * This differs from the WP-Rocket Plugin.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefinedLandingPageWithRocketLazyLoadPlugin(EndToEndTester $I)
+	{
+		// Activate Rocket LazyLoad Plugin.
+		$I->activateThirdPartyPlugin($I, 'rocket-lazy-load');
+
+		// Configure Rocket LazyLoad.
+		$I->haveOptionInDatabase(
+			'rocket_lazyload_options',
+			[
+				'images'  => 1,
+				'iframes' => 1,
+			]
+		);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Landing Page: Rocket LazyLoad: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
+		);
+
+		// Configure metabox's Landing Page setting to value specified in the .env file.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
+			]
+		);
+
+		// Get Landing Page ID.
+		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
+
+		// Publish and view the Page on the frontend site.
+		$url = $I->publishAndViewGutenbergPage($I);
+
+		// Log out.
+		$I->logOut();
+
+		// View the Page.
+		$I->amOnUrl($url);
+
+		// Confirm that the basic HTML structure is correct.
+		$I->seeLandingPageOutput($I, true);
+
+		// Confirm the Kit Site Icon displays.
+		$I->seeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.convertkit.com/templates/favicon.ico">');
+
+		// Confirm that the Kit Landing Page displays.
+		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+
+		// Confirm that Rocket LazyLoad has not attempted to lazy load images.
+		$I->dontSeeElementInDOM('img[data-lazy-src]');
+
+		// Deactivate Rocket LazyLoad Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'rocket-lazy-load');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
