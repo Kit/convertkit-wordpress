@@ -127,17 +127,17 @@ function convertKitRestrictContentCloseModal() {
 }
 
 /**
- * Submits the given email address to maybe_run_subscriber_authentication(), which
- * will return either:
+ * Submits the given email address to the WP REST API kit/v1/restrict-content/subscriber-authentication
+ * endpoint, which will return either:
  * - the email form view, with an error message e.g. invalid email,
  * - the code form view, where the user can enter the OTP.
  *
  * @since 	2.3.8
  *
  * @param {string} nonce         WordPress nonce.
- * @param {string} email         Email address.  resource_type   Resource Type (tag|product).
- * @param {string} resource_type Resource Type (tag|product).
- * @param {string} resource_id   Resource ID (ConvertKit Tag or Product ID).
+ * @param {string} email         Email address.
+ * @param {string} resource_type Resource Type (form|tag|product).
+ * @param {string} resource_id   Resource ID (Kit Form,Tag or Product ID).
  * @param {number} post_id       WordPress Post ID being viewed / accessed.
  */
 function convertKitRestrictContentSubscriberAuthenticationSendCode(
@@ -178,7 +178,9 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 					'#convertkit-restrict-content-modal-content'
 				).innerHTML = result.message;
 			} else {
-				// Output response, which will be a form with/without an error message.
+				// Output response, which will be either:
+				// - the email form view, with an error message e.g. invalid email,
+				// - the code form view, where the user can enter the OTP.
 				document.querySelector(
 					'#convertkit-restrict-content-modal-content'
 				).innerHTML = result.data;
@@ -200,8 +202,8 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 }
 
 /**
- * Submits the given email address to maybe_run_subscriber_verification(), which
- * will return either:
+ * Submits the given email address to the WP REST API kit/v1/restrict-content/subscriber-verification
+ * endpoint, which will return either:
  * - the code form view, with an error message e.g. invalid code entered,
  * - the Post's URL, with a `ck-cache-bust` parameter appended, which can then be loaded to show the content.
  *
