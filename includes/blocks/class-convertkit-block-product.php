@@ -85,6 +85,28 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Product', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-product.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   1.9.8.5
@@ -95,9 +117,9 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 		$settings            = new ConvertKit_Settings();
 
 		return array(
-			'title'                                => __( 'Kit Product', 'convertkit' ),
+			'title'                                => $this->get_title(),
 			'description'                          => __( 'Displays a button to purchase a Kit product.', 'convertkit' ),
-			'icon'                                 => 'resources/backend/images/block-icon-product.svg',
+			'icon'                                 => $this->get_icon(),
 			'category'                             => 'convertkit',
 			'keywords'                             => array(
 				__( 'ConvertKit', 'convertkit' ),

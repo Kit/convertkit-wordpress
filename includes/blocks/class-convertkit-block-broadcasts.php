@@ -92,6 +92,28 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Broadcasts', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-broadcasts.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   1.9.7.4
@@ -103,9 +125,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$settings = new ConvertKit_Settings();
 
 		return array(
-			'title'                         => __( 'Kit Broadcasts', 'convertkit' ),
+			'title'                         => $this->get_title(),
 			'description'                   => __( 'Displays a list of your Kit broadcasts.', 'convertkit' ),
-			'icon'                          => 'resources/backend/images/block-icon-broadcasts.svg',
+			'icon'                          => $this->get_icon(),
 			'category'                      => 'convertkit',
 			'keywords'                      => array(
 				__( 'ConvertKit', 'convertkit' ),

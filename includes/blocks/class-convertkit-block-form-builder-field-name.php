@@ -50,6 +50,28 @@ class ConvertKit_Block_Form_Builder_Field_Name extends ConvertKit_Block_Form_Bui
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form Builder: Name Field', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form-builder-field-name.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   3.0.0
@@ -59,9 +81,9 @@ class ConvertKit_Block_Form_Builder_Field_Name extends ConvertKit_Block_Form_Bui
 	public function get_overview() {
 
 		return array(
-			'title'                   => __( 'Kit Form Builder: Name Field', 'convertkit' ),
+			'title'                   => $this->get_title(),
 			'description'             => __( 'Adds a name field to the Kit Form Builder.', 'convertkit' ),
-			'icon'                    => 'resources/backend/images/block-icon-form-builder-field-name.svg',
+			'icon'                    => $this->get_icon(),
 			'category'                => 'convertkit',
 			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),

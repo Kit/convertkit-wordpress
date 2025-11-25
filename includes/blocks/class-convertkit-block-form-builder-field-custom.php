@@ -32,6 +32,28 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form Builder: Custom Field', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form-builder-field-custom.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   3.0.0
@@ -41,9 +63,9 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 	public function get_overview() {
 
 		return array(
-			'title'                   => __( 'Kit Form Builder: Custom Field', 'convertkit' ),
+			'title'                   => $this->get_title(),
 			'description'             => __( 'Adds a text field to the Kit Form Builder, whose value is stored in a Kit custom field.', 'convertkit' ),
-			'icon'                    => 'resources/backend/images/block-icon-form-builder-field-custom.svg',
+			'icon'                    => $this->get_icon(),
 			'category'                => 'convertkit',
 			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),

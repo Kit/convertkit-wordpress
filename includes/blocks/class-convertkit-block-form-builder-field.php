@@ -111,6 +111,28 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form Builder: Field', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form-builder-field.svg';
+
+	}
+
+	/**
 	 * Returns this block's Attributes
 	 *
 	 * @since   3.0.0

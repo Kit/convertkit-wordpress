@@ -28,6 +28,8 @@ class ConvertKit_Block {
 		// to register and render the block on the frontend site using register_block_type().
 		if ( ! $this->is_admin_frontend_editor_or_admin_rest_request() ) {
 			$blocks[ $this->get_name() ] = array(
+				'title'           => $this->get_title(),
+				'icon'            => $this->get_icon(),
 				'attributes'      => $this->get_attributes(),
 				'render_callback' => array( $this, 'render' ),
 			);
