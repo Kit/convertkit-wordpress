@@ -26,7 +26,7 @@ class ConvertKit_Block {
 
 		// If the request is for the frontend, return the minimum block definition required
 		// to register and render the block on the frontend site using register_block_type().
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
+		if ( ! $this->is_admin_frontend_editor_or_admin_rest_request() ) {
 			$blocks[ $this->get_name() ] = array(
 				'attributes'      => $this->get_attributes(),
 				'render_callback' => array( $this, 'render' ),
@@ -409,15 +409,16 @@ class ConvertKit_Block {
 	}
 
 	/**
-	 * Determines if the request is a WordPress REST API request.
+	 * Determines if the request is a WordPress REST API request
+	 * made by a logged in WordPress user who has the capability to edit posts.
 	 *
 	 * @since   3.1.0
 	 *
 	 * @return  bool
 	 */
-	public function is_rest_request() {
+	public function is_admin_rest_request() {
 
-		return defined( 'REST_REQUEST' ) && REST_REQUEST;
+		return defined( 'REST_REQUEST' ) && REST_REQUEST && current_user_can( 'edit_posts' );
 
 	}
 
@@ -428,9 +429,9 @@ class ConvertKit_Block {
 	 *
 	 * @return  bool
 	 */
-	public function is_admin_frontend_editor_or_rest_request() {
+	public function is_admin_frontend_editor_or_admin_rest_request() {
 
-		return WP_ConvertKit()->is_admin_or_frontend_editor() || $this->is_rest_request();
+		return WP_ConvertKit()->is_admin_or_frontend_editor() || $this->is_admin_rest_request();
 
 	}
 
