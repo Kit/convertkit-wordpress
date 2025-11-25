@@ -73,6 +73,28 @@ class ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return '';
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return '';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   1.9.6
