@@ -194,11 +194,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
-
 		return array(
 			'label'    => array(
 				'label'       => __( 'Label', 'convertkit' ),
@@ -222,11 +217,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
 
 		return array(
 			'general' => array(

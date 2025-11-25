@@ -120,11 +120,6 @@ class ConvertKit_Block_Form_Builder_Field_Email extends ConvertKit_Block_Form_Bu
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
-
 		// The `required` field is not used for this block,
 		// as we always require an email address.
 		$fields = parent::get_fields();

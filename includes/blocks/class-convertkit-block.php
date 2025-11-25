@@ -24,6 +24,19 @@ class ConvertKit_Block {
 	 */
 	public function register( $blocks ) {
 
+		// If the request is for the frontend, return the minimum block definition required
+		// to register and render the block on the frontend site using register_block_type().
+		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
+			$blocks[ $this->get_name() ] = array(
+				'attributes'      => $this->get_attributes(),
+				'render_callback' => array( $this, 'render' ),
+			);
+
+			return $blocks;
+		}
+
+		// Request is for the WordPress Administration, frontend editor or REST API request.
+		// Register the full block definition, including fields, panels, default values and supports.
 		$blocks[ $this->get_name() ] = array_merge(
 			$this->get_overview(),
 			array(

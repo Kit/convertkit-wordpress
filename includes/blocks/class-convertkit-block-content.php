@@ -104,11 +104,6 @@ class ConvertKit_Block_Content extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
-
 		// Get ConvertKit Tags.
 		$tags            = array();
 		$convertkit_tags = new ConvertKit_Resource_Tags();
@@ -136,11 +131,6 @@ class ConvertKit_Block_Content extends ConvertKit_Block {
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
 
 		return array(
 			'general' => array(

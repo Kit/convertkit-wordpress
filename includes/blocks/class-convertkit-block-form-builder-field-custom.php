@@ -101,11 +101,6 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
-
 		// Get Kit Custom Fields.
 		$custom_fields = new ConvertKit_Resource_Custom_Fields( 'block_form_builder' );
 		$values        = array();
@@ -149,11 +144,6 @@ class ConvertKit_Block_Form_Builder_Field_Custom extends ConvertKit_Block_Form_B
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
 
 		// Get Panels from parent class.
 		$panels = parent::get_panels();
