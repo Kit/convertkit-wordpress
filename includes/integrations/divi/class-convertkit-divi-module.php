@@ -98,7 +98,10 @@ class ConvertKit_Divi_Module extends ET_Builder_Module {
 			return array();
 		}
 
-		// Bail if no fields.
+		// Bail if no fields i.e. this is a frontend request.
+		if ( ! array_key_exists( 'fields', $this->block ) ) {
+			return array();
+		}
 		if ( ! is_array( $this->block['fields'] ) ) {
 			return array();
 		}
