@@ -445,7 +445,7 @@ class ConvertKit_Block {
 	public function is_block_editor_request() {
 
 		// Return false if not a WordPress REST API request, which Gutenberg uses.
-		if ( ! $this->is_rest_request() ) {
+		if ( ! $this->is_admin_rest_request() ) {
 			return false;
 		}
 
