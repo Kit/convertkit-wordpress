@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.8
 Requires PHP: 7.1
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,10 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.1.1 2025-11-26
+* Fix: Block Registration: Improve Frontend Performance
+* Fix: Settings: Move hooks to ensure invalid Access Tokens are automatically deleted
 
 ### 3.1.0 2025-11-20
 * Added: Settings: Tools: Mailchimp for WordPress to Kit Form Importer

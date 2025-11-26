@@ -690,3 +690,61 @@ function convertkit_kses_allowed_html() {
 	return array_merge( $elements, $form_elements );
 
 }
+
+/**
+ * Saves the new access token, refresh token and its expiry, and schedules
+ * a WordPress Cron event to refresh the token on expiry.
+ *
+ * @since   3.1.1
+ *
+ * @param   array  $result      New Access Token, Refresh Token and Expiry.
+ * @param   string $client_id   OAuth Client ID used for the Access and Refresh Tokens.
+ */
+function convertkit_maybe_update_credentials( $result, $client_id ) {
+
+	// Don't save these credentials if they're not for this Client ID.
+	// They're for another Kit Plugin that uses OAuth.
+	if ( $client_id !== CONVERTKIT_OAUTH_CLIENT_ID ) {
+		return;
+	}
+
+	$settings = new ConvertKit_Settings();
+	$settings->update_credentials( $result );
+
+}
+
+/**
+ * Deletes the stored access token, refresh token and its expiry from the Plugin settings,
+ * and clears any existing scheduled WordPress Cron event to refresh the token on expiry,
+ * when either:
+ * - The access token is invalid
+ * - The access token expired, and refreshing failed
+ *
+ * @since   3.1.1
+ *
+ * @param   WP_Error $result      Error result.
+ * @param   string   $client_id   OAuth Client ID used for the Access and Refresh Tokens.
+ */
+function convertkit_maybe_delete_credentials( $result, $client_id ) {
+
+	// Don't save these credentials if they're not for this Client ID.
+	// They're for another Kit Plugin that uses OAuth.
+	if ( $client_id !== CONVERTKIT_OAUTH_CLIENT_ID ) {
+		return;
+	}
+
+	// Persist an error notice in the WordPress Administration until the user fixes the problem.
+	WP_ConvertKit()->get_class( 'admin_notices' )->add( 'authorization_failed' );
+
+	$settings = new ConvertKit_Settings();
+	$settings->delete_credentials();
+
+}
+
+// Update Access Token when refreshed by the API class.
+add_action( 'convertkit_api_get_access_token', 'convertkit_maybe_update_credentials', 10, 2 );
+add_action( 'convertkit_api_refresh_token', 'convertkit_maybe_update_credentials', 10, 2 );
+
+// Delete credentials if the API class uses a invalid access token.
+// This prevents the Plugin making repetitive API requests that will 401.
+add_action( 'convertkit_api_access_token_invalid', 'convertkit_maybe_delete_credentials', 10, 2 );
