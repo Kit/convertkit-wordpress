@@ -111,6 +111,28 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form Builder: Field', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form-builder-field.svg';
+
+	}
+
+	/**
 	 * Returns this block's Attributes
 	 *
 	 * @since   3.0.0
@@ -194,11 +216,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
-
 		return array(
 			'label'    => array(
 				'label'       => __( 'Label', 'convertkit' ),
@@ -222,11 +239,6 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
 
 		return array(
 			'general' => array(

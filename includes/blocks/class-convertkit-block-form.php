@@ -91,6 +91,28 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   1.9.6
@@ -103,9 +125,9 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 		$settings         = new ConvertKit_Settings();
 
 		return array(
-			'title'                             => __( 'Kit Form', 'convertkit' ),
+			'title'                             => $this->get_title(),
 			'description'                       => __( 'Displays a Kit Form.', 'convertkit' ),
-			'icon'                              => 'resources/backend/images/block-icon-form.svg',
+			'icon'                              => $this->get_icon(),
 			'category'                          => 'convertkit',
 			'keywords'                          => array(
 				__( 'ConvertKit', 'convertkit' ),
@@ -240,11 +262,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
-
 		// Get ConvertKit Forms.
 		$forms            = array();
 		$convertkit_forms = new ConvertKit_Resource_Forms( 'block_edit' );
@@ -284,11 +301,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration, frontend editor or REST API request.
-		if ( ! $this->is_admin_frontend_editor_or_rest_request() ) {
-			return false;
-		}
 
 		return array(
 			'general' => array(
