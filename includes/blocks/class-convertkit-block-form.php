@@ -397,10 +397,11 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 				if ( $settings->debug_enabled() ) {
 					return '<!-- ' . $result->get_error_message() . ' --> <!-- ' . $form->get_error_message() . ' -->';
 				}
-	
+
 				return '';
 			}
 
+			// Refresh succeeded.
 			// Get Form HTML again.
 			$form = $forms->get_html( $form_id, $post_id );
 		}
