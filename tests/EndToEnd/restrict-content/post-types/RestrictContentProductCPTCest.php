@@ -304,6 +304,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create the CPT.
 		$postID = $I->createRestrictedContentPage(
