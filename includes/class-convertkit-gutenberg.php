@@ -54,17 +54,40 @@ class ConvertKit_Gutenberg {
 
 				// Return blocks.
 				'callback'            => function () {
-					// Refresh resources.
+					// Refresh Forms.
 					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
-					$forms->refresh();
+					$result = $forms->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Delete credentials if the error is a 401.
+						convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
+
+					// Refresh Posts.
 					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
-					$posts->refresh();
+					$result = $posts->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Delete credentials if the error is a 401.
+						convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
+
+					// Refresh Products.
 					$products = new ConvertKit_Resource_Products( 'block_edit' );
-					$products->refresh();
+					$result = $products->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Delete credentials if the error is a 401.
+						convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 
-					// Return blocks.
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
+
+					// Return blocks, which will now include the refreshed resources.
 					return rest_ensure_response( convertkit_get_blocks() );
 				},
 

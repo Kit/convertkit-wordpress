@@ -96,6 +96,9 @@ class ConvertKit_Admin_Refresh_Resources {
 
 				// Bail if an error occured.
 				if ( is_wp_error( $results_tags ) ) {
+					// Delete credentials if the error is a 401.
+					convertkit_maybe_delete_credentials( $results_tags, CONVERTKIT_OAUTH_CLIENT_ID );
+
 					return rest_ensure_response( $results_tags );
 				}
 
@@ -105,6 +108,9 @@ class ConvertKit_Admin_Refresh_Resources {
 
 				// Bail if an error occured.
 				if ( is_wp_error( $results_products ) ) {
+					// Delete credentials if the error is a 401.
+					convertkit_maybe_delete_credentials( $results_products, CONVERTKIT_OAUTH_CLIENT_ID );
+
 					return rest_ensure_response( $results_products );
 				}
 
