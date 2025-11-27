@@ -44,7 +44,8 @@ class ConvertKit_Gutenberg {
 	 */
 	public function register_routes() {
 
-		// Register route to return all blocks registered by the Plugin.
+		// Register route to refresh resources andreturn all blocks registered by the Plugin,
+		// when the user clicks the refresh button in the Gutenberg editor.
 		register_rest_route(
 			'kit/v1',
 			'/blocks',
@@ -53,6 +54,17 @@ class ConvertKit_Gutenberg {
 
 				// Return blocks.
 				'callback'            => function () {
+					// Refresh resources.
+					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
+					$forms->refresh();
+
+					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
+					$posts->refresh();
+
+					$products = new ConvertKit_Resource_Products( 'block_edit' );
+					$products->refresh();
+
+					// Return blocks.
 					return rest_ensure_response( convertkit_get_blocks() );
 				},
 

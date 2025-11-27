@@ -81,8 +81,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			),
 		);
 
-		$this->maybe_disconnect();
-
 		// Register and maybe output notices for this settings screen, and the Intercom messenger.
 		if ( $this->on_settings_screen( $this->name ) ) {
 			add_filter( 'convertkit_settings_base_register_notices', array( $this, 'register_notices' ) );
@@ -96,6 +94,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		parent::__construct();
 
 		$this->check_credentials();
+		$this->maybe_disconnect();
 
 	}
 
