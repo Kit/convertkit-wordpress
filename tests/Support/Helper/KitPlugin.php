@@ -418,6 +418,27 @@ class KitPlugin extends \Codeception\Module
 			]
 		);
 
+		// Define Sequences.
+		$I->haveOptionInDatabase(
+			'convertkit_sequences',
+			[
+				1341993 => [
+					'id'         => 1341993,
+					'name'       => 'Another Sequence',
+					'hold'       => false,
+					'repeat'     => false,
+					'created_at' => '2023-01-30T17:25:54Z',
+				],
+				1030824 => [
+					'id'         => 1030824,
+					'name'       => 'WordPress Sequence',
+					'hold'       => false,
+					'repeat'     => false,
+					'created_at' => '2022-01-04T13:00:15Z',
+				],
+			]
+		);
+
 		// Define Tags.
 		$I->haveOptionInDatabase(
 			'convertkit_tags',
