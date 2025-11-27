@@ -382,21 +382,35 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 		$forms = new ConvertKit_Resource_Forms( 'output_form' );
 		$form  = $forms->get_html( $form_id, $post_id );
 
-		// If an error occured, the shortcode might be from the ConvertKit App for a Legacy Form ID
+		// If an error occured, it might be that we're requesting a Form ID that exists in ConvertKit
+		// but does not yet exist in the Plugin's Form Resources.
+		// If so, refresh the Form Resources and try again.
+		if ( is_wp_error( $form ) && $form->get_error_data() === 404 ) {
+			// Refresh Forms from the API.
+			$result = $forms->refresh();
+
+			// Bail if an error occured.
+			if ( is_wp_error( $result ) ) {
+				// Delete credentials if the error is a 401.
+				convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+
+				if ( $settings->debug_enabled() ) {
+					return '<!-- ' . $result->get_error_message() . ' --> <!-- ' . $form->get_error_message() . ' -->';
+				}
+	
+				return '';
+			}
+
+			// Get Form HTML again.
+			$form = $forms->get_html( $form_id, $post_id );
+		}
+
+		// If an error still occured, the shortcode might be from the ConvertKit App for a Legacy Form ID
 		// These ConvertKit App shortcodes, for some reason, use a different Form ID than the one presented
 		// to us in the API.
 		// For example, a Legacy Form ID might be 470099, but the ConvertKit app says to use the shortcode [convertkit form=5281783]).
 		// In this instance, fetch the Form HTML without checking that the Form ID exists in the Form Resources.
 		if ( is_wp_error( $form ) ) {
-			// If no access and refresh token are specified in the Plugin Settings, return the error message.
-			if ( ! $settings->has_access_and_refresh_token() ) {
-				if ( $settings->debug_enabled() ) {
-					return '<!-- ' . $form->get_error_message() . ' -->';
-				}
-
-				return '';
-			}
-
 			// Initialize the API.
 			$api = new ConvertKit_API_V4(
 				CONVERTKIT_OAUTH_CLIENT_ID,
