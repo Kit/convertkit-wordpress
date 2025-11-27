@@ -36,6 +36,7 @@ class RestrictContentFormCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -85,6 +86,7 @@ class RestrictContentFormCest
 	{
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -137,6 +139,7 @@ class RestrictContentFormCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -166,6 +169,7 @@ class RestrictContentFormCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -205,6 +209,7 @@ class RestrictContentFormCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(
