@@ -97,14 +97,7 @@ function convertkit_resource_refresh_posts() {
 
 	// If debug logging is enabled, write to it now.
 	if ( $settings->debug_enabled() ) {
-		// If an error occured, log it.
-		if ( is_wp_error( $result ) ) {
-			$log->add( 'CRON: convertkit_resource_refresh_posts(): Error: ' . $result->get_error_message() );
-		}
-		if ( is_array( $result ) ) {
-			$log->add( 'CRON: convertkit_resource_refresh_posts(): Success: ' . count( $result ) . ' broadcasts fetched from API and cached.' );
-		}
-
+		$log->add( 'CRON: convertkit_resource_refresh_posts(): Success: ' . count( $result ) . ' broadcasts fetched from API and cached.' );
 		$log->add( 'CRON: convertkit_resource_refresh_posts(): Finished' );
 	}
 
