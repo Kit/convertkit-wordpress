@@ -81,6 +81,7 @@ class RestrictContentFilterCPTCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Navigate to Private CPT.
 		$I->amOnAdminPage('edit.php?post_type=private');
@@ -103,6 +104,7 @@ class RestrictContentFilterCPTCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Article, set to restrict content to a Product.
 		$I->createRestrictedContentPage(
@@ -153,6 +155,7 @@ class RestrictContentFilterCPTCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Article, set to restrict content to a Product.
 		$I->createRestrictedContentPage(
@@ -203,6 +206,7 @@ class RestrictContentFilterCPTCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Article, set to restrict content to a Product.
 		$I->createRestrictedContentPage(
@@ -253,6 +257,7 @@ class RestrictContentFilterCPTCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a mix of Posts restricted and not restricted to Forms, Tags and Products.
 		$I->createRestrictedContentPage(
@@ -340,6 +345,7 @@ class RestrictContentFilterCPTCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a mix of Posts restricted and not restricted to Forms, Tags and Products.
 		$I->createRestrictedContentPage(

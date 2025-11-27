@@ -77,6 +77,7 @@ class RestrictContentFilterPostCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Post, set to restrict content to a Product.
 		$I->createRestrictedContentPage(
@@ -127,6 +128,7 @@ class RestrictContentFilterPostCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Post, set to restrict content to a Tag.
 		$I->createRestrictedContentPage(
@@ -177,6 +179,7 @@ class RestrictContentFilterPostCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create Post, set to restrict content to a Form.
 		$I->createRestrictedContentPage(
@@ -227,6 +230,7 @@ class RestrictContentFilterPostCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a mix of Posts restricted and not restricted to Forms, Tags and Products.
 		$I->createRestrictedContentPage(
@@ -314,6 +318,7 @@ class RestrictContentFilterPostCest
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Create a mix of Posts restricted and not restricted to Forms, Tags and Products.
 		$I->createRestrictedContentPage(

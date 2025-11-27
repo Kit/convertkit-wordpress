@@ -193,6 +193,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage($I, 'page', 'Kit: Page: Non-Inline Form: Default');
@@ -233,6 +234,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -276,6 +278,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -320,6 +323,7 @@ class NonInlineFormCest
 				'non_inline_form_honor_none_setting' => 'on',
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -362,6 +366,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -415,6 +420,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage(
@@ -470,6 +476,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -514,6 +521,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -558,6 +566,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Create Category.
 		$termID = $I->haveTermInDatabase(
@@ -614,6 +623,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -659,6 +669,7 @@ class NonInlineFormCest
 				'non_inline_form_honor_none_setting' => 'on',
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -703,6 +714,7 @@ class NonInlineFormCest
 				'non_inline_form_limit_per_session' => 'on',
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database that uses a different non-inline form.
 		$I->havePostInDatabase(
@@ -760,6 +772,7 @@ class NonInlineFormCest
 				),
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Create a Page in the database.
 		$I->havePostInDatabase(

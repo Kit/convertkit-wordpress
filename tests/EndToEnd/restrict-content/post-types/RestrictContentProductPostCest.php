@@ -73,6 +73,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -120,6 +121,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -168,6 +170,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Define visible content and member-only content.
 		$visibleContent    = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
@@ -221,6 +224,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Define visible content and member-only content.
 		$options = [
@@ -288,6 +292,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Post using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -337,6 +342,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Post.
 		$postID = $I->createRestrictedContentPage(
@@ -367,6 +373,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Post.
 		$postID = $I->createRestrictedContentPage(
@@ -403,6 +410,7 @@ class RestrictContentProductPostCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Posts.
 		$postIDs = array(

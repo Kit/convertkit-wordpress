@@ -36,6 +36,7 @@ class RestrictContentTagCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -88,6 +89,7 @@ class RestrictContentTagCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Restrict Content functionality with Require Login enabled.
 		$I->setupKitPluginRestrictContent(
@@ -156,6 +158,7 @@ class RestrictContentTagCest
 				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Define reCAPTCHA settings.
 		$options = [
@@ -220,6 +223,7 @@ class RestrictContentTagCest
 	{
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Define Restrict Content settings.
 		$options = [
@@ -282,6 +286,7 @@ class RestrictContentTagCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -319,6 +324,7 @@ class RestrictContentTagCest
 				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Setup Restrict Content functionality.
 		$I->setupKitPluginRestrictContent($I);
@@ -379,6 +385,7 @@ class RestrictContentTagCest
 				'recaptcha_minimum_score' => '0.99', // Set a high score to ensure reCAPTCHA blocks the subscriber.
 			]
 		);
+		$I->setupKitPluginResources($I);
 
 		// Setup Restrict Content functionality.
 		$I->setupKitPluginRestrictContent($I);
@@ -438,6 +445,7 @@ class RestrictContentTagCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -477,6 +485,7 @@ class RestrictContentTagCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(

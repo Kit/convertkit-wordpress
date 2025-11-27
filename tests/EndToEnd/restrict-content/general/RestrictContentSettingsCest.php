@@ -25,6 +25,7 @@ class RestrictContentSettingsCest
 
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**

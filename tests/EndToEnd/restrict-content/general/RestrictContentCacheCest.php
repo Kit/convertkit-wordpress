@@ -24,6 +24,7 @@ class RestrictContentCacheCest
 		// Activate and Setup Kit plugin.
 		$I->activateKitPlugin($I);
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Clear up any cache configuration files that might exist from previous tests.
 		$I->deleteWPCacheConfigFiles($I);
