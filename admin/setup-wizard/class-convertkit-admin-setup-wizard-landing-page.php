@@ -213,7 +213,16 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 			// Delete credentials if the error is a 401.
 			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 
-			// @TODO Go back to the start with an error.
+			// Change the next button label and make it a link to reload the screen.
+			unset( $this->steps[1]['next_button'] );
+			$this->current_url = add_query_arg(
+				array(
+					'page'         => $this->page_name,
+					'ck_post_type' => $this->post_type,
+					'step'         => 1,
+				),
+				admin_url( 'options.php' )
+			);
 			return;
 		}
 
