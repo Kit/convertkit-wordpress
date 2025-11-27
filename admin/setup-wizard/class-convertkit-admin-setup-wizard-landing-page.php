@@ -205,9 +205,17 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 		// Fetch Landing Pages.
 		$this->landing_pages = new ConvertKit_Resource_Landing_Pages( 'landing_page_wizard' );
 
-		// Refresh Landing Page resources, in case the user just created their first Product or Tag
-		// in ConvertKit.
-		$this->landing_pages->refresh();
+		// Refresh Landing Page resources, in case the user just created their first Landing Page in Kit.
+		$result = $this->landing_pages->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			// Delete credentials if the error is a 401.
+			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+
+			// @TODO Go back to the start with an error.
+			return;
+		}
 
 		// If no Landing Pages exist in ConvertKit, change the next button label and make it a link to reload
 		// the screen.

@@ -129,6 +129,9 @@ class ConvertKit_Admin_Refresh_Resources {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $results ) ) {
+			// Delete credentials if the error is a 401.
+			convertkit_maybe_delete_credentials( $results, CONVERTKIT_OAUTH_CLIENT_ID );
+
 			return rest_ensure_response( $results );
 		}
 

@@ -51,19 +51,8 @@ class ConvertKit_Gutenberg {
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 
-				// Refresh resources and return blocks.
+				// Return blocks.
 				'callback'            => function () {
-					// Refresh resources from the API, to reflect any changes.
-					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
-					$forms->refresh();
-
-					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
-					$posts->refresh();
-
-					$products = new ConvertKit_Resource_Products( 'block_edit' );
-					$products->refresh();
-
-					// Return blocks.
 					return rest_ensure_response( convertkit_get_blocks() );
 				},
 

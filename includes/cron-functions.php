@@ -68,6 +68,15 @@ function convertkit_resource_refresh_posts() {
 	$settings = new ConvertKit_Settings();
 	$log      = new ConvertKit_Log( CONVERTKIT_PLUGIN_PATH );
 
+	// Bail if no access and refresh token exists.
+	if ( ! $settings->has_access_and_refresh_token() ) {
+		if ( $settings->debug_enabled() ) {
+			$log->add( 'CRON: convertkit_resource_refresh_posts(): No access and refresh token exists.' );
+		}
+
+		return;
+	}
+
 	// If debug logging is enabled, write to it now.
 	if ( $settings->debug_enabled() ) {
 		$log->add( 'CRON: convertkit_resource_refresh_posts(): Started' );
@@ -76,6 +85,15 @@ function convertkit_resource_refresh_posts() {
 	// Refresh Posts Resource.
 	$posts  = new ConvertKit_Resource_Posts( 'cron' );
 	$result = $posts->refresh();
+
+	// Bail if an error occured.
+	if ( is_wp_error( $result ) ) {
+		// Delete credentials if the error is a 401.
+		convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+
+		$log->add( 'CRON: convertkit_resource_refresh_posts(): Error: ' . $result->get_error_message() );
+		return;
+	}
 
 	// If debug logging is enabled, write to it now.
 	if ( $settings->debug_enabled() ) {

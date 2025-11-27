@@ -282,9 +282,40 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 				// Refresh Forms, Products and Tags resources, in case the user just created their first Form, Product or Tag
 				// in ConvertKit.
-				$this->forms->refresh();
-				$this->products->refresh();
-				$this->tags->refresh();
+				$result = $this->forms->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Delete credentials if the error is a 401.
+					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+
+					// @TODO Go back to the start with an error.
+					return;
+				}
+
+				// Refresh Products.
+				$result = $this->products->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Delete credentials if the error is a 401.
+					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+
+					// @TODO Go back to the start with an error.
+					return;
+				}
+
+				// Refresh Tags.
+				$result = $this->tags->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Delete credentials if the error is a 401.
+					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+
+					// @TODO Go back to the start with an error.
+					return;
+				}
 
 				// If no Forms, Products and Tags exist in ConvertKit, change the next button label and make it a link to reload
 				// the screen.
