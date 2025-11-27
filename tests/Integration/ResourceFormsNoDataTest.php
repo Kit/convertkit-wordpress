@@ -63,6 +63,12 @@ class ResourceFormsNoDataTest extends WPTestCase
 
 		// Confirm initialization didn't result in an error.
 		$this->assertNotInstanceOf(\WP_Error::class, $this->resource->resources);
+
+		// Initialize the resource class, fetching resources from the API and caching them in the options table.
+		$result = $this->resource->init();
+
+		// Confirm calling init() didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
 	}
 
 	/**

@@ -50,8 +50,9 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			);
 		}
 
-		// Call parent initialization function.
-		parent::init();
+		// Get last query time and existing resources.
+		$this->last_queried = get_option( $this->settings_name . '_last_queried' );
+		$this->resources    = get_option( $this->settings_name );
 
 	}
 
@@ -496,7 +497,8 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 					/* translators: ConvertKit Form ID */
 					__( 'Kit Form ID %s does not exist on Kit.', 'convertkit' ),
 					$id
-				)
+				),
+				404
 			);
 		}
 
