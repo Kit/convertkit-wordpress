@@ -497,7 +497,8 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 					/* translators: ConvertKit Form ID */
 					__( 'Kit Form ID %s does not exist on Kit.', 'convertkit' ),
 					$id
-				)
+				),
+				404
 			);
 		}
 
