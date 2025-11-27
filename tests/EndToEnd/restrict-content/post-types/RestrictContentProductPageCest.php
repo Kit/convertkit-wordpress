@@ -72,6 +72,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -118,6 +119,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -165,6 +167,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Define visible content and member-only content.
 		$visibleContent    = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
@@ -217,6 +220,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -264,6 +268,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -416,6 +421,7 @@ class RestrictContentProductPageCest
 
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Setup Restrict Content functionality with permit crawlers setting enabled.
 		$I->setupKitPluginRestrictContent(
@@ -472,6 +478,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create a Page.
 		$pageID = $I->createRestrictedContentPage(
@@ -507,6 +514,7 @@ class RestrictContentProductPageCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two Pages.
 		$pageIDs = array(

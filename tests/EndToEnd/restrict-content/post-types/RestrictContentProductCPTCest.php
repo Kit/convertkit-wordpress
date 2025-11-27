@@ -103,6 +103,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add the CPT using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -150,6 +151,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Add a CPT using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -198,6 +200,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Define visible content and member-only content.
 		$visibleContent    = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
@@ -251,6 +254,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Add the CPT using the Gutenberg editor.
 		$I->addGutenbergPage(
@@ -330,6 +334,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create the CPT.
 		$postID = $I->createRestrictedContentPage(
@@ -366,6 +371,7 @@ class RestrictContentProductCPTCest
 	{
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 
 		// Programmatically create two CPTs.
 		$postIDs = array(
