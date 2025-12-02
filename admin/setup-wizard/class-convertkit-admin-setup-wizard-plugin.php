@@ -325,9 +325,6 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
-					// Delete credentials if the error is a 401.
-					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 					// Change the next button label and make it a link to reload the screen.
 					$this->steps[2]['next_button']['label'] = __( 'I\'ve created a form in Kit', 'convertkit' );
 					$this->steps[2]['next_button']['link']  = add_query_arg(

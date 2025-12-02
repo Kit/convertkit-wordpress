@@ -286,9 +286,6 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
-					// Delete credentials if the error is a 401.
-					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 					// Change the next label and make it a link to reload the screen.
 					unset( $this->steps[1]['next_button'] );
 					$this->current_url = add_query_arg(
@@ -307,9 +304,6 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
-					// Delete credentials if the error is a 401.
-					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 					// Change the next label and make it a link to reload the screen.
 					unset( $this->steps[1]['next_button'] );
 					$this->current_url = add_query_arg(
@@ -328,9 +322,6 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
-					// Delete credentials if the error is a 401.
-					convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 					// Change the next label and make it a link to reload the screen.
 					unset( $this->steps[1]['next_button'] );
 					$this->current_url = add_query_arg(

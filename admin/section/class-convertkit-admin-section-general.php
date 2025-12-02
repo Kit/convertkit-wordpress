@@ -607,8 +607,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
-			// Delete credentials if the error is a 401.
-			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 			return;
 		}
 
@@ -619,8 +617,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
-			// Delete credentials if the error is a 401.
-			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 			return;
 		}
 
@@ -630,8 +626,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
-			// Delete credentials if the error is a 401.
-			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 			return;
 		}
 
@@ -640,8 +634,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
-			// Delete credentials if the error is a 401.
-			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 			return;
 		}
 
@@ -650,8 +642,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
-			// Delete credentials if the error is a 401.
-			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 			return;
 		}
 
@@ -660,8 +650,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
-			// Delete credentials if the error is a 401.
-			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
 			return;
 		}
 

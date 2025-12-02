@@ -391,9 +391,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 
 			// Bail if an error occured.
 			if ( is_wp_error( $result ) ) {
-				// Delete credentials if the error is a 401.
-				convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 				if ( $settings->debug_enabled() ) {
 					return '<!-- ' . $result->get_error_message() . ' --> <!-- ' . $form->get_error_message() . ' -->';
 				}

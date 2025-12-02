@@ -58,9 +58,6 @@ class ConvertKit_Gutenberg {
 					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
 					$result = $forms->refresh();
 					if ( is_wp_error( $result ) ) {
-						// Delete credentials if the error is a 401.
-						convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 						// Return blocks without refreshing other resources.
 						return rest_ensure_response( convertkit_get_blocks() );
 					}
@@ -69,9 +66,6 @@ class ConvertKit_Gutenberg {
 					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
 					$result = $posts->refresh();
 					if ( is_wp_error( $result ) ) {
-						// Delete credentials if the error is a 401.
-						convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 						// Return blocks without refreshing other resources.
 						return rest_ensure_response( convertkit_get_blocks() );
 					}
@@ -80,9 +74,6 @@ class ConvertKit_Gutenberg {
 					$products = new ConvertKit_Resource_Products( 'block_edit' );
 					$result = $products->refresh();
 					if ( is_wp_error( $result ) ) {
-						// Delete credentials if the error is a 401.
-						convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
-
 						// Return blocks without refreshing other resources.
 						return rest_ensure_response( convertkit_get_blocks() );
 					}
