@@ -198,16 +198,20 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Delete cached resources.
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();
+		$custom_fields   = new ConvertKit_Resource_Custom_Fields();
 		$forms           = new ConvertKit_Resource_Forms();
 		$landing_pages   = new ConvertKit_Resource_Landing_Pages();
 		$posts           = new ConvertKit_Resource_Posts();
 		$products        = new ConvertKit_Resource_Products();
+		$sequences       = new ConvertKit_Resource_Sequences();
 		$tags            = new ConvertKit_Resource_Tags();
 		$creator_network->delete();
+		$custom_fields->delete();
 		$forms->delete();
 		$landing_pages->delete();
 		$posts->delete();
 		$products->delete();
+		$sequences->delete();
 		$tags->delete();
 
 		// Redirect to General screen, which will now show the ConvertKit_Settings_OAuth screen, because
