@@ -666,7 +666,7 @@ add_filter( 'convertkit_block_product_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_broadcasts_render">
 						convertkit_block_broadcasts_render
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::674</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::667</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -697,7 +697,7 @@ add_filter( 'convertkit_block_broadcasts_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_broadcasts_render_ajax">
 						convertkit_block_broadcasts_render_ajax
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::587</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::580</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's inner content immediately before it is output by AJAX, which occurs when pagination was clicked.</p><h4>Parameters</h4>
 					<table>
@@ -728,7 +728,7 @@ add_filter( 'convertkit_block_broadcasts_render_ajax', function( $html, $atts ) 
 </pre>
 <h3 id="convertkit_block_broadcasts_build_html_list_item">
 						convertkit_block_broadcasts_build_html_list_item
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::755</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::748</code>
 					</h3><h4>Overview</h4>
 						<p>Defines the HTML for an individual broadcast item in the Broadcasts block.</p><h4>Parameters</h4>
 					<table>
@@ -794,7 +794,7 @@ add_filter( 'convertkit_block_form_builder_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_form_render">
 						convertkit_block_form_render
-						<code>includes/blocks/class-convertkit-block-form.php::447</code>
+						<code>includes/blocks/class-convertkit-block-form.php::457</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1057,7 +1057,7 @@ add_filter( 'convertkit_user_get_default_settings', function( $defaults ) {
 </pre>
 <h3 id="convertkit_admin_gutenberg_add_block_categories">
 						convertkit_admin_gutenberg_add_block_categories
-						<code>includes/class-convertkit-gutenberg.php::107</code>
+						<code>includes/class-convertkit-gutenberg.php::122</code>
 					</h3><h4>Overview</h4>
 						<p>Adds block categories to the default Gutenberg Block Categories</p><h4>Parameters</h4>
 					<table>
@@ -1533,7 +1533,7 @@ add_filter( 'convertkit_is_admin_or_frontend_editor', function( $is_admin_or_fro
 </pre>
 <h3 id="convertkit_resource_forms_output_script">
 						convertkit_resource_forms_output_script
-						<code>includes/class-convertkit-resource-forms.php::600</code>
+						<code>includes/class-convertkit-resource-forms.php::627</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the form <script> key/value pairs immediately before the script is output.</p><h4>Parameters</h4>
 					<table>
@@ -2210,7 +2210,7 @@ do_action( 'convertkit_pre_publish_action_run_  this-get_name', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts">
 						convertkit_gutenberg_enqueue_scripts
-						<code>includes/class-convertkit-gutenberg.php::217</code>
+						<code>includes/class-convertkit-gutenberg.php::232</code>
 					</h3><h4>Overview</h4>
 						<p>Enqueue any additional scripts for Gutenberg blocks that have been registered.</p><h4>Parameters</h4>
 					<table>
@@ -2239,7 +2239,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts', function( $blocks, $block_for
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles">
 						convertkit_gutenberg_enqueue_styles
-						<code>includes/class-convertkit-gutenberg.php::241</code>
+						<code>includes/class-convertkit-gutenberg.php::256</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2259,7 +2259,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts_editor_and_frontend">
 						convertkit_gutenberg_enqueue_scripts_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::265</code>
+						<code>includes/class-convertkit-gutenberg.php::280</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2279,7 +2279,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts_editor_and_frontend', function(
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles_editor_and_frontend">
 						convertkit_gutenberg_enqueue_styles_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::289</code>
+						<code>includes/class-convertkit-gutenberg.php::304</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

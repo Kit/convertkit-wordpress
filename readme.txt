@@ -3,9 +3,9 @@ Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,12 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.1.2 2025-12-03
+* Fix: Settings: Improve logic to automatically delete invalid Access Tokens
+* Fix: Settings: Disconnect: Immediately disconnect Plugin from Kit, instead of loading resources first
+* Fix: Settings: Disconnect: Remove cached Custom Fields and Sequences
+* Updated: Use WordPress Libraries 2.1.2
 
 ### 3.1.1 2025-11-26
 * Fix: Block Registration: Improve Frontend Performance
