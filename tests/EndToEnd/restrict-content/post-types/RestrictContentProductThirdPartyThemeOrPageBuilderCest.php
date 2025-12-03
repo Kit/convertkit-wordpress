@@ -76,7 +76,9 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			options: [
 				'visible_content' => '',
 				'member_content'  => 'Member-only content.',
-			]
+			],
+			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
+			checkNoWarningsAndNotices: false
 		);
 
 		// Deactivate Visual Composer Page Builder.
@@ -122,7 +124,9 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			options: [
 				'visible_content' => '',
 				'member_content'  => 'Member-only content.',
-			]
+			],
+			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
+			checkNoWarningsAndNotices: false
 		);
 	}
 

@@ -979,8 +979,8 @@ class PageBlockFormBuilderCest
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 
 		// Confirm some core blocks can be added to the Form Builder block.
-		$I->seeGutenbergBlockAvailable($I, 'Paragraph', 'paragraph');
-		$I->seeGutenbergBlockAvailable($I, 'Heading', 'heading');
+		$I->seeGutenbergBlockAvailable($I, 'Paragraph', 'paragraph/paragraph');
+		$I->seeGutenbergBlockAvailable($I, 'Heading', 'heading/heading');
 		$I->seeGutenbergBlockAvailable($I, 'List', 'list');
 		$I->seeGutenbergBlockAvailable($I, 'Image', 'image');
 		$I->seeGutenbergBlockAvailable($I, 'Spacer', 'spacer');
