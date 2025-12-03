@@ -81,6 +81,8 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			),
 		);
 
+		$this->maybe_disconnect();
+
 		// Register and maybe output notices for this settings screen, and the Intercom messenger.
 		if ( $this->on_settings_screen( $this->name ) ) {
 			add_filter( 'convertkit_settings_base_register_notices', array( $this, 'register_notices' ) );
@@ -94,7 +96,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		parent::__construct();
 
 		$this->check_credentials();
-		$this->maybe_disconnect();
 
 	}
 
@@ -198,16 +199,20 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Delete cached resources.
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();
+		$custom_fields   = new ConvertKit_Resource_Custom_Fields();
 		$forms           = new ConvertKit_Resource_Forms();
 		$landing_pages   = new ConvertKit_Resource_Landing_Pages();
 		$posts           = new ConvertKit_Resource_Posts();
 		$products        = new ConvertKit_Resource_Products();
+		$sequences       = new ConvertKit_Resource_Sequences();
 		$tags            = new ConvertKit_Resource_Tags();
 		$creator_network->delete();
+		$custom_fields->delete();
 		$forms->delete();
 		$landing_pages->delete();
 		$posts->delete();
 		$products->delete();
+		$sequences->delete();
 		$tags->delete();
 
 		// Redirect to General screen, which will now show the ConvertKit_Settings_OAuth screen, because
@@ -598,25 +603,56 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Refresh Forms.
-		$this->forms->refresh();
+		$result = $this->forms->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		// Also refresh Landing Pages, Tags and Posts. Whilst not displayed in the Plugin Settings, this ensures up to date
 		// lists are stored for when editing e.g. Pages.
 		$landing_pages = new ConvertKit_Resource_Landing_Pages( 'settings' );
-		$landing_pages->refresh();
+		$result        = $landing_pages->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		remove_all_actions( 'convertkit_resource_refreshed_posts' );
-		$posts = new ConvertKit_Resource_Posts( 'settings' );
-		$posts->refresh();
+		$posts  = new ConvertKit_Resource_Posts( 'settings' );
+		$result = $posts->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		$products = new ConvertKit_Resource_Products( 'settings' );
-		$products->refresh();
+		$result   = $products->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		$sequences = new ConvertKit_Resource_Sequences( 'settings' );
-		$sequences->refresh();
+		$result    = $sequences->refresh();
 
-		$tags = new ConvertKit_Resource_Tags( 'settings' );
-		$tags->refresh();
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
+		$tags   = new ConvertKit_Resource_Tags( 'settings' );
+		$result = $tags->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
 	}
 
 	/**

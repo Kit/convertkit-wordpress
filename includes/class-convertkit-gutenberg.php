@@ -44,26 +44,41 @@ class ConvertKit_Gutenberg {
 	 */
 	public function register_routes() {
 
-		// Register route to return all blocks registered by the Plugin.
+		// Register route to refresh resources andreturn all blocks registered by the Plugin,
+		// when the user clicks the refresh button in the Gutenberg editor.
 		register_rest_route(
 			'kit/v1',
 			'/blocks',
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 
-				// Refresh resources and return blocks.
+				// Return blocks.
 				'callback'            => function () {
-					// Refresh resources from the API, to reflect any changes.
+					// Refresh Forms.
 					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
-					$forms->refresh();
+					$result = $forms->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
 
+					// Refresh Posts.
 					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
-					$posts->refresh();
+					$result = $posts->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
 
+					// Refresh Products.
 					$products = new ConvertKit_Resource_Products( 'block_edit' );
-					$products->refresh();
+					$result = $products->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
 
-					// Return blocks.
+					// Return blocks, which will now include the refreshed resources.
 					return rest_ensure_response( convertkit_get_blocks() );
 				},
 
