@@ -603,25 +603,56 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Refresh Forms.
-		$this->forms->refresh();
+		$result = $this->forms->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		// Also refresh Landing Pages, Tags and Posts. Whilst not displayed in the Plugin Settings, this ensures up to date
 		// lists are stored for when editing e.g. Pages.
 		$landing_pages = new ConvertKit_Resource_Landing_Pages( 'settings' );
-		$landing_pages->refresh();
+		$result        = $landing_pages->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		remove_all_actions( 'convertkit_resource_refreshed_posts' );
-		$posts = new ConvertKit_Resource_Posts( 'settings' );
-		$posts->refresh();
+		$posts  = new ConvertKit_Resource_Posts( 'settings' );
+		$result = $posts->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		$products = new ConvertKit_Resource_Products( 'settings' );
-		$products->refresh();
+		$result   = $products->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
 
 		$sequences = new ConvertKit_Resource_Sequences( 'settings' );
-		$sequences->refresh();
+		$result    = $sequences->refresh();
 
-		$tags = new ConvertKit_Resource_Tags( 'settings' );
-		$tags->refresh();
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
+		$tags   = new ConvertKit_Resource_Tags( 'settings' );
+		$result = $tags->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
 	}
 
 	/**

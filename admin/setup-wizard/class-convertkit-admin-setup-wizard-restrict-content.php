@@ -282,9 +282,58 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 				// Refresh Forms, Products and Tags resources, in case the user just created their first Form, Product or Tag
 				// in ConvertKit.
-				$this->forms->refresh();
-				$this->products->refresh();
-				$this->tags->refresh();
+				$result = $this->forms->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Change the next label and make it a link to reload the screen.
+					unset( $this->steps[1]['next_button'] );
+					$this->current_url = add_query_arg(
+						array(
+							'page'         => $this->page_name,
+							'ck_post_type' => $this->post_type,
+							'step'         => 1,
+						),
+						admin_url( 'options.php' )
+					);
+					return;
+				}
+
+				// Refresh Products.
+				$result = $this->products->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Change the next label and make it a link to reload the screen.
+					unset( $this->steps[1]['next_button'] );
+					$this->current_url = add_query_arg(
+						array(
+							'page'         => $this->page_name,
+							'ck_post_type' => $this->post_type,
+							'step'         => 1,
+						),
+						admin_url( 'options.php' )
+					);
+					return;
+				}
+
+				// Refresh Tags.
+				$result = $this->tags->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Change the next label and make it a link to reload the screen.
+					unset( $this->steps[1]['next_button'] );
+					$this->current_url = add_query_arg(
+						array(
+							'page'         => $this->page_name,
+							'ck_post_type' => $this->post_type,
+							'step'         => 1,
+						),
+						admin_url( 'options.php' )
+					);
+					return;
+				}
 
 				// If no Forms, Products and Tags exist in ConvertKit, change the next button label and make it a link to reload
 				// the screen.

@@ -50,8 +50,34 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			);
 		}
 
-		// Call parent initialization function.
-		parent::init();
+		// Get last query time and existing resources.
+		$this->last_queried = get_option( $this->settings_name . '_last_queried' );
+		$this->resources    = get_option( $this->settings_name );
+
+	}
+
+	/**
+	 * Fetches resources (forms, landing pages or tags) from the API, storing them in the options table
+	 * with a last queried timestamp.
+	 *
+	 * If the refresh results in a 401, removes the access and refresh tokens from the settings.
+	 *
+	 * @since   3.1.2
+	 *
+	 * @return  WP_Error|array
+	 */
+	public function refresh() {
+
+		// Call parent refresh method.
+		$result = parent::refresh();
+
+		// If an error occured, maybe delete credentials from the Plugin's settings
+		// if the error is a 401 unauthorized.
+		if ( is_wp_error( $result ) ) {
+			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
+		}
+
+		return $result;
 
 	}
 
@@ -496,7 +522,8 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 					/* translators: ConvertKit Form ID */
 					__( 'Kit Form ID %s does not exist on Kit.', 'convertkit' ),
 					$id
-				)
+				),
+				404
 			);
 		}
 

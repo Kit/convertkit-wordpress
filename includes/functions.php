@@ -733,6 +733,12 @@ function convertkit_maybe_delete_credentials( $result, $client_id ) {
 		return;
 	}
 
+	// If the error isn't a 401, don't delete credentials.
+	// This could be e.g. a temporary network error, rate limit or similar.
+	if ( $result->get_error_data( 'convertkit_api_error' ) !== 401 ) {
+		return;
+	}
+
 	// Persist an error notice in the WordPress Administration until the user fixes the problem.
 	WP_ConvertKit()->get_class( 'admin_notices' )->add( 'authorization_failed' );
 

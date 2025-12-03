@@ -487,13 +487,6 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		// Fetch Posts.
 		$posts = new ConvertKit_Resource_Posts( 'output_broadcasts' );
 
-		// If this is an admin request, refresh the Posts resource now from the API,
-		// as it's an inexpensive query of ~ 0.5 seconds when we're editing a Page
-		// containing this block.
-		if ( function_exists( 'is_admin' ) && is_admin() ) {
-			$posts->refresh();
-		}
-
 		// If no Posts exist, bail.
 		if ( ! $posts->exist() ) {
 			if ( $settings->debug_enabled() ) {
