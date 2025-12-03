@@ -1,3 +1,13 @@
+### 3.1.2 2025-12-03
+* Fix: Settings: Improve logic to automatically delete invalid Access Tokens
+* Fix: Settings: Disconnect: Immediately disconnect Plugin from Kit, instead of loading resources first
+* Fix: Settings: Disconnect: Remove cached Custom Fields and Sequences
+* Updated: Use WordPress Libraries 2.1.2
+
+### 3.1.1 2025-11-26
+* Fix: Block Registration: Improve Frontend Performance
+* Fix: Settings: Move hooks to ensure invalid Access Tokens are automatically deleted
+
 ### 3.1.0 2025-11-20
 * Added: Settings: Tools: Mailchimp for WordPress to Kit Form Importer
 * Fix: Settings: Non-inline Forms: Correctly output `data-kit-limit-per-session`
