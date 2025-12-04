@@ -35,6 +35,51 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 
 	/**
 	 * Test that restricting content by a Product specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page using the Uncode theme without
+	 * the Visual Composer Page Builder.
+	 *
+	 * @since   2.7.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
+	{
+		// Programmatically create a Page using the Visual Composer Page Builder.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Restrict Content: Product: Uncode Theme without Visual Composer',
+
+				// Emulate non-Visual Composer content.
+				'post_content' => 'Member-only content.',
+
+				// Don't display a Form on this Page, so we test against Restrict Content's Form.
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend(
+			$I,
+			urlOrPageID: $pageID,
+			options: [
+				'visible_content' => '',
+				'member_content'  => 'Member-only content.',
+			],
+			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
+			checkNoWarningsAndNotices: false
+		);
+	}
+
+	/**
+	 * Test that restricting content by a Product specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page using the Uncode theme with
 	 * the Visual Composer Page Builder.
 	 *
@@ -83,51 +128,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 
 		// Deactivate Visual Composer Page Builder.
 		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
-	}
-
-	/**
-	 * Test that restricting content by a Product specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page using the Uncode theme without
-	 * the Visual Composer Page Builder.
-	 *
-	 * @since   2.7.7
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
-	{
-		// Programmatically create a Page using the Visual Composer Page Builder.
-		$pageID = $I->havePostInDatabase(
-			[
-				'post_type'    => 'page',
-				'post_title'   => 'Kit: Page: Restrict Content: Product: Uncode Theme without Visual Composer',
-
-				// Emulate non-Visual Composer content.
-				'post_content' => 'Member-only content.',
-
-				// Don't display a Form on this Page, so we test against Restrict Content's Form.
-				'meta_input'   => [
-					'_wp_convertkit_post_meta' => [
-						'form'             => '0',
-						'landing_page'     => '',
-						'tag'              => '',
-						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
-					],
-				],
-			]
-		);
-
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByProductOnFrontend(
-			$I,
-			urlOrPageID: $pageID,
-			options: [
-				'visible_content' => '',
-				'member_content'  => 'Member-only content.',
-			],
-			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
-			checkNoWarningsAndNotices: false
-		);
 	}
 
 	/**
