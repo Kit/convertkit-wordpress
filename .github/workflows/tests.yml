@@ -199,6 +199,11 @@ jobs:
             location ~ \.php$ {
                 include snippets/fastcgi-php.conf;
                 fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
+
+                # Prevent 502 Bad Gateway error "upstream sent too big header while reading response header from upstream"
+                fastcgi_buffers 16 16k;
+                fastcgi_buffer_size 32k;
+                fastcgi_busy_buffers_size 64k;
             }
 
             location ~ /\.ht {
