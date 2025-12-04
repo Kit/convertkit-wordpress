@@ -25,6 +25,8 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 		// Activate Kit Plugin and third party Plugins.
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->useTheme('uncode');
+		$I->activateThirdPartyPlugin($I, 'uncode-core');
 
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
@@ -42,9 +44,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function testRestrictContentByProductWithUncodeThemeAndVisualComposer(EndToEndTester $I)
 	{
-		// Activate theme and third party Plugins.
-		$I->useTheme('uncode');
-		$I->activateThirdPartyPlugin($I, 'uncode-core');
+		// Activate Visual Composer Page Builder.
 		$I->activateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
 
 		// Programmatically create a Page using the Visual Composer Page Builder.
@@ -81,10 +81,8 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			checkNoWarningsAndNotices: false
 		);
 
-		// Deactivate theme and third party Plugins.
+		// Deactivate Visual Composer Page Builder.
 		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
 	}
 
 	/**
@@ -98,10 +96,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
 	{
-		// Activate theme and third party Plugins.
-		$I->useTheme('uncode');
-		$I->activateThirdPartyPlugin($I, 'uncode-core');
-
 		// Programmatically create a Page using the Visual Composer Page Builder.
 		$pageID = $I->havePostInDatabase(
 			[
@@ -134,10 +128,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
 			checkNoWarningsAndNotices: false
 		);
-
-		// Deactivate theme and third party Plugins.
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
 	}
 
 	/**
@@ -152,6 +142,8 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	public function _passed(EndToEndTester $I)
 	{
 		// Deactivate Plugins and revert to default theme.
+		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
+		$I->useTheme('twentytwentyfive');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 
 		// Deactivate and reset Kit Plugin.
