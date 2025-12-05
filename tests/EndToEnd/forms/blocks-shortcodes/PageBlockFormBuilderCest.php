@@ -149,7 +149,7 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the message and form is displayed.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->see('Thanks for subscribing!');
 		$I->seeElementInDOM('input[name="convertkit[first_name]"]');
 		$I->seeElementInDOM('input[name="convertkit[email]"]');
@@ -265,12 +265,11 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
-		$I->waitForElementVisible('body.page');
 
 		// Check that the form no longer displays and the message displays.
 		$I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
 		$I->dontSeeElementInDOM('input[name="convertkit[email]"]');
-		$I->see('Welcome to the newsletter!');
+		$I->waitForText('Welcome to the newsletter!', 10, '.convertkit-form-builder.wp-block-convertkit-form-builder');
 
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists(
@@ -367,10 +366,9 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
-		$I->waitForElementVisible('body.page');
 
 		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
@@ -474,10 +472,9 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
-		$I->waitForElementVisible('body.page');
 
 		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
@@ -580,10 +577,9 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
-		$I->waitForElementVisible('body.page');
 
 		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
@@ -718,7 +714,7 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
@@ -983,8 +979,8 @@ class PageBlockFormBuilderCest
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 
 		// Confirm some core blocks can be added to the Form Builder block.
-		$I->seeGutenbergBlockAvailable($I, 'Paragraph', 'paragraph');
-		$I->seeGutenbergBlockAvailable($I, 'Heading', 'heading');
+		$I->seeGutenbergBlockAvailable($I, 'Paragraph', 'paragraph/paragraph');
+		$I->seeGutenbergBlockAvailable($I, 'Heading', 'heading/heading');
 		$I->seeGutenbergBlockAvailable($I, 'List', 'list');
 		$I->seeGutenbergBlockAvailable($I, 'Image', 'image');
 		$I->seeGutenbergBlockAvailable($I, 'Spacer', 'spacer');
@@ -1051,7 +1047,7 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,
@@ -1118,7 +1114,6 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was not added to Kit, as reCAPTCHA score failed.
-		$I->waitForElementVisible('body.page');
 		$I->wait(3);
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
@@ -1192,7 +1187,7 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('body.page');
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
 		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,

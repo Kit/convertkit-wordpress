@@ -24,6 +24,21 @@ class ConvertKit_Block {
 	 */
 	public function register( $blocks ) {
 
+		// If the request is for the frontend, return the minimum block definition required
+		// to register and render the block on the frontend site using register_block_type().
+		if ( ! $this->is_admin_frontend_editor_or_admin_rest_request() ) {
+			$blocks[ $this->get_name() ] = array(
+				'title'           => $this->get_title(),
+				'icon'            => $this->get_icon(),
+				'attributes'      => $this->get_attributes(),
+				'render_callback' => array( $this, 'render' ),
+			);
+
+			return $blocks;
+		}
+
+		// Request is for the WordPress Administration, frontend editor or REST API request.
+		// Register the full block definition, including fields, panels, default values and supports.
 		$blocks[ $this->get_name() ] = array_merge(
 			$this->get_overview(),
 			array(
@@ -53,6 +68,28 @@ class ConvertKit_Block {
 		 * - a shortcode, with the name [convertkit], for backward compat.
 		 * - a Gutenberg block, with the name convertkit/form.
 		 */
+		return '';
+
+	}
+
+	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return '';
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
 		return '';
 
 	}
@@ -396,6 +433,33 @@ class ConvertKit_Block {
 	}
 
 	/**
+	 * Determines if the request is a WordPress REST API request
+	 * made by a logged in WordPress user who has the capability to edit posts.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  bool
+	 */
+	public function is_admin_rest_request() {
+
+		return defined( 'REST_REQUEST' ) && REST_REQUEST && current_user_can( 'edit_posts' );
+
+	}
+
+	/**
+	 * Determines if the request is for the WordPress Administration, frontend editor or REST API request.
+	 *
+	 * @since   3.1.0
+	 *
+	 * @return  bool
+	 */
+	public function is_admin_frontend_editor_or_admin_rest_request() {
+
+		return WP_ConvertKit()->is_admin_or_frontend_editor() || $this->is_admin_rest_request();
+
+	}
+
+	/**
 	 * Determines if the request for the block is from the block editor or the frontend site.
 	 *
 	 * @since   1.9.8.5
@@ -405,10 +469,7 @@ class ConvertKit_Block {
 	public function is_block_editor_request() {
 
 		// Return false if not a WordPress REST API request, which Gutenberg uses.
-		if ( ! defined( 'REST_REQUEST' ) ) {
-			return false;
-		}
-		if ( REST_REQUEST !== true ) {
+		if ( ! $this->is_admin_rest_request() ) {
 			return false;
 		}
 

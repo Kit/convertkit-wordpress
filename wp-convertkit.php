@@ -9,7 +9,7 @@
  * Plugin Name: Kit (formerly ConvertKit)
  * Plugin URI: https://kit.com/
  * Description: Display Kit (formerly ConvertKit) email subscription forms, landing pages, products, broadcasts and more.
- * Version: 3.0.8
+ * Version: 3.1.2
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
@@ -27,7 +27,7 @@ define( 'CONVERTKIT_PLUGIN_NAME', 'ConvertKit' ); // Used for user-agent in API 
 define( 'CONVERTKIT_PLUGIN_FILE', plugin_basename( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
-define( 'CONVERTKIT_PLUGIN_VERSION', '3.0.8' );
+define( 'CONVERTKIT_PLUGIN_VERSION', '3.1.2' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 
@@ -52,6 +52,7 @@ if ( ! class_exists( 'ConvertKit_Review_Request' ) ) {
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/cron-functions.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/functions.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-wp-convertkit.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-admin-notices.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-ajax.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-exporter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-importer.php';
@@ -109,7 +110,6 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-quick-edit.
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-cache-plugins.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-category.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-landing-page.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-notices.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-post.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-refresh-resources.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-restrict-content.php';

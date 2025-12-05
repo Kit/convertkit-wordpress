@@ -14,6 +14,7 @@ extensions:
         - lucatume\WPBrowser\Command\RunOriginal
         - lucatume\WPBrowser\Command\RunAll
         - lucatume\WPBrowser\Command\GenerateWPUnit
+        - lucatume\WPBrowser\Command\GenerateWPRestApi
         - lucatume\WPBrowser\Command\DbExport
         - lucatume\WPBrowser\Command\DbImport
         - lucatume\WPBrowser\Command\MonkeyCachePath

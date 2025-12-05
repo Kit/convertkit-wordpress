@@ -310,6 +310,28 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form Builder', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form-builder.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   3.0.0
@@ -322,9 +344,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$settings         = new ConvertKit_Settings();
 
 		return array(
-			'title'                   => __( 'Kit Form Builder', 'convertkit' ),
+			'title'                   => $this->get_title(),
 			'description'             => __( 'Build a subscription form with Kit.', 'convertkit' ),
-			'icon'                    => 'resources/backend/images/block-icon-form-builder.svg',
+			'icon'                    => $this->get_icon(),
 			'category'                => 'convertkit',
 			'keywords'                => array(
 				__( 'ConvertKit', 'convertkit' ),
@@ -475,11 +497,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return false;
-		}
-
 		// Get Kit Forms.
 		$forms         = new ConvertKit_Resource_Forms( 'block_form_builder' );
 		$forms_options = array();
@@ -567,11 +584,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return false;
-		}
 
 		return array(
 			'general' => array(

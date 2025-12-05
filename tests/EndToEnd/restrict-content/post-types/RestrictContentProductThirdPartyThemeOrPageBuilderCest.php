@@ -22,8 +22,13 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function _before(EndToEndTester $I)
 	{
-		// Activate Kit plugin.
+		// Activate Kit Plugin and third party Plugins.
 		$I->activateKitPlugin($I);
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
 	}
 
 	/**
@@ -37,11 +42,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function testRestrictContentByProductWithUncodeThemeAndVisualComposer(EndToEndTester $I)
 	{
-		// Setup Kit Plugin, disabling JS.
-		$I->setupKitPluginDisableJS($I);
-
-		// Activate Uncode theme and Plugins.
-		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		// Activate theme and third party Plugins.
 		$I->useTheme('uncode');
 		$I->activateThirdPartyPlugin($I, 'uncode-core');
 		$I->activateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
@@ -75,14 +76,15 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			options: [
 				'visible_content' => '',
 				'member_content'  => 'Member-only content.',
-			]
+			],
+			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
+			checkNoWarningsAndNotices: false
 		);
 
-		// Deactivate Uncode theme and Plugins.
+		// Deactivate theme and third party Plugins.
 		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
 		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
 		$I->useTheme('twentytwentyfive');
-		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
@@ -96,10 +98,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
 	{
-		// Setup Kit Plugin, disabling JS.
-		$I->setupKitPluginDisableJS($I);
-
-		// Activate Uncode theme and Plugins.
+		// Activate theme and third party Plugins.
 		$I->useTheme('uncode');
 		$I->activateThirdPartyPlugin($I, 'uncode-core');
 
@@ -131,10 +130,12 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			options: [
 				'visible_content' => '',
 				'member_content'  => 'Member-only content.',
-			]
+			],
+			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
+			checkNoWarningsAndNotices: false
 		);
 
-		// Deactivate Uncode theme and Plugins.
+		// Deactivate theme and third party Plugins.
 		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
 		$I->useTheme('twentytwentyfive');
 	}
@@ -150,6 +151,10 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		// Deactivate Plugins.
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+
+		// Deactivate and reset Kit Plugin.
 		$I->clearRestrictContentCookie($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);

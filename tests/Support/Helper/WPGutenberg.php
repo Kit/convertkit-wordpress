@@ -73,9 +73,18 @@ class WPGutenberg extends \Codeception\Module
 		$I->wait(2);
 
 		// Insert the block.
-		$I->waitForElementVisible('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
-		$I->seeElementInDOM('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
-		$I->click('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+		if (strpos($blockProgrammaticName, '/') !== false) {
+			// Use XPath if $blockProgrammaticName contains a forward slash.
+			$xpath = '//button[contains(@class, "editor-block-list-item-' . $blockProgrammaticName . '") and contains(@class,"block-editor-block-types-list__item") and contains(@class,"components-button")]';
+			$I->waitForElementVisible([ 'xpath' => $xpath ]);
+			$I->seeElementInDOM([ 'xpath' => $xpath ]);
+			$I->click([ 'xpath' => $xpath ]);
+		} else {
+			$selector = '.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName;
+			$I->waitForElementVisible($selector);
+			$I->seeElementInDOM($selector);
+			$I->click($selector);
+		}
 
 		// Close block inserter.
 		$I->click('button.editor-document-tools__inserter-toggle');
@@ -139,7 +148,7 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function addGutenbergParagraphBlock($I, $text)
 	{
-		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph');
+		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph/paragraph');
 
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
@@ -268,7 +277,17 @@ class WPGutenberg extends \Codeception\Module
 		$I->wait(2);
 
 		// Confirm the block is available.
-		$I->waitForElementVisible('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+		// $blockProgrammaticName may contain a slash, which is not valid in a CSS class selector.
+		// Use XPath to check for a button containing the relevant class.
+		if (strpos($blockProgrammaticName, '/') !== false) {
+			// XPath: class attribute contains all required classes including block-programmatic-name.
+			$classParts = explode('/', $blockProgrammaticName);
+			$xpath      = '//button[contains(@class, "editor-block-list-item-' . $blockProgrammaticName . '") and contains(@class,"block-editor-block-types-list__item") and contains(@class,"components-button")]';
+			$I->waitForElementVisible([ 'xpath' => $xpath ]);
+		} else {
+			$selector = '.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName;
+			$I->waitForElementVisible($selector);
+		}
 
 		// Clear the search field.
 		$I->click('button[aria-label="Reset search"]');

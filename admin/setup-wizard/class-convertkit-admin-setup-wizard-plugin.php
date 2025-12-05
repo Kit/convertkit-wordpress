@@ -316,12 +316,26 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 
 		switch ( $step ) {
 			case 2:
-				// Re-load settings class now that the API Key and Secret has been defined.
+				// Re-load settings class now that the Access and Refresh Tokens have been defined.
 				$this->settings = new ConvertKit_Settings();
 
 				// Fetch Forms.
 				$this->forms = new ConvertKit_Resource_Forms( 'setup_wizard' );
-				$this->forms->refresh();
+				$result      = $this->forms->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $result ) ) {
+					// Change the next button label and make it a link to reload the screen.
+					$this->steps[2]['next_button']['label'] = __( 'I\'ve created a form in Kit', 'convertkit' );
+					$this->steps[2]['next_button']['link']  = add_query_arg(
+						array(
+							'page' => $this->page_name,
+							'step' => 2,
+						),
+						admin_url( 'options.php' )
+					);
+					return;
+				}
 
 				// If no Forms exist in ConvertKit, change the next button label and make it a link to reload
 				// the screen.

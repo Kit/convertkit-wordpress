@@ -212,11 +212,8 @@ class CategoryFormCest
 		// Click Update.
 		$I->click('Update');
 
-		// Wait for the page to load.
-		$I->waitForElementVisible('#wpfooter');
-
 		// Check that the update succeeded.
-		$I->seeElementInDOM('div.notice-success');
+		$I->waitForElementVisible('.notice-success');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -287,11 +284,8 @@ class CategoryFormCest
 		// Click Update.
 		$I->click('Update');
 
-		// Wait for the page to load.
-		$I->waitForElementVisible('#wpfooter');
-
 		// Check that the update succeeded.
-		$I->seeElementInDOM('div.notice-success');
+		$I->waitForElementVisible('.notice-success');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -487,11 +481,8 @@ class CategoryFormCest
 		// Click Update.
 		$I->click('Update');
 
-		// Wait for the page to load.
-		$I->waitForElementVisible('#wpfooter');
-
 		// Check that the update succeeded.
-		$I->seeElementInDOM('div.notice-success');
+		$I->waitForElementVisible('.notice-success');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -572,11 +563,8 @@ class CategoryFormCest
 		// Click Update.
 		$I->click('Update');
 
-		// Wait for the page to load.
-		$I->waitForElementVisible('#wpfooter');
-
 		// Check that the update succeeded.
-		$I->seeElementInDOM('div.notice-success');
+		$I->waitForElementVisible('.notice-success');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

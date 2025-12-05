@@ -32,6 +32,62 @@ class ConvertKit_Gutenberg {
 		// Register Gutenberg Blocks.
 		add_action( 'init', array( $this, 'add_blocks' ) );
 
+		// Register REST API routes.
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.0
+	 */
+	public function register_routes() {
+
+		// Register route to refresh resources andreturn all blocks registered by the Plugin,
+		// when the user clicks the refresh button in the Gutenberg editor.
+		register_rest_route(
+			'kit/v1',
+			'/blocks',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+
+				// Return blocks.
+				'callback'            => function () {
+					// Refresh Forms.
+					$forms = new ConvertKit_Resource_Forms( 'block_edit' );
+					$result = $forms->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
+
+					// Refresh Posts.
+					$posts = new ConvertKit_Resource_Posts( 'block_edit' );
+					$result = $posts->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
+
+					// Refresh Products.
+					$products = new ConvertKit_Resource_Products( 'block_edit' );
+					$result = $products->refresh();
+					if ( is_wp_error( $result ) ) {
+						// Return blocks without refreshing other resources.
+						return rest_ensure_response( convertkit_get_blocks() );
+					}
+
+					// Return blocks, which will now include the refreshed resources.
+					return rest_ensure_response( convertkit_get_blocks() );
+				},
+
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
+
 	}
 
 	/**
@@ -157,7 +213,8 @@ class ConvertKit_Gutenberg {
 			'convertkit-gutenberg',
 			'convertkit_gutenberg',
 			array(
-				'get_blocks_nonce' => wp_create_nonce( 'convertkit_get_blocks' ),
+				'ajaxurl'          => rest_url( 'kit/v1/blocks' ),
+				'get_blocks_nonce' => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 

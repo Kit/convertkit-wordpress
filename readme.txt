@@ -3,9 +3,9 @@ Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.0.8
+Stable tag: 3.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -178,6 +178,28 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 10. Track subscriber growth and email newsletter performance
 
 == Changelog ==
+
+### 3.1.2 2025-12-03
+* Fix: Settings: Improve logic to automatically delete invalid Access Tokens
+* Fix: Settings: Disconnect: Immediately disconnect Plugin from Kit, instead of loading resources first
+* Fix: Settings: Disconnect: Remove cached Custom Fields and Sequences
+* Updated: Use WordPress Libraries 2.1.2
+
+### 3.1.1 2025-11-26
+* Fix: Block Registration: Improve Frontend Performance
+* Fix: Settings: Move hooks to ensure invalid Access Tokens are automatically deleted
+
+### 3.1.0 2025-11-20
+* Added: Settings: Tools: Mailchimp for WordPress to Kit Form Importer
+* Fix: Settings: Non-inline Forms: Correctly output `data-kit-limit-per-session`
+* Fix: Settings: Automatically delete invalid Access Tokens
+* Fix: Member Content: Courses: Next/Previous Links compatibility for WordPress 6.9
+* Fix: Landing Pages: Prevent LazyLoad Plugin from lazy loading images on Landing Pages, which would result in missing images
+* Updated: Blocks: Refresh Resources: Use REST API, replacing admin-ajax.php
+* Updated: Refresh Resources: Use REST API, replacing admin-ajax.php
+* Updated: Member Content: Use REST API, replacing admin-ajax.php
+* Updated: Use WordPress Libraries 2.1.1
+* Removed: Unused `convertkit_store_subscriber_id_in_cookie` AJAX function
 
 ### 3.0.8 2025-11-05
 * Fix: Member Content: Product: Display 'no access' notice when logged in and no access

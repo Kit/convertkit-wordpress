@@ -91,6 +91,28 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Form', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-form.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   1.9.6
@@ -103,9 +125,9 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 		$settings         = new ConvertKit_Settings();
 
 		return array(
-			'title'                             => __( 'Kit Form', 'convertkit' ),
+			'title'                             => $this->get_title(),
 			'description'                       => __( 'Displays a Kit Form.', 'convertkit' ),
-			'icon'                              => 'resources/backend/images/block-icon-form.svg',
+			'icon'                              => $this->get_icon(),
 			'category'                          => 'convertkit',
 			'keywords'                          => array(
 				__( 'ConvertKit', 'convertkit' ),
@@ -240,11 +262,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return false;
-		}
-
 		// Get ConvertKit Forms.
 		$forms            = array();
 		$convertkit_forms = new ConvertKit_Resource_Forms( 'block_edit' );
@@ -284,11 +301,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 * @return  bool|array
 	 */
 	public function get_panels() {
-
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return false;
-		}
 
 		return array(
 			'general' => array(
@@ -373,10 +385,20 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 		// If an error occured, it might be that we're requesting a Form ID that exists in ConvertKit
 		// but does not yet exist in the Plugin's Form Resources.
 		// If so, refresh the Form Resources and try again.
-		if ( is_wp_error( $form ) ) {
+		if ( is_wp_error( $form ) && $form->get_error_data() === 404 ) {
 			// Refresh Forms from the API.
-			$forms->refresh();
+			$result = $forms->refresh();
 
+			// Bail if an error occured.
+			if ( is_wp_error( $result ) ) {
+				if ( $settings->debug_enabled() ) {
+					return '<!-- ' . $result->get_error_message() . ' --> <!-- ' . $form->get_error_message() . ' -->';
+				}
+
+				return '';
+			}
+
+			// Refresh succeeded.
 			// Get Form HTML again.
 			$form = $forms->get_html( $form_id, $post_id );
 		}

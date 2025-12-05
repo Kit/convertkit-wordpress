@@ -176,6 +176,16 @@ class PluginSettingsGeneralCest
 		// Disconnect the Plugin connection to Kit.
 		$I->click('Disconnect');
 
+		// Check cached resources are removed from the database on disconnection.
+		$I->dontSeeOptionInDatabase('convertkit_creator_network_recommendations');
+		$I->dontSeeOptionInDatabase('convertkit_custom_fields');
+		$I->dontSeeOptionInDatabase('convertkit_forms');
+		$I->dontSeeOptionInDatabase('convertkit_landing_pages');
+		$I->dontSeeOptionInDatabase('convertkit_posts');
+		$I->dontSeeOptionInDatabase('convertkit_products');
+		$I->dontSeeOptionInDatabase('convertkit_sequences');
+		$I->dontSeeOptionInDatabase('convertkit_tags');
+
 		// Confirm the Connect button displays.
 		$I->see('Connect');
 		$I->dontSee('Disconnect');

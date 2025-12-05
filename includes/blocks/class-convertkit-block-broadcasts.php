@@ -92,6 +92,28 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's title.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_title() {
+
+		return __( 'Kit Broadcasts', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's icon.
+	 *
+	 * @since   3.1.1
+	 */
+	public function get_icon() {
+
+		return 'resources/backend/images/block-icon-broadcasts.svg';
+
+	}
+
+	/**
 	 * Returns this block's Title, Icon, Categories, Keywords and properties.
 	 *
 	 * @since   1.9.7.4
@@ -103,9 +125,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$settings = new ConvertKit_Settings();
 
 		return array(
-			'title'                         => __( 'Kit Broadcasts', 'convertkit' ),
+			'title'                         => $this->get_title(),
 			'description'                   => __( 'Displays a list of your Kit broadcasts.', 'convertkit' ),
-			'icon'                          => 'resources/backend/images/block-icon-broadcasts.svg',
+			'icon'                          => $this->get_icon(),
 			'category'                      => 'convertkit',
 			'keywords'                      => array(
 				__( 'ConvertKit', 'convertkit' ),
@@ -272,11 +294,6 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return false;
-		}
-
 		return array(
 			'display_grid'        => array(
 				'label'       => __( 'Display as grid', 'convertkit' ),
@@ -380,11 +397,6 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 */
 	public function get_panels() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return false;
-		}
-
 		return array(
 			'general'    => array(
 				'label'  => __( 'General', 'convertkit' ),
@@ -474,13 +486,6 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		// Fetch Posts.
 		$posts = new ConvertKit_Resource_Posts( 'output_broadcasts' );
-
-		// If this is an admin request, refresh the Posts resource now from the API,
-		// as it's an inexpensive query of ~ 0.5 seconds when we're editing a Page
-		// containing this block.
-		if ( function_exists( 'is_admin' ) && is_admin() ) {
-			$posts->refresh();
-		}
 
 		// If no Posts exist, bail.
 		if ( ! $posts->exist() ) {
