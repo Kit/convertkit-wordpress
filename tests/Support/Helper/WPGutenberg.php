@@ -16,7 +16,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * Any blocks using apiVersion 2 or lower will result in the block editor
 	 * *not* being served in an Iframe
-	 * 
+	 *
 	 * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
 	 *
 	 * @since   2.7.7
