@@ -229,10 +229,18 @@ function convertKitGutenbergRegisterBlock(block) {
 						[
 							el(
 								FlexItem,
-								{},
+								{
+									key: attribute + '-select',
+								},
 								el(SelectControl, fieldProperties)
 							),
-							el(FlexItem, {}, inlineRefreshButton(props)),
+							el(
+								FlexItem,
+								{
+									key: attribute + '-refresh',
+								},
+								inlineRefreshButton(props)
+							),
 						]
 					);
 
@@ -509,9 +517,15 @@ function convertKitGutenbergRegisterBlock(block) {
 			} else {
 				// Refresh button enabled; display the notice, link and button.
 				elements = [
-					!block.has_access_token
-						? block.no_access_token.notice
-						: block.no_resources.notice,
+					el(
+						'div',
+						{
+							key: props.clientId + '-notice',
+						},
+						!block.has_access_token
+							? block.no_access_token.notice
+							: block.no_resources.notice
+					),
 					noticeLink(props, setButtonDisabled),
 					refreshButton(props, buttonDisabled, setButtonDisabled),
 				];
