@@ -195,6 +195,12 @@ function convertKitGutenbergRegisterBlock(block) {
 					// Assign options to field.
 					fieldProperties.options = fieldOptions;
 
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom to SelectControl properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					fieldProperties.__next40pxDefaultSize = true;
+					fieldProperties.__nextHasNoMarginBottom = true;
+
 					// Return field element.
 					return el(SelectControl, fieldProperties);
 
@@ -220,6 +226,12 @@ function convertKitGutenbergRegisterBlock(block) {
 
 					// Assign options to field.
 					fieldProperties.options = fieldOptions;
+
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom to SelectControl properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					fieldProperties.__next40pxDefaultSize = true;
+					fieldProperties.__nextHasNoMarginBottom = true;
 
 					return el(
 						Flex,
