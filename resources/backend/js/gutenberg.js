@@ -144,6 +144,13 @@ function convertKitGutenbergRegisterBlock(block) {
 				label: field.label,
 				help: field.description,
 				value: props.attributes[attribute],
+
+				// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
+				// preventing deprecation notices in the block editor and opt in to the new styles
+				// from 7.0.
+				__next40pxDefaultSize: true,
+				__nextHasNoMarginBottom: true,
+
 				onChange(value) {
 					if (field.type === 'number') {
 						// If value is a blank string i.e. no attribute value was provided,
@@ -195,12 +202,6 @@ function convertKitGutenbergRegisterBlock(block) {
 					// Assign options to field.
 					fieldProperties.options = fieldOptions;
 
-					// Add __next40pxDefaultSize and __nextHasNoMarginBottom to SelectControl properties,
-					// preventing deprecation notices in the block editor and opt in to the new styles
-					// from 7.0.
-					fieldProperties.__next40pxDefaultSize = true;
-					fieldProperties.__nextHasNoMarginBottom = true;
-
 					// Return field element.
 					return el(SelectControl, fieldProperties);
 
@@ -226,12 +227,6 @@ function convertKitGutenbergRegisterBlock(block) {
 
 					// Assign options to field.
 					fieldProperties.options = fieldOptions;
-
-					// Add __next40pxDefaultSize and __nextHasNoMarginBottom to SelectControl properties,
-					// preventing deprecation notices in the block editor and opt in to the new styles
-					// from 7.0.
-					fieldProperties.__next40pxDefaultSize = true;
-					fieldProperties.__nextHasNoMarginBottom = true;
 
 					return el(
 						Flex,
