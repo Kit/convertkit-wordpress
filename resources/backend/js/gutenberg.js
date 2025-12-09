@@ -478,9 +478,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			if (typeof block.gutenberg_template !== 'undefined') {
 				// Use useBlockProps.save() to preserve styling classes and attributes
 				// from block supports (colors, typography, spacing, etc.)
-				const blockProps = useBlockProps.save({
-					className: 'wp-block-' + block.name.replace(/\//g, '-'),
-				});
+				const blockProps = useBlockProps.save();
 				return el('div', blockProps, el(InnerBlocks.Content));
 			}
 
@@ -841,32 +839,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			edit: editBlock,
 
 			// Output.
-			save: saveBlock,
-
-			// Migrate blocks created with apiVersion: 1 to apiVersion: 3.
-			// @TODO Fixes Form Builder; do we need this with other blocks?
-			// @TODO Write a test with a block created in apiVersion: 1 and migrated to apiVersion: 3.
-			deprecated: [
-				{
-					attributes: block.attributes,
-					supports: block.supports,
-					save: function (props) {
-						if (typeof block.gutenberg_template !== 'undefined') {
-							// Use useBlockProps.save() to preserve styling classes and attributes
-							// from block supports (colors, typography, spacing, etc.)
-							const blockProps = useBlockProps.save({
-								className: 'wp-block-' + block.name.replace(/\//g, '-'),
-							});
-							return el('div', blockProps, el(InnerBlocks.Content));
-						}
-			
-						// Deliberate; preview in the editor is determined by the return statement in `edit` above.
-						// On the frontend site, the block's render() PHP class is always called, so we dynamically
-						// fetch the content.
-						return null;
-					},
-				},
-			]
+			save: saveBlock
 		});
 	})(
 		window.wp.blocks,
