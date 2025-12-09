@@ -195,6 +195,12 @@ function convertKitGutenbergRegisterBlock(block) {
 					// Assign options to field.
 					fieldProperties.options = fieldOptions;
 
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom to SelectControl properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					fieldProperties.__next40pxDefaultSize = true;
+					fieldProperties.__nextHasNoMarginBottom = true;
+
 					// Return field element.
 					return el(SelectControl, fieldProperties);
 
@@ -221,6 +227,12 @@ function convertKitGutenbergRegisterBlock(block) {
 					// Assign options to field.
 					fieldProperties.options = fieldOptions;
 
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom to SelectControl properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					fieldProperties.__next40pxDefaultSize = true;
+					fieldProperties.__nextHasNoMarginBottom = true;
+
 					return el(
 						Flex,
 						{
@@ -229,10 +241,18 @@ function convertKitGutenbergRegisterBlock(block) {
 						[
 							el(
 								FlexItem,
-								{},
+								{
+									key: attribute + '-select',
+								},
 								el(SelectControl, fieldProperties)
 							),
-							el(FlexItem, {}, inlineRefreshButton(props)),
+							el(
+								FlexItem,
+								{
+									key: attribute + '-refresh',
+								},
+								inlineRefreshButton(props)
+							),
 						]
 					);
 
@@ -515,9 +535,15 @@ function convertKitGutenbergRegisterBlock(block) {
 			} else {
 				// Refresh button enabled; display the notice, link and button.
 				elements = [
-					!block.has_access_token
-						? block.no_access_token.notice
-						: block.no_resources.notice,
+					el(
+						'div',
+						{
+							key: props.clientId + '-notice',
+						},
+						!block.has_access_token
+							? block.no_access_token.notice
+							: block.no_resources.notice
+					),
 					noticeLink(props, setButtonDisabled),
 					refreshButton(props, buttonDisabled, setButtonDisabled),
 				];
