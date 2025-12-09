@@ -42,7 +42,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		const el = element.createElement;
 		const { registerBlockType } = blocks;
 		const { InspectorControls, InnerBlocks, useBlockProps } = editor;
-		const { Fragment, useState } = element;
+		const { useState } = element;
 		const {
 			Button,
 			Icon,
@@ -357,7 +357,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			// when the user adds a new block and hovers over this block's icon),
 			// show the preview image.
 			if (props.attributes.is_gutenberg_example === true) {
-				return (
+				return el(
 					'div',
 					blockProps,
 					el('img', {
@@ -476,7 +476,12 @@ function convertKitGutenbergRegisterBlock(block) {
 		 */
 		const saveBlock = function () {
 			if (typeof block.gutenberg_template !== 'undefined') {
-				return el('div', {}, el(InnerBlocks.Content));
+				// Use useBlockProps.save() to preserve styling classes and attributes
+				// from block supports (colors, typography, spacing, etc.)
+				const blockProps = useBlockProps.save({
+					className: 'wp-block-' + block.name.replace(/\//g, '-'),
+				});
+				return el('div', blockProps, el(InnerBlocks.Content));
 			}
 
 			// Deliberate; preview in the editor is determined by the return statement in `edit` above.
@@ -837,6 +842,31 @@ function convertKitGutenbergRegisterBlock(block) {
 
 			// Output.
 			save: saveBlock,
+
+			// Migrate blocks created with apiVersion: 1 to apiVersion: 3.
+			// @TODO Fixes Form Builder; do we need this with other blocks?
+			// @TODO Write a test with a block created in apiVersion: 1 and migrated to apiVersion: 3.
+			deprecated: [
+				{
+					attributes: block.attributes,
+					supports: block.supports,
+					save: function (props) {
+						if (typeof block.gutenberg_template !== 'undefined') {
+							// Use useBlockProps.save() to preserve styling classes and attributes
+							// from block supports (colors, typography, spacing, etc.)
+							const blockProps = useBlockProps.save({
+								className: 'wp-block-' + block.name.replace(/\//g, '-'),
+							});
+							return el('div', blockProps, el(InnerBlocks.Content));
+						}
+			
+						// Deliberate; preview in the editor is determined by the return statement in `edit` above.
+						// On the frontend site, the block's render() PHP class is always called, so we dynamically
+						// fetch the content.
+						return null;
+					},
+				},
+			]
 		});
 	})(
 		window.wp.blocks,
