@@ -365,7 +365,6 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @return {Object}       Block settings sidebar elements.
 		 */
 		const editBlock = function (props) {
-
 			const blockProps = useBlockProps();
 
 			// If requesting an example of how this block looks (which is requested
@@ -404,7 +403,11 @@ function convertKitGutenbergRegisterBlock(block) {
 					block,
 					props
 				);
-				return editBlockWithPanelsAndPreview(panels, preview, blockProps);
+				return editBlockWithPanelsAndPreview(
+					panels,
+					preview,
+					blockProps
+				);
 			}
 
 			// If no settings have been defined for this block, render the block with a notice
@@ -419,7 +422,11 @@ function convertKitGutenbergRegisterBlock(block) {
 					block.name,
 					block.gutenberg_help_description
 				);
-				return editBlockWithPanelsAndPreview(panels, preview, blockProps);
+				return editBlockWithPanelsAndPreview(
+					panels,
+					preview,
+					blockProps
+				);
 			}
 
 			// If no render_callback is defined, render the block.
@@ -446,7 +453,11 @@ function convertKitGutenbergRegisterBlock(block) {
 						template,
 					})
 				);
-				return editBlockWithPanelsAndPreview(panels, preview, blockProps);
+				return editBlockWithPanelsAndPreview(
+					panels,
+					preview,
+					blockProps
+				);
 			}
 
 			// Use the block's PHP's render() function by calling the ServerSideRender component.
@@ -467,19 +478,20 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   3.0.0
 		 *
-		 * @param {Object} panels  Block panels.
-		 * @param {Object} preview Block preview.
+		 * @param          blockProps
+		 * @param {Object} panels     Block panels.
+		 * @param {Object} preview    Block preview.
 		 * @return {Object}         Block settings sidebar elements.
 		 */
-		const editBlockWithPanelsAndPreview = function (panels, preview, blockProps) {
-			return el(
-				'div',
-				blockProps,
-				[
-					el(InspectorControls, {}, panels),
-					preview
-				]
-			);
+		const editBlockWithPanelsAndPreview = function (
+			panels,
+			preview,
+			blockProps
+		) {
+			return el('div', blockProps, [
+				el(InspectorControls, {}, panels),
+				preview,
+			]);
 		};
 
 		/**
@@ -860,7 +872,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			edit: editBlock,
 
 			// Output.
-			save: saveBlock
+			save: saveBlock,
 		});
 	})(
 		window.wp.blocks,
