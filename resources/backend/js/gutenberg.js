@@ -41,7 +41,7 @@ function convertKitGutenbergRegisterBlock(block) {
 		// Define some constants for the various items we'll use.
 		const el = element.createElement;
 		const { registerBlockType } = blocks;
-		const { InspectorControls, InnerBlocks } = editor;
+		const { InspectorControls, InnerBlocks, useBlockProps } = editor;
 		const { Fragment, useState } = element;
 		const {
 			Button,
@@ -350,13 +350,16 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @return {Object}       Block settings sidebar elements.
 		 */
 		const editBlock = function (props) {
+
+			const blockProps = useBlockProps();
+
 			// If requesting an example of how this block looks (which is requested
 			// when the user adds a new block and hovers over this block's icon),
 			// show the preview image.
 			if (props.attributes.is_gutenberg_example === true) {
 				return (
-					Fragment,
-					{},
+					'div',
+					blockProps,
 					el('img', {
 						src: block.gutenberg_example_image,
 					})
@@ -386,7 +389,7 @@ function convertKitGutenbergRegisterBlock(block) {
 					block,
 					props
 				);
-				return editBlockWithPanelsAndPreview(panels, preview);
+				return editBlockWithPanelsAndPreview(panels, preview, blockProps);
 			}
 
 			// If no settings have been defined for this block, render the block with a notice
@@ -401,7 +404,7 @@ function convertKitGutenbergRegisterBlock(block) {
 					block.name,
 					block.gutenberg_help_description
 				);
-				return editBlockWithPanelsAndPreview(panels, preview);
+				return editBlockWithPanelsAndPreview(panels, preview, blockProps);
 			}
 
 			// If no render_callback is defined, render the block.
@@ -428,7 +431,7 @@ function convertKitGutenbergRegisterBlock(block) {
 						template,
 					})
 				);
-				return editBlockWithPanelsAndPreview(panels, preview);
+				return editBlockWithPanelsAndPreview(panels, preview, blockProps);
 			}
 
 			// Use the block's PHP's render() function by calling the ServerSideRender component.
@@ -440,7 +443,7 @@ function convertKitGutenbergRegisterBlock(block) {
 				// apply styles with i.e. convertkit-block.name.
 				className: 'convertkit-ssr-' + block.name,
 			});
-			return editBlockWithPanelsAndPreview(panels, preview);
+			return editBlockWithPanelsAndPreview(panels, preview, blockProps);
 		};
 
 		/**
@@ -453,14 +456,14 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @param {Object} preview Block preview.
 		 * @return {Object}         Block settings sidebar elements.
 		 */
-		const editBlockWithPanelsAndPreview = function (panels, preview) {
+		const editBlockWithPanelsAndPreview = function (panels, preview, blockProps) {
 			return el(
-				// Sidebar Panel with Fields.
-				Fragment,
-				{},
-				el(InspectorControls, {}, panels),
-				// Block Preview.
-				preview
+				'div',
+				blockProps,
+				[
+					el(InspectorControls, {}, panels),
+					preview
+				]
 			);
 		};
 
