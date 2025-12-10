@@ -77,7 +77,7 @@ function convertKitGutenbergFormBlockRenderPreview(block, props) {
 			{
 				className: className.join(' '),
 			},
-			wp.components.SandBox({
+			wp.element.createElement(wp.components.SandBox, {
 				html,
 				title: block.name,
 				styles: [

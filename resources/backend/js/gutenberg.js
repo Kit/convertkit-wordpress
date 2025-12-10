@@ -144,6 +144,13 @@ function convertKitGutenbergRegisterBlock(block) {
 				label: field.label,
 				help: field.description,
 				value: props.attributes[attribute],
+
+				// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
+				// preventing deprecation notices in the block editor and opt in to the new styles
+				// from 7.0.
+				__next40pxDefaultSize: true,
+				__nextHasNoMarginBottom: true,
+
 				onChange(value) {
 					if (field.type === 'number') {
 						// If value is a blank string i.e. no attribute value was provided,
@@ -229,10 +236,18 @@ function convertKitGutenbergRegisterBlock(block) {
 						[
 							el(
 								FlexItem,
-								{},
+								{
+									key: attribute + '-select',
+								},
 								el(SelectControl, fieldProperties)
 							),
-							el(FlexItem, {}, inlineRefreshButton(props)),
+							el(
+								FlexItem,
+								{
+									key: attribute + '-refresh',
+								},
+								inlineRefreshButton(props)
+							),
 						]
 					);
 
@@ -509,9 +524,15 @@ function convertKitGutenbergRegisterBlock(block) {
 			} else {
 				// Refresh button enabled; display the notice, link and button.
 				elements = [
-					!block.has_access_token
-						? block.no_access_token.notice
-						: block.no_resources.notice,
+					el(
+						'div',
+						{
+							key: props.clientId + '-notice',
+						},
+						!block.has_access_token
+							? block.no_access_token.notice
+							: block.no_resources.notice
+					),
 					noticeLink(props, setButtonDisabled),
 					refreshButton(props, buttonDisabled, setButtonDisabled),
 				];
