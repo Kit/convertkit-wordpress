@@ -144,6 +144,13 @@ function convertKitGutenbergRegisterBlock(block) {
 				label: field.label,
 				help: field.description,
 				value: props.attributes[attribute],
+
+				// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
+				// preventing deprecation notices in the block editor and opt in to the new styles
+				// from 7.0.
+				__next40pxDefaultSize: true,
+				__nextHasNoMarginBottom: true,
+
 				onChange(value) {
 					if (field.type === 'number') {
 						// If value is a blank string i.e. no attribute value was provided,
