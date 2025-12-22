@@ -367,8 +367,10 @@ function convertKitGutenbergRegisterBlock(block) {
 		const EditBlock = function (props) {
 			const blockProps = useBlockProps();
 
-			console.log(props);
-			console.log(blockProps);
+			// Refresh button disabled state on DisplayNoticeWithLink.
+			// This must be here to avoid React error on hook order change when the user e.g.
+			// connects their Kit account from within the block itself.
+			const [buttonDisabled, setButtonDisabled] = useState(false);
 
 			// If requesting an example of how this block looks (which is requested
 			// when the user adds a new block and hovers over this block's icon),
@@ -386,7 +388,12 @@ function convertKitGutenbergRegisterBlock(block) {
 			// If no access token has been defined in the Plugin, or no resources exist in Kit
 			// for this block, show a message in the block to tell the user what to do.
 			if (!block.has_access_token || !block.has_resources) {
-				return DisplayNoticeWithLink(props, blockProps);
+				return DisplayNoticeWithLink(
+					props,
+					blockProps,
+					buttonDisabled,
+					setButtonDisabled
+				);
 			}
 
 			// Build Inspector Control Panels, which will appear in the Sidebar when editing the Block.
@@ -525,14 +532,18 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.5
 		 *
-		 * @param {Object} props      Block properties.
-		 * @param {Object} blockProps Block properties.
-		 * @return {Object}           Notice.
+		 * @param {Object}   props             Block properties.
+		 * @param {Object}   blockProps        Block properties.
+		 * @param {boolean}  buttonDisabled    Whether the refresh button is disabled (true) or enabled (false)
+		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
+		 * @return {Object}                     Notice.
 		 */
-		const DisplayNoticeWithLink = function (props, blockProps) {
-			// useState to toggle the refresh button's disabled state.
-			const [buttonDisabled, setButtonDisabled] = useState(false);
-
+		const DisplayNoticeWithLink = function (
+			props,
+			blockProps,
+			buttonDisabled,
+			setButtonDisabled
+		) {
 			// Holds the array of elements to display in the notice component.
 			let elements;
 
