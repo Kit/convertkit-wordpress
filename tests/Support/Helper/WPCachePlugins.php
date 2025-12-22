@@ -195,7 +195,12 @@ class WPCachePlugins extends \Codeception\Module
 		// Navigate to its settings screen.
 		$I->amOnAdminPage('admin.php?page=wpo_cache');
 
+		// Exit tour.
+		$I->waitForElementVisible('#teamupdraft-onboarding');
+		$I->click('Exit setup');
+
 		// Dismiss notice.
+		$I->waitForElementVisible('.wpo-introduction-notice');
 		$I->click('Dismiss');
 
 		// Enable.
