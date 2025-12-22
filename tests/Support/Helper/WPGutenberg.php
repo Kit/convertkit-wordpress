@@ -11,13 +11,11 @@ class WPGutenberg extends \Codeception\Module
 {
 	/**
 	 * Helper method to switch to the Gutenberg editor Iframe.
-	 * Use this method if all blocks use the block editor apiVersion 3,
-	 * as this means the block editor will be served in an Iframe.
-	 *
-	 * Any blocks using apiVersion 2 or lower will result in the block editor
-	 * *not* being served in an Iframe
-	 *
-	 * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
+	 * Use this method if all blocks use the Block API v3,
+	 * as this means Gutenberg will be served in an Iframe.
+	 * At present, we use v2 to provide backwards compatibility
+	 * down to WordPress 5.6:
+	 * https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
 	 *
 	 * @since   2.7.7
 	 *
