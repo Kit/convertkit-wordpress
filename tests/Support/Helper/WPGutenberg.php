@@ -10,11 +10,8 @@ namespace Tests\Support\Helper;
 class WPGutenberg extends \Codeception\Module
 {
 	/**
-	 * Helper method to switch to the Gutenberg editor Iframe.
-	 * Use this method if all blocks use the Block API v3,
-	 * as this means Gutenberg will be served in an Iframe.
-	 * At present, we use v2 to provide backwards compatibility
-	 * down to WordPress 5.6:
+	 * Helper method to switch to the Gutenberg editor Iframe
+	 * when all blocks use the Block API v3:
 	 * https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
 	 *
 	 * @since   2.7.7
@@ -41,8 +38,14 @@ class WPGutenberg extends \Codeception\Module
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 		$I->waitForElementVisible('body.post-new-php');
 
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
+
 		// Define the Title.
 		$I->fillField('.editor-post-title__input', $title);
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
