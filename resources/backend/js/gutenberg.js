@@ -41,8 +41,8 @@ function convertKitGutenbergRegisterBlock(block) {
 		// Define some constants for the various items we'll use.
 		const el = element.createElement;
 		const { registerBlockType } = blocks;
-		const { InspectorControls, InnerBlocks } = editor;
-		const { Fragment, useState } = element;
+		const { InspectorControls, InnerBlocks, useBlockProps } = editor;
+		const { useState } = element;
 		const {
 			Button,
 			Icon,
@@ -364,14 +364,21 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @param {Object} props Block properties.
 		 * @return {Object}       Block settings sidebar elements.
 		 */
-		const editBlock = function (props) {
+		const EditBlock = function (props) {
+			const blockProps = useBlockProps();
+
+			// Refresh button disabled state on DisplayNoticeWithLink.
+			// This must be here to avoid React error on hook order change when the user e.g.
+			// connects their Kit account from within the block itself.
+			const [buttonDisabled, setButtonDisabled] = useState(false);
+
 			// If requesting an example of how this block looks (which is requested
 			// when the user adds a new block and hovers over this block's icon),
 			// show the preview image.
 			if (props.attributes.is_gutenberg_example === true) {
-				return (
-					Fragment,
-					{},
+				return el(
+					'div',
+					blockProps,
 					el('img', {
 						src: block.gutenberg_example_image,
 					})
@@ -381,7 +388,12 @@ function convertKitGutenbergRegisterBlock(block) {
 			// If no access token has been defined in the Plugin, or no resources exist in Kit
 			// for this block, show a message in the block to tell the user what to do.
 			if (!block.has_access_token || !block.has_resources) {
-				return DisplayNoticeWithLink(props);
+				return DisplayNoticeWithLink(
+					props,
+					blockProps,
+					buttonDisabled,
+					setButtonDisabled
+				);
 			}
 
 			// Build Inspector Control Panels, which will appear in the Sidebar when editing the Block.
@@ -401,7 +413,11 @@ function convertKitGutenbergRegisterBlock(block) {
 					block,
 					props
 				);
-				return editBlockWithPanelsAndPreview(panels, preview);
+				return editBlockWithPanelsAndPreview(
+					panels,
+					preview,
+					blockProps
+				);
 			}
 
 			// If no settings have been defined for this block, render the block with a notice
@@ -416,7 +432,11 @@ function convertKitGutenbergRegisterBlock(block) {
 					block.name,
 					block.gutenberg_help_description
 				);
-				return editBlockWithPanelsAndPreview(panels, preview);
+				return editBlockWithPanelsAndPreview(
+					panels,
+					preview,
+					blockProps
+				);
 			}
 
 			// If no render_callback is defined, render the block.
@@ -443,7 +463,11 @@ function convertKitGutenbergRegisterBlock(block) {
 						template,
 					})
 				);
-				return editBlockWithPanelsAndPreview(panels, preview);
+				return editBlockWithPanelsAndPreview(
+					panels,
+					preview,
+					blockProps
+				);
 			}
 
 			// Use the block's PHP's render() function by calling the ServerSideRender component.
@@ -455,7 +479,7 @@ function convertKitGutenbergRegisterBlock(block) {
 				// apply styles with i.e. convertkit-block.name.
 				className: 'convertkit-ssr-' + block.name,
 			});
-			return editBlockWithPanelsAndPreview(panels, preview);
+			return editBlockWithPanelsAndPreview(panels, preview, blockProps);
 		};
 
 		/**
@@ -464,19 +488,20 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since   3.0.0
 		 *
-		 * @param {Object} panels  Block panels.
-		 * @param {Object} preview Block preview.
-		 * @return {Object}         Block settings sidebar elements.
+		 * @param {Object} panels     Block panels.
+		 * @param {Object} preview    Block preview.
+		 * @param {Object} blockProps Block properties.
+		 * @return {Object}           Block settings sidebar elements.
 		 */
-		const editBlockWithPanelsAndPreview = function (panels, preview) {
-			return el(
-				// Sidebar Panel with Fields.
-				Fragment,
-				{},
+		const editBlockWithPanelsAndPreview = function (
+			panels,
+			preview,
+			blockProps
+		) {
+			return el('div', blockProps, [
 				el(InspectorControls, {}, panels),
-				// Block Preview.
-				preview
-			);
+				preview,
+			]);
 		};
 
 		/**
@@ -488,7 +513,10 @@ function convertKitGutenbergRegisterBlock(block) {
 		 */
 		const saveBlock = function () {
 			if (typeof block.gutenberg_template !== 'undefined') {
-				return el('div', {}, el(InnerBlocks.Content));
+				// Use useBlockProps.save() to preserve styling classes and attributes
+				// from block supports (colors, typography, spacing, etc.)
+				const blockProps = useBlockProps.save();
+				return el('div', blockProps, el(InnerBlocks.Content));
 			}
 
 			// Deliberate; preview in the editor is determined by the return statement in `edit` above.
@@ -504,13 +532,18 @@ function convertKitGutenbergRegisterBlock(block) {
 		 *
 		 * @since 	2.2.5
 		 *
-		 * @param {Object} props Block properties.
-		 * @return {Object}       Notice.
+		 * @param {Object}   props             Block properties.
+		 * @param {Object}   blockProps        Block properties.
+		 * @param {boolean}  buttonDisabled    Whether the refresh button is disabled (true) or enabled (false)
+		 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
+		 * @return {Object}                     Notice.
 		 */
-		const DisplayNoticeWithLink = function (props) {
-			// useState to toggle the refresh button's disabled state.
-			const [buttonDisabled, setButtonDisabled] = useState(false);
-
+		const DisplayNoticeWithLink = function (
+			props,
+			blockProps,
+			buttonDisabled,
+			setButtonDisabled
+		) {
 			// Holds the array of elements to display in the notice component.
 			let elements;
 
@@ -541,13 +574,19 @@ function convertKitGutenbergRegisterBlock(block) {
 			// Return the element.
 			return el(
 				'div',
-				{
-					// convertkit-no-content class allows resources/backend/css/gutenberg.css
-					// to apply styling/branding to the block.
-					className:
-						'convertkit-' + block.name + ' convertkit-no-content',
-				},
-				elements
+				blockProps,
+				el(
+					'div',
+					{
+						// convertkit-no-content class allows resources/backend/css/gutenberg.css
+						// to apply styling/branding to the block.
+						className:
+							'convertkit-' +
+							block.name +
+							' convertkit-no-content',
+					},
+					elements
+				)
 			);
 		};
 
@@ -851,7 +890,7 @@ function convertKitGutenbergRegisterBlock(block) {
 			},
 
 			// Editor.
-			edit: editBlock,
+			edit: EditBlock,
 
 			// Output.
 			save: saveBlock,
