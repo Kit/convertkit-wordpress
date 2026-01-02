@@ -159,6 +159,68 @@ class RestrictContentFormCest
 
 	/**
 	 * Test that restricting content by a Form specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page, and that the container CSS classes are applied
+	 * to the content preview and call to action.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentContainerCSSClasses(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
+
+		// Define Restrict Content settings.
+		$settings = [
+			'container_css_classes' => 'custom-container-css-class',
+		];
+
+		// Setup Restrict Content functionality with container CSS classes.
+		$I->setupKitPluginRestrictContent($I, $settings);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Form'
+		);
+
+		// Configure metabox's Restrict Content setting = Form name.
+		$I->configureMetaboxSettings(
+			$I,
+			'wp-convertkit-meta-box',
+			[
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByFormOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			options: [
+				'settings' => $settings,
+			]
+		);
+	}
+
+	/**
+	 * Test that restricting content by a Form specified in the Page Settings works when
 	 * using the Quick Edit functionality.
 	 *
 	 * @since   2.7.3

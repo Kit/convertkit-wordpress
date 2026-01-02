@@ -167,6 +167,7 @@ class RestrictContentSettingsCest
 			'email_description_text' => 'Email Description Text',
 			'email_check_heading'    => 'Email Check Heading',
 			'email_check_text'       => 'Email Check Text',
+			'container_css_classes'  => 'customer-container-class',
 		);
 
 		// Save settings.
