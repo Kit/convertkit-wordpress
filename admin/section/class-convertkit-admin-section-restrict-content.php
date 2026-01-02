@@ -333,6 +333,21 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			)
 		);
 
+		add_settings_field(
+			'container_css_classes',
+			__( 'Container CSS Classes', 'convertkit' ),
+			array( $this, 'text_callback' ),
+			$this->settings_key,
+			$this->name,
+			array(
+				'name'        => 'container_css_classes',
+				'label_for'   => 'container_css_classes',
+				'description' => array(
+					__( 'Optional CSS classes to apply to the container wrapping the content preview and call to action for non-authenticated subscribers.', 'convertkit' ),
+				),
+			)
+		);
+
 	}
 
 	/**
