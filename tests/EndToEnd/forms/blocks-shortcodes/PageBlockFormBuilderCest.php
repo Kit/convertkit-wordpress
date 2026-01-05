@@ -1246,11 +1246,22 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I  Tester.
+	 * @param   EndToEndTester $I  						 Tester.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	private function seeFormBuilderBlock(EndToEndTester $I)
+	private function seeFormBuilderBlock(EndToEndTester $I, $switchToGutenbergEditor = true)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
+
 		$I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
+
+		// Switch back to main window.
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -1258,11 +1269,22 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I  Tester.
+	 * @param   EndToEndTester $I  						 Tester.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	private function seeFormBuilderButtonBlock(EndToEndTester $I)
+	private function seeFormBuilderButtonBlock(EndToEndTester $I, $switchToGutenbergEditor = true)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
+
 		$I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
+
+		// Switch back to main window.
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -1277,9 +1299,15 @@ class PageBlockFormBuilderCest
 	 * @param   string         $label      Field label.
 	 * @param   bool           $required   Whether the field should be marked `required`.
 	 * @param   string         $container  The container the field should be in.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div')
+	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div', $switchToGutenbergEditor = true)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
+
 		// Check field exists with correct attributes.
 		switch ( $fieldType ) {
 			case 'textarea':
@@ -1297,6 +1325,11 @@ class PageBlockFormBuilderCest
 		if ($required) {
 			$I->seeElementInDOM($container . ' label[for="' . $fieldID . '"] span.convertkit-form-builder-field-required');
 		}
+
+		// Switch back to main window.
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -1304,8 +1337,8 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I     Tester.
-	 * @param   string         $text  The text to check for in the submit button.
+	 * @param   EndToEndTester $I  		Tester.
+	 * @param   string         $text  	The text to check for in the submit button.
 	 */
 	private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
 	{

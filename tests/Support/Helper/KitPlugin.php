@@ -771,17 +771,24 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.6
 	 *
-	 * @param   EndToEndTester $I                 Tester.
-	 * @param   string         $blockName         Block Name.
-	 * @param   bool|string    $expectedMessage   Expected message displayed in block after valid OAuth tokens are specified.
+	 * @param   EndToEndTester $I                 		 Tester.
+	 * @param   string         $blockName         		 Block Name.
+	 * @param   bool|string    $expectedMessage   		 Expected message displayed in block after valid OAuth tokens are specified.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false)
+	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false, $switchToGutenbergEditor = true)
 	{
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
-		$I->seeBlockHasNoContentMessage($I, 'Not connected to Kit.');
+		$I->seeBlockHasNoContentMessage(
+			$I,
+			message: 'Not connected to Kit.',
+			switchToGutenbergEditor: $switchToGutenbergEditor
+		);
 
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		// Click the link to confirm it loads the Plugin's setup wizard.
 		$I->click(
@@ -804,7 +811,9 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		// Wait until the block changes to refreshing.
 		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
@@ -814,11 +823,17 @@ class KitPlugin extends \Codeception\Module
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources', 30);
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
-			$I->seeBlockHasNoContentMessage($I, $expectedMessage);
+			$I->seeBlockHasNoContentMessage(
+				$I,
+				message: $expectedMessage,
+				switchToGutenbergEditor: $switchToGutenbergEditor
+			);
 		}
 	}
 
@@ -827,12 +842,15 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I     EndToEndTester.
+	 * @param   EndToEndTester $I     					 EndToEndTester.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function clickBlockRefreshButton($I)
+	public function clickBlockRefreshButton($I, $switchToGutenbergEditor = true)
 	{
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.wp-convertkit-refresh-resources');
@@ -841,7 +859,9 @@ class KitPlugin extends \Codeception\Module
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources');
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -849,13 +869,16 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           EndToEndTester.
-	 * @param   string         $message     Message.
+	 * @param   EndToEndTester $I           			 EndToEndTester.
+	 * @param   string         $message     			 Message.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function seeBlockHasNoContentMessage($I, $message)
+	public function seeBlockHasNoContentMessage($I, $message, $switchToGutenbergEditor = true)
 	{
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		$I->see(
 			$message,
@@ -865,7 +888,9 @@ class KitPlugin extends \Codeception\Module
 		);
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -874,13 +899,16 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           EndToEndTester.
-	 * @param   string         $linkText    Link text.
+	 * @param   EndToEndTester $I           			 EndToEndTester.
+	 * @param   string         $linkText    			 Link text.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
+	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText, $switchToGutenbergEditor = true)
 	{
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		$I->click(
 			$linkText,
@@ -899,7 +927,9 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -907,13 +937,16 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           EndToEndTester.
-	 * @param   string         $message     Message.
+	 * @param   EndToEndTester $I           			 EndToEndTester.
+	 * @param   string         $message     			 Message.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function seeFormBlockIFrameHasMessage($I, $message)
+	public function seeFormBlockIFrameHasMessage($I, $message, $switchToGutenbergEditor = true)
 	{
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		// Switch to iframe preview for the Form block.
 		$I->switchToIFrame('iframe[class="components-sandbox"]');
