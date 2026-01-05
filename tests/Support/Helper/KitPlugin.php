@@ -888,6 +888,8 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function seeFormBlockIFrameHasMessage($I, $message)
 	{
+		$I->switchToGutenbergEditor($I); // Required for apiVersion 3 blocks.
+
 		// Switch to iframe preview for the Form block.
 		$I->switchToIFrame('iframe[class="components-sandbox"]');
 
