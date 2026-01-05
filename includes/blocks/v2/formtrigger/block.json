@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "convertkit/formtrigger",
+    "title": "Kit Form Trigger",
+    "category": "kit",
+    "description": "Displays a modal, sticky bar or slide in form to display when the button is pressed.",
+    "keywords": [ "convertkit", "kit", "form" ],
+    "textdomain": "convertkit",
+    "attributes": {
+        "form": {
+            "type": "string"
+        },
+        "text": {
+            "type": "string"
+        },
+        "fontSize": {
+            "type": "string"
+        },
+        "style": {
+            "type": "object"
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "is_gutenberg_example": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "className": true,
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "convertkit-gutenberg"
+}

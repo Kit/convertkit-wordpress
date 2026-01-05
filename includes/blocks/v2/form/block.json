@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "convertkit/form",
+    "title": "Kit Form",
+    "category": "kit",
+    "description": "Displays a Kit Form.",
+    "keywords": [
+        "form",
+        "embed",
+        "subscriber",
+        "email",
+        "convertkit"
+    ],
+    "textdomain": "convertkit",
+    "attributes": {
+        "form": {
+            "type": "string"
+        },
+        "is_gutenberg_example": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "align": true,
+        "className": true,
+        "color": {
+            "link": false,
+            "background": true,
+            "text": false
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "convertkit-gutenberg"
+}

@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "convertkit/broadcasts",
+    "title": "Kit Broadcasts",
+    "category": "kit",
+    "description": "Displays a list of your Kit broadcasts.",
+    "keywords": [ "convertkit", "kit", "broadcasts", "posts" ],
+    "textdomain": "convertkit",
+    "attributes": {
+        "display_grid": {
+            "type": "boolean"
+        },
+        "date_format": {
+            "type": "string"
+        },
+        "display_image": {
+            "type": "boolean"
+        },
+        "display_description": {
+            "type": "boolean"
+        },
+        "display_read_more": {
+            "type": "boolean"
+        },
+        "read_more_label": {
+            "type": "string"
+        },
+        "limit": {
+            "type": "number"
+        },
+        "page": {
+            "type": "number"
+        },
+        "paginate": {
+            "type": "boolean"
+        },
+        "paginate_label_prev": {
+            "type": "string"
+        },
+        "paginate_label_next": {
+            "type": "string"
+        },
+        "style": {
+            "type": "object"
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "is_gutenberg_example": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "className": true,
+        "color": {
+            "link": true,
+            "background": true,
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "convertkit-gutenberg"
+}
