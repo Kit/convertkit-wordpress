@@ -1261,7 +1261,7 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I  						 Tester.
+	 * @param   EndToEndTester $I                        Tester.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	private function seeFormBuilderBlock(EndToEndTester $I, $switchToGutenbergEditor = true)
@@ -1284,7 +1284,7 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I  						 Tester.
+	 * @param   EndToEndTester $I                        Tester.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	private function seeFormBuilderButtonBlock(EndToEndTester $I, $switchToGutenbergEditor = true)
@@ -1352,8 +1352,8 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I  		Tester.
-	 * @param   string         $text  	The text to check for in the submit button.
+	 * @param   EndToEndTester $I       Tester.
+	 * @param   string         $text    The text to check for in the submit button.
 	 */
 	private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
 	{

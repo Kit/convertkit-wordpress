@@ -771,9 +771,9 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.6
 	 *
-	 * @param   EndToEndTester $I                 		 Tester.
-	 * @param   string         $blockName         		 Block Name.
-	 * @param   bool|string    $expectedMessage   		 Expected message displayed in block after valid OAuth tokens are specified.
+	 * @param   EndToEndTester $I                        Tester.
+	 * @param   string         $blockName                Block Name.
+	 * @param   bool|string    $expectedMessage          Expected message displayed in block after valid OAuth tokens are specified.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false, $switchToGutenbergEditor = true)
@@ -842,7 +842,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I     					 EndToEndTester.
+	 * @param   EndToEndTester $I                        EndToEndTester.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	public function clickBlockRefreshButton($I, $switchToGutenbergEditor = true)
@@ -869,8 +869,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           			 EndToEndTester.
-	 * @param   string         $message     			 Message.
+	 * @param   EndToEndTester $I                        EndToEndTester.
+	 * @param   string         $message                  Message.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	public function seeBlockHasNoContentMessage($I, $message, $switchToGutenbergEditor = true)
@@ -899,8 +899,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           			 EndToEndTester.
-	 * @param   string         $linkText    			 Link text.
+	 * @param   EndToEndTester $I                        EndToEndTester.
+	 * @param   string         $linkText                 Link text.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText, $switchToGutenbergEditor = true)
@@ -937,8 +937,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           			 EndToEndTester.
-	 * @param   string         $message     			 Message.
+	 * @param   EndToEndTester $I                        EndToEndTester.
+	 * @param   string         $message                  Message.
 	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
 	public function seeFormBlockIFrameHasMessage($I, $message, $switchToGutenbergEditor = true)
