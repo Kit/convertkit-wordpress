@@ -20,11 +20,8 @@ class WPMetabox extends \Codeception\Module
 	 */
 	public function configureMetaboxSettings($I, $metabox, $configuration)
 	{
-		// Expand the Meta Boxes panel.
-		$I->click('Meta Boxes', '.edit-post-meta-boxes-main');
-		
 		// Check that the metabox exists.
-		$I->waitForElementVisible('#' . $metabox);
+		$I->seeElementInDOM('#' . $metabox);
 
 		// Apply configuration.
 		foreach ($configuration as $field => $attributes) {
@@ -47,8 +44,5 @@ class WPMetabox extends \Codeception\Module
 					break;
 			}
 		}
-
-		// Collapse the Meta Boxes panel.
-		$I->click('Meta Boxes', '.edit-post-meta-boxes-main');
 	}
 }

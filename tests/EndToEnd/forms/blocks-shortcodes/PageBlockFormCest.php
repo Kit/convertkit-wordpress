@@ -42,8 +42,6 @@ class PageBlockFormCest
 			title: 'Kit: Page: Form: Block: Valid Form Param'
 		);
 
-		// @TODO.
-
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
 		$I->configureMetaboxSettings(
 			$I,
