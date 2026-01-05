@@ -21,7 +21,7 @@ class ConvertKit_Impeka {
 	 */
 	public function __construct() {
 
-		add_action( 'convertkit_output_restrict_content_container_css_classes', array( $this, 'maybe_add_restrict_content_container_css_classes' ) );
+		add_filter( 'convertkit_output_restrict_content_container_css_classes', array( $this, 'maybe_add_restrict_content_container_css_classes' ) );
 
 	}
 
