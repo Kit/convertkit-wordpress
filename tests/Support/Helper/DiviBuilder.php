@@ -83,7 +83,13 @@ class DiviBuilder extends \Codeception\Module
 	public function createDiviPageInFrontendEditor($I, $title, $configureMetaBox = true)
 	{
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage($I, 'page', $title);
+		// Don't switch to the Gutenberg IFrame, as we're using the Divi Builder, which won't use the iframe.
+		$I->addGutenbergPage(
+			$I,
+			postType: 'page',
+			title: $title,
+			switchToGutenbergEditor: false
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
 		if ($configureMetaBox) {

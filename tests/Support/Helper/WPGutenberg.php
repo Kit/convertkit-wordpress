@@ -28,24 +28,29 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I          EndToEnd Tester.
-	 * @param   string         $postType   Post Type.
-	 * @param   string         $title      Post Title.
+	 * @param   EndToEndTester $I                        EndToEnd Tester.
+	 * @param   string         $postType                 Post Type.
+	 * @param   string         $title                    Post Title.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame (i.e if all blocks use apiVersion 3).
 	 */
-	public function addGutenbergPage($I, $postType = 'page', $title = 'Gutenberg Title')
+	public function addGutenbergPage($I, $postType = 'page', $title = 'Gutenberg Title', $switchToGutenbergEditor = true)
 	{
 		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 		$I->waitForElementVisible('body.post-new-php');
 
 		// Switch to the Gutenberg IFrame.
-		$I->switchToGutenbergEditor($I);
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
 
 		// Define the Title.
 		$I->fillField('.editor-post-title__input', $title);
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
