@@ -780,6 +780,9 @@ class KitPlugin extends \Codeception\Module
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
 		$I->seeBlockHasNoContentMessage($I, 'Not connected to Kit.');
 
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
+
 		// Click the link to confirm it loads the Plugin's setup wizard.
 		$I->click(
 			'Click here to connect your Kit account.',
@@ -807,6 +810,9 @@ class KitPlugin extends \Codeception\Module
 		// and that resources now exist.
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources', 30);
 
+		// Switch back to main window.
+		$I->switchToIFrame();
+
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
 			$I->seeBlockHasNoContentMessage($I, $expectedMessage);
@@ -822,11 +828,17 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function clickBlockRefreshButton($I)
 	{
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
+
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.wp-convertkit-refresh-resources');
 
 		// Wait for the refresh button to disappear, confirming that credentials and resources now exist.
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources');
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
@@ -839,6 +851,9 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function seeBlockHasNoContentMessage($I, $message)
 	{
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
+
 		$I->see(
 			$message,
 			[
@@ -861,6 +876,9 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
 	{
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
+
 		$I->click(
 			$linkText,
 			[
@@ -876,6 +894,9 @@ class KitPlugin extends \Codeception\Module
 
 		// Close tab.
 		$I->closeTab();
+
+		// Switch back to main window.
+		$I->switchToIFrame();
 	}
 
 	/**
@@ -888,7 +909,8 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function seeFormBlockIFrameHasMessage($I, $message)
 	{
-		$I->switchToGutenbergEditor($I); // Required for apiVersion 3 blocks.
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
 
 		// Switch to iframe preview for the Form block.
 		$I->switchToIFrame('iframe[class="components-sandbox"]');
