@@ -803,6 +803,9 @@ class KitPlugin extends \Codeception\Module
 		// Close the popup window.
 		$I->closeTab();
 
+		// Switch to the Gutenberg IFrame.
+		$I->switchToGutenbergEditor($I);
+
 		// Wait until the block changes to refreshing.
 		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
 
