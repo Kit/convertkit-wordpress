@@ -129,7 +129,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -137,7 +138,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 
 		// Generate email address for this test.
@@ -247,7 +249,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'Nafnið þitt',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -255,7 +258,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Netfangið þitt',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 
 		// Generate email address for this test.
@@ -348,7 +352,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -356,7 +361,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 
 		// Generate email address for this test.
@@ -454,7 +460,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -462,7 +469,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 
 		// Generate email address for this test.
@@ -559,7 +567,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -567,7 +576,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 
 		// Generate email address for this test.
@@ -681,7 +691,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -689,7 +700,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		foreach ( $customFields as $key => $field ) {
 			$this->seeFormBuilderField(
@@ -698,7 +710,8 @@ class PageBlockFormBuilderCest
 				fieldName: 'custom_fields][' . $key,
 				fieldID: 'custom_fields_' . $key,
 				label: $field['label'],
-				container: 'div.wp-block-convertkit-form-builder'
+				container: 'div.wp-block-convertkit-form-builder',
+				switchToGutenbergEditor: false
 			);
 		}
 
@@ -796,7 +809,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -804,7 +818,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			switchToGutenbergEditor: false
 		);
 
 		// Generate email address for this test.
@@ -1311,10 +1326,10 @@ class PageBlockFormBuilderCest
 		// Check field exists with correct attributes.
 		switch ( $fieldType ) {
 			case 'textarea':
-				$I->seeElementInDOM($container . ' textarea[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+				$I->seeElementInDOM($container . ' textarea[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . ( $required ? '[required]' : '' ) );
 				break;
 			default:
-				$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][type="' . $fieldType . '"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+				$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][type="' . $fieldType . '"][id="' . $fieldID . '"]' . ( $required ? '[required]' : '' ) );
 		}
 
 		// Check label exists with correct text.
