@@ -141,6 +141,12 @@ jobs:
         run: |
           wp-cli config set DISALLOW_FILE_MODS true --raw
 
+      # Prevent WordPress auto updating to the latest version, as we specifically want to use a specific version of WordPress.
+      - name: Disable WP_AUTO_UPDATE_CORE
+        working-directory: ${{ env.ROOT_DIR }}
+        run: |
+          wp-cli config set WP_AUTO_UPDATE_CORE false --raw
+
       # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
       # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
       # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
