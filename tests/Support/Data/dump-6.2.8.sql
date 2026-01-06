@@ -313,23 +313,28 @@ CREATE TABLE `wp_usermeta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES
-(1,	1,	'nickname',	'admin'),
-(2,	1,	'first_name',	''),
-(3,	1,	'last_name',	''),
-(4,	1,	'description',	''),
-(5,	1,	'rich_editing',	'true'),
-(6,	1,	'syntax_highlighting',	'true'),
-(7,	1,	'comment_shortcuts',	'false'),
-(8,	1,	'admin_color',	'fresh'),
-(9,	1,	'use_ssl',	'0'),
-(10,	1,	'show_admin_bar_front',	'true'),
-(11,	1,	'locale',	''),
-(12,	1,	'wp_capabilities',	'a:1:{s:13:\"administrator\";b:1;}'),
-(13,	1,	'wp_user_level',	'10'),
-(14,	1,	'dismissed_wp_pointers',	''),
-(15,	1,	'show_welcome_panel',	'1'),
-(16,	1,	'session_tokens',	'a:1:{s:64:\"2e6c5be50a5dc4b7bf08d68c6db2092ed367421699b2f886930017c93ce1a4ea\";a:4:{s:10:\"expiration\";i:1767860380;s:2:\"ip\";s:9:\"127.0.0.1\";s:2:\"ua\";s:117:\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\";s:5:\"login\";i:1767687580;}}'),
-(17,	1,	'wp_dashboard_quick_press_last_post_id',	'4');
+(1, 1,  'nickname', 'admin'),
+(2, 1,  'first_name', ''),
+(3, 1,  'last_name',  ''),
+(4, 1,  'description',  ''),
+(5, 1,  'rich_editing', 'true'),
+(6, 1,  'syntax_highlighting',  'true'),
+(7, 1,  'comment_shortcuts',  'false'),
+(8, 1,  'admin_color',  'fresh'),
+(9, 1,  'use_ssl',  '0'),
+(10,  1,  'show_admin_bar_front', 'true'),
+(11,  1,  'locale', ''),
+(12,  1,  'wp_capabilities',  'a:1:{s:13:\"administrator\";b:1;}'),
+(13,  1,  'wp_user_level',  '10'),
+(14,  1,  'dismissed_wp_pointers',  ''),
+(15,  1,  'show_welcome_panel', '1'),
+(16,  1,  'session_tokens', 'a:1:{s:64:\"d1edb8c7d17dc41fa6de9833631a6381dca0306f20dfd4b64947e6b8818dd16e\";a:4:{s:10:\"expiration\";i:1676810217;s:2:\"ip\";s:9:\"127.0.0.1\";s:2:\"ua\";s:117:\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36\";s:5:\"login\";i:1676637417;}}'),
+(17,  1,  'wp_user-settings', 'unfold=1&ampampmfold=o&ampampeditor=html&ampamplibraryContent=browse&ampampsiteorigin_panels_setting_tab=widgets&amplibraryContent=browse&ampeditor=tinymce&libraryContent=browse&editor=tinymce&siteorigin_panels_setting_tab=welcome'),
+(18,  1,  'wp_user-settings-time',  '1676637417'),
+(19,  1,  'wp_dashboard_quick_press_last_post_id',  '1'),
+(20,  1,  'edit_page_per_page',  '100'),
+(21,  1,  'edit_post_per_page',  '100'),
+(22,  1,  'wp_persisted_preferences', 'a:4:{s:4:"core";a:2:{s:26:"isComplementaryAreaVisible";b:1;s:24:"enableChoosePatternModal";b:0;}s:14:"core/edit-post";a:4:{s:12:"welcomeGuide";b:0;s:23:"metaBoxesMainOpenHeight";i:540;s:20:"welcomeGuideTemplate";b:0;s:19:"metaBoxesMainIsOpen";b:1;}s:9:"_modified";s:24:"2024-07-18T02:45:41.491Z";s:17:"core/edit-widgets";a:2:{s:26:"isComplementaryAreaVisible";b:1;s:12:"welcomeGuide";b:0;}}');
 
 DROP TABLE IF EXISTS `wp_users`;
 CREATE TABLE `wp_users` (
