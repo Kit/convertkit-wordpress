@@ -78,9 +78,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 				],
 			],
 		);
-
-		// Deactivate theme.
-		$I->useTheme('twentytwentyfive');
 	}
 
 	/**
