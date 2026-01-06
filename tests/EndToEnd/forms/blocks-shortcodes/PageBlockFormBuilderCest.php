@@ -1261,7 +1261,7 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I                        Tester.
+	 * @param   EndToEndTester $I  Tester.
 	 */
 	private function seeFormBuilderBlock(EndToEndTester $I)
 	{
@@ -1283,7 +1283,7 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I                        Tester.
+	 * @param   EndToEndTester $I  Tester.
 	 */
 	private function seeFormBuilderButtonBlock(EndToEndTester $I)
 	{
@@ -1350,8 +1350,8 @@ class PageBlockFormBuilderCest
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   EndToEndTester $I       Tester.
-	 * @param   string         $text    The text to check for in the submit button.
+	 * @param   EndToEndTester $I     Tester.
+	 * @param   string         $text  The text to check for in the submit button.
 	 */
 	private function seeFormBuilderSubmitButton(EndToEndTester $I, $text)
 	{

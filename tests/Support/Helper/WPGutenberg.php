@@ -41,9 +41,9 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   1.9.7.5
 	 *
-	 * @param   EndToEndTester $I                        EndToEnd Tester.
-	 * @param   string         $postType                 Post Type.
-	 * @param   string         $title                    Post Title.
+	 * @param   EndToEndTester $I          EndToEnd Tester.
+	 * @param   string         $postType   Post Type.
+	 * @param   string         $title      Post Title.
 	 */
 	public function addGutenbergPage($I, $postType = 'page', $title = 'Gutenberg Title')
 	{
@@ -163,8 +163,8 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I                        EndToEnd Tester.
-	 * @param   string         $text                     Paragraph Text.
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 * @param   string         $text   Paragraph Text.
 	 */
 	public function addGutenbergParagraphBlock($I, $text)
 	{

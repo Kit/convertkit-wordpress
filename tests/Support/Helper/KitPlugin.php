@@ -771,17 +771,14 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.6
 	 *
-	 * @param   EndToEndTester $I                        Tester.
-	 * @param   string         $blockName                Block Name.
-	 * @param   bool|string    $expectedMessage          Expected message displayed in block after valid OAuth tokens are specified.
+	 * @param   EndToEndTester $I                 Tester.
+	 * @param   string         $blockName         Block Name.
+	 * @param   bool|string    $expectedMessage   Expected message displayed in block after valid OAuth tokens are specified.
 	 */
 	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false)
 	{
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
-		$I->seeBlockHasNoContentMessage(
-			$I,
-			message: 'Not connected to Kit.'
-		);
+		$I->seeBlockHasNoContentMessage($I, 'Not connected to Kit.');
 
 		// Switch to the Gutenberg IFrame.
 		if ($I->isGutenbergIFrameEditorEnabled()) {
@@ -827,10 +824,7 @@ class KitPlugin extends \Codeception\Module
 
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
-			$I->seeBlockHasNoContentMessage(
-				$I,
-				message: $expectedMessage
-			);
+			$I->seeBlockHasNoContentMessage($I, $expectedMessage);
 		}
 	}
 
@@ -839,7 +833,7 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I                        EndToEndTester.
+	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
 	public function clickBlockRefreshButton($I)
 	{
@@ -865,8 +859,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I                        EndToEndTester.
-	 * @param   string         $message                  Message.
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $message     Message.
 	 */
 	public function seeBlockHasNoContentMessage($I, $message)
 	{
@@ -894,8 +888,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I                        EndToEndTester.
-	 * @param   string         $linkText                 Link text.
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $linkText    Link text.
 	 */
 	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
 	{
@@ -931,8 +925,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I                        EndToEndTester.
-	 * @param   string         $message                  Message.
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $message     Message.
 	 */
 	public function seeFormBlockIFrameHasMessage($I, $message)
 	{
@@ -999,8 +993,8 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   EndToEndTester $I                        EndToEnd Tester.
-	 * @param   string         $selector                 CSS or ID selector for the input element.
+	 * @param   EndToEndTester $I         EndToEnd Tester.
+	 * @param   string         $selector  CSS or ID selector for the input element.
 	 */
 	public function selectAllText($I, $selector)
 	{
