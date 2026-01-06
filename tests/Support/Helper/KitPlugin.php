@@ -774,20 +774,18 @@ class KitPlugin extends \Codeception\Module
 	 * @param   EndToEndTester $I                        Tester.
 	 * @param   string         $blockName                Block Name.
 	 * @param   bool|string    $expectedMessage          Expected message displayed in block after valid OAuth tokens are specified.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false, $switchToGutenbergEditor = true)
+	public function testBlockNoCredentialsPopupWindow($I, $blockName, $expectedMessage = false)
 	{
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
 		$I->seeBlockHasNoContentMessage(
 			$I,
-			message: 'Not connected to Kit.',
-			switchToGutenbergEditor: $switchToGutenbergEditor
+			message: 'Not connected to Kit.'
 		);
 
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Click the link to confirm it loads the Plugin's setup wizard.
@@ -811,8 +809,8 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Wait until the block changes to refreshing.
@@ -823,7 +821,7 @@ class KitPlugin extends \Codeception\Module
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources', 30);
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 
@@ -831,8 +829,7 @@ class KitPlugin extends \Codeception\Module
 		if ($expectedMessage) {
 			$I->seeBlockHasNoContentMessage(
 				$I,
-				message: $expectedMessage,
-				switchToGutenbergEditor: $switchToGutenbergEditor
+				message: $expectedMessage
 			);
 		}
 	}
@@ -843,13 +840,12 @@ class KitPlugin extends \Codeception\Module
 	 * @since   2.7.7
 	 *
 	 * @param   EndToEndTester $I                        EndToEndTester.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function clickBlockRefreshButton($I, $switchToGutenbergEditor = true)
+	public function clickBlockRefreshButton($I)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Click the refresh button.
@@ -859,7 +855,7 @@ class KitPlugin extends \Codeception\Module
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources');
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -871,13 +867,12 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                        EndToEndTester.
 	 * @param   string         $message                  Message.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function seeBlockHasNoContentMessage($I, $message, $switchToGutenbergEditor = true)
+	public function seeBlockHasNoContentMessage($I, $message)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		$I->see(
@@ -888,7 +883,7 @@ class KitPlugin extends \Codeception\Module
 		);
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -901,13 +896,12 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                        EndToEndTester.
 	 * @param   string         $linkText                 Link text.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText, $switchToGutenbergEditor = true)
+	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		$I->click(
@@ -927,7 +921,7 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -939,13 +933,12 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                        EndToEndTester.
 	 * @param   string         $message                  Message.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function seeFormBlockIFrameHasMessage($I, $message, $switchToGutenbergEditor = true)
+	public function seeFormBlockIFrameHasMessage($I, $message)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Switch to iframe preview for the Form block.
@@ -1008,13 +1001,12 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                        EndToEnd Tester.
 	 * @param   string         $selector                 CSS or ID selector for the input element.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function selectAllText($I, $selector, $switchToGutenbergEditor = true)
+	public function selectAllText($I, $selector)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Determine whether to use the control or command key, depending on the OS.
@@ -1029,7 +1021,7 @@ class KitPlugin extends \Codeception\Module
 		$I->pressKey($selector, array( $key, 'a' ));
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}

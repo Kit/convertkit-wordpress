@@ -130,7 +130,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -139,7 +139,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -250,7 +250,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'Nafnið þitt',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -259,7 +259,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Netfangið þitt',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -353,7 +353,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -362,7 +362,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -461,7 +461,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -470,7 +470,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -568,7 +568,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -577,7 +577,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -692,7 +692,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -701,7 +701,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		foreach ( $customFields as $key => $field ) {
 			$this->seeFormBuilderField(
@@ -711,7 +711,7 @@ class PageBlockFormBuilderCest
 				fieldID: 'custom_fields_' . $key,
 				label: $field['label'],
 				container: 'div.wp-block-convertkit-form-builder',
-				switchToGutenbergEditor: false
+				isFrontend: true
 			);
 		}
 
@@ -810,7 +810,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'first_name',
 			label: 'First name',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -819,7 +819,7 @@ class PageBlockFormBuilderCest
 			fieldID: 'email',
 			label: 'Email address',
 			container: 'div.wp-block-convertkit-form-builder',
-			switchToGutenbergEditor: false
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -1262,19 +1262,18 @@ class PageBlockFormBuilderCest
 	 * @since   3.0.0
 	 *
 	 * @param   EndToEndTester $I                        Tester.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	private function seeFormBuilderBlock(EndToEndTester $I, $switchToGutenbergEditor = true)
+	private function seeFormBuilderBlock(EndToEndTester $I)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		$I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -1285,19 +1284,18 @@ class PageBlockFormBuilderCest
 	 * @since   3.0.0
 	 *
 	 * @param   EndToEndTester $I                        Tester.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	private function seeFormBuilderButtonBlock(EndToEndTester $I, $switchToGutenbergEditor = true)
+	private function seeFormBuilderButtonBlock(EndToEndTester $I)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		$I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -1314,13 +1312,13 @@ class PageBlockFormBuilderCest
 	 * @param   string         $label      Field label.
 	 * @param   bool           $required   Whether the field should be marked `required`.
 	 * @param   string         $container  The container the field should be in.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
+	 * @param   bool           $isFrontend Whether the field is being tested in the frontend.
 	 */
-	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div', $switchToGutenbergEditor = true)
+	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div', $isFrontend = false)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ( ! $isFrontend && $I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Check field exists with correct attributes.
@@ -1342,7 +1340,7 @@ class PageBlockFormBuilderCest
 		}
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ( ! $isFrontend && $I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}

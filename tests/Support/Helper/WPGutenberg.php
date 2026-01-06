@@ -10,6 +10,19 @@ namespace Tests\Support\Helper;
 class WPGutenberg extends \Codeception\Module
 {
 	/**
+	 * Helper method to determine if the Gutenberg IFrame editor is enabled
+	 * in tests by inspecting the WORDPRESS_V3_BLOCK_EDITOR_ENABLED environment variable.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @return  bool
+	 */
+	public function isGutenbergIFrameEditorEnabled()
+	{
+		return filter_var($_ENV['WORDPRESS_V3_BLOCK_EDITOR_ENABLED'], FILTER_VALIDATE_BOOLEAN);
+	}
+
+	/**
 	 * Helper method to switch to the Gutenberg editor Iframe
 	 * when all blocks use the Block API v3:
 	 * https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
@@ -18,7 +31,7 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I  EndToEnd Tester.
 	 */
-	public function switchToGutenbergEditor($I)
+	public function switchToGutenbergIFrameEditor($I)
 	{
 		$I->switchToIFrame('iframe[name="editor-canvas"]');
 	}
@@ -31,24 +44,23 @@ class WPGutenberg extends \Codeception\Module
 	 * @param   EndToEndTester $I                        EndToEnd Tester.
 	 * @param   string         $postType                 Post Type.
 	 * @param   string         $title                    Post Title.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame (i.e if all blocks use apiVersion 3).
 	 */
-	public function addGutenbergPage($I, $postType = 'page', $title = 'Gutenberg Title', $switchToGutenbergEditor = true)
+	public function addGutenbergPage($I, $postType = 'page', $title = 'Gutenberg Title')
 	{
 		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 		$I->waitForElementVisible('body.post-new-php');
 
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Define the Title.
 		$I->fillField('.editor-post-title__input', $title);
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($this->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -153,16 +165,15 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                        EndToEnd Tester.
 	 * @param   string         $text                     Paragraph Text.
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function addGutenbergParagraphBlock($I, $text, $switchToGutenbergEditor = true)
+	public function addGutenbergParagraphBlock($I, $text)
 	{
 		// Add paragraph block.
 		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph/paragraph');
 
 		// Switch to the Gutenberg IFrame.
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		// Click the editor area and enter the text in the paragraph.
@@ -170,7 +181,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
 
 		// Switch back to main window.
-		if ($switchToGutenbergEditor) {
+		if ($this->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
@@ -281,17 +292,16 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                        EndToEnd Tester.
 	 * @param   string         $blockProgrammaticName    Programmatic Block Name (e.g. 'convertkit/form-builder-field-name').
-	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function selectGutenbergBlockInEditor($I, $blockProgrammaticName, $switchToGutenbergEditor = true)
+	public function selectGutenbergBlockInEditor($I, $blockProgrammaticName)
 	{
-		if ($switchToGutenbergEditor) {
-			$I->switchToGutenbergEditor($I);
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
 		}
 
 		$I->click('div[data-type="' . $blockProgrammaticName . '"]');
 
-		if ($switchToGutenbergEditor) {
+		if ($this->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
 		}
 	}
