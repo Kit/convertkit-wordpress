@@ -52,12 +52,14 @@ Start collecting email subscribers today, building your newsletter audience and 
 Kit's Form Builder block, for the WordPress block editor, gives complete control to design and customize your own subscription and email marketing forms - directly in WordPress.
 
 With the Form Builder block, you can:
+
 - Add fields such as first name, email address, and custom fields
 - Apply tags and sequences to subscribers for powerful segmentation
 - Enable reCAPTCHA protection (if configured in your Kit account)
 - Style forms using block editor controls, with full support for your block theme’s CSS and styling
 
 This makes the Form Builder block ideal for:
+
 - Subscription forms to grow your email subscribers list
 - Contact forms that connect directly to Kit
 - Custom forms tailored to your email marketing strategy
@@ -142,7 +144,7 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 
 = Is Kit free for email newsletter creators? =
 
-Yes! Kit is 100% free for your first 10,000 email subscribers. This makes it perfect for new newsletter creators, bloggers starting email marketing, and small membership sites. You can grow your email subscribers list, send newsletters, create landing pages, and even sell membership products without paying anything until you exceed 10,000 newsletter subscribers.
+Yes! Kit is 100% free for your first 10,000 email subscribers - [sign up today](https://kit.com?utm_source=wordpress&utm_term=en_US&utm_content=readme). This makes it perfect for new newsletter creators, bloggers starting email marketing, and small membership sites. You can grow your email subscribers list, send newsletters, create landing pages, and even sell membership products without paying anything until you exceed 10,000 newsletter subscribers.
 
 = How do I create newsletter signup forms? =
 
