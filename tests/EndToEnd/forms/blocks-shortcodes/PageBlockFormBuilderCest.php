@@ -208,11 +208,11 @@ class PageBlockFormBuilderCest
 		);
 
 		// Change the labels of the form fields. These are added as inner blocks when the Form Builder block is added.
-		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-name');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 		$I->fillField('#convertkit_form_builder_field_name_label', 'Nafnið þitt');
 
-		$I->click('div[data-type="convertkit/form-builder-field-email"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-email');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 		$I->fillField('#convertkit_form_builder_field_email_label', 'Netfangið þitt');
 
@@ -271,9 +271,9 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Check that the form no longer displays and the message displays.
+		$I->waitForText('Welcome to the newsletter!', 10, '.convertkit-form-builder.wp-block-convertkit-form-builder');
 		$I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
 		$I->dontSeeElementInDOM('input[name="convertkit[email]"]');
-		$I->waitForText('Welcome to the newsletter!', 10, '.convertkit-form-builder.wp-block-convertkit-form-builder');
 
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists(
@@ -666,7 +666,7 @@ class PageBlockFormBuilderCest
 
 		foreach ( $customFields as $field ) {
 			// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
-			$I->click('div[data-type="convertkit/form-builder-field-name"]');
+			$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-name');
 
 			// Add custom field block, mapping its data to the Last Name field in Kit.
 			$I->addGutenbergBlock(
@@ -936,7 +936,7 @@ class PageBlockFormBuilderCest
 		);
 
 		// Click an inner block within the Form Builder block.
-		$I->click('div[data-type="convertkit/form-builder"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 
 		// Confirm the Form Field blocks can be added to the Form Builder block.
@@ -990,7 +990,7 @@ class PageBlockFormBuilderCest
 		);
 
 		// Click an inner block within the Form Builder block.
-		$I->click('div[data-type="convertkit/form-builder"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 
 		// Confirm some core blocks can be added to the Form Builder block.
@@ -1175,7 +1175,7 @@ class PageBlockFormBuilderCest
 		);
 
 		// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
-		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-name');
 
 		// Add custom field block, mapping its data to the Last Name field in Kit.
 		$I->addGutenbergBlock(

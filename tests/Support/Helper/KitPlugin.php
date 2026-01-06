@@ -1006,11 +1006,17 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.2.0
 	 *
-	 * @param   EndToEndTester $I         EndToEnd Tester.
-	 * @param   string         $selector  CSS or ID selector for the input element.
+	 * @param   EndToEndTester $I                        EndToEnd Tester.
+	 * @param   string         $selector                 CSS or ID selector for the input element.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function selectAllText($I, $selector)
+	public function selectAllText($I, $selector, $switchToGutenbergEditor = true)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
+
 		// Determine whether to use the control or command key, depending on the OS.
 		$key = \Facebook\WebDriver\WebDriverKeys::CONTROL;
 
@@ -1021,6 +1027,11 @@ class KitPlugin extends \Codeception\Module
 
 		// Press Ctrl/Command + a on Keyboard.
 		$I->pressKey($selector, array( $key, 'a' ));
+
+		// Switch back to main window.
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**

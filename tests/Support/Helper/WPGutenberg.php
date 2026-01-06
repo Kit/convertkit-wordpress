@@ -151,15 +151,28 @@ class WPGutenberg extends \Codeception\Module
 	 *
 	 * @since   2.0.0
 	 *
-	 * @param   EndToEndTester $I      EndToEnd Tester.
-	 * @param   string         $text   Paragraph Text.
+	 * @param   EndToEndTester $I                        EndToEnd Tester.
+	 * @param   string         $text                     Paragraph Text.
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
 	 */
-	public function addGutenbergParagraphBlock($I, $text)
+	public function addGutenbergParagraphBlock($I, $text, $switchToGutenbergEditor = true)
 	{
+		// Add paragraph block.
 		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph/paragraph');
 
+		// Switch to the Gutenberg IFrame.
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
+
+		// Click the editor area and enter the text in the paragraph.
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
+
+		// Switch back to main window.
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -259,6 +272,28 @@ class WPGutenberg extends \Codeception\Module
 
 		// Click the Product name to create a link to it.
 		$I->click($name, '.block-editor-link-control__search-results');
+	}
+
+	/**
+	 * Helper method to select an existing block previously added to the Gutenberg editor.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I                        EndToEnd Tester.
+	 * @param   string         $blockProgrammaticName    Programmatic Block Name (e.g. 'convertkit/form-builder-field-name').
+	 * @param   bool           $switchToGutenbergEditor  Switch to the Gutenberg IFrame.
+	 */
+	public function selectGutenbergBlockInEditor($I, $blockProgrammaticName, $switchToGutenbergEditor = true)
+	{
+		if ($switchToGutenbergEditor) {
+			$I->switchToGutenbergEditor($I);
+		}
+
+		$I->click('div[data-type="' . $blockProgrammaticName . '"]');
+
+		if ($switchToGutenbergEditor) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
