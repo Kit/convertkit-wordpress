@@ -140,42 +140,204 @@ Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2
 
 == Frequently asked questions ==
 
-= Does this plugin require a paid service? =
+= Is Kit free for email newsletter creators? =
 
-No. You must first have an account on [kit.com](https://kit.com?utm_source=wordpress&utm_term=en_US&utm_content=readme), but you do not have to use a paid plan!
+Yes! Kit is 100% free for your first 10,000 email subscribers. This makes it perfect for new newsletter creators, bloggers starting email marketing, and small membership sites. You can grow your email subscribers list, send newsletters, create landing pages, and even sell membership products without paying anything until you exceed 10,000 newsletter subscribers.
 
-= How do I refresh my available Forms, Landing Pages and Tags? =
+= How do I create newsletter signup forms? =
 
-Either:
+Create newsletter subscription forms directly in your Kit account using the visual form builder. Design inline forms, modal popups, slide-in forms, or sticky bars optimized for email subscriber conversion. Once created, the newsletter forms automatically sync with the WordPress plugin and become available for embedding on your site to grow your email subscribers list.
 
-- Navigate to the Plugin's Settings at `Settings > Kit`
-- Click the refresh button displayed next to the Form, Landing Page or Tag fields when creating/editing Pages or Posts to ensure your latest email newsletter forms are available
+= Can I create landing pages for email subscriber growth? =
 
-= How do I automatically import Kit Broadcasts to WordPress Posts? =
+Yes! Design professional landing pages in Kit's landing page editor, then display them on any WordPress page. Landing pages are optimized specifically for email newsletter signups and subscriber conversion. Choose from pre-built landing page templates or customize your own. The plugin seamlessly integrates Kit landing pages into WordPress for consistent subscriber experience.
 
-To import your past (and future) email newsletters from Kit to WordPress:
+= How does the membership site feature work? =
 
-- Navigate to the Plugin's Settings at `Settings > Kit`
-- Click the `Broadcasts` tab
-- Tick the `Enable Automatic Import` option
-- Configure other settings as necessary, and click `Save Changes` when done to streamline your email newsletter publishing
+The membership feature lets you restrict WordPress content to paying email subscribers or newsletter members. Create Products in Kit, then assign them to specific WordPress pages or posts. When email subscribers visit protected content, they're prompted to enter their email. If they've purchased the required Kit Product, they receive membership access via a magic link. No complex membership plugins needed.
 
-= Where can I find the Plugin's Documentation? =
+= Can I segment my email subscribers for targeted newsletters? =
 
-Full Plugin documentation can be found [here](https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&utm_content=readme).
+Absolutely! Kit provides powerful subscriber segmentation using tags. Automatically tag email subscribers based on which newsletter form they used, which links they clicked, or which Kit Products they purchased. Send targeted email newsletters to specific subscriber segments for more relevant email marketing campaigns and higher newsletter engagement rates.
+
+= Do I need coding knowledge to use this plugin? =
+
+No coding required! Create newsletter subscription forms, landing pages, and email campaigns using Kit's visual editors. Embed newsletter forms using native WordPress blocks or simple shortcodes. Build membership sites by selecting Products from dropdowns. Even custom newsletter forms in WordPress can be built using the drag-and-drop block editor without touching code.
+
+= How do I refresh available forms, landing pages, and tags? =
+
+Click the refresh button next to Form, Landing Page, or Tag dropdowns when editing Pages or Posts. This syncs your latest newsletter forms and products from Kit to WordPress. You can also refresh all resources at once by navigating to Settings > Kit and clicking refresh. This ensures your newest email subscriber capture forms are always available.
+
+= Can I automatically import email newsletters to WordPress? =
+
+Yes! Navigate to Settings > Kit > Broadcasts and enable automatic import. Your published email newsletters from Kit will automatically import as WordPress posts. Configure the import schedule, post author, category, and featured image settings. This keeps newsletter subscribers engaged by making your email content discoverable on your site.
+
+= What integrations work with email subscriber capture? =
+
+The plugin integrates with Contact Form 7, Gravity Forms, WooCommerce, WishList Member, Elementor, and more. Automatically add form submissions as email subscribers, tag WooCommerce customers for email marketing, sync membership levels with newsletter subscriber tags, and use native Elementor widgets for newsletter forms. Additional integrations available through separate plugins.
+
+= How do I display newsletter forms in specific locations? =
+
+You have multiple options for newsletter form placement. Set site-wide defaults that display newsletter signup forms automatically below posts and pages. Override defaults on individual posts to show specific email subscriber forms. Use blocks or shortcodes to embed newsletter forms within content at optimal conversion points. Add widget newsletter forms to sidebars and footers.
+
+= Can I create free membership content for newsletter subscribers? =
+
+Yes! You can gate content requiring only email subscription without requiring payment. This is perfect for exclusive newsletter subscriber content, free member communities, or content upgrades. Use Tag-based restrictions where entering an email and receiving membership access via magic link is all that's required. Great for building email subscriber loyalty.
+
+= Does this work with my WordPress theme? =
+
+The plugin works with any WordPress theme. Newsletter signup forms and landing pages are designed to adapt to your theme's styling. The Form Builder block uses your theme's CSS ensuring newsletter forms match your site perfectly. Inline forms blend seamlessly into content while modal, slide-in, and sticky bar newsletter forms maintain Kit's polished design.
+
+= How do I track email subscriber growth and conversions? =
+
+Track subscriber growth, newsletter form conversion rates, email campaign performance, and landing page analytics directly in your Kit dashboard. Monitor which newsletter forms convert best, which landing pages drive the most email subscribers, and which email newsletters get the highest engagement from your subscriber list. All metrics update in real-time.
+
+= What's the difference between inline and non-inline newsletter forms? =
+
+Inline newsletter forms embed directly within page content and scroll with the page. They're great for email subscriber capture within blog posts. Non-inline forms include modals (popups), slide-ins (appear from corners), and sticky bars (fixed to top/bottom). Non-inline newsletter forms demand attention and often achieve higher email subscriber conversion rates.
+
+= Can I customize newsletter form colors and styling? =
+
+Yes! Customize newsletter subscription forms in Kit's form editor matching your brand colors, fonts, and style. Adjust form button colors, input field styling, and background colors. For inline forms, the Form Builder block in WordPress uses your theme's styling automatically, ensuring newsletter forms blend seamlessly with your site design.
+
+= What happens when someone subscribes to my newsletter? =
+
+When visitors submit newsletter signup forms, they're added as email subscribers to your Kit account. You can configure forms to immediately add subscribers to your newsletter list, tag them for segmentation, or enroll them in automated email sequences. Subscribers receive welcome emails if configured, and you can start sending email newsletters immediately.
+
+= How do membership magic links work for subscribers? =
+
+When an email subscriber tries accessing protected membership content, they enter their email address. If they've purchased the required Kit Product or have the necessary tag, they receive an email containing a one-time code and magic link. Clicking the magic link or entering the code grants immediate membership access without requiring passwords.
+
+= Can I sell digital products through membership features? =
+
+Yes! Create Products in Kit and sell them directly to your email subscribers. Products can be one-time purchases, subscriptions, or tip jars. Assign Products to WordPress pages and posts as membership content. When newsletter subscribers purchase Products, they automatically get membership access to all associated content in WordPress.
+
+= Do newsletter forms slow down my site? =
+
+No. Newsletter subscription forms load asynchronously and are optimized for performance. The plugin only loads necessary assets on pages actually displaying newsletter forms. Landing pages are hosted on Kit's servers ensuring fast load times. The lightweight codebase ensures email subscriber capture doesn't impact your WordPress site speed.
+
+= How many newsletter forms can I create? =
+
+There's no limit to the number of newsletter subscription forms you can create in Kit. Design different forms for different audiences, pages, or lead magnets. Create targeted newsletter signup forms for each email subscriber segment. Test variations of forms to optimize conversion. All forms sync automatically with the WordPress plugin.
+
+= Can I schedule email newsletters to subscribers? =
+
+Yes! Kit's email marketing platform lets you schedule newsletter campaigns to send at optimal times for your email subscribers. Write newsletters in advance and schedule them for future delivery. Set up recurring newsletters that send automatically on a schedule. Ensure global email subscribers receive newsletters at appropriate times for their timezone.
+
+= What's the difference between tags and segments for email subscribers? =
+
+Tags are labels you apply to newsletter subscribers based on interests, behavior, or characteristics. Segments are filtered views of your subscriber list based on one or more tags. Use tags to organize email subscribers, then create segments to send targeted newsletters. For example, tag subscribers as "interested in courses" then create a segment for course email marketing.
+
+= Can I migrate existing email subscribers to Kit? =
+
+Yes! Kit provides easy import tools for migrating email subscribers from other platforms. Import CSV files containing subscriber data. The plugin maintains subscriber tags and preferences during migration. You can continue sending newsletters immediately after importing. Kit's migration support team helps with large subscriber list transfers.
+
+= How do I remove email subscribers from newsletters? =
+
+Email subscribers can unsubscribe from newsletters using links automatically included in every email campaign per email marketing regulations. You can also manually remove subscribers from Settings > Kit in WordPress or directly in your Kit account. Unsubscribed email addresses are automatically excluded from future newsletter sends.
+
+= Does this work with WooCommerce for email marketing? =
+
+Yes! The separate Kit for WooCommerce plugin adds powerful integrations. Automatically subscribe WooCommerce customers to email newsletters at checkout. Tag purchasers for targeted email marketing campaigns. Track purchase data for each newsletter subscriber. Send abandoned cart emails to recover lost sales. Build email subscriber value over time.
+
+= Can I create multiple membership tiers for subscribers? =
+
+Yes! Create different Kit Products for each membership tier. Assign Products to different WordPress content. Newsletter subscribers purchase the membership tier they want and automatically get access to corresponding content. Create Bronze, Silver, Gold membership tiers each with different Products and content access for paying email subscribers.
+
+= How do landing pages improve email subscriber conversions? =
+
+Landing pages are specifically designed for single conversion goals like email newsletter signups. They remove navigation and distractions, focusing visitors entirely on becoming email subscribers. Use compelling headlines, clear value propositions, social proof, and strong calls-to-action. Kit's landing page templates are proven to convert visitors into newsletter subscribers at high rates.
+
+= What email marketing automations can I create for subscribers? =
+
+Create welcome sequences greeting new email subscribers with your best content. Build product launch funnels promoting offers to newsletter segments. Set up abandoned cart sequences for WooCommerce email marketing. Create re-engagement campaigns for inactive newsletter subscribers. Configure behavioral automations tagging email subscribers based on email clicks and website activity.
+
+= Can I embed past email newsletters on my WordPress site? =
+
+Yes! Use the Broadcasts block or `[convertkit_broadcasts]` shortcode to display past email newsletters on any page or post. This keeps newsletter content discoverable for website visitors, drives email subscriber signups from engaged readers, and extends the life of newsletter content beyond inboxes.
+
+= How do I optimize newsletter forms for mobile email subscribers? =
+
+All newsletter subscription forms and landing pages are automatically mobile-responsive. Forms resize and reorganize for small screens ensuring easy email subscriber signup on phones and tablets. Test newsletter forms on mobile devices to verify the email subscriber experience. The Form Builder block uses responsive WordPress patterns for perfect mobile newsletter conversion.
+
+= What's the best strategy for growing email subscribers? =
+
+Use multiple newsletter form types strategically. Place inline newsletter forms within valuable blog posts where visitors are most engaged. Add exit-intent modal newsletter forms to capture abandoning visitors as email subscribers. Include sticky bar newsletter forms for persistent visibility. Create dedicated landing pages for lead magnets. Test and optimize all newsletter forms for maximum email subscriber growth.
+
+= Can I use newsletter forms with page builders? =
+
+Yes! The plugin includes integrations with popular page builders. Use native Elementor widgets for newsletter forms and email subscriber content. Divi modules available for newsletter integration. All page builders support the shortcode method for email subscriber forms. The WordPress block editor provides native blocks for newsletter capture.
+
+= How do I create a newsletter lead magnet funnel? =
+
+Create a compelling lead magnet (ebook, checklist, course) that solves a specific problem for your target email subscribers. Design a dedicated landing page promoting the lead magnet optimized for newsletter signups. Create a newsletter subscription form offering the lead magnet in exchange for email addresses. Set up an automated email sequence delivering the lead magnet and nurturing new newsletter subscribers.
+
+= What is the Form Builder block for email newsletter forms? =
+
+The Form Builder block is a native WordPress block that lets you create custom email newsletter subscription forms directly in the WordPress editor without any coding. Unlike embedding pre-designed forms from Kit, the Form Builder block gives you complete control to design newsletter signup forms that perfectly match your WordPress theme's styling and branding for optimal email subscriber conversion.
+
+= How does the Form Builder block differ from regular newsletter forms? =
+
+Regular newsletter forms are designed in Kit and embedded in WordPress. The Form Builder block lets you build email subscription forms entirely within WordPress using the block editor. Form Builder newsletter forms automatically inherit your theme's typography, colors, and spacing. You can customize every aspect including form fields, button styling, colors, spacing, and layout while maintaining your site's design consistency for email subscribers.
+
+= Can I customize Form Builder newsletter forms to match my brand? =
+
+Yes! The Form Builder block provides extensive customization options for email newsletter forms. Adjust typography including font families, sizes, and weights. Customize colors for form fields, buttons, labels, and backgrounds. Control spacing with margin and padding settings. Add custom CSS classes for advanced styling. Form Builder newsletter forms adapt to your WordPress theme while allowing granular control over email subscriber form appearance.
+
+= What fields can I add to Form Builder newsletter subscription forms? =
+
+The Form Builder block supports multiple field types for email newsletter signups. Add email address fields (required), first name fields, last name fields, and custom fields you've created in Kit. All fields can be marked as required or optional. This flexibility lets you collect exactly the email subscriber information you need while keeping newsletter forms simple and conversion-focused.
+
+= Does the Form Builder block work with Kit tags and sequences? =
+
+Absolutely! When building newsletter subscription forms with the Form Builder block, you can assign Kit tags to segment email subscribers automatically. Subscribe new email addresses to specific Kit sequences to trigger automated email marketing campaigns. Configure reCAPTCHA protection if enabled in your Kit account. Form Builder newsletter forms have full integration with Kit's email subscriber management features.
+
+= How do I add a Form Builder newsletter form to my WordPress site? =
+
+In the WordPress block editor, click the plus icon to add a new block and search for "Kit Form Builder." Add the block to your page or post. Configure your email newsletter form by adding fields like email and first name. Customize the styling, colors, and spacing to match your theme. Optionally assign tags or sequences for email subscriber segmentation. Publish to start capturing email subscribers with your custom newsletter form.
+
+= Can Form Builder newsletter forms collect custom subscriber data? =
+
+Yes! The Form Builder block supports custom fields you've created in your Kit account. Add custom fields to collect specific information from email newsletter subscribers like job titles, company names, interests, or any data relevant to your email marketing strategy. Custom field data syncs to Kit automatically, enabling advanced email subscriber segmentation and personalized newsletter campaigns.
+
+= Are Form Builder newsletter forms mobile responsive? =
+
+All Form Builder newsletter subscription forms are automatically mobile responsive. Forms adapt to screen sizes ensuring email subscribers can easily sign up on phones and tablets. The Form Builder block uses responsive WordPress patterns and follows your theme's mobile styling. Test newsletter forms on multiple devices to verify the optimal email subscriber experience across all screen sizes.
+
+= Can I use the Form Builder block for contact forms and email subscribers? =
+
+Yes! The Form Builder block works as both a newsletter subscription form and a contact form. Collect email addresses and additional information from visitors. When someone submits a Form Builder form, they're automatically added as email subscribers to your Kit account and can be tagged or added to sequences. This makes Form Builder perfect for dual-purpose forms capturing both contacts and newsletter subscribers.
+
+= Does the Form Builder block support spam protection for newsletter signups? =
+
+Yes! The Form Builder block integrates with Google reCAPTCHA v3 if configured in your Kit account at Settings > Kit > General. This protects your email newsletter forms from bot submissions and fake email subscribers. reCAPTCHA runs invisibly in the background, ensuring legitimate newsletter subscribers have a smooth signup experience while blocking spam from polluting your email list.
+
+= How does the Form Builder block handle newsletter form styling? =
+
+The Form Builder block uses your WordPress theme's CSS by default, ensuring newsletter subscription forms match your site design automatically. You can then customize individual elements including button colors, input field borders, label typography, and spacing. The block provides intuitive controls in the WordPress editor sidebar letting you style email newsletter forms visually without touching code while maintaining theme consistency.
+
+= Can I view Form Builder newsletter form submissions in WordPress? =
+
+Yes! Navigate to Settings > Kit > Form Entries to view all submissions from Form Builder newsletter forms. Search entries by email address, filter by submission date or API result, and export subscriber data as CSV files. This gives you a WordPress-based view of email newsletter signups alongside Kit's subscriber management, perfect for tracking email subscriber acquisition and form performance.
+
+= Where can I find complete plugin documentation? =
+
+Comprehensive documentation is available at: [Kit WordPress Plugin Setup Guide](https://help.kit.com/en/articles/2502591-how-to-set-up-the-kit-plugin-on-your-wordpress-website?utm_source=wordpress&utm_content=readme)
+
+The documentation covers newsletter form setup, landing page configuration, membership site creation, email marketing automation, subscriber segmentation, and all plugin features for growing your email newsletter.
 
 == Screenshots ==
 
-1. Create and customize stunning email subscription forms and landing pages in Kit
-2. Manage the WordPress plugin from a simple settings page in the WordPress admin
-3. Append Kit forms to Pages, Posts or other Custom Post Types to grow your email subscribers
-4. Configure a specific Kit form to display on a specific Page or Post
-5. Display your Kit forms anywhere on your WordPress web site using the form block / shortcode
-6. Configure a Kit landing page to be used in place of a WordPress Page, to capture email subscribers
-7. Automatically import your past email newsletters to WordPress Posts
-8. Create your paid membership site by assigning paid Kit Products to your existing WordPress content 
-9. Set up form and landing page automations in Kit
-10. Track subscriber growth and email newsletter performance
+1. Create stunning email newsletter subscription forms and landing pages in Kit's visual editor optimized for email subscriber conversion
+2. Simple WordPress plugin settings page to manage email newsletter forms, landing pages, and membership features for subscribers
+3. Automatically append newsletter signup forms to Posts, Pages, or Custom Post Types to capture email subscribers site-wide
+4. Configure specific email newsletter forms on individual Pages and Posts for targeted subscriber growth and email marketing
+5. Display newsletter subscription forms anywhere using blocks or shortcodes to maximize email subscriber capture opportunities
+6. Replace WordPress pages with Kit landing pages optimized specifically for email newsletter subscriber acquisition
+7. Automatically import published email newsletters from Kit to WordPress Posts keeping subscribers engaged with searchable newsletter content
+8. Build paid membership sites by assigning Kit Products to WordPress content accessible only to paying email subscribers
+9. Set up form automations and email marketing sequences in Kit to nurture newsletter subscribers and drive conversions
+10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
 
