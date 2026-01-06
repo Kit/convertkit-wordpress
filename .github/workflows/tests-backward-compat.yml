@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Backward Compat. Tests
 
 # When to run tests.
 on:
@@ -30,6 +30,7 @@ jobs:
       DB_PASS: root
       DB_HOST: localhost
       WORDPRESS_V3_BLOCK_EDITOR_ENABLED: false # Test apiVersion 2 blocks against WordPress 6.2.8
+      WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump-6.2.8.sql # Used to populate the test site database for WordPress 6.2.8
       CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
@@ -221,6 +222,7 @@ jobs:
           path: ${{ env.PLUGIN_DIR }}/.env.testing
           contents: |
             WORDPRESS_V3_BLOCK_EDITOR_ENABLED=${{ env.WORDPRESS_V3_BLOCK_EDITOR_ENABLED }}
+            WORDPRESS_DB_SQL_DUMP_FILE=${{ env.WORDPRESS_DB_SQL_DUMP_FILE }}
             CONVERTKIT_API_KEY=${{ env.CONVERTKIT_API_KEY }}
             CONVERTKIT_API_SECRET=${{ env.CONVERTKIT_API_SECRET }}
             CONVERTKIT_API_KEY_NO_DATA=${{ env.CONVERTKIT_API_KEY_NO_DATA }}
