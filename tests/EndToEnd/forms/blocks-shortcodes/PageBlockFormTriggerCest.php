@@ -313,7 +313,7 @@ class PageBlockFormTriggerCest
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeElementHasClasses(
 			$I,
-			'.convertkit-formtrigger',
+			'a.convertkit-formtrigger',
 			[
 				'convertkit-formtrigger',
 				'wp-block-button__link',
@@ -367,7 +367,7 @@ class PageBlockFormTriggerCest
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeElementHasClasses(
 			$I,
-			'.convertkit-formtrigger',
+			'a.convertkit-formtrigger',
 			[
 				'convertkit-formtrigger',
 				'wp-block-button__link',

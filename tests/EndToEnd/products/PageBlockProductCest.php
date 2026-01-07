@@ -488,7 +488,7 @@ class PageBlockProductCest
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeElementHasClasses(
 			$I,
-			'.convertkit-product',
+			'a.convertkit-product',
 			[
 				'convertkit-product',
 				'wp-block-button__link',
