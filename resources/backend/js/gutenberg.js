@@ -599,6 +599,14 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @return {Object}       Progress Bar.
 		 */
 		const loadingIndicator = function (props) {
+			// If the ProgressBar component is not available, return a spinner.
+			if (typeof ProgressBar === 'undefined') {
+				return el('span', {
+					key: props.clientId + '-spinner',
+					className: 'spinner is-active',
+				});
+			}
+
 			return el(ProgressBar, {
 				key: props.clientId + '-progress-bar',
 				className: 'convertkit-progress-bar',
