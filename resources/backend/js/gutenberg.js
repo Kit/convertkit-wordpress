@@ -609,7 +609,8 @@ function convertKitGutenbergRegisterBlock(block) {
 
 			return el(ProgressBar, {
 				key: props.clientId + '-progress-bar',
-				className: 'convertkit-progress-bar convertkit-block-refreshing',
+				className:
+					'convertkit-progress-bar convertkit-block-refreshing',
 			});
 		};
 
