@@ -54,7 +54,12 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest'
+          'EndToEnd/broadcasts/blocks-shortcodes/PageBlockBroadcastsCest',
+          'EndToEnd/forms/blocks-shortcodes/PageBlockFormBuilderCest',
+          'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest',
+          'EndToEnd/forms/blocks-shortcodes/PageBlockFormTriggerCest',
+          'EndToEnd/products/PageBlockFormatterProductLinkCest',
+          'EndToEnd/products/PageBlockProductCest'
         ]
 
     # Steps to install, configure and run tests
