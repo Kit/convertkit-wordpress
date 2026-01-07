@@ -30,7 +30,7 @@ jobs:
       DB_PASS: root
       DB_HOST: localhost
       WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump-6.2.8.sql # Used to populate the test site database for WordPress 6.2.8
-      INSTALL_PLUGINS: "autoptimize debloat jetpack-boost litespeed-cache rocket-lazy-load sg-cachepress" # Don't include this repository's Plugin here.
+      INSTALL_PLUGINS: "autoptimize debloat litespeed-cache rocket-lazy-load sg-cachepress" # Don't include this repository's Plugin here.
       INSTALL_PLUGINS_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip https://downloads.wordpress.org/plugin/block-visibility.3.3.0.zip https://downloads.wordpress.org/plugin/jetpack-boost.3.5.0.zip" # URLs to specific third party Plugins or versions that support WordPress 6.2.8
       CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
