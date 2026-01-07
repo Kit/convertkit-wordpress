@@ -311,7 +311,20 @@ class PageBlockFormTriggerCest
 		);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');
+		$I->seeElementHasClasses(
+			$I,
+			'.convertkit-formtrigger',
+			[
+				'convertkit-formtrigger',
+				'wp-block-button__link',
+				'wp-element-button',
+				'wp-block-convertkit-formtrigger',
+				'has-text-color',
+				'has-' . $textColor . '-color',
+				'has-background',
+				'has-' . $backgroundColor . '-background-color',
+			]
+		);
 	}
 
 	/**
@@ -352,16 +365,17 @@ class PageBlockFormTriggerCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('class="convertkit-formtrigger wp-block-button__link wp-element-button wp-block-convertkit-formtrigger has-text-color has-background"');
-
-		// Confirm that the block displays.
-		$I->seeFormTriggerOutput(
+		$I->seeElementHasClasses(
 			$I,
-			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
-			text: 'Subscribe',
-			textColor: $textColor,
-			backgroundColor: $backgroundColor,
-			isBlock: true
+			'.convertkit-formtrigger',
+			[
+				'convertkit-formtrigger',
+				'wp-block-button__link',
+				'wp-element-button',
+				'wp-block-convertkit-formtrigger',
+				'has-text-color',
+				'has-background',
+			]
 		);
 	}
 

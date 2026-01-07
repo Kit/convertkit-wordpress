@@ -900,6 +900,24 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to assert that the given element has the given CSS classes
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I             EndToEndTester.
+	 * @param   string         $element       Element.
+	 * @param   array          $classes       CSS classes.
+	 */
+	public function seeElementHasClasses($I, $element, $classes)
+	{
+		$I->seeElement($element);
+		$element_classes = $I->grabAttributeFrom($element, 'class');
+		foreach ($classes as $class) {
+			$I->assertStringContainsString($class, $element_classes);
+		}
+	}
+
+	/**
 	 * Check that the given Page does output the Creator Network Recommendations
 	 * script.
 	 *

@@ -486,7 +486,20 @@ class PageBlockProductCest
 		);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('class="convertkit-product wp-block-button__link wp-element-button wp-block-convertkit-product has-text-color has-' . $textColor . '-color has-background has-' . $backgroundColor . '-background-color');
+		$I->seeElementHasClasses(
+			$I,
+			'.convertkit-product',
+			[
+				'convertkit-product',
+				'wp-block-button__link',
+				'wp-element-button',
+				'wp-block-convertkit-product',
+				'has-text-color',
+				'has-' . $textColor . '-color',
+				'has-background',
+				'has-' . $backgroundColor . '-background-color',
+			]
+		);
 	}
 
 	/**
