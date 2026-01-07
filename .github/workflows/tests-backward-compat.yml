@@ -123,6 +123,12 @@ jobs:
       - name: Install Free Third Party WordPress Specific Version Plugins
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
+
+      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
+      # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
+      - name: Install Paid Third Party WordPress Plugins
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
         
       # Move Plugin
       - name: Move Plugin
