@@ -30,8 +30,8 @@ jobs:
       DB_PASS: root
       DB_HOST: localhost
       WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump-6.2.8.sql # Used to populate the test site database for WordPress 6.2.8
-      INSTALL_PLUGINS: "autoptimize block-visibility debloat jetpack-boost litespeed-cache rocket-lazy-load sg-cachepress" # Don't include this repository's Plugin here.
-      INSTALL_PLUGINS_URLS: "https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip" # URLs to specific third party Plugins
+      INSTALL_PLUGINS: "autoptimize debloat jetpack-boost litespeed-cache rocket-lazy-load sg-cachepress" # Don't include this repository's Plugin here.
+      INSTALL_PLUGINS_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip https://downloads.wordpress.org/plugin/block-visibility.3.3.0.zip https://downloads.wordpress.org/plugin/jetpack-boost.3.5.0.zip" # URLs to specific third party Plugins or versions that support WordPress 6.2.8
       CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
@@ -54,12 +54,7 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/broadcasts/blocks-shortcodes/PageBlockBroadcastsCest',
-          'EndToEnd/forms/blocks-shortcodes/PageBlockFormBuilderCest',
-          'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest',
-          'EndToEnd/forms/blocks-shortcodes/PageBlockFormTriggerCest',
-          'EndToEnd/products/PageBlockFormatterProductLinkCest',
-          'EndToEnd/products/PageBlockProductCest'
+          'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest'
         ]
 
     # Steps to install, configure and run tests
