@@ -46,6 +46,24 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Clicks the Add Block Button, supporting both old and new selector names depending on the WordPress version.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I  EndToEnd Tester.
+	 */
+	public function clickAddGutenbergBlockButton($I)
+	{
+		if ($I->grabMultiple('button.editor-document-tools__inserter-toggle')) {
+			$I->click('button.editor-document-tools__inserter-toggle');
+		} elseif ($I->grabMultiple('button.edit-post-header-toolbar__inserter-toggle')) {
+			$I->click('button.edit-post-header-toolbar__inserter-toggle');
+		} else {
+			$I->fail('Add Block button not found for either supported selector.');
+		}
+	}
+
+	/**
 	 * Add the given block when adding or editing a Page, Post or Custom Post Type
 	 * in Gutenberg.
 	 *
@@ -61,7 +79,7 @@ class WPGutenberg extends \Codeception\Module
 	public function addGutenbergBlock($I, $blockName, $blockProgrammaticName, $blockConfiguration = false)
 	{
 		// Click Add Block Button.
-		$I->click('button[aria-label="Toggle block inserter"]');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -87,7 +105,7 @@ class WPGutenberg extends \Codeception\Module
 		}
 
 		// Close block inserter.
-		$I->click('button[aria-label="Toggle block inserter"]');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// If a Block configuration is specified, apply it to the Block now.
 		if ($blockConfiguration) {
@@ -265,7 +283,7 @@ class WPGutenberg extends \Codeception\Module
 	public function seeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
-		$I->click('button[aria-label="Toggle block inserter"]');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -293,7 +311,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('button[aria-label="Reset search"]');
 
 		// Close block inserter.
-		$I->click('button[aria-label="Toggle block inserter"]');
+		$this->clickAddGutenbergBlockButton($I);
 	}
 
 	/**
@@ -308,7 +326,7 @@ class WPGutenberg extends \Codeception\Module
 	public function dontSeeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
-		$I->click('button[aria-label="Toggle block inserter"]');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -326,7 +344,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('button[aria-label="Reset search"]');
 
 		// Close block inserter.
-		$I->click('button[aria-label="Toggle block inserter"]');
+		$this->clickAddGutenbergBlockButton($I);
 	}
 
 	/**
