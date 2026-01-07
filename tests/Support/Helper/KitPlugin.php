@@ -801,7 +801,7 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Wait until the block changes to refreshing.
-		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
+		$I->waitForElementVisible('.' . $blockName . ' .convertkit-block-refreshing', 30);
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
