@@ -61,7 +61,7 @@ class WPGutenberg extends \Codeception\Module
 	public function addGutenbergBlock($I, $blockName, $blockProgrammaticName, $blockConfiguration = false)
 	{
 		// Click Add Block Button.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$I->click('button[aria-label="Toggle block inserter"]');
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -87,7 +87,7 @@ class WPGutenberg extends \Codeception\Module
 		}
 
 		// Close block inserter.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$I->click('button[aria-label="Toggle block inserter"]');
 
 		// If a Block configuration is specified, apply it to the Block now.
 		if ($blockConfiguration) {
@@ -265,7 +265,7 @@ class WPGutenberg extends \Codeception\Module
 	public function seeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$I->click('button[aria-label="Toggle block inserter"]');
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -293,7 +293,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('button[aria-label="Reset search"]');
 
 		// Close block inserter.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$I->click('button[aria-label="Toggle block inserter"]');
 	}
 
 	/**
@@ -308,7 +308,7 @@ class WPGutenberg extends \Codeception\Module
 	public function dontSeeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$I->click('button[aria-label="Toggle block inserter"]');
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -326,7 +326,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('button[aria-label="Reset search"]');
 
 		// Close block inserter.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$I->click('button[aria-label="Toggle block inserter"]');
 	}
 
 	/**
