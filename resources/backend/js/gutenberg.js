@@ -599,9 +599,18 @@ function convertKitGutenbergRegisterBlock(block) {
 		 * @return {Object}       Progress Bar.
 		 */
 		const loadingIndicator = function (props) {
+			// If the ProgressBar component is not available i.e. WordPress < 6.3, return a spinner.
+			if (typeof ProgressBar === 'undefined') {
+				return el('span', {
+					key: props.clientId + '-spinner',
+					className: 'spinner is-active convertkit-block-refreshing',
+				});
+			}
+
 			return el(ProgressBar, {
 				key: props.clientId + '-progress-bar',
-				className: 'convertkit-progress-bar',
+				className:
+					'convertkit-progress-bar convertkit-block-refreshing',
 			});
 		};
 

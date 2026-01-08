@@ -1214,7 +1214,16 @@ class PageBlockFormCest
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form has-background" style="background-color:' . $backgroundColor . '"');
+		$I->seeInSource('style="background-color:' . $backgroundColor . '"');
+		$I->seeElementHasClasses(
+			$I,
+			'.convertkit-form',
+			[
+				'convertkit-form',
+				'wp-block-convertkit-form',
+				'has-background',
+			]
+		);
 	}
 
 	/**
@@ -1265,7 +1274,16 @@ class PageBlockFormCest
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form has-background" style="background-color:' . $backgroundColor . '"');
+		$I->seeInSource('style="background-color:' . $backgroundColor . '"');
+		$I->seeElementHasClasses(
+			$I,
+			'.convertkit-form',
+			[
+				'convertkit-form',
+				'wp-block-convertkit-form',
+				'has-background',
+			]
+		);
 	}
 
 	/**
@@ -1315,7 +1333,15 @@ class PageBlockFormCest
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 		// Confirm that the chosen margin and padding are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-form wp-block-convertkit-form" style="padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)"');
+		$I->seeInSource('style="padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)"');
+		$I->seeElementHasClasses(
+			$I,
+			'.convertkit-form',
+			[
+				'convertkit-form',
+				'wp-block-convertkit-form',
+			]
+		);
 	}
 
 	/**
@@ -1365,7 +1391,15 @@ class PageBlockFormCest
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 		// Confirm that the chosen alignment is applied as a CSS class.
-		$I->seeInSource('<div class="convertkit-form alignright wp-block-convertkit-form"');
+		$I->seeElementHasClasses(
+			$I,
+			'.convertkit-form',
+			[
+				'convertkit-form',
+				'wp-block-convertkit-form',
+				'alignright',
+			]
+		);
 	}
 
 	/**
