@@ -66,6 +66,24 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Clicks the Add Block Button, supporting both old and new selector names depending on the WordPress version.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I  EndToEnd Tester.
+	 */
+	public function clickAddGutenbergBlockButton($I)
+	{
+		if ($I->grabMultiple('button.editor-document-tools__inserter-toggle')) {
+			$I->click('button.editor-document-tools__inserter-toggle');
+		} elseif ($I->grabMultiple('button.edit-post-header-toolbar__inserter-toggle')) {
+			$I->click('button.edit-post-header-toolbar__inserter-toggle');
+		} else {
+			$I->fail('Add Block button not found for either supported selector.');
+		}
+	}
+
+	/**
 	 * Add the given block when adding or editing a Page, Post or Custom Post Type
 	 * in Gutenberg.
 	 *
@@ -81,7 +99,7 @@ class WPGutenberg extends \Codeception\Module
 	public function addGutenbergBlock($I, $blockName, $blockProgrammaticName, $blockConfiguration = false)
 	{
 		// Click Add Block Button.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -92,22 +110,44 @@ class WPGutenberg extends \Codeception\Module
 		// If we don't do this, we get stale reference errors when trying to click a block to insert.
 		$I->wait(2);
 
-		// Insert the block.
+		// Build potential programmatic block names.
+		$potentialNames = [ $blockProgrammaticName ];
 		if (strpos($blockProgrammaticName, '/') !== false) {
-			// Use XPath if $blockProgrammaticName contains a forward slash.
-			$xpath = '//button[contains(@class, "editor-block-list-item-' . $blockProgrammaticName . '") and contains(@class,"block-editor-block-types-list__item") and contains(@class,"components-button")]';
-			$I->waitForElementVisible([ 'xpath' => $xpath ]);
-			$I->seeElementInDOM([ 'xpath' => $xpath ]);
-			$I->click([ 'xpath' => $xpath ]);
-		} else {
-			$selector = '.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName;
-			$I->waitForElementVisible($selector);
-			$I->seeElementInDOM($selector);
-			$I->click($selector);
+			// Also add last segment after slash, for compatibility with older WordPress versions.
+			$parts = explode('/', $blockProgrammaticName);
+			if (count($parts) === 2) {
+				$potentialNames[] = $parts[1];
+			}
+		}
+
+		// Confirm the block is available.
+		foreach ($potentialNames as $name) {
+			// Check for both XPath (to cover slashes) and regular selector (no slash).
+			if (strpos($name, '/') !== false) {
+				$xpath = '//button[contains(@class, "editor-block-list-item-' . $name . '") and contains(@class,"block-editor-block-types-list__item") and contains(@class,"components-button")]';
+				try {
+					$I->waitForElementVisible([ 'xpath' => $xpath ]);
+					$I->seeElementInDOM([ 'xpath' => $xpath ]);
+					$I->click([ 'xpath' => $xpath ]);
+					break;
+				} catch (\Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Not found, try others.
+				}
+			} else {
+				$selector = '.block-editor-inserter__panel-content button.editor-block-list-item-' . $name;
+				try {
+					$I->waitForElementVisible($selector);
+					$I->seeElementInDOM($selector);
+					$I->click($selector);
+					break;
+				} catch (\Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Not found, try others.
+				}
+			}
 		}
 
 		// Close block inserter.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// If a Block configuration is specified, apply it to the Block now.
 		if ($blockConfiguration) {
@@ -307,18 +347,22 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
-	 * Asserts that the given block is not available in the Gutenberg block library.
+	 * Asserts that the given block is available in the Gutenberg block library.
+	 *
+	 * Supports blocks whose programmatic names may be either "block/block" or just "block",
+	 * such as for Paragraph ("paragraph/paragraph" or "paragraph") and Heading ("heading/heading" or "heading")
+	 * for compatibility with different WordPress versions.
 	 *
 	 * @since   3.0.0
 	 *
 	 * @param   EndToEndTester $I                      EndToEnd Tester.
 	 * @param   string         $blockName              Block Name (e.g. 'Kit Form').
-	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form').
+	 * @param   string         $blockProgrammaticName  Programmatic Block Name (e.g. 'convertkit-form' or 'paragraph/paragraph').
 	 */
 	public function seeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -329,24 +373,51 @@ class WPGutenberg extends \Codeception\Module
 		// If we don't do this, we get stale reference errors when trying to click a block to insert.
 		$I->wait(2);
 
-		// Confirm the block is available.
-		// $blockProgrammaticName may contain a slash, which is not valid in a CSS class selector.
-		// Use XPath to check for a button containing the relevant class.
+		// Build potential programmatic block names.
+		$potentialNames = [ $blockProgrammaticName ];
 		if (strpos($blockProgrammaticName, '/') !== false) {
-			// XPath: class attribute contains all required classes including block-programmatic-name.
-			$classParts = explode('/', $blockProgrammaticName);
-			$xpath      = '//button[contains(@class, "editor-block-list-item-' . $blockProgrammaticName . '") and contains(@class,"block-editor-block-types-list__item") and contains(@class,"components-button")]';
-			$I->waitForElementVisible([ 'xpath' => $xpath ]);
-		} else {
-			$selector = '.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName;
-			$I->waitForElementVisible($selector);
+			// Also add last segment after slash, for compatibility with older WordPress versions.
+			$parts = explode('/', $blockProgrammaticName);
+			if (count($parts) === 2) {
+				$potentialNames[] = $parts[1];
+			}
+		}
+
+		// Confirm the block is available.
+		$found = false;
+		foreach ($potentialNames as $name) {
+			// Check for both XPath (to cover slashes) and regular selector (no slash).
+			if (strpos($name, '/') !== false) {
+				$xpath = '//button[contains(@class, "editor-block-list-item-' . $name . '") and contains(@class,"block-editor-block-types-list__item") and contains(@class,"components-button")]';
+				try {
+					$I->waitForElementVisible([ 'xpath' => $xpath ], 2);
+					$found = true;
+					break;
+				} catch (\Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Not found, try others.
+				}
+			} else {
+				$selector = '.block-editor-inserter__panel-content button.editor-block-list-item-' . $name;
+				try {
+					$I->waitForElementVisible($selector, 2);
+					$found = true;
+					break;
+				} catch (\Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Not found, try others.
+				}
+			}
+		}
+
+		// Fail if we don't find any.
+		if ( ! $found) {
+			$I->fail("Block '{$blockName}' not found.");
 		}
 
 		// Clear the search field.
 		$I->click('button[aria-label="Reset search"]');
 
 		// Close block inserter.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$this->clickAddGutenbergBlockButton($I);
 	}
 
 	/**
@@ -361,7 +432,7 @@ class WPGutenberg extends \Codeception\Module
 	public function dontSeeGutenbergBlockAvailable($I, $blockName, $blockProgrammaticName)
 	{
 		// Click Add Block Button.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$this->clickAddGutenbergBlockButton($I);
 
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
@@ -379,7 +450,7 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('button[aria-label="Reset search"]');
 
 		// Close block inserter.
-		$I->click('button.editor-document-tools__inserter-toggle');
+		$this->clickAddGutenbergBlockButton($I);
 	}
 
 	/**
