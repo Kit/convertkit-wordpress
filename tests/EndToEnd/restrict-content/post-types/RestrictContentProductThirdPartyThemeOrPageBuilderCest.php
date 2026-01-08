@@ -33,14 +33,14 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 
 	/**
 	 * Test that restricting content by a Product specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page using the Uncode theme with
-	 * the Visual Composer Page Builder.
+	 * creating and viewing a new WordPress Page using the Uncode theme both using
+	 * the Visual Composer Page Builder and not using it.
 	 *
 	 * @since   2.7.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testRestrictContentByProductWithUncodeThemeAndVisualComposer(EndToEndTester $I)
+	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
 	{
 		// Activate theme and third party Plugins.
 		$I->useTheme('uncode');
@@ -81,28 +81,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			checkNoWarningsAndNotices: false
 		);
 
-		// Deactivate theme and third party Plugins.
-		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
-	}
-
-	/**
-	 * Test that restricting content by a Product specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page using the Uncode theme without
-	 * the Visual Composer Page Builder.
-	 *
-	 * @since   2.7.7
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
-	{
-		// Activate theme and third party Plugins.
-		$I->useTheme('uncode');
-		$I->activateThirdPartyPlugin($I, 'uncode-core');
-
-		// Programmatically create a Page using the Visual Composer Page Builder.
+		// Programmatically create a Page without using the Visual Composer Page Builder.
 		$pageID = $I->havePostInDatabase(
 			[
 				'post_type'    => 'page',
@@ -134,10 +113,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
 			checkNoWarningsAndNotices: false
 		);
-
-		// Deactivate theme and third party Plugins.
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
 	}
 
 	/**

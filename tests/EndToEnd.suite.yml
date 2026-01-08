@@ -67,7 +67,7 @@ modules:
                   download.default_directory: '%WORDPRESS_ROOT_DIR%'
         lucatume\WPBrowser\Module\WPDb:
             dbUrl: '%WORDPRESS_DB_URL%'
-            dump: 'tests/Support/Data/dump.sql'
+            dump: '%WORDPRESS_DB_SQL_DUMP_FILE%'
             #import the dump before the tests; this means the test site database will be repopulated before the tests.
             populate: true
             # re-import the dump between tests; this means the test site database will be repopulated between the tests.
