@@ -145,6 +145,9 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-c
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator-settings.php';
 
+// Impeka Integration.
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-impeka.php';
+
 // Uncode Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-uncode.php';
 

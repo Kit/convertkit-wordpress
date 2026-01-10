@@ -637,6 +637,11 @@ class KitRestrictContent extends \Codeception\Module
 		}
 		$I->dontSee($options['member_content']);
 
+		// If a container CSS classes is set, confirm that the container is displayed.
+		if ( ! empty($options['settings']['container_css_classes'])) {
+			$I->seeInSource('<div class="' . $options['settings']['container_css_classes'] . '">');
+		}
+
 		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
 		$I->seeElementInDOM('#convertkit-restrict-content');
 
