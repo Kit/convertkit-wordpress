@@ -1,3 +1,17 @@
+### 3.1.4 2026-01-12
+* Added: Settings: Member Content: Container CSS Class setting
+* Added: Member Content: Automatically add `grve-container` CSS class for Impeka Theme
+* Fix: Form Builder: Set email field type=email
+* Fix: Blocks: Use Spinner when ProgressBar component unavailable in WordPress versions older than 6.3
+* Updated: Blocks: Use apiVersion 2
+
+### 3.1.3 2025-12-18
+* Added: Blocks: Field controls: Use 40px default size
+* Fix: Blocks: Static flag warning
+* Fix: Blocks: Unique `key` prop warning
+* Fix: Setup Wizard: Replace `ConvertKit` with `Kit` in browser tab/window title
+* Updated: Use WordPress Libraries 2.1.3
+
 ### 3.1.2 2025-12-03
 * Fix: Settings: Improve logic to automatically delete invalid Access Tokens
 * Fix: Settings: Disconnect: Immediately disconnect Plugin from Kit, instead of loading resources first
