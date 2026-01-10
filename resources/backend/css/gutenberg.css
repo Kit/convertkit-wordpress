@@ -2,7 +2,7 @@
 .components-flex-item button.wp-convertkit-refresh-resources {
 	margin: 24px 0 0 0;
 	padding: 0;
-	height: 32px;
+	height: 40px;
 }
 
 .components-flex-item button.wp-convertkit-refresh-resources span.dashicons {
@@ -36,9 +36,12 @@
 	top: 20px;
 	right: 20px;
 	line-height: 22px;
+	width: auto;
 }
 
-.wp-block .convertkit-no-content .convertkit-progress-bar {
+.wp-block .convertkit-no-content .convertkit-progress-bar,
+.wp-block .convertkit-no-content .spinner {
+	float: none;
 	margin: 0 auto;
 }
 

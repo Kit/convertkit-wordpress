@@ -1226,6 +1226,27 @@ class ConvertKit_Output_Restrict_Content {
 		 */
 		$call_to_action = apply_filters( 'convertkit_output_restrict_content_call_to_action', $call_to_action, $this->post_id );
 
+		// Fetch container CSS classes.
+		$container_css_classes = explode( ' ', $this->restrict_content_settings->get_by_key( 'container_css_classes' ) );
+
+		/**
+		 * Define the container CSS classes to wrap the content preview and call to action within.
+		 *
+		 * @since   3.1.4
+		 *
+		 * @param   array  $container_css_classes    Container CSS classes.
+		 * @param   int    $post_id                  Post ID.
+		 */
+		$container_css_classes = apply_filters( 'convertkit_output_restrict_content_container_css_classes', $container_css_classes, $this->post_id );
+
+		// Remove empty CSS classes.
+		$container_css_classes = array_filter( $container_css_classes );
+
+		// If container CSS classes are set, return the content preview and call to action wrapped in the container.
+		if ( count( $container_css_classes ) ) {
+			return '<div class="' . trim( implode( ' ', map_deep( $container_css_classes, 'sanitize_html_class' ) ) ) . '">' . $content_preview . $call_to_action . '</div>';
+		}
+
 		// Return the content preview and its call to action.
 		return $content_preview . $call_to_action;
 

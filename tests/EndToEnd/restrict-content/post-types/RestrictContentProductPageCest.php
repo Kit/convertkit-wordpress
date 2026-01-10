@@ -255,6 +255,67 @@ class RestrictContentProductPageCest
 	}
 
 	/**
+	 * Test that restricting content by a Product specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page, and that the container CSS classes are applied
+	 * to the content preview and call to action.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentContainerCSSClasses(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
+
+		// Define Restrict Content settings.
+		$settings = [
+			'container_css_classes' => 'custom-container-css-class',
+		];
+
+		// Setup Restrict Content functionality with container CSS classes.
+		$I->setupKitPluginRestrictContent($I, $settings);
+
+		// Add the Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Container CSS Classes'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form'             => [ 'select2', 'None' ],
+				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+			]
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			options: [
+				'settings' => $settings,
+			]
+		);
+	}
+
+	/**
 	 * Test that restricting content by a Product specified in the Page Settings displays
 	 * an inline error message when the subscriber logged in to view content gated
 	 * by a Kit Form, and then views content gated by a Kit Product where the subscriber does

@@ -1283,10 +1283,10 @@ class PageBlockFormBuilderCest
 		// Check field exists with correct attributes.
 		switch ( $fieldType ) {
 			case 'textarea':
-				$I->seeElementInDOM($container . ' textarea[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+				$I->seeElementInDOM($container . ' textarea[name="convertkit[' . $fieldName . ']"][id="' . $fieldID . '"]' . ( $required ? '[required]' : '' ) );
 				break;
 			default:
-				$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][type="' . $fieldType . '"][id="' . $fieldID . '"]' . $required ? '[required]' : '');
+				$I->seeElementInDOM($container . ' input[name="convertkit[' . $fieldName . ']"][type="' . $fieldType . '"][id="' . $fieldID . '"]' . ( $required ? '[required]' : '' ) );
 		}
 
 		// Check label exists with correct text.

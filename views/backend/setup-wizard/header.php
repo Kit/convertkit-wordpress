@@ -12,7 +12,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<title><?php echo esc_html( CONVERTKIT_PLUGIN_NAME ); ?> &lsaquo; <?php bloginfo( 'name' ); ?>  &#8212; WordPress</title>
+		<title><?php echo esc_html( 'Kit' ); ?> &lsaquo; <?php bloginfo( 'name' ); ?>  &#8212; WordPress</title>
 		<script type="text/javascript">
 		var ajaxurl = '<?php echo esc_js( admin_url( 'admin-ajax.php', 'relative' ) ); ?>';
 		</script>
@@ -28,7 +28,7 @@
 			if ( ! $this->is_modal() ) {
 				?>
 				<header id="convertkit-setup-wizard-header">
-					<h1><?php echo esc_html( CONVERTKIT_PLUGIN_NAME ); ?></h1>
+					<h1><?php echo esc_html( 'Kit' ); ?></h1>
 				</header>
 				<?php
 			}

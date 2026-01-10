@@ -33,14 +33,63 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 
 	/**
 	 * Test that restricting content by a Product specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page using the Uncode theme with
-	 * the Visual Composer Page Builder.
+	 * creating and viewing a new WordPress Page using the Impeka theme automatically
+	 * adds Impeka's grve-container CSS class to the Restrict Content container,
+	 * ensuring correct layout.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByProductWithImpekaTheme(EndToEndTester $I)
+	{
+		// Activate theme.
+		$I->useTheme('impeka');
+
+		// Programmatically create a Page using the Visual Composer Page Builder.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Restrict Content: Product: Impeka Theme with Visual Composer',
+				'post_content' => 'Member-only content.',
+
+				// Don't display a Form on this Page, so we test against Restrict Content's Form.
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend(
+			$I,
+			urlOrPageID: $pageID,
+			options: [
+				'visible_content' => '',
+				'member_content'  => 'Member-only content.',
+				'settings'        => [
+					// Test that the grve-container CSS class is added to the Restrict Content container.
+					'container_css_classes' => 'grve-container',
+				],
+			],
+		);
+	}
+
+	/**
+	 * Test that restricting content by a Product specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page using the Uncode theme both using
+	 * the Visual Composer Page Builder and not using it.
 	 *
 	 * @since   2.7.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testRestrictContentByProductWithUncodeThemeAndVisualComposer(EndToEndTester $I)
+	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
 	{
 		// Activate theme and third party Plugins.
 		$I->useTheme('uncode');
@@ -81,28 +130,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			checkNoWarningsAndNotices: false
 		);
 
-		// Deactivate theme and third party Plugins.
-		$I->deactivateThirdPartyPlugin($I, 'uncode-wpbakery-page-builder');
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
-	}
-
-	/**
-	 * Test that restricting content by a Product specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page using the Uncode theme without
-	 * the Visual Composer Page Builder.
-	 *
-	 * @since   2.7.7
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRestrictContentByProductWithUncodeTheme(EndToEndTester $I)
-	{
-		// Activate theme and third party Plugins.
-		$I->useTheme('uncode');
-		$I->activateThirdPartyPlugin($I, 'uncode-core');
-
-		// Programmatically create a Page using the Visual Composer Page Builder.
+		// Programmatically create a Page without using the Visual Composer Page Builder.
 		$pageID = $I->havePostInDatabase(
 			[
 				'post_type'    => 'page',
@@ -134,10 +162,6 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 			// Don't check for warnings and notices, as Uncode uses deprecated functions which WordPress 6.9 warn about.
 			checkNoWarningsAndNotices: false
 		);
-
-		// Deactivate theme and third party Plugins.
-		$I->deactivateThirdPartyPlugin($I, 'uncode-core');
-		$I->useTheme('twentytwentyfive');
 	}
 
 	/**

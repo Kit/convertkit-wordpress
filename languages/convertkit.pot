@@ -1,15 +1,15 @@
-# Copyright (C) 2025 Kit
+# Copyright (C) 2026 Kit
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.1.2\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.1.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-03T01:29:00+00:00\n"
+"POT-Creation-Date: 2026-01-10T10:03:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -39,7 +39,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-broadcasts.php:134
 #: includes/blocks/class-convertkit-block-content.php:85
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:72
-#: includes/blocks/class-convertkit-block-form-builder-field-email.php:99
+#: includes/blocks/class-convertkit-block-form-builder-field-email.php:108
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:90
 #: includes/blocks/class-convertkit-block-form-builder.php:353
 #: includes/blocks/class-convertkit-block-form-trigger.php:104
@@ -331,7 +331,7 @@ msgid "First Name"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-form-entries.php:158
-#: includes/blocks/class-convertkit-block-form-builder-field-email.php:100
+#: includes/blocks/class-convertkit-block-form-builder-field-email.php:109
 msgid "Email"
 msgstr ""
 
@@ -791,24 +791,32 @@ msgstr ""
 msgid "The text to display instructing the subscriber to check their email for the login link that was sent."
 msgstr ""
 
+#: admin/section/class-convertkit-admin-section-restrict-content.php:338
+msgid "Container CSS Classes"
+msgstr ""
+
 #: admin/section/class-convertkit-admin-section-restrict-content.php:346
+msgid "Optional CSS classes to apply to the container wrapping the content preview and call to action for non-authenticated subscribers."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-restrict-content.php:361
 msgid "Defines the text and button labels to display when a Page, Post or Custom Post has its Member Content setting defined."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-restrict-content.php:359
+#: admin/section/class-convertkit-admin-section-restrict-content.php:374
 msgid "Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit form."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-restrict-content.php:372
+#: admin/section/class-convertkit-admin-section-restrict-content.php:387
 msgid "Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit product."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-restrict-content.php:386
+#: admin/section/class-convertkit-admin-section-restrict-content.php:401
 msgid "Defines settings when a Page, Post or Custom Post type has its member content setting set to a Kit tag."
 msgstr ""
 
 #. translators: 1: General settings screen link, 2: Closing link tag
-#: admin/section/class-convertkit-admin-section-restrict-content.php:398
+#: admin/section/class-convertkit-admin-section-restrict-content.php:413
 #, php-format
 msgid "Looking for reCAPTCHA settings? They can now be found in the %1$sGeneral settings screen%2$s."
 msgstr ""
@@ -1011,7 +1019,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-broadcasts.php:133
 #: includes/blocks/class-convertkit-block-content.php:84
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:71
-#: includes/blocks/class-convertkit-block-form-builder-field-email.php:98
+#: includes/blocks/class-convertkit-block-form-builder-field-email.php:107
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:89
 #: includes/blocks/class-convertkit-block-form-builder.php:352
 #: includes/blocks/class-convertkit-block-form-trigger.php:103
@@ -1203,7 +1211,7 @@ msgid "Custom"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:74
-#: includes/blocks/class-convertkit-block-form-builder-field-email.php:101
+#: includes/blocks/class-convertkit-block-form-builder-field-email.php:110
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:92
 msgid "Field"
 msgstr ""
@@ -1241,11 +1249,11 @@ msgstr ""
 msgid "The Kit custom field to store this field's entered value."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder-field-email.php:68
+#: includes/blocks/class-convertkit-block-form-builder-field-email.php:77
 msgid "Kit Form Builder: Email Field"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder-field-email.php:94
+#: includes/blocks/class-convertkit-block-form-builder-field-email.php:103
 msgid "Adds an email field to the Kit Form Builder."
 msgstr ""
 

@@ -801,7 +801,7 @@ class KitPlugin extends \Codeception\Module
 		$I->closeTab();
 
 		// Wait until the block changes to refreshing.
-		$I->waitForElementVisible('.' . $blockName . ' div.convertkit-progress-bar', 30);
+		$I->waitForElementVisible('.' . $blockName . ' .convertkit-block-refreshing', 30);
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
@@ -897,6 +897,24 @@ class KitPlugin extends \Codeception\Module
 
 		// Switch back to main window.
 		$I->switchToIFrame();
+	}
+
+	/**
+	 * Helper method to assert that the given element has the given CSS classes
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I             EndToEndTester.
+	 * @param   string         $element       Element.
+	 * @param   array          $classes       CSS classes.
+	 */
+	public function seeElementHasClasses($I, $element, $classes)
+	{
+		$I->seeElement($element);
+		$element_classes = $I->grabAttributeFrom($element, 'class');
+		foreach ($classes as $class) {
+			$I->assertStringContainsString($class, $element_classes);
+		}
 	}
 
 	/**
