@@ -192,6 +192,10 @@
 						<td>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</td>
 					</tr><tr>
 						<td>&nbsp;</td>
+						<td><a href="#convertkit_output_restrict_content_container_css_classes"><code>convertkit_output_restrict_content_container_css_classes</code></a></td>
+						<td>Define the container CSS classes to wrap the content preview and call to action within.</td>
+					</tr><tr>
+						<td>&nbsp;</td>
 						<td><a href="#convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges"><code>convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges</code></a></td>
 						<td>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</td>
 					</tr><tr>
@@ -1003,7 +1007,7 @@ add_filter( 'convertkit_settings_broadcasts_get_defaults', function( $defaults )
 </pre>
 <h3 id="convertkit_settings_restrict_content_get_defaults">
 						convertkit_settings_restrict_content_get_defaults
-						<code>includes/class-convertkit-settings-restrict-content.php::163</code>
+						<code>includes/class-convertkit-settings-restrict-content.php::164</code>
 					</h3><h4>Overview</h4>
 						<p>The default settings, used when the ConvertKit Restrict Content Settings haven't been saved e.g. on a new installation.</p><h4>Parameters</h4>
 					<table>
@@ -1291,9 +1295,40 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 	return $call_to_action;
 }, 10, 2 );
 </pre>
+<h3 id="convertkit_output_restrict_content_container_css_classes">
+						convertkit_output_restrict_content_container_css_classes
+						<code>includes/class-convertkit-output-restrict-content.php::1239</code>
+					</h3><h4>Overview</h4>
+						<p>Define the container CSS classes to wrap the content preview and call to action within.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$container_css_classes</td>
+							<td>array</td>
+							<td>Container CSS classes.</td>
+						</tr><tr>
+							<td>$post_id</td>
+							<td>int</td>
+							<td>Post ID.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_output_restrict_content_container_css_classes', function( $container_css_classes, $post_id ) {
+	// ... your code here
+	// Return value
+	return $container_css_classes;
+}, 10, 2 );
+</pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::1945</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1966</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
