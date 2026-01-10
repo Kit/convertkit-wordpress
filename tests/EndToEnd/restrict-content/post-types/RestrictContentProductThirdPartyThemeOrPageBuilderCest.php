@@ -33,6 +33,55 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 
 	/**
 	 * Test that restricting content by a Product specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page using the Impeka theme automatically
+	 * adds Impeka's grve-container CSS class to the Restrict Content container,
+	 * ensuring correct layout.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByProductWithImpekaTheme(EndToEndTester $I)
+	{
+		// Activate theme.
+		$I->useTheme('impeka');
+
+		// Programmatically create a Page using the Visual Composer Page Builder.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Restrict Content: Product: Impeka Theme with Visual Composer',
+				'post_content' => 'Member-only content.',
+
+				// Don't display a Form on this Page, so we test against Restrict Content's Form.
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend(
+			$I,
+			urlOrPageID: $pageID,
+			options: [
+				'visible_content' => '',
+				'member_content'  => 'Member-only content.',
+				'settings'        => [
+					// Test that the grve-container CSS class is added to the Restrict Content container.
+					'container_css_classes' => 'grve-container',
+				],
+			],
+		);
+	}
+
+	/**
+	 * Test that restricting content by a Product specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page using the Uncode theme both using
 	 * the Visual Composer Page Builder and not using it.
 	 *

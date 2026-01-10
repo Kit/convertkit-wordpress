@@ -642,6 +642,32 @@ function convertkit_output_intercom_messenger() {
 }
 
 /**
+ * Checks if the given Theme is active.
+ *
+ * @since  3.1.4
+ *
+ * @param   string $theme_name   Theme name.
+ * @return  bool
+ */
+function convertkit_is_theme_active( $theme_name ) {
+
+	// Assume Theme isn't active if we can't detect it.
+	if ( ! function_exists( 'wp_get_theme' ) ) {
+		return false;
+	}
+
+	// Check the Parent Theme if we're on a Child Theme.
+	if ( wp_get_theme()->parent() ) {
+		$theme = wp_get_theme()->parent();
+	} else {
+		$theme = wp_get_theme();
+	}
+
+	return strtolower( $theme->get( 'Name' ) ) === strtolower( $theme_name );
+
+}
+
+/**
  * Returns permitted HTML output when using wp_kses( ..., convertkit_kses_allowed_html()).
  *
  * @since   2.8.5
