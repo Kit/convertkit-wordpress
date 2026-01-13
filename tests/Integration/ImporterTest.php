@@ -50,6 +50,86 @@ class ImporterTest extends WPTestCase
 	/**
 	 * Test that the replace_shortcodes_in_content() method replaces the third party form shortcode with the Kit form shortcode.
 	 *
+	 * @since   3.1.5
+	 */
+	public function testAWeberReplaceShortcodesInContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the shortcodes to test.
+		$shortcodes = [
+			'[aweber formid=10]',
+			'[aweber formid="10"]',
+			'[aweber formid=10 listid=11]',
+			'[aweber formid="10" listid="11"]',
+			'[aweber formid=10 listid=11 formtype=webform]',
+			'[aweber formid="10" listid="11" formtype="webform"]',
+			'[aweber listid=11 formid=10]',
+			'[aweber listid="11" formid="10"]',
+			'[aweber listid=11 formid=10 formtype=webform]',
+			'[aweber listid="11" formid="10" formtype="webform"]',
+			'[aweber formtype=webform listid=11 formid=10]',
+			'[aweber formtype="webform" listid="11" formid="10"]',
+		];
+
+		// Test each shortcode is replaced with the Kit form shortcode.
+		foreach ( $shortcodes as $shortcode ) {
+			$this->assertEquals(
+				'[convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+				$this->importer->replace_shortcodes_in_content( $shortcode, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+
+			// Prepend and append some content.
+			$content = 'Some content before the shortcode: ' . $shortcode . ' Some content after the shortcode.';
+			$this->assertEquals(
+				'Some content before the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode.',
+				$this->importer->replace_shortcodes_in_content( $content, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+
+			// Prepend and append some content and duplicate the shortcode.
+			$content = 'Some content before the shortcode: ' . $shortcode . ' Some content after the shortcode: ' . $shortcode;
+			$this->assertEquals(
+				'Some content before the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+				$this->importer->replace_shortcodes_in_content( $content, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+		}
+	}
+
+	/**
+	 * Test that the replace_shortcodes_in_content() method ignores non-AWeber shortcodes.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testAWeberReplaceShortcodesInContentIgnoringOtherShortcodes()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the shortcodes to test.
+		$shortcodes = [
+			'[convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+			'[a_random_shortcode]',
+		];
+
+		// Test each shortcode is ignored.
+		foreach ( $shortcodes as $shortcode ) {
+			$this->assertEquals(
+				$shortcode,
+				$this->importer->replace_shortcodes_in_content( $shortcode, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+		}
+	}
+
+	/**
+	 * Test that the replace_shortcodes_in_content() method replaces the third party form shortcode with the Kit form shortcode.
+	 *
 	 * @since   3.1.0
 	 */
 	public function testMC4WPReplaceShortcodesInContent()
