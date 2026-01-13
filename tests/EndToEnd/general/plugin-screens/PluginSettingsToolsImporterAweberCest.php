@@ -22,7 +22,6 @@ class PluginSettingsToolsImporterAweberCest
 	{
 		// Activate Plugins.
 		$I->activateKitPlugin($I);
-		$I->activateThirdPartyPlugin($I, 'aweber-web-form-widget');
 	}
 
 	/**
@@ -193,7 +192,6 @@ class PluginSettingsToolsImporterAweberCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->deactivateThirdPartyPlugin($I, 'aweber-web-form-widget');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
