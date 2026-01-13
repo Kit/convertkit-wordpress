@@ -78,12 +78,12 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 			return array();
 		}
 
-		// Get OAuth 1 and 2 tokens.
-		$plugin_admin_options  = get_option( $aweber_webform_plugin->adminOptionsName ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		$oauth2_tokens_options = get_option( $aweber_webform_plugin->oauth2TokensOptions ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-
 		// Fetch Aweber account, using OAuth1 or OAuth2.
-		$response = $aweber_webform_plugin->getAWeberAccount( $plugin_admin_options, $oauth2_tokens_options );
+		// This is how the AWeber Plugin fetches the account data.
+		$response = $aweber_webform_plugin->getAWeberAccount(
+			get_option( $aweber_webform_plugin->adminOptionsName ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			get_option( $aweber_webform_plugin->oauth2TokensOptions ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		);
 
 		// If no account is returned, return an empty array.
 		if ( ! isset( $response['account'] ) ) {
