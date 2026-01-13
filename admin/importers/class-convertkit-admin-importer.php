@@ -42,13 +42,33 @@ abstract class ConvertKit_Admin_Importer {
 	abstract public function get_forms();
 
 	/**
-	 * Returns an array of post IDs that contain the third party form shortcode.
+	 * Returns an array of post IDs that contain the AWeber form shortcode.
 	 *
-	 * @since   3.1.0
+	 * @since   3.1.5
 	 *
 	 * @return  array
 	 */
-	abstract public function get_forms_in_posts();
+	public function get_forms_in_posts() {
+
+		global $wpdb;
+
+		// Search post_content for [aweber] shortcode and return array of post IDs.
+		$results = $wpdb->get_col(
+			$wpdb->prepare(
+				"
+            SELECT ID
+            FROM {$wpdb->posts}
+            WHERE post_status = %s
+            AND post_content LIKE %s
+            ",
+				'publish',
+				'%[' . $this->shortcode_name . '%'
+			)
+		);
+
+		return $results ? $results : array();
+
+	}
 
 	/**
 	 * Returns whether any third party forms exist.
@@ -142,6 +162,68 @@ abstract class ConvertKit_Admin_Importer {
 			'[convertkit_form id="' . $form_id . '"]',
 			$content
 		);
+
+	}
+
+	/**
+	 * Returns an array of all unique form IDs from the posts that contain the third party form shortcode.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @return  array
+	 */
+	public function get_form_ids_in_posts() {
+
+		// Get Post IDs that contain the AWeber form shortcode.
+		$post_ids = $this->get_forms_in_posts();
+
+		// If no post IDs are found, return an empty array.
+		if ( ! count( $post_ids ) ) {
+			return array();
+		}
+
+		// Iterate through Posts, extracting the Form IDs from the AWeber form shortcodes.
+		$form_ids = array();
+		foreach ( $post_ids as $post_id ) {
+			$content_form_ids = $this->get_form_ids_from_content( get_post_field( 'post_content', $post_id ) );
+			$form_ids         = array_merge( $form_ids, $content_form_ids );
+		}
+
+		$form_ids = array_values( array_unique( $form_ids ) );
+
+		return $form_ids;
+
+	}
+
+	/**
+	 * Returns an array of form IDs within the shortcode for the third party Form plugin.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   string $content             Content containing third party Form Shortcodes.
+	 * @return  array
+	 */
+	public function get_form_ids_from_content( $content ) {
+
+		$pattern = '/\['                                     // Start regex with an opening square bracket.
+			. preg_quote( $this->shortcode_name, '/' )       // Match the shortcode name, escaping any regex special chars.
+			. '(?:\s+[^\]]*)?'                               // Optionally match any attributes (key/value pairs), non-greedy.
+			. preg_quote( $this->shortcode_id_attribute, '/' )// Match the id attribute name.
+			. '\s*=\s*'                                      // Optional whitespace, equals sign, optional whitespace.
+			. '(?:"([^"]+)"|([^\s\]]+))'                     // Capture quoted or unquoted value.
+			. '[^\]]*?\]/i';                                 // Match up to closing bracket, case-insensitive.
+
+		preg_match_all( $pattern, $content, $matches );
+
+		// Extract form IDs: They could be in either $matches[1] (quoted) or $matches[2] (unquoted).
+		$form_ids = array_filter(
+			array_merge(
+				isset( $matches[1] ) ? $matches[1] : array(),
+				isset( $matches[2] ) ? $matches[2] : array()
+			)
+		);
+
+		return $form_ids;
 
 	}
 

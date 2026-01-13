@@ -33,35 +33,6 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 	public $shortcode_id_attribute = 'formid';
 
 	/**
-	 * Returns an array of post IDs that contain the AWeber form shortcode.
-	 *
-	 * @since   3.1.5
-	 *
-	 * @return  array
-	 */
-	public function get_forms_in_posts() {
-
-		global $wpdb;
-
-		// Search post_content for [aweber] shortcode and return array of post IDs.
-		$results = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-            SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = %s
-            AND post_content LIKE %s
-            ",
-				'publish',
-				'%[' . $this->shortcode_name . '%'
-			)
-		);
-
-		return $results ? $results : array();
-
-	}
-
-	/**
 	 * Returns an array of AWeber form IDs and titles.
 	 *
 	 * @since   3.1.5
@@ -72,22 +43,21 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 
 		global $aweber_webform_plugin;
 
-		// Bail if the AWeber Plugin is not active, as the only way to fetch forms is via their API.
-		// There is no cache of form data.
+		// If the AWeber Plugin is not active, fall back to showing the AWeber Form IDs found in the posts, if any.
 		if ( is_null( $aweber_webform_plugin ) ) {
-			return array();
+			return $this->get_forms_detected_in_posts();
 		}
 
-		// Fetch Aweber account, using OAuth1 or OAuth2.
-		// This is how the AWeber Plugin fetches the account data.
+		// Fetch AWeber account, using OAuth1 or OAuth2.
+		// This is how the AWeber Plugin fetches the account data, as nothing is cached in their Plugin or the database.
 		$response = $aweber_webform_plugin->getAWeberAccount(
 			get_option( $aweber_webform_plugin->adminOptionsName ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			get_option( $aweber_webform_plugin->oauth2TokensOptions ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		);
 
-		// If no account is returned, return an empty array.
+		// If no account is returned, fall back to showing the AWeber Form IDs found in the posts, if any.
 		if ( ! isset( $response['account'] ) ) {
-			return array();
+			return $this->get_forms_detected_in_posts();
 		}
 
 		// Get account, which contains forms and form split tests.
@@ -105,6 +75,25 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 		}
 
 		// Return forms.
+		return $forms;
+
+	}
+
+	/**
+	 * Returns an array of AWeber form IDs and titles found in the posts.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @return  array
+	 */
+	private function get_forms_detected_in_posts() {
+
+		$forms = array();
+
+		foreach ( $this->get_form_ids_in_posts() as $form_id ) {
+			$forms[ $form_id ] = sprintf( 'AWeber Form ID #%s', $form_id );
+		}
+
 		return $forms;
 
 	}
