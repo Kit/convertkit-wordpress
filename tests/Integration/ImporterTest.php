@@ -48,6 +48,31 @@ class ImporterTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the get_form_ids_from_content() method returns third party form shortcode Form IDs.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testGetAWeberFormIDsFromContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the content to test.
+		$content = '[aweber formid="10"] some content [aweber formid="11"] some other content';
+
+		// Extract form IDs from content.
+		$form_ids = $this->importer->get_form_ids_from_content( $content );
+
+		// Assert the correct number of form IDs are returned.
+		$this->assertEquals( 2, count( $form_ids ) );
+		$this->assertEquals( 10, $form_ids[0] );
+		$this->assertEquals( 11, $form_ids[1] );
+	}
+
+	/**
 	 * Test that the replace_shortcodes_in_content() method replaces the third party form shortcode with the Kit form shortcode.
 	 *
 	 * @since   3.1.5
@@ -125,6 +150,31 @@ class ImporterTest extends WPTestCase
 				$this->importer->replace_shortcodes_in_content( $shortcode, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
 			);
 		}
+	}
+
+	/**
+	 * Test that the get_form_ids_from_content() method returns third party form shortcode Form IDs.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testGetMC4WPFormIDsFromContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_MC4WP();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the content to test.
+		$content = '[mc4wp_form id="10"] some content [mc4wp_form id="11"] some other content';
+
+		// Extract form IDs from content.
+		$form_ids = $this->importer->get_form_ids_from_content( $content );
+
+		// Assert the correct number of form IDs are returned.
+		$this->assertEquals( 2, count( $form_ids ) );
+		$this->assertEquals( 10, $form_ids[0] );
+		$this->assertEquals( 11, $form_ids[1] );
 	}
 
 	/**

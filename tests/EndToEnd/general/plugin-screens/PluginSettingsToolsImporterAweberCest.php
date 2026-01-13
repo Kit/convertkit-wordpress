@@ -142,7 +142,10 @@ class PluginSettingsToolsImporterAweberCest
 	 */
 	private function _createAWeberForms(EndToEndTester $I)
 	{
-		// @TODO.
+		// AWeber doesn't cache Forms or store them in the database, so we mock the data that would be returned from their API.
+		return [
+			'10', '11'
+		];
 	}
 
 	/**
