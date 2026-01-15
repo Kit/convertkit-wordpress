@@ -33,35 +33,6 @@ class ConvertKit_Admin_Importer_MC4WP extends ConvertKit_Admin_Importer {
 	public $shortcode_id_attribute = 'id';
 
 	/**
-	 * Returns an array of post IDs that contain the MC4WP form shortcode.
-	 *
-	 * @since   3.1.0
-	 *
-	 * @return  array
-	 */
-	public function get_forms_in_posts() {
-
-		global $wpdb;
-
-		// Search post_content for [mc4wp_form] shortcode and return array of post IDs.
-		$results = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-            SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = %s
-            AND post_content LIKE %s
-            ",
-				'publish',
-				'%[' . $this->shortcode_name . '%'
-			)
-		);
-
-		return $results ? $results : array();
-
-	}
-
-	/**
 	 * Returns an array of MC4WP form IDs and titles.
 	 *
 	 * @since   3.1.0
