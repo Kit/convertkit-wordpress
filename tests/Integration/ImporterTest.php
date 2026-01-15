@@ -48,7 +48,8 @@ class ImporterTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the get_form_ids_from_content() method returns third party form shortcode Form IDs.
+	 * Test that the get_form_ids_from_content() method returns AWeber form shortcode Form IDs
+	 * ignoring any other shortcodes.
 	 *
 	 * @since   3.1.5
 	 */
@@ -61,7 +62,7 @@ class ImporterTest extends WPTestCase
 		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
 
 		// Define the content to test.
-		$content = '[aweber formid="10"] some content [aweber formid="11"] some other content';
+		$content = '[aweber formid="10"] some content [aweber formid="11"] some other content [mc4wp_form id="12"] different shortcode to ignore';
 
 		// Extract form IDs from content.
 		$form_ids = $this->importer->get_form_ids_from_content( $content );
@@ -153,7 +154,8 @@ class ImporterTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the get_form_ids_from_content() method returns third party form shortcode Form IDs.
+	 * Test that the get_form_ids_from_content() method returns MC4WP form shortcode Form IDs
+	 * ignoring any other shortcodes.
 	 *
 	 * @since   3.1.5
 	 */
@@ -166,7 +168,7 @@ class ImporterTest extends WPTestCase
 		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
 
 		// Define the content to test.
-		$content = '[mc4wp_form id="10"] some content [mc4wp_form id="11"] some other content';
+		$content = '[mc4wp_form id="10"] some content [mc4wp_form id="11"] some other content [aweber formid="12"] different shortcode to ignore';
 
 		// Extract form IDs from content.
 		$form_ids = $this->importer->get_form_ids_from_content( $content );
