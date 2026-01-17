@@ -1,3 +1,6 @@
+### 3.1.5 2026-01-19
+* Added: Settings: Tools: AWeber for WordPress Plugin to Kit Form Importer
+
 ### 3.1.4 2026-01-12
 * Added: Settings: Member Content: Container CSS Class setting
 * Added: Member Content: Automatically add `grve-container` CSS class for Impeka Theme
