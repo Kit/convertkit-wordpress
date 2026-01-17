@@ -10,18 +10,28 @@ namespace Tests\Support\Helper;
 class WPGutenberg extends \Codeception\Module
 {
 	/**
-	 * Helper method to switch to the Gutenberg editor Iframe.
-	 * Use this method if all blocks use the Block API v3,
-	 * as this means Gutenberg will be served in an Iframe.
-	 * At present, we use v2 to provide backwards compatibility
-	 * down to WordPress 5.6:
+	 * Helper method to determine if the Gutenberg IFrame editor is enabled
+	 * in tests by inspecting the WORDPRESS_V3_BLOCK_EDITOR_ENABLED environment variable.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @return  bool
+	 */
+	public function isGutenbergIFrameEditorEnabled()
+	{
+		return filter_var($_ENV['WORDPRESS_V3_BLOCK_EDITOR_ENABLED'], FILTER_VALIDATE_BOOLEAN);
+	}
+
+	/**
+	 * Helper method to switch to the Gutenberg editor Iframe
+	 * when all blocks use the Block API v3:
 	 * https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/
 	 *
 	 * @since   2.7.7
 	 *
 	 * @param   EndToEndTester $I  EndToEnd Tester.
 	 */
-	public function switchToGutenbergEditor($I)
+	public function switchToGutenbergIFrameEditor($I)
 	{
 		$I->switchToIFrame('iframe[name="editor-canvas"]');
 	}
@@ -41,8 +51,18 @@ class WPGutenberg extends \Codeception\Module
 		$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 		$I->waitForElementVisible('body.post-new-php');
 
+		// Switch to the Gutenberg IFrame.
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Define the Title.
 		$I->fillField('.editor-post-title__input', $title);
+
+		// Switch back to main window.
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -188,9 +208,22 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function addGutenbergParagraphBlock($I, $text)
 	{
+		// Add paragraph block.
 		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph/paragraph');
+
+		// Switch to the Gutenberg IFrame.
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
+		// Click the editor area and enter the text in the paragraph.
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
+
+		// Switch back to main window.
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -290,6 +323,27 @@ class WPGutenberg extends \Codeception\Module
 
 		// Click the Product name to create a link to it.
 		$I->click($name, '.block-editor-link-control__search-results');
+	}
+
+	/**
+	 * Helper method to select an existing block previously added to the Gutenberg editor.
+	 *
+	 * @since   3.1.4
+	 *
+	 * @param   EndToEndTester $I                        EndToEnd Tester.
+	 * @param   string         $blockProgrammaticName    Programmatic Block Name (e.g. 'convertkit/form-builder-field-name').
+	 */
+	public function selectGutenbergBlockInEditor($I, $blockProgrammaticName)
+	{
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
+		$I->click('div[data-type="' . $blockProgrammaticName . '"]');
+
+		if ($this->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
