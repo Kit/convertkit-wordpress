@@ -33,6 +33,24 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 	public $shortcode_id_attribute = 'formid';
 
 	/**
+	 * Holds the block name for AWeber forms.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @var     string
+	 */
+	public $block_name = 'aweber-signupform-block/aweber-shortcode';
+
+	/**
+	 * Holds the ID attribute name for AWeber forms.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @var     string
+	 */
+	public $block_id_attribute = 'selectedShortCode';
+
+	/**
 	 * Returns an array of AWeber form IDs and titles.
 	 *
 	 * @since   3.1.5

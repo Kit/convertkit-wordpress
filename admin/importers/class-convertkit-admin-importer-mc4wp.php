@@ -33,6 +33,24 @@ class ConvertKit_Admin_Importer_MC4WP extends ConvertKit_Admin_Importer {
 	public $shortcode_id_attribute = 'id';
 
 	/**
+	 * Holds the block name for MC4WP forms.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @var     string
+	 */
+	public $block_name = 'mailchimp-for-wp/form';
+
+	/**
+	 * Holds the ID attribute name for MC4WP forms.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @var     string
+	 */
+	public $block_id_attribute = 'id';
+
+	/**
 	 * Returns an array of MC4WP form IDs and titles.
 	 *
 	 * @since   3.1.0
