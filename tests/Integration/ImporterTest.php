@@ -154,6 +154,57 @@ class ImporterTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the replace_blocks_in_content() method replaces the third party form block with the Kit form block.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testAWeberReplaceBlocksInContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the blocks to test.
+		$content = '<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-289586845-webform"} -->
+<div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=289586845 formtype=webform]</div>
+<!-- /wp:aweber-signupform-block/aweber-shortcode -->';
+
+		// Test the block is replaced with the Kit form block.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->',
+			$this->importer->replace_blocks_in_content( $content, 289586845, $_ENV['CONVERTKIT_API_FORM_ID'] )
+		);
+	}
+
+	/**
+	 * Test that the replace_blocks_in_content() method ignores non-AWeber blocks.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testAWeberReplaceBlocksInContentIgnoringOtherBlocks()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the blocks to test.
+		$html_block = '<!-- wp:html --><div class="wp-block-core-html">Some content</div><!-- /wp:html -->';
+		$content    = '<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-289586845-webform"} -->
+<div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=289586845 formtype=webform]</div>
+<!-- /wp:aweber-signupform-block/aweber-shortcode -->' . $html_block;
+
+		// Test the block is replaced with the Kit form block.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->' . $html_block,
+			$this->importer->replace_blocks_in_content( $content, 289586845, $_ENV['CONVERTKIT_API_FORM_ID'] )
+		);
+	}
+
+	/**
 	 * Test that the get_form_ids_from_content() method returns MC4WP form shortcode Form IDs
 	 * ignoring any other shortcodes.
 	 *
@@ -255,5 +306,52 @@ class ImporterTest extends WPTestCase
 				$this->importer->replace_shortcodes_in_content( $shortcode, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
 			);
 		}
+	}
+
+	/**
+	 * Test that the replace_blocks_in_content() method replaces the third party form block with the Kit form block.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testMC4WPReplaceBlocksInContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_MC4WP();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the blocks to test.
+		$content = '<!-- wp:mailchimp-for-wp/form {"id":4410} /-->';
+
+		// Test the block is replaced with the Kit form block.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->',
+			$this->importer->replace_blocks_in_content( $content, 4410, $_ENV['CONVERTKIT_API_FORM_ID'] )
+		);
+	}
+
+	/**
+	 * Test that the replace_blocks_in_content() method ignores non-MC4WP blocks.
+	 *
+	 * @since   3.1.5
+	 */
+	public function testMC4WPReplaceBlocksInContentIgnoringOtherBlocks()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_MC4WP();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the blocks to test.
+		$html_block = '<!-- wp:html --><div class="wp-block-core-html">Some content</div><!-- /wp:html -->';
+		$content    = '<!-- wp:mailchimp-for-wp/form {"id":4410} /-->' . $html_block;
+
+		// Test the block is replaced with the Kit form block.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->' . $html_block,
+			$this->importer->replace_blocks_in_content( $content, 4410, $_ENV['CONVERTKIT_API_FORM_ID'] )
+		);
 	}
 }
