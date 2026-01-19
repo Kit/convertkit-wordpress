@@ -140,16 +140,15 @@ abstract class ConvertKit_Admin_Importer {
 	}
 
 	/**
-	 * Returns an array of form IDs within the third party form shortcode or block.
+	 * Returns an array of form IDs within the third party form shortcode.
 	 *
 	 * @since   3.1.5
 	 *
-	 * @param   string $content             Content containing third party form shortcode or block.
+	 * @param   string $content             Content containing third party form shortcode.
 	 * @return  array
 	 */
 	public function get_form_ids_from_content( $content ) {
 
-		// Shortcodes.
 		$pattern = '/\['                                       // Start regex with an opening square bracket.
 			. preg_quote( $this->shortcode_name, '/' )         // Match the shortcode name, escaping any regex special chars.
 			. '(?:\s+[^\]]*)?'                                 // Optionally match any attributes (key/value pairs), non-greedy.
@@ -167,9 +166,6 @@ abstract class ConvertKit_Admin_Importer {
 				isset( $matches[2] ) ? $matches[2] : array()
 			)
 		);
-
-		// Blocks.
-		// @TODO.
 
 		return $form_ids;
 
