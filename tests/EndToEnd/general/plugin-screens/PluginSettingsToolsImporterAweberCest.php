@@ -31,7 +31,7 @@ class PluginSettingsToolsImporterAweberCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAWeberImport(EndToEndTester $I)
+	public function testAWeberImportWithShortcodes(EndToEndTester $I)
 	{
 		// Setup Plugin.
 		$I->setupKitPlugin($I);
@@ -42,6 +42,47 @@ class PluginSettingsToolsImporterAweberCest
 
 		// Insert AWeber Form Shortcodes into Pages.
 		$pageIDs = $this->_createPagesWithAWeberFormShortcodes($I, $aweberFormIDs);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Select the Kit Forms to replace the AWeber Forms.
+		foreach ($aweberFormIDs as $aweberFormID) {
+			$I->selectOption('_wp_convertkit_integration_aweber_settings[' . $aweberFormID . ']', $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
+
+		// Click the Migrate button.
+		$I->click('Migrate');
+
+		// Confirm success message displays.
+		$I->waitForElementVisible('.notice-success');
+		$I->see('AWeber forms migrated successfully.');
+
+		// View the Pages, to confirm Kit Forms now display.
+		foreach ($pageIDs as $pageID) {
+			$I->amOnPage('?p=' . $pageID);
+			$I->seeElementInDOM('form[data-sv-form]');
+		}
+	}
+
+	/**
+	 * Test that AWeber Blocks are replaced with Kit Blocks when the Tools > AWeber: Migrate Configuration is configured.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAWeberImportWithBlocks(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Aweber Forms.
+		$aweberFormIDs = $this->_createAWeberForms($I);
+
+		// Insert AWeber Blocks into Pages.
+		$pageIDs = $this->_createPagesWithAWeberBlocks($I, $aweberFormIDs);
 
 		// Navigate to the Tools screen.
 		$I->loadKitSettingsToolsScreen($I);
@@ -167,6 +208,42 @@ class PluginSettingsToolsImporterAweberCest
 					'post_status'  => 'publish',
 					'post_title'   => 'Page with AWeber Form #' . $aweberFormID,
 					'post_content' => '[aweber formid="' . $aweberFormID . '"]',
+					'meta_input'   => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '0',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
+				]
+			);
+		}
+
+		return $pageIDs;
+	}
+
+	/**
+	 * Create Pages with AWeber Blocks.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 * @param   array          $aweberFormIDs  AWeber Form IDs.
+	 * @return  array
+	 */
+	private function _createPagesWithAWeberBlocks(EndToEndTester $I, $aweberFormIDs)
+	{
+		$pageIDs = array();
+
+		foreach ($aweberFormIDs as $aweberFormID) {
+			$pageIDs[] = $I->havePostInDatabase(
+				[
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => 'Page with AWeber Block #' . $aweberFormID,
+					'post_content' => '<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-' . $aweberFormID . '-webform"} -->
+<div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=' . $aweberFormID . ' formtype=webform]</div>
+<!-- /wp:aweber-signupform-block/aweber-shortcode -->',
 					'meta_input'   => [
 						'_wp_convertkit_post_meta' => [
 							'form'         => '0',
