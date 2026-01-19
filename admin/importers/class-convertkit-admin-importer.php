@@ -275,11 +275,8 @@ abstract class ConvertKit_Admin_Importer {
 			// Fetch Blocks from Content.
 			$blocks = parse_blocks( $post_content );
 
-			// Bail if no Blocks exist (i.e. we're not using Gutenberg).
-			if ( ! is_array( $blocks ) ) {
-				continue;
-			}
-			if ( ! count( $blocks ) ) {
+			// If a single block was returned with blockName null, this content was not created using the block editor.
+			if ( count( $blocks ) === 1 && is_null( $blocks[0]['blockName'] ) ) {
 				continue;
 			}
 
@@ -316,11 +313,8 @@ abstract class ConvertKit_Admin_Importer {
 		// Fetch Blocks from Content.
 		$blocks = parse_blocks( $content );
 
-		// Bail if no Blocks exist (i.e. we're not using Gutenberg).
-		if ( ! is_array( $blocks ) ) {
-			return $content;
-		}
-		if ( ! count( $blocks ) ) {
+		// If a single block was returned with blockName null, this content was not created using the block editor.
+		if ( count( $blocks ) === 1 && is_null( $blocks[0]['blockName'] ) ) {
 			return $content;
 		}
 
@@ -367,7 +361,7 @@ abstract class ConvertKit_Admin_Importer {
 			}
 
 			// Skip if the third party form ID doesn't exist within the third party form block's attribute.
-			if ( stripos( $block['attrs'][ $this->block_id_attribute ], $third_party_form_id ) === false ) {
+			if ( stripos( $block['attrs'][ $this->block_id_attribute ], (string) $third_party_form_id ) === false ) {
 				continue;
 			}
 
