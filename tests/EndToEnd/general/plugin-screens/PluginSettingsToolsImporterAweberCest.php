@@ -68,7 +68,7 @@ class PluginSettingsToolsImporterAweberCest
 	/**
 	 * Test that AWeber Blocks are replaced with Kit Blocks when the Tools > AWeber: Migrate Configuration is configured.
 	 *
-	 * @since   3.1.5
+	 * @since   3.1.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -99,10 +99,15 @@ class PluginSettingsToolsImporterAweberCest
 		$I->waitForElementVisible('.notice-success');
 		$I->see('AWeber forms migrated successfully.');
 
-		// View the Pages, to confirm Kit Forms now display.
+		// Test each Page.
 		foreach ($pageIDs as $pageID) {
 			$I->amOnPage('?p=' . $pageID);
+
+			// Check Kit Form block is displayed.
 			$I->seeElementInDOM('form[data-sv-form]');
+
+			// Confirm special characters have not been stripped.
+			$I->seeInSource('!@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\');
 		}
 	}
 
@@ -208,6 +213,8 @@ class PluginSettingsToolsImporterAweberCest
 					'post_status'  => 'publish',
 					'post_title'   => 'Page with AWeber Form #' . $aweberFormID,
 					'post_content' => '[aweber formid="' . $aweberFormID . '"]',
+
+					// Configure Kit Plugin to not display a default Form, so we test against the Kit Form in the content.
 					'meta_input'   => [
 						'_wp_convertkit_post_meta' => [
 							'form'         => '0',
@@ -243,7 +250,7 @@ class PluginSettingsToolsImporterAweberCest
 					'post_title'   => 'Page with AWeber Block #' . $aweberFormID,
 					'post_content' => '<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-' . $aweberFormID . '-webform"} -->
 <div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=' . $aweberFormID . ' formtype=webform]</div>
-<!-- /wp:aweber-signupform-block/aweber-shortcode -->',
+<!-- /wp:aweber-signupform-block/aweber-shortcode --><!-- wp:html --><div class="wp-block-core-html">Some content with characters !@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\\</div><!-- /wp:html -->',
 					'meta_input'   => [
 						'_wp_convertkit_post_meta' => [
 							'form'         => '0',

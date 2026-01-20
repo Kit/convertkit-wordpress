@@ -24,7 +24,7 @@ abstract class ConvertKit_Admin_Importer {
 	public $shortcode_name = '';
 
 	/**
-	 * Holds the ID attribute name for the third party Form plugin.
+	 * Holds the shortcode ID attribute name for the third party Form plugin.
 	 *
 	 * @since   3.1.0
 	 *
@@ -42,7 +42,7 @@ abstract class ConvertKit_Admin_Importer {
 	public $block_name = '';
 
 	/**
-	 * Holds the ID attribute name for the third party Form plugin.
+	 * Holds the block ID attribute name for the third party Form plugin.
 	 *
 	 * @since   3.1.6
 	 *
@@ -60,7 +60,7 @@ abstract class ConvertKit_Admin_Importer {
 	abstract public function get_forms();
 
 	/**
-	 * Returns an array of post IDs that contain the third partyform shortcode.
+	 * Returns an array of post IDs that contain the third party form block or shortcode.
 	 *
 	 * @since   3.1.5
 	 *
@@ -70,7 +70,7 @@ abstract class ConvertKit_Admin_Importer {
 
 		global $wpdb;
 
-		// Search post_content for the third party form shortcode and return array of post IDs.
+		// Search post_content for the third party form block or shortcode and return array of post IDs.
 		$results = $wpdb->get_col(
 			$wpdb->prepare(
 				"
@@ -123,8 +123,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   int $third_party_form_id    The ID of the third party form.
-	 * @param   int $form_id                The ID of the Kit form.
+	 * @param   int $third_party_form_id    Third Party Form ID.
+	 * @param   int $form_id                Kit Form ID.
 	 */
 	public function replace_shortcodes_in_posts( $third_party_form_id, $form_id ) {
 
@@ -254,8 +254,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $third_party_form_id    The ID of the third party form.
-	 * @param   int $form_id                The ID of the Kit form.
+	 * @param   int $third_party_form_id    Third Party Form ID.
+	 * @param   int $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_posts( $third_party_form_id, $form_id ) {
 
@@ -269,31 +269,49 @@ abstract class ConvertKit_Admin_Importer {
 
 		// Iterate through Posts and replace the third party Form Block with the Kit Form Block.
 		foreach ( $posts as $post_id ) {
-			// Get Post content.
-			$post_content = get_post_field( 'post_content', $post_id );
-
-			// Fetch Blocks from Content.
-			$blocks = parse_blocks( $post_content );
-
-			// If a single block was returned with blockName null, this content was not created using the block editor.
-			if ( count( $blocks ) === 1 && is_null( $blocks[0]['blockName'] ) ) {
-				continue;
-			}
-
-			// Replace the third party Form Block with the Kit Form Block.
-			$post_content = $this->replace_blocks_in_content( $post_content, $third_party_form_id, $form_id );
-
-			// Update the Post content.
-			wp_update_post(
-				array(
-					'ID'           => $post_id,
-					'post_content' => $post_content,
-				),
-				false,
-				false // Don't fire after action hooks.
-			);
-
+			$this->replace_blocks_in_post( $post_id, $third_party_form_id, $form_id );
 		}
+
+	}
+
+	/**
+	 * Replaces the third party form block with the Kit form block in the given post.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @param   int $post_id                Post ID.
+	 * @param   int $third_party_form_id    Third Party Form ID.
+	 * @param   int $form_id                Kit Form ID.
+	 */
+	public function replace_blocks_in_post( $post_id, $third_party_form_id, $form_id ) {
+
+		// Get Post content.
+		$post_content = get_post_field( 'post_content', $post_id );
+
+		// Fetch Blocks from Content.
+		$blocks = parse_blocks( $post_content );
+
+		// If a single block was returned with blockName null, this content was not created using the block editor.
+		if ( count( $blocks ) === 1 && is_null( $blocks[0]['blockName'] ) ) {
+			return;
+		}
+
+		// Replace the third party Form Block with the Kit Form Block.
+		$post_content = $this->replace_blocks_in_content( $blocks, $third_party_form_id, $form_id );
+
+		// Double escape backslashes so that wp_update_post doesn't remove them.
+		// When content contains a single backslash (\), wp_update_post will strip it unless we double escape it (\\).
+		$post_content = str_replace( '\\', '\\\\', $post_content );
+
+		// Update the Post content.
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $post_content,
+			),
+			false,
+			false // Don't fire after action hooks.
+		);
 
 	}
 
@@ -302,21 +320,13 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   string $content                Content containing third party Form Blocks.
-	 * @param   int    $third_party_form_id    Third Party Form ID.
-	 * @param   int    $form_id                Kit Form ID.
-
+	 * @param   array $blocks                 Blocks.
+	 * @param   int   $third_party_form_id    Third Party Form ID.
+	 * @param   int   $form_id                Kit Form ID.
+	 *
 	 * @return  string
 	 */
-	public function replace_blocks_in_content( $content, $third_party_form_id, $form_id ) {
-
-		// Fetch Blocks from Content.
-		$blocks = parse_blocks( $content );
-
-		// If a single block was returned with blockName null, this content was not created using the block editor.
-		if ( count( $blocks ) === 1 && is_null( $blocks[0]['blockName'] ) ) {
-			return $content;
-		}
+	public function replace_blocks_in_content( $blocks, $third_party_form_id, $form_id ) {
 
 		// Recursively convert blocks.
 		$blocks = $this->recursively_convert_blocks( $blocks, $third_party_form_id, $form_id );

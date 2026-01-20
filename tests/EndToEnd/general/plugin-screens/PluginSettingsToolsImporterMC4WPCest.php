@@ -70,7 +70,7 @@ class PluginSettingsToolsImporterMC4WPCest
 	/**
 	 * Test that Mailchimp Blocks are replaced with Kit Blocks when the Tools > MC4WP: Migrate Configuration is configured.
 	 *
-	 * @since   3.1.0
+	 * @since   3.1.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -101,10 +101,15 @@ class PluginSettingsToolsImporterMC4WPCest
 		$I->waitForElementVisible('.notice-success');
 		$I->see('MC4WP forms migrated successfully.');
 
-		// View the Pages, to confirm Kit Forms now display.
+		// Test each Page.
 		foreach ($pageIDs as $pageID) {
 			$I->amOnPage('?p=' . $pageID);
+
+			// Check Kit Form block is displayed.
 			$I->seeElementInDOM('form[data-sv-form]');
+
+			// Confirm special characters have not been stripped.
+			$I->seeInSource('!@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\');
 		}
 	}
 
@@ -257,7 +262,16 @@ class PluginSettingsToolsImporterMC4WPCest
 					'post_type'    => 'page',
 					'post_status'  => 'publish',
 					'post_title'   => 'Page with MC4WP Block #' . $mc4wpFormID,
-					'post_content' => '<!-- wp:mailchimp-for-wp/form {"id":' . $mc4wpFormID . '} /-->',
+					'post_content' => '<!-- wp:mailchimp-for-wp/form {"id":' . $mc4wpFormID . '} /--><!-- wp:html --><div class="wp-block-core-html">Some content with characters !@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\\</div><!-- /wp:html -->',
+
+					// Configure Kit Plugin to not display a default Form, so we test against the Kit Form in the content.
+					'meta_input'   => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '0',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
 				]
 			);
 		}
