@@ -102,6 +102,61 @@
 	</div><!-- .postbox -->
 
 	<?php
+	// Aweber.
+	if ( $aweber->has_forms_in_posts() && $aweber->has_forms() && $forms->exist() ) {
+		?>
+		<div id="import-aweber" class="postbox">
+			<h2><?php esc_html_e( 'AWeber: Migrate Configuration', 'convertkit' ); ?></h2>
+
+			<p class="description">
+				<?php esc_html_e( 'Automatically replace AWeber form shortcodes with Kit forms.', 'convertkit' ); ?><br />
+			</p>
+
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'AWeber Form', 'convertkit' ); ?></th>
+						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ( $aweber->get_forms() as $aweber_form_id => $aweber_form_title ) {
+						?>
+						<tr>
+							<td><?php echo esc_html( $aweber_form_title ); ?></td>
+							<td>
+								<select name="_wp_convertkit_integration_aweber_settings[<?php echo esc_attr( $aweber_form_id ); ?>]">
+									<?php
+									foreach ( $forms->get() as $form ) {
+										?>
+										<option value="<?php echo esc_attr( $form['id'] ); ?>"><?php echo esc_html( $form['name'] ); ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+				</tbody>
+			</table>
+
+			<p>
+				<?php
+				submit_button(
+					__( 'Migrate', 'convertkit' ),
+					'primary',
+					'convertkit-import-aweber',
+					false
+				);
+				?>
+			</p>
+		</div><!-- .postbox -->
+		<?php
+	}
+
 	// Mailchimp for WordPress (MC4WP).
 	if ( $mc4wp->has_forms_in_posts() && $mc4wp->has_forms() && $forms->exist() ) {
 		?>
