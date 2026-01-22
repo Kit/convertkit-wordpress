@@ -120,6 +120,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-i
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-aweber.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-mc4wp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-mailpoet.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-newsletter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-broadcasts.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-form-entries.php';
