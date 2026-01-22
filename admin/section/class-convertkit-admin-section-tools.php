@@ -345,6 +345,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 		// Iterate through the AWeber Form IDs and replace the shortcodes with the Kit Form Shortcodes.
 		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_aweber_settings'] ) ) as $aweber_form_id => $kit_form_id ) {
+			$aweber->replace_blocks_in_posts( (int) $aweber_form_id, (int) $kit_form_id );
 			$aweber->replace_shortcodes_in_posts( (int) $aweber_form_id, (int) $kit_form_id );
 		}
 
@@ -380,6 +381,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 		// Iterate through the MC4WP Form IDs and replace the shortcodes with the Kit Form Shortcodes.
 		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_mc4wp_settings'] ) ) as $mc4wp_form_id => $kit_form_id ) {
+			$mc4wp->replace_blocks_in_posts( (int) $mc4wp_form_id, (int) $kit_form_id );
 			$mc4wp->replace_shortcodes_in_posts( (int) $mc4wp_form_id, (int) $kit_form_id );
 		}
 

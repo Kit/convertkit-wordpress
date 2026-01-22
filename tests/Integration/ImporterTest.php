@@ -19,6 +19,15 @@ class ImporterTest extends WPTestCase
 	protected $tester;
 
 	/**
+	 * Holds the HTML block to test, which includes special characters.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @var     string
+	 */
+	private $html_block = '<!-- wp:html --><div class="wp-block-core-html">Some content with characters !@£$%^&amp;*()_+~!@£$%^&amp;*()_+\</div><!-- /wp:html -->';
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.1.0
@@ -154,6 +163,72 @@ class ImporterTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the replace_blocks_in_post() method replaces the third party form block with the Kit form block,
+	 * and special characters are not stripped when the Post is saved.
+	 *
+	 * @since   3.1.6
+	 */
+	public function testAWeberReplaceBlocksInPost()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Create a Post with an AWeber form block and HTML block, as if the user already created this post.
+		$postID = $this->factory->post->create(
+			[
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'AWeber: Replace Blocks in Post',
+				'post_content' => str_replace(
+					'\\',
+					'\\\\',
+					'<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-289586845-webform"} -->
+<div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=289586845 formtype=webform]</div>
+<!-- /wp:aweber-signupform-block/aweber-shortcode -->' . $this->html_block
+				),
+			]
+		);
+
+		// Replace the blocks in the post.
+		$this->importer->replace_blocks_in_post( $postID, 289586845, $_ENV['CONVERTKIT_API_FORM_ID'] );
+
+		// Test the block is replaced with the Kit form block, and special characters are not stripped.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->' . $this->html_block,
+			get_post_field( 'post_content', $postID )
+		);
+	}
+
+	/**
+	 * Test that the replace_blocks_in_content() method replaces the third party form block with the Kit form block,
+	 * and special characters are not stripped.
+	 *
+	 * @since   3.1.6
+	 */
+	public function testAWeberReplaceBlocksInContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_AWeber();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the blocks to test.
+		$content = '<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-289586845-webform"} -->
+<div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=289586845 formtype=webform]</div>
+<!-- /wp:aweber-signupform-block/aweber-shortcode -->' . $this->html_block;
+
+		// Test the block is replaced with the Kit form block.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->' . $this->html_block,
+			$this->importer->replace_blocks_in_content( parse_blocks( $content ), 289586845, $_ENV['CONVERTKIT_API_FORM_ID'] )
+		);
+	}
+
+	/**
 	 * Test that the get_form_ids_from_content() method returns MC4WP form shortcode Form IDs
 	 * ignoring any other shortcodes.
 	 *
@@ -255,5 +330,63 @@ class ImporterTest extends WPTestCase
 				$this->importer->replace_shortcodes_in_content( $shortcode, 10, $_ENV['CONVERTKIT_API_FORM_ID'] )
 			);
 		}
+	}
+
+	/**
+	 * Test that the replace_blocks_in_post() method replaces the third party form block with the Kit form block,
+	 * and special characters are not stripped when the Post is saved.
+	 *
+	 * @since   3.1.6
+	 */
+	public function testMC4WPReplaceBlocksInPost()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_MC4WP();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Create a Post with a MC4WP form block and HTML block, as if the user already created this post.
+		$postID = $this->factory->post->create(
+			[
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Mailchimp 4 WP: Replace Blocks in Post',
+				'post_content' => str_replace( '\\', '\\\\', '<!-- wp:mailchimp-for-wp/form {"id":4410} /-->' . $this->html_block ),
+			]
+		);
+
+		// Replace the blocks in the post.
+		$this->importer->replace_blocks_in_post( $postID, 4410, $_ENV['CONVERTKIT_API_FORM_ID'] );
+
+		// Test the block is replaced with the Kit form block, and special characters are not stripped.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->' . $this->html_block,
+			get_post_field( 'post_content', $postID )
+		);
+	}
+
+	/**
+	 * Test that the replace_blocks_in_content() method replaces the third party form block with the Kit form block,
+	 * and special characters are not stripped.
+	 *
+	 * @since   3.1.6
+	 */
+	public function testMC4WPReplaceBlocksInContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_MC4WP();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the blocks to test.
+		$content = '<!-- wp:mailchimp-for-wp/form {"id":4410} /-->' . $this->html_block;
+
+		// Test the block is replaced with the Kit form block.
+		$this->assertEquals(
+			'<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->' . $this->html_block,
+			$this->importer->replace_blocks_in_content( parse_blocks( $content ), 4410, $_ENV['CONVERTKIT_API_FORM_ID'] )
+		);
 	}
 }
