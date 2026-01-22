@@ -339,6 +339,29 @@ the Helper's namespace and class under the `enabled` section.
 
 Need to change how Codeception runs?  Edit the [codeception.dist.xml](codeception.dist.xml) file.
 
+## Block Testing
+
+To locally test that Kit Blocks are compatible with apiVersion 2, use the following configuration in `.env.testing`:
+
+| Environment Variable | Value |
+|----------------------|-------|
+| `WORDPRESS_DB_SQL_DUMP_FILE` | `tests/Support/Data/dump-6.2.8.sql` |
+| `WORDPRESS_V3_BLOCK_EDITOR_ENABLED` | `false` |
+
+To locally test that Kit Blocks are compatible with apiVersion 3, use the following configuration in `.env.testing`:
+
+| Environment Variable | Value |
+|----------------------|-------|
+| `WORDPRESS_DB_SQL_DUMP_FILE` | `tests/Support/Data/dump.sql` |
+| `WORDPRESS_V3_BLOCK_EDITOR_ENABLED` | `true` |
+
+GitHub Actions are configured to automatically configure the hosted runner with the applicable SQL dump file and block editor version:
+
+| Workflow File | Description |
+|---------------|-------------|
+| `tests-backward-compat.yml` | Runs tests against WordPress 6.2.8, with apiVersion `2` for blocks |
+| `tests.yml` | Runs tests against the latest WordPress version, with apiVersion `3` for blocks |
+
 ## Writing a WordPress Unit Test
 
 WordPress Unit tests provide testing of Plugin specific functions and/or classes, typically to assert that they perform as expected

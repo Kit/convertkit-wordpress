@@ -372,7 +372,7 @@ INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALU
 (19,  1,  'wp_dashboard_quick_press_last_post_id',  '1'),
 (20,  1,  'edit_page_per_page',  '100'),
 (21,  1,  'edit_post_per_page',  '100'),
-(22,  1,  'wp_persisted_preferences', 'a:4:{s:4:"core";a:1:{s:26:"isComplementaryAreaVisible";b:1;}s:14:"core/edit-post";a:1:{s:12:"welcomeGuide";b:0;}s:9:"_modified";s:24:"2024-07-18T02:45:41.491Z";s:17:"core/edit-widgets";a:2:{s:26:"isComplementaryAreaVisible";b:1;s:12:"welcomeGuide";b:0;}}');
+(22,  1,  'wp_persisted_preferences', 'a:4:{s:4:"core";a:2:{s:26:"isComplementaryAreaVisible";b:1;s:24:"enableChoosePatternModal";b:0;}s:14:"core/edit-post";a:4:{s:12:"welcomeGuide";b:0;s:23:"metaBoxesMainOpenHeight";i:540;s:20:"welcomeGuideTemplate";b:0;s:19:"metaBoxesMainIsOpen";b:1;}s:9:"_modified";s:24:"2024-07-18T02:45:41.491Z";s:17:"core/edit-widgets";a:2:{s:26:"isComplementaryAreaVisible";b:1;s:12:"welcomeGuide";b:0;}}');
 
 DROP TABLE IF EXISTS `wp_users`;
 CREATE TABLE `wp_users` (
