@@ -212,8 +212,6 @@
 		<?php
 	}
 
-	wp_nonce_field( 'convertkit-settings-tools', '_convertkit_settings_tools_nonce' );
-
 	// Mailpoet.
 	if ( $mailpoet->has_forms_in_posts() && $mailpoet->has_forms() && $forms->exist() ) {
 		?>
@@ -261,6 +259,61 @@
 					__( 'Migrate', 'convertkit' ),
 					'primary',
 					'convertkit-import-mailpoet',
+					false
+				);
+				?>
+			</p>
+		</div><!-- .postbox -->
+		<?php
+	}
+
+	// Newsletter.
+	if ( $newsletter->has_forms_in_posts() && $newsletter->has_forms() && $forms->exist() ) {
+		?>
+		<div id="import-newsletter" class="postbox">
+			<h2><?php esc_html_e( 'Newsletter: Migrate Configuration', 'convertkit' ); ?></h2>
+
+			<p class="description">
+				<?php esc_html_e( 'Automatically replace Newsletter form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ); ?><br />
+			</p>
+
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Newsletter Form', 'convertkit' ); ?></th>
+						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ( $newsletter->get_forms() as $newsletter_form_id => $newsletter_form_title ) {
+						?>
+						<tr>
+							<td><?php echo esc_html( $newsletter_form_title ); ?></td>
+							<td>
+								<select name="_wp_convertkit_integration_newsletter_settings[<?php echo esc_attr( $newsletter_form_id ); ?>]">
+									<?php
+									foreach ( $forms->get() as $form ) {
+										?>
+										<option value="<?php echo esc_attr( $form['id'] ); ?>"><?php echo esc_html( $form['name'] ); ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+				</tbody>
+			</table>
+
+			<p>
+				<?php
+				submit_button(
+					__( 'Migrate', 'convertkit' ),
+					'primary',
+					'convertkit-import-newsletter',
 					false
 				);
 				?>
