@@ -1,0 +1,282 @@
+<?php
+
+namespace Tests\EndToEnd;
+
+use Tests\Support\EndToEndTester;
+
+/**
+ * Tests for the Settings > Kit > Tools > Import sections for AWeber.
+ *
+ * @since   3.1.5
+ */
+class PluginSettingsToolsImporterAweberCest
+{
+	/**
+	 * Run common actions before running the test functions in this class.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _before(EndToEndTester $I)
+	{
+		// Activate Plugins.
+		$I->activateKitPlugin($I);
+	}
+
+	/**
+	 * Test that AWeber Forms are replaced with Kit Forms when the Tools > AWeber: Migrate Configuration is configured.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAWeberImportWithShortcodes(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Aweber Forms.
+		$aweberFormIDs = $this->_createAWeberForms($I);
+
+		// Insert AWeber Form Shortcodes into Pages.
+		$pageIDs = $this->_createPagesWithAWeberFormShortcodes($I, $aweberFormIDs);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Select the Kit Forms to replace the AWeber Forms.
+		foreach ($aweberFormIDs as $aweberFormID) {
+			$I->selectOption('_wp_convertkit_integration_aweber_settings[' . $aweberFormID . ']', $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
+
+		// Click the Migrate button.
+		$I->click('Migrate');
+
+		// Confirm success message displays.
+		$I->waitForElementVisible('.notice-success');
+		$I->see('AWeber forms migrated successfully.');
+
+		// View the Pages, to confirm Kit Forms now display.
+		foreach ($pageIDs as $pageID) {
+			$I->amOnPage('?p=' . $pageID);
+			$I->seeElementInDOM('form[data-sv-form]');
+		}
+	}
+
+	/**
+	 * Test that AWeber Blocks are replaced with Kit Blocks when the Tools > AWeber: Migrate Configuration is configured.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAWeberImportWithBlocks(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Aweber Forms.
+		$aweberFormIDs = $this->_createAWeberForms($I);
+
+		// Insert AWeber Blocks into Pages.
+		$pageIDs = $this->_createPagesWithAWeberBlocks($I, $aweberFormIDs);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Select the Kit Forms to replace the AWeber Forms.
+		foreach ($aweberFormIDs as $aweberFormID) {
+			$I->selectOption('_wp_convertkit_integration_aweber_settings[' . $aweberFormID . ']', $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
+
+		// Click the Migrate button.
+		$I->click('Migrate');
+
+		// Confirm success message displays.
+		$I->waitForElementVisible('.notice-success');
+		$I->see('AWeber forms migrated successfully.');
+
+		// Test each Page.
+		foreach ($pageIDs as $pageID) {
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check Kit Form block is displayed.
+			$I->seeElementInDOM('form[data-sv-form]');
+
+			// Confirm special characters have not been stripped.
+			$I->seeInSource('!@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\');
+		}
+	}
+
+	/**
+	 * Test that the AWeber: Migrate Configuration section is not displayed when no AWeber Forms exist.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAWeberImportWhenNoAWeberForms(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Confirm no AWeber: Migrate Configuration section is displayed.
+		$I->dontSeeElementInDOM('#import-aweber');
+	}
+
+	/**
+	 * Test that the AWeber: Migrate Configuration section is not displayed when AWeber Forms exist,
+	 * but no Pages, Posts or Custom Posts contain AWeber Form Shortcodes.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAWeberImportWhenNoAWeberShortcodesInContent(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Create AWeber Forms.
+		$aweberFormIDs = $this->_createAWeberForms($I);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Confirm no AWeber: Migrate Configuration section is displayed, as there are no
+		// AWeber Form Shortcodes in the content.
+		$I->dontSeeElementInDOM('#import-aweber');
+	}
+
+	/**
+	 * Test that the AWeber: Migrate Configuration section is not displayed when no Kit Forms exist.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAWeberImportWhenNoKitForms(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
+
+		// Navigate to the Tools screen.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Confirm no AWeber: Migrate Configuration section is displayed, as there are no
+		// AWeber Form Shortcodes in the content.
+		$I->dontSeeElementInDOM('#import-aweber');
+	}
+
+	/**
+	 * Create AWeber Forms.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @return  array
+	 */
+	private function _createAWeberForms()
+	{
+		// AWeber doesn't cache Forms or store them in the database, so we mock the data that would be returned from their API.
+		return [
+			'10',
+			'11',
+		];
+	}
+
+	/**
+	 * Create Pages with AWeber Form Shortcodes.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 * @param   array          $aweberFormIDs  AWeber Form IDs.
+	 * @return  array
+	 */
+	private function _createPagesWithAWeberFormShortcodes(EndToEndTester $I, $aweberFormIDs)
+	{
+		$pageIDs = array();
+
+		foreach ($aweberFormIDs as $aweberFormID) {
+			$pageIDs[] = $I->havePostInDatabase(
+				[
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => 'Page with AWeber Form #' . $aweberFormID,
+					'post_content' => '[aweber formid="' . $aweberFormID . '"]',
+
+					// Configure Kit Plugin to not display a default Form, so we test against the Kit Form in the content.
+					'meta_input'   => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '0',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
+				]
+			);
+		}
+
+		return $pageIDs;
+	}
+
+	/**
+	 * Create Pages with AWeber Blocks.
+	 *
+	 * @since   3.1.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 * @param   array          $aweberFormIDs  AWeber Form IDs.
+	 * @return  array
+	 */
+	private function _createPagesWithAWeberBlocks(EndToEndTester $I, $aweberFormIDs)
+	{
+		$pageIDs = array();
+
+		foreach ($aweberFormIDs as $aweberFormID) {
+			$pageIDs[] = $I->havePostInDatabase(
+				[
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => 'Page with AWeber Block #' . $aweberFormID,
+					'post_content' => '<!-- wp:aweber-signupform-block/aweber-shortcode {"selectedShortCode":"6924484-' . $aweberFormID . '-webform"} -->
+<div class="wp-block-aweber-signupform-block-aweber-shortcode">[aweber listid=6924484 formid=' . $aweberFormID . ' formtype=webform]</div>
+<!-- /wp:aweber-signupform-block/aweber-shortcode --><!-- wp:html --><div class="wp-block-core-html">Some content with characters !@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\\</div><!-- /wp:html -->',
+					'meta_input'   => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '0',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
+				]
+			);
+		}
+
+		return $pageIDs;
+	}
+
+	/**
+	 * Deactivate and reset Plugin(s) after each test, if the test passes.
+	 * We don't use _after, as this would provide a screenshot of the Plugin
+	 * deactivation and not the true test error.
+	 *
+	 * @since   3.1.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _passed(EndToEndTester $I)
+	{
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+	}
+}

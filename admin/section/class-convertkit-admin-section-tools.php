@@ -53,11 +53,14 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		return array_merge(
 			$notices,
 			array(
-				'import_configuration_upload_error'      => __( 'An error occured uploading the configuration file.', 'convertkit' ),
-				'import_configuration_invalid_file_type' => __( 'The uploaded configuration file isn\'t valid.', 'convertkit' ),
-				'import_configuration_empty'             => __( 'The uploaded configuration file contains no settings.', 'convertkit' ),
-				'import_configuration_success'           => __( 'Configuration imported successfully.', 'convertkit' ),
-				'migrate_mc4wp_configuration_success'    => __( 'MC4WP forms migrated successfully.', 'convertkit' ),
+				'import_configuration_upload_error'        => __( 'An error occured uploading the configuration file.', 'convertkit' ),
+				'import_configuration_invalid_file_type'   => __( 'The uploaded configuration file isn\'t valid.', 'convertkit' ),
+				'import_configuration_empty'               => __( 'The uploaded configuration file contains no settings.', 'convertkit' ),
+				'import_configuration_success'             => __( 'Configuration imported successfully.', 'convertkit' ),
+				'migrate_aweber_configuration_success'     => __( 'AWeber forms migrated successfully.', 'convertkit' ),
+				'migrate_mc4wp_configuration_success'      => __( 'MC4WP forms migrated successfully.', 'convertkit' ),
+				'migrate_mailpoet_configuration_success'   => __( 'MailPoet forms migrated successfully.', 'convertkit' ),
+				'migrate_newsletter_configuration_success' => __( 'Newsletter forms migrated successfully.', 'convertkit' ),
 			)
 		);
 
@@ -76,7 +79,10 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		$this->maybe_download_system_info();
 		$this->maybe_export_configuration();
 		$this->maybe_import_configuration();
+		$this->maybe_migrate_aweber_configuration();
 		$this->maybe_migrate_mc4wp_configuration();
+		$this->maybe_migrate_mailpoet_configuration();
+		$this->maybe_migrate_newsletter_configuration();
 
 	}
 
@@ -317,6 +323,42 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Replaces AWeber Form Shortcodes with Kit Form Shortcodes, if the user submitted the
+	 * AWeber Migrate Configuration section.
+	 *
+	 * @since   3.1.5
+	 */
+	private function maybe_migrate_aweber_configuration() {
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
+		// Bail if no AWeber Form IDs were submitted.
+		if ( ! isset( $_REQUEST['_wp_convertkit_integration_aweber_settings'] ) ) {
+			return;
+		}
+
+		// Initialise the importer.
+		$aweber = new ConvertKit_Admin_Importer_AWeber();
+
+		// Iterate through the AWeber Form IDs and replace the shortcodes with the Kit Form Shortcodes.
+		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_aweber_settings'] ) ) as $aweber_form_id => $kit_form_id ) {
+			$aweber->replace_blocks_in_posts( (int) $aweber_form_id, (int) $kit_form_id );
+			$aweber->replace_shortcodes_in_posts( (int) $aweber_form_id, (int) $kit_form_id );
+		}
+
+		// Redirect to Tools screen.
+		$this->redirect_with_success_notice( 'migrate_aweber_configuration_success' );
+
+	}
+
+	/**
 	 * Replaces MC4WP Form Shortcodes with Kit Form Shortcodes, if the user submitted the
 	 * MC4WP Migrate Configuration section.
 	 *
@@ -343,11 +385,84 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 
 		// Iterate through the MC4WP Form IDs and replace the shortcodes with the Kit Form Shortcodes.
 		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_mc4wp_settings'] ) ) as $mc4wp_form_id => $kit_form_id ) {
+			$mc4wp->replace_blocks_in_posts( (int) $mc4wp_form_id, (int) $kit_form_id );
 			$mc4wp->replace_shortcodes_in_posts( (int) $mc4wp_form_id, (int) $kit_form_id );
 		}
 
 		// Redirect to Tools screen.
 		$this->redirect_with_success_notice( 'migrate_mc4wp_configuration_success' );
+
+	}
+
+	/**
+	 * Replaces Mailpoet Form Shortcodes and Blocks with Kit Form Shortcodes and Blocks, if the user submitted the
+	 * Mailpoet Migrate Configuration section.
+	 *
+	 * @since   3.1.6
+	 */
+	private function maybe_migrate_mailpoet_configuration() {
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
+		// Bail if no Mailpoet Form IDs were submitted.
+		if ( ! isset( $_REQUEST['_wp_convertkit_integration_mailpoet_settings'] ) ) {
+			return;
+		}
+
+		// Initialise the importer.
+		$mailpoet = new ConvertKit_Admin_Importer_Mailpoet();
+
+		// Iterate through the Mailpoet Form IDs and replace the shortcodes with the Kit Form Shortcodes.
+		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_mailpoet_settings'] ) ) as $mailpoet_form_id => $kit_form_id ) {
+			$mailpoet->replace_blocks_in_posts( (int) $mailpoet_form_id, (int) $kit_form_id );
+			$mailpoet->replace_shortcodes_in_posts( (int) $mailpoet_form_id, (int) $kit_form_id );
+		}
+
+		// Redirect to Tools screen.
+		$this->redirect_with_success_notice( 'migrate_mailpoet_configuration_success' );
+
+	}
+
+	/**
+	 * Replaces Newsletter Form Blocks and Shortcodes with Kit Form Blocks and Shortcodes, if the user submitted the
+	 * Newsletter Migrate Configuration section.
+	 *
+	 * @since   3.1.6
+	 */
+	private function maybe_migrate_newsletter_configuration() {
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
+		// Bail if no Newsletter Form IDs were submitted.
+		if ( ! isset( $_REQUEST['_wp_convertkit_integration_newsletter_settings'] ) ) {
+			return;
+		}
+
+		// Initialise the importer.
+		$newsletter = new ConvertKit_Admin_Importer_Newsletter();
+
+		// Iterate through the Newsletter Form IDs and replace the blocks and shortcodes with the Kit Form blocks and shortcodes.
+		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_newsletter_settings'] ) ) as $newsletter_form_id => $kit_form_id ) {
+			$newsletter->replace_blocks_in_posts( (int) $newsletter_form_id, (int) $kit_form_id );
+			$newsletter->replace_shortcodes_in_posts( (int) $newsletter_form_id, (int) $kit_form_id );
+		}
+
+		// Redirect to Tools screen.
+		$this->redirect_with_success_notice( 'migrate_newsletter_configuration_success' );
 
 	}
 
@@ -373,7 +488,10 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		$forms = new ConvertKit_Resource_Forms();
 
 		// Get Importers.
-		$mc4wp = new ConvertKit_Admin_Importer_MC4WP();
+		$aweber     = new ConvertKit_Admin_Importer_AWeber();
+		$mc4wp      = new ConvertKit_Admin_Importer_MC4WP();
+		$mailpoet   = new ConvertKit_Admin_Importer_Mailpoet();
+		$newsletter = new ConvertKit_Admin_Importer_Newsletter();
 
 		// Output view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/settings/tools.php';
