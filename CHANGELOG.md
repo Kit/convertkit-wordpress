@@ -1,3 +1,8 @@
+### 3.1.6 2026-01-26
+* Added: Settings: Tools: MailPoet to Kit Form Importer
+* Added: Settings: Tools: Newsletter Plugin to Kit Form Importer
+* Added: Settings: Tools: Importers: Support migrating blocks from AWeber, MC4WP, MailPoet and Newsletter, as well as shortcodes
+
 ### 3.1.5 2026-01-19
 * Added: Settings: Tools: AWeber for WordPress Plugin to Kit Form Importer
 
