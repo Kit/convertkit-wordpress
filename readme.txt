@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.1.6
+Stable tag: 3.1.6.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -343,7 +343,7 @@ The documentation covers newsletter form setup, landing page configuration, memb
 
 == Changelog ==
 
-### 3.1.6 2026-01-26
+### 3.1.6.1 2026-01-26
 * Added: Settings: Tools: MailPoet to Kit Form Importer
 * Added: Settings: Tools: Newsletter Plugin to Kit Form Importer
 * Added: Settings: Tools: Importers: Support migrating blocks from AWeber, MC4WP, MailPoet and Newsletter, as well as shortcodes
