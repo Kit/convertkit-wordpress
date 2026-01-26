@@ -67,6 +67,7 @@ class ConvertKit_Output {
 	 */
 	public function __construct() {
 
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'init', array( $this, 'get_subscriber_id_from_request' ) );
 		add_action( 'wp', array( $this, 'maybe_tag_subscriber' ) );
 		add_action( 'template_redirect', array( $this, 'output_form' ) );
@@ -77,6 +78,57 @@ class ConvertKit_Output {
 		add_filter( 'hooked_block_convertkit/form', array( $this, 'append_form_block_to_category_archive' ), 10, 1 );
 		add_action( 'wp_footer', array( $this, 'output_global_non_inline_form' ), 1 );
 		add_action( 'wp_footer', array( $this, 'output_scripts_footer' ) );
+
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.7
+	 */
+	public function register_routes() {
+
+		// Register route to store the Kit subscriber's email's ID in a cookie.
+		register_rest_route(
+			'kit/v1',
+			'/subscriber/store-email-as-id-in-cookie',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => function ( $request ) {
+
+					// Get email address.
+					$email = $request->get_param( 'email' );
+
+					// Bail if the email address is empty.
+					if ( empty( $email ) ) {
+						return rest_ensure_response( new WP_Error( 'convertkit_subscriber_store_email_as_id_in_cookie_error', __( 'Kit: Required parameter `email` is empty.', 'convertkit' ) ) );
+					}
+
+					// Bail if the email address isn't a valid email address.
+					if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+						return rest_ensure_response( new WP_Error( 'convertkit_subscriber_store_email_as_id_in_cookie_error', __( 'Kit: Required parameter `email` is not an email address.', 'convertkit' ) ) );
+					}
+
+					// Get subscriber ID.
+					$subscriber    = new ConvertKit_Subscriber();
+					$subscriber_id = $subscriber->validate_and_store_subscriber_email( $email );
+
+					// Bail if an error occured i.e. API hasn't been configured.
+					if ( is_wp_error( $subscriber_id ) ) {
+						return rest_ensure_response( $subscriber_id );
+					}
+
+					// Return the subscriber ID.
+					return rest_ensure_response(
+						array(
+							'id' => $subscriber_id,
+						)
+					);
+
+				},
+				'permission_callback' => '__return_true',
+			)
+		);
 
 	}
 
@@ -756,9 +808,9 @@ class ConvertKit_Output {
 			'convertkit-js',
 			'convertkit',
 			array(
-				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'ajaxurl'       => rest_url( 'kit/v1/blocks' ),
 				'debug'         => $settings->debug_enabled(),
-				'nonce'         => wp_create_nonce( 'convertkit' ),
+				'nonce'         => wp_create_nonce( 'wp_rest' ),
 				'subscriber_id' => $this->subscriber_id,
 			)
 		);

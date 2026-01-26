@@ -518,6 +518,106 @@ class RESTAPITest extends WPRestApiTestCase
 	}
 
 	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API route stores
+	 * the subscriber ID in a cookie when a valid email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookie()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( [ 'email' => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'] ] );
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertEquals( (int) $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], (int) $data['id'] );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API returns
+	 * no subscriber ID when a non-subscriber email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookieWithNonSubscriberEmail()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( [ 'email' => 'fail@kit.com' ] );
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertEquals( 0, (int) $data['id'] );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API returns
+	 * an error when no email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookieWithNoEmail()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( [ 'email' => '' ] );
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 500, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertEquals( 'convertkit_subscriber_store_email_as_id_in_cookie_error', $data['code'] );
+		$this->assertEquals( 'Kit: Required parameter `email` is empty.', $data['message'] );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API returns
+	 * an error when an invalid email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookieWithInvalidEmail()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( [ 'email' => 'not-an-email' ] );
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 500, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertEquals( 'convertkit_subscriber_store_email_as_id_in_cookie_error', $data['code'] );
+		$this->assertEquals( 'Kit: Required parameter `email` is not an email address.', $data['message'] );
+	}
+
+	/**
 	 * Act as an editor user.
 	 *
 	 * @since   3.1.0
