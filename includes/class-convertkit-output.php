@@ -94,8 +94,8 @@ class ConvertKit_Output {
 			'/subscriber/store-email-as-id-in-cookie',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
-				'args'     => array(
-					// Email: Validate email is included in the request, a valid email address
+				'args'                => array(
+					// Email: Validate email is included in the request, is a valid email address
 					// and sanitize the email address.
 					'email' => array(
 						'required'          => true,

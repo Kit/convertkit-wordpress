@@ -82,6 +82,7 @@ class ConvertKit_Gutenberg {
 					return rest_ensure_response( convertkit_get_blocks() );
 				},
 
+				// Only refresh resources for users who can edit posts.
 				'permission_callback' => function () {
 					return current_user_can( 'edit_posts' );
 				},
