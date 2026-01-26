@@ -25,15 +25,15 @@ function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
 		console.log(emailAddress);
 	}
 
-	const url = new URL(convertkit.ajaxurl);
-	url.searchParams.append('email', emailAddress);
-
-	fetch(url, {
-		method: 'GET',
+	fetch(convertkit.ajaxurl, {
+		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/x-www-form-urlencoded',
 			'X-WP-Nonce': convertkit.nonce,
 		},
+		body: new URLSearchParams({
+			email: emailAddress,
+		}),
 	})
 		.then(function (response) {
 			if (convertkit.debug) {
