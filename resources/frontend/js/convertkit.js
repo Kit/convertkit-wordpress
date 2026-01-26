@@ -29,10 +29,9 @@ function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			'X-WP-Nonce': convertkit.nonce,
 		},
 		body: new URLSearchParams({
-			action: 'convertkit_store_subscriber_email_as_id_in_cookie',
-			convertkit_nonce: convertkit.nonce,
 			email: emailAddress,
 		}),
 	})
@@ -50,7 +49,7 @@ function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
 
 			// Emit custom event with subscriber ID.
 			convertKitEmitCustomEvent('convertkit_user_subscribed', {
-				id: result.data.id,
+				id: result.id,
 				email: emailAddress,
 			});
 		})
