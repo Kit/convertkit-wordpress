@@ -47,8 +47,6 @@ function convertStoreSubscriberEmailAsIDInCookie(emailAddress) {
 				console.log(result);
 			}
 
-			// @TODO Handle error.
-
 			// Emit custom event with subscriber ID.
 			convertKitEmitCustomEvent('convertkit_user_subscribed', {
 				id: result.id,

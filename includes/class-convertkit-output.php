@@ -808,7 +808,7 @@ class ConvertKit_Output {
 			'convertkit-js',
 			'convertkit',
 			array(
-				'ajaxurl'       => rest_url( 'kit/v1/blocks' ),
+				'ajaxurl'       => rest_url( 'kit/v1/subscriber/store-email-as-id-in-cookie' ),
 				'debug'         => $settings->debug_enabled(),
 				'nonce'         => wp_create_nonce( 'wp_rest' ),
 				'subscriber_id' => $this->subscriber_id,
