@@ -151,7 +151,12 @@ class RESTAPITest extends WPRestApiTestCase
 		$response = rest_get_server()->dispatch( $request );
 
 		// Assert response is unsuccessful.
-		$this->assertSame( 500, $response->get_status() );
+		$this->assertSame( 400, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertEquals( 'rest_invalid_param', $data['code'] );
+		$this->assertEquals( 'Invalid parameter(s): resource', $data['message'] );
 	}
 
 	/**
