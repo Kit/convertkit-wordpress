@@ -526,9 +526,13 @@ class RESTAPITest extends WPRestApiTestCase
 	public function testStoreEmailAsIDInCookie()
 	{
 		// Build request.
-		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
 		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_query_params( [ 'email' => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'] ] );
+		$request->set_body_params(
+			[
+				'email' => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+			],
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
@@ -551,9 +555,13 @@ class RESTAPITest extends WPRestApiTestCase
 	public function testStoreEmailAsIDInCookieWithNonSubscriberEmail()
 	{
 		// Build request.
-		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
 		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_query_params( [ 'email' => 'fail@kit.com' ] );
+		$request->set_body_params(
+			[
+				'email' => 'fail@kit.com',
+			],
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
@@ -576,20 +584,24 @@ class RESTAPITest extends WPRestApiTestCase
 	public function testStoreEmailAsIDInCookieWithNoEmail()
 	{
 		// Build request.
-		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
 		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_query_params( [ 'email' => '' ] );
+		$request->set_body_params(
+			[
+				'email' => '',
+			],
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
 
-		// Assert response is successful.
-		$this->assertSame( 500, $response->get_status() );
+		// Assert response failed.
+		$this->assertSame( 400, $response->get_status() );
 
 		// Assert response data has the expected keys and data.
 		$data = $response->get_data();
-		$this->assertEquals( 'convertkit_subscriber_store_email_as_id_in_cookie_error', $data['code'] );
-		$this->assertEquals( 'Kit: Required parameter `email` is empty.', $data['message'] );
+		$this->assertEquals( 'rest_invalid_param', $data['code'] );
+		$this->assertEquals( 'Invalid parameter(s): email', $data['message'] );
 	}
 
 	/**
@@ -601,20 +613,24 @@ class RESTAPITest extends WPRestApiTestCase
 	public function testStoreEmailAsIDInCookieWithInvalidEmail()
 	{
 		// Build request.
-		$request = new \WP_REST_Request( 'GET', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
 		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_query_params( [ 'email' => 'not-an-email' ] );
+		$request->set_body_params(
+			[
+				'email' => 'not-an-email',
+			],
+		);
 
 		// Send request.
 		$response = rest_get_server()->dispatch( $request );
 
-		// Assert response is successful.
-		$this->assertSame( 500, $response->get_status() );
+		// Assert response failed.
+		$this->assertSame( 400, $response->get_status() );
 
 		// Assert response data has the expected keys and data.
 		$data = $response->get_data();
-		$this->assertEquals( 'convertkit_subscriber_store_email_as_id_in_cookie_error', $data['code'] );
-		$this->assertEquals( 'Kit: Required parameter `email` is not an email address.', $data['message'] );
+		$this->assertEquals( 'rest_invalid_param', $data['code'] );
+		$this->assertEquals( 'Invalid parameter(s): email', $data['message'] );
 	}
 
 	/**

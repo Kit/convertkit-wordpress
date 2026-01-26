@@ -93,21 +93,24 @@ class ConvertKit_Output {
 			'kit/v1',
 			'/subscriber/store-email-as-id-in-cookie',
 			array(
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'     => array(
+					// Email: Validate email is included in the request, a valid email address
+					// and sanitize the email address.
+					'email' => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param ) && is_email( $param );
+
+						},
+						'sanitize_callback' => 'sanitize_email',
+					),
+				),
 				'callback'            => function ( $request ) {
 
 					// Get email address.
 					$email = $request->get_param( 'email' );
-
-					// Bail if the email address is empty.
-					if ( empty( $email ) ) {
-						return rest_ensure_response( new WP_Error( 'convertkit_subscriber_store_email_as_id_in_cookie_error', __( 'Kit: Required parameter `email` is empty.', 'convertkit' ) ) );
-					}
-
-					// Bail if the email address isn't a valid email address.
-					if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-						return rest_ensure_response( new WP_Error( 'convertkit_subscriber_store_email_as_id_in_cookie_error', __( 'Kit: Required parameter `email` is not an email address.', 'convertkit' ) ) );
-					}
 
 					// Get subscriber ID.
 					$subscriber    = new ConvertKit_Subscriber();
@@ -126,6 +129,8 @@ class ConvertKit_Output {
 					);
 
 				},
+
+				// No authentication required, as this is on the frontend site.
 				'permission_callback' => '__return_true',
 			)
 		);
