@@ -15,6 +15,24 @@
 abstract class ConvertKit_Admin_Importer {
 
 	/**
+	 * Holds the importer name.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $name = '';
+
+	/**
+	 * Holds the importer title.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $title = '';
+
+	/**
 	 * Holds the shortcode name for the third party Form plugin.
 	 *
 	 * @since   3.1.0
