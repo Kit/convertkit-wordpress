@@ -57,6 +57,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 				'import_configuration_invalid_file_type'   => __( 'The uploaded configuration file isn\'t valid.', 'convertkit' ),
 				'import_configuration_empty'               => __( 'The uploaded configuration file contains no settings.', 'convertkit' ),
 				'import_configuration_success'             => __( 'Configuration imported successfully.', 'convertkit' ),
+				'migrate_activecampaign_configuration_success' => __( 'ActiveCampaign forms migrated successfully.', 'convertkit' ),
 				'migrate_aweber_configuration_success'     => __( 'AWeber forms migrated successfully.', 'convertkit' ),
 				'migrate_mc4wp_configuration_success'      => __( 'MC4WP forms migrated successfully.', 'convertkit' ),
 				'migrate_mailpoet_configuration_success'   => __( 'MailPoet forms migrated successfully.', 'convertkit' ),
@@ -79,6 +80,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		$this->maybe_download_system_info();
 		$this->maybe_export_configuration();
 		$this->maybe_import_configuration();
+		$this->maybe_migrate_activecampaign_configuration();
 		$this->maybe_migrate_aweber_configuration();
 		$this->maybe_migrate_mc4wp_configuration();
 		$this->maybe_migrate_mailpoet_configuration();
@@ -323,6 +325,43 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Replaces ActiveCampaign Form Shortcodes and Blocks with Kit Form Shortcodes and Blocks, if the user submitted the
+	 * ActiveCampaign Migrate Configuration section.
+	 *
+	 * @since   3.1.7
+	 */
+	private function maybe_migrate_activecampaign_configuration() {
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_tools_nonce'] ), 'convertkit-settings-tools' ) ) {
+			return;
+		}
+
+		// Bail if no ActiveCampaign Form IDs were submitted.
+		if ( ! isset( $_REQUEST['_wp_convertkit_integration_activecampaign_settings'] ) ) {
+			return;
+		}
+
+		// Initialise the importer.
+		$activecampaign = new ConvertKit_Admin_Importer_ActiveCampaign();
+
+		// Iterate through the ActiveCampaign Form IDs, replacing the shortcodes with the Kit Form Shortcodes
+		// and blocks with the Kit Form Blocks.
+		foreach ( array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['_wp_convertkit_integration_activecampaign_settings'] ) ) as $activecampaign_form_id => $kit_form_id ) {
+			$activecampaign->replace_blocks_in_posts( (int) $activecampaign_form_id, (int) $kit_form_id );
+			$activecampaign->replace_shortcodes_in_posts( (int) $activecampaign_form_id, (int) $kit_form_id );
+		}
+
+		// Redirect to Tools screen.
+		$this->redirect_with_success_notice( 'migrate_activecampaign_configuration_success' );
+
+	}
+
+	/**
 	 * Replaces AWeber Form Shortcodes with Kit Form Shortcodes, if the user submitted the
 	 * AWeber Migrate Configuration section.
 	 *
@@ -488,10 +527,11 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		$forms = new ConvertKit_Resource_Forms();
 
 		// Get Importers.
-		$aweber     = new ConvertKit_Admin_Importer_AWeber();
-		$mc4wp      = new ConvertKit_Admin_Importer_MC4WP();
-		$mailpoet   = new ConvertKit_Admin_Importer_Mailpoet();
-		$newsletter = new ConvertKit_Admin_Importer_Newsletter();
+		$activecampaign = new ConvertKit_Admin_Importer_ActiveCampaign();
+		$aweber         = new ConvertKit_Admin_Importer_AWeber();
+		$mc4wp          = new ConvertKit_Admin_Importer_MC4WP();
+		$mailpoet       = new ConvertKit_Admin_Importer_Mailpoet();
+		$newsletter     = new ConvertKit_Admin_Importer_Newsletter();
 
 		// Output view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/settings/tools.php';
