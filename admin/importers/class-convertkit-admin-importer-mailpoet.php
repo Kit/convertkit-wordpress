@@ -15,6 +15,24 @@
 class ConvertKit_Admin_Importer_Mailpoet extends ConvertKit_Admin_Importer {
 
 	/**
+	 * Holds the programmatic name of the importer (lowercase, no spaces).
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $name = 'admin_importer_mailpoet';
+
+	/**
+	 * Holds the title of the importer (for display in the importer list).
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $title = 'Mailpoet';
+
+	/**
 	 * Holds the shortcode name for Mailpoet forms.
 	 *
 	 * @since   3.1.6
@@ -49,6 +67,18 @@ class ConvertKit_Admin_Importer_Mailpoet extends ConvertKit_Admin_Importer {
 	 * @var     string
 	 */
 	public $block_id_attribute = 'formId';
+
+	/**
+	 * Constructor
+	 *
+	 * @since   3.1.7
+	 */
+	public function __construct() {
+
+		// Register this as an importer, if Mailpoet forms exist.
+		add_filter( 'convertkit_get_form_importers', array( $this, 'register' ) );
+
+	}
 
 	/**
 	 * Returns an array of Mailpoet form IDs and titles.

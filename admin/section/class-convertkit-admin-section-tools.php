@@ -526,12 +526,11 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		// Get Forms.
 		$forms = new ConvertKit_Resource_Forms();
 
-		// Get Importers.
-		$activecampaign = new ConvertKit_Admin_Importer_ActiveCampaign();
-		$aweber         = new ConvertKit_Admin_Importer_AWeber();
-		$mc4wp          = new ConvertKit_Admin_Importer_MC4WP();
-		$mailpoet       = new ConvertKit_Admin_Importer_Mailpoet();
-		$newsletter     = new ConvertKit_Admin_Importer_Newsletter();
+		// Get Importers, if Kit Forms exist.
+		$importers = array();
+		if ( $forms->exist() ) {
+			$importers = convertkit_get_form_importers();
+		}
 
 		// Output view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/settings/tools.php';
