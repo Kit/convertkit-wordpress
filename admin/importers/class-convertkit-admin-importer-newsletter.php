@@ -21,7 +21,7 @@ class ConvertKit_Admin_Importer_Newsletter extends ConvertKit_Admin_Importer {
 	 *
 	 * @var     string
 	 */
-	public $name = 'admin_importer_newsletter';
+	public $name = 'newsletter';
 
 	/**
 	 * Holds the title of the importer (for display in the importer list).

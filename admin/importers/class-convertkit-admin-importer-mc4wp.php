@@ -21,7 +21,7 @@ class ConvertKit_Admin_Importer_MC4WP extends ConvertKit_Admin_Importer {
 	 *
 	 * @var     string
 	 */
-	public $name = 'admin_importer_mc4wp';
+	public $name = 'mc4wp';
 
 	/**
 	 * Holds the title of the importer (for display in the importer list).

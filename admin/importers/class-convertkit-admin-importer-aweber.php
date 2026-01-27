@@ -21,7 +21,7 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 	 *
 	 * @var     string
 	 */
-	public $name = 'admin_importer_aweber';
+	public $name = 'aweber';
 
 	/**
 	 * Holds the title of the importer (for display in the importer list).

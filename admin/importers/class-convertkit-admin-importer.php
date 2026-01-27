@@ -91,6 +91,23 @@ abstract class ConvertKit_Admin_Importer {
 	}
 
 	/**
+	 * Replaces third party form shortcodes and blocks with Kit form shortcodes and blocks.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array $mappings     Mappings.
+	 */
+	public function import( $mappings ) {
+
+		// Iterate through the mappings, replacing the third party form shortcodes and blocks with the Kit form shortcodes and blocks.
+		foreach ( $mappings as $third_party_form_id => $kit_form_id ) {
+			$this->replace_blocks_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+			$this->replace_shortcodes_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+		}
+
+	}
+
+	/**
 	 * Returns an array of post IDs that contain the third party form block or shortcode.
 	 *
 	 * @since   3.1.5
