@@ -117,6 +117,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-tinymce.php
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizard.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-wp-list-table.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-activecampaign.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-aweber.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-mc4wp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-mailpoet.php';

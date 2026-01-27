@@ -102,6 +102,61 @@
 	</div><!-- .postbox -->
 
 	<?php
+	// ActiveCampaign.
+	if ( $activecampaign->has_forms_in_posts() && $activecampaign->has_forms() && $forms->exist() ) {
+		?>
+		<div id="import-activecampaign" class="postbox">
+			<h2><?php esc_html_e( 'ActiveCampaign: Migrate Configuration', 'convertkit' ); ?></h2>
+
+			<p class="description">
+				<?php esc_html_e( 'Automatically replace ActiveCampaign form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ); ?><br />
+			</p>
+
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'ActiveCampaign Form', 'convertkit' ); ?></th>
+						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ( $activecampaign->get_forms() as $activecampaign_form_id => $activecampaign_form_title ) {
+						?>
+						<tr>
+							<td><?php echo esc_html( $activecampaign_form_title ); ?></td>
+							<td>
+								<select name="_wp_convertkit_integration_activecampaign_settings[<?php echo esc_attr( $activecampaign_form_id ); ?>]">
+									<?php
+									foreach ( $forms->get() as $form ) {
+										?>
+										<option value="<?php echo esc_attr( $form['id'] ); ?>"><?php echo esc_html( $form['name'] ); ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+				</tbody>
+			</table>
+
+			<p>
+				<?php
+				submit_button(
+					__( 'Migrate', 'convertkit' ),
+					'primary',
+					'convertkit-import-activecampaign',
+					false
+				);
+				?>
+			</p>
+		</div><!-- .postbox -->
+		<?php
+	}
+
 	// Aweber.
 	if ( $aweber->has_forms_in_posts() && $aweber->has_forms() && $forms->exist() ) {
 		?>
