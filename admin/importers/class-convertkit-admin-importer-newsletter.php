@@ -15,6 +15,24 @@
 class ConvertKit_Admin_Importer_Newsletter extends ConvertKit_Admin_Importer {
 
 	/**
+	 * Holds the programmatic name of the importer (lowercase, no spaces).
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $name = 'newsletter';
+
+	/**
+	 * Holds the title of the importer (for display in the importer list).
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $title = 'Newsletter';
+
+	/**
 	 * Holds the shortcode name for Newsletter forms.
 	 *
 	 * @since   3.1.6
@@ -31,6 +49,18 @@ class ConvertKit_Admin_Importer_Newsletter extends ConvertKit_Admin_Importer {
 	 * @var     string
 	 */
 	public $block_name = 'tnp/minimal';
+
+	/**
+	 * Constructor
+	 *
+	 * @since   3.1.7
+	 */
+	public function __construct() {
+
+		// Register this as an importer, if Newsletter forms exist.
+		add_filter( 'convertkit_get_form_importers', array( $this, 'register' ) );
+
+	}
 
 	/**
 	 * Returns an array of the Newsletter Default Form, if the shortcode

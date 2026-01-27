@@ -259,6 +259,31 @@ function convertkit_get_pre_publish_actions() {
 }
 
 /**
+ * Helper method to get registered importers that can replace third party
+ * form shortcodes and blocks with Kit form shortcodes and blocks.
+ *
+ * @since   3.1.7
+ *
+ * @return  array   Importers.
+ */
+function convertkit_get_form_importers() {
+
+	$importers = array();
+
+	/**
+	 * Registers form importers for the ConvertKit Plugin.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array   $importers     Importers.
+	 */
+	$importers = apply_filters( 'convertkit_get_form_importers', $importers );
+
+	return $importers;
+
+}
+
+/**
  * Helper method to return the Plugin Settings Link
  *
  * @since   1.9.6
