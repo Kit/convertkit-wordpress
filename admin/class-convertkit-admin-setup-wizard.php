@@ -245,7 +245,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		 *
 		 * @since   1.9.8.4
 		 *
-		 * @param   int     $step     Current step number.
+		 * @param   string     $step     Current step.
 		 */
 		do_action( 'convertkit_admin_setup_wizard_process_form_' . $this->page_name, $this->step );
 
@@ -308,7 +308,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		 *
 		 * @since   1.9.8.4
 		 *
-		 * @param   int     $step     Current step number.
+		 * @param   string     $step     Current step.
 		 */
 		do_action( 'convertkit_admin_setup_wizard_load_screen_data_' . $this->page_name, $this->step );
 

@@ -110,7 +110,7 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 	 *
 	 * @since   2.5.5
 	 *
-	 * @param   int $step   Current step.
+	 * @param   string $step   Current step.
 	 */
 	public function process_form( $step ) {
 
@@ -155,7 +155,7 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 	 *
 	 * @since   2.5.5
 	 *
-	 * @param   int $step   Current step.
+	 * @param   string $step   Current step.
 	 */
 	public function load_screen_data( $step ) {
 
