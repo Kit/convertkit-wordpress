@@ -24,7 +24,12 @@ class PluginSetupWizardCest
 		$this->_activatePlugin($I);
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
 	}
 
 	/**
@@ -108,7 +113,12 @@ class PluginSetupWizardCest
 		$this->_activatePlugin($I);
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
 
 		// Click Exit wizard link.
 		$I->click('Exit wizard');
@@ -136,7 +146,12 @@ class PluginSetupWizardCest
 		$this->_activatePlugin($I);
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
 
 		// Test Connect button.
 		$I->click('Connect');
@@ -150,7 +165,12 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Display an email capture form'
+		);
 	}
 
 	/**
@@ -171,7 +191,12 @@ class PluginSetupWizardCest
 		$this->_activatePlugin($I);
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
 
 		// Test Connect button.
 		$I->click('Connect');
@@ -184,7 +209,12 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration&error=' . $error . '&error_description=' . urlencode($errorDescription));
 
 		// Confirm expected setup wizard screen is still displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
 
 		// Confirm error notification is displayed.
 		$I->seeElement('div.notice.notice-error.is-dismissible');
@@ -236,7 +266,12 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Display an email capture form'
+		);
 
 		// Select a Post Form.
 		$I->fillSelect2Field(
@@ -290,7 +325,12 @@ class PluginSetupWizardCest
 		$I->click('Finish Setup');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 3, 'Setup complete');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'finish',
+			stepCount: 3,
+			title: 'Setup complete'
+		);
 
 		// Click Plugin Settings.
 		$I->click('Plugin Settings');
@@ -337,7 +377,12 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Display an email capture form'
+		);
 
 		// Uncheck Usage Tracking setting.
 		$I->uncheckOption('#wp-convertkit-usage-tracking');
@@ -346,7 +391,12 @@ class PluginSetupWizardCest
 		$I->click('Finish Setup');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 3, 'Setup complete');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'finish',
+			stepCount: 3,
+			title: 'Setup complete'
+		);
 
 		// Click Plugin Settings.
 		$I->click('Plugin Settings');
@@ -361,7 +411,12 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Display an email capture form'
+		);
 
 		// Check Usage Tracking setting.
 		$I->checkOption('#wp-convertkit-usage-tracking');
@@ -370,7 +425,12 @@ class PluginSetupWizardCest
 		$I->click('Finish Setup');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 3, 'Setup complete');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'finish',
+			stepCount: 3,
+			title: 'Setup complete'
+		);
 
 		// Click Plugin Settings.
 		$I->click('Plugin Settings');
@@ -406,7 +466,13 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Create your first Kit Form', true);
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Create your first Kit Form',
+			nextButtonIsLink: true
+		);
 
 		// Confirm button link to create a form on Kit is correct.
 		$I->seeInSource('<a href="https://app.kit.com/forms/new/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit"');
@@ -419,7 +485,12 @@ class PluginSetupWizardCest
 		$I->click('I\'ve created a form in Kit');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Display an email capture form'
+		);
 
 		// Confirm we can select a Post Form.
 		$I->fillSelect2Field(
@@ -452,7 +523,12 @@ class PluginSetupWizardCest
 		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'configuration',
+			stepCount: 2,
+			title: 'Display an email capture form'
+		);
 
 		// Confirm no Page or Post preview links exist, because there are no Pages or Posts in WordPress.
 		$I->dontSeeElementInDOM('a#convertkit-preview-form-post');
@@ -483,7 +559,12 @@ class PluginSetupWizardCest
 		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
 
 		// Confirm expected setup wizard screen is displayed.
-		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
 	}
 
 	/**
@@ -520,12 +601,13 @@ class PluginSetupWizardCest
 	 *
 	 * @since   1.9.8.4
 	 *
-	 * @param   EndToEndTester $I      Tester.
-	 * @param   int            $step   Current step.
-	 * @param   string         $title  Expected title.
+	 * @param   EndToEndTester $I                  Tester.
+	 * @param   string         $step               Current step.
+	 * @param   int            $stepCount          Current step count.
+	 * @param   string         $title              Expected title.
 	 * @param   bool           $nextButtonIsLink   Check that next button is a link (false = must be a <button> element).
 	 */
-	private function _seeExpectedSetupWizardScreen(EndToEndTester $I, $step, $title, $nextButtonIsLink = false)
+	private function _seeExpectedSetupWizardScreen(EndToEndTester $I, $step, $stepCount, $title, $nextButtonIsLink = false)
 	{
 		// Wait for the Plugin Setup Wizard screen to load.
 		$I->waitForElementVisible('body.convertkit');
@@ -540,19 +622,17 @@ class PluginSetupWizardCest
 		$I->see($title);
 
 		// Confirm current and previous steps are highlighted as 'done'.
-		for ($stepCount = 1; $stepCount <= $step; $stepCount++) {
-			$I->seeElement('li.step-' . $stepCount . '.done');
-		}
+		$I->seeNumberOfElements('ol li.done', $stepCount);
 
 		// Confirm Step text is correct.
-		$I->see('Step ' . $step . ' of 3');
+		$I->see('Step ' . $stepCount . ' of 3');
 
 		// Depending on the step, confirm previous/next buttons exist / do not exist.
 		switch ($step) {
 			/**
 			 * First step should only display Connect button.
 			 */
-			case 1:
+			case 'start':
 				$I->dontSeeElementInDOM('#convertkit-setup-wizard-footer div.left a.button');
 				$I->dontSeeElementInDOM('#convertkit-setup-wizard-footer div.right button');
 				$I->seeElementInDOM('#convertkit-setup-wizard-footer div.right a.button');
@@ -561,7 +641,7 @@ class PluginSetupWizardCest
 			/**
 			 * Middle step should always display footer buttons.
 			 */
-			case 2:
+			case 'configuration':
 				$I->seeElementInDOM('#convertkit-setup-wizard-footer div.left a.button');
 
 				if ($nextButtonIsLink) {
@@ -576,7 +656,7 @@ class PluginSetupWizardCest
 			/**
 			 * Last step should not display any footer buttons.
 			 */
-			case 3:
+			case 'finish':
 				$I->dontSeeElementInDOM('#convertkit-setup-wizard-footer div.left a.button');
 				$I->dontSeeElementInDOM('#convertkit-setup-wizard-footer div.right button');
 				$I->dontSeeElementInDOM('#convertkit-setup-wizard-footer div.right a.button');
