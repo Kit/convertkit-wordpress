@@ -86,7 +86,7 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 
 		// Define details for each step in the setup process.
 		$this->steps = array(
-			'start' => array(
+			'start'  => array(
 				'name'        => __( 'Setup', 'convertkit' ),
 				'next_button' => array(
 					'label' => __( 'Create', 'convertkit' ),
