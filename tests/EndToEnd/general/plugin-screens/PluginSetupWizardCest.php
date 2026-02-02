@@ -536,6 +536,115 @@ class PluginSetupWizardCest
 	}
 
 	/**
+	 * Test that the Setup Wizard > Form Importer screen works as expected
+	 * when Active Campaign Forms exist.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSetupWizardFormImporterScreen(EndToEndTester $I)
+	{
+		// Activate Plugin.
+		$this->_activatePlugin($I);
+
+		// Wait for the Plugin Setup Wizard screen to load.
+		$I->waitForElementVisible('body.convertkit');
+
+		// Define Plugin settings and resources.
+		$I->setupKitPluginResources($I);
+		$I->setupKitPluginNoDefaultForms($I);
+
+		// Create Active Campaign Forms.
+		$I->haveOptionInDatabase(
+			'settings_activecampaign',
+			[
+				'forms' => [
+					1 => [
+						'id'   => '1',
+						'name' => 'ActiveCampaign Form #1',
+					],
+					2 => [
+						'id'   => '2',
+						'name' => 'ActiveCampaign Form #2',
+					],
+				],
+			]
+		);
+
+		// Create Pages with ActiveCampaign Form Shortcode and Block.
+		$pageIDs = [
+			$I->havePostInDatabase(
+				[
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => 'Page with ActiveCampaign Form',
+					'post_content' => '[activecampaign form="1"]',
+					'meta_input'   => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '0',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
+				]
+			),
+			$I->havePostInDatabase(
+				[
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => 'Page with ActiveCampaign Block',
+					'post_content' => '<!-- wp:activecampaign-form/activecampaign-form-block {"formId":2} /--><!-- wp:html --><div class="wp-block-core-html">Some content with characters !@£$%^&amp;*()_+~!@£$%^&amp;*()_+\\\</div><!-- /wp:html -->',
+
+					// Configure Kit Plugin to not display a default Form, so we test against the Kit Form in the content.
+					'meta_input'   => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '0',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
+				]
+			),
+		];
+
+		// Load Form Importer screen of Setup Wizard.
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=form-importer');
+
+		// Select the Kit Forms to replace the ActiveCampaign Forms.
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-form-importer-activecampaign-1-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-form-importer-activecampaign-2-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+
+		// Click the Finish Setup button.
+		$I->click('Finish Setup');
+
+		// Confirm expected setup wizard screen is displayed.
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'finish',
+			stepCount: 4,
+			totalSteps: 4,
+			title: 'Setup complete'
+		);
+
+		// Test each Page.
+		foreach ($pageIDs as $pageID) {
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check Kit Forms are displayed.
+			$I->seeElementInDOM('form[data-sv-form]');
+		}
+	}
+
+	/**
 	 * Tests that a link to the Setup Wizard exists on the Plugins screen, and works when clicked.
 	 *
 	 * @since   2.1.2
@@ -606,8 +715,9 @@ class PluginSetupWizardCest
 	 * @param   int            $stepCount          Current step count.
 	 * @param   string         $title              Expected title.
 	 * @param   bool           $nextButtonIsLink   Check that next button is a link (false = must be a <button> element).
+	 * @param   int            $totalSteps         Total steps in Setup Wizard.
 	 */
-	private function _seeExpectedSetupWizardScreen(EndToEndTester $I, $step, $stepCount, $title, $nextButtonIsLink = false)
+	private function _seeExpectedSetupWizardScreen(EndToEndTester $I, $step, $stepCount, $title, $nextButtonIsLink = false, $totalSteps = 3)
 	{
 		// Wait for the Plugin Setup Wizard screen to load.
 		$I->waitForElementVisible('body.convertkit');
@@ -625,7 +735,7 @@ class PluginSetupWizardCest
 		$I->seeNumberOfElements('ol li.done', $stepCount);
 
 		// Confirm Step text is correct.
-		$I->see('Step ' . $stepCount . ' of 3');
+		$I->see('Step ' . $stepCount . ' of ' . $totalSteps);
 
 		// Depending on the step, confirm previous/next buttons exist / do not exist.
 		switch ($step) {
