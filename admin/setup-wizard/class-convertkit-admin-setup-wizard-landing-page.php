@@ -86,13 +86,13 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 
 		// Define details for each step in the setup process.
 		$this->steps = array(
-			1 => array(
+			'start' => array(
 				'name'        => __( 'Setup', 'convertkit' ),
 				'next_button' => array(
 					'label' => __( 'Create', 'convertkit' ),
 				),
 			),
-			2 => array(
+			'finish' => array(
 				'name' => __( 'Done', 'convertkit' ),
 			),
 		);
@@ -124,7 +124,7 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 		}
 
 		// Don't process form data if we're not on the second step.
-		if ( $step !== 2 ) {
+		if ( $step !== 'finish' ) {
 			return;
 		}
 
@@ -144,7 +144,7 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 
 		// If an error occured creating the Page, go back a step to show the error.
 		if ( is_wp_error( $this->result ) ) {
-			$this->step  = ( $this->step - 1 );
+			$this->step  = $this->get_step_key_by_number( $this->get_current_step_number() - 1 );
 			$this->error = $this->result->get_error_message();
 		}
 
@@ -198,7 +198,7 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 		);
 
 		// Don't load data if not on the first step.
-		if ( $step !== 1 ) {
+		if ( $step !== 'start' ) {
 			return;
 		}
 
@@ -211,12 +211,12 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 		// Bail if an error occured.
 		if ( is_wp_error( $result ) ) {
 			// Change the next button label and make it a link to reload the screen.
-			unset( $this->steps[1]['next_button'] );
+			unset( $this->steps['start']['next_button'] );
 			$this->current_url = add_query_arg(
 				array(
 					'page'         => $this->page_name,
 					'ck_post_type' => $this->post_type,
-					'step'         => 1,
+					'step'         => 'start',
 				),
 				admin_url( 'options.php' )
 			);
@@ -226,12 +226,12 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 		// If no Landing Pages exist in ConvertKit, change the next button label and make it a link to reload
 		// the screen.
 		if ( ! $this->landing_pages->exist() ) {
-			unset( $this->steps[1]['next_button'] );
+			unset( $this->steps['start']['next_button'] );
 			$this->current_url = add_query_arg(
 				array(
 					'page'         => $this->page_name,
 					'ck_post_type' => $this->post_type,
-					'step'         => 1,
+					'step'         => 'start',
 				),
 				admin_url( 'options.php' )
 			);

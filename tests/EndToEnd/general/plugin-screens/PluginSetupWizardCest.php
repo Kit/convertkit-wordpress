@@ -147,7 +147,7 @@ class PluginSetupWizardCest
 
 		// Act as if we completed OAuth.
 		$I->setupKitPluginNoDefaultForms($I);
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
@@ -181,7 +181,7 @@ class PluginSetupWizardCest
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
 
 		// Act as if OAuth failed i.e. the user didn't authenticate.
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2&error=' . $error . '&error_description=' . urlencode($errorDescription));
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration&error=' . $error . '&error_description=' . urlencode($errorDescription));
 
 		// Confirm expected setup wizard screen is still displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 1, 'Welcome to the Kit Setup Wizard');
@@ -233,7 +233,7 @@ class PluginSetupWizardCest
 		);
 
 		// Load Step 2/3.
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
@@ -334,7 +334,7 @@ class PluginSetupWizardCest
 		);
 
 		// Load Step 2/3.
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
@@ -358,7 +358,7 @@ class PluginSetupWizardCest
 		$I->dontSeeCheckboxIsChecked('#usage_tracking');
 
 		// Load Step 2/3 on the Setup Wizard screen again.
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
@@ -403,7 +403,7 @@ class PluginSetupWizardCest
 		$I->setupKitPluginCredentialsNoData($I);
 
 		// Load Step 2/3.
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Create your first Kit Form', true);
@@ -449,7 +449,7 @@ class PluginSetupWizardCest
 		$I->setupKitPluginNoDefaultForms($I);
 
 		// Load Step 2/3.
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen($I, 2, 'Display an email capture form');
@@ -607,7 +607,7 @@ class PluginSetupWizardCest
 
 		// Act as if we completed OAuth.
 		$I->setupKitPluginNoDefaultForms($I);
-		$I->amOnAdminPage('options.php?page=convertkit-setup&step=2&convertkit-modal=1');
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration&convertkit-modal=1');
 
 		// Confirm the close modal view was loaded, which includes some JS.
 		$I->seeInSource('self.close();');
