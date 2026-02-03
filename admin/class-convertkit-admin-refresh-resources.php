@@ -40,7 +40,22 @@ class ConvertKit_Admin_Refresh_Resources {
 			'/resources/refresh/(?P<resource>[a-zA-Z0-9-_]+)',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => array(
+					// Resource: Validate resource is included in the request, a valid resource
+					// and sanitize the resource.
+					'resource' => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param ) && in_array( $param, array( 'forms', 'landing_pages', 'tags', 'posts', 'products', 'restrict_content' ), true );
+
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
 				'callback'            => array( $this, 'refresh_resources' ),
+
+				// Only refresh resources for users who can edit posts.
 				'permission_callback' => function () {
 					return current_user_can( 'edit_posts' );
 				},
