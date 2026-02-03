@@ -241,7 +241,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	public function process_form( $step ) {
 
 		// Depending on the step, process the form data.
-		if ( array_key_exists( 'code', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - no nonce is sent back from OAuth.
+		if ( array_key_exists( 'code', $_REQUEST ) || array_key_exists( 'error', $_REQUEST ) || array_key_exists( 'error_description', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - no nonce is sent back from OAuth.
 			$this->save_oauth( map_deep( wp_unslash( $_REQUEST ), 'sanitize_text_field' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended - no nonce is sent back from OAuth.
 			return;
 		}
@@ -297,7 +297,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	private function save_oauth( $request ) {
 
 		// If an error occured from OAuth i.e. the user did not authorize, show it now.
-		if ( array_key_exists( 'error', $request ) && array_key_exists( 'error_description', $request ) ) {
+		if ( array_key_exists( 'error', $request ) || array_key_exists( 'error_description', $request ) ) {
 			// Decrement the step.
 			$this->step  = 'start';
 			$this->error = sanitize_text_field( wp_unslash( $request['error_description'] ) );
