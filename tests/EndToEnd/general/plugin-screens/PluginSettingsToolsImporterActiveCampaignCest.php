@@ -187,7 +187,7 @@ class PluginSettingsToolsImporterActiveCampaignCest
 	 */
 	private function _createActiveCampaignForms(EndToEndTester $I)
 	{
-		// Enable Defer and Delay JavaScript.
+		// Create ActiveCampaign Forms in the Plugin Settings.
 		$I->haveOptionInDatabase(
 			'settings_activecampaign',
 			[

@@ -15,7 +15,7 @@
 class ConvertKit_Admin_Importer_ActiveCampaign extends ConvertKit_Admin_Importer {
 
 	/**
-	 * Holds the shortcode name for MC4WP forms.
+	 * Holds the shortcode name for ActiveCampaign forms.
 	 *
 	 * @since   3.1.7
 	 *
@@ -24,7 +24,7 @@ class ConvertKit_Admin_Importer_ActiveCampaign extends ConvertKit_Admin_Importer
 	public $shortcode_name = 'activecampaign';
 
 	/**
-	 * Holds the ID attribute name for MC4WP forms.
+	 * Holds the ID attribute name for ActiveCampaign forms.
 	 *
 	 * @since   3.1.7
 	 *
@@ -33,7 +33,7 @@ class ConvertKit_Admin_Importer_ActiveCampaign extends ConvertKit_Admin_Importer
 	public $shortcode_id_attribute = 'form';
 
 	/**
-	 * Holds the block name for MC4WP forms.
+	 * Holds the block name for ActiveCampaign forms.
 	 *
 	 * @since   3.1.7
 	 *
@@ -42,7 +42,7 @@ class ConvertKit_Admin_Importer_ActiveCampaign extends ConvertKit_Admin_Importer
 	public $block_name = 'activecampaign-form/activecampaign-form-block';
 
 	/**
-	 * Holds the ID attribute name for MC4WP forms.
+	 * Holds the ID attribute name for ActiveCampaign forms.
 	 *
 	 * @since   3.1.7
 	 *
@@ -51,7 +51,7 @@ class ConvertKit_Admin_Importer_ActiveCampaign extends ConvertKit_Admin_Importer
 	public $block_id_attribute = 'formId';
 
 	/**
-	 * Returns an array of MC4WP form IDs and titles.
+	 * Returns an array of ActiveCampaign form IDs and titles.
 	 *
 	 * @since   3.1.7
 	 *
