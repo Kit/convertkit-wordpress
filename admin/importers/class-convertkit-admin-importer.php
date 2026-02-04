@@ -120,10 +120,10 @@ abstract class ConvertKit_Admin_Importer {
 		// Iterate through the mappings, replacing the third party form shortcodes and blocks with the Kit form shortcodes and blocks.
 		foreach ( $mappings as $third_party_form_id => $kit_form_id ) {
 			if ( $this->block_name ) {
-				$this->replace_blocks_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+				$this->replace_blocks_in_posts( $third_party_form_id, (int) $kit_form_id );
 			}
 			if ( $this->shortcode_name ) {
-				$this->replace_shortcodes_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+				$this->replace_shortcodes_in_posts( $third_party_form_id, (int) $kit_form_id );
 			}
 		}
 
@@ -218,8 +218,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_shortcodes_in_posts( $third_party_form_id, $form_id ) {
 
@@ -258,9 +258,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   string $content             Content containing third party Form Shortcodes.
-	 * @param   int    $third_party_form_id    Third Party Form ID.
-	 * @param   int    $form_id                Kit Form ID.
+	 * @param   string     $content                Content containing third party Form Shortcodes.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 
 	 * @return  string
 	 */
@@ -382,8 +382,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_posts( $third_party_form_id, $form_id ) {
 
@@ -407,9 +407,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $post_id                Post ID.
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   int        $post_id                Post ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_post( $post_id, $third_party_form_id, $form_id ) {
 
@@ -448,9 +448,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   array $blocks                 Blocks.
-	 * @param   int   $third_party_form_id    Third Party Form ID.
-	 * @param   int   $form_id                Kit Form ID.
+	 * @param   array      $blocks                 Blocks.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 *
 	 * @return  string
 	 */
@@ -470,9 +470,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   array $blocks                 Blocks.
-	 * @param   int   $third_party_form_id    Third Party Form ID.
-	 * @param   int   $form_id                Kit Form ID.
+	 * @param   array      $blocks                 Blocks.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 * @return  array
 	 */
 	private function recursively_convert_blocks( $blocks, $third_party_form_id, $form_id ) {
