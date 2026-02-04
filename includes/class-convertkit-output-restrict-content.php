@@ -131,6 +131,52 @@ class ConvertKit_Output_Restrict_Content {
 			'/restrict-content/subscriber-authentication',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => array(
+					// Email: Validate email is included in the request, is a valid email address
+					// and sanitize the email address.
+					'convertkit_email'         => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param ) && is_email( $param );
+
+						},
+						'sanitize_callback' => 'sanitize_email',
+					),
+
+					// Post ID: Validate post ID is included in the request and is an integer.
+					'convertkit_post_id'       => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_numeric( $param );
+
+						},
+						'sanitize_callback' => 'absint',
+					),
+
+					// Resource Type: Validate resource type is included in the request and is a string.
+					'convertkit_resource_type' => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param );
+
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+
+					// Resource ID: Validate resource ID is included in the request and is an integer.
+					'convertkit_resource_id'   => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_numeric( $param );
+
+						},
+						'sanitize_callback' => 'absint',
+					),
+				),
 				'callback'            => function ( $request ) {
 
 					// Initialize classes that will be used.
@@ -181,6 +227,8 @@ class ConvertKit_Output_Restrict_Content {
 						)
 					);
 				},
+
+				// No authentication required, as this is on the frontend site.
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -191,6 +239,40 @@ class ConvertKit_Output_Restrict_Content {
 			'/restrict-content/subscriber-verification',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => array(
+					// Post ID: Validate post ID is an integer if included in the request.
+					'convertkit_post_id' => array(
+						'required'          => false,
+						'validate_callback' => function ( $param ) {
+
+							return is_numeric( $param );
+
+						},
+						'sanitize_callback' => 'absint',
+					),
+
+					// Token: Validate token is included in the request and is a string.
+					'token'              => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param );
+
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+
+					// Subscriber Code: Validate subscriber code is included in the request and is a string.
+					'subscriber_code'    => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param );
+
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
 				'callback'            => function ( $request ) {
 
 					// Initialize classes that will be used.
@@ -234,6 +316,8 @@ class ConvertKit_Output_Restrict_Content {
 						)
 					);
 				},
+
+				// No authentication required, as this is on the frontend site.
 				'permission_callback' => '__return_true',
 			)
 		);
