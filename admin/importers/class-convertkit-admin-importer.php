@@ -119,8 +119,12 @@ abstract class ConvertKit_Admin_Importer {
 
 		// Iterate through the mappings, replacing the third party form shortcodes and blocks with the Kit form shortcodes and blocks.
 		foreach ( $mappings as $third_party_form_id => $kit_form_id ) {
-			$this->replace_blocks_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
-			$this->replace_shortcodes_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+			if ( $this->block_name ) {
+				$this->replace_blocks_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+			}
+			if ( $this->shortcode_name ) {
+				$this->replace_shortcodes_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+			}
 		}
 
 	}
@@ -136,23 +140,48 @@ abstract class ConvertKit_Admin_Importer {
 
 		global $wpdb;
 
-		// Search post_content for the third party form block or shortcode and return array of post IDs.
-		$results = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-            SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = %s
-            AND (
-				post_content LIKE %s
-				OR post_content LIKE %s
-			)
-            ",
-				'publish',
-				'%[' . $this->shortcode_name . '%',
-				'%<!-- wp:' . $this->block_name . '%'
+		// Build WHERE clauses and values.
+		$post_content_clauses = array();
+		$post_content_values  = array();
+
+		if ( $this->shortcode_name ) {
+			$post_content_clauses[] = 'post_content LIKE %s';
+			$post_content_values[]  = '%[' . $this->shortcode_name . '%';
+		}
+		if ( $this->block_name ) {
+			$post_content_clauses[] = 'post_content LIKE %s';
+			$post_content_values[]  = '%<!-- wp:' . $this->block_name . '%';
+		}
+
+		// Bail early if nothing to search for.
+		if ( empty( $post_content_clauses ) ) {
+			return array();
+		}
+
+		// Prepare SQL using wpdb->prepare.
+		// call_user_func_array() is used so variable length arrays can be passed to prepare().
+		$query = call_user_func_array(
+			array( $wpdb, 'prepare' ),
+			array_merge(
+				array(
+					"
+					SELECT ID
+					FROM {$wpdb->posts}
+					WHERE post_status = %s
+					AND (
+						" . implode( ' OR ', $post_content_clauses ) . '
+					)
+				',
+				),
+				array_merge(
+					array( 'publish' ),
+					$post_content_values
+				)
 			)
 		);
+
+		// Run query.
+		$results = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results ? $results : array();
 
