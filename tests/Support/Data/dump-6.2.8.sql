@@ -202,10 +202,7 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (121,	'theme_mods_twentytwentythree',	'a:1:{s:18:\"custom_css_post_id\";i:-1;}',	'yes'),
 (122,	'recovery_keys',	'a:0:{}',	'yes'),
 (123,	'https_detection_errors',	'a:1:{s:23:\"ssl_verification_failed\";a:1:{i:0;s:24:\"SSL verification failed.\";}}',	'yes'),
-(124,	'can_compress_scripts',	'0',	'no'),
-(125, 'siteground_optimizer_heartbeat_post_interval', '0',  'on'),
-(126, 'siteground_optimizer_heartbeat_dashboard_interval', '0',  'on'),
-(127, 'siteground_optimizer_heartbeat_frontend_interval', '0',  'on');
+(124,	'can_compress_scripts',	'0',	'no');
 
 DROP TABLE IF EXISTS `wp_postmeta`;
 CREATE TABLE `wp_postmeta` (
