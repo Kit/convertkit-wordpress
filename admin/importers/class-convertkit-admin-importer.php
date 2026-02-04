@@ -15,6 +15,24 @@
 abstract class ConvertKit_Admin_Importer {
 
 	/**
+	 * Holds the importer name.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $name = '';
+
+	/**
+	 * Holds the importer title.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $title = '';
+
+	/**
 	 * Holds the shortcode name for the third party Form plugin.
 	 *
 	 * @since   3.1.0
@@ -58,6 +76,54 @@ abstract class ConvertKit_Admin_Importer {
 	 * @return  array
 	 */
 	abstract public function get_forms();
+
+	/**
+	 * Registers the importer if third party forms exist.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array $importers     Importers.
+	 * @return  array
+	 */
+	public function register( $importers ) {
+
+		// Bail if no third party forms exist in posts.
+		if ( ! $this->has_forms_in_posts() ) {
+			return $importers;
+		}
+
+		// Bail if no third party forms exist for this importer.
+		if ( ! $this->has_forms() ) {
+			return $importers;
+		}
+
+		// Add this importer to the list of importers.
+		$importers[ $this->name ] = array(
+			'name'  => $this->name,
+			'title' => $this->title,
+			'forms' => $this->get_forms(),
+		);
+
+		return $importers;
+
+	}
+
+	/**
+	 * Replaces third party form shortcodes and blocks with Kit form shortcodes and blocks.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array $mappings     Mappings.
+	 */
+	public function import( $mappings ) {
+
+		// Iterate through the mappings, replacing the third party form shortcodes and blocks with the Kit form shortcodes and blocks.
+		foreach ( $mappings as $third_party_form_id => $kit_form_id ) {
+			$this->replace_blocks_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+			$this->replace_shortcodes_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+		}
+
+	}
 
 	/**
 	 * Returns an array of post IDs that contain the third party form block or shortcode.
