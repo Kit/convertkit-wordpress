@@ -119,6 +119,11 @@ abstract class ConvertKit_Admin_Importer {
 
 		// Iterate through the mappings, replacing the third party form shortcodes and blocks with the Kit form shortcodes and blocks.
 		foreach ( $mappings as $third_party_form_id => $kit_form_id ) {
+			// Skip empty Kit Form IDs i.e. no mapping was provided for this third party form.
+			if ( empty( $kit_form_id ) ) {
+				continue;
+			}
+
 			if ( $this->block_name ) {
 				$this->replace_blocks_in_posts( $third_party_form_id, (int) $kit_form_id );
 			}
