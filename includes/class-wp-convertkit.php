@@ -183,7 +183,6 @@ class WP_ConvertKit {
 
 		$this->classes['admin_notices']                               = new ConvertKit_Admin_Notices();
 		$this->classes['admin_refresh_resources']                     = new ConvertKit_Admin_Refresh_Resources();
-		$this->classes['ajax']                                        = new ConvertKit_AJAX();
 		$this->classes['blocks_convertkit_broadcasts']                = new ConvertKit_Block_Broadcasts();
 		$this->classes['blocks_convertkit_content']                   = new ConvertKit_Block_Content();
 		$this->classes['blocks_convertkit_formtrigger']               = new ConvertKit_Block_Form_Trigger();
