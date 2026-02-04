@@ -170,7 +170,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		}
 
 		// Define the step the user is on in the setup process.
-		$this->step = ( filter_has_var( INPUT_GET, 'step' ) ? filter_input( INPUT_GET, 'step', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : 'start' );
+		$this->step = $this->get_current_step();
 
 		// Process any posted form data.
 		$this->process_form();
@@ -190,6 +190,26 @@ class ConvertKit_Admin_Setup_Wizard {
 		$this->output_content();
 		$this->output_footer();
 		exit;
+
+	}
+
+	/**
+	 * Returns the current step in the setup process.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @return  string     Current step.
+	 */
+	public function get_current_step() {
+
+		$step = ( filter_has_var( INPUT_GET, 'step' ) ? filter_input( INPUT_GET, 'step', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : 'start' );
+
+		// Fallback to 'start' if the step is a registered step.
+		if ( ! array_key_exists( $step, $this->steps ) ) {
+			$step = 'start';
+		}
+
+		return $step;
 
 	}
 
