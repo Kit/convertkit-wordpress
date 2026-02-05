@@ -824,16 +824,18 @@ class PageBlockFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Disable Siteground Speed Optimizer's Heartbeat.
-		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_post_interval', false );
-		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_dashboard_interval', false );
-		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_frontend_interval', false );
+				// Configure Siteground Speed Optimizer's Heartbeat.
+				$I->haveOptionInDatabase('siteground_optimizer_heartbeat_post_interval', 120 );
+				$I->haveOptionInDatabase('siteground_optimizer_heartbeat_dashboard_interval', 120 );
+				$I->haveOptionInDatabase('siteground_optimizer_heartbeat_frontend_interval', 120 );
 
 		// Activate Siteground Speed Optimizer Plugin.
 		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
 
 		// Enable Siteground Speed Optimizer's "Combine JavaScript Files" setting.
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
+
+
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
