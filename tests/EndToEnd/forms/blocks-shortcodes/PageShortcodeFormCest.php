@@ -808,11 +808,6 @@ class PageShortcodeFormCest
 		// Enable Siteground Speed Optimizer's "Combine JavaScript Files" setting.
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
 
-		// Configure Siteground Speed Optimizer's Heartbeat.
-		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_post_interval', 120 );
-		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_dashboard_interval', 120 );
-		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_frontend_interval', 120 );
-
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage(
 			$I,

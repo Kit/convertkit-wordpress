@@ -253,7 +253,10 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (128, 'WishListMemberOptions_MigrateContentLevelData',  '1',  'on'),
 (129, 'et_support_center_setup_done',  'processed',  'on'),
 (130, 'et_support_center_installed',  'true',  'on'),
-(131, 'woocommerce_version',  '9.7.1',  'on');
+(131, 'woocommerce_version',  '9.7.1',  'on'),
+(132, 'siteground_optimizer_heartbeat_post_interval', 120,  'on'),
+(133, 'siteground_optimizer_heartbeat_dashboard_interval', 120,  'on'),
+(134, 'siteground_optimizer_heartbeat_frontend_interval', 120,  'on');
 
 DROP TABLE IF EXISTS `wp_postmeta`;
 CREATE TABLE `wp_postmeta` (
