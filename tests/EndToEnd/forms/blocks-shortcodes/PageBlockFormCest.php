@@ -824,6 +824,11 @@ class PageBlockFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
+		// Disable Siteground Speed Optimizer's Heartbeat.
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_post_interval', false );
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_dashboard_interval', false );
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_frontend_interval', false );
+
 		// Activate Siteground Speed Optimizer Plugin.
 		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
 
