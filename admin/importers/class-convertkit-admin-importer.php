@@ -124,8 +124,12 @@ abstract class ConvertKit_Admin_Importer {
 				continue;
 			}
 
-			$this->replace_blocks_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
-			$this->replace_shortcodes_in_posts( (int) $third_party_form_id, (int) $kit_form_id );
+			if ( $this->block_name ) {
+				$this->replace_blocks_in_posts( $third_party_form_id, (int) $kit_form_id );
+			}
+			if ( $this->shortcode_name ) {
+				$this->replace_shortcodes_in_posts( $third_party_form_id, (int) $kit_form_id );
+			}
 		}
 
 	}
@@ -141,23 +145,48 @@ abstract class ConvertKit_Admin_Importer {
 
 		global $wpdb;
 
-		// Search post_content for the third party form block or shortcode and return array of post IDs.
-		$results = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-            SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = %s
-            AND (
-				post_content LIKE %s
-				OR post_content LIKE %s
-			)
-            ",
-				'publish',
-				'%[' . $this->shortcode_name . '%',
-				'%<!-- wp:' . $this->block_name . '%'
+		// Build WHERE clauses and values.
+		$post_content_clauses = array();
+		$post_content_values  = array();
+
+		if ( $this->shortcode_name ) {
+			$post_content_clauses[] = 'post_content LIKE %s';
+			$post_content_values[]  = '%[' . $this->shortcode_name . '%';
+		}
+		if ( $this->block_name ) {
+			$post_content_clauses[] = 'post_content LIKE %s';
+			$post_content_values[]  = '%<!-- wp:' . $this->block_name . '%';
+		}
+
+		// Bail early if nothing to search for.
+		if ( empty( $post_content_clauses ) ) {
+			return array();
+		}
+
+		// Prepare SQL using wpdb->prepare.
+		// call_user_func_array() is used so variable length arrays can be passed to prepare().
+		$query = call_user_func_array(
+			array( $wpdb, 'prepare' ),
+			array_merge(
+				array(
+					"
+					SELECT ID
+					FROM {$wpdb->posts}
+					WHERE post_status = %s
+					AND (
+						" . implode( ' OR ', $post_content_clauses ) . '
+					)
+				',
+				),
+				array_merge(
+					array( 'publish' ),
+					$post_content_values
+				)
 			)
 		);
+
+		// Run query.
+		$results = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results ? $results : array();
 
@@ -194,8 +223,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_shortcodes_in_posts( $third_party_form_id, $form_id ) {
 
@@ -234,9 +263,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   string $content             Content containing third party Form Shortcodes.
-	 * @param   int    $third_party_form_id    Third Party Form ID.
-	 * @param   int    $form_id                Kit Form ID.
+	 * @param   string     $content                Content containing third party Form Shortcodes.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 
 	 * @return  string
 	 */
@@ -358,8 +387,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_posts( $third_party_form_id, $form_id ) {
 
@@ -383,9 +412,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $post_id                Post ID.
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   int        $post_id                Post ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_post( $post_id, $third_party_form_id, $form_id ) {
 
@@ -424,9 +453,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   array $blocks                 Blocks.
-	 * @param   int   $third_party_form_id    Third Party Form ID.
-	 * @param   int   $form_id                Kit Form ID.
+	 * @param   array      $blocks                 Blocks.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 *
 	 * @return  string
 	 */
@@ -446,9 +475,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   array $blocks                 Blocks.
-	 * @param   int   $third_party_form_id    Third Party Form ID.
-	 * @param   int   $form_id                Kit Form ID.
+	 * @param   array      $blocks                 Blocks.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 * @return  array
 	 */
 	private function recursively_convert_blocks( $blocks, $third_party_form_id, $form_id ) {
