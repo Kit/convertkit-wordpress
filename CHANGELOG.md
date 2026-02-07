@@ -1,3 +1,8 @@
+### 3.1.7 2026-02-09
+* Added: Setup Wizard: Replace third party detected forms with Kit Forms
+* Added: Settings: Tools: ActiveCampaign to Kit Form Importer
+* Added: Settings: Tools: Campaign Monitor to Kit Form Importer
+
 ### 3.1.6 2026-01-26
 * Added: Settings: Tools: MailPoet to Kit Form Importer
 * Added: Settings: Tools: Newsletter Plugin to Kit Form Importer
