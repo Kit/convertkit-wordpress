@@ -59,6 +59,7 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 				'import_configuration_success'             => __( 'Configuration imported successfully.', 'convertkit' ),
 				'migrate_activecampaign_configuration_success' => __( 'ActiveCampaign forms migrated successfully.', 'convertkit' ),
 				'migrate_aweber_configuration_success'     => __( 'AWeber forms migrated successfully.', 'convertkit' ),
+				'migrate_campaignmonitor_configuration_success' => __( 'Campaign Monitor forms migrated successfully.', 'convertkit' ),
 				'migrate_mc4wp_configuration_success'      => __( 'MC4WP forms migrated successfully.', 'convertkit' ),
 				'migrate_mailpoet_configuration_success'   => __( 'MailPoet forms migrated successfully.', 'convertkit' ),
 				'migrate_newsletter_configuration_success' => __( 'Newsletter forms migrated successfully.', 'convertkit' ),

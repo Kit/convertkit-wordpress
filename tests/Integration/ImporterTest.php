@@ -387,6 +387,102 @@ class ImporterTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the get_form_ids_from_content() method returns Campaign Monitor form shortcode Form IDs
+	 * ignoring any other shortcodes.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testCampaignMonitorGetFormIDsFromContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_CampaignMonitor();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the content to test.
+		$content = '[cm_form form_id="cm_6912dba75db2d"] some content [cm_form form_id="cm_6982a693a0095"] some other content [aweber formid="12"] different shortcode to ignore';
+
+		// Extract form IDs from content.
+		$form_ids = $this->importer->get_form_ids_from_content( $content );
+
+		// Assert the correct number of form IDs are returned.
+		$this->assertEquals( 2, count( $form_ids ) );
+		$this->assertEquals( 'cm_6912dba75db2d', $form_ids[0] );
+		$this->assertEquals( 'cm_6982a693a0095', $form_ids[1] );
+	}
+
+	/**
+	 * Test that the replace_shortcodes_in_content() method replaces the Campaign Monitor form shortcode with the Kit form shortcode.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testCampaignMonitorReplaceShortcodesInContent()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_CampaignMonitor();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the shortcodes to test.
+		$shortcodes = [
+			'[cm_form form_id="cm_6912dba75db2d"]',
+			'[cm_form form_id=cm_6912dba75db2d]',
+		];
+
+		// Test each shortcode is replaced with the Kit form shortcode.
+		foreach ( $shortcodes as $shortcode ) {
+			$this->assertEquals(
+				'[convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+				$this->importer->replace_shortcodes_in_content( $shortcode, 'cm_6912dba75db2d', $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+
+			// Prepend and append some content.
+			$content = 'Some content before the shortcode: ' . $shortcode . ' Some content after the shortcode.';
+			$this->assertEquals(
+				'Some content before the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode.',
+				$this->importer->replace_shortcodes_in_content( $content, 'cm_6912dba75db2d', $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+
+			// Prepend and append some content and duplicate the shortcode.
+			$content = 'Some content before the shortcode: ' . $shortcode . ' Some content after the shortcode: ' . $shortcode;
+			$this->assertEquals(
+				'Some content before the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+				$this->importer->replace_shortcodes_in_content( $content, 'cm_6912dba75db2d', $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+		}
+	}
+
+	/**
+	 * Test that the replace_shortcodes_in_content() method ignores non-Campaign Monitor shortcodes.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testCampaignMonitorReplaceShortcodesInContentIgnoringOtherShortcodes()
+	{
+		// Initialize the class we want to test.
+		$this->importer = new \ConvertKit_Admin_Importer_CampaignMonitor();
+
+		// Confirm initialization didn't result in an error.
+		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
+
+		// Define the shortcodes to test.
+		$shortcodes = [
+			'[convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+			'[a_random_shortcode]',
+		];
+
+		// Test each shortcode is ignored.
+		foreach ( $shortcodes as $shortcode ) {
+			$this->assertEquals(
+				$shortcode,
+				$this->importer->replace_shortcodes_in_content( $shortcode, 'cm_6912dba75db2d', $_ENV['CONVERTKIT_API_FORM_ID'] )
+			);
+		}
+	}
+
+	/**
 	 * Test that the get_form_ids_from_content() method returns MC4WP form shortcode Form IDs
 	 * ignoring any other shortcodes.
 	 *
