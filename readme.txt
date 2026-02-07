@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.1.6.1
+Stable tag: 3.1.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,11 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.1.7 2026-02-09
+* Added: Setup Wizard: Replace third party detected forms with Kit Forms
+* Added: Settings: Tools: ActiveCampaign to Kit Form Importer
+* Added: Settings: Tools: Campaign Monitor to Kit Form Importer
 
 ### 3.1.6.1 2026-01-26
 * Added: Settings: Tools: MailPoet to Kit Form Importer
@@ -835,57 +840,6 @@ The documentation covers newsletter form setup, landing page configuration, memb
 * Fix: Forms: Preview: Support for previewing and editing Legacy Forms
 * Fix: Improved performance in WordPress Admin when invalid API credentials specified on new installation
 * Fix: Display notice in WordPress Admin with link to settings screen when invalid API credentials specified
-
-### 2.0.8 2023-02-02
-* Added: Settings: Kit: Documentation tab
-* Added: Forms: Link to edit form in Kit when previewing a Page, Post or Custom Post containing a Kit form
-* Fix: Display Forms, Landing Pages, Products and Tags in alphabetical order when listed in a `<select>` dropdown
-* Fix: Form: Block and Shortcode: Check Forms exist in Kit before outputting Block / Shortcode options
-* Fix: Form: Shortcode: Remove unused API Key output
-* Fix: Product: Block: Preview: Improved performance when previewing the Product block to determine if a Kit Product was specified in the Block's settings
-* Fix: Product: Shortcode: Remove unused API Key and data-attributes output
-
-### 2.0.7 2023-01-16
-* Fix: Elementor 3.9.0+ compatibility
-* Updated: Kit WordPress Libraries to 1.3.0
-
-### 2.0.6 2023-01-05
-* Fix: Honor "Add a tag" setting when enabled on a Page/Post
-* Fix: PHP Warning: Cannot modify header information - headers already sent, when ?ck_subscriber_id included in request URI in some Page Builders (e.g. Elementor)
-* Fix: PHP Warning: Trying to access array offset on value of type null
-
-### 2.0.5 2022-12-15
-* Fix: Broadcasts: Strip slashes on output when pagination clicked and Broadcasts are reloaded
-* Fix: Broadcasts: Sanitize and escape HTML attributes on output
-* Fix: Forms: Escape HTML attributes on output
-* Fix: Products: Sanitize and escape HTML attributes on output
-
-### 2.0.4 2022-12-13
-* Fix: Products: PHP warning when attempting to parse an invalid Product URL
-* Fix: Landing Pages: Catch and log when an error occurs fetching a Landing Page
-* Fix: Remove double forwardslash on product.css
-
-### 2.0.3 2022-12-08
-* Added: Categories: Option to specify Kit Form to display when adding a new Post Category
-* Fix: Bulk & Quick Edit: Improve layout of Kit settings on desktop and mobile
-* Fix: Post: Improve layout of Kit settings on desktop and mobile
-* Fix: Categories: Improve layout of Kit settings on desktop and mobile
-* Fix: Products: Block: Display preview when adding new block
-
-### 2.0.2 2022-11-21
-* Fixed: Removed argument count on `in_admin_footer` action calls
-
-### 2.0.1 2022-11-01
-* Added: Broadcasts: Block: Display message in editor when no Broadcasts exist in Kit
-* Fixed: Settings: Contact Form 7: Render screen correctly when no Forms in Kit
-* Fixed: Settings: WishList Member: Render screen correctly when no Forms in Kit
-
-### 2.0.0 2022-10-24
-* Added: Kit Products Block, to output a button linking to a Kit Product or Tip Jar
-* Added: Kit Products Shortcode, to output a button linking to a Kit Product or Tip Jar
-* Added: Gutenberg: Option to link text or button to a Kit Product or Tip Jar
-* Added: Classic Editor: Option to link text or button to a Kit Product or Tip Jar
-* Added: Settings: Improved UI
 
 [See changelog for all versions](https://github.com/convertkit/convertkit-wordpress/CHANGELOG.md).
 

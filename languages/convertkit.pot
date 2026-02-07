@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.1.6\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.1.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-01-23T03:01:05+00:00\n"
+"POT-Creation-Date: 2026-02-07T03:23:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -83,7 +83,7 @@ msgstr ""
 
 #: admin/class-convertkit-admin-landing-page.php:61
 #: views/backend/post/meta-box.php:65
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:11
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:11
 msgid "Landing Page"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 #: admin/section/class-convertkit-admin-section-restrict-content.php:32
 #: admin/section/class-convertkit-admin-section-restrict-content.php:33
 #: views/backend/post/meta-box.php:141
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:11
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:11
 msgid "Member Content"
 msgstr ""
 
@@ -142,15 +142,15 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: admin/importers/class-convertkit-admin-importer-aweber.php:89
+#: admin/importers/class-convertkit-admin-importer-aweber.php:119
 msgid "Sign Up Form"
 msgstr ""
 
-#: admin/importers/class-convertkit-admin-importer-aweber.php:92
+#: admin/importers/class-convertkit-admin-importer-aweber.php:122
 msgid "Split Tests"
 msgstr ""
 
-#: admin/importers/class-convertkit-admin-importer.php:218
+#: admin/importers/class-convertkit-admin-importer.php:318
 msgid "Default Form"
 msgstr ""
 
@@ -522,8 +522,8 @@ msgstr ""
 #: admin/section/class-convertkit-admin-section-general.php:686
 #: admin/section/class-convertkit-admin-section-general.php:823
 #: includes/class-convertkit-broadcasts-exporter.php:150
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:79
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:120
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:79
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:120
 msgid "Click here"
 msgstr ""
 
@@ -661,7 +661,7 @@ msgid "Complete documentation on usage tracking can be found"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:1036
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:150
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:150
 msgid "here"
 msgstr ""
 
@@ -675,7 +675,7 @@ msgstr ""
 #: views/backend/post/meta-box.php:148
 #: views/backend/post/quick-edit.php:63
 #: views/backend/post/wp-list-table-filter.php:18
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:61
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:61
 #: views/backend/subscription-dropdown-field.php:36
 msgid "Forms"
 msgstr ""
@@ -685,7 +685,7 @@ msgstr ""
 #: views/backend/post/meta-box.php:178
 #: views/backend/post/quick-edit.php:92
 #: views/backend/post/wp-list-table-filter.php:52
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:90
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:90
 msgid "Products"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr ""
 #: views/backend/post/meta-box.php:165
 #: views/backend/post/quick-edit.php:79
 #: views/backend/post/wp-list-table-filter.php:37
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:77
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:77
 #: views/backend/subscription-dropdown-field.php:67
 msgid "Tags"
 msgstr ""
@@ -855,26 +855,34 @@ msgid "Configuration imported successfully."
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-tools.php:60
-msgid "AWeber forms migrated successfully."
+msgid "ActiveCampaign forms migrated successfully."
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-tools.php:61
-msgid "MC4WP forms migrated successfully."
+msgid "AWeber forms migrated successfully."
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-tools.php:62
-msgid "MailPoet forms migrated successfully."
+msgid "Campaign Monitor forms migrated successfully."
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-tools.php:63
+msgid "MC4WP forms migrated successfully."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-tools.php:64
+msgid "MailPoet forms migrated successfully."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-tools.php:65
 msgid "Newsletter forms migrated successfully."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-tools.php:514
+#: admin/section/class-convertkit-admin-section-tools.php:413
 msgid "Tools to help you manage Kit on your site."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-tools.php:542
+#: admin/section/class-convertkit-admin-section-tools.php:441
 msgid "WordPress 5.2 or higher is required for system information report."
 msgstr ""
 
@@ -888,13 +896,13 @@ msgid "Create"
 msgstr ""
 
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:96
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:122
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:155
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:153
 msgid "Done"
 msgstr ""
 
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:122
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:257
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:256
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:179
 msgid "Invalid nonce specified."
 msgstr ""
@@ -915,26 +923,36 @@ msgstr ""
 msgid "WordPress Error"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:109
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:111
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:129
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:131
 #: views/backend/settings/oauth.php:19
 msgid "Connect"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:116
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:136
 msgid "Configuration"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:118
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:138
+#: includes/blocks/class-convertkit-block-broadcasts.php:454
+msgid "Next"
+msgstr ""
+
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:138
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:148
 msgid "Finish Setup"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:159
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:146
+msgid "Form Importer"
+msgstr ""
+
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:191
 msgid "Setup Wizard"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:329
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:343
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:386
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:400
 msgid "I've created a form in Kit"
 msgstr ""
 
@@ -951,12 +969,12 @@ msgid "Connect your ConvertKit account in the ConvertKit Plugin's settings to ge
 msgstr ""
 
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:381
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:71
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:71
 msgid "Download"
 msgstr ""
 
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:384
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:80
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:80
 msgid "Course"
 msgstr ""
 
@@ -1004,7 +1022,7 @@ msgstr ""
 #: views/backend/post/meta-box.php:15
 #: views/backend/post/meta-box.php:197
 #: views/backend/post/quick-edit.php:14
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:106
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:106
 msgid "Form"
 msgstr ""
 
@@ -1024,7 +1042,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-product.php:127
 #: includes/blocks/class-convertkit-block-product.php:283
 #: views/backend/post/meta-box.php:203
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:112
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:112
 msgid "Product"
 msgstr ""
 
@@ -1190,10 +1208,6 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:454
-msgid "Next"
-msgstr ""
-
 #: includes/blocks/class-convertkit-block-broadcasts.php:493
 msgid "No Broadcasts exist in Kit."
 msgstr ""
@@ -1218,7 +1232,7 @@ msgstr ""
 #: views/backend/post/bulk-edit.php:43
 #: views/backend/post/meta-box.php:200
 #: views/backend/post/quick-edit.php:37
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:109
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:109
 msgid "Tag"
 msgstr ""
 
@@ -1449,10 +1463,8 @@ msgid "Kit Form ID %s has no embed_js property."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form.php:100
-#: views/backend/settings/tools.php:119
-#: views/backend/settings/tools.php:174
-#: views/backend/settings/tools.php:229
-#: views/backend/settings/tools.php:284
+#: views/backend/settings/tools.php:142
+#: views/backend/setup-wizard/convertkit-setup/content-form-importer.php:37
 #: views/backend/term/fields-add.php:11
 #: views/backend/term/fields-edit.php:12
 msgid "Kit Form"
@@ -1555,18 +1567,6 @@ msgstr ""
 #: includes/class-convertkit-admin-notices.php:73
 #: views/backend/post/no-api-key.php:19
 msgid "connect your Kit account."
-msgstr ""
-
-#: includes/class-convertkit-ajax.php:43
-msgid "Kit: Required parameter `email` not included in AJAX request."
-msgstr ""
-
-#: includes/class-convertkit-ajax.php:49
-msgid "Kit: Required parameter `email` is empty."
-msgstr ""
-
-#: includes/class-convertkit-ajax.php:54
-msgid "Kit: Required parameter `email` is not an email address."
 msgstr ""
 
 #: includes/class-convertkit-broadcasts-exporter.php:148
@@ -1707,12 +1707,12 @@ msgid "Access Token not configured in Plugin Settings."
 msgstr ""
 
 #. translators: %1$s: PHP class name
-#: includes/class-wp-convertkit.php:391
+#: includes/class-wp-convertkit.php:396
 #, php-format
 msgid "Kit Error: Could not load Plugin class <strong>%1$s</strong>"
 msgstr ""
 
-#: includes/class-wp-convertkit.php:401
+#: includes/class-wp-convertkit.php:406
 msgid "Kit Error"
 msgstr ""
 
@@ -2043,22 +2043,22 @@ msgid "A visitor is deemed to be subscribed if they have clicked a link in an em
 msgstr ""
 
 #: views/backend/post/meta-box.php:195
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:104
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:104
 msgid "Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this member-only content."
 msgstr ""
 
 #: views/backend/post/meta-box.php:198
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:107
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:107
 msgid ": Displays the Kit form. On submission, the email address will be subscribed to the selected form, granting access to the member-only content. Useful to gate free content in return for an email address."
 msgstr ""
 
 #: views/backend/post/meta-box.php:201
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:110
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:110
 msgid ": Displays a WordPress styled subscription form. On submission, the email address will be subscribed to the selected tag, granting access to the member-only content. Useful to gate free content in return for an email address."
 msgstr ""
 
 #: views/backend/post/meta-box.php:204
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:113
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:113
 msgid ": Displays a link to the Kit product, and a login form. Useful to gate content that can only be accessed by purchasing the Kit product."
 msgstr ""
 
@@ -2146,295 +2146,274 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: views/backend/settings/tools.php:109
-msgid "AWeber: Migrate Configuration"
+#. translators: %s: Importer title
+#: views/backend/settings/tools.php:113
+#, php-format
+msgid "%s: Migrate Configuration"
 msgstr ""
 
-#: views/backend/settings/tools.php:112
-msgid "Automatically replace AWeber form shortcodes with Kit forms."
+#. translators: %s: Importer title
+#: views/backend/settings/tools.php:123
+#, php-format
+msgid "Automatically replace %s form shortcodes and blocks with Kit form shortcodes and blocks."
 msgstr ""
 
-#: views/backend/settings/tools.php:118
-msgid "AWeber Form"
+#. translators: %s: Importer title
+#. translators: %s: Form importer title
+#: views/backend/settings/tools.php:137
+#: views/backend/setup-wizard/convertkit-setup/content-form-importer.php:31
+#, php-format
+msgid "%s Form"
 msgstr ""
 
-#: views/backend/settings/tools.php:149
-#: views/backend/settings/tools.php:204
-#: views/backend/settings/tools.php:259
-#: views/backend/settings/tools.php:314
+#: views/backend/settings/tools.php:172
 msgid "Migrate"
 msgstr ""
 
-#: views/backend/settings/tools.php:164
-msgid "MC4WP: Migrate Configuration"
-msgstr ""
-
-#: views/backend/settings/tools.php:167
-msgid "Automatically replace MC4WP form shortcodes with Kit forms."
-msgstr ""
-
-#: views/backend/settings/tools.php:173
-msgid "MC4WP Form"
-msgstr ""
-
-#: views/backend/settings/tools.php:219
-msgid "MailPoet: Migrate Configuration"
-msgstr ""
-
-#: views/backend/settings/tools.php:222
-msgid "Automatically replace MailPoet form shortcodes and blocks with Kit form shortcodes and blocks."
-msgstr ""
-
-#: views/backend/settings/tools.php:228
-msgid "MailPoet Form"
-msgstr ""
-
-#: views/backend/settings/tools.php:274
-msgid "Newsletter: Migrate Configuration"
-msgstr ""
-
-#: views/backend/settings/tools.php:277
-msgid "Automatically replace Newsletter form shortcodes and blocks with Kit form shortcodes and blocks."
-msgstr ""
-
-#: views/backend/settings/tools.php:283
-msgid "Newsletter Form"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:14
-msgid "This will display a Kit landing page on the URL you specify on this WordPress web site."
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:25
-msgid "To get started, you first need to create a landing page in Kit. Click the button below to get started."
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:32
-msgid "Create landing page"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:38
-msgid "I've created a landing page in Kit"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:47
-msgid "Which landing page would you like to display?"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:65
-msgid "Which permalink / slug should be assigned to this landing page?"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-1.php:66
-msgid "my-landing-page"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-2.php:11
-#: views/backend/setup-wizard/convertkit-setup/content-3.php:11
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-finish.php:11
+#: views/backend/setup-wizard/convertkit-setup/content-finish.php:11
 msgid "Setup complete"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-2.php:16
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-finish.php:16
 msgid "You can access the landing page at"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-2.php:25
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-finish.php:25
 msgid "View landing page"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-2.php:27
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-finish.php:27
 msgid "Exit the wizard and view the landing page."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-2.php:32
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-finish.php:32
 msgid "Exit"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-landing-page-setup/content-2.php:34
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-finish.php:34
 msgid "Exit the wizard and load the WordPress Pages screen."
 msgstr ""
 
-#. translators: %1$s: Link to ConvertKit Products, %2$s: ConvertKit Tag
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:16
-#, php-format
-msgid "This will generate content that visitors can access once they purchase a %1$s or subscribe to a %2$s."
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:14
+msgid "This will display a Kit landing page on the URL you specify on this WordPress web site."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:20
-msgid "Kit product"
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:25
+msgid "To get started, you first need to create a landing page in Kit. Click the button below to get started."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:22
-msgid "Kit tag"
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:32
+msgid "Create landing page"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:34
-msgid "To get started, you first need to create a Product or Tag in Kit. Click the button below to get started."
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:38
+msgid "I've created a landing page in Kit"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:41
-msgid "Create product"
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:47
+msgid "Which landing page would you like to display?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:44
-msgid "Require visitors to purchase a Kit product to access your content."
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:65
+msgid "Which permalink / slug should be assigned to this landing page?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:50
-msgid "Create tag"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:53
-msgid "Require visitors to enter their email address, subscribing them to a Kit tag to access your content."
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:60
-msgid "I've created a Product or Tag in Kit"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:66
-msgid "What type of content are you offering?"
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:74
-msgid "Require visitors to purchase a Kit product, or subscribe to a Kit tag or form, granting access to a single Page's content, which includes downloadable assets."
-msgstr ""
-
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-1.php:83
-msgid "Require visitors to purchase a Kit product, or subscribe to a Kit tag or form, granting access to a sequential series of Pages, such as a course, lessons or tutorials."
+#: views/backend/setup-wizard/convertkit-landing-page-setup/content-start.php:66
+msgid "my-landing-page"
 msgstr ""
 
 #. translators: Type of content (download, course)
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:15
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:15
 #, php-format
 msgid "Configure %s"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:25
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:25
 msgid "What is the name of the content?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:27
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:27
 msgid "e.g. Free PDF, Macro Photography Course"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:33
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:33
 msgid "Describe the content for non-members."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:36
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:36
 msgid "This will be displayed above product's call to action button."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:45
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:45
 msgid "How many lessons does this course consist of?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-2.php:56
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-configuration.php:56
 msgid "The Kit Product, Tag or Form the visitor must subscribe to, in order to see the content"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-1.php:11
-msgid "Welcome to the Kit Setup Wizard"
+#. translators: %1$s: Link to ConvertKit Products, %2$s: ConvertKit Tag
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:16
+#, php-format
+msgid "This will generate content that visitors can access once they purchase a %1$s or subscribe to a %2$s."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-1.php:13
-msgid "This setup wizard will guide you through adding your first Kit email marketing capture form to your site and begin capturing leads and subscribers."
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:20
+msgid "Kit product"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-1.php:16
-msgid "Click the Connect button to connect your WordPress site to Kit. If you don't have a Kit account, you'll be able to register one."
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:22
+msgid "Kit tag"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:13
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:34
+msgid "To get started, you first need to create a Product or Tag in Kit. Click the button below to get started."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:41
+msgid "Create product"
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:44
+msgid "Require visitors to purchase a Kit product to access your content."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:50
+msgid "Create tag"
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:53
+msgid "Require visitors to enter their email address, subscribing them to a Kit tag to access your content."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:60
+msgid "I've created a Product or Tag in Kit"
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:66
+msgid "What type of content are you offering?"
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:74
+msgid "Require visitors to purchase a Kit product, or subscribe to a Kit tag or form, granting access to a single Page's content, which includes downloadable assets."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:83
+msgid "Require visitors to purchase a Kit product, or subscribe to a Kit tag or form, granting access to a sequential series of Pages, such as a course, lessons or tutorials."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:13
 msgid "Create your first Kit Form"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:16
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:16
 msgid "To get email subscribers, you first need to create a form in Kit. Click the button below to get started."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:23
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:23
 msgid "Create form"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:30
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:30
 msgid "Not sure how to do this in Kit?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:31
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:31
 msgid "Follow our step by step documentation"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:39
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:39
 msgid "Display an email capture form"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:42
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:42
 msgid "To get email subscribers, you need to display a Kit form on your site, using the options below."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:50
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:50
 msgid "Which form would you like to display below all blog posts?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:64
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:64
 msgid "Don't display an email subscription form on posts."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:78
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:83
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:119
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:124
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:78
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:83
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:119
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:124
 msgid "Select a form above."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:80
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:80
 msgid "to preview how this will look on individual posts."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:91
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:91
 msgid "Which form would you like to display below all pages?"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:105
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:105
 msgid "Don't display an email subscription form on pages."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:121
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:121
 msgid "to preview how this will look on individual pages."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:133
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:133
 msgid "To embed email subscriber forms in particular sections of your content on specific Pages or Posts, use the Kit Form block or shortcode when editing a Page or Post."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:140
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:140
 msgid "Usage tracking"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-2.php:149
+#: views/backend/setup-wizard/convertkit-setup/content-configuration.php:149
 msgid "By allowing us to collect usage data, we can better understand which WordPress configurations, themes and plugins we should test. Complete documentation on usage tracking can be found"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-3.php:13
+#: views/backend/setup-wizard/convertkit-setup/content-finish.php:13
 msgid "The Kit for WordPress Plugin setup is complete."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-3.php:19
+#: views/backend/setup-wizard/convertkit-setup/content-finish.php:19
 msgid "Dashboard"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-3.php:21
+#: views/backend/setup-wizard/convertkit-setup/content-finish.php:21
 msgid "Exit the wizard and load the WordPress Dashboard screen."
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-3.php:26
+#: views/backend/setup-wizard/convertkit-setup/content-finish.php:26
 msgid "Plugin Settings"
 msgstr ""
 
-#: views/backend/setup-wizard/convertkit-setup/content-3.php:28
+#: views/backend/setup-wizard/convertkit-setup/content-finish.php:28
 msgid "Exit the wizard and load the Plugin's settings screen."
+msgstr ""
+
+#. translators: %s: Form importer title
+#: views/backend/setup-wizard/convertkit-setup/content-form-importer.php:17
+#, php-format
+msgid "We detected the following %s forms in your content. We recommend replacing these with Kit forms, but you may leave them as is."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-setup/content-form-importer.php:58
+msgid "Don't replace."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-setup/content-start.php:11
+msgid "Welcome to the Kit Setup Wizard"
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-setup/content-start.php:13
+msgid "This setup wizard will guide you through adding your first Kit email marketing capture form to your site and begin capturing leads and subscribers."
+msgstr ""
+
+#: views/backend/setup-wizard/convertkit-setup/content-start.php:16
+msgid "Click the Connect button to connect your WordPress site to Kit. If you don't have a Kit account, you'll be able to register one."
 msgstr ""
 
 #: views/backend/setup-wizard/footer.php:19
@@ -2451,7 +2430,7 @@ msgid "Are you sure you want to exit the wizard? Setup is incomplete."
 msgstr ""
 
 #. translators: %1$s: Current Step, %2$s: Total Steps
-#: views/backend/setup-wizard/header.php:77
+#: views/backend/setup-wizard/header.php:79
 #, php-format
 msgid "Step %1$s of %2$s"
 msgstr ""

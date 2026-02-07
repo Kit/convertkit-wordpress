@@ -9,7 +9,7 @@
  * Plugin Name: Kit (formerly ConvertKit)
  * Plugin URI: https://kit.com/
  * Description: Display Kit (formerly ConvertKit) email subscription forms, landing pages, products, broadcasts and more.
- * Version: 3.1.6.1
+ * Version: 3.1.7
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
