@@ -151,7 +151,12 @@ class RESTAPITest extends WPRestApiTestCase
 		$response = rest_get_server()->dispatch( $request );
 
 		// Assert response is unsuccessful.
-		$this->assertSame( 500, $response->get_status() );
+		$this->assertSame( 400, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertEquals( 'rest_invalid_param', $data['code'] );
+		$this->assertEquals( 'Invalid parameter(s): resource', $data['message'] );
 	}
 
 	/**
@@ -515,6 +520,122 @@ class RESTAPITest extends WPRestApiTestCase
 		$this->assertIsArray( $data );
 		$this->assertFalse( $data['success'] );
 		$this->assertArrayHasKey( 'data', $data );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API route stores
+	 * the subscriber ID in a cookie when a valid email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookie()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body_params(
+			[
+				'email' => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
+			],
+		);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertEquals( (int) $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], (int) $data['id'] );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API returns
+	 * no subscriber ID when a non-subscriber email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookieWithNonSubscriberEmail()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body_params(
+			[
+				'email' => 'fail@kit.com',
+			],
+		);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response is successful.
+		$this->assertSame( 200, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertEquals( 0, (int) $data['id'] );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API returns
+	 * an error when no email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookieWithNoEmail()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body_params(
+			[
+				'email' => '',
+			],
+		);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response failed.
+		$this->assertSame( 400, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertEquals( 'rest_invalid_param', $data['code'] );
+		$this->assertEquals( 'Invalid parameter(s): email', $data['message'] );
+	}
+
+	/**
+	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API returns
+	 * an error when an invalid email address is given.
+	 *
+	 * @since   3.1.7
+	 */
+	public function testStoreEmailAsIDInCookieWithInvalidEmail()
+	{
+		// Build request.
+		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body_params(
+			[
+				'email' => 'not-an-email',
+			],
+		);
+
+		// Send request.
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert response failed.
+		$this->assertSame( 400, $response->get_status() );
+
+		// Assert response data has the expected keys and data.
+		$data = $response->get_data();
+		$this->assertEquals( 'rest_invalid_param', $data['code'] );
+		$this->assertEquals( 'Invalid parameter(s): email', $data['message'] );
 	}
 
 	/**

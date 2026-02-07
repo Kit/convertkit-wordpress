@@ -15,6 +15,24 @@
 abstract class ConvertKit_Admin_Importer {
 
 	/**
+	 * Holds the importer name.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $name = '';
+
+	/**
+	 * Holds the importer title.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     string
+	 */
+	public $title = '';
+
+	/**
 	 * Holds the shortcode name for the third party Form plugin.
 	 *
 	 * @since   3.1.0
@@ -28,9 +46,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @var     string
+	 * @var     bool|string
 	 */
-	public $shortcode_id_attribute = '';
+	public $shortcode_id_attribute = false;
 
 	/**
 	 * Holds the block name for the third party Form plugin.
@@ -46,9 +64,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @var     string
+	 * @var     bool|string
 	 */
-	public $block_id_attribute = '';
+	public $block_id_attribute = false;
 
 	/**
 	 * Returns an array of third party form IDs and titles.
@@ -58,6 +76,63 @@ abstract class ConvertKit_Admin_Importer {
 	 * @return  array
 	 */
 	abstract public function get_forms();
+
+	/**
+	 * Registers the importer if third party forms exist.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array $importers     Importers.
+	 * @return  array
+	 */
+	public function register( $importers ) {
+
+		// Bail if no third party forms exist in posts.
+		if ( ! $this->has_forms_in_posts() ) {
+			return $importers;
+		}
+
+		// Bail if no third party forms exist for this importer.
+		if ( ! $this->has_forms() ) {
+			return $importers;
+		}
+
+		// Add this importer to the list of importers.
+		$importers[ $this->name ] = array(
+			'name'  => $this->name,
+			'title' => $this->title,
+			'forms' => $this->get_forms(),
+		);
+
+		return $importers;
+
+	}
+
+	/**
+	 * Replaces third party form shortcodes and blocks with Kit form shortcodes and blocks.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array $mappings     Mappings.
+	 */
+	public function import( $mappings ) {
+
+		// Iterate through the mappings, replacing the third party form shortcodes and blocks with the Kit form shortcodes and blocks.
+		foreach ( $mappings as $third_party_form_id => $kit_form_id ) {
+			// Skip empty Kit Form IDs i.e. no mapping was provided for this third party form.
+			if ( empty( $kit_form_id ) ) {
+				continue;
+			}
+
+			if ( $this->block_name ) {
+				$this->replace_blocks_in_posts( $third_party_form_id, (int) $kit_form_id );
+			}
+			if ( $this->shortcode_name ) {
+				$this->replace_shortcodes_in_posts( $third_party_form_id, (int) $kit_form_id );
+			}
+		}
+
+	}
 
 	/**
 	 * Returns an array of post IDs that contain the third party form block or shortcode.
@@ -70,23 +145,48 @@ abstract class ConvertKit_Admin_Importer {
 
 		global $wpdb;
 
-		// Search post_content for the third party form block or shortcode and return array of post IDs.
-		$results = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-            SELECT ID
-            FROM {$wpdb->posts}
-            WHERE post_status = %s
-            AND (
-				post_content LIKE %s
-				OR post_content LIKE %s
-			)
-            ",
-				'publish',
-				'%[' . $this->shortcode_name . '%',
-				'%<!-- wp:' . $this->block_name . '%'
+		// Build WHERE clauses and values.
+		$post_content_clauses = array();
+		$post_content_values  = array();
+
+		if ( $this->shortcode_name ) {
+			$post_content_clauses[] = 'post_content LIKE %s';
+			$post_content_values[]  = '%[' . $this->shortcode_name . '%';
+		}
+		if ( $this->block_name ) {
+			$post_content_clauses[] = 'post_content LIKE %s';
+			$post_content_values[]  = '%<!-- wp:' . $this->block_name . '%';
+		}
+
+		// Bail early if nothing to search for.
+		if ( empty( $post_content_clauses ) ) {
+			return array();
+		}
+
+		// Prepare SQL using wpdb->prepare.
+		// call_user_func_array() is used so variable length arrays can be passed to prepare().
+		$query = call_user_func_array(
+			array( $wpdb, 'prepare' ),
+			array_merge(
+				array(
+					"
+					SELECT ID
+					FROM {$wpdb->posts}
+					WHERE post_status = %s
+					AND (
+						" . implode( ' OR ', $post_content_clauses ) . '
+					)
+				',
+				),
+				array_merge(
+					array( 'publish' ),
+					$post_content_values
+				)
 			)
 		);
+
+		// Run query.
+		$results = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results ? $results : array();
 
@@ -123,8 +223,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_shortcodes_in_posts( $third_party_form_id, $form_id ) {
 
@@ -163,21 +263,28 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.0
 	 *
-	 * @param   string $content             Content containing third party Form Shortcodes.
-	 * @param   int    $third_party_form_id    Third Party Form ID.
-	 * @param   int    $form_id                Kit Form ID.
+	 * @param   string     $content                Content containing third party Form Shortcodes.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 
 	 * @return  string
 	 */
 	public function replace_shortcodes_in_content( $content, $third_party_form_id, $form_id ) {
 
-		$pattern = '/\['                                     // Start regex with an opening square bracket.
+		// If there's no shortcode ID attribute, match shortcodes with or without any attribute.
+		if ( ! $this->shortcode_id_attribute ) {
+			$pattern = '/\['                                     // Start regex with an opening square bracket.
 			. preg_quote( $this->shortcode_name, '/' )       // Match the shortcode name, escaping any regex special chars.
-			. '[^\]]*?'                                      // Match any characters that are not a closing square bracket, non-greedy.
-			. '\b' . preg_quote( $this->shortcode_id_attribute, '/' ) // Match the id attribute word boundary and escape as needed.
-			. '\s*=\s*'                                      // Match optional whitespace around an equals sign.
-			. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|' . preg_quote( (string) $third_party_form_id, '/' ) . ')' // Match the form ID, quoted or unquoted.
 			. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
+		} else {
+			$pattern = '/\['                                     // Start regex with an opening square bracket.
+				. preg_quote( $this->shortcode_name, '/' )       // Match the shortcode name, escaping any regex special chars.
+				. '[^\]]*?'                                      // Match any characters that are not a closing square bracket, non-greedy.
+				. '\b' . preg_quote( $this->shortcode_id_attribute, '/' ) // Match the id attribute word boundary and escape as needed.
+				. '\s*=\s*'                                      // Match optional whitespace around an equals sign.
+				. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|' . preg_quote( (string) $third_party_form_id, '/' ) . ')' // Match the form ID, quoted or unquoted.
+				. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
+		}
 
 		return preg_replace(
 			$pattern,
@@ -204,6 +311,14 @@ abstract class ConvertKit_Admin_Importer {
 			return array();
 		}
 
+		// If the shortcode or block ID attribute is not set, the third party Plugin doesn't use IDs
+		// and only has one form.
+		if ( ! $this->shortcode_id_attribute && ! $this->block_id_attribute ) {
+			return array(
+				__( 'Default Form', 'convertkit' ),
+			);
+		}
+
 		// Iterate through Posts, extracting the Form IDs from the third party form shortcodes.
 		$form_ids = array();
 		foreach ( $post_ids as $post_id ) {
@@ -227,6 +342,24 @@ abstract class ConvertKit_Admin_Importer {
 	 */
 	public function get_form_ids_from_content( $content ) {
 
+		// If there's no shortcode ID attribute, match shortcodes with or without any attribute and treat any match as a single "form".
+		if ( ! $this->shortcode_id_attribute ) {
+			$pattern = '/\['                                       // Start regex with an opening square bracket.
+				. preg_quote( $this->shortcode_name, '/' )         // Match the shortcode name, escaping any regex special chars.
+				. '(?:\s+[^\]]*)?'                                 // Optionally match any attributes (key/value pairs), non-greedy.
+				. '[^\]]*?\]/i';                                   // Match up to closing bracket, case-insensitive.
+
+			preg_match_all( $pattern, $content, $matches );
+
+			// If we matched at least one occurrence, just return an array with a single 0 (default/non-ID form).
+			if ( ! empty( $matches[0] ) ) {
+				return array( 0 );
+			}
+
+			return array();
+		}
+
+		// Legacy: Extract where attribute is required.
 		$pattern = '/\['                                       // Start regex with an opening square bracket.
 			. preg_quote( $this->shortcode_name, '/' )         // Match the shortcode name, escaping any regex special chars.
 			. '(?:\s+[^\]]*)?'                                 // Optionally match any attributes (key/value pairs), non-greedy.
@@ -254,8 +387,8 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_posts( $third_party_form_id, $form_id ) {
 
@@ -279,9 +412,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   int $post_id                Post ID.
-	 * @param   int $third_party_form_id    Third Party Form ID.
-	 * @param   int $form_id                Kit Form ID.
+	 * @param   int        $post_id                Post ID.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 */
 	public function replace_blocks_in_post( $post_id, $third_party_form_id, $form_id ) {
 
@@ -320,9 +453,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   array $blocks                 Blocks.
-	 * @param   int   $third_party_form_id    Third Party Form ID.
-	 * @param   int   $form_id                Kit Form ID.
+	 * @param   array      $blocks                 Blocks.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 *
 	 * @return  string
 	 */
@@ -342,9 +475,9 @@ abstract class ConvertKit_Admin_Importer {
 	 *
 	 * @since   3.1.6
 	 *
-	 * @param   array $blocks                 Blocks.
-	 * @param   int   $third_party_form_id    Third Party Form ID.
-	 * @param   int   $form_id                Kit Form ID.
+	 * @param   array      $blocks                 Blocks.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @param   int        $form_id                Kit Form ID.
 	 * @return  array
 	 */
 	private function recursively_convert_blocks( $blocks, $third_party_form_id, $form_id ) {
@@ -365,14 +498,18 @@ abstract class ConvertKit_Admin_Importer {
 				continue;
 			}
 
-			// Skip if the attribute doesn't exist i.e. the block was not configured.
-			if ( ! array_key_exists( $this->block_id_attribute, $block['attrs'] ) ) {
-				continue;
-			}
+			// If the block ID attribute is not set, the third party Plugin doesn't use IDs,
+			// so there's no need to check the $third_party_form_id matches the block attribute.
+			if ( $this->block_id_attribute ) {
+				// Skip if the attribute doesn't exist i.e. the block was not configured.
+				if ( ! array_key_exists( $this->block_id_attribute, $block['attrs'] ) ) {
+					continue;
+				}
 
-			// Skip if the third party form ID doesn't exist within the third party form block's attribute.
-			if ( stripos( $block['attrs'][ $this->block_id_attribute ], (string) $third_party_form_id ) === false ) {
-				continue;
+				// Skip if the third party form ID doesn't exist within the third party form block's attribute.
+				if ( stripos( $block['attrs'][ $this->block_id_attribute ], (string) $third_party_form_id ) === false ) {
+					continue;
+				}
 			}
 
 			// Replace third party form block with Kit form block.

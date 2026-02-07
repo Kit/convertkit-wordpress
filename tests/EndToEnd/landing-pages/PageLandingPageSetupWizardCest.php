@@ -179,7 +179,7 @@ class PageLandingPageSetupWizardCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewMemberLandingPage(EndToEndTester $I)
+	public function testAddNewLandingPage(EndToEndTester $I)
 	{
 		// Setup Plugin and navigate to Add New Landing Page screen.
 		$this->_setupAndLoadAddNewLandingPageScreen($I);
@@ -224,7 +224,7 @@ class PageLandingPageSetupWizardCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewMemberLegacyLandingPage(EndToEndTester $I)
+	public function testAddNewLegacyLandingPage(EndToEndTester $I)
 	{
 		// Setup Plugin and navigate to Add New Landing Page screen.
 		$this->_setupAndLoadAddNewLandingPageScreen($I);

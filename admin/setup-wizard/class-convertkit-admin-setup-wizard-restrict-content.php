@@ -140,16 +140,16 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 		// Define details for each step in the setup process.
 		$this->steps = array(
-			1 => array(
+			'start'         => array(
 				'name' => __( 'Setup', 'convertkit' ),
 			),
-			2 => array(
+			'configuration' => array(
 				'name'        => __( 'Configure', 'convertkit' ),
 				'next_button' => array(
 					'label' => __( 'Submit', 'convertkit' ),
 				),
 			),
-			3 => array(
+			'finish'        => array(
 				'name' => __( 'Done', 'convertkit' ),
 			),
 		);
@@ -167,7 +167,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 	 *
 	 * @since   2.1.0
 	 *
-	 * @param   int $step   Current step.
+	 * @param   string $step   Current step.
 	 */
 	public function process_form( $step ) {
 
@@ -182,7 +182,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 		// Depending on the step, process the form data.
 		switch ( $step ) {
-			case 3:
+			case 'finish':
 				// Sanitize configuration.
 				$configuration = array(
 					'type'             => ( isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : 'download' ),
@@ -215,7 +215,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				// If here, an error occured as create_download() and create_course() perform a redirect on success.
 				// Show an error message if Account Details could not be fetched e.g. API credentials supplied are invalid.
 				// Decrement the step.
-				$this->step  = ( $this->step - 1 );
+				$this->step  = $this->get_step_key_by_number( $this->get_current_step_number() - 1 );
 				$this->error = $result->get_error_message();
 				return;
 
@@ -230,7 +230,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 	 *
 	 * @since   2.1.0
 	 *
-	 * @param   int $step   Current step.
+	 * @param   string $step   Current step.
 	 */
 	public function load_screen_data( $step ) {
 
@@ -274,7 +274,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 
 		// Load data depending on the current step.
 		switch ( $step ) {
-			case 1:
+			case 'start':
 				// Fetch Forms, Products and Tags.
 				$this->forms    = new ConvertKit_Resource_Forms( 'restrict_content_wizard' );
 				$this->products = new ConvertKit_Resource_Products( 'restrict_content_wizard' );
@@ -287,12 +287,12 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
 					// Change the next label and make it a link to reload the screen.
-					unset( $this->steps[1]['next_button'] );
+					unset( $this->steps['start']['next_button'] );
 					$this->current_url = add_query_arg(
 						array(
 							'page'         => $this->page_name,
 							'ck_post_type' => $this->post_type,
-							'step'         => 1,
+							'step'         => 'start',
 						),
 						admin_url( 'options.php' )
 					);
@@ -305,12 +305,12 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
 					// Change the next label and make it a link to reload the screen.
-					unset( $this->steps[1]['next_button'] );
+					unset( $this->steps['start']['next_button'] );
 					$this->current_url = add_query_arg(
 						array(
 							'page'         => $this->page_name,
 							'ck_post_type' => $this->post_type,
-							'step'         => 1,
+							'step'         => 'start',
 						),
 						admin_url( 'options.php' )
 					);
@@ -323,12 +323,12 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
 					// Change the next label and make it a link to reload the screen.
-					unset( $this->steps[1]['next_button'] );
+					unset( $this->steps['start']['next_button'] );
 					$this->current_url = add_query_arg(
 						array(
 							'page'         => $this->page_name,
 							'ck_post_type' => $this->post_type,
-							'step'         => 1,
+							'step'         => 'start',
 						),
 						admin_url( 'options.php' )
 					);
@@ -338,12 +338,12 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				// If no Forms, Products and Tags exist in ConvertKit, change the next button label and make it a link to reload
 				// the screen.
 				if ( ! $this->forms->exist() && ! $this->products->exist() && ! $this->tags->exist() ) {
-					unset( $this->steps[1]['next_button'] );
+					unset( $this->steps['start']['next_button'] );
 					$this->current_url = add_query_arg(
 						array(
 							'page'         => $this->page_name,
 							'ck_post_type' => $this->post_type,
-							'step'         => 1,
+							'step'         => 'start',
 						),
 						admin_url( 'options.php' )
 					);
@@ -367,7 +367,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				}
 				break;
 
-			case 2:
+			case 'configuration':
 				// Define Member Content Type.
 				if ( filter_has_var( INPUT_GET, 'type' ) ) {
 					$this->type = filter_input( INPUT_GET, 'type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );

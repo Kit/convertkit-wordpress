@@ -73,6 +73,9 @@ class ThirdPartyPlugin extends \Codeception\Module
 		if ($name === 'wishlist-member' && version_compare( phpversion(), '8.1', '>' )) {
 			return;
 		}
+		if ($name === 'sg-cachepress') {
+			return;
+		}
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

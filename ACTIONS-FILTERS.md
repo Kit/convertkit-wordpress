@@ -1892,7 +1892,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-admin-section-tools.php::402</code>
+						<code>admin/section/class-convertkit-admin-section-tools.php::480</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -1912,7 +1912,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-admin-section-tools.php::423</code>
+						<code>admin/section/class-convertkit-admin-section-tools.php::503</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

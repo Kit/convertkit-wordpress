@@ -51,9 +51,9 @@ class ConvertKit_Admin_Setup_Wizard {
 	 *
 	 * @since   1.9.8.4
 	 *
-	 * @var     int
+	 * @var     string
 	 */
-	public $step = 1;
+	public $step = 'start';
 
 	/**
 	 * The programmatic name of the setup screen.
@@ -170,7 +170,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		}
 
 		// Define the step the user is on in the setup process.
-		$this->step = ( filter_has_var( INPUT_GET, 'step' ) ? absint( filter_input( INPUT_GET, 'step', FILTER_SANITIZE_NUMBER_INT ) ) : 1 );
+		$this->step = $this->get_current_step();
 
 		// Process any posted form data.
 		$this->process_form();
@@ -194,6 +194,66 @@ class ConvertKit_Admin_Setup_Wizard {
 	}
 
 	/**
+	 * Returns the current step in the setup process.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @return  string     Current step.
+	 */
+	public function get_current_step() {
+
+		$step = ( filter_has_var( INPUT_GET, 'step' ) ? filter_input( INPUT_GET, 'step', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : 'start' );
+
+		// Fallback to 'start' if the step is a registered step.
+		if ( ! array_key_exists( $step, $this->steps ) ) {
+			$step = 'start';
+		}
+
+		return $step;
+
+	}
+
+	/**
+	 * Get the number of the current step.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @return  int     Step number.
+	 */
+	public function get_current_step_number() {
+
+		return array_search( $this->step, array_keys( $this->steps ), true ) + 1;
+
+	}
+
+	/**
+	 * Get the step by number.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   int $number     Step number (1 based index).
+	 * @return  string              Step name/key.
+	 */
+	public function get_step_key_by_number( $number ) {
+
+		return array_keys( $this->steps )[ $number - 1 ];
+
+	}
+
+	/**
+	 * Get the total number of steps.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @return  int     Total steps.
+	 */
+	public function get_total_steps() {
+
+		return count( $this->steps );
+
+	}
+
+	/**
 	 * Process submitted form data for the given setup wizard name and current step.
 	 *
 	 * @since   1.9.8.4
@@ -205,7 +265,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		 *
 		 * @since   1.9.8.4
 		 *
-		 * @param   int     $step     Current step number.
+		 * @param   string     $step     Current step.
 		 */
 		do_action( 'convertkit_admin_setup_wizard_process_form_' . $this->page_name, $this->step );
 
@@ -231,24 +291,24 @@ class ConvertKit_Admin_Setup_Wizard {
 		);
 
 		// Define the previous step URL if we're not on the first or last step.
-		if ( $this->step > 1 && $this->step < count( $this->steps ) ) {
+		if ( $this->get_current_step_number() > 1 && $this->get_current_step_number() < $this->get_total_steps() ) {
 			$this->previous_step_url = add_query_arg(
 				array(
 					'page'             => $this->page_name,
 					'convertkit-modal' => $this->is_modal(),
-					'step'             => ( $this->step - 1 ),
+					'step'             => $this->get_step_key_by_number( $this->get_current_step_number() - 1 ),
 				),
 				admin_url( 'options.php' )
 			);
 		}
 
 		// Define the next step URL if we're not on the last page.
-		if ( $this->step < count( $this->steps ) ) {
+		if ( $this->get_current_step_number() < $this->get_total_steps() ) {
 			$this->next_step_url = add_query_arg(
 				array(
 					'page'             => $this->page_name,
 					'convertkit-modal' => $this->is_modal(),
-					'step'             => ( $this->step + 1 ),
+					'step'             => $this->get_step_key_by_number( $this->get_current_step_number() + 1 ),
 				),
 				admin_url( 'options.php' )
 			);
@@ -268,7 +328,7 @@ class ConvertKit_Admin_Setup_Wizard {
 		 *
 		 * @since   1.9.8.4
 		 *
-		 * @param   int     $step     Current step number.
+		 * @param   string     $step     Current step.
 		 */
 		do_action( 'convertkit_admin_setup_wizard_load_screen_data_' . $this->page_name, $this->step );
 
