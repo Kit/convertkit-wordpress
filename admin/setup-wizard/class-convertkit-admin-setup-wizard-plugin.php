@@ -93,6 +93,24 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	public $exit_url = 'options-general.php?page=_wp_convertkit_settings';
 
 	/**
+	 * If the Form Importer step will be displayed.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     bool
+	 */
+	public $show_form_importer_step = false;
+
+	/**
+	 * Holds the form importers.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @var     array
+	 */
+	public $form_importers = array();
+
+	/**
 	 * Registers action and filter hooks.
 	 *
 	 * @since   1.9.8.4
@@ -103,24 +121,38 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		$this->api      = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI, false, false, false, 'setup_wizard' );
 		$this->settings = new ConvertKit_Settings();
 
+		$this->show_form_importer_step = count( convertkit_get_form_importers() ) > 0 ? true : false;
+
 		// Define details for each step in the setup process.
 		$this->steps = array(
-			1 => array(
+			'start'         => array(
 				'name'        => __( 'Connect', 'convertkit' ),
 				'next_button' => array(
 					'label' => __( 'Connect', 'convertkit' ),
-					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=2' ), get_site_url() ),
+					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration' ), get_site_url() ),
 				),
 			),
-			2 => array(
+			'configuration' => array(
 				'name'        => __( 'Configuration', 'convertkit' ),
+				'next_button' => array(
+					'label' => $this->show_form_importer_step ? __( 'Next', 'convertkit' ) : __( 'Finish Setup', 'convertkit' ),
+				),
+			),
+		);
+
+		// If the Form Importer step will be displayed, add it to the steps.
+		if ( $this->show_form_importer_step ) {
+			$this->steps['form-importer'] = array(
+				'name'        => __( 'Form Importer', 'convertkit' ),
 				'next_button' => array(
 					'label' => __( 'Finish Setup', 'convertkit' ),
 				),
-			),
-			3 => array(
-				'name' => __( 'Done', 'convertkit' ),
-			),
+			);
+		}
+
+		// Add the finish step.
+		$this->steps['finish'] = array(
+			'name' => __( 'Done', 'convertkit' ),
 		);
 
 		// Register link to Setup Wizard below Plugin Name at Plugins > Installed Plugins.
@@ -209,66 +241,91 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	public function process_form( $step ) {
 
 		// Depending on the step, process the form data.
-		switch ( $step ) {
-			case 2:
-				// If an error occured from OAuth i.e. the user did not authorize, show it now.
-				if ( array_key_exists( 'error', $_REQUEST ) && array_key_exists( 'error_description', $_REQUEST ) ) {
-					// Decrement the step.
-					$this->step  = ( $this->step - 1 );
-					$this->error = sanitize_text_field( wp_unslash( $_REQUEST['error_description'] ) );
-					return;
-				}
-
-				// Bail if no authorization code is included in the request.
-				if ( ! array_key_exists( 'code', $_REQUEST ) ) {
-					return;
-				}
-
-				// Sanitize token.
-				$authorization_code = sanitize_text_field( wp_unslash( $_REQUEST['code'] ) );
-
-				// Exchange the authorization code and verifier for an access token.
-				$result = $this->api->get_access_token( $authorization_code );
-
-				// Show an error message if we could not fetch the access token.
-				if ( is_wp_error( $result ) ) {
-					// Decrement the step.
-					$this->step  = ( $this->step - 1 );
-					$this->error = $result->get_error_message();
-					return;
-				}
-
-				// Store Access Token, Refresh Token and expiry.
-				$this->settings->save(
-					array(
-						'access_token'  => $result['access_token'],
-						'refresh_token' => $result['refresh_token'],
-						'token_expires' => ( time() + $result['expires_in'] ),
-					)
-				);
-				break;
-
-			case 3:
-				// Run security checks.
-				if ( ! isset( $_REQUEST['_wpnonce'] ) ) {
-					return;
-				}
-				if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), $this->page_name ) ) {
-					$this->error = __( 'Invalid nonce specified.', 'convertkit' );
-					return;
-				}
-
-				// Save Default Page and Post Form settings.
-				$settings = new ConvertKit_Settings();
-				$settings->save(
-					array(
-						'post_form'      => ( isset( $_POST['post_form'] ) ? sanitize_text_field( wp_unslash( $_POST['post_form'] ) ) : '0' ),
-						'page_form'      => ( isset( $_POST['page_form'] ) ? sanitize_text_field( wp_unslash( $_POST['page_form'] ) ) : '0' ),
-						'usage_tracking' => ( isset( $_POST['usage_tracking'] ) ? 'on' : '' ),
-					)
-				);
-				break;
+		if ( array_key_exists( 'code', $_REQUEST ) || array_key_exists( 'error', $_REQUEST ) || array_key_exists( 'error_description', $_REQUEST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - no nonce is sent back from OAuth.
+			$this->save_oauth( map_deep( wp_unslash( $_REQUEST ), 'sanitize_text_field' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended - no nonce is sent back from OAuth.
+			return;
 		}
+
+		// Run security checks.
+		if ( ! isset( $_REQUEST['_wpnonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), $this->page_name ) ) {
+			// Decrement the step.
+			$this->step  = 'configuration';
+			$this->error = __( 'Invalid nonce specified.', 'convertkit' );
+			return;
+		}
+
+		// Configuration.
+		if ( array_key_exists( 'post_form', $_REQUEST ) || array_key_exists( 'page_form', $_REQUEST ) || array_key_exists( 'usage_tracking', $_REQUEST ) ) {
+			$settings = new ConvertKit_Settings();
+			$settings->save(
+				array(
+					'post_form'      => isset( $_REQUEST['post_form'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['post_form'] ) ) : '0',
+					'page_form'      => isset( $_REQUEST['page_form'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['page_form'] ) ) : '0',
+					'usage_tracking' => isset( $_REQUEST['usage_tracking'] ) ? 'on' : '',
+				)
+			);
+			return;
+		}
+
+		// Form Importer.
+		if ( array_key_exists( 'form_importer', $_REQUEST ) ) {
+			// Replace third party form shortcodes and blocks with Kit form shortcodes and blocks.
+			foreach ( map_deep( wp_unslash( $_REQUEST['form_importer'] ), 'sanitize_text_field' ) as $form_importer_name => $mappings ) {
+				// Sanitize mappings.
+				$mappings = array_map( 'sanitize_text_field', wp_unslash( $mappings ) );
+
+				// Replace third party form shortcodes and blocks with Kit form shortcodes and blocks.
+				WP_ConvertKit()->get_class( 'admin_importer_' . $form_importer_name )->import( $mappings );
+			}
+
+			return;
+		}
+
+	}
+
+	/**
+	 * Save the OAuth credentials.
+	 *
+	 * @since   3.1.7
+	 *
+	 * @param   array $request   Request.
+	 * @return  void
+	 */
+	private function save_oauth( $request ) {
+
+		// If an error occured from OAuth i.e. the user did not authorize, show it now.
+		if ( array_key_exists( 'error', $request ) || array_key_exists( 'error_description', $request ) ) {
+			// Decrement the step.
+			$this->step  = 'start';
+			$this->error = sanitize_text_field( wp_unslash( $request['error_description'] ) );
+			return;
+		}
+
+		// Sanitize token.
+		$authorization_code = sanitize_text_field( wp_unslash( $request['code'] ) );
+
+		// Exchange the authorization code and verifier for an access token.
+		$result = $this->api->get_access_token( $authorization_code );
+
+		// Show an error message if we could not fetch the access token.
+		if ( is_wp_error( $result ) ) {
+			// Decrement the step.
+			$this->step  = 'start';
+			$this->error = $result->get_error_message();
+			return;
+		}
+
+		// Store Access Token, Refresh Token and expiry.
+		$this->settings->save(
+			array(
+				'access_token'  => $result['access_token'],
+				'refresh_token' => $result['refresh_token'],
+				'token_expires' => ( time() + $result['expires_in'] ),
+			)
+		);
 
 	}
 
@@ -284,7 +341,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		// If this wizard is being served in a modal window, change the flow.
 		if ( $this->is_modal() ) {
 			switch ( $step ) {
-				case 1:
+				case 'start':
 					// Setup API.
 					$api = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
 
@@ -304,10 +361,10 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 					);
 
 					// Redirect to OAuth.
-					wp_safe_redirect( $api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=2&convertkit-modal=1' ), get_site_url() ) );
+					wp_safe_redirect( $api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration&convertkit-modal=1' ), get_site_url() ) );
 					die();
 
-				case 2:
+				case 'configuration':
 					// Close modal.
 					$this->maybe_close_modal();
 					break;
@@ -315,7 +372,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		}
 
 		switch ( $step ) {
-			case 2:
+			case 'configuration':
 				// Re-load settings class now that the Access and Refresh Tokens have been defined.
 				$this->settings = new ConvertKit_Settings();
 
@@ -326,11 +383,11 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				// Bail if an error occured.
 				if ( is_wp_error( $result ) ) {
 					// Change the next button label and make it a link to reload the screen.
-					$this->steps[2]['next_button']['label'] = __( 'I\'ve created a form in Kit', 'convertkit' );
-					$this->steps[2]['next_button']['link']  = add_query_arg(
+					$this->steps['configuration']['next_button']['label'] = __( 'I\'ve created a form in Kit', 'convertkit' );
+					$this->steps['configuration']['next_button']['link']  = add_query_arg(
 						array(
 							'page' => $this->page_name,
-							'step' => 2,
+							'step' => 'configuration',
 						),
 						admin_url( 'options.php' )
 					);
@@ -340,11 +397,11 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				// If no Forms exist in ConvertKit, change the next button label and make it a link to reload
 				// the screen.
 				if ( ! $this->forms->exist() ) {
-					$this->steps[2]['next_button']['label'] = __( 'I\'ve created a form in Kit', 'convertkit' );
-					$this->steps[2]['next_button']['link']  = add_query_arg(
+					$this->steps['configuration']['next_button']['label'] = __( 'I\'ve created a form in Kit', 'convertkit' );
+					$this->steps['configuration']['next_button']['link']  = add_query_arg(
 						array(
 							'page' => $this->page_name,
-							'step' => 2,
+							'step' => 'configuration',
 						),
 						admin_url( 'options.php' )
 					);
@@ -353,6 +410,12 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				// Fetch a Post and a Page, appending the preview nonce to their URLs.
 				$this->preview_post_url = WP_ConvertKit()->get_class( 'preview_output' )->get_preview_form_url( 'post' );
 				$this->preview_page_url = WP_ConvertKit()->get_class( 'preview_output' )->get_preview_form_url( 'page' );
+				break;
+
+			case 'form-importer':
+				// Fetch form importers and Kit Forms.
+				$this->form_importers = convertkit_get_form_importers();
+				$this->forms          = new ConvertKit_Resource_Forms( 'setup_wizard' );
 				break;
 		}
 

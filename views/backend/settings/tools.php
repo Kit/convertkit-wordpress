@@ -102,141 +102,54 @@
 	</div><!-- .postbox -->
 
 	<?php
-	// Aweber.
-	if ( $aweber->has_forms_in_posts() && $aweber->has_forms() && $forms->exist() ) {
+	// Importers.
+	foreach ( $importers as $importer ) {
 		?>
-		<div id="import-aweber" class="postbox">
-			<h2><?php esc_html_e( 'AWeber: Migrate Configuration', 'convertkit' ); ?></h2>
-
-			<p class="description">
-				<?php esc_html_e( 'Automatically replace AWeber form shortcodes with Kit forms.', 'convertkit' ); ?><br />
-			</p>
-
-			<table class="widefat striped">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'AWeber Form', 'convertkit' ); ?></th>
-						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach ( $aweber->get_forms() as $aweber_form_id => $aweber_form_title ) {
-						?>
-						<tr>
-							<td><?php echo esc_html( $aweber_form_title ); ?></td>
-							<td>
-								<select name="_wp_convertkit_integration_aweber_settings[<?php echo esc_attr( $aweber_form_id ); ?>]">
-									<?php
-									foreach ( $forms->get() as $form ) {
-										?>
-										<option value="<?php echo esc_attr( $form['id'] ); ?>"><?php echo esc_html( $form['name'] ); ?></option>
-										<?php
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<?php
-					}
-					?>
-				</tbody>
-			</table>
-
-			<p>
+		<div id="import-<?php echo esc_attr( $importer['name'] ); ?>" class="postbox">
+			<h2>
 				<?php
-				submit_button(
-					__( 'Migrate', 'convertkit' ),
-					'primary',
-					'convertkit-import-aweber',
-					false
+				printf(
+					/* translators: %s: Importer title */
+					esc_html__( '%s: Migrate Configuration', 'convertkit' ),
+					esc_html( $importer['title'] )
 				);
 				?>
-			</p>
-		</div><!-- .postbox -->
-		<?php
-	}
-
-	// Mailchimp for WordPress (MC4WP).
-	if ( $mc4wp->has_forms_in_posts() && $mc4wp->has_forms() && $forms->exist() ) {
-		?>
-		<div id="import-mc4wp" class="postbox">
-			<h2><?php esc_html_e( 'MC4WP: Migrate Configuration', 'convertkit' ); ?></h2>
+			</h2>
 
 			<p class="description">
-				<?php esc_html_e( 'Automatically replace MC4WP form shortcodes with Kit forms.', 'convertkit' ); ?><br />
-			</p>
-
-			<table class="widefat striped">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'MC4WP Form', 'convertkit' ); ?></th>
-						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach ( $mc4wp->get_forms() as $mc4wp_form_id => $mc4wp_form_title ) {
-						?>
-						<tr>
-							<td><?php echo esc_html( $mc4wp_form_title ); ?></td>
-							<td>
-								<select name="_wp_convertkit_integration_mc4wp_settings[<?php echo esc_attr( $mc4wp_form_id ); ?>]">
-									<?php
-									foreach ( $forms->get() as $form ) {
-										?>
-										<option value="<?php echo esc_attr( $form['id'] ); ?>"><?php echo esc_html( $form['name'] ); ?></option>
-										<?php
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<?php
-					}
-					?>
-				</tbody>
-			</table>
-
-			<p>
 				<?php
-				submit_button(
-					__( 'Migrate', 'convertkit' ),
-					'primary',
-					'convertkit-import-mc4wp',
-					false
+				printf(
+					/* translators: %s: Importer title */
+					esc_html__( 'Automatically replace %s form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ),
+					esc_html( $importer['title'] )
 				);
 				?>
-			</p>
-		</div><!-- .postbox -->
-		<?php
-	}
-
-	// Mailpoet.
-	if ( $mailpoet->has_forms_in_posts() && $mailpoet->has_forms() && $forms->exist() ) {
-		?>
-		<div id="import-mailpoet" class="postbox">
-			<h2><?php esc_html_e( 'MailPoet: Migrate Configuration', 'convertkit' ); ?></h2>
-
-			<p class="description">
-				<?php esc_html_e( 'Automatically replace MailPoet form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ); ?><br />
+				<br />
 			</p>
 
 			<table class="widefat striped">
 				<thead>
 					<tr>
-						<th><?php esc_html_e( 'MailPoet Form', 'convertkit' ); ?></th>
+						<th>
+							<?php
+							printf(
+								/* translators: %s: Importer title */
+								esc_html__( '%s Form', 'convertkit' ),
+								esc_html( $importer['title'] )
+							);
+							?>
+						</th>
 						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
-					foreach ( $mailpoet->get_forms() as $mailpoet_form_id => $mailpoet_form_title ) {
+					foreach ( $importer['forms'] as $importer_form_id => $importer_form_title ) {
 						?>
 						<tr>
-							<td><?php echo esc_html( $mailpoet_form_title ); ?></td>
+							<td><?php echo esc_html( $importer_form_title ); ?></td>
 							<td>
-								<select name="_wp_convertkit_integration_mailpoet_settings[<?php echo esc_attr( $mailpoet_form_id ); ?>]">
+								<select name="_wp_convertkit_integration_<?php echo esc_attr( $importer['name'] ); ?>_settings[<?php echo esc_attr( $importer_form_id ); ?>]">
 									<?php
 									foreach ( $forms->get() as $form ) {
 										?>
@@ -258,62 +171,7 @@
 				submit_button(
 					__( 'Migrate', 'convertkit' ),
 					'primary',
-					'convertkit-import-mailpoet',
-					false
-				);
-				?>
-			</p>
-		</div><!-- .postbox -->
-		<?php
-	}
-
-	// Newsletter.
-	if ( $newsletter->has_forms_in_posts() && $newsletter->has_forms() && $forms->exist() ) {
-		?>
-		<div id="import-newsletter" class="postbox">
-			<h2><?php esc_html_e( 'Newsletter: Migrate Configuration', 'convertkit' ); ?></h2>
-
-			<p class="description">
-				<?php esc_html_e( 'Automatically replace Newsletter form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ); ?><br />
-			</p>
-
-			<table class="widefat striped">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Newsletter Form', 'convertkit' ); ?></th>
-						<th><?php esc_html_e( 'Kit Form', 'convertkit' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach ( $newsletter->get_forms() as $newsletter_form_id => $newsletter_form_title ) {
-						?>
-						<tr>
-							<td><?php echo esc_html( $newsletter_form_title ); ?></td>
-							<td>
-								<select name="_wp_convertkit_integration_newsletter_settings[<?php echo esc_attr( $newsletter_form_id ); ?>]">
-									<?php
-									foreach ( $forms->get() as $form ) {
-										?>
-										<option value="<?php echo esc_attr( $form['id'] ); ?>"><?php echo esc_html( $form['name'] ); ?></option>
-										<?php
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<?php
-					}
-					?>
-				</tbody>
-			</table>
-
-			<p>
-				<?php
-				submit_button(
-					__( 'Migrate', 'convertkit' ),
-					'primary',
-					'convertkit-import-newsletter',
+					'convertkit-import-' . $importer['name'],
 					false
 				);
 				?>

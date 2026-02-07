@@ -50,7 +50,7 @@
 
 			<?php
 			// Show exit link if we're not on the last step.
-			if ( $this->step < count( $this->steps ) && ! $this->is_modal() ) {
+			if ( $this->get_current_step_number() < $this->get_total_steps() && ! $this->is_modal() ) {
 				?>
 				<div id="convertkit-setup-wizard-exit-link">
 					<a href="<?php echo esc_url( $this->exit_url ); ?>" class="convertkit-confirm" title="<?php esc_html_e( 'Exit wizard', 'convertkit' ); ?>" data-message="<?php esc_html_e( 'Are you sure you want to exit the wizard? Setup is incomplete.', 'convertkit' ); ?>">
