@@ -21,7 +21,7 @@ class ConvertKit_Admin_TinyMCE {
 	public function __construct() {
 
 		// Outputs the TinyMCE and QuickTag Modal.
-		add_action( 'wp_ajax_convertkit_admin_tinymce_output_modal', array( $this, 'output_modal' ) );
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 
 		// Add filters to register QuickTag Plugins.
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_quicktags' ) ); // WordPress Admin.
@@ -35,27 +35,55 @@ class ConvertKit_Admin_TinyMCE {
 	}
 
 	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.8
+	 */
+	public function register_routes() {
+
+		// Register route to return all blocks registered by the Plugin.
+		register_rest_route(
+			'kit/v1',
+			'/tinymce/output-modal',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => array(
+					'shortcode'   => array(
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'editor_type' => array(
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
+				'callback'            => function ( $request ) {
+					ob_start();
+					$this->output_modal( $request['shortcode'], $request['editor_type'] );
+					return ob_get_clean();
+				},
+
+				// Only refresh resources for users who can edit posts.
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
+
+	}
+
+	/**
 	 * Loads the view for a shortcode's modal in the TinyMCE and Text Editors.
 	 *
 	 * @since   1.9.6
+	 *
+	 * @param   string $shortcode_name Shortcode Name.
+	 * @param   string $editor_type    Editor Type (tinymce|quicktags).
 	 */
-	public function output_modal() {
-
-		// Check nonce.
-		check_ajax_referer( 'convertkit_admin_tinymce', 'nonce' );
+	public function output_modal( $shortcode_name, $editor_type ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Get shortcodes.
 		$shortcodes = convertkit_get_shortcodes();
-
-		// Bail if no shortcode or editor type is specified.
-		if ( ! isset( $_REQUEST['shortcode'] ) || ! isset( $_REQUEST['editor_type'] ) ) {
-			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-missing.php';
-			die();
-		}
-
-		// Get requested shortcode name.
-		$shortcode_name = sanitize_text_field( wp_unslash( $_REQUEST['shortcode'] ) );
-		$editor_type    = sanitize_text_field( wp_unslash( $_REQUEST['editor_type'] ) );
 
 		// If the shortcode is not registered, return a view in the modal to tell the user.
 		if ( ! isset( $shortcodes[ $shortcode_name ] ) ) {
@@ -118,7 +146,8 @@ class ConvertKit_Admin_TinyMCE {
 			'convertkit-admin-quicktags',
 			'convertkit_admin_tinymce',
 			array(
-				'nonce' => wp_create_nonce( 'convertkit_admin_tinymce' ),
+				'ajaxurl' => rest_url( 'kit/v1/tinymce/output-modal' ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 
@@ -160,7 +189,8 @@ class ConvertKit_Admin_TinyMCE {
 			'convertkit-admin-editor',
 			'convertkit_admin_tinymce',
 			array(
-				'nonce' => wp_create_nonce( 'convertkit_admin_tinymce' ),
+				'ajaxurl' => rest_url( 'kit/v1/tinymce/output-modal' ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 
