@@ -55,14 +55,13 @@ function convertKitTinyMCERegisterPlugin(block) {
 				});
 
 				// Perform an AJAX call to load the modal's view.
-				fetch(ajaxurl, {
+				fetch(convertkit_admin_tinymce.ajaxurl, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded',
+						'X-WP-Nonce': convertkit_admin_tinymce.nonce,
 					},
 					body: new URLSearchParams({
-						action: 'convertkit_admin_tinymce_output_modal',
-						nonce: convertkit_admin_tinymce.nonce,
 						editor_type: 'tinymce',
 						shortcode: block.name,
 					}),
