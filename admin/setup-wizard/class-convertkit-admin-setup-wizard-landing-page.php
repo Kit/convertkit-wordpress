@@ -84,7 +84,21 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 	 */
 	public function __construct() {
 
-		// Define details for each step in the setup process.
+		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-landing-page-setup', array( $this, 'process_form' ) );
+		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-landing-page-setup', array( $this, 'load_screen_data' ) );
+
+		// Call parent class constructor.
+		parent::__construct();
+
+	}
+
+	/**
+	 * Define the steps for the setup wizard.
+	 *
+	 * @since   3.1.8
+	 */
+	public function define_steps() {
+
 		$this->steps = array(
 			'start'  => array(
 				'name'        => __( 'Setup', 'convertkit' ),
@@ -96,12 +110,6 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 				'name' => __( 'Done', 'convertkit' ),
 			),
 		);
-
-		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-landing-page-setup', array( $this, 'process_form' ) );
-		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-landing-page-setup', array( $this, 'load_screen_data' ) );
-
-		// Call parent class constructor.
-		parent::__construct();
 
 	}
 

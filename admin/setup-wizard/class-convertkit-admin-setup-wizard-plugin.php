@@ -121,6 +121,25 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		$this->api      = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI, false, false, false, 'setup_wizard' );
 		$this->settings = new ConvertKit_Settings();
 
+		// Register link to Setup Wizard below Plugin Name at Plugins > Installed Plugins.
+		add_filter( 'convertkit_plugin_screen_action_links', array( $this, 'add_setup_wizard_link_on_plugins_screen' ) );
+
+		add_action( 'admin_init', array( $this, 'maybe_redirect_to_setup_screen' ), 9999 );
+		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-setup', array( $this, 'process_form' ) );
+		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-setup', array( $this, 'load_screen_data' ) );
+
+		// Call parent class constructor.
+		parent::__construct();
+
+	}
+
+	/**
+	 * Define the steps for the setup wizard.
+	 *
+	 * @since   3.1.8
+	 */
+	public function define_steps() {
+
 		$this->show_form_importer_step = count( convertkit_get_form_importers() ) > 0 ? true : false;
 
 		// Define details for each step in the setup process.
@@ -154,17 +173,6 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		$this->steps['finish'] = array(
 			'name' => __( 'Done', 'convertkit' ),
 		);
-
-		// Register link to Setup Wizard below Plugin Name at Plugins > Installed Plugins.
-		add_filter( 'convertkit_plugin_screen_action_links', array( $this, 'add_setup_wizard_link_on_plugins_screen' ) );
-
-		add_action( 'admin_init', array( $this, 'maybe_redirect_to_setup_screen' ), 9999 );
-		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-setup', array( $this, 'process_form' ) );
-		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-setup', array( $this, 'load_screen_data' ) );
-
-		// Call parent class constructor.
-		parent::__construct();
-
 	}
 
 	/**

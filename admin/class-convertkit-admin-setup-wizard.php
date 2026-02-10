@@ -169,6 +169,9 @@ class ConvertKit_Admin_Setup_Wizard {
 			$this->is_modal = true;
 		}
 
+		// Initialize the setup wizard's steps.
+		$this->define_steps();
+
 		// Define the step the user is on in the setup process.
 		$this->step = $this->get_current_step();
 
