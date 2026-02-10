@@ -79,6 +79,13 @@ class WP_ConvertKit {
 			return;
 		}
 
+		// Bail if this is a WordPress AJAX request.
+		// We don't need to initialize admin classes for AJAX requests,
+		// as any AJAX-based requests in this Plugin use the REST API instead.
+		if ( wp_doing_ajax() ) {
+			return;
+		}
+
 		$this->classes['admin_bulk_edit']                     = new ConvertKit_Admin_Bulk_Edit();
 		$this->classes['admin_cache_plugins']                 = new ConvertKit_Admin_Cache_Plugins();
 		$this->classes['admin_category']                      = new ConvertKit_Admin_Category();
