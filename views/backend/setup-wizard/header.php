@@ -13,6 +13,9 @@
 		<meta name="viewport" content="width=device-width"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title><?php echo esc_html( 'Kit' ); ?> &lsaquo; <?php bloginfo( 'name' ); ?>  &#8212; WordPress</title>
+		<script type="text/javascript">
+		var ajaxurl = '<?php echo esc_js( admin_url( 'admin-ajax.php', 'relative' ) ); ?>';
+		</script>
 		<?php
 		do_action( 'admin_print_scripts' );
 		do_action( 'admin_print_styles' );
