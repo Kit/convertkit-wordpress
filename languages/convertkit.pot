@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.1.7\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.1.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-07T03:23:58+00:00\n"
+"POT-Creation-Date: 2026-02-11T02:14:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -886,115 +886,115 @@ msgstr ""
 msgid "WordPress 5.2 or higher is required for system information report."
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:90
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:144
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:110
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:164
 msgid "Setup"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:92
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:112
 msgid "Create"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:96
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:155
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:153
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:116
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:171
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:173
 msgid "Done"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:122
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:256
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:179
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:136
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:264
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:193
 msgid "Invalid nonce specified."
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:167
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:181
 msgid "Connect your Kit account in the Kit Plugin's settings to get started"
 msgstr ""
 
 #. translators: Post Type
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:182
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:257
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:196
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:271
 #, php-format
 msgid "The post type `%s` is not supported for Member Content."
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:185
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:260
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:199
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:274
 msgid "WordPress Error"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:129
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:131
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:145
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:147
 #: views/backend/settings/oauth.php:19
 msgid "Connect"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:136
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:152
 msgid "Configuration"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:138
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:154
 #: includes/blocks/class-convertkit-block-broadcasts.php:454
 msgid "Next"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:138
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:148
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:154
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:164
 msgid "Finish Setup"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:146
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:162
 msgid "Form Importer"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:191
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:199
 msgid "Setup Wizard"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:386
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:400
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:394
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:408
 msgid "I've created a form in Kit"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:147
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:167
 msgid "Configure"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:149
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:169
 msgid "Submit"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:242
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:256
 msgid "Connect your ConvertKit account in the ConvertKit Plugin's settings to get started"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:381
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:395
 #: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:71
 msgid "Download"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:384
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:398
 #: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:80
 msgid "Course"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:413
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:427
 msgid "The downloadable member-only content goes here."
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:472
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:486
 msgid "Some introductory text about lesson"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:478
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:492
 msgid "Lesson"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:480
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:494
 msgid "member-only content goes here."
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:666
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:680
 msgid "Start Course"
 msgstr ""
 
