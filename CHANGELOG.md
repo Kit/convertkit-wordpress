@@ -1,3 +1,6 @@
+### 3.1.8 2026-02-11
+* Fix: Setup Wizard: Only register form importers when on Setup Wizard screen for performance
+
 ### 3.1.7 2026-02-09
 * Added: Setup Wizard: Replace third party detected forms with Kit Forms
 * Added: Settings: Tools: ActiveCampaign to Kit Form Importer
