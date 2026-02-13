@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
 				paginate_label_next: blockContainer.dataset.paginateLabelNext,
 				link_color: blockContainer.dataset.linkColor,
 				page: e.target.dataset.page,
-				nonce: e.target.dataset.nonce,
 			};
 
 			convertKitBroadcastsRender(blockContainer, atts);
@@ -51,9 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
  * @param {Object} atts           Block attributes
  */
 function convertKitBroadcastsRender(blockContainer, atts) {
-	// Append action.
-	atts.action = convertkit_broadcasts.action;
-
 	if (convertkit_broadcasts.debug) {
 		console.log('convertKitBroadcastsRender()');
 		console.log(atts);
