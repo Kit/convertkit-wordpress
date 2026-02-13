@@ -45,9 +45,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		register_rest_route(
 			'kit/v1',
-			'/broadcasts/render',
+			'/broadcasts',
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
+				'methods'             => WP_REST_Server::READABLE,
 				'args'                => array(
 					'date_format'         => array(
 						'default'           => $this->get_default_value( 'date_format' ),
@@ -122,7 +122,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			'convertkit_broadcasts',
 			array(
 				// REST API URL endpoint.
-				'ajax_url' => rest_url( 'kit/v1/broadcasts/render' ),
+				'ajax_url' => rest_url( 'kit/v1/broadcasts' ),
 
 				// Whether debugging is enabled.
 				'debug'    => $settings->debug_enabled(),
