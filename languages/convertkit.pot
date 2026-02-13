@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.1.8\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.1.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-11T02:14:15+00:00\n"
+"POT-Creation-Date: 2026-02-13T01:08:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -36,7 +36,7 @@ msgstr ""
 #: admin/class-convertkit-admin-settings.php:112
 #: admin/class-convertkit-admin-settings.php:113
 #: admin/class-convertkit-admin-settings.php:132
-#: includes/blocks/class-convertkit-block-broadcasts.php:134
+#: includes/blocks/class-convertkit-block-broadcasts.php:200
 #: includes/blocks/class-convertkit-block-content.php:85
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:72
 #: includes/blocks/class-convertkit-block-form-builder-field-email.php:108
@@ -124,12 +124,12 @@ msgstr ""
 msgid "Beta"
 msgstr ""
 
-#: admin/class-convertkit-admin-tinymce.php:222
+#: admin/class-convertkit-admin-tinymce.php:252
 #: views/backend/tinymce/modal-missing.php:16
 msgid "Cancel"
 msgstr ""
 
-#: admin/class-convertkit-admin-tinymce.php:225
+#: admin/class-convertkit-admin-tinymce.php:255
 msgid "Insert"
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 #: admin/section/class-convertkit-admin-section-broadcasts.php:32
 #: admin/section/class-convertkit-admin-section-broadcasts.php:33
 #: admin/section/class-convertkit-admin-section-broadcasts.php:201
-#: includes/blocks/class-convertkit-block-broadcasts.php:135
+#: includes/blocks/class-convertkit-block-broadcasts.php:201
 msgid "Broadcasts"
 msgstr ""
 
@@ -372,7 +372,7 @@ msgid "General Settings"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:58
-#: includes/blocks/class-convertkit-block-broadcasts.php:402
+#: includes/blocks/class-convertkit-block-broadcasts.php:468
 #: includes/blocks/class-convertkit-block-content.php:159
 #: includes/blocks/class-convertkit-block-form-builder-field.php:245
 #: includes/blocks/class-convertkit-block-form-builder.php:590
@@ -934,7 +934,7 @@ msgid "Configuration"
 msgstr ""
 
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php:154
-#: includes/blocks/class-convertkit-block-broadcasts.php:454
+#: includes/blocks/class-convertkit-block-broadcasts.php:520
 msgid "Next"
 msgstr ""
 
@@ -1050,15 +1050,15 @@ msgstr ""
 msgid "The product modal to display when the text is clicked."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:101
+#: includes/blocks/class-convertkit-block-broadcasts.php:167
 msgid "Kit Broadcasts"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:129
+#: includes/blocks/class-convertkit-block-broadcasts.php:195
 msgid "Displays a list of your Kit broadcasts."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:133
+#: includes/blocks/class-convertkit-block-broadcasts.php:199
 #: includes/blocks/class-convertkit-block-content.php:84
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:71
 #: includes/blocks/class-convertkit-block-form-builder-field-email.php:107
@@ -1070,145 +1070,145 @@ msgstr ""
 msgid "ConvertKit"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:136
+#: includes/blocks/class-convertkit-block-broadcasts.php:202
 msgid "Posts"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:159
+#: includes/blocks/class-convertkit-block-broadcasts.php:225
 #: includes/blocks/class-convertkit-block-form-trigger.php:128
 #: includes/blocks/class-convertkit-block-form.php:158
 #: includes/blocks/class-convertkit-block-product.php:150
 msgid "Not connected to Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:161
+#: includes/blocks/class-convertkit-block-broadcasts.php:227
 #: includes/blocks/class-convertkit-block-form-trigger.php:130
 #: includes/blocks/class-convertkit-block-form.php:160
 #: includes/blocks/class-convertkit-block-product.php:152
 msgid "Click here to connect your Kit account."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:162
+#: includes/blocks/class-convertkit-block-broadcasts.php:228
 msgid "Connect your Kit account at Settings > Kit, and then refresh this page to configure broadcasts to display."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:165
+#: includes/blocks/class-convertkit-block-broadcasts.php:231
 msgid "No broadcasts exist in Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:167
+#: includes/blocks/class-convertkit-block-broadcasts.php:233
 msgid "Click here to send your first broadcast."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:168
+#: includes/blocks/class-convertkit-block-broadcasts.php:234
 msgid "Add a broadcast to your Kit account, and then refresh this page to configure broadcasts to display."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:299
+#: includes/blocks/class-convertkit-block-broadcasts.php:365
 msgid "Display as grid"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:301
+#: includes/blocks/class-convertkit-block-broadcasts.php:367
 msgid "If enabled, displays broadcasts in a grid, instead of a list."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:304
+#: includes/blocks/class-convertkit-block-broadcasts.php:370
 msgid "Display order"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:307
+#: includes/blocks/class-convertkit-block-broadcasts.php:373
 msgid "Date, Broadcast"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:308
+#: includes/blocks/class-convertkit-block-broadcasts.php:374
 msgid "Broadcast, Date"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:312
+#: includes/blocks/class-convertkit-block-broadcasts.php:378
 msgid "Date format"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:322
+#: includes/blocks/class-convertkit-block-broadcasts.php:388
 msgid "Display images"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:326
+#: includes/blocks/class-convertkit-block-broadcasts.php:392
 msgid "Display descriptions"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:330
+#: includes/blocks/class-convertkit-block-broadcasts.php:396
 msgid "Display read more links"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:334
+#: includes/blocks/class-convertkit-block-broadcasts.php:400
 msgid "Read more label"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:336
+#: includes/blocks/class-convertkit-block-broadcasts.php:402
 msgid "The label to display for the \"read more\" link below each broadcast."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:343
+#: includes/blocks/class-convertkit-block-broadcasts.php:409
 msgid "Number of posts"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:350
+#: includes/blocks/class-convertkit-block-broadcasts.php:416
 msgid "Display pagination"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:352
+#: includes/blocks/class-convertkit-block-broadcasts.php:418
 msgid "If the number of broadcasts exceeds the \"Number of posts\" settings above, previous/next pagination links will be displayed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:355
+#: includes/blocks/class-convertkit-block-broadcasts.php:421
 msgid "Newer posts label"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:357
+#: includes/blocks/class-convertkit-block-broadcasts.php:423
 msgid "The label to display for the link to newer broadcasts."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:364
+#: includes/blocks/class-convertkit-block-broadcasts.php:430
 msgid "Older posts label"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:366
+#: includes/blocks/class-convertkit-block-broadcasts.php:432
 msgid "The label to display for the link to older broadcasts."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:376
+#: includes/blocks/class-convertkit-block-broadcasts.php:442
 msgid "Link color"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:380
+#: includes/blocks/class-convertkit-block-broadcasts.php:446
 #: includes/blocks/class-convertkit-block-form-trigger.php:270
 #: includes/blocks/class-convertkit-block-product.php:312
 msgid "Background color"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:384
+#: includes/blocks/class-convertkit-block-broadcasts.php:450
 #: includes/blocks/class-convertkit-block-form-trigger.php:274
 #: includes/blocks/class-convertkit-block-product.php:316
 msgid "Text color"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:414
+#: includes/blocks/class-convertkit-block-broadcasts.php:480
 msgid "Pagination"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:423
+#: includes/blocks/class-convertkit-block-broadcasts.php:489
 msgid "Styles"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:450
+#: includes/blocks/class-convertkit-block-broadcasts.php:516
 msgid "Read more"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:453
+#: includes/blocks/class-convertkit-block-broadcasts.php:519
 msgid "Previous"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-broadcasts.php:493
+#: includes/blocks/class-convertkit-block-broadcasts.php:559
 msgid "No Broadcasts exist in Kit."
 msgstr ""
 

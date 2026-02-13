@@ -734,7 +734,7 @@ add_filter( 'convertkit_block_product_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_broadcasts_render">
 						convertkit_block_broadcasts_render
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::667</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::732</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -765,7 +765,7 @@ add_filter( 'convertkit_block_broadcasts_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_broadcasts_render_ajax">
 						convertkit_block_broadcasts_render_ajax
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::580</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::646</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's inner content immediately before it is output by AJAX, which occurs when pagination was clicked.</p><h4>Parameters</h4>
 					<table>
@@ -796,7 +796,7 @@ add_filter( 'convertkit_block_broadcasts_render_ajax', function( $html, $atts ) 
 </pre>
 <h3 id="convertkit_block_broadcasts_build_html_list_item">
 						convertkit_block_broadcasts_build_html_list_item
-						<code>includes/blocks/class-convertkit-block-broadcasts.php::748</code>
+						<code>includes/blocks/class-convertkit-block-broadcasts.php::813</code>
 					</h3><h4>Overview</h4>
 						<p>Defines the HTML for an individual broadcast item in the Broadcasts block.</p><h4>Parameters</h4>
 					<table>
@@ -2471,7 +2471,7 @@ do_action( 'convertkit_output_landing_page_before', function( $landing_page, $la
 </pre>
 <h3 id="convertkit_initialize_admin">
 						convertkit_initialize_admin
-						<code>includes/class-wp-convertkit.php::105</code>
+						<code>includes/class-wp-convertkit.php::104</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2491,7 +2491,7 @@ do_action( 'convertkit_initialize_admin', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_admin_or_frontend_editor">
 						convertkit_initialize_admin_or_frontend_editor
-						<code>includes/class-wp-convertkit.php::126</code>
+						<code>includes/class-wp-convertkit.php::125</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2511,7 +2511,7 @@ do_action( 'convertkit_initialize_admin_or_frontend_editor', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_cli_cron">
 						convertkit_initialize_cli_cron
-						<code>includes/class-wp-convertkit.php::147</code>
+						<code>includes/class-wp-convertkit.php::146</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2531,7 +2531,7 @@ do_action( 'convertkit_initialize_cli_cron', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_frontend">
 						convertkit_initialize_frontend
-						<code>includes/class-wp-convertkit.php::172</code>
+						<code>includes/class-wp-convertkit.php::171</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
