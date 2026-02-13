@@ -282,7 +282,7 @@ abstract class ConvertKit_Admin_Importer {
 				. '[^\]]*?'                                      // Match any characters that are not a closing square bracket, non-greedy.
 				. '\b' . preg_quote( $this->shortcode_id_attribute, '/' ) // Match the id attribute word boundary and escape as needed.
 				. '\s*=\s*'                                      // Match optional whitespace around an equals sign.
-				. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|' . preg_quote( (string) $third_party_form_id, '/' ) . ')' // Match the form ID, quoted or unquoted.
+				. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|\'' . preg_quote( (string) $third_party_form_id, '/' ) . '\'|' . preg_quote( (string) $third_party_form_id, '/' ) . ')' // Match the form ID, double quotes, single quotes or unquoted.
 				. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
 		}
 
@@ -365,16 +365,19 @@ abstract class ConvertKit_Admin_Importer {
 			. '(?:\s+[^\]]*)?'                                 // Optionally match any attributes (key/value pairs), non-greedy.
 			. preg_quote( $this->shortcode_id_attribute, '/' ) // Match the id attribute name.
 			. '\s*=\s*'                                        // Optional whitespace, equals sign, optional whitespace.
-			. '(?:"([^"]+)"|([^\s\]]+))'                       // Capture quoted or unquoted value.
+			. '(?:"([^"]+)"|\'([^\']+)\'|([^\s\]]+))'          // Capture double quoted, single quoted or unquoted value.
 			. '[^\]]*?\]/i';                                   // Match up to closing bracket, case-insensitive.
 
 		preg_match_all( $pattern, $content, $matches );
 
-		// Extract form IDs: They could be in either $matches[1] (quoted) or $matches[2] (unquoted).
-		$form_ids = array_filter(
-			array_merge(
-				isset( $matches[1] ) ? $matches[1] : array(),
-				isset( $matches[2] ) ? $matches[2] : array()
+		// Extract form IDs: They could be in either $matches[1] (double quoted), $matches[2] (single quoted) or $matches[3] (unquoted).
+		$form_ids = array_values(
+			array_filter(
+				array_merge(
+					isset( $matches[1] ) ? $matches[1] : array(),
+					isset( $matches[2] ) ? $matches[2] : array(),
+					isset( $matches[3] ) ? $matches[3] : array()
+				)
 			)
 		);
 

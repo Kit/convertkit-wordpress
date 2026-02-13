@@ -179,7 +179,7 @@ class PluginSettingsToolsImporterCampaignMonitorCest
 					'post_type'    => 'page',
 					'post_status'  => 'publish',
 					'post_title'   => 'Page with Campaign Monitor Form #' . $campaignMonitorFormID,
-					'post_content' => '[cm_form form_id="' . $campaignMonitorFormID . '"]',
+					'post_content' => '[cm_form form_id=\'' . $campaignMonitorFormID . '\']',
 					'meta_input'   => [
 						'_wp_convertkit_post_meta' => [
 							'form'         => '0',
