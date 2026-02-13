@@ -44,16 +44,26 @@ class ConvertKit_Admin_TinyMCE {
 		// Register route to return all blocks registered by the Plugin.
 		register_rest_route(
 			'kit/v1',
-			'/tinymce/output-modal',
+			'/editor/tinymce/modal/(?P<shortcode>[a-zA-Z0-9-_]+)/(?P<editor_type>[a-zA-Z0-9-_]+)',
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
+				'methods'             => WP_REST_Server::READABLE,
 				'args'                => array(
 					'shortcode'   => array(
 						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param ) && in_array( $param, array_keys( convertkit_get_shortcodes() ), true );
+
+						},
 						'sanitize_callback' => 'sanitize_text_field',
 					),
 					'editor_type' => array(
 						'required'          => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param ) && in_array( $param, array( 'tinymce', 'quicktags' ), true );
+
+						},
 						'sanitize_callback' => 'sanitize_text_field',
 					),
 				),
@@ -146,7 +156,7 @@ class ConvertKit_Admin_TinyMCE {
 			'convertkit-admin-quicktags',
 			'convertkit_admin_tinymce',
 			array(
-				'ajaxurl' => rest_url( 'kit/v1/tinymce/output-modal' ),
+				'ajaxurl' => rest_url( 'kit/v1/editor/tinymce/modal' ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
@@ -189,7 +199,7 @@ class ConvertKit_Admin_TinyMCE {
 			'convertkit-admin-editor',
 			'convertkit_admin_tinymce',
 			array(
-				'ajaxurl' => rest_url( 'kit/v1/tinymce/output-modal' ),
+				'ajaxurl' => rest_url( 'kit/v1/editor/tinymce/modal' ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
