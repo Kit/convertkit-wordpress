@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.1.8
+Stable tag: 3.1.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,11 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.1.9 2026-02-16
+* Added: Settings: Tools: Campaign MOnitor to Kit Form Importer: Support replacing shortcodes with single quotation marks
+* Updated: Blocks: Broadcasts: Use REST API, replacing admin-ajax.php
+* Updated: Classic Editor (TinyMCE/Quick Tags): Use REST API to fetch modal views, replacing admin-ajax.php
 
 ### 3.1.8 2026-02-11
 * Fix: Setup Wizard: Only register form importers when on Setup Wizard screen for performance
