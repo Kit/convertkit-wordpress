@@ -51,26 +51,20 @@ class ConvertKit_Admin_TinyMCE {
 					'shortcode'   => array(
 						'required'          => true,
 						'validate_callback' => function ( $param ) {
-
 							return is_string( $param ) && in_array( $param, array_keys( convertkit_get_shortcodes() ), true );
-
 						},
 						'sanitize_callback' => 'sanitize_text_field',
 					),
 					'editor_type' => array(
 						'required'          => true,
 						'validate_callback' => function ( $param ) {
-
 							return is_string( $param ) && in_array( $param, array( 'tinymce', 'quicktags' ), true );
-
 						},
 						'sanitize_callback' => 'sanitize_text_field',
 					),
 				),
 				'callback'            => function ( $request ) {
-					ob_start();
-					$this->output_modal( $request['shortcode'], $request['editor_type'] );
-					return ob_get_clean();
+					return rest_ensure_response( $this->output_modal( $request['shortcode'], $request['editor_type'] ) );
 				},
 
 				// Only refresh resources for users who can edit posts.
@@ -89,16 +83,20 @@ class ConvertKit_Admin_TinyMCE {
 	 *
 	 * @param   string $shortcode_name Shortcode Name.
 	 * @param   string $editor_type    Editor Type (tinymce|quicktags).
+	 * @return  string
 	 */
 	public function output_modal( $shortcode_name, $editor_type ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Get shortcodes.
 		$shortcodes = convertkit_get_shortcodes();
 
+		// Start output buffering.
+		ob_start();
+
 		// If the shortcode is not registered, return a view in the modal to tell the user.
 		if ( ! isset( $shortcodes[ $shortcode_name ] ) ) {
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-missing.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// Define shortcode.
@@ -108,25 +106,25 @@ class ConvertKit_Admin_TinyMCE {
 		if ( array_key_exists( 'has_access_token', $shortcode ) && ! $shortcode['has_access_token'] ) {
 			$notice = $shortcode['no_access_token'];
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-notice.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// Show a message in the modal if no resources exist.
 		if ( array_key_exists( 'has_resources', $shortcode ) && ! $shortcode['has_resources'] ) {
 			$notice = $shortcode['no_resources'];
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-notice.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// If we have less than two panels defined in the shortcode properties, output a basic modal.
 		if ( count( $shortcode['panels'] ) < 2 ) {
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// Output tabbed view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-tabbed.php';
-		die();
+		return ob_get_clean();
 
 	}
 
