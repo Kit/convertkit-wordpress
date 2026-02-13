@@ -64,13 +64,12 @@ function convertKitTinyMCERegisterPlugin(block) {
 					{
 						method: 'GET',
 						headers: {
-							Accept: 'application/json',
 							'X-WP-Nonce': convertkit_admin_tinymce.nonce,
 						},
 					}
 				)
 					.then(function (response) {
-						return response.text();
+						return response.json();
 					})
 					.then(function (result) {
 						// Inject HTML into modal.
