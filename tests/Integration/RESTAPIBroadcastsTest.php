@@ -81,7 +81,7 @@ class RESTAPIBroadcastsTest extends WPRestApiTestCase
 
 		// Assert response is successful.
 		$this->assertSame( 200, $response->get_status() );
-		$this->assertEquals( '', $response->get_data()['data'] );
+		$this->assertEquals( '', $response->get_data() );
 	}
 
 	/**
@@ -93,7 +93,8 @@ class RESTAPIBroadcastsTest extends WPRestApiTestCase
 	public function testWhenBroadcastsExist()
 	{
 		// Refresh resources.
-		new \ConvertKit_Resource_Posts( 'output_broadcasts' )->refresh();
+		$broadcasts = new \ConvertKit_Resource_Posts( 'output_broadcasts' );
+		$broadcasts->refresh();
 
 		// Send request.
 		$request  = new \WP_REST_Request( 'GET', '/kit/v1/broadcasts' );
@@ -101,6 +102,6 @@ class RESTAPIBroadcastsTest extends WPRestApiTestCase
 
 		// Assert response is successful.
 		$this->assertSame( 200, $response->get_status() );
-		$this->assertNotEmpty( $response->get_data()['data'] );
+		$this->assertNotEmpty( $response->get_data() );
 	}
 }
