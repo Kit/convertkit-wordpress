@@ -80,7 +80,7 @@ function convertKitBroadcastsRender(blockContainer, atts) {
 			blockContainer.classList.remove('convertkit-broadcasts-loading');
 
 			// Replace block container's HTML with response data.
-			blockContainer.innerHTML = result.data;
+			blockContainer.innerHTML = result;
 		})
 		.catch(function (error) {
 			if (convertkit.debug) {

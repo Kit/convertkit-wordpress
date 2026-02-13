@@ -95,8 +95,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 					),
 				),
 				'callback'            => function ( $request ) {
-					$html = $this->render_ajax( $request );
-					return rest_ensure_response( array( 'data' => $html ) );
+					return rest_ensure_response( $this->render_ajax( $request ) );
 				},
 
 				// No authentication required, as this is on the frontend site.
@@ -629,8 +628,20 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
 
+		// Setup Settings class.
+		$settings = new ConvertKit_Settings();
+
 		// Fetch Posts.
 		$posts = new ConvertKit_Resource_Posts( 'output_broadcasts' );
+
+		// If no Posts exist, bail.
+		if ( ! $posts->exist() ) {
+			if ( $settings->debug_enabled() ) {
+				return '<!-- ' . __( 'No Broadcasts exist in Kit.', 'convertkit' ) . ' -->';
+			}
+
+			return '';
+		}
 
 		// Build HTML.
 		$html = $this->build_html( $posts, $atts, false );
