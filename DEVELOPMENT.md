@@ -60,6 +60,12 @@ Typically, packages listed in this section would be internal development tools f
 - PHPStan
 - Codeception
 
+### CSS
+
+Run `npm run watch:css` to compile frontend CSS to `resources/frontend/css/frontend.css` when working on SCSS in the `resources/frontend/scss` folder.
+
+`resources/frontend/css/frontend.css` is excluded from the repo by `.gitignore`; it is built before tests and deployment automatically using GitHub actions.
+
 ## Committing Work
 
 Remember to commit your changes to your branch relatively frequently, with a meaningful, short summary that explains what the change(s) do.
