@@ -343,10 +343,11 @@ The documentation covers newsletter form setup, landing page configuration, memb
 
 == Changelog ==
 
-### 3.1.9 2026-02-16
-* Added: Settings: Tools: Campaign MOnitor to Kit Form Importer: Support replacing shortcodes with single quotation marks
+### 3.1.9 2026-02-17
+* Added: Settings: Tools: Campaign Monitor to Kit Form Importer: Support replacing shortcodes with single quotation marks
 * Updated: Blocks: Broadcasts: Use REST API, replacing admin-ajax.php
 * Updated: Classic Editor (TinyMCE/Quick Tags): Use REST API to fetch modal views, replacing admin-ajax.php
+* Updated: Member Content: REST API improvements
 
 ### 3.1.8 2026-02-11
 * Fix: Setup Wizard: Only register form importers when on Setup Wizard screen for performance
