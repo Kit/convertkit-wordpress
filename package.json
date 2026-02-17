@@ -4,8 +4,8 @@
   "scripts": {
     "build:css": "sass resources/frontend/scss/frontend.scss resources/frontend/css/frontend.css --no-source-map --style=compressed",
     "watch:css": "sass resources/frontend/scss/frontend.scss resources/frontend/css/frontend.css --watch --style=compressed",
-    "lint:css": "wp-scripts lint-style --max-warnings=0",
-    "fix:css": "wp-scripts lint-style --fix",
+    "lint:css": "wp-scripts lint-style 'resources/frontend/scss/**/*.scss' --max-warnings=0",
+    "fix:css": "wp-scripts lint-style 'resources/frontend/scss/**/*.scss' --fix",
     "lint:js": "wp-scripts lint-js --max-warnings=0",
     "fix:js": "wp-scripts lint-js --fix"
   },
@@ -14,6 +14,7 @@
     "@wordpress/prettier-config": "^4.30.0",
     "@wordpress/scripts": "^30.23.0",
     "eslint-config-prettier": "^10.1.8",
-    "sass": "^1.97.3"
+    "sass": "^1.97.3",
+    "stylelint-scss": "^6.14.0"
   }
 }
