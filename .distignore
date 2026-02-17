@@ -1,3 +1,4 @@
+# Directories to exclude from the ZIP file and wordpress.org deployment.
 /.devcontainer
 /.git
 /.github
@@ -5,6 +6,7 @@
 /.wordpress-org
 /log
 /node_modules
+/resources/frontend/css/*.map
 /tests
 /vendor/autoload.php
 /vendor/composer
