@@ -1425,7 +1425,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Only load styles if the Disable CSS option is off.
 		if ( ! $this->settings->css_disabled() ) {
 			// Enqueue styles.
-			wp_enqueue_style( 'convertkit-restrict-content', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/restrict-content.css', array(), CONVERTKIT_PLUGIN_VERSION );
+			wp_enqueue_style( 'convertkit-frontend', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/frontend.css', array(), CONVERTKIT_PLUGIN_VERSION );
 		}
 
 		// Only load scripts if the Disable Scripts option is off.
