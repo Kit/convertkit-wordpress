@@ -150,10 +150,10 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 	fetch(convertkit_restrict_content.subscriber_authentication_url, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
+			'Content-Type': 'application/json',
 			'X-WP-Nonce': nonce,
 		},
-		body: new URLSearchParams({
+		body: JSON.stringify({
 			convertkit_email: email,
 			convertkit_resource_type: resource_type,
 			convertkit_resource_id: resource_id,
@@ -223,10 +223,10 @@ function convertKitRestrictContentSubscriberVerification(
 	fetch(convertkit_restrict_content.subscriber_verification_url, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
+			'Content-Type': 'application/json',
 			'X-WP-Nonce': nonce,
 		},
-		body: new URLSearchParams({
+		body: JSON.stringify({
 			subscriber_code,
 			token,
 			convertkit_post_id: post_id,

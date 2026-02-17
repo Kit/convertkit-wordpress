@@ -31,9 +31,77 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		add_action( 'convertkit_gutenberg_enqueue_scripts_editor_and_frontend', array( $this, 'enqueue_scripts' ) );
 		add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
 
-		// Render Broadcasts block via AJAX.
-		add_action( 'wp_ajax_nopriv_convertkit_broadcasts_render', array( $this, 'render_ajax' ) );
-		add_action( 'wp_ajax_convertkit_broadcasts_render', array( $this, 'render_ajax' ) );
+		// Register REST API routes.
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+	}
+
+	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.8
+	 */
+	public function register_routes() {
+
+		register_rest_route(
+			'kit/v1',
+			'/broadcasts',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'args'                => array(
+					'date_format'         => array(
+						'default'           => $this->get_default_value( 'date_format' ),
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'display_image'       => array(
+						'default'           => $this->get_default_value( 'display_image' ),
+						'sanitize_callback' => 'absint',
+					),
+					'display_description' => array(
+						'default'           => $this->get_default_value( 'display_description' ),
+						'sanitize_callback' => 'absint',
+					),
+					'display_read_more'   => array(
+						'default'           => $this->get_default_value( 'display_read_more' ),
+						'sanitize_callback' => 'absint',
+					),
+					'read_more_label'     => array(
+						'default'           => $this->get_default_value( 'read_more_label' ),
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'limit'               => array(
+						'default'           => $this->get_default_value( 'limit' ),
+						'sanitize_callback' => 'absint',
+					),
+					'page'                => array(
+						'default'           => $this->get_default_value( 'page' ),
+						'sanitize_callback' => 'absint',
+					),
+					'paginate'            => array(
+						'default'           => $this->get_default_value( 'paginate' ),
+						'sanitize_callback' => 'absint',
+					),
+					'paginate_label_next' => array(
+						'default'           => $this->get_default_value( 'paginate_label_next' ),
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'paginate_label_prev' => array(
+						'default'           => $this->get_default_value( 'paginate_label_prev' ),
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'link_color'          => array(
+						'default'           => $this->get_default_value( 'link_color' ),
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
+				'callback'            => function ( $request ) {
+					return rest_ensure_response( $this->render_ajax( $request ) );
+				},
+
+				// No authentication required, as this is on the frontend site.
+				'permission_callback' => '__return_true',
+			)
+		);
 
 	}
 
@@ -52,11 +120,8 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			'convertkit-' . $this->get_name(),
 			'convertkit_broadcasts',
 			array(
-				// WordPress AJAX URL endpoint.
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-
-				// AJAX action registered in __construct().
-				'action'   => 'convertkit_broadcasts_render',
+				// REST API URL endpoint.
+				'ajax_url' => rest_url( 'kit/v1/broadcasts' ),
 
 				// Whether debugging is enabled.
 				'debug'    => $settings->debug_enabled(),
@@ -538,33 +603,45 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * when requested via AJAX.
 	 *
 	 * @since   1.9.7.6
+	 *
+	 * @param   WP_REST_Request $request  The REST request.
+	 * @return  string
 	 */
-	public function render_ajax() {
-
-		// Check nonce.
-		check_ajax_referer( 'convertkit-broadcasts', 'nonce' );
+	public function render_ajax( $request ) {
 
 		// Build attributes array.
 		$atts = array(
-			'date_format'         => ( isset( $_REQUEST['date_format'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['date_format'] ) ) : $this->get_default_value( 'date_format' ) ),
-			'display_image'       => ( isset( $_REQUEST['display_image'] ) ? absint( $_REQUEST['display_image'] ) : $this->get_default_value( 'display_image' ) ),
-			'display_description' => ( isset( $_REQUEST['display_description'] ) ? absint( $_REQUEST['display_description'] ) : $this->get_default_value( 'display_description' ) ),
-			'display_read_more'   => ( isset( $_REQUEST['display_read_more'] ) ? absint( $_REQUEST['display_read_more'] ) : $this->get_default_value( 'display_read_more' ) ),
-			'read_more_label'     => ( isset( $_REQUEST['read_more_label'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['read_more_label'] ) ) : $this->get_default_value( 'read_more_label' ) ),
-			'limit'               => ( isset( $_REQUEST['limit'] ) ? absint( $_REQUEST['limit'] ) : $this->get_default_value( 'limit' ) ),
-			'page'                => ( isset( $_REQUEST['page'] ) ? absint( $_REQUEST['page'] ) : $this->get_default_value( 'page' ) ),
-			'paginate'            => ( isset( $_REQUEST['paginate'] ) ? absint( $_REQUEST['paginate'] ) : $this->get_default_value( 'paginate' ) ),
-			'paginate_label_next' => ( isset( $_REQUEST['paginate_label_next'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['paginate_label_next'] ) ) : $this->get_default_value( 'paginate_label_next' ) ),
-			'paginate_label_prev' => ( isset( $_REQUEST['paginate_label_prev'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['paginate_label_prev'] ) ) : $this->get_default_value( 'paginate_label_prev' ) ),
-			'link_color'          => ( isset( $_REQUEST['link_color'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['link_color'] ) ) : $this->get_default_value( 'link_color' ) ),
+			'date_format'         => $request->get_param( 'date_format' ),
+			'display_image'       => $request->get_param( 'display_image' ),
+			'display_description' => $request->get_param( 'display_description' ),
+			'display_read_more'   => $request->get_param( 'display_read_more' ),
+			'read_more_label'     => $request->get_param( 'read_more_label' ),
+			'limit'               => $request->get_param( 'limit' ),
+			'page'                => $request->get_param( 'page' ),
+			'paginate'            => $request->get_param( 'paginate' ),
+			'paginate_label_next' => $request->get_param( 'paginate_label_next' ),
+			'paginate_label_prev' => $request->get_param( 'paginate_label_prev' ),
+			'link_color'          => $request->get_param( 'link_color' ),
 		);
 
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
 
+		// Setup Settings class.
+		$settings = new ConvertKit_Settings();
+
 		// Fetch Posts.
 		$posts = new ConvertKit_Resource_Posts( 'output_broadcasts' );
+
+		// If no Posts exist, bail.
+		if ( ! $posts->exist() ) {
+			if ( $settings->debug_enabled() ) {
+				return '<!-- ' . __( 'No Broadcasts exist in Kit.', 'convertkit' ) . ' -->';
+			}
+
+			return '';
+		}
 
 		// Build HTML.
 		$html = $this->build_html( $posts, $atts, false );
@@ -580,8 +657,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		 */
 		$html = apply_filters( 'convertkit_block_broadcasts_render_ajax', $html, $atts );
 
-		// Send HTML as response.
-		wp_send_json_success( $html );
+		return $html;
 
 	}
 

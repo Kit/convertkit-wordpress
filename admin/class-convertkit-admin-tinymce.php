@@ -21,7 +21,7 @@ class ConvertKit_Admin_TinyMCE {
 	public function __construct() {
 
 		// Outputs the TinyMCE and QuickTag Modal.
-		add_action( 'wp_ajax_convertkit_admin_tinymce_output_modal', array( $this, 'output_modal' ) );
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 
 		// Add filters to register QuickTag Plugins.
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_quicktags' ) ); // WordPress Admin.
@@ -35,32 +35,68 @@ class ConvertKit_Admin_TinyMCE {
 	}
 
 	/**
+	 * Register REST API routes.
+	 *
+	 * @since   3.1.8
+	 */
+	public function register_routes() {
+
+		// Register route to return all blocks registered by the Plugin.
+		register_rest_route(
+			'kit/v1',
+			'/editor/tinymce/modal/(?P<shortcode>[a-zA-Z0-9-_]+)/(?P<editor_type>[a-zA-Z0-9-_]+)',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'args'                => array(
+					'shortcode'   => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+							return is_string( $param ) && in_array( $param, array_keys( convertkit_get_shortcodes() ), true );
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'editor_type' => array(
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+							return is_string( $param ) && in_array( $param, array( 'tinymce', 'quicktags' ), true );
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
+				'callback'            => function ( $request ) {
+					return rest_ensure_response( $this->output_modal( $request['shortcode'], $request['editor_type'] ) );
+				},
+
+				// Only refresh resources for users who can edit posts.
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
+
+	}
+
+	/**
 	 * Loads the view for a shortcode's modal in the TinyMCE and Text Editors.
 	 *
 	 * @since   1.9.6
+	 *
+	 * @param   string $shortcode_name Shortcode Name.
+	 * @param   string $editor_type    Editor Type (tinymce|quicktags).
+	 * @return  string
 	 */
-	public function output_modal() {
-
-		// Check nonce.
-		check_ajax_referer( 'convertkit_admin_tinymce', 'nonce' );
+	public function output_modal( $shortcode_name, $editor_type ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// Get shortcodes.
 		$shortcodes = convertkit_get_shortcodes();
 
-		// Bail if no shortcode or editor type is specified.
-		if ( ! isset( $_REQUEST['shortcode'] ) || ! isset( $_REQUEST['editor_type'] ) ) {
-			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-missing.php';
-			die();
-		}
-
-		// Get requested shortcode name.
-		$shortcode_name = sanitize_text_field( wp_unslash( $_REQUEST['shortcode'] ) );
-		$editor_type    = sanitize_text_field( wp_unslash( $_REQUEST['editor_type'] ) );
+		// Start output buffering.
+		ob_start();
 
 		// If the shortcode is not registered, return a view in the modal to tell the user.
 		if ( ! isset( $shortcodes[ $shortcode_name ] ) ) {
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-missing.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// Define shortcode.
@@ -70,25 +106,25 @@ class ConvertKit_Admin_TinyMCE {
 		if ( array_key_exists( 'has_access_token', $shortcode ) && ! $shortcode['has_access_token'] ) {
 			$notice = $shortcode['no_access_token'];
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-notice.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// Show a message in the modal if no resources exist.
 		if ( array_key_exists( 'has_resources', $shortcode ) && ! $shortcode['has_resources'] ) {
 			$notice = $shortcode['no_resources'];
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-notice.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// If we have less than two panels defined in the shortcode properties, output a basic modal.
 		if ( count( $shortcode['panels'] ) < 2 ) {
 			require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal.php';
-			die();
+			return ob_get_clean();
 		}
 
 		// Output tabbed view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-tabbed.php';
-		die();
+		return ob_get_clean();
 
 	}
 
@@ -118,7 +154,8 @@ class ConvertKit_Admin_TinyMCE {
 			'convertkit-admin-quicktags',
 			'convertkit_admin_tinymce',
 			array(
-				'nonce' => wp_create_nonce( 'convertkit_admin_tinymce' ),
+				'ajaxurl' => rest_url( 'kit/v1/editor/tinymce/modal' ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 
@@ -160,7 +197,8 @@ class ConvertKit_Admin_TinyMCE {
 			'convertkit-admin-editor',
 			'convertkit_admin_tinymce',
 			array(
-				'nonce' => wp_create_nonce( 'convertkit_admin_tinymce' ),
+				'ajaxurl' => rest_url( 'kit/v1/editor/tinymce/modal' ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 

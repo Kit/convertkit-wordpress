@@ -21,20 +21,21 @@ for (const block in convertkit_quicktags) {
 function convertKitQuickTagRegister(block) {
 	QTags.addButton('convertkit-' + block.name, block.title, function () {
 		// Perform an AJAX call to load the modal's view.
-		fetch(ajaxurl, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			body: new URLSearchParams({
-				action: 'convertkit_admin_tinymce_output_modal',
-				nonce: convertkit_admin_tinymce.nonce,
-				editor_type: 'quicktags',
-				shortcode: block.name,
-			}),
-		})
+		fetch(
+			convertkit_admin_tinymce.ajaxurl +
+				'/' +
+				block.name +
+				'/' +
+				'quicktags',
+			{
+				method: 'GET',
+				headers: {
+					'X-WP-Nonce': convertkit_admin_tinymce.nonce,
+				},
+			}
+		)
 			.then(function (response) {
-				return response.text();
+				return response.json();
 			})
 			.then(function (result) {
 				// Show Modal.

@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.1.7
+Stable tag: 3.1.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,9 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.1.8 2026-02-11
+* Fix: Setup Wizard: Only register form importers when on Setup Wizard screen for performance
 
 ### 3.1.7 2026-02-09
 * Added: Setup Wizard: Replace third party detected forms with Kit Forms

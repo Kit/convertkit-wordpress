@@ -401,7 +401,7 @@ class ImporterTest extends WPTestCase
 		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
 
 		// Define the content to test.
-		$content = '[cm_form form_id="cm_6912dba75db2d"] some content [cm_form form_id="cm_6982a693a0095"] some other content [aweber formid="12"] different shortcode to ignore';
+		$content = '[cm_form form_id="cm_6912dba75db2d"] some content [cm_form form_id=\'cm_6982a693a0095\'] some other content [aweber formid="12"] different shortcode to ignore';
 
 		// Extract form IDs from content.
 		$form_ids = $this->importer->get_form_ids_from_content( $content );
@@ -428,6 +428,7 @@ class ImporterTest extends WPTestCase
 		// Define the shortcodes to test.
 		$shortcodes = [
 			'[cm_form form_id="cm_6912dba75db2d"]',
+			'[cm_form form_id=\'cm_6912dba75db2d\']',
 			'[cm_form form_id=cm_6912dba75db2d]',
 		];
 

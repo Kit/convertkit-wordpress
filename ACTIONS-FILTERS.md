@@ -37,6 +37,12 @@
 						<td><a href="#convertkit_admin_post_register_add_new_buttons"><code>convertkit_admin_post_register_add_new_buttons</code></a></td>
 						<td>Registers 'Add New' buttons for the given Post Type's admin screen.</td>
 					</tr><tr>
+						<td colspan="3">admin/class-convertkit-admin-setup-wizard.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_admin_setup_wizard_steps_  this-page_name"><code>convertkit_admin_setup_wizard_steps_  this-page_name</code></a></td>
+						<td>Define the steps for the setup wizard.</td>
+					</tr><tr>
 						<td colspan="3">includes/functions.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
@@ -431,6 +437,33 @@ add_filter( 'convertkit_admin_post_register_add_new_buttons', function( $buttons
 	// Return value
 	return $buttons;
 }, 10, 2 );
+</pre>
+<h3 id="convertkit_admin_setup_wizard_steps_  this-page_name">
+						convertkit_admin_setup_wizard_steps_  this-page_name
+						<code>admin/class-convertkit-admin-setup-wizard.php::179</code>
+					</h3><h4>Overview</h4>
+						<p>Define the steps for the setup wizard.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$steps</td>
+							<td>array</td>
+							<td>The steps for the setup wizard.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_admin_setup_wizard_steps_  this-page_name', function( $steps ) {
+	// ... your code here
+	// Return value
+	return $steps;
+}, 10, 1 );
 </pre>
 <h3 id="convertkit_get_supported_post_types">
 						convertkit_get_supported_post_types
@@ -2201,7 +2234,7 @@ do_action( 'convertkit_admin_post_enqueue_styles', function(  ) {
 </pre>
 <h3 id="convertkit_admin_setup_wizard_process_form_  this-page_name">
 						convertkit_admin_setup_wizard_process_form_  this-page_name
-						<code>admin/class-convertkit-admin-setup-wizard.php::269</code>
+						<code>admin/class-convertkit-admin-setup-wizard.php::279</code>
 					</h3><h4>Overview</h4>
 						<p>Process submitted form data for the given setup wizard name and current step.</p><h4>Parameters</h4>
 					<table>
@@ -2226,7 +2259,7 @@ do_action( 'convertkit_admin_setup_wizard_process_form_  this-page_name', functi
 </pre>
 <h3 id="convertkit_admin_setup_wizard_load_screen_data_  this-page_name">
 						convertkit_admin_setup_wizard_load_screen_data_  this-page_name
-						<code>admin/class-convertkit-admin-setup-wizard.php::332</code>
+						<code>admin/class-convertkit-admin-setup-wizard.php::342</code>
 					</h3><h4>Overview</h4>
 						<p>Load any data into class variables for the given setup wizard name and current step.</p><h4>Parameters</h4>
 					<table>
