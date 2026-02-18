@@ -62,7 +62,7 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 	public function enqueue_styles() {
 
 		convertkit_enqueue_frontend_css();
-		
+
 		// Enqueue the block button CSS.
 		wp_enqueue_style( 'wp-block-button' );
 
