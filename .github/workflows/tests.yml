@@ -275,12 +275,14 @@ jobs:
 
       # Installs npm packages and runs commands to build the CSS.
       - name: Compile CSS
+        working-directory: ${{ env.PLUGIN_DIR }}
         run: |
           npm install
           npm run build:css
 
       # Confirm that expected files exist.
       - name: Check Kit WordPress Library and Build Files Exist
+        working-directory: ${{ env.PLUGIN_DIR }}
         id: check_files
         uses: andstor/file-existence-action@v1
         with:
@@ -389,6 +391,21 @@ jobs:
       # Installs Kit WordPress Libraries.
       - name: Run Composer
         run: composer install --no-dev
+
+      # Installs npm packages and runs commands to build the CSS.
+      - name: Compile CSS
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: |
+          npm install
+          npm run build:css
+
+      # Confirm that expected files exist.
+      - name: Check Kit WordPress Library and Build Files Exist
+        working-directory: ${{ env.PLUGIN_DIR }}
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "resources/frontend/css/frontend.css, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
 
       # Configure AWS Credentials
       - name: Configure AWS credentials
