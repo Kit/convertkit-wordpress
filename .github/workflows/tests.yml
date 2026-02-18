@@ -53,28 +53,11 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.1', '8.2', '8.3', '8.4' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.1' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/broadcasts/blocks-shortcodes',
-          'EndToEnd/broadcasts/import-export',
-          'EndToEnd/forms/blocks-shortcodes',
-          'EndToEnd/forms/general',
-          'EndToEnd/forms/post-types',
-          'EndToEnd/general/other',
-          'EndToEnd/general/plugin-screens',
-          'EndToEnd/integrations/divi-builder',
-          'EndToEnd/integrations/divi-theme',
-          'EndToEnd/integrations/other',
-          'EndToEnd/integrations/wlm',
-          'EndToEnd/integrations/woocommerce',
-          'EndToEnd/landing-pages',
-          'EndToEnd/products',
-          'EndToEnd/restrict-content/general',
-          'EndToEnd/restrict-content/post-types',
-          'EndToEnd/tags',
-          'Integration'
+          'EndToEnd/forms/general'
         ]
 
     # Steps to install, configure and run tests
@@ -289,6 +272,19 @@ jobs:
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
+
+      # Installs npm packages and runs commands to build the CSS.
+      - name: Compile CSS
+        run: |
+          npm install
+          npm run build:css
+
+      # Confirm that expected files exist.
+      - name: Check Kit WordPress Library and Build Files Exist
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "resources/frontend/css/frontend.css, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
 
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}

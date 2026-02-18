@@ -27,6 +27,8 @@
         "phpcbf": "vendor/bin/phpcbf ./ -s -v",
         "phpcs-tests": "vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -s -v",
         "phpcbf-tests": "vendor/bin/phpcbf ./tests --standard=phpcs.tests.xml -s -v",
+        "build-css": "npm run build:css",
+        "watch-css": "npm run watch:css",
         "lint-css": "npm run lint:css",
         "fix-css": "npm run fix:css",
         "lint-js": "npm run lint:js",

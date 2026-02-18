@@ -136,7 +136,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( 'convertkit-' . $this->get_name(), CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/broadcasts.css', array(), CONVERTKIT_PLUGIN_VERSION );
+		convertkit_enqueue_frontend_css();
 
 	}
 

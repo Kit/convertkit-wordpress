@@ -39,8 +39,8 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( 'convertkit-button', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/button.css', array(), CONVERTKIT_PLUGIN_VERSION );
-
+		convertkit_enqueue_frontend_css();
+		
 		// Enqueue the block button CSS.
 		wp_enqueue_style( 'wp-block-button' );
 

@@ -579,7 +579,7 @@ class PageShortcodeBroadcastsCest
 		);
 
 		// Confirm that our stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeInSource('<div class="convertkit-broadcasts" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');

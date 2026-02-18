@@ -288,7 +288,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( 'convertkit-form-builder-field', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/form-builder.css', array(), CONVERTKIT_PLUGIN_VERSION );
+		convertkit_enqueue_frontend_css();
+		// wp_enqueue_style( 'convertkit-form-builder-field', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/form-builder.css', array(), CONVERTKIT_PLUGIN_VERSION );
 
 	}
 
