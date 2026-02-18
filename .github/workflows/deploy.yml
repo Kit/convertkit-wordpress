@@ -27,8 +27,8 @@ jobs:
         run: composer install --no-dev
 
       # Confirm that expected files exist, to prevent deployment to wordpress.org
-      # if e.g. `composer install` or `npm build` fails.
-      - name: Check Kit WordPress Library and Build Files Exist
+      # if e.g. composer install fails.
+      - name: Check ConvertKit Library Exists
         id: check_files
         uses: andstor/file-existence-action@v1
         with:
