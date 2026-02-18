@@ -108,8 +108,11 @@ class NonInlineFormCest
 		// View the home page.
 		$I->amOnPage('/');
 
-		// Allow time for JS to set the cookie, before checking the DOM.
-		$I->wait(3);
+		// Debug: check what script tags exist with data-kit-limit-per-session.
+		$scriptTags = $I->executeJS('return document.querySelectorAll("script[data-kit-limit-per-session]").length');
+		
+		// Wait for JS to set the cookie, before navigating to the next page.
+		$I->waitForJS('return document.cookie.indexOf("ck_non_inline_form_displayed") !== -1', 10);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
