@@ -273,13 +273,6 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
 
-      # Installs npm packages and runs commands to build the CSS.
-      - name: Compile CSS
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: |
-          npm install
-          npm run build:css
-
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer dump-autoload
@@ -383,13 +376,6 @@ jobs:
       # Installs Kit WordPress Libraries.
       - name: Run Composer
         run: composer install --no-dev
-
-      # Installs npm packages and runs commands to build the CSS.
-      - name: Compile CSS
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: |
-          npm install
-          npm run build:css
 
       # Configure AWS Credentials
       - name: Configure AWS credentials
