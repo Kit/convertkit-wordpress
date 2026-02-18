@@ -44,7 +44,6 @@
         "fix-js-coding-standards": "npm run fix:js",
         "php-static-analysis": "vendor/bin/phpstan analyse --memory-limit=1250M",
         "test": [
-            "npm run build:css",
             "vendor/bin/codecept build @no_additional_args",
             "vendor/bin/codecept run EndToEnd @additional_args --fail-fast"
         ],
