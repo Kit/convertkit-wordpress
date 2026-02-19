@@ -155,6 +155,9 @@ function convertKitRecaptchaFormSubmit(token) {
 	// Submit the form.
 	form.submit();
 }
+
+// Scope the function to the window object as webpack will wrap everything in a closure,
+// resulting in the function not being available globally.
 window.convertKitRecaptchaFormSubmit = convertKitRecaptchaFormSubmit;
 /* eslint-enable no-unused-vars */
 
