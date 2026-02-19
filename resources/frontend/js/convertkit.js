@@ -155,6 +155,7 @@ function convertKitRecaptchaFormSubmit(token) {
 	// Submit the form.
 	form.submit();
 }
+window.convertKitRecaptchaFormSubmit = convertKitRecaptchaFormSubmit;
 /* eslint-enable no-unused-vars */
 
 /**
