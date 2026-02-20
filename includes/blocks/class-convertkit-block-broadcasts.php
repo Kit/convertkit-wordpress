@@ -115,9 +115,12 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		// Get ConvertKit Settings.
 		$settings = new ConvertKit_Settings();
 
-		wp_enqueue_script( 'convertkit-' . $this->get_name(), CONVERTKIT_PLUGIN_URL . 'resources/frontend/js/broadcasts.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
+		// Enqueue frontend JS.
+		convertkit_enqueue_frontend_js();
+
+		// Define variables.
 		wp_localize_script(
-			'convertkit-' . $this->get_name(),
+			'convertkit-js',
 			'convertkit_broadcasts',
 			array(
 				// REST API URL endpoint.
@@ -127,6 +130,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 				'debug'    => $settings->debug_enabled(),
 			)
 		);
+
 	}
 
 	/**
