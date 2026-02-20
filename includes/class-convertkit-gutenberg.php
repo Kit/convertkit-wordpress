@@ -148,6 +148,21 @@ class ConvertKit_Gutenberg {
 			return;
 		}
 
+		// Determine the block API version to use for registering blocks.
+		// WordPress supports Version 3 from WordPress 6.3:
+		// https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/.
+		$block_api_version = ( version_compare( get_bloginfo( 'version' ), '6.3', '>=' ) ? 3 : 2 );
+
+		/**
+		 * Determine the block API version to use for registering blocks.
+		 *
+		 * @since   3.1.4
+		 *
+		 * @param   int  $block_api_version    Block API version.
+		 * @return  int                        Block API version.
+		 */
+		$block_api_version = apply_filters( 'convertkit_gutenberg_block_api_version', $block_api_version );
+
 		// Get registered blocks.
 		$registered_blocks = array_keys( WP_Block_Type_Registry::get_instance()->get_all_registered() );
 
@@ -161,7 +176,7 @@ class ConvertKit_Gutenberg {
 
 			// Register block.
 			register_block_type(
-				CONVERTKIT_PLUGIN_PATH . '/includes/blocks/' . $block,
+				CONVERTKIT_PLUGIN_PATH . '/includes/blocks/v' . (string) $block_api_version . '/' . $block,
 				array(
 					'attributes'      => $properties['attributes'],
 					'editor_script'   => 'convertkit-gutenberg',

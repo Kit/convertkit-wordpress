@@ -780,6 +780,11 @@ class KitPlugin extends \Codeception\Module
 		// Confirm that the Form block displays instructions to the user on how to enter their API Key.
 		$I->seeBlockHasNoContentMessage($I, 'Not connected to Kit.');
 
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Click the link to confirm it loads the Plugin's setup wizard.
 		$I->click(
 			'Click here to connect your Kit account.',
@@ -800,12 +805,22 @@ class KitPlugin extends \Codeception\Module
 		// Close the popup window.
 		$I->closeTab();
 
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Wait until the block changes to refreshing.
 		$I->waitForElementVisible('.' . $blockName . ' .convertkit-block-refreshing', 30);
 
 		// Wait for the refresh button to disappear, confirming that the block refresh completed
 		// and that resources now exist.
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources', 30);
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 
 		// Confirm that the block displays the expected message.
 		if ($expectedMessage) {
@@ -822,11 +837,21 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function clickBlockRefreshButton($I)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Click the refresh button.
 		$I->click('div.convertkit-no-content button.wp-convertkit-refresh-resources');
 
 		// Wait for the refresh button to disappear, confirming that credentials and resources now exist.
 		$I->waitForElementNotVisible('div.convertkit-no-content button.wp-convertkit-refresh-resources');
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -839,6 +864,11 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function seeBlockHasNoContentMessage($I, $message)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		$I->see(
 			$message,
 			[
@@ -847,7 +877,9 @@ class KitPlugin extends \Codeception\Module
 		);
 
 		// Switch back to main window.
-		$I->switchToIFrame();
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -861,6 +893,11 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function clickLinkInBlockAndAssertKitLoginScreen($I, $linkText)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		$I->click(
 			$linkText,
 			[
@@ -876,6 +913,11 @@ class KitPlugin extends \Codeception\Module
 
 		// Close tab.
 		$I->closeTab();
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -888,6 +930,11 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function seeFormBlockIFrameHasMessage($I, $message)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Switch to iframe preview for the Form block.
 		$I->switchToIFrame('iframe[class="components-sandbox"]');
 
@@ -969,6 +1016,11 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function selectAllText($I, $selector)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Determine whether to use the control or command key, depending on the OS.
 		$key = \Facebook\WebDriver\WebDriverKeys::CONTROL;
 
@@ -979,6 +1031,11 @@ class KitPlugin extends \Codeception\Module
 
 		// Press Ctrl/Command + a on Keyboard.
 		$I->pressKey($selector, array( $key, 'a' ));
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
