@@ -801,14 +801,10 @@ class ConvertKit_Output {
 			return;
 		}
 
-		// Register scripts that we might use.
-		wp_register_script(
-			'convertkit-js',
-			CONVERTKIT_PLUGIN_URL . 'resources/frontend/js/convertkit.js',
-			array(),
-			CONVERTKIT_PLUGIN_VERSION,
-			true
-		);
+		// Enqueue frontend JS.
+		convertkit_enqueue_frontend_js();
+
+		// Define variables.
 		wp_localize_script(
 			'convertkit-js',
 			'convertkit',
@@ -819,9 +815,6 @@ class ConvertKit_Output {
 				'subscriber_id' => $this->subscriber_id,
 			)
 		);
-
-		// Enqueue.
-		wp_enqueue_script( 'convertkit-js' );
 
 	}
 

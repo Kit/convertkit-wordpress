@@ -541,6 +541,23 @@ function convertkit_enqueue_frontend_css() {
 }
 
 /**
+ * Helper method to enqueue the frontend JS file.
+ *
+ * @since   3.2.0
+ */
+function convertkit_enqueue_frontend_js() {
+
+	wp_enqueue_script(
+		'convertkit-js',
+		CONVERTKIT_PLUGIN_URL . 'resources/frontend/js/dist/frontend.min.js',
+		array(),
+		CONVERTKIT_PLUGIN_VERSION,
+		true
+	);
+
+}
+
+/**
  * Helper method to enqueue Select2 scripts for use within the ConvertKit Plugin.
  *
  * @since   1.9.6.4
