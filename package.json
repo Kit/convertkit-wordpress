@@ -10,7 +10,7 @@
     "watch:js": "wp-scripts start resources/frontend/js/frontend.js --output-path=resources/frontend/js/dist --output-filename=frontend.min.js",
     "lint:js": "wp-scripts lint-js 'resources/frontend/js/*.js' --max-warnings=0",
     "fix:js": "wp-scripts lint-js 'resources/frontend/js/*.js' --fix",
-    "build": "npm run build:css && npm run build:js"
+    "build": "npm run fix:css && npm run lint:css && npm run fix:js && npm run lint:js && npm run build:css && npm run build:js"
   },
   "prettier": "@wordpress/prettier-config",
   "devDependencies": {

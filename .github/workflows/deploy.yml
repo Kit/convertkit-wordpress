@@ -26,13 +26,19 @@ jobs:
       - name: Run Composer
         run: composer install --no-dev
 
+      # Build the frontend CSS and JS assets
+      - name: Run npm
+        run: |
+          npm install
+          npm run build
+
       # Confirm that expected files exist, to prevent deployment to wordpress.org
-      # if e.g. composer install fails.
-      - name: Check ConvertKit Library Exists
+      # if e.g. `composer install` or `npm run build` fails
+      - name: Check Kit WordPress Libraries and Assets Exists
         id: check_files
         uses: andstor/file-existence-action@v1
         with:
-          files: "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+          files: "resources/frontend/css/frontend.css, resources/frontend/js/dist/frontend.min.asset.php, resources/frontend/js/dist/frontend.min.js, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
 
       # Deploy to wordpress.org, if expected files exist.
       - name: WordPress Plugin Deploy

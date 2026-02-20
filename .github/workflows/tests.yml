@@ -290,6 +290,23 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
 
+      # Build the frontend CSS and JS assets
+      - name: Run npm
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: |
+          npm install
+          npm run build
+
+      # Confirm that expected files exist
+      # if e.g. `composer install` or `npm run build` fails
+      - name: Check Kit WordPress Libraries and Assets Exists
+        working-directory: ${{ env.PLUGIN_DIR }}
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "resources/frontend/css/frontend.css, resources/frontend/js/dist/frontend.min.asset.php, resources/frontend/js/dist/frontend.min.js, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+
+
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer dump-autoload
