@@ -34,7 +34,7 @@ The following Composer commands can be used:
 | `composer fix-js-coding-standards` | `composer fix-js` | Fixes JS files to meet WordPress JS Coding Standards |
 | `composer build-js` | `composer build-js` | Builds the frontend JS file |
 | `composer watch-js` | `composer watch-js` | Builds the frontend JS file when changes are made to frontend JS files |
-| `composer build` | `composer build` | Builds frontend CSS and JS |
+| `composer build` | `composer build` | Fixes, lints and builds frontend CSS and JS |
 | `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
 | `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
 | `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
@@ -47,7 +47,7 @@ The following npm commands can be used, if preferred:
 | `npm run watch:css` | Builds the frontend CSS file when changes are made to SCSS files |
 | `npm run build:js` | Builds the frontend JS file |
 | `npm run watch:js` | Builds the frontend JS file when changes are made to frontend JS files |
-| `npm run build` | Builds frontend CSS and JS |
+| `npm run build` | Fixes, lints and builds frontend CSS and JS |
 
 ## Write (or modify) a test
 
