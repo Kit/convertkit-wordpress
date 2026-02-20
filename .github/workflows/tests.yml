@@ -30,7 +30,8 @@ jobs:
       DB_USER: root
       DB_PASS: root
       DB_HOST: localhost
-      WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump.sql # Used to populate the test site database for WordPress 6.2.8
+      WORDPRESS_V3_BLOCK_EDITOR_ENABLED: true
+      WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump.sql
       INSTALL_PLUGINS: "admin-menu-editor autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui debloat elementor forminator jetpack-boost mailchimp-for-wp rocket-lazy-load woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress" # Don't include this repository's Plugin here.
       INSTALL_PLUGINS_URLS: "https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip" # URLs to specific third party Plugins
       INSTALL_THEMES_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/04/Divi.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/01/impeka.zip"
@@ -266,6 +267,7 @@ jobs:
         with:
           path: ${{ env.PLUGIN_DIR }}/.env.testing
           contents: |
+            WORDPRESS_V3_BLOCK_EDITOR_ENABLED=${{ env.WORDPRESS_V3_BLOCK_EDITOR_ENABLED }}
             WORDPRESS_DB_SQL_DUMP_FILE=${{ env.WORDPRESS_DB_SQL_DUMP_FILE }}
             CONVERTKIT_API_KEY=${{ env.CONVERTKIT_API_KEY }}
             CONVERTKIT_API_SECRET=${{ env.CONVERTKIT_API_SECRET }}

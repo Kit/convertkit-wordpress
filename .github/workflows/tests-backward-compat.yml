@@ -29,6 +29,7 @@ jobs:
       DB_USER: root
       DB_PASS: root
       DB_HOST: localhost
+      WORDPRESS_V3_BLOCK_EDITOR_ENABLED: false # Test apiVersion 2 blocks against WordPress 6.2.8
       WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump-6.2.8.sql # Used to populate the test site database for WordPress 6.2.8
       INSTALL_PLUGINS: "autoptimize debloat litespeed-cache rocket-lazy-load sg-cachepress" # Don't include this repository's Plugin here.
       INSTALL_PLUGINS_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip https://downloads.wordpress.org/plugin/block-visibility.3.3.0.zip https://downloads.wordpress.org/plugin/jetpack-boost.3.5.0.zip" # URLs to specific third party Plugins or versions that support WordPress 6.2.8
@@ -134,7 +135,7 @@ jobs:
       - name: Install Paid Third Party WordPress Plugins
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
-        
+
       # Move Plugin
       - name: Move Plugin
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
@@ -244,6 +245,7 @@ jobs:
         with:
           path: ${{ env.PLUGIN_DIR }}/.env.testing
           contents: |
+            WORDPRESS_V3_BLOCK_EDITOR_ENABLED=${{ env.WORDPRESS_V3_BLOCK_EDITOR_ENABLED }}
             WORDPRESS_DB_SQL_DUMP_FILE=${{ env.WORDPRESS_DB_SQL_DUMP_FILE }}
             CONVERTKIT_API_KEY=${{ env.CONVERTKIT_API_KEY }}
             CONVERTKIT_API_SECRET=${{ env.CONVERTKIT_API_SECRET }}
