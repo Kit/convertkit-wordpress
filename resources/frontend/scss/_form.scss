@@ -2,7 +2,7 @@
  * Replicates CSS styles provided by block themes for older non-block themes
  * that may not include these definitions, resulting in incorrect spacing.
  */
- form.formkit-form {
+form.formkit-form {
 
 	&[data-format="inline"] {
 		margin-left: auto;

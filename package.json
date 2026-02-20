@@ -5,7 +5,7 @@
     "build:css": "sass resources/frontend/scss/frontend.scss resources/frontend/css/frontend.css --no-source-map --style=compressed",
     "watch:css": "sass resources/frontend/scss/frontend.scss resources/frontend/css/frontend.css --watch --style=compressed",
     "lint:css": "wp-scripts lint-style 'resources/frontend/scss/**/*.scss' 'resources/backend/css/**/*.css' --max-warnings=0",
-    "fix:css": "wp-scripts lint-style 'resources/frontend/scss/**/*.scss' 'resources/backend/css/**/*.css' --fix",
+    "fix:css": "prettier --write 'resources/frontend/scss/**/*.scss' && wp-scripts lint-style 'resources/frontend/scss/**/*.scss' 'resources/backend/css/**/*.css' --fix",
     "build:js": "wp-scripts build resources/frontend/js/frontend.js --output-path=resources/frontend/js/dist --output-filename=frontend.min.js",
     "watch:js": "wp-scripts start resources/frontend/js/frontend.js --output-path=resources/frontend/js/dist --output-filename=frontend.min.js",
     "lint:js": "wp-scripts lint-js 'resources/frontend/js/*.js' --max-warnings=0",
