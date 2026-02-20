@@ -1425,15 +1425,17 @@ class ConvertKit_Output_Restrict_Content {
 		// Only load styles if the Disable CSS option is off.
 		if ( ! $this->settings->css_disabled() ) {
 			// Enqueue styles.
-			wp_enqueue_style( 'convertkit-restrict-content', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/restrict-content.css', array(), CONVERTKIT_PLUGIN_VERSION );
+			convertkit_enqueue_frontend_css();
 		}
 
 		// Only load scripts if the Disable Scripts option is off.
 		if ( ! $this->settings->scripts_disabled() ) {
 			// Enqueue scripts.
-			wp_enqueue_script( 'convertkit-restrict-content', CONVERTKIT_PLUGIN_URL . 'resources/frontend/js/restrict-content.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
+			convertkit_enqueue_frontend_js();
+
+			// Define variables.
 			wp_localize_script(
-				'convertkit-restrict-content',
+				'convertkit-js',
 				'convertkit_restrict_content',
 				array(
 					'nonce'                         => wp_create_nonce( 'wp_rest' ),
@@ -1442,7 +1444,6 @@ class ConvertKit_Output_Restrict_Content {
 					'debug'                         => $this->settings->debug_enabled(),
 				)
 			);
-
 		}
 
 		// Output code form if this request is after the user entered their email address,

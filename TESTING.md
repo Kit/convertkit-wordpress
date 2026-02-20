@@ -26,13 +26,28 @@ The following Composer commands can be used:
 | `composer fix-php-coding-standards` | `composer phpcbf` | Fix PHP files to meet WordPress and PHP Coding Standards |
 | `composer php-coding-standards-on-tests` | `composer phpcs-tests` | Runs PHP Coding Standards on the /tests folder |
 | `composer fix-php-coding-standards-on-tests` | `composer phpcbf-tests` | Fix PHP files to meet PHP Coding Standards on the /tests folder |
-| `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on the entire plugin codebase |
+| `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on CSS and SCSS files |
 | `composer fix-css-coding-standards` | `composer fix-css` | Fixes CSS files to meet WordPress CSS Coding Standards |
-| `composer js-coding-standards` | `composer lint-js` | Runs WordPress JS Coding Standards on the entire plugin codebase |
+| `composer build-css` | `composer build-css` | Builds the frontend CSS file |
+| `composer watch-css` | `composer watch-css` | Builds the frontend CSS file when changes are made to SCSS files |
+| `composer js-coding-standards` | `composer lint-js` | Runs WordPress JS Coding Standards on JS files |
 | `composer fix-js-coding-standards` | `composer fix-js` | Fixes JS files to meet WordPress JS Coding Standards |
+| `composer build-js` | `composer build-js` | Builds the frontend JS file |
+| `composer watch-js` | `composer watch-js` | Builds the frontend JS file when changes are made to frontend JS files |
+| `composer build` | `composer build` | Builds frontend CSS and JS |
 | `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
 | `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
 | `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
+
+The following npm commands can be used, if preferred:
+
+| Command | Description |
+|---------|-------------|
+| `npm run build:css` | Builds the frontend CSS file |
+| `npm run watch:css` | Builds the frontend CSS file when changes are made to SCSS files |
+| `npm run build:js` | Builds the frontend JS file |
+| `npm run watch:js` | Builds the frontend JS file when changes are made to frontend JS files |
+| `npm run build` | Builds frontend CSS and JS |
 
 ## Write (or modify) a test
 

@@ -1,0 +1,24 @@
+.convertkit-product,
+.convertkit-button {
+
+	/**
+	 * Replicates CSS styles provided by block themes for older non-block themes
+	 * that may not include these definitions, resulting in incorrect spacing.
+	 */
+	margin-bottom: 20px;
+
+	@media only screen and (min-width: 482px) {
+		margin-bottom: 30px;
+	}
+
+	a,
+	span {
+		display: block;
+		padding: calc(0.667em + 2px) calc(1.333em + 2px);
+		cursor: pointer;
+		text-align: center;
+		text-decoration: none;
+		word-break: break-word;
+		box-sizing: border-box;
+	}
+}

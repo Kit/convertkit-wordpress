@@ -60,6 +60,18 @@ Typically, packages listed in this section would be internal development tools f
 - PHPStan
 - Codeception
 
+### Build
+
+Run `npm run build` to compile frontend CSS and JS in one step.
+
+### CSS
+
+Run `npm run watch:css` to compile frontend CSS to `resources/frontend/css/frontend.css` when working on SCSS in the `resources/frontend/scss` folder.
+
+### JS
+
+Run `npm run watch:js` to compile frontend JS to `resources/frontend/js/dist/frontend-min.js` when working on JS in the `resources/frontend/js` folder.
+
 ## Committing Work
 
 Remember to commit your changes to your branch relatively frequently, with a meaningful, short summary that explains what the change(s) do.

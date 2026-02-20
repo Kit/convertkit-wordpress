@@ -530,6 +530,34 @@ function convertkit_get_new_product_url() {
 }
 
 /**
+ * Helper method to enqueue the frontend CSS file.
+ *
+ * @since   3.2.0
+ */
+function convertkit_enqueue_frontend_css() {
+
+	wp_enqueue_style( 'convertkit-frontend', CONVERTKIT_PLUGIN_URL . 'resources/frontend/css/frontend.css', array(), CONVERTKIT_PLUGIN_VERSION );
+
+}
+
+/**
+ * Helper method to enqueue the frontend JS file.
+ *
+ * @since   3.2.0
+ */
+function convertkit_enqueue_frontend_js() {
+
+	wp_enqueue_script(
+		'convertkit-js',
+		CONVERTKIT_PLUGIN_URL . 'resources/frontend/js/dist/frontend.min.js',
+		array(),
+		CONVERTKIT_PLUGIN_VERSION,
+		true
+	);
+
+}
+
+/**
  * Helper method to enqueue Select2 scripts for use within the ConvertKit Plugin.
  *
  * @since   1.9.6.4

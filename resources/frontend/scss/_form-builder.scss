@@ -1,0 +1,31 @@
+/**
+ * Define some sensible default styles for the form elements,
+ * in case a theme doesn't define them.
+ */
+.wp-block-convertkit-form-builder-field {
+
+	input,
+	textarea {
+		width: 100%;
+		margin: 0 0 20px 0;
+		padding: 10px;
+		box-sizing: border-box;
+		font-family: inherit;
+	}
+
+	label {
+
+		span.convertkit-form-builder-field-required {
+			color: #f00;
+		}
+	}
+}
+
+form {
+
+	.convertkit-form-builder-subscribed-message {
+		width: 100%;
+		margin: 0 0 20px 0;
+		box-sizing: border-box;
+	}
+}

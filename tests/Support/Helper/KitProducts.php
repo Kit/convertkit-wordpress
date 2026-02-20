@@ -61,7 +61,7 @@ class KitProducts extends \Codeception\Module
 	public function seeProductOutput($I, $productURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
 		// Confirm that the product stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the block button CSS loaded.
 		if ($isBlock) {
