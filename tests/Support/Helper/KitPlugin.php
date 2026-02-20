@@ -564,6 +564,11 @@ class KitPlugin extends \Codeception\Module
 
 		// Cache.
 		$I->dontHaveOptionInDatabase('convertkit_restrict_content_enabled');
+
+		// Cookies.
+		$I->resetCookie('ck_subscriber_id');
+		$I->resetCookie('wordpress_ck_subscriber_id');
+		$I->resetCookie('ck_non_inline_form_displayed');
 	}
 
 	/**
