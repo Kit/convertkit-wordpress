@@ -301,11 +301,26 @@ jobs:
       # if e.g. `composer install` or `npm run build` fails
       - name: Check Kit WordPress Libraries and Assets Exists
         working-directory: ${{ env.PLUGIN_DIR }}
-        id: check_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "resources/frontend/css/frontend.css, resources/frontend/js/dist/frontend.min.asset.php, resources/frontend/js/dist/frontend.min.js, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+        run: |
+          set -e
 
+          files=(
+            "resources/frontend/css/frontend.css"
+            "resources/frontend/js/dist/frontend.min.asset.php"
+            "resources/frontend/js/dist/frontend.min.js"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+          )
+
+          for file in "${files[@]}"; do
+            echo "Checking: $file"
+            test -f "$file" || { echo "❌ Missing required file: $file"; exit 1; }
+          done
+
+          echo "✅ All required files exist."
 
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
@@ -411,6 +426,12 @@ jobs:
       - name: Run Composer
         run: composer install --no-dev
 
+      # Build the frontend CSS and JS assets.
+      - name: Run npm
+        run: |
+          npm install
+          npm run build
+
       # Configure AWS Credentials
       - name: Configure AWS credentials
         id: credentials
@@ -423,7 +444,7 @@ jobs:
       # Create ZIP file
       - name: Create ZIP File
         run: |
-          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" "*.example" "*.testing" "vendor/convertkit/convertkit-wordpress-libraries/.git/*"
+          zip -r ${{ env.PLUGIN_SLUG }}.zip . -x ".git/*" ".github/*" ".scripts/*" ".wordpress-org/*" "log/*" "node_modules/*" "tests/*" "*.md" "*.yml" "*.json" "*.neon" "*.lock" "*.xml" "*.dist" ".eslintrc.js" "*.example" "*.testing" "vendor/convertkit/convertkit-wordpress-libraries/.git/*"
 
       # Exchange API Keys and Secrets for OAuth Tokens.
       - name: Exchange API Key and Secret for OAuth Tokens

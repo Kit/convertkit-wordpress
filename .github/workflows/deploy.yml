@@ -32,17 +32,33 @@ jobs:
           npm install
           npm run build
 
-      # Confirm that expected files exist, to prevent deployment to wordpress.org
+      # Confirm that expected files exist
       # if e.g. `composer install` or `npm run build` fails
       - name: Check Kit WordPress Libraries and Assets Exists
-        id: check_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "resources/frontend/css/frontend.css, resources/frontend/js/dist/frontend.min.asset.php, resources/frontend/js/dist/frontend.min.js, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php, vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: |
+          set -e
+
+          files=(
+            "resources/frontend/css/frontend.css"
+            "resources/frontend/js/dist/frontend.min.asset.php"
+            "resources/frontend/js/dist/frontend.min.js"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+          )
+
+          for file in "${files[@]}"; do
+            echo "Checking: $file"
+            test -f "$file" || { echo "❌ Missing required file: $file"; exit 1; }
+          done
+
+          echo "✅ All required files exist."
 
       # Deploy to wordpress.org, if expected files exist.
       - name: WordPress Plugin Deploy
-        if: steps.check_files.outputs.files_exists == 'true'
         id: deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
