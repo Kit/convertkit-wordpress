@@ -60,10 +60,6 @@ Typically, packages listed in this section would be internal development tools f
 - PHPStan
 - Codeception
 
-### Build
-
-Run `npm run build` to compile frontend CSS and JS in one step.
-
 ### CSS
 
 Run `npm run watch:css` to compile frontend CSS to `resources/frontend/css/frontend.css` when working on SCSS in the `resources/frontend/scss` folder.
@@ -71,6 +67,22 @@ Run `npm run watch:css` to compile frontend CSS to `resources/frontend/css/front
 ### JS
 
 Run `npm run watch:js` to compile frontend JS to `resources/frontend/js/dist/frontend-min.js` when working on JS in the `resources/frontend/js` folder.
+
+### Build
+
+Run `npm run build` to:
+- fix CSS to WordPress Coding Standards (`npm run fix:css`)
+- lint CSS to check WordPress Coding Standards met after any fixes (`npm run lint:css`)
+- fix JS to WordPress Coding Standards (`npm run fix:js`)
+- lint JS to check WordPress Coding Standards met after any fixes (`npm run lint:js`)
+- compile frontend CSS from `resources/frontend/scss` to `resources/frontend/css/frontend.css` (`npm run build:css`)
+- compile frontend JS from `resources/frontend/js` to `resources/frontend/js/dist` (`npm run build:js`)
+
+If the build process fails, review the terminal and make applicable changes:
+
+![npm run build errors](/.github/docs/npm-run-build-errors.png?raw=true)
+
+GitHub actions will run this step for you on testing and deployment, but it's a useful command in development if you need a single command to cover CSS + JS.
 
 ## Committing Work
 

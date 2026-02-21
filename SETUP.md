@@ -97,6 +97,10 @@ This sets up:
 - JS compilation and minification
 - SASS compilation and minification
 
+### Build JS and CSS
+
+Run `npm run build` to build the frontend CSS and JS.
+
 ### Configure wp-config.php
 
 In the root of your WordPress installation, find the `wp-config.php` file.

@@ -36,6 +36,10 @@
         "lint-js": "npm run lint:js",
         "fix-js": "npm run fix:js",
         "build": [
+            "npm run fix:css",
+            "npm run lint:css",
+            "npm run fix:js",
+            "npm run lint:js",
             "npm run build:css",
             "npm run build:js"
         ],

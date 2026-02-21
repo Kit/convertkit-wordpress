@@ -8,7 +8,8 @@ log.txt
 package-lock.json
 phpstan.neon
 node_modules
-resources/frontend/css/*.map
+resources/frontend/css/
+resources/frontend/js/dist/
 tests/_output
 tests/_wordpress
 tests/Support/_generated
