@@ -462,7 +462,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		);
 
 		add_settings_field(
-			'no_css',
+			'no_add_new_button',
 			__( 'Disable Add New Landing Page / Member Content Button', 'convertkit' ),
 			array( $this, 'no_add_new_button_callback' ),
 			$this->settings_key,
