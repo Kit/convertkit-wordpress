@@ -20,11 +20,13 @@ if (convertKitGutenbergEnabled()) {
 	}
 
 	if (convertKitEditingPostInGutenberg()) {
-		// Register Post Meta settings in Gutenberg if we're editing a Post.
-		if (typeof convertkit_post_settings !== 'undefined') {
-			convertKitGutenbergRegisterPostSettingsPanel(
-				convertkit_post_settings
-			);
+		// Register Plugin Sidebars in Gutenberg if we're editing a Post.
+		if (typeof convertkit_plugin_sidebars !== 'undefined') {
+			for (const pluginSidebar in convertkit_plugin_sidebars) {
+				convertKitGutenbergRegisterPluginSidebar(
+					convertkit_plugin_sidebars[pluginSidebar]
+				);
+			}
 		}
 
 		// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
@@ -920,13 +922,13 @@ function convertKitGutenbergRegisterBlock(block) {
 }
 
 /**
- * Registers post settings in Gutenberg's document sidebar panel.
+ * Registers a Plugin Sidebar in Gutenberg.
  *
  * @since 3.3.0
  *
- * @param {Object} postSettings Post settings configuration.
+ * @param {Object} sidebar Plugin Sidebars
  */
-function convertKitGutenbergRegisterPostSettingsPanel(postSettings) {
+function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 	(function (plugins, editor, element, components, data) {
 		// Define some constants for the various items we'll use.
 		const el = element.createElement;
@@ -950,26 +952,12 @@ function convertKitGutenbergRegisterPostSettingsPanel(postSettings) {
 			const meta = useSelect(function (wpSelect) {
 				return wpSelect('core/editor').getEditedPostAttribute('meta') || {};
 			}, []);
-
 			const { editPost: wpEditPost } = useDispatch('core/editor');
+			const settings = meta[sidebar.meta_key] || sidebar.default_values;
 
-			const settings = meta._wp_convertkit_post_meta || postSettings.default_values;
-
-			console.log('meta', meta);
-			console.log('settings', settings);
-
-			/**
-			 * Returns the icon to display in the header for this plugin sidebar.
-			 *
-			 * @since   3.3.0
-			 *
-			 * @return  {WPElement} WordPress element (RawHTML)
-			 */
-			const getIcon = function () {
-
-				return ;
-
-			};
+			console.log( 'settings', settings );
+			console.log( 'meta', meta );
+			console.log( 'sidebar.meta_key', sidebar.meta_key );
 
 			/**
 			 * Updates a single key within the _wp_convertkit_post_meta object.
@@ -1100,19 +1088,19 @@ function convertKitGutenbergRegisterPostSettingsPanel(postSettings) {
 			return el(
 				PluginSidebar,
 				{
-					name: postSettings.name,
-					title: postSettings.title,
-					className: postSettings.name,
+					name: sidebar.name,
+					title: sidebar.title,
+					className: sidebar.name,
 					icon: element.RawHTML({
-						children: postSettings.icon,
+						children: sidebar.icon,
 					})
 				},
-				getFields(postSettings.fields)
+				getFields(sidebar.fields)
 			);
 		};
 
-		// Register the settings panel.
-		registerPlugin('convertkit-post-settings', {
+		// Register the plugin sidebar.
+		registerPlugin('convertkit-' + sidebar.name.replace(/_/g, '-'), {
 			render: RenderPanel,
 		});
 	})(

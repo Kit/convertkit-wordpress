@@ -35,7 +35,20 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 	 */
 	public function get_name() {
 
-		return '_wp_convertkit_settings';
+		return 'post-settings';
+
+	}
+
+	/**
+	 * Returns this plugin sidebar's meta key.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @return  string
+	 */
+	public function get_meta_key() {
+
+		return '_wp_convertkit_post_meta';
 
 	}
 

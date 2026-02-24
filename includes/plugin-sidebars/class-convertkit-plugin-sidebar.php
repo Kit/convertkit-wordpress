@@ -27,6 +27,7 @@ class ConvertKit_Plugin_Sidebar {
 		$plugin_sidebars[ $this->get_name() ] = array(
 			'name'               => $this->get_name(),
 			'minimum_capability' => $this->get_minimum_capability(),
+			'meta_key'           => $this->get_meta_key(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			'title'              => $this->get_title(),
 			'icon'               => $this->get_icon(),
 			'fields'             => $this->get_fields(),
@@ -60,6 +61,19 @@ class ConvertKit_Plugin_Sidebar {
 	public function get_minimum_capability() {
 
 		return 'edit_posts';
+
+	}
+
+	/**
+	 * Returns this plugin sidebar's meta key.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @return  string
+	 */
+	public function get_meta_key() {
+
+		return '';
 
 	}
 

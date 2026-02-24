@@ -221,7 +221,7 @@ class ConvertKit_Gutenberg {
 		foreach ( $plugin_sidebars as $plugin_sidebar ) {
 			register_post_meta(
 				'',
-				$plugin_sidebar['name'],
+				$plugin_sidebar['meta_key'],
 				array(
 					'show_in_rest'      => array(
 						'schema' => array(
