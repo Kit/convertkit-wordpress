@@ -98,6 +98,8 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-p
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action-broadcast-export.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/widgets/class-ck-widget-form.php';

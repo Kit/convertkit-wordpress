@@ -235,6 +235,30 @@ function convertkit_get_block_formatters() {
 }
 
 /**
+ * Helper method to get registered plugin sidebars.
+ *
+ * @since   3.3.0
+ *
+ * @return  array   Plugin sidebars
+ */
+function convertkit_get_plugin_sidebars() {
+
+	$plugin_sidebars = array();
+
+	/**
+	 * Registers plugin sidebars for the WordPress block editor.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   array   $plugin_sidebars     Plugin sidebars.
+	 */
+	$plugin_sidebars = apply_filters( 'convertkit_plugin_sidebars', $plugin_sidebars );
+
+	return $plugin_sidebars;
+
+}
+
+/**
  * Helper method to get registered pre-publish actions.
  *
  * @since   2.4.0

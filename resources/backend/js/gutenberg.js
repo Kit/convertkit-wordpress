@@ -926,23 +926,17 @@ function convertKitGutenbergRegisterBlock(block) {
  *
  * @param {Object} postSettings Post settings configuration.
  */
-function convertKitGutenbergRegisterPostSettingsPanel(fields) {
-	(function (plugins, editPost, element, components, data) {
+function convertKitGutenbergRegisterPostSettingsPanel(postSettings) {
+	(function (plugins, editor, element, components, data) {
 		// Define some constants for the various items we'll use.
 		const el = element.createElement;
 		const { registerPlugin } = plugins;
-		const { PluginDocumentSettingPanel } = editPost;
+		const { PluginSidebar } = editor;
 		const {
-			Button,
-			Icon,
 			TextControl,
 			SelectControl,
-			ToggleControl,
-			Flex,
-			FlexItem,
 			PanelBody,
 			PanelRow,
-			ProgressBar,
 		} = components;
 		const { useSelect, useDispatch } = data;
 
@@ -959,7 +953,23 @@ function convertKitGutenbergRegisterPostSettingsPanel(fields) {
 
 			const { editPost: wpEditPost } = useDispatch('core/editor');
 
-			const settings = meta._wp_convertkit_post_meta || {};
+			const settings = meta._wp_convertkit_post_meta || postSettings.default_values;
+
+			console.log('meta', meta);
+			console.log('settings', settings);
+
+			/**
+			 * Returns the icon to display in the header for this plugin sidebar.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @return  {WPElement} WordPress element (RawHTML)
+			 */
+			const getIcon = function () {
+
+				return ;
+
+			};
 
 			/**
 			 * Updates a single key within the _wp_convertkit_post_meta object.
@@ -970,6 +980,8 @@ function convertKitGutenbergRegisterPostSettingsPanel(fields) {
 			 * @param {string} value Value to assign to the sub-key.
 			 */
 			const updateSetting = function (key, value) {
+				console.log('updateSetting', key, value);
+
 				wpEditPost({
 					meta: {
 						_wp_convertkit_post_meta: Object.assign(
@@ -997,7 +1009,7 @@ function convertKitGutenbergRegisterPostSettingsPanel(fields) {
 				const fieldProperties = {
 					key: 'convertkit_post_settings_' + key,
 					label: field.label,
-					help: field.description,
+					help: Array.isArray(field.description) ? field.description.join('\n\n') : field.description,
 					value: settings[key] || field.default_value || '',
 
 					// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
@@ -1007,6 +1019,7 @@ function convertKitGutenbergRegisterPostSettingsPanel(fields) {
 					__nextHasNoMarginBottom: true,
 
 					onChange(value) {
+						console.log('onChange', key, value);
 						updateSetting(key, value);
 					},
 				};
@@ -1065,38 +1078,46 @@ function convertKitGutenbergRegisterPostSettingsPanel(fields) {
 				const rows = [];
 
 				for (const key in fields) {
-
-					console.log(key);
-					console.log(fields[key]);
-					rows.push(getField(fields[key], key));
+					rows.push(
+						el(
+							PanelRow,
+							{
+								key: key,
+							},
+							getField(fields[key], key)
+						)
+					);
 				}
 
-				console.log(rows);
-
-				return rows;
+				return el(
+					PanelBody,
+					{},
+					rows
+				);
 			};
 
-			// Return the settings panel with fields.
+			// Return the settings sidebar panel with fields.
 			return el(
-				PluginDocumentSettingPanel,
+				PluginSidebar,
 				{
-					name: 'convertkit-post-settings',
-					title: 'Kit',
-					className: 'convertkit-post-settings',
+					name: postSettings.name,
+					title: postSettings.title,
+					className: postSettings.name,
+					icon: element.RawHTML({
+						children: postSettings.icon,
+					})
 				},
-				getFields(fields)
+				getFields(postSettings.fields)
 			);
 		};
 
 		// Register the settings panel.
-		console.log('registering convertkit-post-settings');
 		registerPlugin('convertkit-post-settings', {
 			render: RenderPanel,
-			icon: 'admin-settings',
 		});
 	})(
 		window.wp.plugins,
-		window.wp.editPost,
+		window.wp.editor,
 		window.wp.element,
 		window.wp.components,
 		window.wp.data
@@ -1175,7 +1196,7 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
 		});
 	})(
 		window.wp.plugins,
-		window.wp.editPost,
+		window.wp.editor,
 		window.wp.element,
 		window.wp.components,
 		window.wp.data
