@@ -19,8 +19,15 @@ if (convertKitGutenbergEnabled()) {
 		convertKitGutenbergRegisterBlock(convertkit_blocks[block]);
 	}
 
-	// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
 	if (convertKitEditingPostInGutenberg()) {
+		// Register Post Meta settings in Gutenberg if we're editing a Post.
+		if (typeof convertkit_post_settings !== 'undefined') {
+			convertKitGutenbergRegisterPostSettingsPanel(
+				convertkit_post_settings
+			);
+		}
+
+		// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
 		if (typeof convertkit_pre_publish_actions !== 'undefined') {
 			convertKitGutenbergRegisterPrePublishActions(
 				convertkit_pre_publish_actions
@@ -909,6 +916,190 @@ function convertKitGutenbergRegisterBlock(block) {
 		window.wp.blockEditor,
 		window.wp.element,
 		window.wp.components
+	);
+}
+
+/**
+ * Registers post settings in Gutenberg's document sidebar panel.
+ *
+ * @since 3.3.0
+ *
+ * @param {Object} postSettings Post settings configuration.
+ */
+function convertKitGutenbergRegisterPostSettingsPanel(fields) {
+	(function (plugins, editPost, element, components, data) {
+		// Define some constants for the various items we'll use.
+		const el = element.createElement;
+		const { registerPlugin } = plugins;
+		const { PluginDocumentSettingPanel } = editPost;
+		const {
+			Button,
+			Icon,
+			TextControl,
+			SelectControl,
+			ToggleControl,
+			Flex,
+			FlexItem,
+			PanelBody,
+			PanelRow,
+			ProgressBar,
+		} = components;
+		const { useSelect, useDispatch } = data;
+
+		/**
+		 * Returns a PluginDocumentSettingPanel for this plugin, containing
+		 * post-level settings.
+		 *
+		 * @since 3.3.0
+		 */
+		const RenderPanel = function () {
+			const meta = useSelect(function (wpSelect) {
+				return wpSelect('core/editor').getEditedPostAttribute('meta') || {};
+			}, []);
+
+			const { editPost: wpEditPost } = useDispatch('core/editor');
+
+			const settings = meta._wp_convertkit_post_meta || {};
+
+			/**
+			 * Updates a single key within the _wp_convertkit_post_meta object.
+			 *
+			 * @since 3.3.0
+			 *
+			 * @param {string} key   Sub-key within the _wp_convertkit_post_meta object.
+			 * @param {string} value Value to assign to the sub-key.
+			 */
+			const updateSetting = function (key, value) {
+				wpEditPost({
+					meta: {
+						_wp_convertkit_post_meta: Object.assign(
+							{},
+							settings,
+							{ [key]: value }
+						),
+					},
+				});
+			};
+
+			/**
+			 * Return a field element for the settings panel.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @param {Object} props     Block properties.
+			 * @param {Object} field     Field attributes.
+			 * @param {string} attribute Attribute name to store the field's data in.
+			 * @return {Object}            Field element.
+			 */
+			const getField = function (field, key) {
+				
+				// Define some field properties shared across all field types.
+				const fieldProperties = {
+					key: 'convertkit_post_settings_' + key,
+					label: field.label,
+					help: field.description,
+					value: settings[key] || field.default_value || '',
+
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					__next40pxDefaultSize: true,
+					__nextHasNoMarginBottom: true,
+
+					onChange(value) {
+						updateSetting(key, value);
+					},
+				};
+
+				const fieldOptions = [];
+
+				// Define additional Field Properties and the Field Element,
+				// depending on the Field Type (select, textarea, text etc).
+				switch (field.type) {
+					case 'select':
+						// Build options for <select> input.
+						for (const value of Object.keys(field.values)) {
+							fieldOptions.push({
+								label: field.values[value],
+								value,
+							});
+						}
+
+						// Sort field's options alphabetically by label.
+						fieldOptions.sort(function (x, y) {
+							const a = x.label.toUpperCase(),
+								b = y.label.toUpperCase();
+							return a.localeCompare(b);
+						});
+
+						// Assign options to field.
+						fieldProperties.options = fieldOptions;
+
+						// Return field element.
+						return el(SelectControl, fieldProperties);
+
+					case 'number':
+						// Define field properties.
+						fieldProperties.type = field.type;
+						fieldProperties.min = field.min;
+						fieldProperties.max = field.max;
+						fieldProperties.step = field.step;
+
+						// Return field element.
+						return el(TextControl, fieldProperties);
+
+					default:
+						// Return field element.
+						return el(TextControl, fieldProperties);
+				}
+			};
+
+			/**
+			 * Return an array of field elements to display in the settings panel.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @return {Array}        Panel rows.
+			 */
+			const getFields = function (fields) {
+				const rows = [];
+
+				for (const key in fields) {
+
+					console.log(key);
+					console.log(fields[key]);
+					rows.push(getField(fields[key], key));
+				}
+
+				console.log(rows);
+
+				return rows;
+			};
+
+			// Return the settings panel with fields.
+			return el(
+				PluginDocumentSettingPanel,
+				{
+					name: 'convertkit-post-settings',
+					title: 'Kit',
+					className: 'convertkit-post-settings',
+				},
+				getFields(fields)
+			);
+		};
+
+		// Register the settings panel.
+		console.log('registering convertkit-post-settings');
+		registerPlugin('convertkit-post-settings', {
+			render: RenderPanel,
+			icon: 'admin-settings',
+		});
+	})(
+		window.wp.plugins,
+		window.wp.editPost,
+		window.wp.element,
+		window.wp.components,
+		window.wp.data
 	);
 }
 

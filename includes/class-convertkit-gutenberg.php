@@ -29,11 +29,196 @@ class ConvertKit_Gutenberg {
 			add_filter( 'block_categories', array( $this, 'add_block_categories' ), 10, 2 );
 		}
 
+		// Register Gutenberg Post Settings.
+		add_action( 'init', array( $this, 'register_post_settings' ) );
+		add_action( 'convertkit_gutenberg_enqueue_scripts', array( $this, 'register_post_settings_fields' ) );
+
 		// Register Gutenberg Blocks.
 		add_action( 'init', array( $this, 'add_blocks' ) );
 
 		// Register REST API routes.
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+	}
+
+	/**
+	 * Registers the post meta key for storing post settings for the block editor.
+	 *
+	 * @since   3.3.0
+	 */
+	public function register_post_settings() {
+
+		register_post_meta(
+			'',
+			'_wp_convertkit_settings',
+			array(
+				'show_in_rest'      => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'form'             => array(
+								'type'    => 'string',
+								'default' => '-1',
+							),
+							'landing_page'     => array(
+								'type'    => 'string',
+								'default' => '0',
+							),
+							'tag'              => array(
+								'type'    => 'string',
+								'default' => '0',
+							),
+							'restrict_content' => array(
+								'type'    => 'string',
+								'default' => '0',
+							),
+						),
+					),
+				),
+				'single'            => true,
+				'type'              => 'object',
+				'default'           => array(
+					'form'             => '-1',
+					'landing_page'     => '0',
+					'tag'              => '0',
+					'restrict_content' => '0',
+				),
+				'sanitize_callback' => function ( $value ) {
+
+					if ( ! is_array( $value ) ) {
+						return array(
+							'form'             => '-1',
+							'landing_page'     => '0',
+							'tag'              => '0',
+							'restrict_content' => '0',
+						);
+					}
+
+					return array(
+						'form'             => sanitize_text_field( $value['form'] ?? '-1' ),
+						'landing_page'     => sanitize_text_field( $value['landing_page'] ?? '0' ),
+						'tag'              => sanitize_text_field( $value['tag'] ?? '0' ),
+						'restrict_content' => sanitize_text_field( $value['restrict_content'] ?? '0' ),
+					);
+
+				},
+				'auth_callback'     => function () {
+
+					return current_user_can( 'edit_posts' );
+
+				},
+			)
+		);
+
+	}
+
+	/**
+	 * Registers the post settings fields for the block editor.
+	 */
+	public function register_post_settings_fields() {
+
+		// Load resource classes.
+		$convertkit_forms         = new ConvertKit_Resource_Forms( 'post_settings' );
+		$convertkit_landing_pages = new ConvertKit_Resource_Landing_Pages( 'post_settings' );
+		$convertkit_tags          = new ConvertKit_Resource_Tags( 'post_settings' );
+		$convertkit_products      = new ConvertKit_Resource_Products( 'post_settings' );
+
+		// Get Forms.
+		$forms = array(
+			'-1' => esc_html__( 'Default', 'convertkit' ),
+			'0'  => esc_html__( 'None', 'convertkit' ),
+		);
+		if ( $convertkit_forms->exist() ) {
+			foreach ( $convertkit_forms->get() as $form ) {
+				// Legacy forms don't include a `format` key, so define them as inline.
+				$forms[ absint( $form['id'] ) ] = sprintf(
+					'%s [%s]',
+					sanitize_text_field( $form['name'] ),
+					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
+				);
+			}
+		}
+
+		// Get Landing Pages.
+		$landing_pages = array(
+			'0' => esc_html__( 'None', 'convertkit' ),
+		);
+		if ( $convertkit_landing_pages->exist() ) {
+			foreach ( $convertkit_landing_pages->get() as $landing_page ) {
+				$landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+			}
+		}
+
+		// Get Tags.
+		$tags = array(
+			'0' => esc_html__( 'None', 'convertkit' ),
+		);
+		if ( $convertkit_tags->exist() ) {
+			foreach ( $convertkit_tags->get() as $tag ) {
+				$tags[ absint( $tag['id'] ) ] = sanitize_text_field( $tag['name'] );
+			}
+		}
+
+		// Get Products.
+		$restrict_content = array(
+			'0' => esc_html__( 'Don\'t restrict content to member-only', 'convertkit' ),
+		);
+		if ( $convertkit_forms->exist() ) {
+			foreach ( $convertkit_forms->get() as $form ) {
+				// Legacy forms don't include a `format` key, so define them as inline.
+				$restrict_content[ 'form_' . absint( $form['id'] ) ] = sprintf(
+					'%s [%s]',
+					sanitize_text_field( $form['name'] ),
+					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
+				);
+			}
+		}
+		if ( $convertkit_tags->exist() ) {
+			foreach ( $convertkit_tags->get() as $tag ) {
+				$restrict_content[ 'tag_' . absint( $tag['id'] ) ] = sanitize_text_field( $tag['name'] );
+			}
+		}
+		if ( $convertkit_products->exist() ) {
+			foreach ( $convertkit_products->get() as $product ) {
+				$restrict_content[ 'product_' . $product['id'] ] = sanitize_text_field( $product['name'] );
+			}
+		}
+
+		// Define post settings fields.
+		wp_localize_script(
+			'convertkit-gutenberg',
+			'convertkit_post_settings',
+			array(
+				'form'             => array(
+					'label'         => __( 'Form', 'convertkit' ),
+					'type'          => 'select',
+					'description'   => __( 'Select a form to display on this post.', 'convertkit' ),
+					'values'        => $forms,
+					'default_value' => '-1',
+				),
+				'landing_page'     => array(
+					'label'         => __( 'Landing Page', 'convertkit' ),
+					'type'          => 'select',
+					'description'   => __( 'Select a landing page to display on this post.', 'convertkit' ),
+					'values'        => $landing_pages,
+					'default_value' => '0',
+				),
+				'tag'              => array(
+					'label'         => __( 'Tag', 'convertkit' ),
+					'type'          => 'select',
+					'description'   => __( 'Select a tag to apply to visitors of this page who are subscribed.', 'convertkit' ),
+					'values'        => $tags,
+					'default_value' => '0',
+				),
+				'restrict_content' => array(
+					'label'         => __( 'Restrict Content', 'convertkit' ),
+					'type'          => 'select',
+					'description'   => __( 'Select a content to restrict to members only.', 'convertkit' ),
+					'values'        => $restrict_content,
+					'default_value' => '0',
+				),
+			)
+		);
 
 	}
 
