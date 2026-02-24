@@ -190,7 +190,7 @@ class ConvertKit_Gutenberg {
 	/**
 	 * Determines the block API version to use for registering blocks.
 	 *
-	 * @since   3.3.0
+	 * @since   3.2.0
 	 *
 	 * @return  int    Block API version.
 	 */
