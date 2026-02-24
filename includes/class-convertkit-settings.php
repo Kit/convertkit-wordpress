@@ -543,15 +543,15 @@ class ConvertKit_Settings {
 	}
 
 	/**
-	 * Returns whether the Add New Landing Page / Member Content option is disabled in the Plugin settings.
+	 * Returns whether the Add New Landing Page / Member Content button is disabled in the Plugin settings.
 	 *
 	 * @since   3.2.0
 	 *
 	 * @return  bool
 	 */
-	public function add_new_disabled() {
+	public function add_new_button_disabled() {
 
-		return ( $this->settings['no_add_new'] === 'on' ? true : false );
+		return ( $this->settings['no_add_new_button'] === 'on' ? true : false );
 
 	}
 
@@ -602,7 +602,7 @@ class ConvertKit_Settings {
 			'debug'                              => '', // blank|on.
 			'no_scripts'                         => '', // blank|on.
 			'no_css'                             => '', // blank|on.
-			'no_add_new'                         => '', // blank|on.
+			'no_add_new_button'                  => '', // blank|on.
 			'usage_tracking'                     => '', // blank|on.
 		);
 

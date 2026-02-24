@@ -242,7 +242,7 @@ class ConvertKit_Admin_Restrict_Content {
 		}
 
 		// If the Add New Landing Page / Member Content button is disabled, don't output the button.
-		if ( $settings->add_new_disabled() ) {
+		if ( $settings->add_new_button_disabled() ) {
 			return $buttons;
 		}
 
