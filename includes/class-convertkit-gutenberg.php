@@ -232,7 +232,7 @@ class ConvertKit_Gutenberg {
 					'single'            => true,
 					'type'              => 'object',
 					'default'           => $plugin_sidebar['default_values'],
-					'sanitize_callback' => function ( $value ) {
+					'sanitize_callback' => function ( $value ) use ( $plugin_sidebar ) {
 
 						// If the value is not an array, return the default values.
 						if ( ! is_array( $value ) ) {
@@ -240,15 +240,15 @@ class ConvertKit_Gutenberg {
 						}
 
 						// Iterate through the attributes and sanitize the value.
-						foreach ( $plugin_sidebar['attributes'] as $attribute => $value ) {
-							$value[ $attribute ] = sanitize_text_field( $value[ $attribute ] ?? $value['default'] );
+						foreach ( $plugin_sidebar['attributes'] as $key => $attribute ) {
+							$value[ $key ] = sanitize_text_field( $value[ $key ] ?? $value['default'] );
 						}
 
 						// Return the sanitized value.
 						return $value;
 
 					},
-					'auth_callback'     => function () {
+					'auth_callback'     => function () use ( $plugin_sidebar ) {
 
 						return current_user_can( $plugin_sidebar['minimum_capability'] );
 

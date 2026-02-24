@@ -934,12 +934,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 		const el = element.createElement;
 		const { registerPlugin } = plugins;
 		const { PluginSidebar } = editor;
-		const {
-			TextControl,
-			SelectControl,
-			PanelBody,
-			PanelRow,
-		} = components;
+		const { TextControl, SelectControl, PanelBody, PanelRow } = components;
 		const { useSelect, useDispatch } = data;
 
 		/**
@@ -950,33 +945,27 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 		 */
 		const RenderPanel = function () {
 			const meta = useSelect(function (wpSelect) {
-				return wpSelect('core/editor').getEditedPostAttribute('meta') || {};
+				return (
+					wpSelect('core/editor').getEditedPostAttribute('meta') || {}
+				);
 			}, []);
 			const { editPost: wpEditPost } = useDispatch('core/editor');
 			const settings = meta[sidebar.meta_key] || sidebar.default_values;
 
-			console.log( 'settings', settings );
-			console.log( 'meta', meta );
-			console.log( 'sidebar.meta_key', sidebar.meta_key );
-
 			/**
-			 * Updates a single key within the _wp_convertkit_post_meta object.
+			 * Updates the Post meta meta_key object.
 			 *
 			 * @since 3.3.0
 			 *
-			 * @param {string} key   Sub-key within the _wp_convertkit_post_meta object.
-			 * @param {string} value Value to assign to the sub-key.
+			 * @param {string} key   Sub key within the meta_key object.
+			 * @param {string} value Value to assign to the sub key.
 			 */
 			const updateSetting = function (key, value) {
-				console.log('updateSetting', key, value);
-
 				wpEditPost({
 					meta: {
-						_wp_convertkit_post_meta: Object.assign(
-							{},
-							settings,
-							{ [key]: value }
-						),
+						[sidebar.meta_key]: Object.assign({}, settings, {
+							[key]: value,
+						}),
 					},
 				});
 			};
@@ -986,18 +975,18 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			 *
 			 * @since   3.3.0
 			 *
-			 * @param {Object} props     Block properties.
-			 * @param {Object} field     Field attributes.
-			 * @param {string} attribute Attribute name to store the field's data in.
-			 * @return {Object}            Field element.
+			 * @param {Object} field Field properties.
+			 * @param {string} key   Field name.
+			 * @return {Object}        Field element.
 			 */
 			const getField = function (field, key) {
-				
 				// Define some field properties shared across all field types.
 				const fieldProperties = {
-					key: 'convertkit_post_settings_' + key,
+					key: 'convertkit_plugin_sidebar_' + key,
 					label: field.label,
-					help: Array.isArray(field.description) ? field.description.join('\n\n') : field.description,
+					help: Array.isArray(field.description)
+						? field.description.join('\n\n')
+						: field.description,
 					value: settings[key] || field.default_value || '',
 
 					// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
@@ -1006,8 +995,8 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					__next40pxDefaultSize: true,
 					__nextHasNoMarginBottom: true,
 
+					// Save Post Meta on value change.
 					onChange(value) {
-						console.log('onChange', key, value);
 						updateSetting(key, value);
 					},
 				};
@@ -1039,16 +1028,6 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 						// Return field element.
 						return el(SelectControl, fieldProperties);
 
-					case 'number':
-						// Define field properties.
-						fieldProperties.type = field.type;
-						fieldProperties.min = field.min;
-						fieldProperties.max = field.max;
-						fieldProperties.step = field.step;
-
-						// Return field element.
-						return el(TextControl, fieldProperties);
-
 					default:
 						// Return field element.
 						return el(TextControl, fieldProperties);
@@ -1060,7 +1039,8 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			 *
 			 * @since   3.3.0
 			 *
-			 * @return {Array}        Panel rows.
+			 * @param {Object} fields Fields to display.
+			 * @return {Array}         Panel rows.
 			 */
 			const getFields = function (fields) {
 				const rows = [];
@@ -1070,18 +1050,14 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 						el(
 							PanelRow,
 							{
-								key: key,
+								key,
 							},
 							getField(fields[key], key)
 						)
 					);
 				}
 
-				return el(
-					PanelBody,
-					{},
-					rows
-				);
+				return el(PanelBody, {}, rows);
 			};
 
 			// Return the settings sidebar panel with fields.
@@ -1093,7 +1069,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					className: sidebar.name,
 					icon: element.RawHTML({
 						children: sidebar.icon,
-					})
+					}),
 				},
 				getFields(sidebar.fields)
 			);
