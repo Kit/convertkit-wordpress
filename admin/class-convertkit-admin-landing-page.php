@@ -44,6 +44,11 @@ class ConvertKit_Admin_Landing_Page {
 			return $buttons;
 		}
 
+		// If the Add New Landing Page / Member Content button is disabled, don't output the button.
+		if ( $settings->add_new_disabled() ) {
+			return $buttons;
+		}
+
 		// Bail if the Post Type isn't supported.
 		if ( $post_type !== 'page' ) {
 			return $buttons;

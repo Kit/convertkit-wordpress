@@ -462,6 +462,17 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		);
 
 		add_settings_field(
+			'no_css',
+			__( 'Disable Add New Landing Page / Member Content Button', 'convertkit' ),
+			array( $this, 'no_add_new_callback' ),
+			$this->settings_key,
+			$this->name . '-advanced',
+			array(
+				'label_for' => 'no_add_new',
+			)
+		);
+
+		add_settings_field(
 			'usage_tracking',
 			__( 'Usage Tracking', 'convertkit' ),
 			array( $this, 'usage_tracking_callback' ),
@@ -1011,6 +1022,23 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 					esc_html__( 'integrations.', 'convertkit' )
 				),
 			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Disable Add New Landing Page / Member Content setting.
+	 *
+	 * @since   3.2.0
+	 */
+	public function no_add_new_callback() {
+
+		// Output field.
+		$this->output_checkbox_field(
+			'no_add_new',
+			'on',
+			$this->settings->add_new_disabled(),
+			esc_html__( 'Hide the "Add New" button on Pages for creating Landing Pages and Member Content.', 'convertkit' )
 		);
 
 	}
