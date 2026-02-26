@@ -72,6 +72,7 @@ class KitPlugin extends \Codeception\Module
 			'debug'                              => 'on',
 			'no_scripts'                         => '',
 			'no_css'                             => '',
+			'no_add_new_button'                  => '',
 			'usage_tracking'                     => '',
 			'post_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'page_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],

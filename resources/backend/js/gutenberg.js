@@ -894,6 +894,7 @@ function convertKitGutenbergRegisterBlock(block) {
 
 		// Register Block.
 		registerBlockType('convertkit/' + block.name, {
+			apiVersion: convertkit_gutenberg.block_api_version,
 			title: block.title,
 			description: block.description,
 			category: block.category,

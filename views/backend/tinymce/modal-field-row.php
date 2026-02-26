@@ -22,7 +22,7 @@ if ( isset( $field['condition'] ) ) {
 			<?php echo esc_attr( $field['label'] ); ?>
 		</label>
 	</div>
-	<div class="right <?php echo esc_attr( $condition ); ?>">
+	<div class="right<?php echo ! empty( $condition ) ? ' ' . esc_attr( $condition ) : ''; ?>">
 		<?php
 		require 'modal-field.php';
 		?>

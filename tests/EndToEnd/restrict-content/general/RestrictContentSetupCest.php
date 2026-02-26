@@ -61,6 +61,30 @@ class RestrictContentSetupCest
 	}
 
 	/**
+	 * Test that the Add New Member Content button does not display on the Pages screen when the Add New Member Content button is disabled.
+	 *
+	 * @since   3.2.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewMemberContentButtonNotDisplayedWhenDisabled(EndToEndTester $I)
+	{
+		// Setup Plugin, disabling the Add New Landing Page / Member Content button.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'no_add_new_button' => 'on',
+			]
+		);
+
+		// Navigate to Pages.
+		$I->amOnAdminPage('edit.php?post_type=page');
+
+		// Check the buttons are not displayed.
+		$I->dontSeeElementInDOM('span.convertkit-action.page-title-action');
+	}
+
+	/**
 	 * Test that the Dashboard submenu item for this wizard does not display when a
 	 * third party Admin Menu editor type Plugin is installed and active.
 	 *
