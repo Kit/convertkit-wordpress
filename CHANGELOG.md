@@ -1,3 +1,13 @@
+### 3.2.0 2026-02-26
+* Added: Minify CSS into single frontend.css resource
+* Added: Minify JS into single frontend.min.js resource
+* Added: Settings: Advanced: Option to disable Add New button for Landing Pages and Member Content
+* Updated: Blocks: Broadcasts: Improve REST API
+* Updated: Classic Editor (TinyMCE/Quick Tags): Improve REST API
+* Updated: Blocks: Use apiVersion 3 when WordPress version is 6.3 or higher
+* Fix: Classic Editor (TinyMCE/Quick Tags): CLosing tag on `color` input types was missing
+* Fix: Blocks: Specify apiVersion in registerBlockType, to honor loading apiVersion 2 or 3 blocks
+
 ### 3.1.9 2026-02-17
 * Added: Settings: Tools: Campaign Monitor to Kit Form Importer: Support replacing shortcodes with single quotation marks
 * Updated: Blocks: Broadcasts: Use REST API, replacing admin-ajax.php
