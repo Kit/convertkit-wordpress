@@ -504,14 +504,23 @@ class ConvertKit_Output {
 			return $content . $form;
 		}
 
-		// Create new element for the Form.
-		$form_node = new DOMDocument();
-		$form_node->loadHTML( $form, LIBXML_HTML_NODEFDTD );
+		// Load the form into the parser.
+		$form_parser = new ConvertKit_HTML_Parser( $form, LIBXML_HTML_NODEFDTD );
+		$form_body   = $form_parser->html->getElementsByTagName( 'body' )->item( 0 );
 
-		// Append the form to the specific element.
-		$element_node->parentNode->insertBefore( $parser->html->importNode( $form_node->documentElement, true ), $element_node->nextSibling ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		// Collect nodes first to avoid live NodeList mutation issues.
+		$nodes_to_insert = array();
+		foreach ( $form_body->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$nodes_to_insert[] = $parser->html->importNode( $child, true );
+		}
 
-		// Fetch HTML string.
+		// Inject the form node(s) after the element node e.g. after the paragraph, heading etc.
+		$next_sibling = $element_node->nextSibling; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		foreach ( $nodes_to_insert as $node ) {
+			$element_node->parentNode->insertBefore( $node, $element_node->nextSibling ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		// Return modified HTML string.
 		return $parser->get_body_html();
 
 	}
