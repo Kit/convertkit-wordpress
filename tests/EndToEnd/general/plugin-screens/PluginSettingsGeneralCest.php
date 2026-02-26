@@ -45,6 +45,7 @@ class PluginSettingsGeneralCest
 		$I->seeInSource('<label for="debug">');
 		$I->seeInSource('<label for="no_scripts">');
 		$I->seeInSource('<label for="no_css">');
+		$I->seeInSource('<label for="no_add_new_button">');
 		$I->seeInSource('<label for="usage_tracking">');
 
 		// Confirm that the UTM parameters exist for the documentation links.
@@ -776,6 +777,48 @@ class PluginSettingsGeneralCest
 
 		// Confirm CSS is output by the Plugin.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
+	}
+
+	/**
+	 * Test that no PHP errors or notices are displayed on the Plugin's Setting screen
+	 * when the Disable Add New Landing Page / Member Content button settings is unchecked, and that CSS is output
+	 * on the frontend web site.
+	 *
+	 * @since   3.2.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testEnableAndDisableAddNewLandingPageMemberContentButtonSetting(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Tick field.
+		$I->checkOption('#no_add_new_button');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the field remains ticked.
+		$I->seeCheckboxIsChecked('#no_add_new_button');
+
+		// Untick field.
+		$I->uncheckOption('#no_add_new_button');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the field remains unticked.
+		$I->dontSeeCheckboxIsChecked('#no_add_new_button');
 	}
 
 	/**

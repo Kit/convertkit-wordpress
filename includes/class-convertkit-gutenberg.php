@@ -149,19 +149,7 @@ class ConvertKit_Gutenberg {
 		}
 
 		// Determine the block API version to use for registering blocks.
-		// WordPress supports Version 3 from WordPress 6.3:
-		// https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/.
-		$block_api_version = ( version_compare( get_bloginfo( 'version' ), '6.3', '>=' ) ? 3 : 2 );
-
-		/**
-		 * Determine the block API version to use for registering blocks.
-		 *
-		 * @since   3.1.4
-		 *
-		 * @param   int  $block_api_version    Block API version.
-		 * @return  int                        Block API version.
-		 */
-		$block_api_version = apply_filters( 'convertkit_gutenberg_block_api_version', $block_api_version );
+		$block_api_version = $this->get_block_api_version();
 
 		// Get registered blocks.
 		$registered_blocks = array_keys( WP_Block_Type_Registry::get_instance()->get_all_registered() );
@@ -200,6 +188,33 @@ class ConvertKit_Gutenberg {
 	}
 
 	/**
+	 * Determines the block API version to use for registering blocks.
+	 *
+	 * @since   3.2.0
+	 *
+	 * @return  int    Block API version.
+	 */
+	public function get_block_api_version() {
+
+		// Determine the block API version to use for registering blocks.
+		// WordPress supports Version 3 from WordPress 6.3:
+		// https://developer.wordpress.org/block-editor/reference-guides/block-api/block-api-versions/.
+		$block_api_version = ( version_compare( get_bloginfo( 'version' ), '6.3', '>=' ) ? 3 : 2 );
+
+		/**
+		 * Determine the block API version to use for registering blocks.
+		 *
+		 * @since   3.1.4
+		 *
+		 * @param   int  $block_api_version    Block API version.
+		 * @return  int                        Block API version.
+		 */
+		$block_api_version = apply_filters( 'convertkit_gutenberg_block_api_version', $block_api_version );
+
+		return absint( $block_api_version );
+
+	}
+	/**
 	 * Enqueues scripts for Gutenberg blocks in the editor view.
 	 *
 	 * @since   1.9.6
@@ -229,8 +244,9 @@ class ConvertKit_Gutenberg {
 			'convertkit-gutenberg',
 			'convertkit_gutenberg',
 			array(
-				'ajaxurl'          => rest_url( 'kit/v1/blocks' ),
-				'get_blocks_nonce' => wp_create_nonce( 'wp_rest' ),
+				'ajaxurl'           => rest_url( 'kit/v1/blocks' ),
+				'block_api_version' => $this->get_block_api_version(),
+				'get_blocks_nonce'  => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 

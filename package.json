@@ -8,8 +8,8 @@
     "fix:css": "prettier --write 'resources/frontend/scss/**/*.scss' && wp-scripts lint-style 'resources/frontend/scss/**/*.scss' 'resources/backend/css/**/*.css' --fix",
     "build:js": "wp-scripts build resources/frontend/js/frontend.js --output-path=resources/frontend/js/dist --output-filename=frontend.min.js",
     "watch:js": "wp-scripts start resources/frontend/js/frontend.js --output-path=resources/frontend/js/dist --output-filename=frontend.min.js",
-    "lint:js": "wp-scripts lint-js 'resources/frontend/js/*.js' --max-warnings=0",
-    "fix:js": "wp-scripts lint-js 'resources/frontend/js/*.js' --fix",
+    "lint:js": "wp-scripts lint-js 'resources/frontend/js/*.js' 'resources/backend/js/*.js' --max-warnings=0",
+    "fix:js": "wp-scripts lint-js 'resources/frontend/js/*.js' 'resources/backend/js/*.js' --fix",
     "build": "npm run fix:css && npm run lint:css && npm run fix:js && npm run lint:js && npm run build:css && npm run build:js"
   },
   "prettier": "@wordpress/prettier-config",
