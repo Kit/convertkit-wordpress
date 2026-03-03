@@ -282,6 +282,9 @@ class PostFormCest
 
 		// Confirm no meta tag exists within the content.
 		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
 	}
 
 	/**
@@ -329,6 +332,9 @@ class PostFormCest
 
 		// Confirm no meta tag exists within the content.
 		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
 	}
 
 	/**
@@ -381,6 +387,9 @@ class PostFormCest
 
 		// Confirm no meta tag exists within the content.
 		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
 	}
 
 	/**
@@ -433,6 +442,9 @@ class PostFormCest
 
 		// Confirm no meta tag exists within the content.
 		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
 	}
 
 	/**
@@ -484,6 +496,9 @@ class PostFormCest
 
 		// Confirm no meta tag exists within the content.
 		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
 	}
 
 	/**

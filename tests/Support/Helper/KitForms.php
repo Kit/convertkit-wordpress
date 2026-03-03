@@ -236,4 +236,18 @@ class KitForms extends \Codeception\Module
 		$I->seeInSource('</body>');
 		$I->seeInSource('</html>');
 	}
+
+	/**
+	 * Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+	 *
+	 * @since   3.2.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function seeNoExtraHtmlHeadBodyTagsOutput($I)
+	{
+		$I->seeNumberOfElementsInDOM('html', 1);
+		$I->seeNumberOfElementsInDOM('head', 1);
+		$I->seeNumberOfElementsInDOM('body', 1);
+	}
 }
