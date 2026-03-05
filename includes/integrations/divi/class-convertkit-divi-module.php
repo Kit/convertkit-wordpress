@@ -97,6 +97,9 @@ class ConvertKit_Divi_Module extends ET_Builder_Module {
 		if ( is_wp_error( $this->block ) ) {
 			return array();
 		}
+		if ( ! $this->block ) {
+			return array();
+		}
 
 		// Bail if no fields i.e. this is a frontend request.
 		if ( ! array_key_exists( 'fields', $this->block ) ) {
