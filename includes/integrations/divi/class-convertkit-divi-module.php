@@ -97,6 +97,9 @@ class ConvertKit_Divi_Module extends ET_Builder_Module {
 		if ( is_wp_error( $this->block ) ) {
 			return array();
 		}
+
+		// Bail if the block is false.
+		// This happens on Divi 5 theme activation.
 		if ( ! $this->block ) {
 			return array();
 		}
