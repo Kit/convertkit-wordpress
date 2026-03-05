@@ -37,10 +37,10 @@ class DiviThemeBroadcastsCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a Divi Page in the backend editor.
+		// Create a Divi Page.
 		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Page: Broadcasts: Divi: Backend Editor: Conditional Fields',
+			title: 'Kit: Page: Broadcasts: Divi 5: Conditional Fields',
 		);
 
 		// Insert the Broadcasts module.
@@ -90,12 +90,10 @@ class DiviThemeBroadcastsCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		$I->amOnAdminPage('themes.php');
-
-		// Create a Divi Page in the backend editor.
+		// Create a Divi Page.
 		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Page: Broadcasts: Divi: Backend Editor',
+			title: 'Kit: Page: Broadcasts: Divi 5',
 		);
 
 		// Insert the Broadcasts module.
@@ -142,17 +140,14 @@ class DiviThemeBroadcastsCest
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor(
 			$I,
-			title: 'Kit: Page: Broadcasts: Divi: Backend Editor: No Credentials',
-			configureMetaBox: false,
-			isDiviPlugin: false
+			title: 'Kit: Page: Broadcasts: Divi 5: No Credentials'
 		);
 
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
 			$I,
 			name: 'Kit Broadcasts',
-			programmaticName: 'convertkit_broadcasts',
-			isDiviPlugin: false
+			programmaticName: 'convertkit_broadcasts'
 		);
 
 		// Confirm the on screen message displays.
@@ -186,16 +181,14 @@ class DiviThemeBroadcastsCest
 		// Create a Divi Page in the backend editor.
 		$I->createDiviPageInBackendEditor(
 			$I,
-			title: 'Kit: Page: Broadcasts: Divi: Backend Editor: No Broadcasts',
-			isDiviPlugin: false
+			title: 'Kit: Page: Broadcasts: Divi 5: No Broadcasts'
 		);
 
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
 			$I,
 			name: 'Kit Broadcasts',
-			programmaticName: 'convertkit_broadcasts',
-			isDiviPlugin: false
+			programmaticName: 'convertkit_broadcasts'
 		);
 
 		// Confirm the on screen message displays.

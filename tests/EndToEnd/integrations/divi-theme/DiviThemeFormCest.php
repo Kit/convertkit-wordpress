@@ -25,8 +25,7 @@ class DiviThemeFormCest
 	}
 
 	/**
-	 * Test the Form module works when a valid Form is selected
-	 * using Divi's backend editor.
+	 * Test the Form module works when a valid Form is selected.
 	 *
 	 * @since   2.8.0
 	 *
@@ -38,22 +37,20 @@ class DiviThemeFormCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a Divi Page in the backend editor.
-		$I->createDiviPageInBackendEditor(
+		// Create a Divi Page.
+		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Page: Form: Divi: Backend Editor',
-			isDiviPlugin: false
+			title: 'Kit: Page: Form: Divi 5',
 		);
 
 		// Insert the Form module.
-		$I->insertDiviRowWithModule(
+		$I->insertDivi5RowWithModule(
 			$I,
 			name: 'Kit Form',
 			programmaticName: 'convertkit_form',
 			fieldName: 'form',
 			fieldValue: $_ENV['CONVERTKIT_API_FORM_ID'],
-			fieldType: 'select',
-			isDiviPlugin: false
+			fieldType: 'select'
 		);
 
 		// Save and view page.
@@ -160,20 +157,24 @@ class DiviThemeFormCest
 		);
 		$I->setupKitPluginResources($I);
 
-		// Create Page with Form module in Divi.
-		$pageID = $I->createPageWithDiviModuleProgrammatically(
+		// Create a Divi Page.
+		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Legacy Form: Divi Module: Valid Form Param',
-			programmaticName: 'convertkit_form',
-			fieldName: 'form',
-			fieldValue: $_ENV['CONVERTKIT_API_LEGACY_FORM_ID']
+			title: 'Kit: Page: Form: Legacy: Divi 5',
 		);
 
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
+		// Insert the Form module.
+		$I->insertDivi5RowWithModule(
+			$I,
+			name: 'Kit Form',
+			programmaticName: 'convertkit_form',
+			fieldName: 'form',
+			fieldValue: $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+			fieldType: 'select'
+		);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that the Kit Form is displayed.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
@@ -192,20 +193,21 @@ class DiviThemeFormCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create Page with Form module in Divi.
-		$pageID = $I->createPageWithDiviModuleProgrammatically(
+		// Create a Divi Page.
+		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Legacy Form: Divi Module: No Form Param',
-			programmaticName: 'convertkit_form',
-			fieldName: 'form',
-			fieldValue: ''
+			title: 'Kit: Page: Form: None: Divi 5',
 		);
 
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
+		// Insert the Form module.
+		$I->insertDivi5RowWithModule(
+			$I,
+			name: 'Kit Form',
+			programmaticName: 'convertkit_form'
+		);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');

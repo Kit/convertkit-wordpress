@@ -14,8 +14,8 @@ class Divi5Theme extends \Codeception\Module
 	 *
 	 * @since   2.5.7
 	 *
-	 * @param   EndToEndTester $I             	  EndToEnd Tester.
-	 * @param   string         $title         	  Page Title.
+	 * @param   EndToEndTester $I                 EndToEnd Tester.
+	 * @param   string         $title             Page Title.
 	 * @param   bool           $configureMetaBox  Configure Plugin's Meta Box to set Form = None (set to false if running a test with no credentials).
 	 */
 	public function createDivi5Page($I, $title, $configureMetaBox = true)
@@ -41,11 +41,11 @@ class Divi5Theme extends \Codeception\Module
 			);
 		}
 
-        // Publish Page.
-        $I->publishGutenbergPage($I);
-    
-        // Click Divi Builder button.
-        $I->click('#et-switch-to-divi');
+		// Publish Page.
+		$I->publishGutenbergPage($I);
+
+		// Click Divi Builder button.
+		$I->click('#et-switch-to-divi');
 
 		// Wait for Divi Builder to load.
 		$I->waitForElementVisible('body.et_pb_pagebuilder_layout');
@@ -64,54 +64,53 @@ class Divi5Theme extends \Codeception\Module
 	 * @param   string         $fieldType         Field Type.
 	 */
 	public function insertDivi5RowWithModule($I, $name, $programmaticName, $fieldName = false, $fieldValue = false, $fieldType = 'text')
-	{	
-        // Switch to editor iframe.
-        $I->switchToIFrame('iframe[id="et-vb-app-frame"]');
+	{
+		// Switch to editor iframe.
+		$I->switchToIFrame('iframe[id="et-vb-app-frame"]');
 
-        // Insert row.
-        $I->waitForElementVisible('button.et-vb-add-module');
-        $I->click('button.et-vb-add-module');
+		// Insert row.
+		$I->waitForElementVisible('button.et-vb-add-module');
+		$I->click('button.et-vb-add-module');
 
 		// Switch back to main window.
-        $I->switchToIFrame();
+		$I->switchToIFrame();
 
 		// Select 1 column layout.
 		$I->waitForElementVisible('button[value="equal-columns_1"]');
 		$I->click('button[value="equal-columns_1"]');
 
-        // Search for module.
-        $I->waitForElementVisible('input[name="et-vb-field-input-text-filter-option"]');
-        $I->fillField('et-vb-field-input-text-filter-option', $name);
+		// Search for module.
+		$I->waitForElementVisible('input[name="et-vb-field-input-text-filter-option"]');
+		$I->fillField('et-vb-field-input-text-filter-option', $name);
 
-        // Insert module.
-        $I->waitForElementVisible('button[value="divi/shortcode-module/' . $programmaticName . '"]');
-        $I->click('button[value="divi/shortcode-module/' . $programmaticName . '"]');
+		// Insert module.
+		$I->waitForElementVisible('button[value="divi/shortcode-module/' . $programmaticName . '"]');
+		$I->click('button[value="divi/shortcode-module/' . $programmaticName . '"]');
 
-        // Switch to editor iframe.
-        $I->switchToIFrame('iframe[id="et-vb-app-frame"]');
+		// Switch to editor iframe.
+		$I->switchToIFrame('iframe[id="et-vb-app-frame"]');
 
-        // Wait for module to load.
-        $I->waitForElementVisible('div.et_pb_shortcode_module_inner div.' . $programmaticName);
+		// Wait for module to load.
+		$I->waitForElementVisible('div.et_pb_shortcode_module_inner div.' . $programmaticName);
 
-        // Select field value.
-        if ($fieldName && $fieldValue) {
-            switch ($fieldType) {
-                case 'select':
-                    die();
-                    $I->click('div#et-vb-' . $fieldName);
-                    $I->waitForElementVisible('li[data-value="' . $fieldValue . '"]', '#et-vb-' . $fieldName);
-                    $I->click('li[data-value="' . $fieldValue . '"]', '#et-vb-' . $fieldName);
-                    break;
+		// Switch to main window.
+		$I->switchToIFrame();
 
-                default:
-                    $I->waitForElementVisible('input[name="et-vb-field-input-text-' . $fieldName . '"]');
-                    $I->fillField('input[name="et-vb-field-input-text-' . $fieldName . '"]', $fieldValue);
-                    break;
-            }
-        }
+		// Select field value.
+		if ($fieldName && $fieldValue) {
+			switch ($fieldType) {
+				case 'select':
+					$I->click('div#et-vb-' . $fieldName);
+					$I->waitForElementVisible('#et-vb-' . $fieldName . ' li[data-value="' . $fieldValue . '"]');
+					$I->click('#et-vb-' . $fieldName . ' li[data-value="' . $fieldValue . '"]');
+					break;
 
-        // Switch back to main window.
-        $I->switchToIFrame();
+				default:
+					$I->waitForElementVisible('input[name="et-vb-field-input-text-' . $fieldName . '"]');
+					$I->fillField('input[name="et-vb-field-input-text-' . $fieldName . '"]', $fieldValue);
+					break;
+			}
+		}
 	}
 
 	/**
