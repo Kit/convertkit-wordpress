@@ -5,7 +5,7 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Form's Divi Module using the Divi Theme.
+ * Tests for the Kit Form's Divi Module using the Divi 5 Theme.
  *
  * @since   2.8.0
  */
@@ -21,78 +21,40 @@ class DiviThemeFormTriggerCest
 	public function _before(EndToEndTester $I)
 	{
 		$I->activateKitPlugin($I);
-		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->useTheme('Divi');
 	}
 
 	/**
-	 * Test the Form module works when a valid Form is selected
-	 * using Divi's backend editor.
+	 * Test the Form module works when a valid Form is selected.
 	 *
 	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testFormTriggerModuleInBackendEditor(EndToEndTester $I)
+	public function testFormTriggerModule(EndToEndTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a Divi Page in the backend editor.
-		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Form Trigger: Divi: Backend Editor');
+		// Create a Divi Page.
+		$I->createDivi5Page(
+			$I,
+			title: 'Kit: Page: Form Trigger: Divi 5',
+		);
 
 		// Insert the Form module.
-		$I->insertDiviRowWithModule(
+		$I->insertDivi5RowWithModule(
 			$I,
 			name: 'Kit Form Trigger',
 			programmaticName: 'convertkit_formtrigger',
 			fieldName: 'form',
-			fieldValue: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']
+			fieldValue: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+			fieldType: 'select'
 		);
 
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInBackendEditorAndViewPage($I);
-
-		// Confirm that the block displays.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
-
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
-
-		// Deactivate Classic Editor.
-		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-	}
-
-	/**
-	 * Test the Form module works when a valid Form is selected
-	 * using Divi's backend editor.
-	 *
-	 * @since   2.8.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormTriggerModuleInFrontendEditor(EndToEndTester $I)
-	{
-		// Setup Plugin, without defining default Forms.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Create a Divi Page in the frontend editor.
-		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Form Trigger: Divi: Frontend Editor');
-
-		// Insert the Form module.
-		$I->insertDiviRowWithModule(
-			$I,
-			name: 'Kit Form Trigger',
-			programmaticName: 'convertkit_formtrigger',
-			fieldName: 'form',
-			fieldValue: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']
-		);
-
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInFrontendEditorAndViewPage($I, $url);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that the block displays.
 		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
@@ -101,6 +63,7 @@ class DiviThemeFormTriggerCest
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 	}
+
 
 	/**
 	 * Test the Form module displays the expected message when the Plugin has no credentials
@@ -109,8 +72,14 @@ class DiviThemeFormTriggerCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testFormTriggerModuleInFrontendEditorWhenNoCredentials(EndToEndTester $I)
+	public function testFormTriggerModuleWhenNoCredentials(EndToEndTester $I)
 	{
+		// Skip test until modules upgraded to Divi 5.
+		$I->useTheme('twentytwentytwo');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('No Credentials notice cannot be displayed until modules upgraded to Divi 5.');
+
 		// Create a Divi Page in the frontend editor.
 		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Form Trigger: Divi: Frontend: No Credentials', false);
 
@@ -139,6 +108,12 @@ class DiviThemeFormTriggerCest
 	 */
 	public function testFormTriggerModuleInFrontendEditorWhenNoForms(EndToEndTester $I)
 	{
+		// Skip test until modules upgraded to Divi 5.
+		$I->useTheme('twentytwentytwo');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('No resources notice cannot be displayed until modules upgraded to Divi 5.');
+
 		// Setup Plugin.
 		$I->setupKitPluginCredentialsNoData($I);
 		$I->setupKitPluginResourcesNoData($I);
@@ -174,20 +149,21 @@ class DiviThemeFormTriggerCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create Page with Form module in Divi.
-		$pageID = $I->createPageWithDiviModuleProgrammatically(
+		// Create a Divi Page.
+		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Legacy Form Trigger: Divi Module: No Form Param',
-			programmaticName: 'convertkit_formtrigger',
-			fieldName: 'form',
-			fieldValue: ''
+			title: 'Kit: Page: Form Trigger: None: Divi 5',
 		);
 
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
+		// Insert the Form module.
+		$I->insertDivi5RowWithModule(
+			$I,
+			name: 'Kit Form Trigger',
+			programmaticName: 'convertkit_formtrigger'
+		);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that no Kit Form trigger button is displayed.
 		$I->dontSeeFormTriggerOutput($I);
@@ -205,7 +181,6 @@ class DiviThemeFormTriggerCest
 	public function _passed(EndToEndTester $I)
 	{
 		$I->useTheme('twentytwentytwo');
-		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

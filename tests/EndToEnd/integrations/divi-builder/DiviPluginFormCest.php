@@ -5,7 +5,7 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Form's Divi Module using the Divi Builder Plugin.
+ * Tests for the Kit Form's Divi Module using the Divi 4 Builder Plugin.
  *
  * @since   2.5.6
  */

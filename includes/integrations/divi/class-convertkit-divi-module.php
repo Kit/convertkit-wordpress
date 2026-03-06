@@ -98,6 +98,12 @@ class ConvertKit_Divi_Module extends ET_Builder_Module {
 			return array();
 		}
 
+		// Bail if the block is false.
+		// This happens on Divi 5 theme activation.
+		if ( ! $this->block ) {
+			return array();
+		}
+
 		// Bail if no fields i.e. this is a frontend request.
 		if ( ! array_key_exists( 'fields', $this->block ) ) {
 			return array();
