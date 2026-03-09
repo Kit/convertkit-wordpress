@@ -27,6 +27,7 @@ modules:
         - \Tests\Support\Helper\KitProducts
         - \Tests\Support\Helper\KitRestrictContent
         - \Tests\Support\Helper\CustomPostType
+        - \Tests\Support\Helper\Divi5Theme
         - \Tests\Support\Helper\DiviBuilder
         - \Tests\Support\Helper\Email
         - \Tests\Support\Helper\Select2
@@ -55,6 +56,7 @@ modules:
             capabilities:
               "goog:chromeOptions":
                 args:
+                  - "--headless"
                   - "--disable-gpu"
                   - "--disable-dev-shm-usage"
                   - "--disable-software-rasterizer"

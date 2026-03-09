@@ -1,3 +1,7 @@
+### 3.2.1 2026-03-05
+* Fix: Divi 5: Fatal error when activating Theme
+* Fix: Removed errant `<html>` and `<head>` tags when Settings > Kit > Form Position = After element
+
 ### 3.2.0 2026-02-26
 * Added: Minify CSS into single frontend.css resource
 * Added: Minify JS into single frontend.min.js resource
