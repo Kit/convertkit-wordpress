@@ -1,0 +1,239 @@
+/**
+ * Pagination
+ */
+.convertkit-broadcasts-pagination {
+	display: grid;
+	grid-template-areas: "prev next";
+	grid-template-columns: repeat(2, 1fr);
+	grid-column-gap: 20px;
+	padding: 20px 0 0 0;
+
+	li {
+		list-style: none;
+		margin: 0;
+
+		&.convertkit-broadcasts-pagination-prev {
+			grid-area: prev;
+			text-align: left;
+		}
+
+		&.convertkit-broadcasts-pagination-next {
+			grid-area: next;
+			text-align: right;
+		}
+	}
+}
+
+/**
+* Shared list reset
+*/
+.convertkit-broadcasts-list,
+.convertkit-broadcasts-pagination {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.editor-styles-wrapper {
+
+	.convertkit-broadcasts-list,
+	.convertkit-broadcasts-pagination {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+/**
+* Broadcast List Items
+*/
+.convertkit-broadcasts-list {
+
+	li {
+		list-style: none;
+		margin: 0;
+		padding: 5px 0;
+		display: grid;
+		grid-template-areas:
+			"date title"
+			"image text";
+		grid-template-columns: 150px auto;
+		grid-column-gap: 20px;
+
+		time {
+			display: inline-block;
+			grid-area: date;
+		}
+
+		.convertkit-broadcast-title {
+			display: inline-block;
+			grid-area: title;
+		}
+
+		.convertkit-broadcast-image {
+			display: inline-block;
+			grid-area: image;
+
+			img {
+				max-width: 100%;
+				height: auto;
+			}
+		}
+
+		.convertkit-broadcast-text {
+			display: inline-block;
+			grid-area: text;
+			font-size: 16px;
+		}
+
+		.convertkit-broadcast-read-more {
+			display: block;
+			margin: 10px 0 0 0;
+		}
+	}
+}
+
+/**
+* Broadcasts
+*/
+.convertkit-broadcasts {
+	margin-bottom: 20px;
+
+	@media only screen and (min-width: 482px) {
+		margin-bottom: 30px;
+	}
+
+	&.has-background,
+	&[data-background-color] {
+		padding: 20px;
+	}
+
+	&.convertkit-broadcasts-loading {
+		background-color: #e3e3e3 !important;
+		background-image: url(../images/spinner.gif);
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.editor-styles-wrapper &.has-background {
+		padding: 20px;
+	}
+
+	.editor-styles-wrapper &.convertkit-broadcasts-loading {
+		background-color: #e3e3e3 !important;
+		background-image: url(../images/spinner.gif);
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	/**
+	* List View Layout Variant
+	*/
+	&[data-display-order="broadcast-date"] {
+
+		.convertkit-broadcasts-list li {
+			grid-template-areas:
+				"title date"
+				"text image";
+			grid-template-columns: auto 150px;
+		}
+	}
+
+	/**
+	* Grid View
+	*/
+	&[data-display-grid="1"] {
+
+		.convertkit-broadcasts-list {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			grid-column-gap: 20px;
+			grid-row-gap: 20px;
+			align-items: start;
+
+			@media screen and (max-width: 768px) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			@media screen and (max-width: 478px) {
+				grid-template-columns: repeat(1, 1fr);
+			}
+
+			li {
+				grid-template-areas:
+					"image"
+					"date"
+					"title"
+					"text";
+				grid-template-columns: none;
+				grid-row-gap: 10px;
+			}
+		}
+
+		&[data-display-order="broadcast-date"] {
+
+			.convertkit-broadcasts-list li {
+				grid-template-areas:
+					"image"
+					"title"
+					"text"
+					"date";
+			}
+		}
+	}
+}
+
+/**
+* Date alignment variants
+*/
+.convertkit-broadcasts[data-display-order="broadcast-date"]
+	.convertkit-broadcasts-list
+	li
+	time {
+	text-align: right;
+}
+
+.convertkit-broadcasts[data-display-grid="1"][data-display-order="broadcast-date"]
+	.convertkit-broadcasts-list
+	li
+	time {
+	text-align: left;
+}
+
+/**
+* Mobile Layout Adjustments
+*/
+@media screen and (max-width: 478px) {
+
+	.convertkit-broadcasts-list li {
+		grid-template-areas:
+			"image image"
+			"date date"
+			"title title"
+			"text text";
+		grid-row-gap: 10px;
+	}
+
+	.convertkit-broadcasts[data-display-image="1"]
+		.convertkit-broadcasts-list
+		li {
+		margin: 0 0 20px 0;
+	}
+}
+
+/**
+* Imported Broadcast Overrides
+*/
+body.convertkit-broadcast.elementor-default {
+
+	table,
+	table tbody,
+	table tbody td {
+		border: none;
+	}
+
+	table tbody > tr:nth-child(odd) > td,
+	table tbody > tr:nth-child(odd) > th {
+		background: none;
+	}
+}

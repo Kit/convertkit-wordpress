@@ -93,7 +93,13 @@ In the Plugin's directory, at the command line, run `npm install`.
 
 This sets up:
 - JS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-js)
-- CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style)
+- SCSS and CSS linting / coding standards using WordPress recommended configurations (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#lint-style)
+- JS compilation and minification
+- SASS compilation and minification
+
+### Build JS and CSS
+
+Run `npm run build` to build the frontend CSS and JS.
 
 ### Configure wp-config.php
 

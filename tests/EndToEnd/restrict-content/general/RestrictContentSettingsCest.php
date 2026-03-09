@@ -196,7 +196,7 @@ class RestrictContentSettingsCest
 	}
 
 	/**
-	 * Tests that disabling CSS results in restrict-content.css not being output.
+	 * Tests that disabling CSS results in frontend.css not being output.
 	 *
 	 * @since   2.1.0
 	 *
@@ -219,7 +219,7 @@ class RestrictContentSettingsCest
 		);
 
 		// Confirm no CSS is output by the Plugin.
-		$I->dontSeeInSource('restrict-content.css');
+		$I->dontSeeInSource('frontend.css');
 	}
 
 	/**

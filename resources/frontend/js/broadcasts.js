@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
 				paginate_label_next: blockContainer.dataset.paginateLabelNext,
 				link_color: blockContainer.dataset.linkColor,
 				page: e.target.dataset.page,
-				nonce: e.target.dataset.nonce,
 			};
 
 			convertKitBroadcastsRender(blockContainer, atts);
@@ -51,9 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
  * @param {Object} atts           Block attributes
  */
 function convertKitBroadcastsRender(blockContainer, atts) {
-	// Append action.
-	atts.action = convertkit_broadcasts.action;
-
 	if (convertkit_broadcasts.debug) {
 		console.log('convertKitBroadcastsRender()');
 		console.log(atts);
@@ -62,14 +58,12 @@ function convertKitBroadcastsRender(blockContainer, atts) {
 	// Show loading indicator.
 	blockContainer.classList.add('convertkit-broadcasts-loading');
 
+	// Build URL with query string parameters.
+	const params = new URLSearchParams(atts);
+	const url = `${convertkit_broadcasts.ajax_url}?${params.toString()}`;
+
 	// Fetch HTML.
-	fetch(convertkit_broadcasts.ajax_url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		body: new URLSearchParams(atts),
-	})
+	fetch(url)
 		.then(function (response) {
 			if (convertkit_broadcasts.debug) {
 				console.log(response);
@@ -86,7 +80,7 @@ function convertKitBroadcastsRender(blockContainer, atts) {
 			blockContainer.classList.remove('convertkit-broadcasts-loading');
 
 			// Replace block container's HTML with response data.
-			blockContainer.innerHTML = result.data;
+			blockContainer.innerHTML = result;
 		})
 		.catch(function (error) {
 			if (convertkit.debug) {

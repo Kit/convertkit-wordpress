@@ -93,15 +93,6 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	public $exit_url = 'options-general.php?page=_wp_convertkit_settings';
 
 	/**
-	 * If the Form Importer step will be displayed.
-	 *
-	 * @since   3.1.7
-	 *
-	 * @var     bool
-	 */
-	public $show_form_importer_step = false;
-
-	/**
 	 * Holds the form importers.
 	 *
 	 * @since   3.1.7
@@ -121,39 +112,8 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		$this->api      = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI, false, false, false, 'setup_wizard' );
 		$this->settings = new ConvertKit_Settings();
 
-		$this->show_form_importer_step = count( convertkit_get_form_importers() ) > 0 ? true : false;
-
-		// Define details for each step in the setup process.
-		$this->steps = array(
-			'start'         => array(
-				'name'        => __( 'Connect', 'convertkit' ),
-				'next_button' => array(
-					'label' => __( 'Connect', 'convertkit' ),
-					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration' ), get_site_url() ),
-				),
-			),
-			'configuration' => array(
-				'name'        => __( 'Configuration', 'convertkit' ),
-				'next_button' => array(
-					'label' => $this->show_form_importer_step ? __( 'Next', 'convertkit' ) : __( 'Finish Setup', 'convertkit' ),
-				),
-			),
-		);
-
-		// If the Form Importer step will be displayed, add it to the steps.
-		if ( $this->show_form_importer_step ) {
-			$this->steps['form-importer'] = array(
-				'name'        => __( 'Form Importer', 'convertkit' ),
-				'next_button' => array(
-					'label' => __( 'Finish Setup', 'convertkit' ),
-				),
-			);
-		}
-
-		// Add the finish step.
-		$this->steps['finish'] = array(
-			'name' => __( 'Done', 'convertkit' ),
-		);
+		// Define the steps for the setup wizard.
+		add_filter( 'convertkit_admin_setup_wizard_steps_convertkit-setup', array( $this, 'define_steps' ) );
 
 		// Register link to Setup Wizard below Plugin Name at Plugins > Installed Plugins.
 		add_filter( 'convertkit_plugin_screen_action_links', array( $this, 'add_setup_wizard_link_on_plugins_screen' ) );
@@ -164,6 +124,54 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 
 		// Call parent class constructor.
 		parent::__construct();
+
+	}
+
+	/**
+	 * Define the steps for the setup wizard.
+	 *
+	 * @since   3.1.8
+	 *
+	 * @param   array $steps     The steps for the setup wizard.
+	 * @return  array
+	 */
+	public function define_steps( $steps ) {
+
+		$show_form_importer_step = count( convertkit_get_form_importers() ) > 0 ? true : false;
+
+		// Define details for each step in the setup process.
+		$steps = array(
+			'start'         => array(
+				'name'        => __( 'Connect', 'convertkit' ),
+				'next_button' => array(
+					'label' => __( 'Connect', 'convertkit' ),
+					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration' ), get_site_url() ),
+				),
+			),
+			'configuration' => array(
+				'name'        => __( 'Configuration', 'convertkit' ),
+				'next_button' => array(
+					'label' => $show_form_importer_step ? __( 'Next', 'convertkit' ) : __( 'Finish Setup', 'convertkit' ),
+				),
+			),
+		);
+
+		// If the Form Importer step will be displayed, add it to the steps.
+		if ( $show_form_importer_step ) {
+			$steps['form-importer'] = array(
+				'name'        => __( 'Form Importer', 'convertkit' ),
+				'next_button' => array(
+					'label' => __( 'Finish Setup', 'convertkit' ),
+				),
+			);
+		}
+
+		// Add the finish step.
+		$steps['finish'] = array(
+			'name' => __( 'Done', 'convertkit' ),
+		);
+
+		return $steps;
 
 	}
 

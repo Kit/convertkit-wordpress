@@ -138,8 +138,28 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 	 */
 	public function __construct() {
 
-		// Define details for each step in the setup process.
-		$this->steps = array(
+		// Define the steps for the setup wizard.
+		add_filter( 'convertkit_admin_setup_wizard_steps_convertkit-restrict-content-setup', array( $this, 'define_steps' ) );
+
+		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-restrict-content-setup', array( $this, 'process_form' ) );
+		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-restrict-content-setup', array( $this, 'load_screen_data' ) );
+
+		// Call parent class constructor.
+		parent::__construct();
+
+	}
+
+	/**
+	 * Define the steps for the setup wizard.
+	 *
+	 * @since   3.1.8
+	 *
+	 * @param   array $steps     The steps for the setup wizard.
+	 * @return  array
+	 */
+	public function define_steps( $steps ) {
+
+		return array(
 			'start'         => array(
 				'name' => __( 'Setup', 'convertkit' ),
 			),
@@ -153,12 +173,6 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				'name' => __( 'Done', 'convertkit' ),
 			),
 		);
-
-		add_action( 'convertkit_admin_setup_wizard_process_form_convertkit-restrict-content-setup', array( $this, 'process_form' ) );
-		add_action( 'convertkit_admin_setup_wizard_load_screen_data_convertkit-restrict-content-setup', array( $this, 'load_screen_data' ) );
-
-		// Call parent class constructor.
-		parent::__construct();
 
 	}
 

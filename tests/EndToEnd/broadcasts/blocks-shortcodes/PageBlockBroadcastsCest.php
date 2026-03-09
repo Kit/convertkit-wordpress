@@ -780,7 +780,7 @@ class PageBlockBroadcastsCest
 		);
 
 		// Confirm that our stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeElementHasClasses(
@@ -843,7 +843,7 @@ class PageBlockBroadcastsCest
 		);
 
 		// Confirm that our stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the chosen colors are applied as CSS styles.
 		$I->seeElementHasClasses(
@@ -900,7 +900,7 @@ class PageBlockBroadcastsCest
 		);
 
 		// Confirm that our stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the chosen margin and padding are applied as CSS styles.
 		$I->seeInSource('<div class="convertkit-broadcasts wp-block-convertkit-broadcasts" style="padding-top:var(--wp--preset--spacing--30);margin-top:var(--wp--preset--spacing--30)"');
@@ -948,7 +948,7 @@ class PageBlockBroadcastsCest
 		);
 
 		// Confirm that our stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-broadcasts-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/broadcasts.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the chosen typography settings are applied as CSS styles.
 		$I->seeInSource('<div class="convertkit-broadcasts wp-block-convertkit-broadcasts has-large-font-size" style="line-height:2"');

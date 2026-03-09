@@ -55,20 +55,21 @@ function convertKitTinyMCERegisterPlugin(block) {
 				});
 
 				// Perform an AJAX call to load the modal's view.
-				fetch(ajaxurl, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					body: new URLSearchParams({
-						action: 'convertkit_admin_tinymce_output_modal',
-						nonce: convertkit_admin_tinymce.nonce,
-						editor_type: 'tinymce',
-						shortcode: block.name,
-					}),
-				})
+				fetch(
+					convertkit_admin_tinymce.ajaxurl +
+						'/' +
+						block.name +
+						'/' +
+						'tinymce',
+					{
+						method: 'GET',
+						headers: {
+							'X-WP-Nonce': convertkit_admin_tinymce.nonce,
+						},
+					}
+				)
 					.then(function (response) {
-						return response.text();
+						return response.json();
 					})
 					.then(function (result) {
 						// Inject HTML into modal.

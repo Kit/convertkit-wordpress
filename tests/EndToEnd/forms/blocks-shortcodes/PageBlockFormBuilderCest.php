@@ -129,7 +129,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -137,7 +138,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -206,11 +208,11 @@ class PageBlockFormBuilderCest
 		);
 
 		// Change the labels of the form fields. These are added as inner blocks when the Form Builder block is added.
-		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-name');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 		$I->fillField('#convertkit_form_builder_field_name_label', 'Nafnið þitt');
 
-		$I->click('div[data-type="convertkit/form-builder-field-email"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-email');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 		$I->fillField('#convertkit_form_builder_field_email_label', 'Netfangið þitt');
 
@@ -247,7 +249,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'Nafnið þitt',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -255,7 +258,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Netfangið þitt',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -267,9 +271,9 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Check that the form no longer displays and the message displays.
+		$I->waitForText('Welcome to the newsletter!', 10, '.convertkit-form-builder.wp-block-convertkit-form-builder');
 		$I->dontSeeElementInDOM('input[name="convertkit[first_name]"]');
 		$I->dontSeeElementInDOM('input[name="convertkit[email]"]');
-		$I->waitForText('Welcome to the newsletter!', 10, '.convertkit-form-builder.wp-block-convertkit-form-builder');
 
 		// Confirm that the email address was added to Kit.
 		$I->apiCheckSubscriberExists(
@@ -348,7 +352,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -356,7 +361,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -454,7 +460,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -462,7 +469,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -559,7 +567,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -567,7 +576,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -656,7 +666,7 @@ class PageBlockFormBuilderCest
 
 		foreach ( $customFields as $field ) {
 			// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
-			$I->click('div[data-type="convertkit/form-builder-field-name"]');
+			$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-name');
 
 			// Add custom field block, mapping its data to the Last Name field in Kit.
 			$I->addGutenbergBlock(
@@ -681,7 +691,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -689,7 +700,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		foreach ( $customFields as $key => $field ) {
 			$this->seeFormBuilderField(
@@ -698,7 +710,8 @@ class PageBlockFormBuilderCest
 				fieldName: 'custom_fields][' . $key,
 				fieldID: 'custom_fields_' . $key,
 				label: $field['label'],
-				container: 'div.wp-block-convertkit-form-builder'
+				container: 'div.wp-block-convertkit-form-builder',
+				isFrontend: true
 			);
 		}
 
@@ -796,7 +809,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'first_name',
 			fieldID: 'first_name',
 			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 		$this->seeFormBuilderField(
 			$I,
@@ -804,7 +818,8 @@ class PageBlockFormBuilderCest
 			fieldName: 'email',
 			fieldID: 'email',
 			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder'
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
 		);
 
 		// Generate email address for this test.
@@ -921,7 +936,7 @@ class PageBlockFormBuilderCest
 		);
 
 		// Click an inner block within the Form Builder block.
-		$I->click('div[data-type="convertkit/form-builder"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 
 		// Confirm the Form Field blocks can be added to the Form Builder block.
@@ -975,7 +990,7 @@ class PageBlockFormBuilderCest
 		);
 
 		// Click an inner block within the Form Builder block.
-		$I->click('div[data-type="convertkit/form-builder"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder');
 		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
 
 		// Confirm some core blocks can be added to the Form Builder block.
@@ -1160,7 +1175,7 @@ class PageBlockFormBuilderCest
 		);
 
 		// Focus on an inner block, so the Form Builder field blocks are available in the inserter.
-		$I->click('div[data-type="convertkit/form-builder-field-name"]');
+		$I->selectGutenbergBlockInEditor($I, 'convertkit/form-builder-field-name');
 
 		// Add custom field block, mapping its data to the Last Name field in Kit.
 		$I->addGutenbergBlock(
@@ -1250,7 +1265,17 @@ class PageBlockFormBuilderCest
 	 */
 	private function seeFormBuilderBlock(EndToEndTester $I)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		$I->seeElementInDOM('div[data-type="convertkit/form-builder"]');
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -1262,7 +1287,17 @@ class PageBlockFormBuilderCest
 	 */
 	private function seeFormBuilderButtonBlock(EndToEndTester $I)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		$I->seeElementInDOM('div[data-type="convertkit/form-builder"] div[data-type="core/button"]');
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 	}
 
 	/**
@@ -1277,9 +1312,15 @@ class PageBlockFormBuilderCest
 	 * @param   string         $label      Field label.
 	 * @param   bool           $required   Whether the field should be marked `required`.
 	 * @param   string         $container  The container the field should be in.
+	 * @param   bool           $isFrontend Whether the field is being tested in the frontend.
 	 */
-	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div')
+	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div', $isFrontend = false)
 	{
+		// Switch to the Gutenberg IFrame.
+		if ( ! $isFrontend && $I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Check field exists with correct attributes.
 		switch ( $fieldType ) {
 			case 'textarea':
@@ -1296,6 +1337,11 @@ class PageBlockFormBuilderCest
 		// Check the required asterisk is displayed.
 		if ($required) {
 			$I->seeElementInDOM($container . ' label[for="' . $fieldID . '"] span.convertkit-form-builder-field-required');
+		}
+
+		// Switch back to main window.
+		if ( ! $isFrontend && $I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
 		}
 	}
 

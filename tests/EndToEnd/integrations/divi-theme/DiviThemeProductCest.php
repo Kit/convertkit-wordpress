@@ -5,7 +5,7 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Product's Divi Module using the Divi Theme.
+ * Tests for the Kit Product's Divi Module using the Divi 5 Theme.
  *
  * @since   2.8.0
  */
@@ -21,38 +21,40 @@ class DiviThemeProductCest
 	public function _before(EndToEndTester $I)
 	{
 		$I->activateKitPlugin($I);
-		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->useTheme('Divi');
 	}
 
 	/**
-	 * Test the Product module works when a valid Product is selected
-	 * using Divi's backend editor.
+	 * Test the Product module works when a valid Product is selected.
 	 *
 	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testProductModuleInBackendEditor(EndToEndTester $I)
+	public function testProductModule(EndToEndTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a Divi Page in the backend editor.
-		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Product: Divi: Backend Editor');
+		// Create a Divi Page.
+		$I->createDivi5Page(
+			$I,
+			title: 'Kit: Page: Product: Divi 5',
+		);
 
 		// Insert the Product module.
-		$I->insertDiviRowWithModule(
+		$I->insertDivi5RowWithModule(
 			$I,
 			name: 'Kit Product',
 			programmaticName: 'convertkit_product',
 			fieldName: 'product',
-			fieldValue: $_ENV['CONVERTKIT_API_PRODUCT_ID']
+			fieldValue: $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+			fieldType: 'select'
 		);
 
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInBackendEditorAndViewPage($I);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that the module displays.
 		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
@@ -62,47 +64,20 @@ class DiviThemeProductCest
 	}
 
 	/**
-	 * Test the Product module works when a valid Product is selected
-	 * using Divi's backend editor.
-	 *
-	 * @since   2.8.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testProductModuleInFrontendEditor(EndToEndTester $I)
-	{
-		// Setup Plugin, without defining default Forms.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Create a Divi Page in the frontend editor.
-		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Product: Divi: Frontend Editor');
-
-		// Insert the Product module.
-		$I->insertDiviRowWithModule(
-			$I,
-			name: 'Kit Product',
-			programmaticName: 'convertkit_product',
-			fieldName: 'product',
-			fieldValue: $_ENV['CONVERTKIT_API_PRODUCT_ID']
-		);
-
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInFrontendEditorAndViewPage($I, $url);
-
-		// Confirm that the module displays.
-		$I->seeProductOutput($I, $_ENV['CONVERTKIT_API_PRODUCT_URL'], 'Buy my product');
-	}
-
-	/**
 	 * Test the Product module displays the expected message when the Plugin has no credentials
 	 *
 	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testProductModuleInFrontendEditorWhenNoCredentials(EndToEndTester $I)
+	public function testProductModuleWhenNoCredentials(EndToEndTester $I)
 	{
+		// Skip test until modules upgraded to Divi 5.
+		$I->useTheme('twentytwentytwo');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('No Credentials notice cannot be displayed until modules upgraded to Divi 5.');
+
 		// Create a Divi Page in the frontend editor.
 		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Product: Divi: Frontend: No Credentials', false);
 
@@ -129,8 +104,14 @@ class DiviThemeProductCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testProductModuleInFrontendEditorWhenNoProducts(EndToEndTester $I)
+	public function testProductModuleWhenNoProducts(EndToEndTester $I)
 	{
+		// Skip test until modules upgraded to Divi 5.
+		$I->useTheme('twentytwentytwo');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('No resources notice cannot be displayed until modules upgraded to Divi 5.');
+
 		// Setup Plugin.
 		$I->setupKitPluginCredentialsNoData($I);
 		$I->setupKitPluginResourcesNoData($I);
@@ -166,20 +147,21 @@ class DiviThemeProductCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create Page with Product module in Divi.
-		$pageID = $I->createPageWithDiviModuleProgrammatically(
+		// Create a Divi Page.
+		$I->createDivi5Page(
 			$I,
-			title: 'Kit: Product: Divi Module: No Product Param',
-			programmaticName: 'convertkit_product',
-			fieldName: 'product',
-			fieldValue: ''
+			title: 'Kit: Page: Product: None: Divi 5',
 		);
 
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
+		// Insert the Form module.
+		$I->insertDivi5RowWithModule(
+			$I,
+			name: 'Kit Product',
+			programmaticName: 'convertkit_product'
+		);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that no Kit Product is displayed.
 		$I->dontSeeProductOutput($I);
@@ -198,7 +180,6 @@ class DiviThemeProductCest
 	public function _passed(EndToEndTester $I)
 	{
 		$I->useTheme('twentytwentytwo');
-		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

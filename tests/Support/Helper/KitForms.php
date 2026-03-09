@@ -88,7 +88,7 @@ class KitForms extends \Codeception\Module
 	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
 		// Confirm that the button stylesheet loaded.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-button-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/button.css');
+		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
 		// Confirm that the block button CSS loaded.
 		if ($isBlock) {
@@ -235,5 +235,19 @@ class KitForms extends \Codeception\Module
 		$I->seeInSource('<body');
 		$I->seeInSource('</body>');
 		$I->seeInSource('</html>');
+	}
+
+	/**
+	 * Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+	 *
+	 * @since   3.2.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function seeNoExtraHtmlHeadBodyTagsOutput($I)
+	{
+		$I->seeNumberOfElementsInDOM('html', 1);
+		$I->seeNumberOfElementsInDOM('head', 1);
+		$I->seeNumberOfElementsInDOM('body', 1);
 	}
 }

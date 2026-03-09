@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.1.7
+Stable tag: 3.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,29 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.2.1 2026-03-05
+* Fix: Divi 5: Fatal error when activating Theme
+* Fix: Removed errant `<html>` and `<head>` tags when Settings > Kit > Form Position = After element
+
+### 3.2.0 2026-02-26
+* Added: Minify CSS into single frontend.css resource
+* Added: Minify JS into single frontend.min.js resource
+* Added: Settings: Advanced: Option to disable Add New button for Landing Pages and Member Content
+* Updated: Blocks: Broadcasts: Improve REST API
+* Updated: Classic Editor (TinyMCE/Quick Tags): Improve REST API
+* Updated: Blocks: Use apiVersion 3 when WordPress version is 6.3 or higher
+* Fix: Classic Editor (TinyMCE/Quick Tags): CLosing tag on `color` input types was missing
+* Fix: Blocks: Specify apiVersion in registerBlockType, to honor loading apiVersion 2 or 3 blocks
+
+### 3.1.9 2026-02-17
+* Added: Settings: Tools: Campaign Monitor to Kit Form Importer: Support replacing shortcodes with single quotation marks
+* Updated: Blocks: Broadcasts: Use REST API, replacing admin-ajax.php
+* Updated: Classic Editor (TinyMCE/Quick Tags): Use REST API to fetch modal views, replacing admin-ajax.php
+* Updated: Member Content: REST API improvements
+
+### 3.1.8 2026-02-11
+* Fix: Setup Wizard: Only register form importers when on Setup Wizard screen for performance
 
 ### 3.1.7 2026-02-09
 * Added: Setup Wizard: Replace third party detected forms with Kit Forms

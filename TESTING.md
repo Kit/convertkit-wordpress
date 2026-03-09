@@ -26,13 +26,28 @@ The following Composer commands can be used:
 | `composer fix-php-coding-standards` | `composer phpcbf` | Fix PHP files to meet WordPress and PHP Coding Standards |
 | `composer php-coding-standards-on-tests` | `composer phpcs-tests` | Runs PHP Coding Standards on the /tests folder |
 | `composer fix-php-coding-standards-on-tests` | `composer phpcbf-tests` | Fix PHP files to meet PHP Coding Standards on the /tests folder |
-| `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on the entire plugin codebase |
+| `composer css-coding-standards` | `composer lint-css` | Runs WordPress CSS Coding Standards on CSS and SCSS files |
 | `composer fix-css-coding-standards` | `composer fix-css` | Fixes CSS files to meet WordPress CSS Coding Standards |
-| `composer js-coding-standards` | `composer lint-js` | Runs WordPress JS Coding Standards on the entire plugin codebase |
+| `composer build-css` | `composer build-css` | Builds the frontend CSS file |
+| `composer watch-css` | `composer watch-css` | Builds the frontend CSS file when changes are made to SCSS files |
+| `composer js-coding-standards` | `composer lint-js` | Runs WordPress JS Coding Standards on JS files |
 | `composer fix-js-coding-standards` | `composer fix-js` | Fixes JS files to meet WordPress JS Coding Standards |
+| `composer build-js` | `composer build-js` | Builds the frontend JS file |
+| `composer watch-js` | `composer watch-js` | Builds the frontend JS file when changes are made to frontend JS files |
+| `composer build` | `composer build` | Fixes, lints and builds frontend CSS and JS |
 | `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
 | `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
 | `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
+
+The following npm commands can be used, if preferred:
+
+| Command | Description |
+|---------|-------------|
+| `npm run build:css` | Builds the frontend CSS file |
+| `npm run watch:css` | Builds the frontend CSS file when changes are made to SCSS files |
+| `npm run build:js` | Builds the frontend JS file |
+| `npm run watch:js` | Builds the frontend JS file when changes are made to frontend JS files |
+| `npm run build` | Fixes, lints and builds frontend CSS and JS |
 
 ## Write (or modify) a test
 
@@ -338,6 +353,29 @@ If the function doesn't fit into any existing helper file:
 the Helper's namespace and class under the `enabled` section.
 
 Need to change how Codeception runs?  Edit the [codeception.dist.xml](codeception.dist.xml) file.
+
+## Block Testing
+
+To locally test that Kit Blocks are compatible with apiVersion 2, use the following configuration in `.env.testing`:
+
+| Environment Variable | Value |
+|----------------------|-------|
+| `WORDPRESS_DB_SQL_DUMP_FILE` | `tests/Support/Data/dump-6.2.8.sql` |
+| `WORDPRESS_V3_BLOCK_EDITOR_ENABLED` | `false` |
+
+To locally test that Kit Blocks are compatible with apiVersion 3, use the following configuration in `.env.testing`:
+
+| Environment Variable | Value |
+|----------------------|-------|
+| `WORDPRESS_DB_SQL_DUMP_FILE` | `tests/Support/Data/dump.sql` |
+| `WORDPRESS_V3_BLOCK_EDITOR_ENABLED` | `true` |
+
+GitHub Actions are configured to automatically configure the hosted runner with the applicable SQL dump file and block editor version:
+
+| Workflow File | Description |
+|---------------|-------------|
+| `tests-backward-compat.yml` | Runs tests against WordPress 6.2.8, with apiVersion `2` for blocks |
+| `tests.yml` | Runs tests against the latest WordPress version, with apiVersion `3` for blocks |
 
 ## Writing a WordPress Unit Test
 

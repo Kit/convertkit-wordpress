@@ -5,6 +5,7 @@
 /.wordpress-org
 /log
 /node_modules
+/resources/frontend/css/*.map
 /tests
 /vendor/autoload.php
 /vendor/composer

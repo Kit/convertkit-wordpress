@@ -117,6 +117,7 @@ switch ( $field['type'] ) {
 				data-shortcode="<?php echo esc_attr( $field_name ); ?>"
 				placeholder="<?php echo esc_attr( isset( $field['placeholder'] ) ? $field['placeholder'] : '' ); ?>"
 				<?php echo ( array_key_exists( 'display_if', $field ) ? ' data-display-if="' . esc_attr( $field['display_if']['key'] ) . '" data-display-if-value="' . esc_attr( $field['display_if']['value'] ) . '"' : '' ); ?>
+				/>
 		<?php
 		break;
 }
