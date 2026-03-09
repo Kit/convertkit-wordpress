@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,10 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.2.1 2026-03-05
+* Fix: Divi 5: Fatal error when activating Theme
+* Fix: Removed errant `<html>` and `<head>` tags when Settings > Kit > Form Position = After element
 
 ### 3.2.0 2026-02-26
 * Added: Minify CSS into single frontend.css resource

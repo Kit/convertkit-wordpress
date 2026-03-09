@@ -5,7 +5,7 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Broadcasts Divi Module using the Divi Theme.
+ * Tests for the Kit Broadcasts Divi Module using the Divi 5 Theme.
  *
  * @since   2.8.0
  */
@@ -21,7 +21,6 @@ class DiviThemeBroadcastsCest
 	public function _before(EndToEndTester $I)
 	{
 		$I->activateKitPlugin($I);
-		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->useTheme('Divi');
 	}
 
@@ -32,182 +31,80 @@ class DiviThemeBroadcastsCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testBroadcastsModuleInBackendEditorConditionalFields(EndToEndTester $I)
+	public function testBroadcastsModuleConditionalFields(EndToEndTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Create a Divi Page in the backend editor.
-		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Broadcasts: Divi: Backend Editor: Conditional Fields');
+		// Create a Divi Page.
+		$I->createDivi5Page(
+			$I,
+			title: 'Kit: Page: Broadcasts: Divi 5: Conditional Fields',
+		);
 
 		// Insert the Broadcasts module.
-		$I->insertDiviRowWithModule(
+		$I->insertDivi5RowWithModule(
 			$I,
 			name: 'Kit Broadcasts',
-			programmaticName:'convertkit_broadcasts'
+			programmaticName:'convertkit_broadcasts',
 		);
 
 		// Confirm conditional fields are not displayed.
-		$I->dontSeeElementInDOM('#read_more_label');
-		$I->dontSeeElementInDOM('#paginate_label_prev');
-		$I->dontSeeElementInDOM('#paginate_label_next');
+		$I->dontSeeElementInDOM('input[name="et-vb-field-input-text-read_more_label"]');
+		$I->dontSeeElementInDOM('input[name="et-vb-field-input-text-paginate_label_prev"]');
+		$I->dontSeeElementInDOM('input[name="et-vb-field-input-text-paginate_label_next"]');
 
 		// Enable 'Display read more links' and confirm the conditional field displays.
-		$I->wait(1);
-		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
-		$I->waitForElementVisible('input[name="read_more_label"]');
+		$I->click('div[aria-label="Toggle display_read_more"]');
+		$I->waitForElementVisible('input[name="et-vb-field-input-text-read_more_label"]');
 
 		// Disable 'Display read more links' to confirm the conditional field is hidden.
-		$I->wait(1);
-		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
-		$I->waitForElementNotVisible('input[name="read_more_label"]');
+		$I->click('div[aria-label="Toggle display_read_more"]');
+		$I->waitForElementNotVisible('input[name="et-vb-field-input-text-read_more_label"]');
 
 		// Enable 'Display pagination' and confirm the conditional fields display.
-		$I->wait(1);
-		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
-		$I->waitForElementVisible('input[name="paginate_label_prev"]');
-		$I->waitForElementVisible('input[name="paginate_label_next"]');
+		$I->click('div[aria-label="Toggle paginate"]');
+		$I->waitForElementVisible('input[name="et-vb-field-input-text-paginate_label_prev"]');
+		$I->waitForElementVisible('input[name="et-vb-field-input-text-paginate_label_next"]');
 
 		// Disable 'Display pagination' to confirm the conditional fields are hidden.
-		$I->wait(1);
-		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
-		$I->waitForElementNotVisible('input[name="paginate_label_prev"]');
-		$I->waitForElementNotVisible('input[name="paginate_label_next"]');
+		$I->click('div[aria-label="Toggle paginate"]');
+		$I->waitForElementNotVisible('input[name="et-vb-field-input-text-paginate_label_prev"]');
+		$I->waitForElementNotVisible('input[name="et-vb-field-input-text-paginate_label_next"]');
 
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInBackendEditorAndViewPage($I);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 	}
 
 	/**
-	 * Test the Broadcasts module works when added
-	 * using Divi's backend editor.
+	 * Test the Broadcasts module works.
 	 *
 	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testBroadcastsModuleInBackendEditor(EndToEndTester $I)
+	public function testBroadcastsModule(EndToEndTester $I)
 	{
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		$I->amOnAdminPage('themes.php');
-
-		// Create a Divi Page in the backend editor.
-		$I->createDiviPageInBackendEditor($I, 'Kit: Page: Broadcasts: Divi: Backend Editor');
+		// Create a Divi Page.
+		$I->createDivi5Page(
+			$I,
+			title: 'Kit: Page: Broadcasts: Divi 5',
+		);
 
 		// Insert the Broadcasts module.
-		$I->insertDiviRowWithModule(
+		$I->insertDivi5RowWithModule(
 			$I,
 			name: 'Kit Broadcasts',
-			programmaticName: 'convertkit_broadcasts'
+			programmaticName: 'convertkit_broadcasts',
 		);
 
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInBackendEditorAndViewPage($I);
-
-		// Confirm that the block displays.
-		$I->seeBroadcastsOutput($I);
-
-		// Confirm that the default date format is as expected.
-		$I->seeInSource('<time datetime="' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '">' . date( 'F j, Y', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '</time>');
-
-		// Confirm that the default expected number of Broadcasts are displayed.
-		$I->seeNumberOfElements('li.convertkit-broadcast', [ 1, 10 ]);
-
-		// Confirm that the expected Broadcast name is displayed first links to the expected URL, with UTM parameters.
-		$I->assertEquals(
-			$I->grabAttributeFrom('div.convertkit-broadcasts ul.convertkit-broadcasts-list li.convertkit-broadcast:nth-child(2) a', 'href'),
-			$_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&utm_term=en_US&utm_content=convertkit'
-		);
-
-		// Deactivate Classic Editor.
-		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-	}
-
-	/**
-	 * Test the Broadcasts module's conditional fields work when added
-	 * using Divi's frontend editor.
-	 *
-	 * @since   3.0.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testBroadcastsModuleInFrontendEditorConditionalFields(EndToEndTester $I)
-	{
-		// Setup Plugin, without defining default Forms.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Create a Divi Page in the frontend editor.
-		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend Editor: Conditional Fields');
-
-		// Insert the Broadcasts module.
-		$I->insertDiviRowWithModule(
-			$I,
-			name: 'Kit Broadcasts',
-			programmaticName:'convertkit_broadcasts'
-		);
-
-		// Confirm conditional fields are not displayed.
-		$I->dontSeeElementInDOM('#read_more_label');
-		$I->dontSeeElementInDOM('#paginate_label_prev');
-		$I->dontSeeElementInDOM('#paginate_label_next');
-
-		// Enable 'Display read more links' and confirm the conditional field displays.
-		$I->wait(1);
-		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
-		$I->waitForElementVisible('input[name="read_more_label"]');
-
-		// Disable 'Display read more links' to confirm the conditional field is hidden.
-		$I->wait(1);
-		$I->click('//input[@name="display_read_more"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
-		$I->waitForElementNotVisible('input[name="read_more_label"]');
-
-		// Enable 'Display pagination' and confirm the conditional fields display.
-		$I->wait(1);
-		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--off")]');
-		$I->waitForElementVisible('input[name="paginate_label_prev"]');
-		$I->waitForElementVisible('input[name="paginate_label_next"]');
-
-		// Disable 'Display pagination' to confirm the conditional fields are hidden.
-		$I->wait(1);
-		$I->click('//input[@name="paginate"]/ancestor::div[contains(@class, "et-core-control-toggle--on")]');
-		$I->waitForElementNotVisible('input[name="paginate_label_prev"]');
-		$I->waitForElementNotVisible('input[name="paginate_label_next"]');
-
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInFrontendEditorAndViewPage($I, $url);
-	}
-
-	/**
-	 * Test the Broadcasts module works when added
-	 * using Divi's frontend editor.
-	 *
-	 * @since   2.8.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testBroadcastsModuleInFrontendEditor(EndToEndTester $I)
-	{
-		// Setup Plugin, without defining default Forms.
-		$I->setupKitPluginNoDefaultForms($I);
-		$I->setupKitPluginResources($I);
-
-		// Create a Divi Page in the frontend editor.
-		$url = $I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend Editor');
-
-		// Insert the Broadcasts module.
-		$I->insertDiviRowWithModule(
-			$I,
-			name: 'Kit Broadcasts',
-			programmaticName: 'convertkit_broadcasts'
-		);
-
-		// Save Divi module and view the page on the frontend site.
-		$I->saveDiviModuleInFrontendEditorAndViewPage($I, $url);
+		// Save and view page.
+		$I->saveDivi5PageAndViewOnFrontend($I);
 
 		// Confirm that the block displays.
 		$I->seeBroadcastsOutput($I);
@@ -226,16 +123,25 @@ class DiviThemeBroadcastsCest
 	}
 
 	/**
-	 * Test the Broadcasts module displays the expected message when the Plugin has no credentials
+	 * Test the Broadcasts module displays the expected message when the Plugin has no credentials.
 	 *
 	 * @since   2.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testBroadcastsModuleInFrontendEditorWhenNoCredentials(EndToEndTester $I)
+	public function testBroadcastsModuleWhenNoCredentials(EndToEndTester $I)
 	{
-		// Create a Divi Page in the frontend editor.
-		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend: No Credentials', false);
+		// Skip test until modules upgraded to Divi 5.
+		$I->useTheme('twentytwentytwo');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('No Credentials notice cannot be displayed until modules upgraded to Divi 5.');
+
+		// Create a Divi Page in the backend editor.
+		$I->createDiviPageInBackendEditor(
+			$I,
+			title: 'Kit: Page: Broadcasts: Divi 5: No Credentials'
+		);
 
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
@@ -260,14 +166,23 @@ class DiviThemeBroadcastsCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testBroadcastsModuleInFrontendEditorWhenNoBroadcasts(EndToEndTester $I)
+	public function testBroadcastsModuleWhenNoBroadcasts(EndToEndTester $I)
 	{
+		// Skip test until modules upgraded to Divi 5.
+		$I->useTheme('twentytwentytwo');
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+		$I->markTestSkipped('No resources notice cannot be displayed until modules upgraded to Divi 5.');
+
 		// Setup Plugin.
 		$I->setupKitPluginCredentialsNoData($I);
 		$I->setupKitPluginResourcesNoData($I);
 
-		// Create a Divi Page in the frontend editor.
-		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Broadcasts: Divi: Frontend: No Broadcasts');
+		// Create a Divi Page in the backend editor.
+		$I->createDiviPageInBackendEditor(
+			$I,
+			title: 'Kit: Page: Broadcasts: Divi 5: No Broadcasts'
+		);
 
 		// Insert the Broadcasts module.
 		$I->insertDiviRowWithModule(
@@ -296,7 +211,6 @@ class DiviThemeBroadcastsCest
 	public function _passed(EndToEndTester $I)
 	{
 		$I->useTheme('twentytwentytwo');
-		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}

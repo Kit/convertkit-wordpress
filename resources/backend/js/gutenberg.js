@@ -1148,7 +1148,7 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
 				PluginPrePublishPanel,
 				{
 					className: 'convertkit-pre-publish-actions',
-					title: 'ConvertKit',
+					title: 'Kit',
 					initialOpen: true,
 				},
 				rows
