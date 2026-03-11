@@ -45,12 +45,6 @@ class PageFormBlockEditorCest
 			title: 'Kit: Page: Form: Default: None'
 		);
 
-		// Configure Plugin Sidebar's Form setting = Default.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'Default'
-		);
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -76,12 +70,6 @@ class PageFormBlockEditorCest
 		$I->addGutenbergPage(
 			$I,
 			title: 'Kit: Page: Form: Default'
-		);
-
-		// Configure Plugin Sidebar's Form setting = Default.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -120,12 +108,6 @@ class PageFormBlockEditorCest
 
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Page content');
-
-		// Configure Plugin Sidebar's Form setting = Default.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'Default'
-		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -167,12 +149,6 @@ class PageFormBlockEditorCest
 
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Page content');
-
-		// Configure Plugin Sidebar's Form setting = Default.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'Default'
-		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -474,12 +450,6 @@ class PageFormBlockEditorCest
 		$I->addGutenbergPage(
 			$I,
 			title: 'Kit: Page: Form: Legacy: Default'
-		);
-
-		// Configure Plugin Sidebar's Form setting = Default.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
