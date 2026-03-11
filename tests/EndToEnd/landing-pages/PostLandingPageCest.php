@@ -52,15 +52,6 @@ class PostLandingPageCest
 		// Check that no Landing Page option is displayed.
 		$I->dontSeeElementInDOM('#wp-convertkit-landing_page');
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 

@@ -77,15 +77,6 @@ class PageFormCest
 			]
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -111,15 +102,6 @@ class PageFormCest
 		$I->addGutenbergPage(
 			$I,
 			title: 'Kit: Page: Form: Default'
-		);
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -158,15 +140,6 @@ class PageFormCest
 
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Page content');
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -208,15 +181,6 @@ class PageFormCest
 
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Page content');
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -518,15 +482,6 @@ class PageFormCest
 		$I->addGutenbergPage(
 			$I,
 			title: 'Kit: Page: Form: Legacy: Default'
-		);
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
 		);
 
 		// Publish and view the Page on the frontend site.

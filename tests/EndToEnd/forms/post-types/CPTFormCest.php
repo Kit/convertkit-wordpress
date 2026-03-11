@@ -148,15 +148,6 @@ class CPTFormCest
 			]
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
-
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -188,15 +179,6 @@ class CPTFormCest
 			$I,
 			postType: 'article',
 			title: 'Kit: CPT: Form: Default'
-		);
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
 		);
 
 		// Publish and view the CPT on the frontend site.
@@ -238,15 +220,6 @@ class CPTFormCest
 		// Add paragraph to CPT.
 		$I->addGutenbergParagraphBlock($I, 'CPT content');
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
-
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -285,15 +258,6 @@ class CPTFormCest
 
 		// Add paragraph to CPT.
 		$I->addGutenbergParagraphBlock($I, 'CPT content');
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
 
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -601,15 +565,6 @@ class CPTFormCest
 			$I,
 			postType: 'article',
 			title: 'Kit: CPT: Form: Legacy: Default'
-		);
-
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'Default' ],
-			]
 		);
 
 		// Publish and view the CPT on the frontend site.
