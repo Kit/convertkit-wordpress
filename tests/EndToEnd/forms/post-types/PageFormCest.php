@@ -550,7 +550,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Inline Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -590,7 +590,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -638,7 +638,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -688,7 +688,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -737,7 +737,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -789,7 +789,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -843,7 +843,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -890,7 +890,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Modal Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -938,7 +938,7 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Legacy Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
