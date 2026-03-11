@@ -22,6 +22,7 @@ class PageFormCest
 	{
 		// Activate Kit plugin.
 		$I->activateKitPlugin($I);
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
@@ -61,8 +62,8 @@ class PageFormCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: Default: None'
 		);
@@ -78,7 +79,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
@@ -98,14 +99,14 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: Default'
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -132,17 +133,17 @@ class PageFormCest
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: Default: Before Content'
 		);
 
 		// Add paragraph to Page.
-		$I->addGutenbergParagraphBlock($I, 'Page content');
+		$I->addClassicEditorParagraph($I, 'Page content');
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM after the Page content.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -173,17 +174,17 @@ class PageFormCest
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: Default: Before and After Content'
 		);
 
 		// Add paragraph to Page.
-		$I->addGutenbergParagraphBlock($I, 'Page content');
+		$I->addClassicEditorParagraph($I, 'Page content');
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that two Kit Forms are output in the DOM before and after the Page content.
 		$I->seeFormOutput(
@@ -217,7 +218,7 @@ class PageFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
+		$pageID = $I->addClassicEditorPageToDatabase(
 			$I,
 			title: 'Kit: Page: Form: Default: After 3rd Paragraph Element'
 		);
@@ -271,7 +272,7 @@ class PageFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
+		$pageID = $I->addClassicEditorPageToDatabase(
 			$I,
 			title: 'Kit: Page: Non-Inline Form: Default: After 3rd Paragraph Element'
 		);
@@ -320,7 +321,7 @@ class PageFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
+		$pageID = $I->addClassicEditorPageToDatabase(
 			$I,
 			title: 'Kit: Page: Form: Default: After 2nd H2 Element'
 		);
@@ -374,7 +375,7 @@ class PageFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
+		$pageID = $I->addClassicEditorPageToDatabase(
 			$I,
 			title: 'Kit: Page: Form: Default: After 2nd Image Element'
 		);
@@ -428,7 +429,7 @@ class PageFormCest
 		$I->setupKitPluginResources($I);
 
 		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
+		$pageID = $I->addClassicEditorPageToDatabase(
 			$I,
 			title: 'Kit: Page: Form: Default: After 9th Paragraph Element'
 		);
@@ -478,14 +479,14 @@ class PageFormCest
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: Legacy: Default'
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the Kit Default Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
@@ -508,8 +509,8 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: None'
 		);
@@ -524,7 +525,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
@@ -544,8 +545,8 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
@@ -560,7 +561,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -584,8 +585,8 @@ class PageFormCest
 		// Activate Autoptimize Plugin.
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
 		);
@@ -600,7 +601,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -632,8 +633,8 @@ class PageFormCest
 		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
 		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
 		);
@@ -648,7 +649,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -682,8 +683,8 @@ class PageFormCest
 		$I->amOnAdminPage('admin.php?page=jetpack-boost');
 		$I->click('#inspector-toggle-control-1');
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
 		);
@@ -698,7 +699,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -731,8 +732,8 @@ class PageFormCest
 		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
 		$I->enableLiteSpeedCacheLoadJSDeferred($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
 		);
@@ -747,7 +748,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -783,8 +784,8 @@ class PageFormCest
 		// Enable Siteground Speed Optimizer's "Combine JavaScript Files" setting.
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
 		);
@@ -799,7 +800,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
@@ -837,8 +838,8 @@ class PageFormCest
 			]
 		);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
 		);
@@ -853,7 +854,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -884,8 +885,8 @@ class PageFormCest
 		// Configure WP Rocket.
 		$I->enableWPRocketDelayJS($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
 		);
@@ -900,7 +901,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -932,8 +933,8 @@ class PageFormCest
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
@@ -948,7 +949,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the Kit Legacy Form displays.
 		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
@@ -1017,6 +1018,7 @@ class PageFormCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
