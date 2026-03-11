@@ -70,20 +70,17 @@ class PageFormCest
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
 		$I->checkSelectFormOptionOrder(
 			$I,
-			selectElement: '#wp-convertkit-form',
+			selectElement: '.editor-sidebar #inspector-select-control-0',
 			prependOptions: [
 				'Default',
 				'None',
 			]
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Default.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
+			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -113,13 +110,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: Default'
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Default.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
+			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -159,13 +153,10 @@ class PageFormCest
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Page content');
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Default.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
+			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -209,13 +200,10 @@ class PageFormCest
 		// Add paragraph to Page.
 		$I->addGutenbergParagraphBlock($I, 'Page content');
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Default.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
+			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -520,13 +508,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: Legacy: Default'
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Default.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
+			form: 'Default'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -559,13 +544,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: None'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = None.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -595,13 +577,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Inline Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -635,13 +614,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -683,13 +659,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -733,13 +706,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -782,13 +752,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -834,13 +801,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -888,13 +852,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -935,13 +896,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Modal Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -983,13 +941,10 @@ class PageFormCest
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		// Configure Plugin Sidebar's Form setting = Legacy Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
