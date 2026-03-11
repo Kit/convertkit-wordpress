@@ -558,7 +558,7 @@ class PostFormCest
 			title: 'Kit: Post: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Inline Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
@@ -603,7 +603,7 @@ class PostFormCest
 			title: 'Kit: Post: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
 
-		// Configure metabox's Form setting = None.
+		// Configure metabox's Form setting = Legacy Form.
 		$I->configureMetaboxSettings(
 			$I,
 			metabox: 'wp-convertkit-meta-box',
