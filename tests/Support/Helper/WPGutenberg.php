@@ -612,6 +612,52 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Configure the settings for the Plugin sidebar in Gutenberg.
+	 *
+	 * @since   3.2.2
+	 *
+	 * @param   EndToEndTester $I                EndToEnd Tester.
+	 * @param   string         $form             Form ID.
+	 * @param   string         $landingPage      Landing Page ID.
+	 * @param   string         $tag              Tag ID.
+	 * @param   string         $restrictContent  Restrict Content ID.
+	 */
+	public function configurePluginSidebarSettings($I, $form = false, $landingPage = false, $tag = false, $restrictContent = false)
+	{
+		// Click the Plugin sidebar button.
+		$I->waitForElementVisible('button[aria-controls="convertkit-post-settings:post-settings"]');
+		$I->click('button[aria-controls="convertkit-post-settings:post-settings"]');
+
+		// Wait for the Plugin sidebar to be fully loaded.
+		$I->waitForElementVisible('.editor-sidebar');
+
+		// Gutenberg doesn't expose the field names as IDs, so we need to use the index.
+		// Form.
+		if ( $form ) {
+			$I->waitForElementVisible('.editor-sidebar #inspector-select-control-0');
+			$I->selectOption('.editor-sidebar #inspector-select-control-0', $form);
+		}
+
+		// Landing Page.
+		if ( $landingPage ) {
+			$I->selectOption('#convertkit-post-settings:post-settings #inspector-select-control-1', $landingPage);
+		}
+
+		// Tag.
+		if ( $tag ) {
+			$I->selectOption('#convertkit-post-settings:post-settings #inspector-select-control-2', $tag);
+		}
+
+		// Restrict Content.
+		if ( $restrictContent ) {
+			$I->selectOption('#convertkit-post-settings:post-settings #inspector-select-control-3', $restrictContent);
+		}
+
+		// Close the Plugin sidebar by opening the Page sidebar.
+		$I->click('.interface-pinned-items button[aria-label="Settings"]');
+	}
+
+	/**
 	 * Add a Page, Post or Custom Post Type directly to the WordPress database,
 	 * with dummy content used for testing.
 	 *
