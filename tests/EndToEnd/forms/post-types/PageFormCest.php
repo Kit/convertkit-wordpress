@@ -5,7 +5,7 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for Kit Forms on WordPress Pages.
+ * Tests the Form setting on WordPress Pages when using the Classic Editor.
  *
  * @since   1.9.6
  */
