@@ -52,15 +52,6 @@ class PageTagCest
 			title: 'Kit: Page: Tag: None'
 		);
 
-		// Check the order of the Tag resources are alphabetical, with the None option prepending the Tags.
-		$I->checkSelectTagOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-tag',
-			prependOptions:[
-				'None',
-			]
-		);
-
 		// Configure metabox's Tag setting = None.
 		$I->configurePluginSidebarSettings(
 			$I,

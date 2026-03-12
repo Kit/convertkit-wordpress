@@ -91,7 +91,7 @@ class RestrictContentProductCPTCest
 		$I->dontSeeElementInDOM('#wp-convertkit-meta-box');
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Deactivate Classic Editor Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');

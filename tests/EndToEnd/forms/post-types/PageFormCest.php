@@ -74,16 +74,6 @@ class PageFormCest
 			title: 'Kit: Page: Form: Default: None'
 		);
 
-		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 

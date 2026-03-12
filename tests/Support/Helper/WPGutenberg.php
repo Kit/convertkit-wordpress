@@ -673,29 +673,30 @@ class WPGutenberg extends \Codeception\Module
 		// Open the Plugin sidebar settings.
 		$I->openPluginSidebarSettings($I);
 
-		// Gutenberg doesn't expose the field names as IDs, so we need to use the index.
+		// Gutenberg doesn't expose the field names as IDs.
+		// The index (#inspector-select-control-*) also changes between WordPress versions.
 		// Form.
 		if ( $form ) {
-			$I->waitForElementVisible('.editor-sidebar #inspector-select-control-0');
-			$I->selectOption('.editor-sidebar #inspector-select-control-0', $form);
+			$I->waitForElementVisible('//label[text()="Form"]/following::select[1]');
+			$I->selectOption('//label[text()="Form"]/following::select[1]', $form);
 		}
 
 		// Landing Page.
 		if ( $landingPage ) {
-			$I->waitForElementVisible('.editor-sidebar #inspector-select-control1');
-			$I->selectOption('.editor-sidebar #inspector-select-control-1', $landingPage);
+			$I->waitForElementVisible('//label[text()="Landing Page"]/following::select[1]');
+			$I->selectOption('//label[text()="Landing Page"]/following::select[1]', $landingPage);
 		}
 
 		// Tag.
 		if ( $tag ) {
-			$I->waitForElementVisible('.editor-sidebar #inspector-select-control-2');
-			$I->selectOption('.editor-sidebar #inspector-select-control-2', $tag);
+			$I->waitForElementVisible('//label[text()="Tag"]/following::select[1]');
+			$I->selectOption('//label[text()="Tag"]/following::select[1]', $tag);
 		}
 
 		// Restrict Content.
 		if ( $restrictContent ) {
-			$I->waitForElementVisible('.editor-sidebar #inspector-select-control-3');
-			$I->selectOption('.editor-sidebar #inspector-select-control-3', $restrictContent);
+			$I->waitForElementVisible('//label[text()="Restrict Content"]/following::select[1]');
+			$I->selectOption('//label[text()="Restrict Content"]/following::select[1]', $restrictContent);
 		}
 
 		// Close the Plugin sidebar settings.
@@ -716,26 +717,27 @@ class WPGutenberg extends \Codeception\Module
 		// Open the Plugin sidebar settings.
 		$I->openPluginSidebarSettings($I);
 
-		// Gutenberg doesn't expose the field names as IDs, so we need to use the index.
+		// Gutenberg doesn't expose the field names as IDs.
+		// The index (#inspector-select-control-*) also changes between WordPress versions.
 		switch ($setting) {
 			case 'form':
-				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-0');
-				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-0', $value);
+				$I->waitForElementVisible('//label[text()="Form"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Form"]/following::select[1]', $value);
 				break;
 
 			case 'landing_page':
-				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-1');
-				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-1', $value);
+				$I->waitForElementVisible('//label[text()="Landing Page"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Landing Page"]/following::select[1]', $value);
 				break;
 
 			case 'tag':
-				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-2');
-				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-2', $value);
+				$I->waitForElementVisible('//label[text()="Tag"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Tag"]/following::select[1]', $value);
 				break;
 
 			case 'restrict_content':
-				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-3');
-				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-3', $value);
+				$I->waitForElementVisible('//label[text()="Restrict Content"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Restrict Content"]/following::select[1]', $value);
 				break;
 		}
 
@@ -753,8 +755,8 @@ class WPGutenberg extends \Codeception\Module
 	public function openPluginSidebarSettings($I)
 	{
 		// Click the Plugin sidebar button.
-		$I->waitForElementVisible('button[aria-controls="convertkit-post-settings:post-settings"]');
-		$I->click('button[aria-controls="convertkit-post-settings:post-settings"]');
+		$I->waitForElementVisible('button[aria-label="Kit"]');
+		$I->click('button[aria-label="Kit"]');
 
 		// Wait for the Plugin sidebar to be fully loaded.
 		$I->waitForElementVisible('.editor-sidebar');
