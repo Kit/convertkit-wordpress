@@ -8,8 +8,8 @@
 
 /**
  * Registers a metabox on Posts, Pages and public facing Custom Post Types
- * and saves its settings when the Post is saved in the WordPress Administration
- * interface.
+ * that do not use the block editor, saving settings when the Post is saved
+ * in the WordPress Administration interface.
  *
  * @package ConvertKit
  * @author ConvertKit
@@ -27,7 +27,7 @@ class ConvertKit_Admin_Post {
 		add_filter( 'views_edit-page', array( $this, 'output_wp_list_table_buttons' ) );
 
 		add_action( 'post_submitbox_misc_actions', array( $this, 'output_pre_publish_actions' ) );
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 		add_action( 'save_post', array( $this, 'save_post_meta' ) );
 
 	}
@@ -181,13 +181,19 @@ class ConvertKit_Admin_Post {
 	 *
 	 * @since   1.9.6
 	 *
-	 * @param   string $post_type  Post Type.
+	 * @param   string  $post_type  Post Type.
+	 * @param   WP_Post $post       Post.
 	 */
-	public function add_meta_boxes( $post_type ) {
+	public function add_meta_boxes( $post_type, $post ) {
 
 		// Don't register the meta box if this Post Type isn't supported.
 		$supported_post_types = convertkit_get_supported_post_types();
 		if ( ! in_array( $post_type, $supported_post_types, true ) ) {
+			return;
+		}
+
+		// Don't register the meta box if the block editor is being used, as register_post_meta() handles saving post meta.
+		if ( function_exists( 'use_block_editor_for_post' ) && use_block_editor_for_post( $post ) ) {
 			return;
 		}
 
@@ -258,6 +264,11 @@ class ConvertKit_Admin_Post {
 
 		// Bail if this is a post revision.
 		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		// Bail if the block editor is being used, as register_post_meta() handles saving post meta.
+		if ( function_exists( 'use_block_editor_for_post' ) && use_block_editor_for_post( $post_id ) ) {
 			return;
 		}
 

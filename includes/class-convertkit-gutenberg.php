@@ -32,6 +32,9 @@ class ConvertKit_Gutenberg {
 		// Register Gutenberg Blocks.
 		add_action( 'init', array( $this, 'add_blocks' ) );
 
+		// Register Gutenberg Plugin Sidebars.
+		add_action( 'init', array( $this, 'add_plugin_sidebars' ) );
+
 		// Register REST API routes.
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 
@@ -188,6 +191,63 @@ class ConvertKit_Gutenberg {
 	}
 
 	/**
+	 * Registers post meta for any registered plugin sidebars using register_post_meta(),
+	 * so data is saved when using the Gutenberg editor.
+	 *
+	 * @since   3.3.0
+	 */
+	public function add_plugin_sidebars() {
+
+		// Get plugin sidebars.
+		$plugin_sidebars = convertkit_get_plugin_sidebars();
+
+		// Bail if no plugin sidebars are available.
+		if ( ! count( $plugin_sidebars ) ) {
+			return;
+		}
+
+		foreach ( $plugin_sidebars as $plugin_sidebar ) {
+			register_post_meta(
+				'',
+				$plugin_sidebar['meta_key'],
+				array(
+					'show_in_rest'      => array(
+						'schema' => array(
+							'type'       => 'object',
+							'properties' => $plugin_sidebar['attributes'],
+						),
+					),
+					'single'            => true,
+					'type'              => 'object',
+					'default'           => $plugin_sidebar['default_values'],
+					'sanitize_callback' => function ( $value ) use ( $plugin_sidebar ) {
+
+						// If the value is not an array, return the default values.
+						if ( ! is_array( $value ) ) {
+							return $plugin_sidebar['default_values'];
+						}
+
+						// Iterate through the attributes and sanitize the value.
+						foreach ( $plugin_sidebar['attributes'] as $key => $attribute ) {
+							$value[ $key ] = sanitize_text_field( $value[ $key ] ?? $value['default'] );
+						}
+
+						// Return the sanitized value.
+						return $value;
+
+					},
+					'auth_callback'     => function () use ( $plugin_sidebar ) {
+
+						return current_user_can( $plugin_sidebar['minimum_capability'] );
+
+					},
+				)
+			);
+		}
+
+	}
+
+	/**
 	 * Determines the block API version to use for registering blocks.
 	 *
 	 * @since   3.2.0
@@ -214,6 +274,7 @@ class ConvertKit_Gutenberg {
 		return absint( $block_api_version );
 
 	}
+
 	/**
 	 * Enqueues scripts for Gutenberg blocks in the editor view.
 	 *
@@ -233,13 +294,23 @@ class ConvertKit_Gutenberg {
 		$blocks              = convertkit_get_blocks();
 		$block_formatters    = convertkit_get_block_formatters();
 		$pre_publish_actions = convertkit_get_pre_publish_actions();
+		$plugin_sidebars     = convertkit_get_plugin_sidebars();
 
 		// Enqueue Gutenberg Javascript, and set the blocks data.
 		wp_enqueue_script( 'convertkit-gutenberg', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/gutenberg.js', array( 'jquery' ), CONVERTKIT_PLUGIN_VERSION, true );
 		wp_localize_script( 'convertkit-gutenberg', 'convertkit_blocks', $blocks );
+
+		// If pre-publish actions are available, set the data.
 		if ( count( $pre_publish_actions ) ) {
 			wp_localize_script( 'convertkit-gutenberg', 'convertkit_pre_publish_actions', $pre_publish_actions );
 		}
+
+		// If plugin sidebars are available, set the data.
+		if ( count( $plugin_sidebars ) ) {
+			wp_localize_script( 'convertkit-gutenberg', 'convertkit_plugin_sidebars', $plugin_sidebars );
+		}
+
+		// Set the Gutenberg data.
 		wp_localize_script(
 			'convertkit-gutenberg',
 			'convertkit_gutenberg',
