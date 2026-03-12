@@ -208,17 +208,17 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'page_form_position'               => 'after_element',
-				'page_form_position_element'       => 'p',
-				'page_form_position_element_index' => 3,
-				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'post_form_position'               => 'after_element',
-				'post_form_position_element'       => 'p',
-				'post_form_position_element_index' => 3,
-				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'article_form_position'            => 'after_element',
-				'article_form_position_element'    => 'p',
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'p',
+				'page_form_position_element_index'    => 3,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'p',
+				'post_form_position_element_index'    => 3,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'p',
 				'article_form_position_element_index' => 3,
 			]
 		);
@@ -274,17 +274,17 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
-				'page_form_position'               => 'after_element',
-				'page_form_position_element'       => 'p',
-				'page_form_position_element_index' => 3,
-				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
-				'post_form_position'               => 'after_element',
-				'post_form_position_element'       => 'p',
-				'post_form_position_element_index' => 3,
-				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
-				'article_form_position'            => 'after_element',
-				'article_form_position_element'    => 'p',
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'p',
+				'page_form_position_element_index'    => 3,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'p',
+				'post_form_position_element_index'    => 3,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'p',
 				'article_form_position_element_index' => 3,
 			]
 		);
@@ -335,17 +335,17 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'page_form_position'               => 'after_element',
-				'page_form_position_element'       => 'h2',
-				'page_form_position_element_index' => 2,
-				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'post_form_position'               => 'after_element',
-				'post_form_position_element'       => 'h2',
-				'post_form_position_element_index' => 2,
-				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'article_form_position'            => 'after_element',
-				'article_form_position_element'    => 'h2',
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'h2',
+				'page_form_position_element_index'    => 2,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'h2',
+				'post_form_position_element_index'    => 2,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'h2',
 				'article_form_position_element_index' => 2,
 			]
 		);
@@ -401,17 +401,17 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'page_form_position'               => 'after_element',
-				'page_form_position_element'       => 'img',
-				'page_form_position_element_index' => 2,
-				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'post_form_position'               => 'after_element',
-				'post_form_position_element'       => 'img',
-				'post_form_position_element_index' => 2,
-				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'article_form_position'            => 'after_element',
-				'article_form_position_element'    => 'img',
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'img',
+				'page_form_position_element_index'    => 2,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'img',
+				'post_form_position_element_index'    => 2,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'img',
 				'article_form_position_element_index' => 2,
 			]
 		);
@@ -467,17 +467,17 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'page_form_position'               => 'after_element',
-				'page_form_position_element'       => 'p',
-				'page_form_position_element_index' => 9,
-				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'post_form_position'               => 'after_element',
-				'post_form_position_element'       => 'p',
-				'post_form_position_element_index' => 9,
-				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'article_form_position'            => 'after_element',
-				'article_form_position_element'    => 'p',
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'p',
+				'page_form_position_element_index'    => 9,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'p',
+				'post_form_position_element_index'    => 9,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'p',
 				'article_form_position_element_index' => 9,
 			]
 		);
@@ -531,11 +531,11 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
-				'page_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
-				'post_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
-				'article_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
+				'page_form'    => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'post_form'    => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'article_form' => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 			]
 		);
 		$I->setupKitPluginResources($I);
@@ -649,11 +649,11 @@ class FormBlockEditorCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
-				'page_form'  => '',
-				'post_form'  => '',
-				'article_form'  => '',
+				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
+				'page_form'    => '',
+				'post_form'    => '',
+				'article_form' => '',
 			]
 		);
 		$I->setupKitPluginResources($I);
