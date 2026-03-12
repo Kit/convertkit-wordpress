@@ -585,6 +585,52 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Saves an existing published Page, Post or Custom Post Type,
+	 * loading it on the frontend web site.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I     EndToEnd Tester.
+	 * @return  string           $url   Page / Post URL.
+	 */
+	public function saveAndViewGutenbergPage($I)
+	{
+		// Save Gutenberg Page.
+		$url = $I->saveGutenbergPage($I);
+
+		// Load the Page on the frontend site.
+		$I->amOnUrl($url);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Return URL.
+		return $url;
+	}
+
+	/**
+	 * Save an existing published Page, Post or Custom Post Type.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function saveGutenbergPage($I)
+	{
+		// Click the Save button.
+		$I->click('.editor-post-publish-button__button');
+
+		// Wait for confirmation that the Page saved.
+		$I->waitForElementVisible('.components-external-link.components-snackbar__action', 30);
+
+		// Return URL from 'View page' link.
+		return $I->grabAttributeFrom('.components-external-link.components-snackbar__action', 'href');
+	}
+
+	/**
 	 * Clicks the Publish button the pre-publish checks sidebar, confirming the Page, Post or Custom Post Type
 	 * published and returning its URL.
 	 *
@@ -624,12 +670,8 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function configurePluginSidebarSettings($I, $form = false, $landingPage = false, $tag = false, $restrictContent = false)
 	{
-		// Click the Plugin sidebar button.
-		$I->waitForElementVisible('button[aria-controls="convertkit-post-settings:post-settings"]');
-		$I->click('button[aria-controls="convertkit-post-settings:post-settings"]');
-
-		// Wait for the Plugin sidebar to be fully loaded.
-		$I->waitForElementVisible('.editor-sidebar');
+		// Open the Plugin sidebar settings.
+		$I->openPluginSidebarSettings($I);
 
 		// Gutenberg doesn't expose the field names as IDs, so we need to use the index.
 		// Form.
@@ -640,19 +682,93 @@ class WPGutenberg extends \Codeception\Module
 
 		// Landing Page.
 		if ( $landingPage ) {
-			$I->selectOption('#convertkit-post-settings:post-settings #inspector-select-control-1', $landingPage);
+			$I->waitForElementVisible('.editor-sidebar #inspector-select-control1');
+			$I->selectOption('.editor-sidebar #inspector-select-control-1', $landingPage);
 		}
 
 		// Tag.
 		if ( $tag ) {
-			$I->selectOption('#convertkit-post-settings:post-settings #inspector-select-control-2', $tag);
+			$I->waitForElementVisible('.editor-sidebar #inspector-select-control-2');
+			$I->selectOption('.editor-sidebar #inspector-select-control-2', $tag);
 		}
 
 		// Restrict Content.
 		if ( $restrictContent ) {
-			$I->selectOption('#convertkit-post-settings:post-settings #inspector-select-control-3', $restrictContent);
+			$I->waitForElementVisible('.editor-sidebar #inspector-select-control-3');
+			$I->selectOption('.editor-sidebar #inspector-select-control-3', $restrictContent);
 		}
 
+		// Close the Plugin sidebar settings.
+		$I->closePluginSidebarSettings($I);
+	}
+
+	/**
+	 * Asserts that the given plugin sidebar setting is set to the given value.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 * @param   string         $setting                Setting Name (e.g. 'form').
+	 * @param   string         $value                  Setting Value (e.g. '12345').
+	 */
+	public function seePluginSidebarSetting($I, $setting, $value)
+	{
+		// Open the Plugin sidebar settings.
+		$I->openPluginSidebarSettings($I);
+
+		// Gutenberg doesn't expose the field names as IDs, so we need to use the index.
+		switch ($setting) {
+			case 'form':
+				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-0');
+				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-0', $value);
+				break;
+
+			case 'landing_page':
+				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-1');
+				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-1', $value);
+				break;
+
+			case 'tag':
+				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-2');
+				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-2', $value);
+				break;
+
+			case 'restrict_content':
+				$I->waitForElementVisible('.editor-sidebar #inspector-select-control-3');
+				$I->seeOptionIsSelected('.editor-sidebar #inspector-select-control-3', $value);
+				break;
+		}
+
+		// Close the Plugin sidebar settings.
+		$I->closePluginSidebarSettings($I);
+	}
+
+	/**
+	 * Opens the Plugin sidebar settings.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function openPluginSidebarSettings($I)
+	{
+		// Click the Plugin sidebar button.
+		$I->waitForElementVisible('button[aria-controls="convertkit-post-settings:post-settings"]');
+		$I->click('button[aria-controls="convertkit-post-settings:post-settings"]');
+
+		// Wait for the Plugin sidebar to be fully loaded.
+		$I->waitForElementVisible('.editor-sidebar');
+	}
+
+	/**
+	 * Closes the Plugin sidebar settings.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function closePluginSidebarSettings($I)
+	{
 		// Close the Plugin sidebar by opening the Page sidebar.
 		$I->click('.interface-pinned-items button[aria-label="Settings"]');
 	}
