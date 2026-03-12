@@ -54,12 +54,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting = None.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', 'None' ],
-			]
+			landingPage: 'None'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -87,12 +84,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -137,12 +131,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -182,12 +173,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_CHARACTER_ENCODING_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_CHARACTER_ENCODING_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -220,12 +208,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -263,12 +248,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -368,12 +350,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -435,12 +414,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -493,12 +469,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.
@@ -570,12 +543,9 @@ class PageLandingPageCest
 		);
 
 		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Get Landing Page ID.

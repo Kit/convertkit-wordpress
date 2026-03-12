@@ -62,12 +62,9 @@ class PageTagCest
 		);
 
 		// Configure metabox's Tag setting = None.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'tag' => [ 'select2', 'None' ],
-			]
+			tag: 'None',
 		);
 
 		// Publish Page.
@@ -108,12 +105,9 @@ class PageTagCest
 		);
 
 		// Configure metabox's Tag setting to the value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'tag' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
-			]
+			tag: $_ENV['CONVERTKIT_API_TAG_NAME']
 		);
 
 		// Publish Page.
@@ -151,12 +145,9 @@ class PageTagCest
 		);
 
 		// Configure metabox's Tag setting to the value specified in the .env file.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'tag' => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
-			]
+			tag: $_ENV['CONVERTKIT_API_TAG_NAME']
 		);
 
 		// Publish Page.

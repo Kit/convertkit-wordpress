@@ -112,13 +112,10 @@ class ReviewRequestCest
 			title: 'Kit: Page: Test Review Request on Save with Form Specified'
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure metabox's Form setting = Inline Form.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -155,13 +152,10 @@ class ReviewRequestCest
 			title: 'Kit: Page: Test Review Request on Save with Landing Page Specified'
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
+		// Configure metabox's Landing Page setting.
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME'] ],
-			]
+			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
