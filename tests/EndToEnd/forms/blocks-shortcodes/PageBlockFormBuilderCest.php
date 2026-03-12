@@ -84,12 +84,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -188,12 +185,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -304,12 +298,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -412,12 +403,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -519,12 +507,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -625,12 +610,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -761,12 +743,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page, setting the Form setting to the value specified in the .env file.
@@ -915,12 +894,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Confirm the Form Field blocks cannot be added, as we are not within the Form Builder block.
@@ -974,12 +950,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add the Form Builder block.
@@ -1031,12 +1004,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -1098,12 +1068,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -1154,12 +1121,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.

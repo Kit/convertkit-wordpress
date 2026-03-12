@@ -32,12 +32,9 @@ class Divi5Theme extends \Codeception\Module
 
 		// Configure metabox's Form setting = None, ensuring we only test the Divi block.
 		if ($configureMetaBox) {
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				'wp-convertkit-meta-box',
-				[
-					'form' => [ 'select2', 'None' ],
-				]
+				form: 'None'
 			);
 		}
 

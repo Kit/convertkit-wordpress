@@ -39,8 +39,11 @@ class PostLandingPageCest
 	 */
 	public function testAddNewPostDoesNotDisplayLandingPageOption(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage(
+		$I->addClassicEditorPage(
 			$I,
 			postType: 'post',
 			title: 'Kit: Post: Landing Page'
@@ -57,6 +60,9 @@ class PostLandingPageCest
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
