@@ -32,7 +32,8 @@ class CPTFormCest
 	}
 
 	/**
-	 * Test that the Articles > Add New screen has expected a11y output, such as label[for].
+	 * Test that the Articles > Add New screen has expected a11y output, such as label[for],
+	 * when using the Classic Editor.
 	 *
 	 * @since   2.4.3
 	 *
@@ -40,6 +41,9 @@ class CPTFormCest
 	 */
 	public function testAccessibility(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
@@ -50,6 +54,9 @@ class CPTFormCest
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="wp-convertkit-form">');
 		$I->seeInSource('<label for="wp-convertkit-tag">');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
@@ -63,8 +70,11 @@ class CPTFormCest
 	 */
 	public function testNoOptionsOrOutputOnPrivateCustomPostType(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Add a Private CPT using the Gutenberg editor.
-		$I->addGutenbergPage(
+		$I->addClassicEditorPage(
 			$I,
 			postType: 'private',
 			title: 'Kit: Private: Form: None'
@@ -81,6 +91,9 @@ class CPTFormCest
 
 		// Confirm that no debug data is output, as this isn't a supported Post Type.
 		$I->dontSeeInSource('<!-- Kit append_form_to_content()');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**

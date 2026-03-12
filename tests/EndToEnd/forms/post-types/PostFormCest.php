@@ -25,7 +25,8 @@ class PostFormCest
 	}
 
 	/**
-	 * Test that the Posts > Add New screen has expected a11y output, such as label[for].
+	 * Test that the Posts > Add New screen has expected a11y output, such as label[for],
+	 * when using the Classic Editor.
 	 *
 	 * @since   1.9.7.6
 	 *
@@ -33,6 +34,9 @@ class PostFormCest
 	 */
 	public function testAccessibility(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
@@ -43,6 +47,9 @@ class PostFormCest
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="wp-convertkit-form">');
 		$I->seeInSource('<label for="wp-convertkit-tag">');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
