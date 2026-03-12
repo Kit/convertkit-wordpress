@@ -1069,7 +1069,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					title: sidebar.title,
 					className: sidebar.name,
 					icon: element.RawHTML({
-						children: sidebar.icon,
+						children: sidebar.gutenberg_icon,
 					}),
 				},
 				getFields(sidebar.fields)
