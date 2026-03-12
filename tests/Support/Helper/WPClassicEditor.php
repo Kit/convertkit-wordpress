@@ -31,6 +31,23 @@ class WPClassicEditor extends \Codeception\Module
 	}
 
 	/**
+	 * Adds a paragraph block when adding or editing a Page, Post or Custom Post Type
+	 * in the Classic Editor.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 * @param   string         $text   Paragraph Text.
+	 * @param   string         $editor Target TinyMCE editor instance.
+	 */
+	public function addClassicEditorParagraph($I, $text, $editor = 'content')
+	{
+		// There's no way for Codeception to fill an iframe's contenteditable using fillField(),
+		// so use JS instead.
+		$I->executeJS("tinymce.get('" . $editor . "').insertContent('<p>" . $text . "</p>');");
+	}
+
+	/**
 	 * Add the given shortcode when adding or editing a Page, Post or Custom Post Type
 	 * in the Visual Editor (TinyMCE).
 	 *
