@@ -7,14 +7,14 @@ use Tests\Support\EndToEndTester;
 /**
  * Tests the Form setting on WordPress Pages, Posts and Custom Post Types when using the block editor.
  *
- * @since   3.2.2
+ * @since   3.3.0
  */
 class FormBlockEditorCest
 {
 	/**
 	 * Post Types to test.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @var array
 	 */
@@ -27,7 +27,7 @@ class FormBlockEditorCest
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -45,7 +45,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and there is no Default Form specified in the Plugin
 	 * settings.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -76,7 +76,7 @@ class FormBlockEditorCest
 	 * Test that the Default Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -109,7 +109,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and its position is set
 	 * to after the Page content.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -154,7 +154,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and its position is set
 	 * to before and after the Page content.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -198,7 +198,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and its position is set
 	 * to after the 3rd paragraph.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -212,9 +212,11 @@ class FormBlockEditorCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'p',
 				'page_form_position_element_index' => 3,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'post_form_position'               => 'after_element',
 				'post_form_position_element'       => 'p',
 				'post_form_position_element_index' => 3,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'article_form_position'            => 'after_element',
 				'article_form_position_element'    => 'p',
 				'article_form_position_element_index' => 3,
@@ -262,7 +264,7 @@ class FormBlockEditorCest
 	 * result in a fatal error when creating and viewing a new WordPress Page, and its position is set
 	 * to after the 3rd paragraph.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -276,9 +278,11 @@ class FormBlockEditorCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'p',
 				'page_form_position_element_index' => 3,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
 				'post_form_position'               => 'after_element',
 				'post_form_position_element'       => 'p',
 				'post_form_position_element_index' => 3,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
 				'article_form_position'            => 'after_element',
 				'article_form_position_element'    => 'p',
 				'article_form_position_element_index' => 3,
@@ -321,7 +325,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and its position is set
 	 * to after the 2nd <h2> element.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -335,9 +339,11 @@ class FormBlockEditorCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'h2',
 				'page_form_position_element_index' => 2,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'post_form_position'               => 'after_element',
 				'post_form_position_element'       => 'h2',
 				'post_form_position_element_index' => 2,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'article_form_position'            => 'after_element',
 				'article_form_position_element'    => 'h2',
 				'article_form_position_element_index' => 2,
@@ -385,7 +391,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and its position is set
 	 * to after the 2nd <img> element.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -399,9 +405,11 @@ class FormBlockEditorCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'img',
 				'page_form_position_element_index' => 2,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'post_form_position'               => 'after_element',
 				'post_form_position_element'       => 'img',
 				'post_form_position_element_index' => 2,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'article_form_position'            => 'after_element',
 				'article_form_position_element'    => 'img',
 				'article_form_position_element_index' => 2,
@@ -449,7 +457,7 @@ class FormBlockEditorCest
 	 * creating and viewing a new WordPress Page, and its position is set
 	 * to a number greater than the number of elements in the content.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -463,9 +471,11 @@ class FormBlockEditorCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'p',
 				'page_form_position_element_index' => 9,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'post_form_position'               => 'after_element',
 				'post_form_position_element'       => 'p',
 				'post_form_position_element_index' => 9,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'article_form_position'            => 'after_element',
 				'article_form_position_element'    => 'p',
 				'article_form_position_element_index' => 9,
@@ -478,7 +488,8 @@ class FormBlockEditorCest
 			// Setup Page with placeholder content.
 			$pageID = $I->addGutenbergPageToDatabase(
 				$I,
-				title: 'Kit: Page: Form: Default: After 9th Paragraph Element'
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 9th Paragraph Element'
 			);
 
 			// View the Page on the frontend site.
@@ -510,7 +521,7 @@ class FormBlockEditorCest
 	 * Test that the Default Legacy Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -553,7 +564,7 @@ class FormBlockEditorCest
 	 * Test that 'None' Form specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -590,7 +601,7 @@ class FormBlockEditorCest
 	 * Test that the Form specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -628,7 +639,7 @@ class FormBlockEditorCest
 	 * Test that the Legacy Form specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -765,7 +776,7 @@ class FormBlockEditorCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */

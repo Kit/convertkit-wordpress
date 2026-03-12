@@ -660,7 +660,7 @@ class WPGutenberg extends \Codeception\Module
 	/**
 	 * Configure the settings for the Plugin sidebar in Gutenberg.
 	 *
-	 * @since   3.2.2
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I                EndToEnd Tester.
 	 * @param   string         $form             Form ID.

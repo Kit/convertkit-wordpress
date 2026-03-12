@@ -5,12 +5,25 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for Kit Forms on WordPress Pages.
+ * Tests the Form setting on WordPress Pages, Posts and Custom Post Types when using the Classic Editor.
  *
  * @since   1.9.6
  */
-class PageFormCest
+class FormClassicEditorCest
 {
+	/**
+	 * Post Types to test.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @var array
+	 */
+	private $postTypes = [
+		'page',
+		'post',
+		'article',
+	];
+
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
@@ -22,6 +35,12 @@ class PageFormCest
 	{
 		// Activate Kit plugin.
 		$I->activateKitPlugin($I);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -61,27 +80,31 @@ class PageFormCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: Default: None'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: None'
+			);
 
-		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
+			// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
+			$I->checkSelectFormOptionOrder(
+				$I,
+				selectElement: '#wp-convertkit-form',
+				prependOptions: [
+					'Default',
+					'None',
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that no Kit Form is displayed.
-		$I->dontSeeElementInDOM('form[data-sv-form]');
+			// Confirm that no Kit Form is displayed.
+			$I->dontSeeElementInDOM('form[data-sv-form]');
+		}
 	}
 
 	/**
@@ -98,18 +121,22 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: Default'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default'
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
 	}
 
 	/**
@@ -132,25 +159,29 @@ class PageFormCest
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: Default: Before Content'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: Before Content'
+			);
 
-		// Add paragraph to Page.
-		$I->addGutenbergParagraphBlock($I, 'Page content');
+			// Add paragraph to Page.
+			$I->addClassicEditorParagraph($I, $postType . ' content');
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM after the Page content.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput(
-			$I,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-			position: 'before_content'
-		);
+			// Confirm that one Kit Form is output in the DOM after the Page content.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'before_content'
+			);
+		}
 	}
 
 	/**
@@ -169,28 +200,34 @@ class PageFormCest
 			$I,
 			[
 				'page_form_position' => 'before_after_content',
+				'post_form_position' => 'before_after_content',
+				'article_form_position' => 'before_after_content',
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: Default: Before and After Content'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: Before and After Content'
+			);
 
-		// Add paragraph to Page.
-		$I->addGutenbergParagraphBlock($I, 'Page content');
+			// Add paragraph to Page.
+			$I->addClassicEditorParagraph($I, $postType . ' content');
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that two Kit Forms are output in the DOM before and after the Page content.
-		$I->seeFormOutput(
-			$I,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-			position: 'before_after_content'
-		);
+			// Confirm that two Kit Forms are output in the DOM before and after the Page content.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'before_after_content'
+			);
+		}
 	}
 
 	/**
@@ -212,39 +249,51 @@ class PageFormCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'p',
 				'page_form_position_element_index' => 3,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'               => 'after_element',
+				'post_form_position_element'       => 'p',
+				'post_form_position_element_index' => 3,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'            => 'after_element',
+				'article_form_position_element'    => 'p',
+				'article_form_position_element_index' => 3,
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
-			$I,
-			title: 'Kit: Page: Form: Default: After 3rd Paragraph Element'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addClassicEditorPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 3rd Paragraph Element'
+			);
 
-		// View the Page on the frontend site.
-		$I->amOnPage('?p=' . $pageID);
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one Kit Form is output in the DOM after the third paragraph.
-		$I->seeFormOutput(
-			$I,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-			position: 'after_element',
-			element: 'p',
-			elementIndex: 3
-		);
+			// Confirm that one Kit Form is output in the DOM after the third paragraph.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_element',
+				element: 'p',
+				elementIndex: 3
+			);
 
-		// Confirm character encoding is not broken due to using DOMDocument.
-		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
 
-		// Confirm no meta tag exists within the content.
-		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 
-		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
-		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
 	}
 
 	/**
@@ -266,34 +315,46 @@ class PageFormCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'p',
 				'page_form_position_element_index' => 3,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'post_form_position'               => 'after_element',
+				'post_form_position_element'       => 'p',
+				'post_form_position_element_index' => 3,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'article_form_position'            => 'after_element',
+				'article_form_position_element'    => 'p',
+				'article_form_position_element_index' => 3,
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
-			$I,
-			title: 'Kit: Page: Non-Inline Form: Default: After 3rd Paragraph Element'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addClassicEditorPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Non-Inline Form: Default: After 3rd Paragraph Element'
+			);
 
-		// View the Page on the frontend site.
-		$I->amOnPage('?p=' . $pageID);
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
 
-		// Confirm character encoding is not broken due to using DOMDocument.
-		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
 
-		// Confirm no meta tag exists within the content.
-		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 
-		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
-		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
 	}
 
 	/**
@@ -315,39 +376,51 @@ class PageFormCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'h2',
 				'page_form_position_element_index' => 2,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'               => 'after_element',
+				'post_form_position_element'       => 'h2',
+				'post_form_position_element_index' => 2,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'            => 'after_element',
+				'article_form_position_element'    => 'h2',
+				'article_form_position_element_index' => 2,
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
-			$I,
-			title: 'Kit: Page: Form: Default: After 2nd H2 Element'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addClassicEditorPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 2nd H2 Element'
+			);
 
-		// View the Page on the frontend site.
-		$I->amOnPage('?p=' . $pageID);
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one Kit Form is output in the DOM after the second <h2> element.
-		$I->seeFormOutput(
-			$I,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-			position: 'after_element',
-			element: 'h2',
-			elementIndex: 2
-		);
+			// Confirm that one Kit Form is output in the DOM after the second <h2> element.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_element',
+				element: 'h2',
+				elementIndex: 2
+			);
 
-		// Confirm character encoding is not broken due to using DOMDocument.
-		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
 
-		// Confirm no meta tag exists within the content.
-		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 
-		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
-		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
 	}
 
 	/**
@@ -369,39 +442,51 @@ class PageFormCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'img',
 				'page_form_position_element_index' => 2,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'               => 'after_element',
+				'post_form_position_element'       => 'img',
+				'post_form_position_element_index' => 2,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'            => 'after_element',
+				'article_form_position_element'    => 'img',
+				'article_form_position_element_index' => 2,
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
-			$I,
-			title: 'Kit: Page: Form: Default: After 2nd Image Element'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addClassicEditorPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 2nd Image Element'
+			);
 
-		// View the Post on the frontend site.
-		$I->amOnPage('?p=' . $pageID);
+			// View the Post on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one Kit Form is output in the DOM after the second <img> element.
-		$I->seeFormOutput(
-			$I,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-			position: 'after_element',
-			element: 'img',
-			elementIndex: 2
-		);
+			// Confirm that one Kit Form is output in the DOM after the second <img> element.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_element',
+				element: 'img',
+				elementIndex: 2
+			);
 
-		// Confirm character encoding is not broken due to using DOMDocument.
-		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
 
-		// Confirm no meta tag exists within the content.
-		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 
-		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
-		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
 	}
 
 	/**
@@ -423,38 +508,50 @@ class PageFormCest
 				'page_form_position'               => 'after_element',
 				'page_form_position_element'       => 'p',
 				'page_form_position_element_index' => 9,
+				'post_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'               => 'after_element',
+				'post_form_position_element'       => 'p',
+				'post_form_position_element_index' => 9,
+				'article_form'                     => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'            => 'after_element',
+				'article_form_position_element'    => 'p',
+				'article_form_position_element_index' => 9,
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Setup Page with placeholder content.
-		$pageID = $I->addGutenbergPageToDatabase(
-			$I,
-			title: 'Kit: Page: Form: Default: After 9th Paragraph Element'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addClassicEditorPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: Page: Form: Default: After 9th Paragraph Element'
+			);
 
-		// View the Page on the frontend site.
-		$I->amOnPage('?p=' . $pageID);
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that one Kit Form is output in the DOM after the content, as
-		// the number of paragraphs is less than the position.
-		$I->seeFormOutput(
-			$I,
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-			position: 'after_content'
-		);
+			// Confirm that one Kit Form is output in the DOM after the content, as
+			// the number of paragraphs is less than the position.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_content'
+			);
 
-		// Confirm character encoding is not broken due to using DOMDocument.
-		$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
 
-		// Confirm no meta tag exists within the content.
-		$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 
-		// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
-		$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
 	}
 
 	/**
@@ -474,24 +571,30 @@ class PageFormCest
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
 				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
 				'page_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'post_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'article_form'  => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: Legacy: Default'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Legacy: Default'
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the Kit Default Legacy Form displays.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
+			// Confirm that the Kit Default Legacy Form displays.
+			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 
-		// Confirm that the Legacy Form title's character encoding is correct.
-		$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
+			// Confirm that the Legacy Form title's character encoding is correct.
+			$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
+		}
 	}
 
 	/**
@@ -508,26 +611,30 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: None'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: None'
+			);
 
-		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
-		);
+			// Configure metabox's Form setting = None.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', 'None' ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that no Kit Form is displayed.
-		$I->dontSeeElementInDOM('form[data-sv-form]');
+			// Confirm that no Kit Form is displayed.
+			$I->dontSeeElementInDOM('form[data-sv-form]');
+		}
 	}
 
 	/**
@@ -544,27 +651,31 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+			);
 
-		// Configure metabox's Form setting = Inline Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Inline Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
 	}
 
 	/**
@@ -584,8 +695,8 @@ class PageFormCest
 		// Activate Autoptimize Plugin.
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
 		);
@@ -600,7 +711,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -632,8 +743,8 @@ class PageFormCest
 		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
 		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
 		);
@@ -648,7 +759,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -682,8 +793,8 @@ class PageFormCest
 		$I->amOnAdminPage('admin.php?page=jetpack-boost');
 		$I->click('#inspector-toggle-control-1');
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
 		);
@@ -698,7 +809,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -731,8 +842,8 @@ class PageFormCest
 		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
 		$I->enableLiteSpeedCacheLoadJSDeferred($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
 		);
@@ -747,7 +858,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form,
@@ -783,8 +894,8 @@ class PageFormCest
 		// Enable Siteground Speed Optimizer's "Combine JavaScript Files" setting.
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
 		);
@@ -799,7 +910,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
@@ -837,8 +948,8 @@ class PageFormCest
 			]
 		);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
 		);
@@ -853,7 +964,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -884,8 +995,8 @@ class PageFormCest
 		// Configure WP Rocket.
 		$I->enableWPRocketDelayJS($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
 		);
@@ -900,7 +1011,7 @@ class PageFormCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that one Kit Form is output in the DOM within the <main> element.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -928,33 +1039,39 @@ class PageFormCest
 				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
 				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
 				'page_form'  => '',
+				'post_form'  => '',
+				'article_form'  => '',
 			]
 		);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
+			);
 
-		// Configure metabox's Form setting = Legacy Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Legacy Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that the Kit Legacy Form displays.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
+			// Confirm that the Kit Legacy Form displays.
+			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 
-		// Confirm that the Legacy Form title's character encoding is correct.
-		$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
+			// Confirm that the Legacy Form title's character encoding is correct.
+			$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
+		}
 	}
 
 	/**
@@ -976,34 +1093,37 @@ class PageFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Create Page, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
-		// a Form being deleted in Kit.
-		$pageID = $I->havePostInDatabase(
-			[
-				'post_type'  => 'page',
-				'post_title' => 'Kit: Page: Form: Specific: Invalid',
-				'meta_input' => [
-					'_wp_convertkit_post_meta' => [
-						'form'         => '11111',
-						'landing_page' => '',
-						'tag'          => '',
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Create Page, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
+			// a Form being deleted in Kit.
+			$pageID = $I->havePostInDatabase(
+				[
+					'post_type'  => $postType,
+					'post_title' => 'Kit: ' . $postType . ': Form: Specific: Invalid',
+					'meta_input' => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '11111',
+							'landing_page' => '',
+							'tag'          => '',
+						],
 					],
-				],
-			]
-		);
+				]
+			);
 
-		// Load the Page on the frontend site.
-		$I->amOnPage('/?p=' . $pageID);
+			// Load the Page on the frontend site.
+			$I->amOnPage('/?p=' . $pageID);
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the invalid Kit Form does not display.
-		$I->dontSeeElementInDOM('form[data-sv-form="11111"]');
+			// Confirm that the invalid Kit Form does not display.
+			$I->dontSeeElementInDOM('form[data-sv-form="11111"]');
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
 	}
 
 	/**
@@ -1017,6 +1137,8 @@ class PageFormCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+		$I->unregisterCustomPostTypes($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
