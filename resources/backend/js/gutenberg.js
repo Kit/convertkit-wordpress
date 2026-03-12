@@ -1082,7 +1082,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 		});
 	})(
 		window.wp.plugins,
-		window.wp.editor,
+		window.wp.editPost,
 		window.wp.element,
 		window.wp.components,
 		window.wp.data
@@ -1161,7 +1161,7 @@ function convertKitGutenbergRegisterPrePublishActions(actions) {
 		});
 	})(
 		window.wp.plugins,
-		window.wp.editor,
+		window.wp.editPost,
 		window.wp.element,
 		window.wp.components,
 		window.wp.data
