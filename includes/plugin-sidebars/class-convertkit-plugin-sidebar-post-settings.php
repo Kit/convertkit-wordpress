@@ -70,7 +70,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 	 */
 	public function get_icon() {
 
-		return 'resources/backend/images/block-icon-form.svg';
+		return 'resources/backend/images/kit-logo.svg';
 
 	}
 

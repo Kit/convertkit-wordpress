@@ -30,6 +30,7 @@ class ConvertKit_Plugin_Sidebar {
 			'meta_key'           => $this->get_meta_key(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			'title'              => $this->get_title(),
 			'icon'               => $this->get_icon(),
+			'gutenberg_icon'     => convertkit_get_file_contents( CONVERTKIT_PLUGIN_PATH . '/' . $this->get_icon() ),
 			'fields'             => $this->get_fields(),
 			'attributes'         => $this->get_attributes(),
 			'default_values'     => $this->get_default_values(),
