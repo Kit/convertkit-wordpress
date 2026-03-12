@@ -515,12 +515,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None',
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -551,12 +548,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Inline Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -591,12 +585,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -639,12 +630,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -689,12 +677,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -738,12 +723,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -790,12 +772,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -844,12 +823,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -891,12 +867,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -939,12 +912,9 @@ class PageFormCest
 		);
 
 		// Configure metabox's Form setting = Legacy Form.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -1004,6 +974,89 @@ class PageFormCest
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
 		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+	}
+
+	/**
+	 * Test that the Form Settings are preserved when switching between the Classic Editor
+	 * and Gutenberg.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormSettingsPreservedWhenSwitchingEditors(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Editor Switching: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+
+		// Configure metabox's Form setting = Inline Form.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Grab the edit page URL.
+		$editPageURL = $I->grabAttributeFrom('#wp-admin-bar-edit a', 'href');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+
+		$I->wait(2);
+
+		// Edit the page in the Gutenberg editor.
+		$I->amOnUrl($editPageURL);
+
+		// Confirm the Form setting is set to Inline Form.
+		$I->seePluginSidebarSetting($I, 'form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Add a paragraph, so the Save button can be used.
+		$I->addGutenbergParagraphBlock($I, 'This is a test paragraph.');
+
+		// Save (update) and view the Page on the frontend site.
+		$I->saveAndViewGutenbergPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Edit the page in the Classic Editor.
+		$I->amOnUrl($editPageURL);
+
+		// Add a paragraph, so the Save button can be used.
+		$I->addClassicEditorParagraph($I, 'This is a test paragraph.');
+
+		// Save (update) and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
