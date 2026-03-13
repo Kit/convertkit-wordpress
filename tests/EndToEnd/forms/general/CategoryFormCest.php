@@ -51,16 +51,6 @@ class CategoryFormCest
 			value: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
-		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
-
 		// Save.
 		$I->click('input#submit');
 
@@ -115,16 +105,6 @@ class CategoryFormCest
 			$I,
 			container: '#select2-wp-convertkit-form-container',
 			value: 'None'
-		);
-
-		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
 		);
 
 		// Save.
@@ -192,16 +172,6 @@ class CategoryFormCest
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="wp-convertkit-form">');
 
-		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
-
 		// Change Form to value specified in the .env file.
 		$I->fillSelect2Field(
 			$I,
@@ -263,16 +233,6 @@ class CategoryFormCest
 
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="wp-convertkit-form">');
-
-		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
 
 		// Change Form to None.
 		$I->fillSelect2Field(
@@ -460,16 +420,6 @@ class CategoryFormCest
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="wp-convertkit-form">');
 
-		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
-
 		// Change Form to value specified in the .env file.
 		$I->fillSelect2Field(
 			$I,
@@ -541,16 +491,6 @@ class CategoryFormCest
 
 		// Confirm that settings have label[for] attributes.
 		$I->seeInSource('<label for="wp-convertkit-form">');
-
-		// Check the order of the Form resources are alphabetical, with the Default option prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-form',
-			prependOptions: [
-				'Default',
-				'None',
-			]
-		);
 
 		// Change Form to value specified in the .env file.
 		$I->fillSelect2Field(

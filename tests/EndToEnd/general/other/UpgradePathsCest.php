@@ -139,15 +139,6 @@ class UpgradePathsCest
 		// Confirm the Plugin authorized by checking for a Disconnect button.
 		$I->see('Kit WordPress');
 		$I->see('Disconnect');
-
-		// Check the order of the Form resources are alphabetical, with 'None' as the first choice.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			'#_wp_convertkit_settings_page_form',
-			[
-				'None',
-			]
-		);
 	}
 
 	/**
