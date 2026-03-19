@@ -128,11 +128,11 @@ class Divi5Theme extends \Codeception\Module
 		$I->click('.et-vb-page-bar-dropdown-button.et-vb-page-bar-dropdown-button--fill button.et-vb-page-bar-action-button');
 		$I->waitForElementNotVisible('.et-vb-page-bar-dropdown-button--saving');
 
-		// Exit back to the block editor.
-		$I->waitForElementVisible('.et-vb-page-bar-exit-button a.et-vb-page-bar-action-button');
-		$I->click('.et-vb-page-bar-exit-button a.et-vb-page-bar-action-button');
+		// View page.
+		$url = $_ENV['WORDPRESS_URL'] . wp_parse_url($I->grabFromCurrentUrl(), PHP_URL_PATH);
+		$I->amOnUrl($url);
 
-		// Save and view page.
-		$I->updateAndViewGutenbergPage($I);
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
 	}
 }
