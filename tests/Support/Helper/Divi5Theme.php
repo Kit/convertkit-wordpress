@@ -114,7 +114,8 @@ class Divi5Theme extends \Codeception\Module
 	}
 
 	/**
-	 * Helper method to save a page created using Divi 5.
+	 * Helper method to save a page created using Divi 5, and view
+	 * it on the frontend site.
 	 *
 	 * @since   3.2.1
 	 *
@@ -127,13 +128,11 @@ class Divi5Theme extends \Codeception\Module
 		$I->click('.et-vb-page-bar-dropdown-button.et-vb-page-bar-dropdown-button--fill button.et-vb-page-bar-action-button');
 		$I->waitForElementNotVisible('.et-vb-page-bar-dropdown-button--saving');
 
-		// Load the Page on the frontend site.
-		$I->waitForElementVisible('div[aria-label="Exit Dropdown"]');
-		$I->click('div[aria-label="Exit Dropdown"]');
-		$I->waitForElementVisible('button[value="view-page"]');
-		$I->click('button[value="view-page"]');
+		// Exit back to the block editor.
+		$I->waitForElementVisible('.et-vb-page-bar-exit-button a.et-vb-page-bar-action-button');
+		$I->click('.et-vb-page-bar-exit-button a.et-vb-page-bar-action-button');
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
+		// Save and view page.
+		$I->updateAndViewGutenbergPage($I);
 	}
 }
