@@ -113,9 +113,14 @@ class DiviBuilder extends \Codeception\Module
 		$I->waitForElementVisible('#wp-admin-bar-et-use-visual-builder');
 		$I->click('#wp-admin-bar-et-use-visual-builder a');
 
-		// Wait for the welcome modal and dismiss it.
-		$I->waitForElementVisible('.et-core-modal-action-dont-restore');
-		$I->click('.et-core-modal-action-dont-restore');
+		// Dismiss modal if displayed.
+		// May have been dismissed by other tests in the suite e.g. DiviFormCest.
+		try {
+			$I->waitForElementVisible('.et-core-modal-action-dont-restore');
+			$I->click('.et-core-modal-action-dont-restore');
+		} catch ( \Facebook\WebDriver\Exception\NoSuchElementException $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// No modal exists, so nothing to dismiss.
+		}
 
 		// Click Build from scratch button.
 		$I->waitForElementVisible('.et-fb-page-creation-card-build_from_scratch');
