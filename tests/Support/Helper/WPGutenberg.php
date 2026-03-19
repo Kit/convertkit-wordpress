@@ -596,9 +596,9 @@ class WPGutenberg extends \Codeception\Module
 	public function clickPublishOnPrePublishChecksForGutenbergPage($I)
 	{
 		// Click publish on the pre-publish panel.
-		$I->waitForElementVisible('.editor-post-publish-panel');
+		$I->waitForElementVisible('.editor-post-publish-panel__header-publish-button');
 		$I->performOn(
-			'.editor-post-publish-panel .editor-post-publish-panel__header-publish-button',
+			'.editor-post-publish-panel__header-publish-button',
 			function($I) {
 				$I->click('.editor-post-publish-panel__header-publish-button button');
 			},
