@@ -25,6 +25,9 @@ class SelectOptionOrderCest
 		$I->activateThirdPartyPlugin($I, 'classic-editor');
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
+
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -89,7 +92,7 @@ class SelectOptionOrderCest
 	 */
 	public function testFormSelectOrderOnPostTypes(EndToEndTester $I)
 	{
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
+		// Navigate to Pages > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=page');
 
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
@@ -120,7 +123,7 @@ class SelectOptionOrderCest
 			]
 		);
 
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
+		// Navigate to Posts > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=post');
 
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
@@ -142,7 +145,7 @@ class SelectOptionOrderCest
 			]
 		);
 
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
+		// Navigate to Custom Post Type > Add New.
 		$I->amOnAdminPage('post-new.php?post_type=article');
 
 		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
@@ -199,6 +202,7 @@ class SelectOptionOrderCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		$I->unregisterCustomPostTypes($I);
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
