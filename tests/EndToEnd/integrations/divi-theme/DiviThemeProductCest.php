@@ -64,77 +64,6 @@ class DiviThemeProductCest
 	}
 
 	/**
-	 * Test the Product module displays the expected message when the Plugin has no credentials
-	 *
-	 * @since   2.8.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testProductModuleWhenNoCredentials(EndToEndTester $I)
-	{
-		// Skip test until modules upgraded to Divi 5.
-		$I->useTheme('twentytwentytwo');
-		$I->deactivateKitPlugin($I);
-		$I->resetKitPlugin($I);
-		$I->markTestSkipped('No Credentials notice cannot be displayed until modules upgraded to Divi 5.');
-
-		// Create a Divi Page in the frontend editor.
-		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Product: Divi: Frontend: No Credentials', false);
-
-		// Insert the Product module.
-		$I->insertDiviRowWithModule(
-			$I,
-			name: 'Kit Product',
-			programmaticName: 'convertkit_product'
-		);
-
-		// Confirm the on screen message displays.
-		$I->seeTextInDiviModule(
-			$I,
-			title: 'Not connected to Kit',
-			text: 'Connect your Kit account at Settings > Kit, and then refresh this page to select a product.'
-		);
-	}
-
-	/**
-	 * Test the Product module displays the expected message when the Kit account
-	 * has no products.
-	 *
-	 * @since   2.8.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testProductModuleWhenNoProducts(EndToEndTester $I)
-	{
-		// Skip test until modules upgraded to Divi 5.
-		$I->useTheme('twentytwentytwo');
-		$I->deactivateKitPlugin($I);
-		$I->resetKitPlugin($I);
-		$I->markTestSkipped('No resources notice cannot be displayed until modules upgraded to Divi 5.');
-
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Create a Divi Page in the frontend editor.
-		$I->createDiviPageInFrontendEditor($I, 'Kit: Page: Product: Divi: Product: No Products');
-
-		// Insert the Product module.
-		$I->insertDiviRowWithModule(
-			$I,
-			name: 'Kit Product',
-			programmaticName: 'convertkit_product'
-		);
-
-		// Confirm the on screen message displays.
-		$I->seeTextInDiviModule(
-			$I,
-			title: 'No products exist in Kit',
-			text: 'Add a product to your Kit account, and then refresh this page to select a product.'
-		);
-	}
-
-	/**
 	 * Test the Product module works when no Product is selected.
 	 *
 	 * @since   2.8.0
@@ -166,7 +95,6 @@ class DiviThemeProductCest
 		// Confirm that no Kit Product is displayed.
 		$I->dontSeeProductOutput($I);
 	}
-
 
 	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
