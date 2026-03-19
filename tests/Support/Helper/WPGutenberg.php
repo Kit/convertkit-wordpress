@@ -57,6 +57,7 @@ class WPGutenberg extends \Codeception\Module
 		}
 
 		// Define the Title.
+		$I->waitForElementVisible('.editor-post-title__input');
 		$I->fillField('.editor-post-title__input', $title);
 
 		// Switch back to main window.

@@ -90,6 +90,7 @@ class DiviBuilder extends \Codeception\Module
 		$I->waitForElementVisible('body.post-new-php');
 
 		// Define the Title.
+		$I->waitForElementVisible('.editor-post-title__input');
 		$I->fillField('.editor-post-title__input', $title);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
