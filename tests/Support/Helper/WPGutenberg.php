@@ -585,6 +585,50 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Update a published Page, Post or Custom Post Type. loading it on the frontend web site.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function updateAndViewGutenbergPage($I)
+	{
+		// Save published page.
+		$url = $I->updateGutenbergPage($I);
+
+		// Load the Page on the frontend site.
+		$I->amOnUrl($url);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Return URL.
+		return $url;
+	}
+
+	/**
+	 * Update a published Page, Post or Custom Post Type.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function updateGutenbergPage($I)
+	{
+		$I->waitForElementVisible('.editor-post-publish-button__button');
+		$I->click('.editor-post-publish-button__button');
+
+		// Wait for confirmation that the Page updated.
+		$I->waitForElementVisible('.components-snackbar__content a.components-snackbar__action');
+
+		// Return URL from 'View page' button inside the snackbar.
+		return $I->grabAttributeFrom('.components-snackbar__content a.components-snackbar__action', 'href');
+	}
+
+	/**
 	 * Clicks the Publish button the pre-publish checks sidebar, confirming the Page, Post or Custom Post Type
 	 * published and returning its URL.
 	 *
