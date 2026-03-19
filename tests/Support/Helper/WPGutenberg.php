@@ -609,7 +609,6 @@ class WPGutenberg extends \Codeception\Module
 
 		// Return URL from 'View page' button.
 		return $I->grabAttributeFrom('.post-publish-panel__postpublish-buttons a.components-button', 'href');
-
 	}
 
 	/**

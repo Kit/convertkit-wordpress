@@ -12,7 +12,7 @@ class Divi5Theme extends \Codeception\Module
 	/**
 	 * Helper method to create a Divi Page in the WordPress Administration interface.
 	 *
-	 * @since   2.5.7
+	 * @since   3.2.1
 	 *
 	 * @param   EndToEndTester $I                 EndToEnd Tester.
 	 * @param   string         $title             Page Title.
@@ -20,15 +20,11 @@ class Divi5Theme extends \Codeception\Module
 	 */
 	public function createDivi5Page($I, $title, $configureMetaBox = true)
 	{
-		// Add a Page using the Gutenberg editor.
-		// We don't use addGutenbergPage(), as when the Divi Builder is used, the iframed Gutenberg editor is not used,
-		// and addGutenbergPage() may switch to an iframe based on the value of the WORDPRESS_V3_BLOCK_EDITOR_ENABLED environment variable.
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-		$I->waitForElementVisible('body.post-new-php');
-
-		// Define the Title.
-		$I->fillField('.editor-post-title__input', $title);
+		// Create a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: $title
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the Divi block.
 		if ($configureMetaBox) {
@@ -42,10 +38,10 @@ class Divi5Theme extends \Codeception\Module
 		}
 
 		// Publish Page.
-		$I->publishGutenbergPage($I);
+		$I->publishClassicEditorPage($I);
 
-		// Click Divi Builder button.
-		$I->click('#et-switch-to-divi');
+		// Click "Use The Divi Builder" button.
+		$I->click('#et_pb_use_the_builder');
 
 		// Wait for Divi Builder to load.
 		$I->waitForElementVisible('body.et_pb_pagebuilder_layout');
@@ -74,10 +70,6 @@ class Divi5Theme extends \Codeception\Module
 
 		// Switch back to main window.
 		$I->switchToIFrame();
-
-		// Select 1 column layout.
-		$I->waitForElementVisible('button[value="equal-columns_1"]');
-		$I->click('button[value="equal-columns_1"]');
 
 		// Search for module.
 		$I->waitForElementVisible('input[name="et-vb-field-input-text-filter-option"]');
