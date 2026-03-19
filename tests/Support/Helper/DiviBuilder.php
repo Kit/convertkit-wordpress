@@ -83,15 +83,10 @@ class DiviBuilder extends \Codeception\Module
 	public function createDiviPageInFrontendEditor($I, $title, $configureMetaBox = true)
 	{
 		// Add a Page using the Gutenberg editor.
-		// We don't use addGutenbergPage(), as when the Divi Builder is used, the iframed Gutenberg editor is not used,
-		// and addGutenbergPage() may switch to an iframe based on the value of the WORDPRESS_V3_BLOCK_EDITOR_ENABLED environment variable.
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-		$I->waitForElementVisible('body.post-new-php');
-
-		// Define the Title.
-		$I->waitForElementVisible('.editor-post-title__input');
-		$I->fillField('.editor-post-title__input', $title);
+		$I->addGutenbergPage(
+			$I,
+			title: $title
+		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
 		if ($configureMetaBox) {
@@ -107,15 +102,19 @@ class DiviBuilder extends \Codeception\Module
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Click Divi Builder button inside the Gutenberg editor.
-		$I->click('Use Divi Builder');
+		// Load page.
+		$I->amOnUrl($url);
 
-		// Reload page to dismiss modal.
-		$I->wait(5);
-		$I->amOnUrl($url . '?et_fb=1&PageSpeed=off');
+		// Enable the Divi Builder.
+		$I->waitForElementVisible('#wp-admin-bar-et-use-visual-builder');
+		$I->click('#wp-admin-bar-et-use-visual-builder a');
+		
+		// Wait for the welcome modal and dismiss it.
+		$I->waitForElementVisible('.et-core-modal-action-dont-restore');
+		$I->click('.et-core-modal-action-dont-restore');
 
 		// Click Build from scratch button.
-		$I->waitForElementVisible('.et-fb-page-creation-card-build_from_scratch', 30);
+		$I->waitForElementVisible('.et-fb-page-creation-card-build_from_scratch');
 		$I->click('Start Building', '.et-fb-page-creation-card-build_from_scratch');
 
 		return $url;
