@@ -108,7 +108,7 @@ class DiviBuilder extends \Codeception\Module
 		// Enable the Divi Builder.
 		$I->waitForElementVisible('#wp-admin-bar-et-use-visual-builder');
 		$I->click('#wp-admin-bar-et-use-visual-builder a');
-		
+
 		// Wait for the welcome modal and dismiss it.
 		$I->waitForElementVisible('.et-core-modal-action-dont-restore');
 		$I->click('.et-core-modal-action-dont-restore');
