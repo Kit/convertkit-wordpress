@@ -128,6 +128,7 @@ class Divi5Theme extends \Codeception\Module
 		$I->waitForElementNotVisible('.et-vb-page-bar-dropdown-button--saving');
 
 		// Load the Page on the frontend site.
+		$I->waitForElementVisible('div[aria-label="Exit Dropdown"]');
 		$I->click('div[aria-label="Exit Dropdown"]');
 		$I->waitForElementVisible('button[value="view-page"]');
 		$I->click('button[value="view-page"]');
