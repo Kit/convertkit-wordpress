@@ -16,32 +16,32 @@ class Divi5Theme extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I                 EndToEnd Tester.
 	 * @param   string         $title             Page Title.
-	 * @param   bool           $configureMetaBox  Configure Plugin's Meta Box to set Form = None (set to false if running a test with no credentials).
 	 */
-	public function createDivi5Page($I, $title, $configureMetaBox = true)
+	public function createDivi5Page($I, $title)
 	{
-		// Create a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: $title
+		// Create a Page.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => $title,
+				'post_content' => '',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+					'_et_pb_use_builder'       => 'on',
+				],
+			]
 		);
 
-		// Configure metabox's Form setting = None, ensuring we only test the Divi block.
-		if ($configureMetaBox) {
-			$I->configureMetaboxSettings(
-				$I,
-				'wp-convertkit-meta-box',
-				[
-					'form' => [ 'select2', 'None' ],
-				]
-			);
-		}
-
-		// Publish Page.
-		$I->publishClassicEditorPage($I);
+		// Edit Page.
+		$I->amOnPage('/wp-admin/post.php?post=' . $pageID . '&action=edit');
 
 		// Click "Use The Divi Builder" button.
-		$I->click('#et_pb_use_the_builder');
+		$I->click('#et-switch-to-divi');
 
 		// Wait for Divi Builder to load.
 		$I->waitForElementVisible('body.et_pb_pagebuilder_layout');
@@ -70,6 +70,10 @@ class Divi5Theme extends \Codeception\Module
 
 		// Switch back to main window.
 		$I->switchToIFrame();
+
+		// Select 1 column layout.
+		$I->waitForElementVisible('button[value="equal-columns_1"]');
+		$I->click('button[value="equal-columns_1"]');
 
 		// Search for module.
 		$I->waitForElementVisible('input[name="et-vb-field-input-text-filter-option"]');
