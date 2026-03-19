@@ -106,15 +106,19 @@ class DiviBuilder extends \Codeception\Module
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Click Divi Builder button inside the Gutenberg editor.
-		$I->click('Use Divi Builder');
+		// Load page.
+		$I->amOnUrl($url);
 
-		// Reload page to dismiss modal.
-		$I->wait(5);
-		$I->amOnUrl($url . '?et_fb=1&PageSpeed=off');
+		// Enable the Divi Builder.
+		$I->waitForElementVisible('#wp-admin-bar-et-use-visual-builder');
+		$I->click('#wp-admin-bar-et-use-visual-builder a');
+
+		// Wait for the welcome modal and dismiss it.
+		$I->waitForElementVisible('.et-core-modal-action-dont-restore');
+		$I->click('.et-core-modal-action-dont-restore');
 
 		// Click Build from scratch button.
-		$I->waitForElementVisible('.et-fb-page-creation-card-build_from_scratch', 30);
+		$I->waitForElementVisible('.et-fb-page-creation-card-build_from_scratch');
 		$I->click('Start Building', '.et-fb-page-creation-card-build_from_scratch');
 
 		return $url;
