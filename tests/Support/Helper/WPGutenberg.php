@@ -594,22 +594,22 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function clickPublishOnPrePublishChecksForGutenbergPage($I)
 	{
-		// Wait for publish button specifically.
-		$I->waitForElementVisible('.editor-post-publish-panel__header-publish-button button', 30);
-		$I->wait(1);
+		// Click publish on the pre-publish panel.
+		$I->waitForElementVisible('.editor-post-publish-panel');
+		$I->performOn(
+			'.editor-post-publish-panel .editor-post-publish-panel__header-publish-button',
+			function($I) {
+				$I->click('.editor-post-publish-panel__header-publish-button button');
+			},
+			15
+		);
 
-		// Scroll to the publish button and click it.
-		$I->scrollTo('.editor-post-publish-panel__header-publish-button button');
-		$I->click('.editor-post-publish-panel__header-publish-button button');
-
-		// Wait for confirmation.
+		// Wait for confirmation that the Page published.
 		$I->waitForElementVisible('.post-publish-panel__postpublish-buttons a.components-button', 30);
 
 		// Return URL from 'View page' button.
-		return $I->grabAttributeFrom(
-			'.post-publish-panel__postpublish-buttons a.components-button',
-			'href'
-		);
+		return $I->grabAttributeFrom('.post-publish-panel__postpublish-buttons a.components-button', 'href');
+
 	}
 
 	/**
