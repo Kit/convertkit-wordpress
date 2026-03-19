@@ -44,15 +44,6 @@ class EditFormLinkCest
 			title: 'Kit: Page: Form: Default: Edit Link'
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
