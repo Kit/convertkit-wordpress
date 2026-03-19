@@ -36,9 +36,6 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnPage(EndToEndTester $I)
 	{
-		// Activate Classic Editor Plugin.
-		$I->activateThirdPartyPlugin($I, 'classic-editor');
-
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
 
@@ -136,9 +133,6 @@ class RefreshResourcesButtonCest
 			container: '#select2-wp-convertkit-restrict_content-container',
 			value: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
-
-		// Deactivate Classic Editor Plugin.
-		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
