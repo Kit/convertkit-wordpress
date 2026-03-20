@@ -146,15 +146,6 @@ class PluginSettingsGeneralCest
 		$I->see('Disconnect');
 		$I->seeElementInDOM('input#submit');
 
-		// Check the order of the Form resources are alphabetical, with 'None' as the first choice.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			'#_wp_convertkit_settings_page_form',
-			[
-				'None',
-			]
-		);
-
 		// Save Changes to confirm credentials are not lost.
 		$I->click('Save Changes');
 

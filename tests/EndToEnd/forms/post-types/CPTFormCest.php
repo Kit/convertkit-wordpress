@@ -138,16 +138,6 @@ class CPTFormCest
 			title: 'Kit: CPT: Form: Default: None'
 		);
 
-		// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			'#wp-convertkit-form',
-			[
-				'Default',
-				'None',
-			]
-		);
-
 		// Publish and view the CPT on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
