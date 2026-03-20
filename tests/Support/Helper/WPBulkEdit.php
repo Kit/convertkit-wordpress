@@ -89,7 +89,7 @@ class WPBulkEdit extends \Codeception\Module
 		}
 
 		// Select Edit from the Bulk actions dropdown.
-		$I->selectOption('#bulk-action-selector-top', 'Edit');
+		$I->selectOption('#bulk-action-selector-top', 'Bulk edit');
 
 		// Click Apply button.
 		$I->click('#doaction');

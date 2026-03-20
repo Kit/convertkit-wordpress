@@ -57,6 +57,7 @@ class WPGutenberg extends \Codeception\Module
 		}
 
 		// Define the Title.
+		$I->waitForElementVisible('.editor-post-title__input');
 		$I->fillField('.editor-post-title__input', $title);
 
 		// Switch back to main window.
@@ -604,11 +605,11 @@ class WPGutenberg extends \Codeception\Module
 			15
 		);
 
-		// Wait for confirmation that the Page published.
-		$I->waitForElementVisible('.post-publish-panel__postpublish-buttons a.components-button', 30);
+		// Wait for the snackbar notification that the post has been published.
+		$I->waitForElementVisible('div.components-snackbar__content a.components-snackbar__action', 30);
 
-		// Return URL from 'View page' button.
-		return $I->grabAttributeFrom('.post-publish-panel__postpublish-buttons a.components-button', 'href');
+		// Return the URL from the 'View Post' button in the snackbar.
+		return $I->grabAttributeFrom('div.components-snackbar__content a.components-snackbar__action', 'href');
 	}
 
 	/**
