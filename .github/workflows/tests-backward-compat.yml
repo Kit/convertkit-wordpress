@@ -77,7 +77,7 @@ jobs:
       # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
       # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
       - name: Checkout Plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
 
