@@ -82,7 +82,7 @@ jobs:
       # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
       # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
       - name: Checkout Plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
 
@@ -348,21 +348,21 @@ jobs:
       # because we want to see why a test failed.
       - name: Upload nginx Error Log to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nginx-error-log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.log
           path: /var/log/nginx/error.log
 
       - name: Upload Test Results to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
           path: ${{ env.PLUGIN_DIR }}/tests/_output/
 
       - name: Upload Plugin Log File to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
