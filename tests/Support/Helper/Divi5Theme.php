@@ -12,36 +12,35 @@ class Divi5Theme extends \Codeception\Module
 	/**
 	 * Helper method to create a Divi Page in the WordPress Administration interface.
 	 *
-	 * @since   2.5.7
+	 * @since   3.2.1
 	 *
 	 * @param   EndToEndTester $I                 EndToEnd Tester.
 	 * @param   string         $title             Page Title.
-	 * @param   bool           $configureMetaBox  Configure Plugin's Meta Box to set Form = None (set to false if running a test with no credentials).
 	 */
-	public function createDivi5Page($I, $title, $configureMetaBox = true)
+	public function createDivi5Page($I, $title)
 	{
-		// Add a Page using the Gutenberg editor.
-		// We don't use addGutenbergPage(), as when the Divi Builder is used, the iframed Gutenberg editor is not used,
-		// and addGutenbergPage() may switch to an iframe based on the value of the WORDPRESS_V3_BLOCK_EDITOR_ENABLED environment variable.
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-		$I->waitForElementVisible('body.post-new-php');
+		// Create a Page.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => $title,
+				'post_content' => '',
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+					'_et_pb_use_builder'       => 'on',
+				],
+			]
+		);
 
-		// Define the Title.
-		$I->fillField('.editor-post-title__input', $title);
+		// Edit Page.
+		$I->amOnPage('/wp-admin/post.php?post=' . $pageID . '&action=edit');
 
-		// Configure metabox's Form setting = None, ensuring we only test the Divi block.
-		if ($configureMetaBox) {
-			$I->configurePluginSidebarSettings(
-				$I,
-				form: 'None'
-			);
-		}
-
-		// Publish Page.
-		$I->publishGutenbergPage($I);
-
-		// Click Divi Builder button.
+		// Click "Use The Divi Builder" button.
 		$I->click('#et-switch-to-divi');
 
 		// Wait for Divi Builder to load.
@@ -111,7 +110,8 @@ class Divi5Theme extends \Codeception\Module
 	}
 
 	/**
-	 * Helper method to save a page created using Divi 5.
+	 * Helper method to save a page created using Divi 5, and view
+	 * it on the frontend site.
 	 *
 	 * @since   3.2.1
 	 *
@@ -124,10 +124,9 @@ class Divi5Theme extends \Codeception\Module
 		$I->click('.et-vb-page-bar-dropdown-button.et-vb-page-bar-dropdown-button--fill button.et-vb-page-bar-action-button');
 		$I->waitForElementNotVisible('.et-vb-page-bar-dropdown-button--saving');
 
-		// Load the Page on the frontend site.
-		$I->click('div[aria-label="Exit Dropdown"]');
-		$I->waitForElementVisible('button[value="view-page"]');
-		$I->click('button[value="view-page"]');
+		// View page.
+		$url = $_ENV['WORDPRESS_URL'] . wp_parse_url($I->grabFromCurrentUrl(), PHP_URL_PATH);
+		$I->amOnUrl($url);
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
