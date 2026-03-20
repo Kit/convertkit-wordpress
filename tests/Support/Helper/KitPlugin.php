@@ -764,6 +764,10 @@ class KitPlugin extends \Codeception\Module
 				$nth = 'nth-child(' . ( $i + 1 ) . ')';
 			}
 
+			// Wait for the option to be visible.
+			$I->waitForElementVisible('select' . $selectElement . ' option:' . $nth);
+
+			// Assert that the option text matches the expected value.
 			$I->assertEquals(
 				$I->grabTextFrom('select' . $selectElement . ' option:' . $nth),
 				$value
