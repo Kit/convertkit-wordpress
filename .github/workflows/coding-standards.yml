@@ -22,7 +22,7 @@ jobs:
     # Don't run if the PR is from Dependabot, as it doesn't have access to the repository's secrets.
     # Dependabot also only checks for GitHub action dependencies, so it's not necessary to run
     # Plugin tests.
-    if: github.actor != 'dependabot[bot]
+    if: github.actor != 'dependabot[bot]'
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
