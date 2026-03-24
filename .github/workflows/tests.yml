@@ -19,6 +19,11 @@ jobs:
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
 
+    # Don't run if the PR is from Dependabot, as it doesn't have access to the repository's secrets.
+    # Dependabot also only checks for GitHub action dependencies, so it's not necessary to run
+    # Plugin tests.
+    if: github.actor != 'dependabot[bot]'
+
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
     # Use ${{ secrets.NAME }} to include any GitHub Secrets in ${{ env.NAME }}
@@ -92,7 +97,7 @@ jobs:
       # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
       # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
       - name: Checkout Plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
 
@@ -365,21 +370,21 @@ jobs:
       # because we want to see why a test failed.
       - name: Upload nginx Error Log to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nginx-error-log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.log
           path: /var/log/nginx/error.log
 
       - name: Upload Test Results to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
           path: ${{ env.PLUGIN_DIR }}/tests/_output/
 
       - name: Upload Plugin Log File to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
@@ -391,7 +396,7 @@ jobs:
     needs: tests
 
     # Only run on pull requests, not when merging to main branch
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
@@ -422,7 +427,7 @@ jobs:
     steps:
       # Checkout (copy) this repository's Plugin to this VM.
       - name: Checkout Plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Installs Kit WordPress Libraries.
       - name: Run Composer
@@ -437,7 +442,7 @@ jobs:
       # Configure AWS Credentials
       - name: Configure AWS credentials
         id: credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ env.AWS_ROLE }}
           role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
@@ -473,7 +478,7 @@ jobs:
 
       # Add comment to PR linking to Playground
       - name: Comment on PR
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
