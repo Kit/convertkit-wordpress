@@ -220,20 +220,28 @@ class ConvertKit_Gutenberg {
 					'single'            => true,
 					'type'              => 'object',
 					'default'           => $plugin_sidebar['default_values'],
-					'sanitize_callback' => function ( $value ) use ( $plugin_sidebar ) {
+					'sanitize_callback' => function ( $meta ) use ( $plugin_sidebar ) {
 
 						// If the value is not an array, return the default values.
-						if ( ! is_array( $value ) ) {
+						if ( ! is_array( $meta ) ) {
 							return $plugin_sidebar['default_values'];
 						}
 
-						// Iterate through the attributes and sanitize the value.
+						// Iterate through the attributes and sanitize the meta.
 						foreach ( $plugin_sidebar['attributes'] as $key => $attribute ) {
-							$value[ $key ] = sanitize_text_field( $value[ $key ] ?? $value['default'] );
+							$meta[ $key ] = sanitize_text_field( $meta[ $key ] ?? $attribute['default'] );
 						}
 
-						// Return the sanitized value.
-						return $value;
+						// If a Form or Landing Page was specified, request a review.
+						// This can safely be called multiple times, as the review request
+						// class will ensure once a review request is dismissed by the user,
+						// it is never displayed again.
+						if ( $meta['form'] || $meta['landing_page'] ) {
+							WP_ConvertKit()->get_class( 'review_request' )->request_review();
+						}
+
+						// Return the sanitized meta.
+						return $meta;
 
 					},
 					'auth_callback'     => function () use ( $plugin_sidebar ) {
