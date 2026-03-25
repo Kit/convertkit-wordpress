@@ -24,6 +24,21 @@ class ConvertKit_Plugin_Sidebar {
 	 */
 	public function register( $plugin_sidebars ) {
 
+		// If the request is for the frontend, return the minimum sidebar definition required
+		// for register_post_meta().
+		if ( ! $this->is_admin_frontend_editor_or_admin_rest_request() ) {
+			$plugin_sidebars[ $this->get_name() ] = array(
+				'name'               => $this->get_name(),
+				'minimum_capability' => $this->get_minimum_capability(),
+				'meta_key'           => $this->get_meta_key(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'title'              => $this->get_title(),
+				'attributes'         => $this->get_attributes(),
+				'default_values'     => $this->get_default_values(),
+			);
+
+			return $plugin_sidebars;
+		}
+
 		$plugin_sidebars[ $this->get_name() ] = array(
 			'name'               => $this->get_name(),
 			'minimum_capability' => $this->get_minimum_capability(),
@@ -155,6 +170,33 @@ class ConvertKit_Plugin_Sidebar {
 		}
 
 		return '';
+
+	}
+
+	/**
+	 * Determines if the request is a WordPress REST API request
+	 * made by a logged in WordPress user who has the capability to edit posts.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @return  bool
+	 */
+	public function is_admin_rest_request() {
+
+		return defined( 'REST_REQUEST' ) && REST_REQUEST && current_user_can( 'edit_posts' );
+
+	}
+
+	/**
+	 * Determines if the request is for the WordPress Administration, frontend editor or REST API request.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @return  bool
+	 */
+	public function is_admin_frontend_editor_or_admin_rest_request() {
+
+		return WP_ConvertKit()->is_admin_or_frontend_editor() || $this->is_admin_rest_request();
 
 	}
 
