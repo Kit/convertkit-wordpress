@@ -35,7 +35,7 @@ class WPGutenberg extends \Codeception\Module
 	{
 		// Don't switch if the iframe doesn't exist e.g. Divi is active, which prevents
 		// the iframe block editor in WordPress 7.0+ from being used.
-		if (!$I->tryToSeeElement('iframe[name="editor-canvas"]')) {
+		if ( ! $I->tryToSeeElement('iframe[name="editor-canvas"]')) {
 			return;
 		}
 
