@@ -57,7 +57,7 @@ class CustomPostType extends \Codeception\Module
 					'show_in_menu_string'   => '',
 					'menu_icon'             => null,
 					'register_meta_box_cb'  => null,
-					'supports'              => array( 'title', 'editor', 'thumbnail' ),
+					'supports'              => array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
 					'taxonomies'            => array(),
 					'labels'                => array(
 						'menu_name'                => '',
@@ -124,7 +124,7 @@ class CustomPostType extends \Codeception\Module
 					'show_in_menu_string'   => '',
 					'menu_icon'             => null,
 					'register_meta_box_cb'  => null,
-					'supports'              => array( 'title', 'editor', 'thumbnail' ),
+					'supports'              => array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
 					'taxonomies'            => array(),
 					'labels'                => array(
 						'menu_name'                => '',
