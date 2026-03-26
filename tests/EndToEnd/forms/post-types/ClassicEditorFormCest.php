@@ -9,7 +9,7 @@ use Tests\Support\EndToEndTester;
  *
  * @since   1.9.6
  */
-class FormClassicEditorCest
+class ClassicEditorFormCest
 {
 	/**
 	 * Post Types to test.
