@@ -1,0 +1,1183 @@
+<?php
+
+namespace Tests\EndToEnd;
+
+use Tests\Support\EndToEndTester;
+
+/**
+ * Tests the Form setting on WordPress Pages, Posts and Custom Post Types when using the Block Editor.
+ *
+ * @since   1.9.6
+ */
+class BlockEditorFormCest
+{
+	/**
+	 * Post Types to test.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @var array
+	 */
+	private $postTypes = [
+		'page',
+		'post',
+		'article',
+	];
+
+	/**
+	 * Run common actions before running the test functions in this class.
+	 *
+	 * @since   1.9.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _before(EndToEndTester $I)
+	{
+		// Activate Kit plugin.
+		$I->activateKitPlugin($I);
+
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
+	}
+
+	/**
+	 * Test that the 'Default' option for the Default Form setting in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and there is no Default Form specified in the Plugin
+	 * settings.
+	 *
+	 * @since   1.9.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormWithNoDefaultFormSpecifiedInPlugin(EndToEndTester $I)
+	{
+		// Setup Kit plugin with no default Forms configured.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: None'
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that no Kit Form is displayed.
+			$I->dontSeeElementInDOM('form[data-sv-form]');
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page.
+	 *
+	 * @since   1.9.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultForm(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default'
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and its position is set
+	 * to after the Page content.
+	 *
+	 * @since   2.5.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormBeforeContent(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages set to be output before the Page content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form_position' => 'before_content',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: Before Content'
+			);
+
+			// Add paragraph to Page.
+			$I->addGutenbergParagraphBlock($I, 'Page content');
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM after the Page content.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'before_content'
+			);
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and its position is set
+	 * to before and after the Page content.
+	 *
+	 * @since   2.5.9
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormBeforeAndAfterContent(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages set to be output before and after the Page content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form_position' => 'before_after_content',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: Before and After Content'
+			);
+
+			// Add paragraph to Page.
+			$I->addGutenbergParagraphBlock($I, 'Page content');
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that two Kit Forms are output in the DOM before and after the Page content.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'before_after_content'
+			);
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and its position is set
+	 * to after the 3rd paragraph.
+	 *
+	 * @since   2.6.2
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormAfterParagraphElement(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'p',
+				'page_form_position_element_index'    => 3,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'p',
+				'post_form_position_element_index'    => 3,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'p',
+				'article_form_position_element_index' => 3,
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addGutenbergPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 3rd Paragraph Element'
+			);
+
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Confirm that one Kit Form is output in the DOM after the third paragraph.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_element',
+				element: 'p',
+				elementIndex: 3
+			);
+
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
+	}
+
+	/**
+	 * Test that specifying a non-inline Form specified in the Plugin Settings does not
+	 * result in a fatal error when creating and viewing a new WordPress Page, and its position is set
+	 * to after the 3rd paragraph.
+	 *
+	 * @since   2.6.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultNonInlineFormAfterParagraphElement(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'p',
+				'page_form_position_element_index'    => 3,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'p',
+				'post_form_position_element_index'    => 3,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'p',
+				'article_form_position_element_index' => 3,
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addGutenbergPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Non-Inline Form: Default: After 3rd Paragraph Element'
+			);
+
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and its position is set
+	 * to after the 2nd <h2> element.
+	 *
+	 * @since   2.6.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormAfterHeadingElement(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 2nd <h2> of content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'h2',
+				'page_form_position_element_index'    => 2,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'h2',
+				'post_form_position_element_index'    => 2,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'h2',
+				'article_form_position_element_index' => 2,
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addGutenbergPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 2nd H2 Element'
+			);
+
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Confirm that one Kit Form is output in the DOM after the second <h2> element.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_element',
+				element: 'h2',
+				elementIndex: 2
+			);
+
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and its position is set
+	 * to after the 2nd <img> element.
+	 *
+	 * @since   2.6.2
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormAfterImageElement(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 2nd <img> of content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form_position_element_index'    => 2,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'img',
+				'post_form_position_element_index'    => 2,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'img',
+				'article_form_position_element_index' => 2,
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addGutenbergPageToDatabase(
+				$I,
+				title: 'Kit: Page: Form: Default: After 2nd Image Element'
+			);
+
+			// View the Post on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Confirm that one Kit Form is output in the DOM after the second <img> element.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_element',
+				element: 'img',
+				elementIndex: 2
+			);
+
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
+	}
+
+	/**
+	 * Test that the Default Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page, and its position is set
+	 * to a number greater than the number of elements in the content.
+	 *
+	 * @since   2.6.2
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultFormAfterOutOfBoundsElement(EndToEndTester $I)
+	{
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 9th paragraph of content.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                  => 'after_element',
+				'page_form_position_element'          => 'p',
+				'page_form_position_element_index'    => 9,
+				'post_form'                           => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                  => 'after_element',
+				'post_form_position_element'          => 'p',
+				'post_form_position_element_index'    => 9,
+				'article_form'                        => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'article_form_position'               => 'after_element',
+				'article_form_position_element'       => 'p',
+				'article_form_position_element_index' => 9,
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Setup Page with placeholder content.
+			$pageID = $I->addGutenbergPageToDatabase(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Default: After 9th Paragraph Element'
+			);
+
+			// View the Page on the frontend site.
+			$I->amOnPage('?p=' . $pageID);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Confirm that one Kit Form is output in the DOM after the content, as
+			// the number of paragraphs is less than the position.
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				position: 'after_content'
+			);
+
+			// Confirm character encoding is not broken due to using DOMDocument.
+			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
+
+			// Confirm no meta tag exists within the content.
+			$I->dontSeeInSource('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+
+			// Confirm no extra <html>, <head> or <body> tags are output i.e. injecting the form doesn't result in DOMDocument adding tags.
+			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
+		}
+	}
+
+	/**
+	 * Test that the Default Legacy Form specified in the Plugin Settings works when
+	 * creating and viewing a new WordPress Page.
+	 *
+	 * @since   1.9.6.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefaultLegacyForm(EndToEndTester $I)
+	{
+		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
+				'page_form'    => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'post_form'    => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'article_form' => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: Legacy: Default'
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that the Kit Default Legacy Form displays.
+			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
+
+			// Confirm that the Legacy Form title's character encoding is correct.
+			$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
+		}
+	}
+
+	/**
+	 * Test that 'None' Form specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page.
+	 *
+	 * @since   1.9.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingNoForm(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: None'
+			);
+
+			// Configure metabox's Form setting = None.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that no Kit Form is displayed.
+			$I->dontSeeElementInDOM('form[data-sv-form]');
+		}
+	}
+
+	/**
+	 * Test that the Form specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page.
+	 *
+	 * @since   1.9.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefinedForm(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+			);
+
+			// Configure metabox's Form setting = Inline Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
+	}
+
+	/**
+	 * Test that the Modal Form is output once when the Autoptimize Plugin is active and
+	 * its "Defer JavaScript" setting is enabled.
+	 *
+	 * @since   2.4.9
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithAutoptimizePlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Autoptimize Plugin.
+		$I->activateThirdPartyPlugin($I, 'autoptimize');
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that Autoptimize hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate Autoptimize Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'autoptimize');
+	}
+
+	/**
+	 * Test that the Modal Form is output once when the Debloat Plugin is active and
+	 * its "Defer JavaScript" and "Delay All Scripts" settings are enabled.
+	 *
+	 * @since   2.8.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithDebloatPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Debloat Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->activateThirdPartyPlugin($I, 'debloat');
+
+		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
+		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that Debloat hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate Debloat Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'debloat');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+	}
+
+	/**
+	 * Test that the Modal Form is output once when the Jetpack Boost Plugin is active and
+	 * its "Defer Non-Essential JavaScript" setting is enabled.
+	 *
+	 * @since   2.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithJetpackBoostPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Jetpack Boost Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->activateThirdPartyPlugin($I, 'jetpack-boost');
+
+		// Enable Jetpack Boost's "Defer Non-Essential JavaScript" setting.
+		$I->amOnAdminPage('admin.php?page=jetpack-boost');
+		$I->click('#inspector-toggle-control-1');
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate Jetpack Boost Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'jetpack-boost');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+	}
+
+	/**
+	 * Test that the Modal Form is output once when the LiteSpeed Cache Plugin is active and
+	 * its "Load JS Deferred" setting is enabled.
+	 *
+	 * @since   2.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithLiteSpeedCachePlugin(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate and enable LiteSpeed Cache Plugin.
+		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
+		$I->enableCachingLiteSpeedCachePlugin($I);
+
+		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
+		$I->enableLiteSpeedCacheLoadJSDeferred($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate LiteSpeed Cache Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'litespeed-cache');
+	}
+
+	/**
+	 * Test that the Modal Form <script> embed is output once when the Siteground Speed Optimizer Plugin is active
+	 * and its "Combine JavaScript Files" setting is enabled.
+	 *
+	 * @since   2.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithSitegroundSpeedOptimizerPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Siteground Speed Optimizer Plugin.
+		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
+
+		// Configure Siteground Speed Optimizer's Heartbeat.
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_post_interval', 120 );
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_dashboard_interval', 120 );
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_frontend_interval', 120 );
+
+		// Enable Siteground Speed Optimizer's "Combine JavaScript Files" setting.
+		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate Siteground Speed Optimizer Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'sg-cachepress');
+	}
+
+	/**
+	 * Test that the Modal Form is output once when the Perfmatters Plugin is active and its "Delay JavaScript"
+	 * setting is enabled.
+	 *
+	 * @since   2.4.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithPerfmattersPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Perfmatters Plugin.
+		$I->activateThirdPartyPlugin($I, 'perfmatters');
+
+		// Enable Defer and Delay JavaScript.
+		$I->haveOptionInDatabase(
+			'perfmatters_options',
+			[
+				'assets' => [
+					'defer_js'            => 1,
+					'delay_js'            => 1,
+					'delay_js_inclusions' => '',
+				],
+			]
+		);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM within the <main> element.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate Perfmatters Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'perfmatters');
+	}
+
+	/**
+	 * Test that the Modal Form is output once when the WP Rocket Plugin is active and its "Delay JavaScript execution"
+	 * setting is enabled.
+	 *
+	 * @since   2.4.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingModalFormWithWPRocketPlugin(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate WP Rocket Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+		$I->activateThirdPartyPlugin($I, 'wp-rocket');
+
+		// Configure WP Rocket.
+		$I->enableWPRocketDelayJS($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
+			);
+
+			// Configure metabox's Form setting = Modal Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that one Kit Form is output in the DOM within the <main> element.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
+
+		// Deactivate WP Rocket Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
+	}
+
+	/**
+	 * Test that the Legacy Form specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page.
+	 *
+	 * @since   1.9.6.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingDefinedLegacyForm(EndToEndTester $I)
+	{
+		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
+				'page_form'    => '',
+				'post_form'    => '',
+				'article_form' => '',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
+			);
+
+			// Configure metabox's Form setting = Legacy Form.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
+			);
+
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewGutenbergPage($I);
+
+			// Confirm that the Kit Legacy Form displays.
+			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
+
+			// Confirm that the Legacy Form title's character encoding is correct.
+			$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
+		}
+	}
+
+	/**
+	 * Test that the Default Form for Pages displays when an invalid Form ID is specified
+	 * for a Page.
+	 *
+	 * Whilst the on screen options won't permit selecting an invalid Form ID, a Page might
+	 * have an invalid Form ID because:
+	 * - the form belongs to another Kit account (i.e. API credentials were changed in the Plugin, but this Page's specified Form was not changed)
+	 * - the form was deleted from the Kit account.
+	 *
+	 * @since   1.9.7.2
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPageUsingInvalidDefinedForm(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Create Page, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
+			// a Form being deleted in Kit.
+			$pageID = $I->havePostInDatabase(
+				[
+					'post_type'  => $postType,
+					'post_title' => 'Kit: ' . $postType . ': Form: Specific: Invalid',
+					'meta_input' => [
+						'_wp_convertkit_post_meta' => [
+							'form'         => '11111',
+							'landing_page' => '',
+							'tag'          => '',
+						],
+					],
+				]
+			);
+
+			// Load the Page on the frontend site.
+			$I->amOnPage('/?p=' . $pageID);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Confirm that the invalid Kit Form does not display.
+			$I->dontSeeElementInDOM('form[data-sv-form="11111"]');
+
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		}
+	}
+
+	/**
+	 * Test that the Form Settings are preserved when switching between the Classic Editor
+	 * and Gutenberg.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormSettingsPreservedWhenSwitchingEditors(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Editor Switching: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+
+		// Configure metabox's Form setting = Inline Form.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Grab the edit page URL.
+		$editPageURL = $I->grabAttributeFrom('#wp-admin-bar-edit a', 'href');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+
+		$I->wait(2);
+
+		// Edit the page in the Gutenberg editor.
+		$I->amOnUrl($editPageURL);
+
+		// Confirm the Form setting is set to Inline Form.
+		$I->seePluginSidebarSetting($I, 'form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Add a paragraph, so the Save button can be used.
+		$I->addGutenbergParagraphBlock($I, 'This is a test paragraph.');
+
+		// Save (update) and view the Page on the frontend site.
+		$I->saveAndViewGutenbergPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Edit the page in the Classic Editor.
+		$I->amOnUrl($editPageURL);
+
+		// Add a paragraph, so the Save button can be used.
+		$I->addClassicEditorParagraph($I, 'This is a test paragraph.');
+
+		// Save (update) and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+	}
+
+	/**
+	 * Deactivate and reset Plugin(s) after each test, if the test passes.
+	 * We don't use _after, as this would provide a screenshot of the Plugin
+	 * deactivation and not the true test error.
+	 *
+	 * @since   1.9.6.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function _passed(EndToEndTester $I)
+	{
+		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
+	}
+}
