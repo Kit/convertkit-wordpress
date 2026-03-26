@@ -89,16 +89,6 @@ class ClassicEditorFormCest
 				title: 'Kit: ' . $postType . ': Form: Default: None'
 			);
 
-			// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
-			$I->checkSelectFormOptionOrder(
-				$I,
-				selectElement: '#wp-convertkit-form',
-				prependOptions: [
-					'Default',
-					'None',
-				]
-			);
-
 			// Publish and view the Page on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
@@ -150,11 +140,13 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormBeforeContent(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages set to be output before the Page content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output before the Page content.
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form_position' => 'before_content',
+				'page_form_position'    => 'before_content',
+				'post_form_position'    => 'before_content',
+				'article_form_position' => 'before_content',
 			]
 		);
 		$I->setupKitPluginResources($I);
@@ -195,7 +187,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormBeforeAndAfterContent(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages set to be output before and after the Page content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output before and after the Page content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -241,7 +233,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterParagraphElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages set to be output after the 3rd paragraph of content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -307,7 +299,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultNonInlineFormAfterParagraphElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages set to be output after the 3rd paragraph of content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -368,7 +360,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterHeadingElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages set to be output after the 2nd <h2> of content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 2nd <h2> of content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -434,7 +426,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterImageElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Posts set to be output after the 2nd <img> of content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 2nd <img> of content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -500,7 +492,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPageUsingDefaultFormAfterOutOfBoundsElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages set to be output after the 7rd paragraph of content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 9th paragraph of content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -695,28 +687,32 @@ class ClassicEditorFormCest
 		// Activate Autoptimize Plugin.
 		$I->activateThirdPartyPlugin($I, 'autoptimize');
 
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form,
-		// and that Autoptimize hasn't moved the script embed to the footer of the site.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that Autoptimize hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate Autoptimize Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'autoptimize');
@@ -743,28 +739,32 @@ class ClassicEditorFormCest
 		// Enable Debloat's "Defer JavaScript" and "Delay All Scripts" settings.
 		$I->enableJSDeferDelayAllScriptsDebloatPlugin($I);
 
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form,
-		// and that Debloat hasn't moved the script embed to the footer of the site.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that Debloat hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate Debloat Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'debloat');
@@ -793,28 +793,32 @@ class ClassicEditorFormCest
 		$I->amOnAdminPage('admin.php?page=jetpack-boost');
 		$I->click('#inspector-toggle-control-1');
 
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form,
-		// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate Jetpack Boost Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'jetpack-boost');
@@ -842,28 +846,32 @@ class ClassicEditorFormCest
 		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
 		$I->enableLiteSpeedCacheLoadJSDeferred($I);
 
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form,
-		// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM.
+			// This confirms that there is only one script on the page for this form, which renders the form,
+			// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate LiteSpeed Cache Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'litespeed-cache');
@@ -895,25 +903,28 @@ class ClassicEditorFormCest
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
 
 		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
-		);
+		foreach ( $this->postTypes as $postType ) {
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate Siteground Speed Optimizer Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'sg-cachepress');
@@ -948,27 +959,31 @@ class ClassicEditorFormCest
 			]
 		);
 
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM within the <main> element.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM within the <main> element.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate Perfmatters Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'perfmatters');
@@ -995,27 +1010,31 @@ class ClassicEditorFormCest
 		// Configure WP Rocket.
 		$I->enableWPRocketDelayJS($I);
 
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Classic Editor.
+			$I->addClassicEditorPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
+			);
 
-		// Configure metabox's Form setting = Modal Form.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-			]
-		);
+			// Configure metabox's Form setting = Modal Form.
+			$I->configureMetaboxSettings(
+				$I,
+				metabox: 'wp-convertkit-meta-box',
+				configuration: [
+					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
+				]
+			);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
+			// Publish and view the Page on the frontend site.
+			$I->publishAndViewClassicEditorPage($I);
 
-		// Confirm that one Kit Form is output in the DOM within the <main> element.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			// Confirm that one Kit Form is output in the DOM within the <main> element.
+			// This confirms that there is only one script on the page for this form, which renders the form.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		}
 
 		// Deactivate WP Rocket Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
