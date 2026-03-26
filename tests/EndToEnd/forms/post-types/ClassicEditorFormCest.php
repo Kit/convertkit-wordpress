@@ -56,13 +56,22 @@ class ClassicEditorFormCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Navigate to Post Type (e.g. Pages / Posts) > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Navigate to Post Type (e.g. Pages / Posts) > Add New.
+			$I->amOnAdminPage('post-new.php?post_type=' . $postType);
 
-		// Confirm that settings have label[for] attributes.
-		$I->seeInSource('<label for="wp-convertkit-form">');
-		$I->seeInSource('<label for="wp-convertkit-landing_page">');
-		$I->seeInSource('<label for="wp-convertkit-tag">');
+			// Confirm that settings have label[for] attributes.
+			$I->waitForElementVisible('label[for="wp-convertkit-form"]');
+			$I->waitForElementVisible('label[for="wp-convertkit-tag"]');
+			$I->waitForElementVisible('label[for="wp-convertkit-restrict_content"]');
+
+			// For Pages, confirm that the Landing Page setting label is correct.
+			// This isn't supported for Posts and Articles.
+			if ( 'page' === $postType ) {
+				$I->waitForElementVisible('label[for="wp-convertkit-landing_page"]');
+			}
+		}
 	}
 
 	/**
