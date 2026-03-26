@@ -271,6 +271,7 @@ class WPClassicEditor extends \Codeception\Module
 		// Click the body.
 		// This ensures any elements focused such as Select2 fields are blurred, ensuring the Publish button is clickable.
 		$I->click('body');
+		$I->wait(1);
 
 		// Scroll to Publish meta box, so its buttons are not hidden.
 		$I->scrollTo('#submitdiv');
