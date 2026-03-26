@@ -7,7 +7,7 @@ use Tests\Support\EndToEndTester;
 /**
  * Tests the Form setting on WordPress Pages, Posts and Custom Post Types when using the Classic Editor.
  *
- * @since   1.9.6
+ * @since   3.3.0
  */
 class ClassicEditorFormCest
 {
@@ -27,7 +27,7 @@ class ClassicEditorFormCest
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   1.9.6
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -67,14 +67,14 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the 'Default' option for the Default Form setting in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and there is no Default Form specified in the Plugin
+	 * creating and viewing a new WordPress Page, Post or Article, and there is no Default Form specified in the Plugin
 	 * settings.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormWithNoDefaultFormSpecifiedInPlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormWithNoDefaultFormSpecifiedInPlugin(EndToEndTester $I)
 	{
 		// Setup Kit plugin with no default Forms configured.
 		$I->setupKitPluginNoDefaultForms($I);
@@ -82,14 +82,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: None'
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that no Kit Form is displayed.
@@ -99,13 +99,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page.
+	 * creating and viewing a new WordPress Page, Post or Article.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultForm(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultForm(EndToEndTester $I)
 	{
 		// Setup Kit plugin.
 		$I->setupKitPlugin($I);
@@ -113,14 +113,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default'
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -131,16 +131,16 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and its position is set
+	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
 	 * to after the Page content.
 	 *
 	 * @since   2.5.8
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormBeforeContent(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormBeforeContent(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output before the Page content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output before the Post Type content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -153,20 +153,20 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: Before Content'
 			);
 
-			// Add paragraph to Page.
+			// Add paragraph to Post Type.
 			$I->addClassicEditorParagraph($I, $postType . ' content');
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
-			// Confirm that one Kit Form is output in the DOM after the Page content.
+			// Confirm that one Kit Form is output in the DOM after the Post Type content.
 			// This confirms that there is only one script on the page for this form, which renders the form.
 			$I->seeFormOutput(
 				$I,
@@ -178,16 +178,16 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and its position is set
-	 * to before and after the Page content.
+	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
+	 * to before and after the Post Type content.
 	 *
 	 * @since   2.5.9
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormBeforeAndAfterContent(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormBeforeAndAfterContent(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output before and after the Page content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output before and after the Post Type content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -200,20 +200,20 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: Before and After Content'
 			);
 
-			// Add paragraph to Page.
+			// Add paragraph to Post Type.
 			$I->addClassicEditorParagraph($I, $postType . ' content');
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
-			// Confirm that two Kit Forms are output in the DOM before and after the Page content.
+			// Confirm that two Kit Forms are output in the DOM before and after the Post Type content.
 			$I->seeFormOutput(
 				$I,
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
@@ -224,16 +224,16 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and its position is set
+	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
 	 * to after the 3rd paragraph.
 	 *
 	 * @since   2.6.2
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormAfterParagraphElement(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormAfterParagraphElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of Post Type content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -255,14 +255,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Setup Page with placeholder content.
+			// Setup Post Type with placeholder content.
 			$pageID = $I->addClassicEditorPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: After 3rd Paragraph Element'
 			);
 
-			// View the Page on the frontend site.
+			// View the Post Type on the frontend site.
 			$I->amOnPage('?p=' . $pageID);
 
 			// Check that no PHP warnings or notices were output.
@@ -290,14 +290,14 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that specifying a non-inline Form specified in the Plugin Settings does not
-	 * result in a fatal error when creating and viewing a new WordPress Page, and its position is set
+	 * result in a fatal error when creating and viewing a new WordPress Page, Post or Article, and its position is set
 	 * to after the 3rd paragraph.
 	 *
 	 * @since   2.6.8
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultNonInlineFormAfterParagraphElement(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultNonInlineFormAfterParagraphElement(EndToEndTester $I)
 	{
 		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
 		$I->setupKitPlugin(
@@ -321,14 +321,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Setup Page with placeholder content.
+			// Setup Post Type with placeholder content.
 			$pageID = $I->addClassicEditorPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Non-Inline Form: Default: After 3rd Paragraph Element'
 			);
 
-			// View the Page on the frontend site.
+			// View the Post Type on the frontend site.
 			$I->amOnPage('?p=' . $pageID);
 
 			// Check that no PHP warnings or notices were output.
@@ -351,14 +351,14 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and its position is set
+	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
 	 * to after the 2nd <h2> element.
 	 *
 	 * @since   2.6.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormAfterHeadingElement(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormAfterHeadingElement(EndToEndTester $I)
 	{
 		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 2nd <h2> of content.
 		$I->setupKitPlugin(
@@ -382,14 +382,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Setup Page with placeholder content.
+			// Setup Post Type with placeholder content.
 			$pageID = $I->addClassicEditorPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: After 2nd H2 Element'
 			);
 
-			// View the Page on the frontend site.
+			// View the Post Type on the frontend site.
 			$I->amOnPage('?p=' . $pageID);
 
 			// Check that no PHP warnings or notices were output.
@@ -417,14 +417,14 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and its position is set
+	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
 	 * to after the 2nd <img> element.
 	 *
 	 * @since   2.6.2
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormAfterImageElement(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormAfterImageElement(EndToEndTester $I)
 	{
 		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 2nd <img> of content.
 		$I->setupKitPlugin(
@@ -448,14 +448,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Setup Page with placeholder content.
+			// Setup Post Type with placeholder content.
 			$pageID = $I->addClassicEditorPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: After 2nd Image Element'
 			);
 
-			// View the Post on the frontend site.
+			// View the Post Type on the frontend site.
 			$I->amOnPage('?p=' . $pageID);
 
 			// Check that no PHP warnings or notices were output.
@@ -483,14 +483,14 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page, and its position is set
+	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
 	 * to a number greater than the number of elements in the content.
 	 *
 	 * @since   2.6.2
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultFormAfterOutOfBoundsElement(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultFormAfterOutOfBoundsElement(EndToEndTester $I)
 	{
 		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 9th paragraph of content.
 		$I->setupKitPlugin(
@@ -514,14 +514,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Setup Page with placeholder content.
+			// Setup Post Type with placeholder content.
 			$pageID = $I->addClassicEditorPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: Page: Form: Default: After 9th Paragraph Element'
 			);
 
-			// View the Page on the frontend site.
+			// View the Post Type on the frontend site.
 			$I->amOnPage('?p=' . $pageID);
 
 			// Check that no PHP warnings or notices were output.
@@ -548,13 +548,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Legacy Form specified in the Plugin Settings works when
-	 * creating and viewing a new WordPress Page.
+	 * creating and viewing a new WordPress Page, Post or Article.
 	 *
 	 * @since   1.9.6.3
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefaultLegacyForm(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefaultLegacyForm(EndToEndTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
 		$I->setupKitPlugin(
@@ -571,14 +571,14 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Legacy: Default'
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that the Kit Default Legacy Form displays.
@@ -591,13 +591,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that 'None' Form specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page.
+	 * creating and viewing a new WordPress Page, Post or Article.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingNoForm(EndToEndTester $I)
+	public function testAddNewPostTypeUsingNoForm(EndToEndTester $I)
 	{
 		// Setup Kit plugin.
 		$I->setupKitPlugin($I);
@@ -605,7 +605,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -621,7 +621,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that no Kit Form is displayed.
@@ -631,13 +631,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Form specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page.
+	 * creating and viewing a new WordPress Page, Post or Article.
 	 *
 	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefinedForm(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefinedForm(EndToEndTester $I)
 	{
 		// Setup Kit plugin.
 		$I->setupKitPlugin($I);
@@ -645,7 +645,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -661,7 +661,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -672,13 +672,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the Autoptimize Plugin is active and
-	 * its "Defer JavaScript" setting is enabled.
+	 * its "Defer JavaScript" setting is enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.9
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithAutoptimizePlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithAutoptimizePlugin(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -689,7 +689,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -705,7 +705,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -720,13 +720,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the Debloat Plugin is active and
-	 * its "Defer JavaScript" and "Delay All Scripts" settings are enabled.
+	 * its "Defer JavaScript" and "Delay All Scripts" settings are enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.8.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithDebloatPlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithDebloatPlugin(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -741,7 +741,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -757,7 +757,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -773,13 +773,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the Jetpack Boost Plugin is active and
-	 * its "Defer Non-Essential JavaScript" setting is enabled.
+	 * its "Defer Non-Essential JavaScript" setting is enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithJetpackBoostPlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithJetpackBoostPlugin(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -795,7 +795,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -811,7 +811,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -827,13 +827,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the LiteSpeed Cache Plugin is active and
-	 * its "Load JS Deferred" setting is enabled.
+	 * its "Load JS Deferred" setting is enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithLiteSpeedCachePlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithLiteSpeedCachePlugin(EndToEndTester $I)
 	{
 		// Setup Kit plugin.
 		$I->setupKitPlugin($I);
@@ -848,7 +848,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -864,7 +864,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -879,13 +879,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form <script> embed is output once when the Siteground Speed Optimizer Plugin is active
-	 * and its "Combine JavaScript Files" setting is enabled.
+	 * and its "Combine JavaScript Files" setting is enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithSitegroundSpeedOptimizerPlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithSitegroundSpeedOptimizerPlugin(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -902,8 +902,9 @@ class ClassicEditorFormCest
 		// Enable Siteground Speed Optimizer's "Combine JavaScript Files" setting.
 		$I->haveOptionInDatabase('siteground_optimizer_combine_javascript', '1');
 
-		// Add a Page using the Classic Editor.
+		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -919,7 +920,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
@@ -932,13 +933,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the Perfmatters Plugin is active and its "Delay JavaScript"
-	 * setting is enabled.
+	 * setting is enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithPerfmattersPlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithPerfmattersPlugin(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -961,7 +962,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -977,7 +978,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
@@ -991,13 +992,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the WP Rocket Plugin is active and its "Delay JavaScript execution"
-	 * setting is enabled.
+	 * setting is enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingModalFormWithWPRocketPlugin(EndToEndTester $I)
+	public function testAddNewPostTypeUsingModalFormWithWPRocketPlugin(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -1012,7 +1013,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -1028,7 +1029,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
@@ -1043,13 +1044,13 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Legacy Form specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page.
+	 * creating and viewing a new WordPress Page, Post or Article.
 	 *
 	 * @since   1.9.6.3
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingDefinedLegacyForm(EndToEndTester $I)
+	public function testAddNewPostTypeUsingDefinedLegacyForm(EndToEndTester $I)
 	{
 		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
 		$I->setupKitPlugin(
@@ -1066,7 +1067,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Page using the Classic Editor.
+			// Add a Post Type using the Classic Editor.
 			$I->addClassicEditorPage(
 				$I,
 				postType: $postType,
@@ -1082,7 +1083,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Publish and view the Page on the frontend site.
+			// Publish and view the Post Type on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
 			// Confirm that the Kit Legacy Form displays.
@@ -1095,7 +1096,7 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form for Pages displays when an invalid Form ID is specified
-	 * for a Page.
+	 * for a WordPress Page, Post or Article.
 	 *
 	 * Whilst the on screen options won't permit selecting an invalid Form ID, a Page might
 	 * have an invalid Form ID because:
@@ -1106,7 +1107,7 @@ class ClassicEditorFormCest
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewPageUsingInvalidDefinedForm(EndToEndTester $I)
+	public function testAddNewPostTypeUsingInvalidDefinedForm(EndToEndTester $I)
 	{
 		// Setup Kit plugin.
 		$I->setupKitPlugin($I);
@@ -1114,7 +1115,7 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Create Page, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
+			// Create Post Type, with an invalid Form ID, as if it were created prior to API credentials being changed and/or
 			// a Form being deleted in Kit.
 			$pageID = $I->havePostInDatabase(
 				[
@@ -1130,7 +1131,7 @@ class ClassicEditorFormCest
 				]
 			);
 
-			// Load the Page on the frontend site.
+			// Load the Post Type on the frontend site.
 			$I->amOnPage('/?p=' . $pageID);
 
 			// Check that no PHP warnings or notices were output.
