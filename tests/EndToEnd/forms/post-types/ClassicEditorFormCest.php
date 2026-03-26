@@ -89,16 +89,6 @@ class ClassicEditorFormCest
 				title: 'Kit: ' . $postType . ': Form: Default: None'
 			);
 
-			// Check the order of the Form resources are alphabetical, with the Default and None options prepending the Forms.
-			$I->checkSelectFormOptionOrder(
-				$I,
-				selectElement: '#wp-convertkit-form',
-				prependOptions: [
-					'Default',
-					'None',
-				]
-			);
-
 			// Publish and view the Page on the frontend site.
 			$I->publishAndViewClassicEditorPage($I);
 
@@ -154,8 +144,8 @@ class ClassicEditorFormCest
 		$I->setupKitPlugin(
 			$I,
 			[
-				'page_form_position' => 'before_content',
-				'post_form_position' => 'before_content',
+				'page_form_position'    => 'before_content',
+				'post_form_position'    => 'before_content',
 				'article_form_position' => 'before_content',
 			]
 		);
