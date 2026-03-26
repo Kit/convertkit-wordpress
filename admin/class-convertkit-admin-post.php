@@ -267,11 +267,6 @@ class ConvertKit_Admin_Post {
 			return;
 		}
 
-		// Bail if the block editor is being used, as register_post_meta() handles saving post meta.
-		if ( function_exists( 'use_block_editor_for_post' ) && use_block_editor_for_post( $post_id ) ) {
-			return;
-		}
-
 		// Bail if no nonce field exists.
 		if ( ! isset( $_POST['wp-convertkit-save-meta-nonce'] ) ) {
 			return;

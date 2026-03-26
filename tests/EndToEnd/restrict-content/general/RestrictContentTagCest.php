@@ -104,6 +104,7 @@ class RestrictContentTagCest
 
 		// Configure metabox's Restrict Content setting = Tag name.
 		$I->configurePluginSidebarSettings(
+			$I,
 			form: 'None',
 			restrictContent: $_ENV['CONVERTKIT_API_TAG_NAME']
 		);

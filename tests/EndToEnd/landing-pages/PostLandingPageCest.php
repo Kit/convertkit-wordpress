@@ -56,7 +56,7 @@ class PostLandingPageCest
 		$I->dontSeeElementInDOM('#wp-convertkit-landing_page');
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');

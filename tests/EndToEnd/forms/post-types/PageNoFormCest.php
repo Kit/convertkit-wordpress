@@ -24,12 +24,6 @@ class PageNoFormCest
 		$I->activateKitPlugin($I);
 		$I->setupKitPluginCredentialsNoData($I);
 		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to Pages > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
 	}
 
 	/**
@@ -44,6 +38,9 @@ class PageNoFormCest
 	{
 		// Activate Classic Editor Plugin.
 		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Navigate to Pages > Add New.
+		$I->amOnAdminPage('post-new.php?post_type=page');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

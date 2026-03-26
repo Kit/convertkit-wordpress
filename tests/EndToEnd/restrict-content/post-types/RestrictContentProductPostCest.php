@@ -179,6 +179,7 @@ class RestrictContentProductPostCest
 
 		// Configure metabox's Restrict Content setting = Product name.
 		$I->configurePluginSidebarSettings(
+			$I,
 			form: 'None',
 			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);

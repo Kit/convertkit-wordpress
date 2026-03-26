@@ -80,9 +80,6 @@ class PageLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -94,7 +91,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Subscribe.
 		$I->fillField('email_address', $I->generateEmailAddress());
@@ -127,9 +124,6 @@ class PageLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -145,7 +139,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
@@ -168,9 +162,6 @@ class PageLandingPageCest
 			$I,
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_CHARACTER_ENCODING_NAME']
 		);
-
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -203,9 +194,6 @@ class PageLandingPageCest
 			$I,
 			landingPage: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
 		);
-
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -243,9 +231,6 @@ class PageLandingPageCest
 			$I,
 			landingPage: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
 		);
-
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
@@ -346,9 +331,6 @@ class PageLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -360,7 +342,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Autoptimize has not lazy loaded assets.
 		$I->dontSeeElementInDOM('img[data-bg]');
@@ -410,9 +392,6 @@ class PageLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -424,7 +403,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Perfmatters has not lazy loaded assets.
 		$I->dontSeeElementInDOM('.perfmatters-lazy');
@@ -465,9 +444,6 @@ class PageLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
 		$url = $I->publishAndViewGutenbergPage($I);
 
@@ -485,7 +461,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that WP Rocket has not minified any CSS or JS assets.
 		// WP Rocket now always includes a minified file for its own Plugin, so we can't reliably check for data-minify="1"
@@ -539,9 +515,6 @@ class PageLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
 		$url = $I->publishAndViewGutenbergPage($I);
 
@@ -559,7 +532,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Rocket LazyLoad has not attempted to lazy load images.
 		$I->dontSeeElementInDOM('img[data-lazy-src]');

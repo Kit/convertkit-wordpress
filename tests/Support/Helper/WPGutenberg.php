@@ -759,7 +759,8 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('button[aria-label="Kit"]');
 
 		// Wait for the Plugin sidebar to be fully loaded.
-		$I->waitForElementVisible('.editor-sidebar');
+		// .editor-sidebar is not available in WordPress 6.2.8, so we use .interface-complementary-area instead.
+		$I->waitForElementVisible('.interface-complementary-area');
 	}
 
 	/**
