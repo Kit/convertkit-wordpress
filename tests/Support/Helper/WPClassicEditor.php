@@ -268,11 +268,17 @@ class WPClassicEditor extends \Codeception\Module
 	 */
 	public function publishClassicEditorPage($I)
 	{
+		// Click the body.
+		// This ensures any elements focused such as Select2 fields are blurred, ensuring the Publish button is clickable.
+		$I->click('body');
+		$I->wait(1);
+
 		// Scroll to Publish meta box, so its buttons are not hidden.
 		$I->scrollTo('#submitdiv');
 
 		// Wait for the Publish button to change its state from disabled (WordPress disables it for a moment when auto-saving).
-		$I->waitForElementVisible('input#publish:not(:disabled)');
+		$I->waitForElementVisible('input#publish');
+		$I->waitForElementClickable('input#publish');
 
 		// Click the Publish button.
 		$I->click('input#publish');
@@ -302,5 +308,71 @@ class WPClassicEditor extends \Codeception\Module
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
+	 * Add a Page, Post or Custom Post Type directly to the WordPress database,
+	 * with dummy content used for testing.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                     EndToEnd Tester.
+	 * @param   string         $postType              Post Type.
+	 * @param   string         $title                 Post Title.
+	 * @param   string         $formID                Meta Box `Form` value (-1: Default).
+	 */
+	public function addClassicEditorPageToDatabase($I, $postType = 'page', $title = 'Classic Editor Title', $formID = '-1')
+	{
+		return $I->havePostInDatabase(
+			[
+				'post_title'   => $title,
+				'post_type'    => $postType,
+				'post_status'  => 'publish',
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'         => $formID,
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+				'post_content' => 'Item #1
+
+<h2 class="wp-block-heading">Item #1</h2>
+
+Item #2: Adhaésionés altéram improbis mi pariendarum sit stulti triarium
+
+<figure class="wp-block-image size-large"><img src="https://placehold.co/600x400" alt="Image #1" /></figure>
+
+<h2 class="wp-block-heading">Item #2</h2>
+
+Item #3
+
+<figure class="wp-block-image size-full"><img src="https://placehold.co/600x400" alt="Image #2" /></figure>
+
+<h3 class="wp-block-heading">Item #1</h3>
+
+Item #4
+
+<h4 class="wp-block-heading">Item #1</h4>
+
+Item #5
+
+<h5 class="wp-block-heading">Item #1</h5>
+
+Item #6
+
+<h6 class="wp-block-heading">Item #1</h6>
+
+Item #7
+
+<h3 class="wp-block-heading">Item #2</h3>
+
+<h4 class="wp-block-heading">Item #2</h4>
+
+<h5 class="wp-block-heading">Item #2</h5>
+
+<h6 class="wp-block-heading">Item #2</h6>',
+			]
+		);
 	}
 }
