@@ -28,27 +28,6 @@ class Select2 extends \Codeception\Module
 		$I->fillField('.select2-search__field[' . $ariaAttributeName . '="select2-' . $fieldName . '-results"]', $value);
 		$I->waitForElementVisible('ul#select2-' . $fieldName . '-results li.select2-results__option--highlighted');
 		$I->pressKey('.select2-search__field[' . $ariaAttributeName . '="select2-' . $fieldName . '-results"]', \Facebook\WebDriver\WebDriverKeys::ENTER);
-
-		// Ensure dropdown is fully closed.
-		$I->waitForElementNotVisible('.select2-dropdown', 5);
-
-		// Ensure value is actually applied (prevents race condition).
-		$I->waitForJS(
-			"
-			return document.querySelector('#$fieldID') 
-				&& document.querySelector('#$fieldID').textContent.trim().length > 0;
-		",
-			5
-		);
-
-		// Clear focus from Select2 dropdown.
-		$I->executeJS(
-			'
-			if (document.activeElement) {
-				document.activeElement.blur();
-			}
-		'
-		);
 	}
 
 	/**
