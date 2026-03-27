@@ -20,7 +20,6 @@ class ClassicEditorFormCest
 	 */
 	private $postTypes = [
 		'page',
-		'post',
 	];
 
 	/**
