@@ -68,7 +68,6 @@ class ConvertKit_Output {
 	public function __construct() {
 
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
-		add_action( 'init', array( $this, 'get_subscriber_id_from_request' ) );
 		add_action( 'wp', array( $this, 'maybe_tag_subscriber' ) );
 		add_action( 'template_redirect', array( $this, 'output_form' ) );
 		add_action( 'template_redirect', array( $this, 'page_takeover' ) );
@@ -146,11 +145,6 @@ class ConvertKit_Output {
 	 */
 	public function maybe_tag_subscriber() {
 
-		// Bail if no subscriber ID detected.
-		if ( ! $this->subscriber_id ) {
-			return;
-		}
-
 		// Bail if not a singular Post Type supported by ConvertKit.
 		if ( ! is_singular( convertkit_get_supported_post_types() ) ) {
 			return;
@@ -181,6 +175,14 @@ class ConvertKit_Output {
 
 		// Bail if no "Add a Tag" setting specified for this Page.
 		if ( ! $this->post_settings->has_tag() ) {
+			return;
+		}
+
+		// Get subscriber ID from URL or cookie.
+		$this->get_subscriber_id_from_request();
+
+		// Bail if no subscriber ID detected.
+		if ( ! $this->subscriber_id ) {
 			return;
 		}
 
