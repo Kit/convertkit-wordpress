@@ -271,17 +271,14 @@ class WPClassicEditor extends \Codeception\Module
 		// Scroll to Publish meta box, so its buttons are not hidden.
 		$I->scrollTo('#submitdiv');
 
-		// Wait for the Publish button to change its state from disabled (WordPress disables it for a moment when auto-saving).
-		$I->waitForElementClickable('input#publish');
+		// Wait until button is truly enabled (DOM property, not CSS).
+		$I->waitForJS("return document.querySelector('#publish') && !document.querySelector('#publish').disabled;", 10);
 
-		// Click the Publish button.
-		// Retry up to 6 sec: 4 times, for 400ms initial interval => 400ms + 800ms + 1600ms + 3200ms = 6000ms.
-		// This handles some cases where the publish button is not clickable immediately after the page is saved.
-		$I->retry(4, 400);
-		$I->retryClick('input#publish');
+		// Click using JS to bypass WP/UI weirdness.
+		$I->executeJS("document.querySelector('#publish').click();");
 
 		// Wait for notice to display.
-		$I->waitForElementVisible('.notice-success');
+		$I->waitForElementVisible('.notice-success', 10);
 	}
 
 	/**
