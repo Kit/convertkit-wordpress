@@ -274,6 +274,9 @@ class WPClassicEditor extends \Codeception\Module
 		// Wait for the Publish button to change its state from disabled (WordPress disables it for a moment when auto-saving).
 		$I->waitForElementVisible('input#publish:not(:disabled)');
 
+		// Some tests are flaky and fail if we click the Publish button too soon.
+		$I->wait(1);
+
 		// Click the Publish button.
 		$I->click('input#publish');
 
