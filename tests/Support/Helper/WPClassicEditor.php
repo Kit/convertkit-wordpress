@@ -268,20 +268,15 @@ class WPClassicEditor extends \Codeception\Module
 	 */
 	public function publishClassicEditorPage($I)
 	{
-		// Click the body.
-		// This ensures any elements focused such as Select2 fields are blurred, ensuring the Publish button is clickable.
-		$I->click('body');
-		$I->wait(1);
-
 		// Scroll to Publish meta box, so its buttons are not hidden.
 		$I->scrollTo('#submitdiv');
 
 		// Wait for the Publish button to change its state from disabled (WordPress disables it for a moment when auto-saving).
-		$I->waitForElementVisible('input#publish');
 		$I->waitForElementClickable('input#publish');
 
 		// Click the Publish button.
-		$I->click('input#publish');
+		// Use retryClick() to handle UI jitter.
+		$I->retryClick('input#publish');
 
 		// Wait for notice to display.
 		$I->waitForElementVisible('.notice-success');
