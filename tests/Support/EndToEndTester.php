@@ -23,6 +23,7 @@ namespace Tests\Support;
 class EndToEndTester extends \Codeception\Actor
 {
 	use _generated\EndToEndTesterActions;
+	use \Codeception\Lib\Actor\Shared\Retry;
 
 	/**
 	 * Define custom actions here

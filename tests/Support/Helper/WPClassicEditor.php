@@ -275,7 +275,9 @@ class WPClassicEditor extends \Codeception\Module
 		$I->waitForElementClickable('input#publish');
 
 		// Click the Publish button.
-		// Use retryClick() to handle UI jitter.
+		// Retry up to 6 sec: 4 times, for 400ms initial interval => 400ms + 800ms + 1600ms + 3200ms = 6000ms.
+		// This handles some cases where the publish button is not clickable immediately after the page is saved.
+		$I->retry(4, 400);
 		$I->retryClick('input#publish');
 
 		// Wait for notice to display.
