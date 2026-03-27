@@ -272,11 +272,13 @@ class WPClassicEditor extends \Codeception\Module
 		$I->scrollTo('#submitdiv');
 
 		// Wait for the Publish button to change its state from disabled (WordPress disables it for a moment when auto-saving).
-		$I->waitForElementClickable('input#publish');
+		$I->waitForElementVisible('input#publish:not(:disabled)');
+
+		// Some tests are flaky and fail if we click the Publish button too soon.
+		$I->wait(1);
 
 		// Click the Publish button.
-		// Use retryClick() to handle UI jitter.
-		$I->retryClick('input#publish');
+		$I->click('input#publish');
 
 		// Wait for notice to display.
 		$I->waitForElementVisible('.notice-success');
