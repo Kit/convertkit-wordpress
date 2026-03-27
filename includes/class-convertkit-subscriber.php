@@ -35,68 +35,18 @@ class ConvertKit_Subscriber {
 
 		// If the subscriber ID is in the request URI, use it.
 		if ( filter_has_var( INPUT_GET, $this->key ) ) {
-			return $this->validate_and_store_subscriber_id( filter_input( INPUT_GET, $this->key, FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+			$subscriber_id = filter_input( INPUT_GET, $this->key, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$this->set( $subscriber_id );
+			return $subscriber_id;
 		}
 
 		// If the subscriber ID is in a cookie, return it.
-		// For performance, we don't check that the subscriber ID exists every time, otherwise this would
-		// call the API on every page load.
 		if ( isset( $_COOKIE[ $this->key ] ) && ! empty( $_COOKIE[ $this->key ] ) ) {
 			return $this->get_subscriber_id_from_cookie();
 		}
 
 		// If here, no subscriber ID exists.
 		return false;
-
-	}
-
-	/**
-	 * Validates the given subscriber ID by querying the API to confirm
-	 * the subscriber exists before storing their ID in a cookie.
-	 *
-	 * @since   2.0.0
-	 *
-	 * @param   int|string $subscriber_id  Possible Subscriber ID or Signed Subscriber ID.
-	 * @return  WP_Error|int|string                 Error | Confirmed Subscriber ID or Signed Subscriber ID
-	 */
-	public function validate_and_store_subscriber_id( $subscriber_id ) {
-
-		// Bail if the API hasn't been configured.
-		$settings = new ConvertKit_Settings();
-		if ( ! $settings->has_access_and_refresh_token() ) {
-			return new WP_Error(
-				'convertkit_subscriber_get_subscriber_id_from_request_error',
-				__( 'Access Token not configured in Plugin Settings.', 'convertkit' )
-			);
-		}
-
-		// Initialize the API.
-		$api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$settings->get_access_token(),
-			$settings->get_refresh_token(),
-			$settings->debug_enabled(),
-			'subscriber'
-		);
-
-		// Get subscriber by ID, to ensure they exist.
-		$subscriber = $api->get_subscriber( absint( $subscriber_id ) );
-
-		// Bail if no subscriber exists with the given subscriber ID, or an error occured.
-		if ( is_wp_error( $subscriber ) ) {
-			// Delete the cookie.
-			$this->forget();
-
-			// Return error.
-			return $subscriber;
-		}
-
-		// Store the subscriber ID as a cookie.
-		$this->set( $subscriber['subscriber']['id'] );
-
-		// Return subscriber ID.
-		return $subscriber['subscriber']['id'];
 
 	}
 
