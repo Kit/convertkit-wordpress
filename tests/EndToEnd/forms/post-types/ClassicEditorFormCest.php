@@ -21,7 +21,6 @@ class ClassicEditorFormCest
 	private $postTypes = [
 		'page',
 		'post',
-		'article',
 	];
 
 	/**
@@ -38,9 +37,6 @@ class ClassicEditorFormCest
 
 		// Activate Classic Editor Plugin.
 		$I->activateThirdPartyPlugin($I, 'classic-editor');
-
-		// Create Custom Post Types using the Custom Post Type UI Plugin.
-		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -1169,7 +1165,6 @@ class ClassicEditorFormCest
 	public function _passed(EndToEndTester $I)
 	{
 		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->unregisterCustomPostTypes($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
