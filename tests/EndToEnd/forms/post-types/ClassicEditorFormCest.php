@@ -955,6 +955,7 @@ class ClassicEditorFormCest
 		$I->setupKitPluginResources($I);
 
 		// Activate Perfmatters Plugin.
+		$I->activateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 		$I->activateThirdPartyPlugin($I, 'perfmatters');
 
 		// Enable Defer and Delay JavaScript.
@@ -997,6 +998,7 @@ class ClassicEditorFormCest
 
 		// Deactivate Perfmatters Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'perfmatters');
+		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
 	}
 
 	/**
