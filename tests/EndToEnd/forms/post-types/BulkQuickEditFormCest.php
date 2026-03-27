@@ -12,6 +12,19 @@ use Tests\Support\EndToEndTester;
 class BulkQuickEditFormCest
 {
 	/**
+	 * Post Types to test.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @var array
+	 */
+	private $postTypes = [
+		'page',
+		'post',
+		'article',
+	];
+
+	/**
 	 * Run common actions before running the test functions in this class.
 	 *
 	 * @since   1.9.6
