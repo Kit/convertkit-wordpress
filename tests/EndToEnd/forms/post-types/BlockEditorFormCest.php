@@ -979,7 +979,6 @@ class BlockEditorFormCest
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			die();
 			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
