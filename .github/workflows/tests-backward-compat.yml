@@ -222,11 +222,19 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
+      # Install ChromeDriver 145. 146 results in tests hanging.
+      - name: Install Chrome and ChromeDriver 145
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: 145
+          install-chromedriver: true
+        id: setup-chrome
+
       # Start chromedriver
       - name: Start chromedriver
         run: |
           export DISPLAY=:99
-          chromedriver --port=9515 --url-base=/wd/hub &
+          ${{ steps.setup-chrome.outputs.chromedriver-path }} --port=9515 --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
 
       # Exchange API Keys and Secrets for OAuth Tokens.
