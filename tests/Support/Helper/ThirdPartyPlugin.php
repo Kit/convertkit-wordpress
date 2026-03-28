@@ -82,6 +82,24 @@ class ThirdPartyPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to activate a third party Plugin via the database.
+	 *
+	 * @since   3.2.2
+	 *
+	 * @param   EndToEndTester $I          EndToEnd Tester.
+	 * @param   string         $pluginFile Plugin File.
+	 */
+	public function activatePluginViaDatabase($I, $pluginFile)
+	{
+		$activePlugins = $I->grabOptionFromDatabase('active_plugins');
+		$activePlugins = maybe_unserialize($activePlugins);
+		if (!in_array($pluginFile, $activePlugins)) {
+			$activePlugins[] = $pluginFile;
+			$I->haveOptionInDatabase('active_plugins', $activePlugins);
+		}
+	}
+
+	/**
 	 * Helper method to activate a third party Plugin, checking
 	 * it activated and no errors were output.
 	 *
