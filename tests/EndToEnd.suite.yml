@@ -64,6 +64,9 @@ modules:
                   - "--proxy-bypass-list=*"
                   - "--no-sandbox"
                   - "--user-agent=%TEST_SITE_HTTP_USER_AGENT%"
+                  - "--disable-renderer-backgrounding"
+                  - "--disable-backgrounding-occluded-windows"
+                  - "--js-flags=--max-old-space-size=512"
                 prefs:
                   download.default_directory: '%WORDPRESS_ROOT_DIR%'
         lucatume\WPBrowser\Module\WPDb:
