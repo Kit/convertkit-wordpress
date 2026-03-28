@@ -654,7 +654,6 @@ class PageBlockFormCest
 
 		// Activate Autoptimize Plugin.
 		$I->activatePluginViaDatabase($I, 'autoptimize/autoptimize.php');
-		die();
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
