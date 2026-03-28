@@ -60,7 +60,7 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest:testFormBlockWithAutoptimizePlugin'
+          'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest'
         ]
 
     # Steps to install, configure and run tests
