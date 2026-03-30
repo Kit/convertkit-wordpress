@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,11 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.2.2 2026-03-30
+* Fix: Only run `get_subscriber_id_from_request` when viewing Pages with "Add a Tag" configured, to improve performance
+* Removed: Global `validate_and_store_subscriber_id` method; Custom Content and Member Content functionality performs necessary subscriber ID validation
+* Updated: Use WordPress Libraries 2.1.4
 
 ### 3.2.1 2026-03-05
 * Fix: Divi 5: Fatal error when activating Theme
