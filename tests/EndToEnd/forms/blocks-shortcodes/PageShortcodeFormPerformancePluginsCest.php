@@ -5,7 +5,7 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Form's Gutenberg Block against common performance plugins.
+ * Tests for the Kit Form's Shortcode against common performance plugins.
  *
  * @since   3.3.0
  */
