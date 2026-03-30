@@ -74,11 +74,14 @@ class RestrictContentProductCPTCest
 	 */
 	public function testNoRestrictContentOnPrivateCPT(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
 
 		// Add the CPT using the Gutenberg editor.
-		$I->addGutenbergPage(
+		$I->addClassicEditorPage(
 			$I,
 			postType: 'private',
 			title: 'Kit: Private: Restrict Content'
@@ -88,7 +91,10 @@ class RestrictContentProductCPTCest
 		$I->dontSeeElementInDOM('#wp-convertkit-meta-box');
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
@@ -113,13 +119,10 @@ class RestrictContentProductCPTCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -161,14 +164,11 @@ class RestrictContentProductCPTCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'tag'              => [ 'select2', $_ENV['CONVERTKIT_API_TAG_NAME'] ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			tag: $_ENV['CONVERTKIT_API_TAG_NAME'],
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -214,13 +214,10 @@ class RestrictContentProductCPTCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -264,13 +261,10 @@ class RestrictContentProductCPTCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -320,13 +314,10 @@ class RestrictContentProductCPTCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
