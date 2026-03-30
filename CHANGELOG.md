@@ -1,3 +1,6 @@
+### 3.2.2.1 2026-03-30
+* Fix: Fatal error: Cannot redeclare trait ConvertKit_API\ConvertKit_API_Traits
+
 ### 3.2.2 2026-03-30
 * Fix: Only run `get_subscriber_id_from_request` when viewing Pages with "Add a Tag" configured, to improve performance
 * Removed: Global `validate_and_store_subscriber_id` method; Custom Content and Member Content functionality performs necessary subscriber ID validation
