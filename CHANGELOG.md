@@ -1,3 +1,8 @@
+### 3.2.2 2026-03-30
+* Fix: Only run `get_subscriber_id_from_request` when viewing Pages with "Add a Tag" configured, to improve performance
+* Removed: Global `validate_and_store_subscriber_id` method; Custom Content and Member Content functionality performs necessary subscriber ID validation
+* Updated: Use WordPress Libraries 2.1.4
+
 ### 3.2.1 2026-03-05
 * Fix: Divi 5: Fatal error when activating Theme
 * Fix: Removed errant `<html>` and `<head>` tags when Settings > Kit > Form Position = After element
