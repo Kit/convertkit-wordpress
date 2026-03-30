@@ -24,12 +24,6 @@ class PageNoFormCest
 		$I->activateKitPlugin($I);
 		$I->setupKitPluginCredentialsNoData($I);
 		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to Pages > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
 	}
 
 	/**
@@ -42,6 +36,12 @@ class PageNoFormCest
 	 */
 	public function testUTMParametersExist(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Navigate to Pages > Add New.
+		$I->amOnAdminPage('post-new.php?post_type=page');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -50,6 +50,9 @@ class PageNoFormCest
 
 		// Confirm that UTM parameters exist for the 'sign in to Kit' link.
 		$I->seeInSource('<a href="https://app.kit.com/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">sign in to Kit</a>');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
