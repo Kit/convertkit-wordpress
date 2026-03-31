@@ -75,6 +75,33 @@ class ClassicEditorFormCest
 	}
 
 	/**
+	 * Test that UTM parameters are included in links displayed in the metabox for the user to sign in to
+	 * their Kit account.
+	 *
+	 * @since   1.9.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testUTMParametersExist(EndToEndTester $I)
+	{
+		// Setup Kit plugin with no credentials or data.
+		$I->setupKitPluginCredentialsNoData($I);
+		$I->setupKitPluginResourcesNoData($I);
+
+		// Navigate to Pages > Add New.
+		$I->amOnAdminPage('post-new.php?post_type=page');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check that the metabox is displayed.
+		$I->seeElementInDOM('#wp-convertkit-meta-box');
+
+		// Confirm that UTM parameters exist for the 'sign in to Kit' link.
+		$I->seeInSource('<a href="https://app.kit.com/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">sign in to Kit</a>');
+	}
+
+	/**
 	 * Test that the 'Default' option for the Default Form setting in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and there is no Default Form specified in the Plugin
 	 * settings.
