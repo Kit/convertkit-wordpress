@@ -5,11 +5,11 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests the Form setting on WordPress Pages, Posts and Custom Post Types when using the Classic Editor.
+ * Tests the Form setting on WordPress Pages, Posts and Custom Post Types when using the Block Editor.
  *
- * @since   3.3.0
+ * @since   1.9.6
  */
-class ClassicEditorFormCest
+class BlockEditorFormCest
 {
 	/**
 	 * Post Types to test.
@@ -27,7 +27,7 @@ class ClassicEditorFormCest
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   3.3.0
+	 * @since   1.9.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -36,69 +36,8 @@ class ClassicEditorFormCest
 		// Activate Kit plugin.
 		$I->activateKitPlugin($I);
 
-		// Activate Classic Editor Plugin.
-		$I->activateThirdPartyPlugin($I, 'classic-editor');
-
 		// Create Custom Post Types using the Custom Post Type UI Plugin.
 		$I->registerCustomPostTypes($I);
-	}
-
-	/**
-	 * Test that the Pages > Add New screen has expected a11y output, such as label[for].
-	 *
-	 * @since   1.9.7.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testAccessibility(EndToEndTester $I)
-	{
-		// Setup Kit plugin.
-		$I->setupKitPlugin($I);
-		$I->setupKitPluginResources($I);
-
-		// Test each Post Type.
-		foreach ( $this->postTypes as $postType ) {
-			// Navigate to Post Type (e.g. Pages / Posts) > Add New.
-			$I->amOnAdminPage('post-new.php?post_type=' . $postType);
-
-			// Confirm that settings have label[for] attributes.
-			$I->waitForElementVisible('label[for="wp-convertkit-form"]');
-			$I->waitForElementVisible('label[for="wp-convertkit-tag"]');
-			$I->waitForElementVisible('label[for="wp-convertkit-restrict_content"]');
-
-			// For Pages, confirm that the Landing Page setting label is correct.
-			// This isn't supported for Posts and Articles.
-			if ( 'page' === $postType ) {
-				$I->waitForElementVisible('label[for="wp-convertkit-landing_page"]');
-			}
-		}
-	}
-
-	/**
-	 * Test that UTM parameters are included in links displayed in the metabox for the user to sign in to
-	 * their Kit account.
-	 *
-	 * @since   1.9.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testUTMParametersExist(EndToEndTester $I)
-	{
-		// Setup Kit plugin with no credentials or data.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to Pages > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Check that the metabox is displayed.
-		$I->seeElementInDOM('#wp-convertkit-meta-box');
-
-		// Confirm that UTM parameters exist for the 'sign in to Kit' link.
-		$I->seeInSource('<a href="https://app.kit.com/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">sign in to Kit</a>');
 	}
 
 	/**
@@ -118,15 +57,15 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: None'
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that no Kit Form is displayed.
 			$I->dontSeeElementInDOM('form[data-sv-form]');
@@ -149,15 +88,15 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default'
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
@@ -168,7 +107,7 @@ class ClassicEditorFormCest
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
-	 * to after the Page content.
+	 * to after the Post Type content.
 	 *
 	 * @since   2.5.8
 	 *
@@ -189,18 +128,18 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: Before Content'
 			);
 
 			// Add paragraph to Post Type.
-			$I->addClassicEditorParagraph($I, $postType . ' content');
+			$I->addGutenbergParagraphBlock($I, $postType . ' content');
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM after the Post Type content.
 			// This confirms that there is only one script on the page for this form, which renders the form.
@@ -236,18 +175,18 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: Before and After Content'
 			);
 
 			// Add paragraph to Post Type.
-			$I->addClassicEditorParagraph($I, $postType . ' content');
+			$I->addGutenbergParagraphBlock($I, $postType . ' content');
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that two Kit Forms are output in the DOM before and after the Post Type content.
 			$I->seeFormOutput(
@@ -261,7 +200,7 @@ class ClassicEditorFormCest
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
-	 * to after the 3rd paragraph.
+	 * to after the 3rd paragraph of Post Type content.
 	 *
 	 * @since   2.6.2
 	 *
@@ -269,7 +208,7 @@ class ClassicEditorFormCest
 	 */
 	public function testAddNewPostTypeUsingDefaultFormAfterParagraphElement(EndToEndTester $I)
 	{
-		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of Post Type content.
+		// Setup Kit plugin with Default Form for Pages, Posts and Articles set to be output after the 3rd paragraph of content.
 		$I->setupKitPlugin(
 			$I,
 			[
@@ -292,7 +231,7 @@ class ClassicEditorFormCest
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
 			// Setup Post Type with placeholder content.
-			$pageID = $I->addClassicEditorPageToDatabase(
+			$pageID = $I->addGutenbergPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: After 3rd Paragraph Element'
@@ -326,8 +265,8 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that specifying a non-inline Form specified in the Plugin Settings does not
-	 * result in a fatal error when creating and viewing a new WordPress Page, Post or Article, and its position is set
-	 * to after the 3rd paragraph.
+	 * result in a fatal error when creating and viewing a new WordPress Page, and its position is set
+	 * to after the 3rd paragraph of Post Type content.
 	 *
 	 * @since   2.6.8
 	 *
@@ -358,7 +297,7 @@ class ClassicEditorFormCest
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
 			// Setup Post Type with placeholder content.
-			$pageID = $I->addClassicEditorPageToDatabase(
+			$pageID = $I->addGutenbergPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Non-Inline Form: Default: After 3rd Paragraph Element'
@@ -388,7 +327,7 @@ class ClassicEditorFormCest
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
-	 * to after the 2nd <h2> element.
+	 * to after the 2nd <h2> element of Post Type content.
 	 *
 	 * @since   2.6.6
 	 *
@@ -419,7 +358,7 @@ class ClassicEditorFormCest
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
 			// Setup Post Type with placeholder content.
-			$pageID = $I->addClassicEditorPageToDatabase(
+			$pageID = $I->addGutenbergPageToDatabase(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Default: After 2nd H2 Element'
@@ -454,7 +393,7 @@ class ClassicEditorFormCest
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
-	 * to after the 2nd <img> element.
+	 * to after the 2nd <img> element of Post Type content.
 	 *
 	 * @since   2.6.2
 	 *
@@ -485,10 +424,9 @@ class ClassicEditorFormCest
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
 			// Setup Post Type with placeholder content.
-			$pageID = $I->addClassicEditorPageToDatabase(
+			$pageID = $I->addGutenbergPageToDatabase(
 				$I,
-				postType: $postType,
-				title: 'Kit: ' . $postType . ': Form: Default: After 2nd Image Element'
+				title: 'Kit: Page: Form: Default: After 2nd Image Element'
 			);
 
 			// View the Post Type on the frontend site.
@@ -551,10 +489,10 @@ class ClassicEditorFormCest
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
 			// Setup Post Type with placeholder content.
-			$pageID = $I->addClassicEditorPageToDatabase(
+			$pageID = $I->addGutenbergPageToDatabase(
 				$I,
 				postType: $postType,
-				title: 'Kit: Page: Form: Default: After 9th Paragraph Element'
+				title: 'Kit: ' . $postType . ': Form: Default: After 9th Paragraph Element'
 			);
 
 			// View the Post Type on the frontend site.
@@ -607,15 +545,15 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: Legacy: Default'
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that the Kit Default Legacy Form displays.
 			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
@@ -641,24 +579,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: None'
 			);
 
 			// Configure metabox's Form setting = None.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', 'None' ],
-				]
+				form: 'None',
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that no Kit Form is displayed.
 			$I->dontSeeElementInDOM('form[data-sv-form]');
@@ -681,24 +616,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
 			);
 
 			// Configure metabox's Form setting = Inline Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
@@ -725,24 +657,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Autoptimize'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
@@ -777,24 +706,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Debloat'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
@@ -831,24 +757,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Jetpack Boost'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
@@ -884,24 +807,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': LiteSpeed Cache'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
@@ -940,24 +860,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Siteground Speed Optimizer'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
 			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
@@ -999,24 +916,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': Perfmatters'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
 			// This confirms that there is only one script on the page for this form, which renders the form.
@@ -1051,24 +965,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] . ': WP Rocket'
 			);
 
 			// Configure metabox's Form setting = Modal Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
 			// This confirms that there is only one script on the page for this form, which renders the form.
@@ -1105,24 +1016,21 @@ class ClassicEditorFormCest
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
 				$I,
 				postType: $postType,
 				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 			);
 
 			// Configure metabox's Form setting = Legacy Form.
-			$I->configureMetaboxSettings(
+			$I->configurePluginSidebarSettings(
 				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-				]
+				form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 			);
 
 			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
+			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that the Kit Legacy Form displays.
 			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
@@ -1134,7 +1042,7 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Default Form for Pages displays when an invalid Form ID is specified
-	 * for a WordPress Page, Post or Article.
+	 * for a Page, Post or Article.
 	 *
 	 * Whilst the on screen options won't permit selecting an invalid Form ID, a Page might
 	 * have an invalid Form ID because:
@@ -1185,6 +1093,89 @@ class ClassicEditorFormCest
 	}
 
 	/**
+	 * Test that the Form Settings are preserved when switching between the Classic Editor
+	 * and Gutenberg.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormSettingsPreservedWhenSwitchingEditors(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
+			$I,
+			title: 'Kit: Page: Form: Editor Switching: ' . $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+
+		// Configure metabox's Form setting = Inline Form.
+		$I->configureMetaboxSettings(
+			$I,
+			metabox: 'wp-convertkit-meta-box',
+			configuration: [
+				'form' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Grab the edit page URL.
+		$editPageURL = $I->grabAttributeFrom('#wp-admin-bar-edit a', 'href');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+
+		$I->wait(2);
+
+		// Edit the page in the Gutenberg editor.
+		$I->amOnUrl($editPageURL);
+
+		// Confirm the Form setting is set to Inline Form.
+		$I->seePluginSidebarSetting($I, 'form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Add a paragraph, so the Save button can be used.
+		$I->addGutenbergParagraphBlock($I, 'This is a test paragraph.');
+
+		// Save (update) and view the Page on the frontend site.
+		$I->saveAndViewGutenbergPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
+		// Edit the page in the Classic Editor.
+		$I->amOnUrl($editPageURL);
+
+		// Add a paragraph, so the Save button can be used.
+		$I->addClassicEditorParagraph($I, 'This is a test paragraph.');
+
+		// Save (update) and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
@@ -1195,8 +1186,6 @@ class ClassicEditorFormCest
 	 */
 	public function _passed(EndToEndTester $I)
 	{
-		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
-		$I->unregisterCustomPostTypes($I);
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);
 	}
