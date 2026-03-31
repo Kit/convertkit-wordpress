@@ -1,3 +1,6 @@
+### 3.2.3 2026-03-31
+* Fix: Downgrade WordPress Libraries to 2.1.3, resolving issues in 3.2.2 and 3.2.2.1
+
 ### 3.2.2.1 2026-03-30
 * Fix: Fatal error: Cannot redeclare trait ConvertKit_API\ConvertKit_API_Traits
 
