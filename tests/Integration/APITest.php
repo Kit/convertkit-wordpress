@@ -177,6 +177,60 @@ class APITest extends WPTestCase
 	}
 
 	/**
+	 * Test that the access token and refresh token are deleted from the Plugin's settings
+	 * when the access token is revoked.
+	 *
+	 * @since   3.2.4
+	 */
+	public function testCredentialsDeletedAndInvalidWhenRevoked()
+	{
+		// Initialize the API without an access token or refresh token.
+		$api = new \ConvertKit_API_V4(
+			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+			$_ENV['KIT_OAUTH_REDIRECT_URI']
+		);
+
+		// Generate an access token by API key and secret.
+		$result = $api->get_access_token_by_api_key_and_secret(
+			$_ENV['CONVERTKIT_API_KEY'],
+			$_ENV['CONVERTKIT_API_SECRET'],
+			wp_generate_password( 10, false ) // Random tenant name to produce a token for this request only.
+		);
+
+		// Store the access token in the Plugin's settings.
+		$settings = new \ConvertKit_Settings();
+		$settings->save(
+			array(
+				'access_token'  => $result['oauth']['access_token'],
+				'refresh_token' => $result['oauth']['refresh_token'],
+				'token_expires' => $result['oauth']['expires_at'],
+			)
+		);
+
+		// Initialize the API with the access token and refresh token.
+		$api = new \ConvertKit_API_V4(
+			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+			$_ENV['KIT_OAUTH_REDIRECT_URI'],
+			$settings->get_access_token(),
+			$settings->get_refresh_token()
+		);
+
+		// Confirm the token works when making an authenticated request.
+		$this->assertNotInstanceOf( 'WP_Error', $api->get_account() );
+
+		// Revoke the access token.
+		$api->revoke_token();
+
+		// Confirm the access token and refresh token are deleted from the Plugin's settings.
+		$this->assertEmpty( $settings->get_access_token() );
+		$this->assertEmpty( $settings->get_refresh_token() );
+		$this->assertEmpty( $settings->get_token_expiry() );
+
+		// Confirm the token no longer works when making an authenticated request.
+		$this->assertInstanceOf( 'WP_Error', $api->get_account() );
+	}
+
+	/**
 	 * Mocks an API response as if the Access Token expired.
 	 *
 	 * @since   2.5.0

@@ -193,13 +193,16 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Get Settings class.
+		$settings = new ConvertKit_Settings();
+
 		// Revoke Access Token.
 		$api    = new ConvertKit_API_V4(
 			CONVERTKIT_OAUTH_CLIENT_ID,
 			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
+			$settings->get_access_token(),
+			$settings->get_refresh_token(),
+			$settings->debug_enabled(),
 			'settings'
 		);
 		$result = $api->revoke_token();
@@ -207,10 +210,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			$this->output_error( $result->get_error_message() );
 			return;
 		}
-
-		// Delete Access and Refresh Tokens.
-		$settings = new ConvertKit_Settings();
-		$settings->delete_credentials();
 
 		// Delete cached resources.
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();
