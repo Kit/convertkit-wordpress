@@ -193,7 +193,22 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Delete Access Token.
+		// Revoke Access Token.
+		$api    = new ConvertKit_API_V4(
+			CONVERTKIT_OAUTH_CLIENT_ID,
+			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
+			$this->settings->get_access_token(),
+			$this->settings->get_refresh_token(),
+			$this->settings->debug_enabled(),
+			'settings'
+		);
+		$result = $api->revoke_token();
+		if ( is_wp_error( $result ) ) {
+			$this->output_error( $result->get_error_message() );
+			return;
+		}
+
+		// Delete Access and Refresh Tokens.
 		$settings = new ConvertKit_Settings();
 		$settings->delete_credentials();
 
