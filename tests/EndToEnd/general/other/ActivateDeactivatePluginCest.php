@@ -115,7 +115,7 @@ class ActivateDeactivatePluginCest
 		$I->deleteKitPlugin($I);
 
 		// Confirm the credentials have been removed from the Plugin's settings.
-		$I->wait(2);
+		$I->wait(3);
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
 		$I->assertEmpty($settings['access_token']);
 		$I->assertEmpty($settings['refresh_token']);
@@ -134,7 +134,7 @@ class ActivateDeactivatePluginCest
 		);
 		$data   = json_decode(wp_remote_retrieve_body($result), true);
 		$I->assertArrayHasKey( 'errors', $data );
-		$I->assertEquals( 'The access token is invalid', $data['errors'][0] );
+		$I->assertEquals( 'The access token was revoked', $data['errors'][0] );
 
 		// Confirm attempting to use the revoked refresh token no longer works.
 		$result = wp_remote_post(
