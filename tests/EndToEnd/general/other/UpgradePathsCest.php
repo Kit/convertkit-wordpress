@@ -259,6 +259,39 @@ class UpgradePathsCest
 	}
 
 	/**
+	 * Tests that the v3 API Secret is removed from settings when upgrading to 3.2.4 or later.
+	 *
+	 * @since   3.2.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testV3APISecretRemovedFromSettings(EndToEndTester $I)
+	{
+		// Setup Plugin with v3 API Key and Secret.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
+				'post_form'    => '',
+				'page_form'    => '',
+				'product_form' => '',
+			]
+		);
+
+		// Define an installation version older than 3.2.4.
+		$I->haveOptionInDatabase('convertkit_version', '3.2.0');
+
+		// Activate the Plugin.
+		$I->activateKitPlugin($I, false);
+
+		// Confirm the settings no longer have a value for the v3 API Secret.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
+		$I->assertEquals($settings['api_key'], $_ENV['CONVERTKIT_API_KEY']);
+		$I->assertEquals($settings['api_secret'], '');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

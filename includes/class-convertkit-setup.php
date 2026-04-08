@@ -60,6 +60,10 @@ class ConvertKit_Setup {
 			return;
 		}
 
+		// Actions that should run regardless of the version number
+		// whenever the Plugin is updated.
+		$this->remove_v3_api_secret_from_settings();
+
 		/**
 		 * 3.0.4: Add form_id to entries database table.
 		 */
@@ -153,6 +157,22 @@ class ConvertKit_Setup {
 
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
+
+	}
+
+	/**
+	 * Remove v3 API Secret from settings.
+	 *
+	 * @since   3.2.4
+	 */
+	private function remove_v3_api_secret_from_settings() {
+
+		$settings = new ConvertKit_Settings();
+		$settings->save(
+			array(
+				'api_secret' => '',
+			)
+		);
 
 	}
 
