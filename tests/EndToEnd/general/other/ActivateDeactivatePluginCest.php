@@ -59,6 +59,7 @@ class ActivateDeactivatePluginCest
 		// Deactivate Plugins.
 		$I->deactivateThirdPartyPlugin($I, 'convertkit-for-woocommerce');
 		$I->deactivateKitPlugin($I);
+		$I->resetKitPlugin($I);
 	}
 
 	/**
