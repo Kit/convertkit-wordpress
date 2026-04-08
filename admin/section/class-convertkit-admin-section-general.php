@@ -215,7 +215,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Revoke Access and Refresh Tokens.
-		// See convertkit_revoke_credentials() method in functions.php, which is called
+		// See convertkit_delete_credentials() method in functions.php, which is called
 		// by the `convertkit_api_revoke_tokens` action and deletes credentials from the Plugin's settings.
 		$result = $api->revoke_tokens();
 		if ( is_wp_error( $result ) ) {
