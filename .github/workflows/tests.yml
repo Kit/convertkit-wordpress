@@ -63,7 +63,24 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/general/other/ActivateDeactivatePluginCest'
+          'EndToEnd/broadcasts/blocks-shortcodes',
+          'EndToEnd/broadcasts/import-export',
+          'EndToEnd/forms/blocks-shortcodes',
+          'EndToEnd/forms/general',
+          'EndToEnd/forms/post-types',
+          'EndToEnd/general/other',
+          'EndToEnd/general/plugin-screens',
+          'EndToEnd/integrations/divi-builder',
+          'EndToEnd/integrations/divi-theme',
+          'EndToEnd/integrations/other',
+          'EndToEnd/integrations/wlm',
+          'EndToEnd/integrations/woocommerce',
+          'EndToEnd/landing-pages',
+          'EndToEnd/products',
+          'EndToEnd/restrict-content/general',
+          'EndToEnd/restrict-content/post-types',
+          'EndToEnd/tags',
+          'Integration'
         ]
 
     # Steps to install, configure and run tests
@@ -173,7 +190,7 @@ jobs:
       # We don't enable DISALLOW_FILE_MODS for the ActivateDeactivatePluginCest test, as tests will perform a Plugin deletion
       # which requires DISALLOW_FILE_MODS to not be true.
       - name: Enable DISALLOW_FILE_MODS
-        if: ${{ matrix.test-groups != 'EndToEnd/general/other/ActivateDeactivatePluginCest' }}
+        if: ${{ matrix.test-groups != 'EndToEnd/general/other' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set DISALLOW_FILE_MODS true --raw
