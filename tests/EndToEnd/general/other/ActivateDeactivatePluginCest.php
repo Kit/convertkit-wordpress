@@ -74,26 +74,34 @@ class ActivateDeactivatePluginCest
 		// Activate this Plugin.
 		$I->activateKitPlugin($I, false);
 
-		// Initialize the API without an access token or refresh token.
-		$api = new \ConvertKit_API_V4(
-			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
-			$_ENV['KIT_OAUTH_REDIRECT_URI']
+		// Generate an access token and refresh token by API key and secret.
+		// We don't use the tokens from the environment, as revoking those
+		// would result in later tests failing.
+		$result = wp_remote_post(
+			'https://api.kit.com/wordpress/accounts/oauth_access_token',
+			[
+				'headers' => [
+					'Content-Type' => 'application/json',
+				],
+				'body'    => wp_json_encode(
+					[
+						'api_key'     => $_ENV['CONVERTKIT_API_KEY'],
+						'api_secret'  => $_ENV['CONVERTKIT_API_SECRET'],
+						'client_id'   => $_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+						'tenant_name' => wp_generate_password( 10, false ), // Random tenant name to produce a token for this request only.
+					]
+				),
+			]
 		);
-
-		// Generate an access token by API key and secret.
-		$result = $api->get_access_token_by_api_key_and_secret(
-			$_ENV['CONVERTKIT_API_KEY'],
-			$_ENV['CONVERTKIT_API_SECRET'],
-			wp_generate_password( 10, false ) // Random tenant name to produce a token for this request only.
-		);
+		$tokens = json_decode(wp_remote_retrieve_body($result), true)['oauth'];
 
 		// Store the tokens and API keys in the Plugin's settings.
 		$I->setupKitPlugin(
 			$I,
 			[
-				'access_token'  => $result['oauth']['access_token'],
-				'refresh_token' => $result['oauth']['refresh_token'],
-				'token_expires' => $result['oauth']['expires_at'],
+				'access_token'  => $tokens['access_token'],
+				'refresh_token' => $tokens['refresh_token'],
+				'token_expires' => $tokens['expires_at'],
 				'api_key'       => $_ENV['CONVERTKIT_API_KEY'],
 				'api_secret'    => $_ENV['CONVERTKIT_API_SECRET'],
 			]
@@ -113,18 +121,35 @@ class ActivateDeactivatePluginCest
 		$I->assertEmpty($settings['api_key']);
 		$I->assertEmpty($settings['api_secret']);
 
-		// Initialize the API with the (now revoked) access token and refresh token.
-		$api = new \ConvertKit_API_V4(
-			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
-			$_ENV['KIT_OAUTH_REDIRECT_URI'],
-			$result['oauth']['access_token'],
-			$result['oauth']['refresh_token']
-		);
-
 		// Confirm attempting to use the revoked access token no longer works.
-		$this->assertInstanceOf( 'WP_Error', $api->get_account() );
+		$result = wp_remote_get(
+			'https://api.kit.com/v4/account',
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $tokens['access_token'],
+				],
+			]
+		);
+		$data   = json_decode(wp_remote_retrieve_body($result), true);
+		$I->assertArrayHasKey( 'errors', $data );
+		$I->assertEquals( 'The access token is invalid', $data['errors'][0] );
 
 		// Confirm attempting to use the revoked refresh token no longer works.
-		$this->assertInstanceOf( 'WP_Error', $api->refresh_token() );
+		$result = wp_remote_post(
+			'https://api.kit.com/v4/oauth/token',
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $tokens['access_token'],
+				],
+				'body'    => [
+					'client_id'     => $_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+					'grant_type'    => 'refresh_token',
+					'refresh_token' => $tokens['refresh_token'],
+				],
+			]
+		);
+		$data   = json_decode(wp_remote_retrieve_body($result), true);
+		$I->assertArrayHasKey( 'error', $data );
+		$I->assertEquals( 'invalid_grant', $data['error'] );
 	}
 }
