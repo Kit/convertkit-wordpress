@@ -853,8 +853,8 @@ function convertkit_maybe_delete_credentials( $result, $client_id ) {
 add_action( 'convertkit_api_get_access_token', 'convertkit_maybe_update_credentials', 10, 2 );
 add_action( 'convertkit_api_refresh_token', 'convertkit_maybe_update_credentials', 10, 2 );
 
-// Delete credentials when the user revokes the access token.
-add_action( 'convertkit_api_revoke_token', 'convertkit_revoke_credentials', 10, 1 );
+// Delete credentials when the user revokes the access and refresh tokens.
+add_action( 'convertkit_api_revoke_tokens', 'convertkit_revoke_credentials', 10, 1 );
 
 // Delete credentials if the API class uses a invalid access token.
 // This prevents the Plugin making repetitive API requests that will 401.
