@@ -72,7 +72,7 @@ class ActivateDeactivatePluginCest
 	public function testPluginDeletionRevokesAndRemovesTokens(EndToEndTester $I)
 	{
 		// Activate this Plugin.
-		$I->activateKitPlugin($I, false);
+		$I->activateKitPlugin($I);
 
 		// Generate an access token and refresh token by API key and secret.
 		// We don't use the tokens from the environment, as revoking those
