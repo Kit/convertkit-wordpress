@@ -65,11 +65,11 @@ if ( array_key_exists( 'refresh_token', $settings ) && ! empty( $settings['refre
 }
 
 // Remove credentials from settings.
-$settings['access_token'] = '';
+$settings['access_token']  = '';
 $settings['refresh_token'] = '';
 $settings['token_expires'] = '';
-$settings['api_key'] = '';
-$settings['api_secret'] = '';
+$settings['api_key']       = '';
+$settings['api_secret']    = '';
 
 // Save settings.
 update_option( '_wp_convertkit_settings', $settings );
