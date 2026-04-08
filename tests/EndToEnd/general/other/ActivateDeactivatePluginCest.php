@@ -115,6 +115,7 @@ class ActivateDeactivatePluginCest
 		$I->deleteKitPlugin($I);
 
 		// Confirm the credentials have been removed from the Plugin's settings.
+		$I->wait(2);
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
 		$I->assertEmpty($settings['access_token']);
 		$I->assertEmpty($settings['refresh_token']);
