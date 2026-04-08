@@ -170,7 +170,10 @@ jobs:
 
       # DISALLOW_FILE_MODS = true is required to disable the block directory's "Available to Install" suggestions, which trips up
       # tests that search and wait for block results.
+      # We don't enable DISALLOW_FILE_MODS for the ActivateDeactivatePluginCest test, as tests will perform a Plugin deletion
+      # which requires DISALLOW_FILE_MODS to not be true.
       - name: Enable DISALLOW_FILE_MODS
+        if: ${{ matrix.test-groups != 'EndToEnd/general/other/ActivateDeactivatePluginCest' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set DISALLOW_FILE_MODS true --raw
