@@ -801,7 +801,7 @@ function convertkit_maybe_update_credentials( $result, $client_id ) {
  *
  * @param   string $client_id   OAuth Client ID used for the Access and Refresh Tokens.
  */
-function convertkit_revoke_credentials( $client_id ) {
+function convertkit_delete_credentials( $client_id ) {
 
 	// Don't delete these credentials if they're not for this Client ID.
 	// They're for another Kit Plugin that uses OAuth.
@@ -854,7 +854,7 @@ add_action( 'convertkit_api_get_access_token', 'convertkit_maybe_update_credenti
 add_action( 'convertkit_api_refresh_token', 'convertkit_maybe_update_credentials', 10, 2 );
 
 // Delete credentials when the user revokes the access and refresh tokens.
-add_action( 'convertkit_api_revoke_tokens', 'convertkit_revoke_credentials', 10, 1 );
+add_action( 'convertkit_api_revoke_tokens', 'convertkit_delete_credentials', 10, 1 );
 
 // Delete credentials if the API class uses a invalid access token.
 // This prevents the Plugin making repetitive API requests that will 401.
