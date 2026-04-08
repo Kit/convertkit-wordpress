@@ -60,4 +60,71 @@ class ActivateDeactivatePluginCest
 		$I->deactivateThirdPartyPlugin($I, 'convertkit-for-woocommerce');
 		$I->deactivateKitPlugin($I);
 	}
+
+	/**
+	 * Test that the Plugin's access and refresh tokens are revoked, and all v4 and v4
+	 * API credentials are removed from the Plugin's settings when the Plugin is deleted.
+	 *
+	 * @since   3.2.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testPluginDeletionRevokesAndRemovesTokens(EndToEndTester $I)
+	{
+		// Activate this Plugin.
+		$I->activateKitPlugin($I, false);
+
+		// Initialize the API without an access token or refresh token.
+		$api = new \ConvertKit_API_V4(
+			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+			$_ENV['KIT_OAUTH_REDIRECT_URI']
+		);
+
+		// Generate an access token by API key and secret.
+		$result = $api->get_access_token_by_api_key_and_secret(
+			$_ENV['CONVERTKIT_API_KEY'],
+			$_ENV['CONVERTKIT_API_SECRET'],
+			wp_generate_password( 10, false ) // Random tenant name to produce a token for this request only.
+		);
+
+		// Store the tokens and API keys in the Plugin's settings.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'access_token'  => $result['oauth']['access_token'],
+				'refresh_token' => $result['oauth']['refresh_token'],
+				'token_expires' => $result['oauth']['expires_at'],
+				'api_key'       => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret'    => $_ENV['CONVERTKIT_API_SECRET'],
+			]
+		);
+
+		// Deactivate the Plugin.
+		$I->deactivateKitPlugin($I);
+
+		// Delete the Plugin.
+		$I->deleteKitPlugin($I);
+
+		// Confirm the credentials have been removed from the Plugin's settings.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
+		$I->assertEmpty($settings['access_token']);
+		$I->assertEmpty($settings['refresh_token']);
+		$I->assertEmpty($settings['token_expires']);
+		$I->assertEmpty($settings['api_key']);
+		$I->assertEmpty($settings['api_secret']);
+
+		// Initialize the API with the (now revoked) access token and refresh token.
+		$api = new \ConvertKit_API_V4(
+			$_ENV['CONVERTKIT_OAUTH_CLIENT_ID'],
+			$_ENV['KIT_OAUTH_REDIRECT_URI'],
+			$result['oauth']['access_token'],
+			$result['oauth']['refresh_token']
+		);
+
+		// Confirm attempting to use the revoked access token no longer works.
+		$this->assertInstanceOf( 'WP_Error', $api->get_account() );
+
+		// Confirm attempting to use the revoked refresh token no longer works.
+		$this->assertInstanceOf( 'WP_Error', $api->refresh_token() );
+	}
 }

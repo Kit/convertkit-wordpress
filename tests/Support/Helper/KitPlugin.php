@@ -39,6 +39,19 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to delete the Kit Plugin, checking
+	 * it deleted and no errors were output.
+	 *
+	 * @since   3.2.4
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function deleteKitPlugin($I)
+	{
+		$I->deleteThirdPartyPlugin($I, 'convertkit');
+	}
+
+	/**
 	 * Helper method to programmatically setup the Plugin's settings, as if the
 	 * user configured the Plugin at `Settings > Kit`.
 	 *
