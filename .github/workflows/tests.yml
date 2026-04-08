@@ -63,7 +63,7 @@ jobs:
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/general/other/ActivateDeactivatePluginCest:testPluginDeletionRevokesAndRemovesTokens'
+          'EndToEnd/general/other/ActivateDeactivatePluginCest'
         ]
 
     # Steps to install, configure and run tests

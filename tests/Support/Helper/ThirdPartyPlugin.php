@@ -144,6 +144,7 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Delete the Plugin.
+		$I->waitForElementVisible('a#delete-' . $name);
 		$I->click('a#delete-' . $name);
 
 		// Click the confirmation dialog.
