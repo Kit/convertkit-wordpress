@@ -6,6 +6,8 @@
 
 actor: EndToEndTester
 bootstrap: _bootstrap.php
+step_decorators:
+    - \Codeception\Step\TryTo
 modules:
     enabled:
         # wp-browser supplied classes, which provide WordPress specific functions

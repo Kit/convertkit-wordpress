@@ -817,6 +817,7 @@ class KitPlugin extends \Codeception\Module
 
 		// Switch to the Gutenberg IFrame.
 		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
 			$I->switchToGutenbergIFrameEditor($I);
 		}
 
