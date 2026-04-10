@@ -31,6 +31,23 @@ class WPClassicEditor extends \Codeception\Module
 	}
 
 	/**
+	 * Adds a paragraph block when adding or editing a Page, Post or Custom Post Type
+	 * in the Classic Editor.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 * @param   string         $text   Paragraph Text.
+	 * @param   string         $editor Target TinyMCE editor instance.
+	 */
+	public function addClassicEditorParagraph($I, $text, $editor = 'content')
+	{
+		// There's no way for Codeception to fill an iframe's contenteditable using fillField(),
+		// so use JS instead.
+		$I->executeJS("tinymce.get('" . $editor . "').insertContent('<p>" . $text . "</p>');");
+	}
+
+	/**
 	 * Add the given shortcode when adding or editing a Page, Post or Custom Post Type
 	 * in the Visual Editor (TinyMCE).
 	 *
@@ -288,5 +305,71 @@ class WPClassicEditor extends \Codeception\Module
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
+	 * Add a Page, Post or Custom Post Type directly to the WordPress database,
+	 * with dummy content used for testing.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                     EndToEnd Tester.
+	 * @param   string         $postType              Post Type.
+	 * @param   string         $title                 Post Title.
+	 * @param   string         $formID                Meta Box `Form` value (-1: Default).
+	 */
+	public function addClassicEditorPageToDatabase($I, $postType = 'page', $title = 'Classic Editor Title', $formID = '-1')
+	{
+		return $I->havePostInDatabase(
+			[
+				'post_title'   => $title,
+				'post_type'    => $postType,
+				'post_status'  => 'publish',
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'         => $formID,
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+				'post_content' => 'Item #1
+
+<h2 class="wp-block-heading">Item #1</h2>
+
+Item #2: Adhaésionés altéram improbis mi pariendarum sit stulti triarium
+
+<figure class="wp-block-image size-large"><img src="https://placehold.co/600x400" alt="Image #1" /></figure>
+
+<h2 class="wp-block-heading">Item #2</h2>
+
+Item #3
+
+<figure class="wp-block-image size-full"><img src="https://placehold.co/600x400" alt="Image #2" /></figure>
+
+<h3 class="wp-block-heading">Item #1</h3>
+
+Item #4
+
+<h4 class="wp-block-heading">Item #1</h4>
+
+Item #5
+
+<h5 class="wp-block-heading">Item #1</h5>
+
+Item #6
+
+<h6 class="wp-block-heading">Item #1</h6>
+
+Item #7
+
+<h3 class="wp-block-heading">Item #2</h3>
+
+<h4 class="wp-block-heading">Item #2</h4>
+
+<h5 class="wp-block-heading">Item #2</h5>
+
+<h6 class="wp-block-heading">Item #2</h6>',
+			]
+		);
 	}
 }

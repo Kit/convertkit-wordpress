@@ -39,8 +39,11 @@ class PostLandingPageCest
 	 */
 	public function testAddNewPostDoesNotDisplayLandingPageOption(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Add a Post using the Gutenberg editor.
-		$I->addGutenbergPage(
+		$I->addClassicEditorPage(
 			$I,
 			postType: 'post',
 			title: 'Kit: Post: Landing Page'
@@ -53,10 +56,13 @@ class PostLandingPageCest
 		$I->dontSeeElementInDOM('#wp-convertkit-landing_page');
 
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**
