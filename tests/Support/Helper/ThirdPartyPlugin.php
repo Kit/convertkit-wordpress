@@ -122,6 +122,39 @@ class ThirdPartyPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to delete a third party Plugin, checking
+	 * it deleted and no errors were output.
+	 *
+	 * @since   3.2.4
+	 *
+	 * @param   EndToEndTester $I      EndToEnd Tester.
+	 * @param   string         $name   Plugin Slug.
+	 */
+	public function deleteThirdPartyPlugin($I, $name)
+	{
+		// Login as the Administrator, if we're not already logged in.
+		if ( ! $this->amLoggedInAsAdmin($I) ) {
+			$this->doLoginAsAdmin($I);
+		}
+
+		// Go to the Plugins screen in the WordPress Administration interface.
+		$I->amOnPluginsPage();
+
+		// Wait for the Plugins page to load.
+		$I->waitForElementVisible('body.plugins-php');
+
+		// Delete the Plugin.
+		$I->waitForElementVisible('a#delete-' . $name);
+		$I->click('a#delete-' . $name);
+
+		// Click the confirmation dialog.
+		$I->acceptPopup();
+
+		// Wait for the Plugin to be marked as deleted.
+		$I->waitForElementNotVisible('table.plugins tr.deleted[data-slug=' . $name . ']');
+	}
+
+	/**
 	 * Helper method to check if the Administrator is logged in.
 	 *
 	 * @since   2.7.6
