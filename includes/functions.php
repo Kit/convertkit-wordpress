@@ -819,6 +819,29 @@ function convertkit_maybe_update_credentials( $result, $client_id ) {
 /**
  * Deletes the stored access token, refresh token and its expiry from the Plugin settings,
  * and clears any existing scheduled WordPress Cron event to refresh the token on expiry,
+ * when the user revokes the access token.
+ *
+ * @since   3.2.4
+ *
+ * @param   string $client_id   OAuth Client ID used for the Access and Refresh Tokens.
+ */
+function convertkit_delete_credentials( $client_id ) {
+
+	// Don't delete these credentials if they're not for this Client ID.
+	// They're for another Kit Plugin that uses OAuth.
+	if ( $client_id !== CONVERTKIT_OAUTH_CLIENT_ID ) {
+		return;
+	}
+
+	// Delete Access and Refresh Tokens.
+	$settings = new ConvertKit_Settings();
+	$settings->delete_credentials();
+
+}
+
+/**
+ * Deletes the stored access token, refresh token and its expiry from the Plugin settings,
+ * and clears any existing scheduled WordPress Cron event to refresh the token on expiry,
  * when either:
  * - The access token is invalid
  * - The access token expired, and refreshing failed
@@ -853,6 +876,9 @@ function convertkit_maybe_delete_credentials( $result, $client_id ) {
 // Update Access Token when refreshed by the API class.
 add_action( 'convertkit_api_get_access_token', 'convertkit_maybe_update_credentials', 10, 2 );
 add_action( 'convertkit_api_refresh_token', 'convertkit_maybe_update_credentials', 10, 2 );
+
+// Delete credentials when the user revokes the access and refresh tokens.
+add_action( 'convertkit_api_revoke_tokens', 'convertkit_delete_credentials', 10, 1 );
 
 // Delete credentials if the API class uses a invalid access token.
 // This prevents the Plugin making repetitive API requests that will 401.
