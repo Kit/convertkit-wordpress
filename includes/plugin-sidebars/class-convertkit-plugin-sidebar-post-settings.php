@@ -157,7 +157,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 
 		// Get Products.
 		$restrict_content = array(
-			'0' => esc_html__( 'Don\'t restrict content to member-only', 'convertkit' ),
+			'0' => esc_html__( 'Do not restrict content to member-only', 'convertkit' ),
 		);
 		if ( $convertkit_forms->exist() ) {
 			$restrict_content['forms'] = array(
