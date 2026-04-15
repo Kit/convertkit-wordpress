@@ -936,7 +936,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 		const { registerPlugin } = plugins;
 		const { PluginSidebar } = editor;
 		const { TextControl, SelectControl, PanelBody, PanelRow } = components;
-		const { useSelect, useDispatch } = data;
+		const { useSelect, useDispatch, select } = data;
 
 		/**
 		 * Returns a PluginDocumentSettingPanel for this plugin, containing
@@ -952,6 +952,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			}, []);
 			const { editPost: wpEditPost } = useDispatch('core/editor');
 			const settings = meta[sidebar.meta_key] || sidebar.default_values;
+			const currentPostType = select('core/editor').getCurrentPostType();
 
 			/**
 			 * Updates the Post meta meta_key object.
@@ -1047,6 +1048,14 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 				const rows = [];
 
 				for (const key in fields) {
+					// Skip if the Post Type being edited is not the same as the Post Type specified in the field's post_type property.
+					if (
+						typeof fields[key].post_type !== 'undefined' &&
+						fields[key].post_type !== currentPostType
+					) {
+						continue;
+					}
+
 					rows.push(
 						el(
 							PanelRow,

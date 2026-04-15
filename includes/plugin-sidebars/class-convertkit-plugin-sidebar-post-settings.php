@@ -196,6 +196,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 				'type'        => 'select',
 				'description' => __( 'Select a landing page to make it appear in place of this page.', 'convertkit' ),
 				'values'      => $landing_pages,
+				'post_type'   => 'page',
 			),
 			'tag'              => array(
 				'label'       => __( 'Tag', 'convertkit' ),
