@@ -482,7 +482,7 @@ jobs:
 
       # Add comment to PR linking to Playground
       - name: Comment on PR
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
