@@ -5,11 +5,11 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for Kit Landing Pages on WordPress Pages.
+ * Tests for Kit Landing Pages on WordPress Pages when using the Block Editor.
  *
  * @since   1.9.6
  */
-class PageLandingPageCest
+class BlockEditorLandingPageCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
@@ -539,6 +539,37 @@ class PageLandingPageCest
 
 		// Deactivate Rocket LazyLoad Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'rocket-lazy-load');
+	}
+
+	/**
+	 * Test that no Landing Page option is displayed in the Plugin Settings when
+	 * creating and viewing a new WordPress Post, and that no attempt to check
+	 * for a Landing Page is made when viewing a Post.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPostDoesNotDisplayLandingPageOption(EndToEndTester $I)
+	{
+		// Add a Post using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Post: Landing Page',
+			postType: 'post'
+		);
+
+		// Open the Plugin sidebar settings.
+		$I->openPluginSidebarSettings($I);
+
+		// Confirm no Landing Page option is displayed.
+		$I->waitForElementNotVisible('//label[text()="Landing Page"]/following::select[1]');
+
+		// Close the Plugin sidebar settings.
+		$I->closePluginSidebarSettings($I);
+
+		// Publish Page, so no browser warnings are displayed about unsaved changes.
+		$I->publishGutenbergPage($I);
 	}
 
 	/**
