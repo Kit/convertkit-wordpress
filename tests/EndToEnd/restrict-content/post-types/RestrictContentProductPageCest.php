@@ -5,11 +5,12 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests Restrict Content by Product functionality on WordPress Pages.
+ * Tests Restrict Content by Product functionality on WordPress Pages, Posts and Custom Post Types
+ * using the Block Editor.
  *
  * @since   2.1.0
  */
-class RestrictContentProductPageCest
+class RestrictContentProductCest
 {
 	/**
 	 * Post Types to test.
