@@ -460,7 +460,7 @@ class ClassicEditorLandingPageCest
 		$I->enableWPRocketLazyLoad($I);
 
 		// Add a Page using the Classic Editor.
-		$I->addGutenbergPage(
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: WP Rocket: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -548,8 +548,8 @@ class ClassicEditorLandingPageCest
 			]
 		);
 
-		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewClassicEditorPage($I);
+		// Publish page.
+		$url = $I->publishClassicEditorPage($I);
 
 		// Log out.
 		$I->logOut();
