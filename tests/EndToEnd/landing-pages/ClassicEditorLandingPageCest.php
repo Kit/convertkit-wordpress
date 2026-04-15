@@ -475,7 +475,7 @@ class ClassicEditorLandingPageCest
 		);
 
 		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewClassicEditorPage($I);
+		$url = $I->publishClassicEditorPage($I);
 
 		// Log out, as WP Rocket won't cache or minify for logged in WordPress Users.
 		$I->logOut();

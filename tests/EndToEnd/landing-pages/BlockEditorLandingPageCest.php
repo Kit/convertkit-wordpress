@@ -444,8 +444,8 @@ class BlockEditorLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewGutenbergPage($I);
+		// Publish the Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Log out, as WP Rocket won't cache or minify for logged in WordPress Users.
 		$I->logOut();
@@ -515,8 +515,8 @@ class BlockEditorLandingPageCest
 			landingPage: $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
 
-		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewGutenbergPage($I);
+		// Publish the Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Log out.
 		$I->logOut();
