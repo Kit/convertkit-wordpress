@@ -12,6 +12,19 @@ use Tests\Support\EndToEndTester;
 class RestrictContentProductPageCest
 {
 	/**
+	 * Post Types to test.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @var array
+	 */
+	private $postTypes = [
+		'page',
+		'post',
+		'article',
+	];
+
+	/**
 	 * Run common actions before running the test functions in this class.
 	 *
 	 * @since   2.1.0
@@ -22,6 +35,9 @@ class RestrictContentProductPageCest
 	{
 		// Activate Kit plugin.
 		$I->activateKitPlugin($I);
+
+		// Create Custom Post Types using the Custom Post Type UI Plugin.
+		$I->registerCustomPostTypes($I);
 	}
 
 	/**
@@ -36,28 +52,32 @@ class RestrictContentProductPageCest
 		// Setup Kit Plugin, disabling JS.
 		$I->setupKitPluginDisableJS($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product'
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Confirm that all content is displayed.
-		$I->amOnUrl($url);
-		$I->see('Visible content.');
-		$I->see('Member-only content.');
+			// Confirm that all content is displayed.
+			$I->amOnUrl($url);
+			$I->see('Visible content.');
+			$I->see('Member-only content.');
+		}
 	}
 
 	/**
@@ -74,33 +94,37 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByProductOnFrontend($I, $url);
+			// Test Restrict Content functionality.
+			$I->testRestrictedContentByProductOnFrontend($I, $url);
+		}
 	}
 
 	/**
@@ -118,34 +142,38 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			tag: $_ENV['CONVERTKIT_API_TAG_NAME'],
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				tag: $_ENV['CONVERTKIT_API_TAG_NAME'],
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByProductOnFrontend($I, $url);
+			// Test Restrict Content functionality.
+			$I->testRestrictedContentByProductOnFrontend($I, $url);
+		}
 	}
 
 	/**
@@ -167,35 +195,39 @@ class RestrictContentProductPageCest
 		$visibleContent    = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at velit purus. Nam gravida tempor tellus, sit amet euismod arcu. Mauris sed mattis leo. Mauris viverra eget tellus sit amet vehicula. Nulla eget sapien quis felis euismod pellentesque. Quisque elementum et diam nec eleifend. Sed ornare quam eget augue consequat, in maximus quam fringilla. Morbi';
 		$memberOnlyContent = 'Member-only content';
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product: Generated Excerpt'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product: Generated Excerpt'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, $visibleContent);
-		$I->addGutenbergParagraphBlock($I, $memberOnlyContent);
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, $visibleContent);
+			$I->addGutenbergParagraphBlock($I, $memberOnlyContent);
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByProductOnFrontend(
-			$I,
-			urlOrPageID: $url,
-			options: [
-				'visible_content' => $visibleContent,
-				'member_content'  => $memberOnlyContent,
-			]
-		);
+			// Test Restrict Content functionality.
+			$I->testRestrictedContentByProductOnFrontend(
+				$I,
+				urlOrPageID: $url,
+				options: [
+					'visible_content' => $visibleContent,
+					'member_content'  => $memberOnlyContent,
+				]
+			);
+		}
 	}
 
 	/**
@@ -213,33 +245,37 @@ class RestrictContentProductPageCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product: Modal'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product: Modal'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentModal($I, $url);
+			// Test Restrict Content functionality.
+			$I->testRestrictedContentModal($I, $url);
+		}
 	}
 
 	/**
@@ -265,39 +301,43 @@ class RestrictContentProductPageCest
 		// Setup Restrict Content functionality with container CSS classes.
 		$I->setupKitPluginRestrictContent($I, $settings);
 
-		// Add the Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Container CSS Classes'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add the Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Container CSS Classes'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByProductOnFrontend(
-			$I,
-			urlOrPageID: $url,
-			options: [
-				'settings' => $settings,
-			]
-		);
+			// Test Restrict Content functionality.
+			$I->testRestrictedContentByProductOnFrontend(
+				$I,
+				urlOrPageID: $url,
+				options: [
+					'settings' => $settings,
+				]
+			);
+		}
 	}
 
 	/**
@@ -316,40 +356,44 @@ class RestrictContentProductPageCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product: No Access'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product: No Access'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Set cookie with signed subscriber ID, as if we logged in before to e.g. content gated by a Kit Form.
-		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS'], $url);
+			// Set cookie with signed subscriber ID, as if we logged in before to e.g. content gated by a Kit Form.
+			$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS'], $url);
 
-		// View page.
-		$I->amOnUrl($url);
+			// View page.
+			$I->amOnUrl($url);
 
-		// Confirm an inline error message is displayed.
-		$options = $I->getRestrictedContentOptionsWithDefaultsMerged();
-		$I->seeRestrictContentError($I, $options['settings']['no_access_text']);
+			// Confirm an inline error message is displayed.
+			$options = $I->getRestrictedContentOptionsWithDefaultsMerged();
+			$I->seeRestrictContentError($I, $options['settings']['no_access_text']);
+		}
 	}
 
 	/**
@@ -369,20 +413,24 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Programmatically create a Page.
-		$pageID = $I->createRestrictedContentPage(
-			$I,
-			[
-				'post_title'               => 'Kit: Page: Restrict Content: Invalid Product',
-				'restrict_content_setting' => 'product_12345', // A fake Product that does not exist in Kit.
-			]
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Programmatically create a Page.
+			$pageID = $I->createRestrictedContentPage(
+				$I,
+				[
+					'post_type'                => $postType,
+					'post_title'               => 'Kit: ' . $postType . ': Restrict Content: Invalid Product',
+					'restrict_content_setting' => 'product_12345', // A fake Product that does not exist in Kit.
+				]
+			);
 
-		// Navigate to the page.
-		$I->amOnPage('?p=' . $pageID);
+			// Navigate to the page.
+			$I->amOnPage('?p=' . $pageID);
 
-		// Confirm all content displays, with no errors, as the Product is invalid.
-		$I->testRestrictContentDisplaysContent($I);
+			// Confirm all content displays, with no errors, as the Product is invalid.
+			$I->testRestrictContentDisplaysContent($I);
+		}
 	}
 
 	/**
@@ -472,36 +520,40 @@ class RestrictContentProductPageCest
 			]
 		);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Product: Search Engines'
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Add a Page using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Restrict Content: Product: Search Engines'
+			);
 
-		// Configure metabox's Restrict Content setting = Product name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
-		);
+			// Configure metabox's Restrict Content setting = Product name.
+			$I->configurePluginSidebarSettings(
+				$I,
+				form: 'None',
+				restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+			);
 
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+			// Add blocks.
+			$I->addGutenbergParagraphBlock($I, 'Visible content.');
+			$I->addGutenbergBlock(
+				$I,
+				blockName: 'More',
+				blockProgrammaticName: 'more'
+			);
+			$I->addGutenbergParagraphBlock($I, 'Member-only content.');
 
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
+			// Publish Page.
+			$url = $I->publishGutenbergPage($I);
 
-		// Load page.
-		$I->amOnUrl($url);
+			// Load page.
+			$I->amOnUrl($url);
 
-		// Confirm page displays all content, as we're a crawler.
-		$I->testRestrictContentDisplaysContent($I);
+			// Confirm page displays all content, as we're a crawler.
+			$I->testRestrictContentDisplaysContent($I);
+		}
 	}
 
 	/**
@@ -518,26 +570,30 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Programmatically create a Page.
-		$pageID = $I->createRestrictedContentPage(
-			$I,
-			[
-				'post_title' => 'Kit: Page: Restrict Content: Product: ' . $_ENV['CONVERTKIT_API_PRODUCT_NAME'] . ': Quick Edit',
-			]
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Programmatically create a Page.
+			$pageID = $I->createRestrictedContentPage(
+				$I,
+				[
+					'post_type'  => $postType,
+					'post_title' => 'Kit: ' . $postType . ': Restrict Content: Product: ' . $_ENV['CONVERTKIT_API_PRODUCT_NAME'] . ': Quick Edit',
+				]
+			);
 
-		// Quick Edit the Page in the Pages WP_List_Table.
-		$I->quickEdit(
-			$I,
-			postType: 'page',
-			postID: $pageID,
-			configuration: [
-				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
-		);
+			// Quick Edit the Page in the Pages WP_List_Table.
+			$I->quickEdit(
+				$I,
+				postType: $postType,
+				postID: $pageID,
+				configuration: [
+					'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+				]
+			);
 
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByProductOnFrontend($I, $pageID);
+			// Test Restrict Content functionality.
+			$I->testRestrictedContentByProductOnFrontend($I, $pageID);
+		}
 	}
 
 	/**
@@ -554,37 +610,42 @@ class RestrictContentProductPageCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Programmatically create two Pages.
-		$pageIDs = array(
-			$I->createRestrictedContentPage(
-				$I,
-				[
-					'post_title' => 'Kit: Page: Restrict Content: Product: ' . $_ENV['CONVERTKIT_API_PRODUCT_NAME'] . ': Bulk Edit #1',
-				]
-			),
-			$I->createRestrictedContentPage(
-				$I,
-				[
-					'post_title' => 'Kit: Page: Restrict Content: Product: ' . $_ENV['CONVERTKIT_API_PRODUCT_NAME'] . ': Bulk Edit #2',
-				]
-			),
-		);
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Programmatically create two Pages.
+			$pageIDs = array(
+				$I->createRestrictedContentPage(
+					$I,
+					[
+						'post_type'  => $postType,
+						'post_title' => 'Kit: ' . $postType . ': Restrict Content: Product: ' . $_ENV['CONVERTKIT_API_PRODUCT_NAME'] . ': Bulk Edit #1',
+					]
+				),
+				$I->createRestrictedContentPage(
+					$I,
+					[
+						'post_type'  => $postType,
+						'post_title' => 'Kit: ' . $postType . ': Restrict Content: Product: ' . $_ENV['CONVERTKIT_API_PRODUCT_NAME'] . ': Bulk Edit #2',
+					]
+				),
+			);
 
-		// Bulk Edit the Pages in the Pages WP_List_Table.
-		$I->bulkEdit(
-			$I,
-			postType: 'page',
-			postIDs: $pageIDs,
-			configuration: [
-				'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
-		);
+			// Bulk Edit the Pages in the Pages WP_List_Table.
+			$I->bulkEdit(
+				$I,
+				postType: $postType,
+				postIDs: $pageIDs,
+				configuration: [
+					'restrict_content' => [ 'select', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
+				]
+			);
 
-		// Iterate through Pages to run frontend tests.
-		foreach ($pageIDs as $pageID) {
-			// Test Restrict Content functionality.
-			$I->testRestrictedContentByProductOnFrontend($I, $pageID);
-			$I->clearRestrictContentCookie($I);
+			// Iterate through Pages to run frontend tests.
+			foreach ($pageIDs as $pageID) {
+				// Test Restrict Content functionality.
+				$I->testRestrictedContentByProductOnFrontend($I, $pageID);
+				$I->clearRestrictContentCookie($I);
+			}
 		}
 	}
 
