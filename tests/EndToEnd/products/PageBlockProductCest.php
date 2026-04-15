@@ -402,8 +402,8 @@ class PageBlockProductCest
 			]
 		);
 
-		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewGutenbergPage($I);
+		// Publish the Page.
+		$url = $I->publishGutenbergPage($I);
 
 		// Change device and user agent to a mobile.
 		$I->enableMobileEmulation();
