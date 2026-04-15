@@ -160,9 +160,13 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 			'0' => esc_html__( 'Don\'t restrict content to member-only', 'convertkit' ),
 		);
 		if ( $convertkit_forms->exist() ) {
+			$restrict_content['forms'] = array(
+				'label'  => esc_html__( 'Forms', 'convertkit' ),
+				'values' => array(),
+			);
 			foreach ( $convertkit_forms->get() as $form ) {
 				// Legacy forms don't include a `format` key, so define them as inline.
-				$restrict_content[ 'form_' . absint( $form['id'] ) ] = sprintf(
+				$restrict_content['forms']['values'][ 'form_' . absint( $form['id'] ) ] = sprintf(
 					'%s [%s]',
 					sanitize_text_field( $form['name'] ),
 					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
@@ -170,13 +174,21 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 			}
 		}
 		if ( $convertkit_tags->exist() ) {
+			$restrict_content['tags'] = array(
+				'label'  => esc_html__( 'Tags', 'convertkit' ),
+				'values' => array(),
+			);
 			foreach ( $convertkit_tags->get() as $tag ) {
-				$restrict_content[ 'tag_' . absint( $tag['id'] ) ] = sanitize_text_field( $tag['name'] );
+				$restrict_content['tags']['values'][ 'tag_' . absint( $tag['id'] ) ] = sanitize_text_field( $tag['name'] );
 			}
 		}
 		if ( $convertkit_products->exist() ) {
+			$restrict_content['products'] = array(
+				'label'  => esc_html__( 'Products', 'convertkit' ),
+				'values' => array(),
+			);
 			foreach ( $convertkit_products->get() as $product ) {
-				$restrict_content[ 'product_' . $product['id'] ] = sanitize_text_field( $product['name'] );
+				$restrict_content['products']['values'][ 'product_' . $product['id'] ] = sanitize_text_field( $product['name'] );
 			}
 		}
 

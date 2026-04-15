@@ -1009,25 +1009,104 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 				// depending on the Field Type (select, textarea, text etc).
 				switch (field.type) {
 					case 'select':
-						// Build options for <select> input.
+						// Check if any values are optgroups.
+						const hasOptgroups = Object.keys(field.values).some(
+							(subKey) =>
+								typeof field.values[subKey] === 'object' &&
+								field.values[subKey].label &&
+								field.values[subKey].values
+						);
+
+						if (hasOptgroups) {
+							const children = [];
+
+							for (const value of Object.keys(field.values)) {
+								if (
+									typeof field.values[value] === 'object' &&
+									field.values[value].label &&
+									field.values[value].values
+								) {
+									// Optgroup.
+									const groupChildren = [];
+									for (const groupValue of Object.keys(
+										field.values[value].values
+									)) {
+										const label =
+											typeof field.values[value].values[
+												groupValue
+											] === 'string'
+												? field.values[value].values[
+														groupValue
+													].replace(
+														/&#0*39;|&#x27;|&apos;/g,
+														"'"
+													)
+												: field.values[value].values[
+														groupValue
+													];
+										groupChildren.push(
+											el(
+												'option',
+												{
+													value: groupValue,
+													key: groupValue,
+												},
+												label
+											)
+										);
+									}
+									children.push(
+										el(
+											'optgroup',
+											{
+												label: field.values[value]
+													.label,
+												key: value,
+											},
+											...groupChildren
+										)
+									);
+								} else {
+									// Flat option.
+									const label = field.values[value].replace(
+										/&#0*39;|&#x27;|&apos;/g,
+										"'"
+									);
+									children.push(
+										el(
+											'option',
+											{ value, key: value },
+											label
+										)
+									);
+								}
+							}
+
+							return el(
+								SelectControl,
+								fieldProperties,
+								...children
+							);
+						}
+
+						// Non-optgroup: existing logic using options prop.
 						for (const value of Object.keys(field.values)) {
 							fieldOptions.push({
-								label: field.values[value],
+								label: field.values[value].replace(
+									/&#0*39;|&#x27;|&apos;/g,
+									"'"
+								),
 								value,
 							});
 						}
 
-						// Sort field's options alphabetically by label.
 						fieldOptions.sort(function (x, y) {
 							const a = x.label.toUpperCase(),
 								b = y.label.toUpperCase();
 							return a.localeCompare(b);
 						});
 
-						// Assign options to field.
 						fieldProperties.options = fieldOptions;
-
-						// Return field element.
 						return el(SelectControl, fieldProperties);
 
 					default:
