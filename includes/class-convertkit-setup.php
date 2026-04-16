@@ -154,6 +154,7 @@ class ConvertKit_Setup {
 		// Actions that should run regardless of the version number
 		// whenever the Plugin is updated.
 		$this->remove_v3_api_secret_from_settings();
+		$this->maybe_delete_old_cached_resource_structure();
 
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
@@ -173,6 +174,46 @@ class ConvertKit_Setup {
 				'api_secret' => '',
 			)
 		);
+
+	}
+
+	/**
+	 * Deletes any cached resources stored in the options table if they are a flat array
+	 * that originates from between 1.6.0 and 1.9.5.2 of the Plugin.
+	 * i.e. [id => name], rather than the expected [id => [id => '...', name => '...', ...]].
+	 *
+	 * This will permit the Resources classes to fetch and cache the Form resources correctly
+	 * from the API, and prevent fatal errors when a user activates the latest version of the Plugin
+	 * on a site that previously had a very old Plugin version installed.
+	 *
+	 * @since   3.2.5
+	 */
+	private function maybe_delete_old_cached_resource_structure() {
+
+		// Define the resource options to check.
+		$resource_options = array(
+			'convertkit_forms',
+			'convertkit_landing_pages',
+			'convertkit_tags',
+		);
+
+		foreach ( $resource_options as $resource_option ) {
+			// Get the resource option.
+			$resource = get_option( $resource_option, false );
+
+			// If the resource option does not exist, there's nothing to delete.
+			if ( false === $resource ) {
+				return;
+			}
+
+			// If the resource structure is correct e.g. [id => [name => '...']], there's nothing to delete.
+			if ( is_array( reset( $resource ) ) ) {
+				return;
+			}
+
+			// Delete the cached resource.
+			delete_option( $resource_option );
+		}
 
 	}
 
