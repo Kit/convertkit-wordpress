@@ -294,6 +294,8 @@ class UpgradePathsCest
 	 * i.e. [id => name], rather than the expected [id => [id => '...', name => '...', ...]].
 	 *
 	 * @since   3.2.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function testFlatArrayResourcesDeleted(EndToEndTester $I)
 	{
@@ -333,6 +335,8 @@ class UpgradePathsCest
 	 * the credentials are defined.
 	 *
 	 * @since   3.2.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function testFlatArrayResourcesDeletedWhenCredentialsAreDefined(EndToEndTester $I)
 	{
