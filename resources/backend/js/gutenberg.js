@@ -1003,13 +1003,77 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					},
 				};
 
-				const fieldOptions = [];
-
 				// Define additional Field Properties and the Field Element,
 				// depending on the Field Type (select, textarea, text etc).
 				switch (field.type) {
 					case 'select':
-						// Build options for <select> input.
+						// Check if any values are optgroups.
+						const hasOptgroups = Object.keys(field.values).some(
+							(subKey) =>
+								typeof field.values[subKey] === 'object' &&
+								field.values[subKey].label &&
+								field.values[subKey].values
+						);
+
+						if (hasOptgroups) {
+							const children = [];
+
+							for (const value of Object.keys(field.values)) {
+								if (
+									typeof field.values[value] === 'object' &&
+									field.values[value].label &&
+									field.values[value].values
+								) {
+									// Optgroup.
+									const groupChildren = [];
+									for (const groupValue of Object.keys(
+										field.values[value].values
+									)) {
+										groupChildren.push(
+											el(
+												'option',
+												{
+													value: groupValue,
+													key: groupValue,
+												},
+												field.values[value].values[
+													groupValue
+												]
+											)
+										);
+									}
+									children.push(
+										el(
+											'optgroup',
+											{
+												label: field.values[value]
+													.label,
+												key: value,
+											},
+											...groupChildren
+										)
+									);
+								} else {
+									// Option within optgroup.
+									children.push(
+										el(
+											'option',
+											{ value, key: value },
+											field.values[value]
+										)
+									);
+								}
+							}
+
+							return el(
+								SelectControl,
+								fieldProperties,
+								...children
+							);
+						}
+
+						// Options only, no optgroups.
+						const fieldOptions = [];
 						for (const value of Object.keys(field.values)) {
 							fieldOptions.push({
 								label: field.values[value],
@@ -1017,14 +1081,14 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 							});
 						}
 
-						// Sort field's options alphabetically by label.
+						// Sort options alphabetically by label.
 						fieldOptions.sort(function (x, y) {
 							const a = x.label.toUpperCase(),
 								b = y.label.toUpperCase();
 							return a.localeCompare(b);
 						});
 
-						// Assign options to field.
+						// Assign options to field properties.
 						fieldProperties.options = fieldOptions;
 
 						// Return field element.
