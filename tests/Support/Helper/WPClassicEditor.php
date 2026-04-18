@@ -282,6 +282,9 @@ class WPClassicEditor extends \Codeception\Module
 
 		// Wait for notice to display.
 		$I->waitForElementVisible('.notice-success');
+
+		// Return URL from 'View page' link.
+		return $I->grabAttributeFrom('.notice-success a', 'href');
 	}
 
 	/**
