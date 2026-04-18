@@ -196,6 +196,7 @@ class WP_ConvertKit {
 		$this->classes['block_formatter_form_link']                   = new ConvertKit_Block_Formatter_Form_Link();
 		$this->classes['block_formatter_product_link']                = new ConvertKit_Block_Formatter_Product_Link();
 		$this->classes['pre_publish_action_broadcast_export']         = new ConvertKit_Pre_Publish_Action_Broadcast_Export();
+		$this->classes['plugin_sidebar_post_settings']                = new ConvertKit_Plugin_Sidebar_Post_Settings();
 		$this->classes['broadcasts_exporter']                         = new ConvertKit_Broadcasts_Exporter();
 		$this->classes['broadcasts_importer']                         = new ConvertKit_Broadcasts_Importer();
 		$this->classes['elementor']                                   = new ConvertKit_Elementor();

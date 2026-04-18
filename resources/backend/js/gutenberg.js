@@ -19,8 +19,17 @@ if (convertKitGutenbergEnabled()) {
 		convertKitGutenbergRegisterBlock(convertkit_blocks[block]);
 	}
 
-	// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
 	if (convertKitEditingPostInGutenberg()) {
+		// Register Plugin Sidebars in Gutenberg if we're editing a Post.
+		if (typeof convertkit_plugin_sidebars !== 'undefined') {
+			for (const pluginSidebar in convertkit_plugin_sidebars) {
+				convertKitGutenbergRegisterPluginSidebar(
+					convertkit_plugin_sidebars[pluginSidebar]
+				);
+			}
+		}
+
+		// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
 		if (typeof convertkit_pre_publish_actions !== 'undefined') {
 			convertKitGutenbergRegisterPrePublishActions(
 				convertkit_pre_publish_actions
@@ -910,6 +919,246 @@ function convertKitGutenbergRegisterBlock(block) {
 		window.wp.blockEditor,
 		window.wp.element,
 		window.wp.components
+	);
+}
+
+/**
+ * Registers a Plugin Sidebar in Gutenberg.
+ *
+ * @since 3.3.0
+ *
+ * @param {Object} sidebar Plugin Sidebars
+ */
+function convertKitGutenbergRegisterPluginSidebar(sidebar) {
+	(function (plugins, editor, element, components, data) {
+		// Define some constants for the various items we'll use.
+		const el = element.createElement;
+		const { registerPlugin } = plugins;
+		const { PluginSidebar } = editor;
+		const { TextControl, SelectControl, PanelBody, PanelRow } = components;
+		const { useSelect, useDispatch, select } = data;
+
+		/**
+		 * Returns a PluginDocumentSettingPanel for this plugin, containing
+		 * post-level settings.
+		 *
+		 * @since 3.3.0
+		 */
+		const RenderPanel = function () {
+			const meta = useSelect(function (wpSelect) {
+				return (
+					wpSelect('core/editor').getEditedPostAttribute('meta') || {}
+				);
+			}, []);
+			const { editPost: wpEditPost } = useDispatch('core/editor');
+			const settings = meta[sidebar.meta_key] || sidebar.default_values;
+			const currentPostType = select('core/editor').getCurrentPostType();
+
+			/**
+			 * Updates the Post meta meta_key object.
+			 *
+			 * @since 3.3.0
+			 *
+			 * @param {string} key   Sub key within the meta_key object.
+			 * @param {string} value Value to assign to the sub key.
+			 */
+			const updateSetting = function (key, value) {
+				wpEditPost({
+					meta: {
+						[sidebar.meta_key]: Object.assign({}, settings, {
+							[key]: value,
+						}),
+					},
+				});
+			};
+
+			/**
+			 * Return a field element for the settings panel.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @param {Object} field Field properties.
+			 * @param {string} key   Field name.
+			 * @return {Object}        Field element.
+			 */
+			const getField = function (field, key) {
+				// Define some field properties shared across all field types.
+				const fieldProperties = {
+					key: 'convertkit_plugin_sidebar_' + key,
+					label: field.label,
+					help: Array.isArray(field.description)
+						? field.description.join('\n\n')
+						: field.description,
+					value: settings[key] || field.default_value || '',
+
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					__next40pxDefaultSize: true,
+					__nextHasNoMarginBottom: true,
+
+					// Save Post Meta on value change.
+					onChange(value) {
+						updateSetting(key, value);
+					},
+				};
+
+				// Define additional Field Properties and the Field Element,
+				// depending on the Field Type (select, textarea, text etc).
+				switch (field.type) {
+					case 'select':
+						// Check if any values are optgroups.
+						const hasOptgroups = Object.keys(field.values).some(
+							(subKey) =>
+								typeof field.values[subKey] === 'object' &&
+								field.values[subKey].label &&
+								field.values[subKey].values
+						);
+
+						if (hasOptgroups) {
+							const children = [];
+
+							for (const value of Object.keys(field.values)) {
+								if (
+									typeof field.values[value] === 'object' &&
+									field.values[value].label &&
+									field.values[value].values
+								) {
+									// Optgroup.
+									const groupChildren = [];
+									for (const groupValue of Object.keys(
+										field.values[value].values
+									)) {
+										groupChildren.push(
+											el(
+												'option',
+												{
+													value: groupValue,
+													key: groupValue,
+												},
+												field.values[value].values[
+													groupValue
+												]
+											)
+										);
+									}
+									children.push(
+										el(
+											'optgroup',
+											{
+												label: field.values[value]
+													.label,
+												key: value,
+											},
+											...groupChildren
+										)
+									);
+								} else {
+									// Option within optgroup.
+									children.push(
+										el(
+											'option',
+											{ value, key: value },
+											field.values[value]
+										)
+									);
+								}
+							}
+
+							return el(
+								SelectControl,
+								fieldProperties,
+								...children
+							);
+						}
+
+						// Options only, no optgroups.
+						const fieldOptions = [];
+						for (const value of Object.keys(field.values)) {
+							fieldOptions.push({
+								label: field.values[value],
+								value,
+							});
+						}
+
+						// Sort options alphabetically by label.
+						fieldOptions.sort(function (x, y) {
+							const a = x.label.toUpperCase(),
+								b = y.label.toUpperCase();
+							return a.localeCompare(b);
+						});
+
+						// Assign options to field properties.
+						fieldProperties.options = fieldOptions;
+
+						// Return field element.
+						return el(SelectControl, fieldProperties);
+
+					default:
+						// Return field element.
+						return el(TextControl, fieldProperties);
+				}
+			};
+
+			/**
+			 * Return an array of field elements to display in the settings panel.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @param {Object} fields Fields to display.
+			 * @return {Array}         Panel rows.
+			 */
+			const getFields = function (fields) {
+				const rows = [];
+
+				for (const key in fields) {
+					// Skip if the Post Type being edited is not the same as the Post Type specified in the field's post_type property.
+					if (
+						typeof fields[key].post_type !== 'undefined' &&
+						fields[key].post_type !== currentPostType
+					) {
+						continue;
+					}
+
+					rows.push(
+						el(
+							PanelRow,
+							{
+								key,
+							},
+							getField(fields[key], key)
+						)
+					);
+				}
+
+				return el(PanelBody, {}, rows);
+			};
+
+			// Return the settings sidebar panel with fields.
+			return el(
+				PluginSidebar,
+				{
+					name: sidebar.name,
+					title: sidebar.title,
+					className: sidebar.name,
+					icon: element.RawHTML({
+						children: sidebar.gutenberg_icon,
+					}),
+				},
+				getFields(sidebar.fields)
+			);
+		};
+
+		// Register the plugin sidebar.
+		registerPlugin('convertkit-' + sidebar.name.replace(/_/g, '-'), {
+			render: RenderPanel,
+		});
+	})(
+		window.wp.plugins,
+		window.wp.editPost,
+		window.wp.element,
+		window.wp.components,
+		window.wp.data
 	);
 }
 
