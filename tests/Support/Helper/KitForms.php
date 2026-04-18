@@ -53,7 +53,7 @@ class KitForms extends \Codeception\Module
 				// The block editor automatically adds CSS classes to some elements.
 				switch ( $element ) {
 					case 'p':
-						$I->seeInSource('<' . $element . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+						$I->seeInSource('<' . $element . ' class="wp-block-paragraph">Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
 						break;
 
 					case 'img':
