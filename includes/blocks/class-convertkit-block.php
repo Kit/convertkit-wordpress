@@ -56,6 +56,25 @@ class ConvertKit_Block {
 	}
 
 	/**
+	 * Registers this block's MCP abilities.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities     Abilities to Register.
+	 * @return  array
+	 */
+	public function register_abilities( $abilities ) {
+
+		return array_merge(
+			$abilities,
+			array(
+				new ConvertKit_MCP_Ability_Block_Insert( $this ),
+			)
+		);
+
+	}
+
+	/**
 	 * Returns this block's programmatic name, excluding the convertkit- prefix.
 	 *
 	 * @since   1.9.6
