@@ -13,3 +13,4 @@ updates:
       interval: "daily"
     allow:
       - dependency-type: "production"
+    versioning-strategy: "increase"
