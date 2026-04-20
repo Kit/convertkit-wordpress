@@ -1,4 +1,4 @@
-# Configures Dependabot to update packages used in GitHub Actions
+# Configures Dependabot to update packages used in GitHub Actions and Composer
 # https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/keeping-your-actions-up-to-date-with-dependabot
 version: 2
 updates:
@@ -6,3 +6,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
