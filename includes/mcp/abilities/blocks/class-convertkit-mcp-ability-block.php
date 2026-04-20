@@ -43,6 +43,8 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	/**
 	 * Returns the ability name, derived from the block's name and the verb
 	 * returned by get_verb().
+	 * 
+	 * For example, the Form block's insert ability would be named `kit/form-block-insert`.
 	 *
 	 * @since   3.4.0
 	 *
@@ -50,7 +52,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	 */
 	public function get_name() {
 
-		return 'kit/' . $this->block->get_name() . '-' . $this->get_verb();
+		return 'kit/' . $this->block->get_name() . '-block-' . $this->get_verb();
 
 	}
 
