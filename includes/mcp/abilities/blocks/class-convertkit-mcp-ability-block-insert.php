@@ -101,23 +101,23 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 				'post_id'  => array(
 					'type'        => 'integer',
 					'minimum'     => 1,
-					'description' => __( 'ID of the post to insert the block into.', 'convertkit' ),
-				),
-				'attrs'    => array(
-					'type'        => 'object',
-					'description' => __( 'Block attributes for the new occurrence.', 'convertkit' ),
-					'properties'  => $this->get_input_schema_properties(),
+					'description' => __( 'Page / Post / Custom Post Type ID to insert the block into.', 'convertkit' ),
 				),
 				'position' => array(
 					'type'        => 'string',
-					'enum'        => array( 'append', 'prepend', 'at_index' ),
+					'enum'        => array( 'append', 'prepend', 'index' ),
 					'default'     => 'append',
-					'description' => __( 'Where to insert the new block. "at_index" requires the "index" property.', 'convertkit' ),
+					'description' => __( 'Where to insert the new block. "index" requires the "index" property.', 'convertkit' ),
 				),
 				'index'    => array(
 					'type'        => 'integer',
 					'minimum'     => 0,
-					'description' => __( 'When position is "at_index", the zero-based top-level block index at which to insert the new block.', 'convertkit' ),
+					'description' => __( 'When position is "index", the zero-based top-level block index at which to insert the new block.', 'convertkit' ),
+				),
+				'attrs'    => array(
+					'type'        => 'object',
+					'description' => __( 'Block attributes.', 'convertkit' ),
+					'properties'  => $this->get_input_schema_properties(),
 				),
 			),
 		);
@@ -254,12 +254,10 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 					$occurrence_index = 0;
 					break;
 
-				case 'at_index':
-				case 'append':
 				default:
 					// Find the first occurrence whose attrs match the just-inserted
 					// attrs; fall back to the last occurrence for 'append' and
-					// the first-after-$index for 'at_index'.
+					// the first-after-$index for 'block_index'.
 					$occurrence_index = count( $occurrences ) - 1;
 					break;
 			}
