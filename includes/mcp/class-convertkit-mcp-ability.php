@@ -73,7 +73,11 @@ abstract class ConvertKit_MCP_Ability {
 	 *
 	 * @return  string
 	 */
-	abstract public function get_category();
+	public function get_category() {
+
+		return 'kit';
+
+	}
 
 	/**
 	 * Returns the ability's input JSON Schema.
