@@ -69,6 +69,7 @@ jobs:
           'EndToEnd/forms/general',
           'EndToEnd/forms/post-types',
           'EndToEnd/general/other',
+          'EndToEnd/general/uninstall',
           'EndToEnd/general/plugin-screens',
           'EndToEnd/integrations/divi-builder',
           'EndToEnd/integrations/divi-theme',
@@ -187,7 +188,10 @@ jobs:
 
       # DISALLOW_FILE_MODS = true is required to disable the block directory's "Available to Install" suggestions, which trips up
       # tests that search and wait for block results.
+      # We don't enable DISALLOW_FILE_MODS for the UninstallCest test, as tests will perform a Plugin deletion
+      # which requires DISALLOW_FILE_MODS to not be true.
       - name: Enable DISALLOW_FILE_MODS
+        if: ${{ matrix.test-groups != 'EndToEnd/general/uninstall' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: |
           wp-cli config set DISALLOW_FILE_MODS true --raw
@@ -478,7 +482,7 @@ jobs:
 
       # Add comment to PR linking to Playground
       - name: Comment on PR
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

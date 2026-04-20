@@ -36,6 +36,9 @@ class RefreshResourcesButtonCest
 	 */
 	public function testRefreshResourcesOnPage(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
 
@@ -915,38 +918,6 @@ class RefreshResourcesButtonCest
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
-	}
-
-	/**
-	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the Kit API returns an error, when adding a Page using the Gutenberg editor.
-	 *
-	 * @since   1.9.8.3
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRefreshResourcesErrorNoticeOnPage(EndToEndTester $I)
-	{
-		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupKitPluginFakeAPIKey($I);
-
-		// Navigate to Pages > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-
-		// Click the Forms refresh button.
-		$I->click('button.wp-convertkit-refresh-resources[data-resource="forms"]');
-
-		// Wait for button to change its state from disabled.
-		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="forms"]:not(:disabled)');
-
-		// Confirm that an error notification is displayed on screen, with the expected error message.
-		$I->seeElementInDOM('div.components-notice-list div.is-error');
-		$I->see('Kit: The access token is invalid');
-
-		// Confirm that the notice is dismissible.
-		$I->click('div.components-notice-list div.is-error button.components-notice__dismiss');
-		$I->wait(1);
-		$I->dontSeeElementInDOM('div.components-notice-list div.is-error');
 	}
 
 	/**

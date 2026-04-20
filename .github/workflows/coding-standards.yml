@@ -151,5 +151,4 @@ jobs:
       # Run PHPStan for static analysis.
       - name: Run PHPStan Static Analysis
         working-directory: ${{ env.PLUGIN_DIR }}
-        if: ${{ contains('8.0 8.1 8.2 8.3 8.4', matrix.php-versions) }}
         run: php vendor/bin/phpstan analyse --memory-limit=1250M
