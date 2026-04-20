@@ -98,6 +98,14 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-p
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-ability.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/blocks/class-convertkit-mcp-ability-block.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/blocks/class-convertkit-mcp-ability-block-list.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/blocks/class-convertkit-mcp-ability-block-insert.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/blocks/class-convertkit-mcp-ability-block-update.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/blocks/class-convertkit-mcp-ability-block-delete.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-ability-set-page-form.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';

@@ -531,4 +531,345 @@ class ConvertKit_Block {
 
 	}
 
+	/**
+	 * Returns the block's full Gutenberg name (e.g. `convertkit/form`).
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_full_block_name() {
+
+		return 'convertkit/' . $this->get_name();
+
+	}
+
+	/**
+	 * Returns JSON Schema properties derived from this block's get_attributes()
+	 * and get_fields(), suitable for use as the `attrs` object in an Abilities
+	 * API input schema.
+	 *
+	 * Structural/styling attributes injected by Gutenberg (align, style,
+	 * backgroundColor, textColor, className, is_gutenberg_example) are excluded
+	 * so the agent-facing schema only covers block-specific attributes.
+	 *
+	 * Where possible, the schema is enriched using get_fields(): the field's
+	 * `label` becomes the property description, and `resource`-type fields
+	 * become an enum of valid IDs drawn from the corresponding resource class.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_input_schema_properties() {
+
+		$properties = array();
+		$fields     = is_array( $this->get_fields() ) ? $this->get_fields() : array();
+
+		// JSON Schema type for each Gutenberg attribute type.
+		$type_map = array(
+			'string'  => 'string',
+			'number'  => 'integer',
+			'boolean' => 'boolean',
+			'object'  => 'object',
+			'array'   => 'array',
+		);
+
+		// Attributes that are either provided by Gutenberg's own block supports
+		// or are internal-only. These should not appear in the agent-facing schema.
+		$skip_attrs = array(
+			'align',
+			'style',
+			'backgroundColor',
+			'textColor',
+			'className',
+			'is_gutenberg_example',
+		);
+
+		foreach ( $this->get_attributes() as $name => $definition ) {
+			if ( in_array( $name, $skip_attrs, true ) ) {
+				continue;
+			}
+
+			$type                = isset( $definition['type'] ) ? $definition['type'] : 'string';
+			$json_type           = isset( $type_map[ $type ] ) ? $type_map[ $type ] : 'string';
+			$properties[ $name ] = array( 'type' => $json_type );
+
+			// Enrich from the field definition, if one exists.
+			if ( ! isset( $fields[ $name ] ) ) {
+				continue;
+			}
+
+			$field = $fields[ $name ];
+
+			if ( ! empty( $field['label'] ) ) {
+				$properties[ $name ]['description'] = (string) $field['label'];
+			}
+
+			// For resource-type fields, narrow the schema to a concrete list of
+			// valid IDs. This prevents agents from passing IDs that don't exist.
+			if ( isset( $field['type'] ) && $field['type'] === 'resource' && ! empty( $field['values'] ) && is_array( $field['values'] ) ) {
+				$ids = array_keys( $field['values'] );
+				if ( ! empty( $ids ) ) {
+					// The attribute is typed as string in Gutenberg, but IDs are
+					// naturally integers. Preserve whatever the attribute's
+					// declared type is, and just cast enum values to match.
+					$properties[ $name ]['enum'] = array_map(
+						function ( $id ) use ( $json_type ) {
+							return $json_type === 'string' ? (string) $id : (int) $id;
+						},
+						$ids
+					);
+				}
+			}
+		}
+
+		return $properties;
+
+	}
+
+	/**
+	 * Finds all top-level occurrences of this block in the given post's content.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   int $post_id    Post ID.
+	 * @return  array|WP_Error  Array of ['index' => int, 'attrs' => array] entries, or WP_Error if the post is missing.
+	 */
+	public function find_blocks_in_post( $post_id ) {
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return new WP_Error(
+				'convertkit_block_post_not_found',
+				/* translators: %d: post ID */
+				sprintf( __( 'No post exists with ID %d.', 'convertkit' ), $post_id )
+			);
+		}
+
+		$blocks    = parse_blocks( $post->post_content );
+		$full_name = $this->get_full_block_name();
+		$found     = array();
+
+		foreach ( $blocks as $index => $block ) {
+			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $full_name ) {
+				continue;
+			}
+
+			$found[] = array(
+				'index' => (int) $index,
+				'attrs' => isset( $block['attrs'] ) ? (array) $block['attrs'] : array(),
+			);
+		}
+
+		return $found;
+
+	}
+
+	/**
+	 * Inserts this block into the given post's content at the specified position.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   int    $post_id    Post ID.
+	 * @param   array  $attrs      Block attributes to set on the inserted block.
+	 * @param   string $position   One of 'append', 'prepend', 'at_index'.
+	 * @param   int    $index      Zero-based index when $position is 'at_index'.
+	 * @return  array|WP_Error     ['block_count' => int, 'position_used' => string] on success.
+	 */
+	public function insert_into_post( $post_id, $attrs, $position = 'append', $index = 0 ) {
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return new WP_Error(
+				'convertkit_block_post_not_found',
+				/* translators: %d: post ID */
+				sprintf( __( 'No post exists with ID %d.', 'convertkit' ), $post_id )
+			);
+		}
+
+		$blocks = parse_blocks( $post->post_content );
+
+		$new_block = array(
+			'blockName'    => $this->get_full_block_name(),
+			'attrs'        => (array) $attrs,
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		);
+
+		switch ( $position ) {
+			case 'prepend':
+				array_unshift( $blocks, $new_block );
+				break;
+
+			case 'at_index':
+				$index = max( 0, min( (int) $index, count( $blocks ) ) );
+				array_splice( $blocks, $index, 0, array( $new_block ) );
+				break;
+
+			case 'append':
+			default:
+				$blocks[] = $new_block;
+				$position = 'append';
+				break;
+		}
+
+		$updated = wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => serialize_blocks( $blocks ),
+			),
+			true
+		);
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		return array(
+			'block_count'   => count( $blocks ),
+			'position_used' => $position,
+		);
+
+	}
+
+	/**
+	 * Replaces the attributes of a specific top-level occurrence of this block
+	 * in the given post's content.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   int   $post_id        Post ID.
+	 * @param   int   $target_index   Zero-based index among this block's occurrences in the post (not the block-array index).
+	 * @param   array $attrs          New attributes to apply.
+	 * @param   bool  $merge          If true, merge $attrs into the existing block attrs. If false, replace entirely.
+	 * @return  array|WP_Error
+	 */
+	public function replace_in_post( $post_id, $target_index, $attrs, $merge = true ) {
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return new WP_Error(
+				'convertkit_block_post_not_found',
+				/* translators: %d: post ID */
+				sprintf( __( 'No post exists with ID %d.', 'convertkit' ), $post_id )
+			);
+		}
+
+		$blocks      = parse_blocks( $post->post_content );
+		$full_name   = $this->get_full_block_name();
+		$occurrence  = 0;
+		$matched     = false;
+		$final_attrs = array();
+
+		foreach ( $blocks as $key => $block ) {
+			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $full_name ) {
+				continue;
+			}
+
+			if ( $occurrence === (int) $target_index ) {
+				$existing                = isset( $block['attrs'] ) ? (array) $block['attrs'] : array();
+				$final_attrs             = $merge ? array_merge( $existing, (array) $attrs ) : (array) $attrs;
+				$blocks[ $key ]['attrs'] = $final_attrs;
+				$matched                 = true;
+				break;
+			}
+
+			++$occurrence;
+		}
+
+		if ( ! $matched ) {
+			return new WP_Error(
+				'convertkit_block_occurrence_not_found',
+				/* translators: 1: block name, 2: target index, 3: post ID */
+				sprintf( __( 'No occurrence #%2$d of block %1$s found in post %3$d.', 'convertkit' ), $full_name, (int) $target_index, $post_id )
+			);
+		}
+
+		$updated = wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => serialize_blocks( $blocks ),
+			),
+			true
+		);
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		return array(
+			'attrs' => $final_attrs,
+		);
+
+	}
+
+	/**
+	 * Deletes a specific top-level occurrence of this block from the given
+	 * post's content.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   int $post_id       Post ID.
+	 * @param   int $target_index  Zero-based index among this block's occurrences in the post.
+	 * @return  array|WP_Error
+	 */
+	public function delete_from_post( $post_id, $target_index ) {
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return new WP_Error(
+				'convertkit_block_post_not_found',
+				/* translators: %d: post ID */
+				sprintf( __( 'No post exists with ID %d.', 'convertkit' ), $post_id )
+			);
+		}
+
+		$blocks     = parse_blocks( $post->post_content );
+		$full_name  = $this->get_full_block_name();
+		$occurrence = 0;
+		$matched    = false;
+
+		foreach ( $blocks as $key => $block ) {
+			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $full_name ) {
+				continue;
+			}
+
+			if ( $occurrence === (int) $target_index ) {
+				unset( $blocks[ $key ] );
+				$blocks  = array_values( $blocks );
+				$matched = true;
+				break;
+			}
+
+			++$occurrence;
+		}
+
+		if ( ! $matched ) {
+			return new WP_Error(
+				'convertkit_block_occurrence_not_found',
+				/* translators: 1: block name, 2: target index, 3: post ID */
+				sprintf( __( 'No occurrence #%2$d of block %1$s found in post %3$d.', 'convertkit' ), $full_name, (int) $target_index, $post_id )
+			);
+		}
+
+		$updated = wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => serialize_blocks( $blocks ),
+			),
+			true
+		);
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		return array(
+			'block_count' => count( $blocks ),
+		);
+
+	}
+
 }
