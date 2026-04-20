@@ -63,7 +63,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
 			__( 'Updates the attributes of a single occurrence of the %1$s (%2$s) block in the given post. By default the provided attributes are merged into the existing attributes; set replace_all to true to replace them entirely.', 'convertkit' ),
-			$this->block->get_full_block_name(),
+			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
 
@@ -197,7 +197,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 		// Return result.
 		return array(
 			'post_id'          => $post_id,
-			'block'            => $this->block->get_full_block_name(),
+			'block'            => 'convertkit/' . $this->block->get_name(),
 			'occurrence_index' => (int) $occurrence_index,
 			'attrs'            => isset( $result['attrs'] ) ? $result['attrs'] : $attrs,
 		);

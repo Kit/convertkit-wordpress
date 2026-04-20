@@ -60,7 +60,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
 			__( 'Removes a single occurrence of the %1$s (%2$s) block from the given post.', 'convertkit' ),
-			$this->block->get_full_block_name(),
+			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
 
@@ -180,7 +180,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 		// Return result.
 		return array(
 			'post_id'                  => $post_id,
-			'block'                    => $this->block->get_full_block_name(),
+			'block'                    => 'convertkit/' . $this->block->get_name(),
 			'deleted_occurrence_index' => (int) $occurrence_index,
 		);
 

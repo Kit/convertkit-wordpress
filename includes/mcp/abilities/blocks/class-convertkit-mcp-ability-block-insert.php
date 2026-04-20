@@ -59,8 +59,8 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Inserts a new %1$s (%2$s) block into the given post\'s content. The block can be appended (default), prepended, or positioned relative to an existing occurrence by zero-based index.', 'convertkit' ),
-			$this->block->get_full_block_name(),
+			__( 'Inserts a new %1$s (%2$s) block into the given post\'s content. The block can be appended (default), prepended, or positioned relative to an existing block using a zero-based index.', 'convertkit' ),
+			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
 
@@ -106,7 +106,7 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 				'attrs'    => array(
 					'type'        => 'object',
 					'description' => __( 'Block attributes for the new occurrence.', 'convertkit' ),
-					'properties'  => $this->block->get_input_schema_properties(),
+					'properties'  => $this->get_input_schema_properties(),
 				),
 				'position' => array(
 					'type'        => 'string',
@@ -121,6 +121,60 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 				),
 			),
 		);
+
+	}
+
+	/**
+	 * Returns JSON Schema properties derived from the block's get_attributes()
+	 * and get_fields(), suitable for use as the `attrs` object in an Abilities
+	 * API input schema.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_input_schema_properties() {
+
+		// Define properties.
+		$properties = array();
+
+		foreach ( $this->block->get_fields() as $field_name => $field ) {
+
+			// Build JSON Schema property.
+			$properties[ $field_name ] = array(
+				'description' => $field['label'],
+				'type'        => $this->get_input_schema_property_type( $field ),
+			);
+
+		}
+
+		return $properties;
+
+	}
+
+	/**
+	 * Returns the JSON Schema type for the given field.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $field   Field definition.
+	 * @return  string
+	 */
+	private function get_input_schema_property_type( $field ) {
+
+		switch ( $field['type'] ) {
+			case 'resource':
+				return 'string';
+
+			case 'number':
+				return 'integer';
+
+			case 'toggle':
+				return 'boolean';
+
+			default:
+				return $field['type'];
+		}
 
 	}
 
@@ -214,7 +268,7 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 		// Return result.
 		return array(
 			'post_id'          => $post_id,
-			'block'            => $this->block->get_full_block_name(),
+			'block'            => 'convertkit/' . $this->block->get_name(),
 			'occurrence_index' => (int) $occurrence_index,
 			'attrs'            => $attrs,
 		);

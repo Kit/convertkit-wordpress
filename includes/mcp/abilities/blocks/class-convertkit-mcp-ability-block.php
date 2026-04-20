@@ -178,7 +178,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 			return new WP_Error(
 				'convertkit_mcp_no_block_occurrences',
 				/* translators: 1: block name, 2: post ID */
-				sprintf( __( 'No occurrences of block %1$s found in post %2$d.', 'convertkit' ), $this->block->get_full_block_name(), $post_id )
+				sprintf( __( 'No occurrences of block %1$s found in post %2$d.', 'convertkit' ), 'convertkit/' . $this->block->get_name(), $post_id )
 			);
 		}
 
@@ -217,7 +217,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 				return new WP_Error(
 					'convertkit_mcp_target_not_found',
 					/* translators: 1: attribute name, 2: value, 3: block name */
-					sprintf( __( 'No occurrence of block %3$s has %1$s = %2$s.', 'convertkit' ), $attr, wp_json_encode( $value ), $this->block->get_full_block_name() )
+					sprintf( __( 'No occurrence of block %3$s has %1$s = %2$s.', 'convertkit' ), $attr, wp_json_encode( $value ), 'convertkit/' . $this->block->get_name() )
 				);
 
 			default:

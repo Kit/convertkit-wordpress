@@ -60,7 +60,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
 			__( 'Lists every occurrence of the %1$s (%2$s) block in the given post, including each occurrence\'s zero-based index and current attribute values.', 'convertkit' ),
-			$this->block->get_full_block_name(),
+			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
 
@@ -184,7 +184,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 		// Return result.
 		return array(
 			'post_id'     => $post_id,
-			'block'       => $this->block->get_full_block_name(),
+			'block'       => 'convertkit/' . $this->block->get_name(),
 			'count'       => count( $occurrences ),
 			'occurrences' => $occurrences,
 		);
