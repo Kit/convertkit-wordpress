@@ -585,6 +585,52 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Saves an existing published Page, Post or Custom Post Type,
+	 * loading it on the frontend web site.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I     EndToEnd Tester.
+	 * @return  string           $url   Page / Post URL.
+	 */
+	public function saveAndViewGutenbergPage($I)
+	{
+		// Save Gutenberg Page.
+		$url = $I->saveGutenbergPage($I);
+
+		// Load the Page on the frontend site.
+		$I->amOnUrl($url);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Return URL.
+		return $url;
+	}
+
+	/**
+	 * Save an existing published Page, Post or Custom Post Type.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function saveGutenbergPage($I)
+	{
+		// Click the Save button.
+		$I->click('.editor-post-publish-button__button');
+
+		// Wait for confirmation that the Page saved.
+		$I->waitForElementVisible('.components-external-link.components-snackbar__action', 30);
+
+		// Return URL from 'View page' link.
+		return $I->grabAttributeFrom('.components-external-link.components-snackbar__action', 'href');
+	}
+
+	/**
 	 * Clicks the Publish button the pre-publish checks sidebar, confirming the Page, Post or Custom Post Type
 	 * published and returning its URL.
 	 *
@@ -609,6 +655,125 @@ class WPGutenberg extends \Codeception\Module
 
 		// Return URL from 'View page' button.
 		return $I->grabAttributeFrom('.post-publish-panel__postpublish-buttons a.components-button', 'href');
+	}
+
+	/**
+	 * Configure the settings for the Plugin sidebar in Gutenberg.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                EndToEnd Tester.
+	 * @param   string         $form             Form ID.
+	 * @param   string         $landingPage      Landing Page ID.
+	 * @param   string         $tag              Tag ID.
+	 * @param   string         $restrictContent  Restrict Content ID.
+	 */
+	public function configurePluginSidebarSettings($I, $form = false, $landingPage = false, $tag = false, $restrictContent = false)
+	{
+		// Open the Plugin sidebar settings.
+		$I->openPluginSidebarSettings($I);
+
+		// Gutenberg doesn't expose the field names as IDs.
+		// The index (#inspector-select-control-*) also changes between WordPress versions.
+		// Form.
+		if ( $form ) {
+			$I->waitForElementVisible('//label[text()="Form"]/following::select[1]');
+			$I->selectOption('//label[text()="Form"]/following::select[1]', $form);
+		}
+
+		// Landing Page.
+		if ( $landingPage ) {
+			$I->waitForElementVisible('//label[text()="Landing Page"]/following::select[1]');
+			$I->selectOption('//label[text()="Landing Page"]/following::select[1]', $landingPage);
+		}
+
+		// Tag.
+		if ( $tag ) {
+			$I->waitForElementVisible('//label[text()="Tag"]/following::select[1]');
+			$I->selectOption('//label[text()="Tag"]/following::select[1]', $tag);
+		}
+
+		// Restrict Content.
+		if ( $restrictContent ) {
+			$I->waitForElementVisible('//label[text()="Restrict Content"]/following::select[1]');
+			$I->selectOption('//label[text()="Restrict Content"]/following::select[1]', $restrictContent);
+		}
+
+		// Close the Plugin sidebar settings.
+		$I->closePluginSidebarSettings($I);
+	}
+
+	/**
+	 * Asserts that the given plugin sidebar setting is set to the given value.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 * @param   string         $setting                Setting Name (e.g. 'form').
+	 * @param   string         $value                  Setting Value (e.g. '12345').
+	 */
+	public function seePluginSidebarSetting($I, $setting, $value)
+	{
+		// Open the Plugin sidebar settings.
+		$I->openPluginSidebarSettings($I);
+
+		// Gutenberg doesn't expose the field names as IDs.
+		// The index (#inspector-select-control-*) also changes between WordPress versions.
+		switch ($setting) {
+			case 'form':
+				$I->waitForElementVisible('//label[text()="Form"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Form"]/following::select[1]', $value);
+				break;
+
+			case 'landing_page':
+				$I->waitForElementVisible('//label[text()="Landing Page"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Landing Page"]/following::select[1]', $value);
+				break;
+
+			case 'tag':
+				$I->waitForElementVisible('//label[text()="Tag"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Tag"]/following::select[1]', $value);
+				break;
+
+			case 'restrict_content':
+				$I->waitForElementVisible('//label[text()="Restrict Content"]/following::select[1]');
+				$I->seeOptionIsSelected('//label[text()="Restrict Content"]/following::select[1]', $value);
+				break;
+		}
+
+		// Close the Plugin sidebar settings.
+		$I->closePluginSidebarSettings($I);
+	}
+
+	/**
+	 * Opens the Plugin sidebar settings.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function openPluginSidebarSettings($I)
+	{
+		// Click the Plugin sidebar button.
+		$I->waitForElementVisible('button[aria-label="Kit"]');
+		$I->click('button[aria-label="Kit"]');
+
+		// Wait for the Plugin sidebar to be fully loaded.
+		// .editor-sidebar is not available in WordPress 6.2.8, so we use .interface-complementary-area instead.
+		$I->waitForElementVisible('.interface-complementary-area');
+	}
+
+	/**
+	 * Closes the Plugin sidebar settings.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I                      EndToEnd Tester.
+	 */
+	public function closePluginSidebarSettings($I)
+	{
+		// Close the Plugin sidebar by opening the Page sidebar.
+		$I->click('.interface-pinned-items button[aria-label="Settings"]');
 	}
 
 	/**
