@@ -62,6 +62,10 @@
 						<td>Registers block formatters in Gutenberg for the ConvertKit Plugin.</td>
 					</tr><tr>
 						<td>&nbsp;</td>
+						<td><a href="#convertkit_plugin_sidebars"><code>convertkit_plugin_sidebars</code></a></td>
+						<td>Registers plugin sidebars for the WordPress block editor.</td>
+					</tr><tr>
+						<td>&nbsp;</td>
 						<td><a href="#convertkit_get_pre_publish_actions"><code>convertkit_get_pre_publish_actions</code></a></td>
 						<td>Registers pre-publish actions for the ConvertKit Plugin.</td>
 					</tr><tr>
@@ -577,9 +581,36 @@ add_filter( 'convertkit_get_block_formatters', function( $block_formatters ) {
 	return $block_formatters;
 }, 10, 1 );
 </pre>
+<h3 id="convertkit_plugin_sidebars">
+						convertkit_plugin_sidebars
+						<code>includes/functions.php::254</code>
+					</h3><h4>Overview</h4>
+						<p>Registers plugin sidebars for the WordPress block editor.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$plugin_sidebars</td>
+							<td>array</td>
+							<td>Plugin sidebars.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_plugin_sidebars', function( $plugin_sidebars ) {
+	// ... your code here
+	// Return value
+	return $plugin_sidebars;
+}, 10, 1 );
+</pre>
 <h3 id="convertkit_get_pre_publish_actions">
 						convertkit_get_pre_publish_actions
-						<code>includes/functions.php::254</code>
+						<code>includes/functions.php::278</code>
 					</h3><h4>Overview</h4>
 						<p>Registers pre-publish actions for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -606,7 +637,7 @@ add_filter( 'convertkit_get_pre_publish_actions', function( $pre_publish_actions
 </pre>
 <h3 id="convertkit_get_form_importers">
 						convertkit_get_form_importers
-						<code>includes/functions.php::279</code>
+						<code>includes/functions.php::303</code>
 					</h3><h4>Overview</h4>
 						<p>Registers form importers for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -1129,7 +1160,7 @@ add_filter( 'convertkit_user_get_default_settings', function( $defaults ) {
 </pre>
 <h3 id="convertkit_admin_gutenberg_add_block_categories">
 						convertkit_admin_gutenberg_add_block_categories
-						<code>includes/class-convertkit-gutenberg.php::123</code>
+						<code>includes/class-convertkit-gutenberg.php::126</code>
 					</h3><h4>Overview</h4>
 						<p>Adds block categories to the default Gutenberg Block Categories</p><h4>Parameters</h4>
 					<table>
@@ -1160,7 +1191,7 @@ add_filter( 'convertkit_admin_gutenberg_add_block_categories', function( $catego
 </pre>
 <h3 id="convertkit_gutenberg_block_api_version">
 						convertkit_gutenberg_block_api_version
-						<code>includes/class-convertkit-gutenberg.php::211</code>
+						<code>includes/class-convertkit-gutenberg.php::279</code>
 					</h3><h4>Overview</h4>
 						<p>Determine the block API version to use for registering blocks.</p><h4>Parameters</h4>
 					<table>
@@ -1636,7 +1667,7 @@ add_filter( 'convertkit_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_is_admin_or_frontend_editor">
 						convertkit_is_admin_or_frontend_editor
-						<code>includes/class-wp-convertkit.php::335</code>
+						<code>includes/class-wp-convertkit.php::336</code>
 					</h3><h4>Overview</h4>
 						<p>Filters whether the current request is a WordPress Administration / Frontend Editor request or not. Page Builders can set this to true to allow ConvertKit to load its administration functionality.</p><h4>Parameters</h4>
 					<table>
@@ -2340,7 +2371,7 @@ do_action( 'convertkit_pre_publish_action_run_  this-get_name', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts">
 						convertkit_gutenberg_enqueue_scripts
-						<code>includes/class-convertkit-gutenberg.php::264</code>
+						<code>includes/class-convertkit-gutenberg.php::343</code>
 					</h3><h4>Overview</h4>
 						<p>Enqueue any additional scripts for Gutenberg blocks that have been registered.</p><h4>Parameters</h4>
 					<table>
@@ -2369,7 +2400,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts', function( $blocks, $block_for
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles">
 						convertkit_gutenberg_enqueue_styles
-						<code>includes/class-convertkit-gutenberg.php::288</code>
+						<code>includes/class-convertkit-gutenberg.php::367</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2389,7 +2420,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts_editor_and_frontend">
 						convertkit_gutenberg_enqueue_scripts_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::312</code>
+						<code>includes/class-convertkit-gutenberg.php::391</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2409,7 +2440,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts_editor_and_frontend', function(
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles_editor_and_frontend">
 						convertkit_gutenberg_enqueue_styles_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::336</code>
+						<code>includes/class-convertkit-gutenberg.php::415</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2582,7 +2613,7 @@ do_action( 'convertkit_initialize_frontend', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_global">
 						convertkit_initialize_global
-						<code>includes/class-wp-convertkit.php::214</code>
+						<code>includes/class-wp-convertkit.php::215</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
