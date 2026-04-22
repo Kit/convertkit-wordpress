@@ -42,6 +42,15 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 nvm install 24
 ```
 
+### WP-CLI
+
+If [wp-cli](https://wp-cli.org/) is not installed on your local environment, install it using:
+```bash
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+sudo mv wp-cli.phar /usr/local/bin/wp
+```
+
 ### Clone Repository
 
 Using your preferred Git client or command line, clone this repository into the `wp-content/plugins/` folder of your local WordPress installation.
