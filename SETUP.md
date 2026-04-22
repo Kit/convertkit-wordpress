@@ -146,7 +146,7 @@ Our change above tells WordPress to use the test database for our test requests,
 ChromeDriver is a headless (i.e. non-GUI) browser that our test suite uses to run End to End tests, interacting with the Kit
 Plugin just as a user would - including full JavaScript execution, user inputs etc.
 
-Download ChromeDriver for your Google Chrome version and OS from https://sites.google.com/chromium.org/driver/downloads?authuser=0
+Download ChromeDriver for your Google Chrome version and OS from https://googlechromelabs.github.io/chrome-for-testing/
 
 For Mac users, copy the unzipped executable to `/usr/local/bin`.
 
@@ -155,7 +155,7 @@ For Mac users, copy the unzipped executable to `/usr/local/bin`.
 First, run the ChromeDriver in a separate Terminal window:
 
 ```bash
-chromedriver --url-base=/wd/hub
+chromedriver --port=9515 --url-base=/wd/hub
 ```
 
 ![ChromeDriver Screenshot](/.github/docs/chromedriver.png?raw=true)
