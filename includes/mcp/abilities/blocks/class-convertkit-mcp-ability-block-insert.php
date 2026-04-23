@@ -25,7 +25,7 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @return  string
 	 */
-	protected function get_verb() {
+	public function get_verb() {
 
 		return 'insert';
 
@@ -125,60 +125,6 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 	}
 
 	/**
-	 * Returns JSON Schema properties derived from the block's get_attributes()
-	 * and get_fields(), suitable for use as the `attrs` object in an Abilities
-	 * API input schema.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_input_schema_properties() {
-
-		// Define properties.
-		$properties = array();
-
-		foreach ( $this->block->get_fields() as $field_name => $field ) {
-
-			// Build JSON Schema property.
-			$properties[ $field_name ] = array(
-				'description' => $field['label'],
-				'type'        => $this->get_input_schema_property_type( $field ),
-			);
-
-		}
-
-		return $properties;
-
-	}
-
-	/**
-	 * Returns the JSON Schema type for the given field.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @param   array $field   Field definition.
-	 * @return  string
-	 */
-	private function get_input_schema_property_type( $field ) {
-
-		switch ( $field['type'] ) {
-			case 'resource':
-				return 'string';
-
-			case 'number':
-				return 'integer';
-
-			case 'toggle':
-				return 'boolean';
-
-			default:
-				return $field['type'];
-		}
-
-	}
-
-	/**
 	 * Returns the ability's output JSON Schema.
 	 *
 	 * @since   3.4.0
@@ -235,39 +181,19 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 
 		// Get attributes.
 		$attrs    = isset( $input['attrs'] ) && is_array( $input['attrs'] ) ? $input['attrs'] : array();
-		$position = isset( $input['position'] ) ? (string) $input['position'] : 'append';
 		$index    = isset( $input['index'] ) ? (int) $input['index'] : 0;
 
 		// Insert block into post.
-		$result = $this->block->insert_into_post( $post_id, $attrs, $position, $index );
+		$result = ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $index );
 		if ( is_wp_error( $result ) ) {
 			return $result;
-		}
-
-		// Re-list occurrences to determine the newly inserted block's
-		// zero-based occurrence index among this block's appearances.
-		$occurrences      = $this->block->find_blocks_in_post( $post_id );
-		$occurrence_index = 0;
-		if ( is_array( $occurrences ) && count( $occurrences ) > 0 ) {
-			switch ( $position ) {
-				case 'prepend':
-					$occurrence_index = 0;
-					break;
-
-				default:
-					// Find the first occurrence whose attrs match the just-inserted
-					// attrs; fall back to the last occurrence for 'append' and
-					// the first-after-$index for 'block_index'.
-					$occurrence_index = count( $occurrences ) - 1;
-					break;
-			}
 		}
 
 		// Return result.
 		return array(
 			'post_id'          => $post_id,
 			'block'            => 'convertkit/' . $this->block->get_name(),
-			'occurrence_index' => (int) $occurrence_index,
+			'occurrence_index' => $result,
 			'attrs'            => $attrs,
 		);
 

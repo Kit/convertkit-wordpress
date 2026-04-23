@@ -43,7 +43,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	/**
 	 * Returns the ability name, derived from the block's name and the verb
 	 * returned by get_verb().
-	 * 
+	 *
 	 * For example, the Form block's insert ability would be named `kit/form-block-insert`.
 	 *
 	 * @since   3.4.0
@@ -63,7 +63,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	 *
 	 * @return  string
 	 */
-	abstract protected function get_verb();
+	abstract public function get_verb();
 
 	/**
 	 * Only permit an ability to be executed if the current user can edit the given post.
@@ -106,7 +106,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	 *
 	 * @return  array
 	 */
-	protected function get_target_schema() {
+	public function get_target_schema() {
 
 		return array(
 			'type'        => 'object',
@@ -159,7 +159,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	 * @param   array $target     Target descriptor (see get_target_schema()).
 	 * @return  int|WP_Error      Zero-based occurrence index, or WP_Error.
 	 */
-	protected function resolve_target( $post_id, $target ) {
+	public function resolve_target( $post_id, $target ) {
 
 		// Bail if target is not an array or does not have a 'by' key.
 		if ( ! is_array( $target ) || empty( $target['by'] ) ) {
@@ -170,7 +170,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 		}
 
 		// Find blocks in post.
-		$occurrences = $this->block->find_blocks_in_post( $post_id );
+		$occurrences = ConvertKit_Block_Post_Helper::find( $post_id, 'convertkit/' . $this->block->get_name() );
 		if ( is_wp_error( $occurrences ) ) {
 			return $occurrences;
 		}
@@ -228,6 +228,66 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 					/* translators: %s: invalid 'by' value */
 					sprintf( __( 'Unknown target.by value "%s". Expected "attribute" or "index".', 'convertkit' ), (string) $target['by'] )
 				);
+		}
+
+	}
+
+	/**
+	 * Returns JSON Schema properties derived from the block's get_fields(),
+	 * suitable for use as the `attrs` object in an Abilities API input schema.
+	 *
+	 * Used by verb subclasses whose input schema includes an `attrs` object
+	 * (insert, update).
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	protected function get_input_schema_properties() {
+
+		// Define properties.
+		$properties = array();
+		$fields     = $this->block->get_fields();
+
+		if ( ! is_array( $fields ) ) {
+			return $properties;
+		}
+
+		foreach ( $fields as $field_name => $field ) {
+			$properties[ $field_name ] = array(
+				'description' => isset( $field['label'] ) ? (string) $field['label'] : '',
+				'type'        => $this->get_input_schema_property_type( $field ),
+			);
+		}
+
+		return $properties;
+
+	}
+
+	/**
+	 * Returns the JSON Schema type for the given field definition.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $field   Field definition.
+	 * @return  string
+	 */
+	private function get_input_schema_property_type( $field ) {
+
+		$type = isset( $field['type'] ) ? (string) $field['type'] : 'string';
+
+		switch ( $type ) {
+			case 'resource':
+				return 'string';
+
+			case 'number':
+				return 'integer';
+
+			case 'toggle':
+				return 'boolean';
+
+			default:
+				return $type;
 		}
 
 	}

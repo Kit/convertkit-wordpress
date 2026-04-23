@@ -25,7 +25,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @return  string
 	 */
-	protected function get_verb() {
+	public function get_verb() {
 
 		return 'list';
 
@@ -176,7 +176,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 		}
 
 		// Find blocks in post.
-		$occurrences = $this->block->find_blocks_in_post( $post_id );
+		$occurrences = ConvertKit_Block_Post_Helper::find( $post_id, 'convertkit/' . $this->block->get_name() );
 		if ( is_wp_error( $occurrences ) ) {
 			return $occurrences;
 		}

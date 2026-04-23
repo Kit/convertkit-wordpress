@@ -28,7 +28,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @return  string
 	 */
-	protected function get_verb() {
+	public function get_verb() {
 
 		return 'update';
 
@@ -110,7 +110,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 				'attrs'       => array(
 					'type'        => 'object',
 					'description' => __( 'Attribute values to apply to the target block.', 'convertkit' ),
-					'properties'  => $this->block->get_input_schema_properties(),
+					'properties'  => $this->get_input_schema_properties(),
 				),
 				'replace_all' => array(
 					'type'        => 'boolean',
@@ -189,7 +189,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 		}
 
 		// Update block in post.
-		$result = $this->block->replace_in_post( $post_id, $occurrence_index, $attrs, $merge );
+		$result = ConvertKit_Block_Post_Helper::update( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index, $attrs, $merge );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}

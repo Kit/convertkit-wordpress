@@ -25,7 +25,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @return  string
 	 */
-	protected function get_verb() {
+	public function get_verb() {
 
 		return 'delete';
 
@@ -172,7 +172,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 		}
 
 		// Delete block from post.
-		$result = $this->block->delete_from_post( $post_id, $occurrence_index );
+		$result = ConvertKit_Block_Post_Helper::delete( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
