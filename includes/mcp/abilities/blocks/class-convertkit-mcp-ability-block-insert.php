@@ -106,40 +106,6 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 	}
 
 	/**
-	 * Returns the ability's output JSON Schema.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_output_schema() {
-
-		return array(
-			'type'       => 'object',
-			'required'   => array( 'post_id', 'block', 'occurrence_index', 'attrs' ),
-			'properties' => array(
-				'post_id'          => array(
-					'type' => 'integer',
-				),
-				'block'            => array(
-					'type'        => 'string',
-					'description' => __( 'The full block name, e.g. convertkit/form.', 'convertkit' ),
-				),
-				'occurrence_index' => array(
-					'type'        => 'integer',
-					'minimum'     => 0,
-					'description' => __( 'Zero-based occurrence index of the newly inserted block among this block\'s appearances in the post.', 'convertkit' ),
-				),
-				'attrs'            => array(
-					'type'        => 'object',
-					'description' => __( 'Attributes of the newly inserted block.', 'convertkit' ),
-				),
-			),
-		);
-
-	}
-
-	/**
 	 * Executes the ability.
 	 *
 	 * @since   3.4.0
@@ -160,23 +126,18 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 			);
 		}
 
-		// Get attributes.
+		// Get attributes, position and index.
 		$attrs    = isset( $input['attrs'] ) && is_array( $input['attrs'] ) ? $input['attrs'] : array();
 		$position = isset( $input['position'] ) ? (string) $input['position'] : 'append';
 		$index    = isset( $input['index'] ) ? (int) $input['index'] : 0;
 
 		// Insert block into post.
 		$result = ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $position, $index );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
 
 		// Return result.
 		return array(
-			'post_id'          => $post_id,
-			'block'            => 'convertkit/' . $this->block->get_name(),
-			'occurrence_index' => $result,
-			'attrs'            => $attrs,
+			'post_id' => $post_id,
+			'result'  => $result,
 		);
 
 	}

@@ -89,52 +89,22 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 
 		return array(
 			'type'       => 'object',
-			'required'   => array( 'post_id', 'target', 'attrs' ),
-			'properties' => array(
-				'post_id' => array(
-					'type'        => 'integer',
-					'minimum'     => 1,
-					'description' => __( 'ID of the post containing the block.', 'convertkit' ),
-				),
-				'target'  => $this->get_target_schema(),
-				'attrs'   => array(
-					'type'        => 'object',
-					'description' => __( 'Attribute values to apply to the target block.', 'convertkit' ),
-					'properties'  => $this->get_input_schema_properties(),
-				),
-			),
-		);
-
-	}
-
-	/**
-	 * Returns the ability's output JSON Schema.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_output_schema() {
-
-		return array(
-			'type'       => 'object',
-			'required'   => array( 'post_id', 'block', 'occurrence_index', 'attrs' ),
+			'required'   => array( 'post_id', 'occurrence_index', 'attrs' ),
 			'properties' => array(
 				'post_id'          => array(
-					'type' => 'integer',
-				),
-				'block'            => array(
-					'type'        => 'string',
-					'description' => __( 'The full block name, e.g. convertkit/form.', 'convertkit' ),
+					'type'        => 'integer',
+					'minimum'     => 1,
+					'description' => __( 'Page / Post / Custom Post Type ID containing the existing block.', 'convertkit' ),
 				),
 				'occurrence_index' => array(
 					'type'        => 'integer',
 					'minimum'     => 0,
-					'description' => __( 'Zero-based occurrence index of the updated block.', 'convertkit' ),
+					'description' => __( 'The zero-based occurrence index of the block to update.', 'convertkit' ),
 				),
 				'attrs'            => array(
 					'type'        => 'object',
-					'description' => __( 'Attributes of the updated block.', 'convertkit' ),
+					'description' => __( 'Block attributes to update. Any attributes not provided will be left unchanged.', 'convertkit' ),
+					'properties'  => $this->get_input_schema_properties(),
 				),
 			),
 		);
@@ -162,29 +132,17 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 			);
 		}
 
-		// Get target.
-		$target = isset( $input['target'] ) && is_array( $input['target'] ) ? $input['target'] : array();
-		$attrs  = isset( $input['attrs'] ) && is_array( $input['attrs'] ) ? $input['attrs'] : array();
-		$merge  = ! ( isset( $input['replace_all'] ) && (bool) $input['replace_all'] );
+		// Get attributes, position and index.
+		$attrs            = isset( $input['attrs'] ) && is_array( $input['attrs'] ) ? $input['attrs'] : array();
+		$occurrence_index = isset( $input['occurrence_index'] ) ? (int) $input['occurrence_index'] : 0;
 
-		// Resolve target.
-		$occurrence_index = $this->resolve_target( $post_id, $target );
-		if ( is_wp_error( $occurrence_index ) ) {
-			return $occurrence_index;
-		}
-
-		// Update block in post.
-		$result = ConvertKit_Block_Post_Helper::update( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index, $attrs, $merge );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
+		// Update block into post.
+		$result = ConvertKit_Block_Post_Helper::update( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index, $attrs );
 
 		// Return result.
 		return array(
-			'post_id'          => $post_id,
-			'block'            => 'convertkit/' . $this->block->get_name(),
-			'occurrence_index' => (int) $occurrence_index,
-			'attrs'            => isset( $result['attrs'] ) ? $result['attrs'] : $attrs,
+			'post_id' => $post_id,
+			'result'  => $result,
 		);
 
 	}

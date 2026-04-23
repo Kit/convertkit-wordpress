@@ -147,9 +147,9 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Parse blocks.
-		$blocks     = parse_blocks( $post->post_content );
-		$occurrence = 0;
-		$matched    = false;
+		$blocks  = parse_blocks( $post->post_content );
+		$index   = 0;
+		$matched = false;
 
 		foreach ( $blocks as $key => $block ) {
 			// Skip if the block name does not match.
@@ -158,13 +158,13 @@ class ConvertKit_Block_Post_Helper {
 			}
 
 			// Update the block if the occurrence index matches.
-			if ( $occurrence === (int) $occurrence_index ) {
+			if ( $index === (int) $occurrence_index ) {
 				$blocks[ $key ]['attrs'] = array_merge( (array) $block['attrs'], (array) $attrs );
 				$matched                 = true;
 				break;
 			}
 
-			++$occurrence;
+			++$index;
 		}
 
 		// Bail if the block was not found.

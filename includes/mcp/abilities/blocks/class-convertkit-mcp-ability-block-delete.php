@@ -93,7 +93,6 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 					'minimum'     => 1,
 					'description' => __( 'ID of the post containing the block.', 'convertkit' ),
 				),
-				'target'  => $this->get_target_schema(),
 			),
 		);
 
