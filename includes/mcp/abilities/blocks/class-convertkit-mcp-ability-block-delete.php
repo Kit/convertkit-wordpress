@@ -1,14 +1,14 @@
 <?php
 /**
- * Kit MCP Ability: Delete a block occurrence from a post.
+ * Kit MCP Ability: Delete a block from a post.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Ability that removes a single occurrence of a Kit block from a WordPress
- * post's content.
+ * Ability that removes an occurrence of a Kit block from a WordPress post's
+ * content.
  *
  * Registered by a block opting in via the `convertkit_abilities` filter and
  * produces an ability named `kit/<block-name>-delete` (e.g. `kit/form-delete`).

@@ -1,6 +1,6 @@
 <?php
 /**
- * Kit MCP Ability: Update a block occurrence in a post.
+ * Kit MCP Ability: Update a block in a post.
  *
  * @package ConvertKit
  * @author ConvertKit

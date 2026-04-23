@@ -102,12 +102,12 @@ class ConvertKit_Block_Post_Helper {
 				break;
 
 			case 'index':
-				$insert_at = max( 0, min( (int) $index, ( count( $blocks ) - 1 ) ) );
+				$insert_at = max( 0, min( (int) $index, count( $blocks ) ) );
 				break;
 
 			case 'append':
 			default:
-				$insert_at = ( count( $blocks ) - 1 );
+				$insert_at = count( $blocks );
 				break;
 		}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Kit MCP Ability: List block occurrences in a post.
+ * Kit MCP Ability: List blocks in a post.
  *
  * @package ConvertKit
  * @author ConvertKit
