@@ -181,10 +181,11 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 
 		// Get attributes.
 		$attrs    = isset( $input['attrs'] ) && is_array( $input['attrs'] ) ? $input['attrs'] : array();
+		$position = isset( $input['position'] ) ? (string) $input['position'] : 'append';
 		$index    = isset( $input['index'] ) ? (int) $input['index'] : 0;
 
 		// Insert block into post.
-		$result = ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $index );
+		$result = ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $position, $index );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}

@@ -26,7 +26,7 @@ class ConvertKit_Block_Post_Helper {
 	 * @param   string $block_name  Full block name, e.g. "convertkit/form".
 	 * @return  array|WP_Error      Array of occurrences, or WP_Error if the post is missing.
 	 */
-	static public function find( $post_id, $block_name ) {
+	public static function find( $post_id, $block_name ) {
 
 		// Get post.
 		$post = get_post( $post_id );
@@ -61,15 +61,21 @@ class ConvertKit_Block_Post_Helper {
 	 * Inserts a new occurrence of the given block into a post's content at the
 	 * specified position.
 	 *
+	 * $position can be one of:
+	 * - 'prepend'  : insert as the first top-level block.
+	 * - 'append'   : insert as the last top-level block (default).
+	 * - 'index'    : insert at the zero-based top-level block index given by $index.
+	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id     Post ID.
 	 * @param   string $block_name  Programmatic Block Name.
 	 * @param   array  $attrs       Block Attributes.
-	 * @param   int    $index       Position to insert block.
-	 * @return  int|WP_Error
+	 * @param   string $position    One of 'prepend', 'append', 'index'.
+	 * @param   int    $index       Zero-based top-level block index; only used when $position is 'index'.
+	 * @return  int|WP_Error        Zero-based occurrence index of the newly inserted block, or WP_Error on failure.
 	 */
-	static public function insert( $post_id, $block_name, $attrs, $index = 0 ) {
+	public static function insert( $post_id, $block_name, $attrs, $position = 'append', $index = 0 ) {
 
 		// Get Post.
 		$post = get_post( $post_id );
@@ -93,8 +99,24 @@ class ConvertKit_Block_Post_Helper {
 			'innerContent' => array(),
 		);
 
-		// Determine where the new block will be inserted.
-		$insert_at = max( 0, min( (int) $index, count( $blocks ) ) );
+		// Resolve $position into a concrete zero-based splice point in the
+		// top-level block array.
+		switch ( $position ) {
+			case 'prepend':
+				$insert_at = 0;
+				break;
+
+			case 'index':
+				$insert_at = max( 0, min( (int) $index, count( $blocks ) ) );
+				break;
+
+			case 'append':
+			default:
+				$insert_at = count( $blocks );
+				break;
+		}
+
+		// Splice in the new block.
 		array_splice( $blocks, $insert_at, 0, array( $new_block ) );
 
 		// Count how many matching occurrences precede the insertion point —
@@ -116,8 +138,8 @@ class ConvertKit_Block_Post_Helper {
 		);
 
 		// Bail if an error occurred.
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
+		if ( is_wp_error( $result ) ) {
+			return $result;
 		}
 
 		// Return the occurrence index.
@@ -135,9 +157,10 @@ class ConvertKit_Block_Post_Helper {
 	 * @param   string $block_name        Programmatic Block Name.
 	 * @param   int    $occurrence_index  Position to update block.
 	 * @param   array  $attrs             Block Attributes.
+	 * @param   bool   $merge             If true, merge $attrs into existing attributes; if false, replace all.
 	 * @return  array|WP_Error
 	 */
-	static public function update( $post_id, $block_name, $occurrence_index, $attrs ) {
+	public static function update( $post_id, $block_name, $occurrence_index, $attrs, $merge = true ) {
 
 		// Get Post.
 		$post = get_post( $post_id );
@@ -183,12 +206,22 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Update Post.
-		return wp_update_post(
+		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
 				'post_content' => serialize_blocks( $blocks ),
 			),
 			true
+		);
+
+		// Bail if an error occurred.
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		// Return the final attributes applied to the block.
+		return array(
+			'attrs' => $final_attrs,
 		);
 
 	}
@@ -204,7 +237,7 @@ class ConvertKit_Block_Post_Helper {
 	 * @param   int    $occurrence_index  Zero-based index among this block's occurrences in the post.
 	 * @return  array|WP_Error
 	 */
-	static public function delete( $post_id, $block_name, $occurrence_index ) {
+	public static function delete( $post_id, $block_name, $occurrence_index ) {
 
 		// Get Post.
 		$post = get_post( $post_id );
@@ -248,12 +281,22 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Update Post.
-		return wp_update_post(
+		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
 				'post_content' => serialize_blocks( $blocks ),
 			),
 			true
+		);
+
+		// Bail if an error occurred.
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		// Return the remaining block count.
+		return array(
+			'block_count' => count( $blocks ),
 		);
 
 	}
