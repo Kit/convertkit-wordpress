@@ -215,7 +215,7 @@ In a Terminal window, run the ChromeDriver.  This is used by our test to mimic u
 and other elements just as a user would see them:
 
 ```bash
-chromedriver --url-base=/wd/hub
+chromedriver --port=9515 --url-base=/wd/hub
 ```
 
 In a second Terminal window, run the test to confirm it works:
@@ -450,7 +450,7 @@ Once you have written your code and test(s), run the tests to make sure there ar
 If ChromeDriver isn't running, open a new Terminal window and enter the following command:
 
 ```bash
-chromedriver --url-base=/wd/hub
+chromedriver --port=9515 --url-base=/wd/hub
 ```
 
 To run the tests, enter the following commands in a separate Terminal window:
