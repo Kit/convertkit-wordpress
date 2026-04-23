@@ -15,7 +15,7 @@
 class ConvertKit_Block_Post_Helper {
 
 	/**
-	 * Finds all top-level occurrences of the given block in a post's content.
+	 * Finds all blocks matching the given block name in a Post's content.
 	 *
 	 * @since   3.4.0
 	 *
@@ -36,8 +36,9 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Parse blocks.
-		$blocks = parse_blocks( $post->post_content );
-		$found  = array();
+		$blocks           = parse_blocks( $post->post_content );
+		$found            = array();
+		$occurrence_index = 0;
 
 		foreach ( $blocks as $index => $block ) {
 			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $block_name ) {
@@ -45,9 +46,12 @@ class ConvertKit_Block_Post_Helper {
 			}
 
 			$found[] = array(
-				'index' => (int) $index,
-				'attrs' => isset( $block['attrs'] ) ? (array) $block['attrs'] : array(),
+				'index'            => (int) $index,
+				'occurrence_index' => (int) $occurrence_index,
+				'attrs'            => isset( $block['attrs'] ) ? (array) $block['attrs'] : array(),
 			);
+
+			++$occurrence_index;
 		}
 
 		return $found;
@@ -55,8 +59,7 @@ class ConvertKit_Block_Post_Helper {
 	}
 
 	/**
-	 * Inserts a new occurrence of the given block into a post's content at the
-	 * specified position.
+	 * Inserts a new block into the Post's content at the specified position.
 	 *
 	 * @since   3.4.0
 	 *
@@ -99,12 +102,12 @@ class ConvertKit_Block_Post_Helper {
 				break;
 
 			case 'index':
-				$insert_at = max( 0, min( (int) $index, count( $blocks ) ) );
+				$insert_at = max( 0, min( (int) $index, ( count( $blocks ) - 1 ) ) );
 				break;
 
 			case 'append':
 			default:
-				$insert_at = count( $blocks );
+				$insert_at = ( count( $blocks ) - 1 );
 				break;
 		}
 
@@ -112,7 +115,7 @@ class ConvertKit_Block_Post_Helper {
 		array_splice( $blocks, $insert_at, 0, array( $new_block ) );
 
 		// Update Post.
-		return wp_update_post(
+		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
 				'post_content' => serialize_blocks( $blocks ),
@@ -120,11 +123,22 @@ class ConvertKit_Block_Post_Helper {
 			true
 		);
 
+		// Bail if the update failed.
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		// Return the index the block was inserted at.
+		return array(
+			'post_id'          => $post_id,
+			'index'            => $insert_at,
+			'occurrence_index' => 0, // @TODO.
+		);
+
 	}
 
 	/**
-	 * Updates the attributes of a specific top-level occurrence of the given
-	 * block in a post's content.
+	 * Updates the attributes of an existing block in the Post's content.
 	 *
 	 * @since   3.4.0
 	 *
@@ -147,24 +161,27 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Parse blocks.
-		$blocks  = parse_blocks( $post->post_content );
-		$index   = 0;
-		$matched = false;
+		$blocks      = parse_blocks( $post->post_content );
+		$update_at   = 0;
+		$block_index = 0;
+		$matched     = false;
 
 		foreach ( $blocks as $key => $block ) {
+			++$update_at;
+
 			// Skip if the block name does not match.
 			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $block_name ) {
 				continue;
 			}
 
 			// Update the block if the occurrence index matches.
-			if ( $index === (int) $occurrence_index ) {
+			if ( $block_index === (int) $occurrence_index ) {
 				$blocks[ $key ]['attrs'] = array_merge( (array) $block['attrs'], (array) $attrs );
 				$matched                 = true;
 				break;
 			}
 
-			++$index;
+			++$block_index;
 		}
 
 		// Bail if the block was not found.
@@ -177,7 +194,7 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Update Post.
-		return wp_update_post(
+		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
 				'post_content' => serialize_blocks( $blocks ),
@@ -185,11 +202,22 @@ class ConvertKit_Block_Post_Helper {
 			true
 		);
 
+		// Bail if the update failed.
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		// Return the index the block was updated at.
+		return array(
+			'post_id'          => $post_id,
+			'index'            => $update_at,
+			'occurrence_index' => $occurrence_index,
+		);
+
 	}
 
 	/**
-	 * Deletes a specific top-level occurrence of the given block from a post's
-	 * content.
+	 * Deletes a specific block from the Post's content.
 	 *
 	 * @since   3.4.0
 	 *
@@ -204,50 +232,65 @@ class ConvertKit_Block_Post_Helper {
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			return new WP_Error(
-				'convertkit_block_post_helper_delete_block_post_not_found',
-				/* translators: %d: Post ID */
+				'convertkit_block_post_helper_update_block_post_not_found',
+				/* translators: %d: post ID */
 				sprintf( __( 'No Post exists with ID %d.', 'convertkit' ), $post_id )
 			);
 		}
 
 		// Parse blocks.
-		$blocks     = parse_blocks( $post->post_content );
-		$occurrence = 0;
-		$matched    = false;
+		$blocks      = parse_blocks( $post->post_content );
+		$delete_at   = 0;
+		$block_index = 0;
+		$matched     = false;
 
 		foreach ( $blocks as $key => $block ) {
+			++$delete_at;
+
 			// Skip if the block name does not match.
 			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $block_name ) {
 				continue;
 			}
 
-			// Delete the block if the occurrence index matches.
-			if ( $occurrence === (int) $occurrence_index ) {
+			// Update the block if the occurrence index matches.
+			if ( $block_index === (int) $occurrence_index ) {
 				unset( $blocks[ $key ] );
 				$blocks  = array_values( $blocks );
 				$matched = true;
 				break;
 			}
 
-			++$occurrence;
+			++$block_index;
 		}
 
 		// Bail if the block was not found.
 		if ( ! $matched ) {
 			return new WP_Error(
-				'convertkit_block_post_helper_delete_block_occurrence_not_found',
-				/* translators: 1: Block Name, 2: Occurrence Index, 3: Post ID */
-				sprintf( __( 'No occurrence #%2$d of block %1$s found in Post %3$d.', 'convertkit' ), $block_name, (int) $occurrence_index, $post_id )
+				'convertkit_block_post_helper_occurrence_not_found',
+				/* translators: 1: block name, 2: occurrence index, 3: post ID */
+				sprintf( __( 'No occurrence #%2$d of block %1$s found in post %3$d.', 'convertkit' ), $block_name, (int) $occurrence_index, $post_id )
 			);
 		}
 
 		// Update Post.
-		return wp_update_post(
+		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
 				'post_content' => serialize_blocks( $blocks ),
 			),
 			true
+		);
+
+		// Bail if the update failed.
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		// Return the index the block was deleted from.
+		return array(
+			'post_id'          => $post_id,
+			'index'            => $delete_at,
+			'occurrence_index' => $occurrence_index,
 		);
 
 	}

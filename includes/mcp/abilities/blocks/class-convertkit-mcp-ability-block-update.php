@@ -137,13 +137,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 		$occurrence_index = isset( $input['occurrence_index'] ) ? (int) $input['occurrence_index'] : 0;
 
 		// Update block into post.
-		$result = ConvertKit_Block_Post_Helper::update( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index, $attrs );
-
-		// Return result.
-		return array(
-			'post_id' => $post_id,
-			'result'  => $result,
-		);
+		return ConvertKit_Block_Post_Helper::update( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index, $attrs );
 
 	}
 

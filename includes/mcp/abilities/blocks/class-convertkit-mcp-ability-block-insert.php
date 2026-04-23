@@ -132,13 +132,7 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 		$index    = isset( $input['index'] ) ? (int) $input['index'] : 0;
 
 		// Insert block into post.
-		$result = ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $position, $index );
-
-		// Return result.
-		return array(
-			'post_id' => $post_id,
-			'result'  => $result,
-		);
+		return ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $position, $index );
 
 	}
 

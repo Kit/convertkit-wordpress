@@ -109,15 +109,19 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 
 		return array(
 			'type'       => 'object',
-			'required'   => array( 'post_id', 'result' ),
+			'required'   => array( 'post_id', 'occurrence_index', 'index' ),
 			'properties' => array(
-				'post_id' => array(
+				'post_id'          => array(
 					'type'        => 'integer',
 					'description' => __( 'The Post/Page/Custom Post Type ID.', 'convertkit' ),
 				),
-				'result'  => array(
+				'occurrence_index' => array(
 					'type'        => 'integer',
-					'description' => __( 'The wp_update_post() result.', 'convertkit' ),
+					'description' => __( 'The zero-based occurrence index of the block in the post.', 'convertkit' ),
+				),
+				'index'            => array(
+					'type'        => 'integer',
+					'description' => __( 'The zero-based index of the block in the post.', 'convertkit' ),
 				),
 			),
 		);

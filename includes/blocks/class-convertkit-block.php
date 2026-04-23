@@ -68,8 +68,10 @@ class ConvertKit_Block {
 		return array_merge(
 			$abilities,
 			array(
+				new ConvertKit_MCP_Ability_Block_List( $this ),
 				new ConvertKit_MCP_Ability_Block_Insert( $this ),
 				new ConvertKit_MCP_Ability_Block_Update( $this ),
+				new ConvertKit_MCP_Ability_Block_Delete( $this ),
 			)
 		);
 

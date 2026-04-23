@@ -86,42 +86,17 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 
 		return array(
 			'type'       => 'object',
-			'required'   => array( 'post_id', 'target' ),
+			'required'   => array( 'post_id', 'occurrence_index' ),
 			'properties' => array(
-				'post_id' => array(
+				'post_id'          => array(
 					'type'        => 'integer',
 					'minimum'     => 1,
 					'description' => __( 'ID of the post containing the block.', 'convertkit' ),
 				),
-			),
-		);
-
-	}
-
-	/**
-	 * Returns the ability's output JSON Schema.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_output_schema() {
-
-		return array(
-			'type'       => 'object',
-			'required'   => array( 'post_id', 'block', 'deleted_occurrence_index' ),
-			'properties' => array(
-				'post_id'                  => array(
-					'type' => 'integer',
-				),
-				'block'                    => array(
-					'type'        => 'string',
-					'description' => __( 'The full block name, e.g. convertkit/form.', 'convertkit' ),
-				),
-				'deleted_occurrence_index' => array(
+				'occurrence_index' => array(
 					'type'        => 'integer',
 					'minimum'     => 0,
-					'description' => __( 'Zero-based occurrence index of the deleted block among this block\'s appearances in the post prior to deletion.', 'convertkit' ),
+					'description' => __( 'The zero-based occurrence index of the block to delete.', 'convertkit' ),
 				),
 			),
 		);
@@ -149,29 +124,11 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 			);
 		}
 
-		// Get target.
-		$target = isset( $input['target'] ) && is_array( $input['target'] ) ? $input['target'] : array();
-
-		// Resolve target.
-		$occurrence_index = $this->resolve_target( $post_id, $target );
-
-		// Bail if the target is not found.
-		if ( is_wp_error( $occurrence_index ) ) {
-			return $occurrence_index;
-		}
+		// Get occurrence index.
+		$occurrence_index = isset( $input['occurrence_index'] ) ? (int) $input['occurrence_index'] : 0;
 
 		// Delete block from post.
-		$result = ConvertKit_Block_Post_Helper::delete( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		// Return result.
-		return array(
-			'post_id'                  => $post_id,
-			'block'                    => 'convertkit/' . $this->block->get_name(),
-			'deleted_occurrence_index' => (int) $occurrence_index,
-		);
+		return ConvertKit_Block_Post_Helper::delete( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index );
 
 	}
 

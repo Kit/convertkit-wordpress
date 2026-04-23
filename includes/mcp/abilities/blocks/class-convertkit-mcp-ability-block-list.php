@@ -118,14 +118,10 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 
 		return array(
 			'type'       => 'object',
-			'required'   => array( 'post_id', 'block', 'count', 'occurrences' ),
+			'required'   => array( 'post_id', 'count', 'occurrences' ),
 			'properties' => array(
 				'post_id'     => array(
 					'type' => 'integer',
-				),
-				'block'       => array(
-					'type'        => 'string',
-					'description' => __( 'The full block name, e.g. convertkit/form.', 'convertkit' ),
 				),
 				'count'       => array(
 					'type'    => 'integer',
@@ -184,7 +180,6 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 		// Return result.
 		return array(
 			'post_id'     => $post_id,
-			'block'       => 'convertkit/' . $this->block->get_name(),
 			'count'       => count( $occurrences ),
 			'occurrences' => $occurrences,
 		);
