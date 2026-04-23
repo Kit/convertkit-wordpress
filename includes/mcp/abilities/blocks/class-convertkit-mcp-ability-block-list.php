@@ -19,6 +19,24 @@
 class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 
 	/**
+	 * Sets whether the ability is readonly.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     bool
+	 */
+	private $readonly = true;
+
+	/**
+	 * Sets whether the ability is idempotent.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     bool
+	 */
+	private $idempotent = true;
+
+	/**
 	 * Returns the verb this ability represents.
 	 *
 	 * @since   3.4.0
@@ -62,24 +80,6 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 			__( 'Lists every occurrence of the %1$s (%2$s) block in the given post, including each occurrence\'s zero-based index and current attribute values.', 'convertkit' ),
 			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
-		);
-
-	}
-
-	/**
-	 * MCP annotations: readonly + idempotent.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_annotations() {
-
-		return array(
-			'title'       => $this->get_label(),
-			'readonly'    => true,
-			'destructive' => false,
-			'idempotent'  => true,
 		);
 
 	}

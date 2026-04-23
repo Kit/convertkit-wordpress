@@ -19,6 +19,15 @@
 class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 
 	/**
+	 * Sets whether the ability is destructive.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     bool
+	 */
+	private $destructive = true;
+
+	/**
 	 * Returns the verb this ability represents.
 	 *
 	 * @since   3.4.0
@@ -42,7 +51,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Delete a %s block from a post', 'convertkit' ),
+			__( 'Delete an existing %s block from a post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -62,25 +71,6 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 			__( 'Removes a single occurrence of the %1$s (%2$s) block from the given post.', 'convertkit' ),
 			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
-		);
-
-	}
-
-	/**
-	 * MCP annotations: destructive and not readonly; not idempotent, as repeated
-	 * calls will attempt to delete sequential occurrences rather than a no-op.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_annotations() {
-
-		return array(
-			'title'       => $this->get_label(),
-			'readonly'    => false,
-			'destructive' => true,
-			'idempotent'  => false,
 		);
 
 	}

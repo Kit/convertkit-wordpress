@@ -67,25 +67,6 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 	}
 
 	/**
-	 * MCP annotations: not readonly, not destructive, not idempotent
-	 * (repeated calls insert additional blocks).
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_annotations() {
-
-		return array(
-			'title'       => $this->get_label(),
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => false,
-		);
-
-	}
-
-	/**
 	 * Returns the ability's input JSON Schema.
 	 *
 	 * @since   3.4.0

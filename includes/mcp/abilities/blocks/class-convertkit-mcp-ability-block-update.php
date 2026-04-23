@@ -22,6 +22,15 @@
 class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 
 	/**
+	 * Sets whether the ability is idempotent.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     bool
+	 */
+	private $idempotent = true;
+
+	/**
 	 * Returns the verb this ability represents.
 	 *
 	 * @since   3.4.0
@@ -45,7 +54,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Update a %s block in a post', 'convertkit' ),
+			__( 'Update an existing %s block in a post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -70,25 +79,6 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 	}
 
 	/**
-	 * MCP annotations: not readonly, not destructive, idempotent
-	 * (repeating the same update yields the same result).
-	 *
-	 * @since   3.4.0
-	 *
-	 * @return  array
-	 */
-	public function get_annotations() {
-
-		return array(
-			'title'       => $this->get_label(),
-			'readonly'    => false,
-			'destructive' => false,
-			'idempotent'  => true,
-		);
-
-	}
-
-	/**
 	 * Returns the ability's input JSON Schema.
 	 *
 	 * @since   3.4.0
@@ -101,21 +91,16 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 			'type'       => 'object',
 			'required'   => array( 'post_id', 'target', 'attrs' ),
 			'properties' => array(
-				'post_id'     => array(
+				'post_id' => array(
 					'type'        => 'integer',
 					'minimum'     => 1,
 					'description' => __( 'ID of the post containing the block.', 'convertkit' ),
 				),
-				'target'      => $this->get_target_schema(),
-				'attrs'       => array(
+				'target'  => $this->get_target_schema(),
+				'attrs'   => array(
 					'type'        => 'object',
 					'description' => __( 'Attribute values to apply to the target block.', 'convertkit' ),
 					'properties'  => $this->get_input_schema_properties(),
-				),
-				'replace_all' => array(
-					'type'        => 'boolean',
-					'default'     => false,
-					'description' => __( 'If true, all existing attributes are replaced with the supplied set. If false (default), the supplied attributes are merged into the existing attributes.', 'convertkit' ),
 				),
 			),
 		);

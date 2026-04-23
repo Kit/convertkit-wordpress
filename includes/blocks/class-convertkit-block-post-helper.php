@@ -17,9 +17,6 @@ class ConvertKit_Block_Post_Helper {
 	/**
 	 * Finds all top-level occurrences of the given block in a post's content.
 	 *
-	 * Returns an array of occurrences in document order, each of the form:
-	 *   [ 'index' => <top-level block-array index>, 'attrs' => <block attrs> ]
-	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id     Post ID.

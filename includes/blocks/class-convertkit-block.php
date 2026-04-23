@@ -69,6 +69,7 @@ class ConvertKit_Block {
 			$abilities,
 			array(
 				new ConvertKit_MCP_Ability_Block_Insert( $this ),
+				new ConvertKit_MCP_Ability_Block_Update( $this ),
 			)
 		);
 
