@@ -11,6 +11,29 @@ on:
       - main
 
 jobs:
+  dependabot-metadata:
+    # Name.
+    name: Dependabot Metadata
+
+    # Virtual Environment to use.
+    # @see: https://github.com/actions/virtual-environments
+    runs-on: ubuntu-latest
+
+    # Don't run if the PR is not from Dependabot.
+    if: github.actor == 'dependabot[bot]'
+
+    # Outputs.
+    outputs:
+      package-ecosystem: ${{ steps.metadata.outputs.package-ecosystem }}
+
+    # Steps to fetch Dependabot metadata.
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
   tests:
     # Name.
     name: ${{ matrix.test-groups }} / WordPress ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
@@ -19,10 +42,17 @@ jobs:
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
 
-    # Don't run if the PR is from Dependabot, as it doesn't have access to the repository's secrets.
-    # Dependabot also only checks for GitHub action dependencies, so it's not necessary to run
-    # Plugin tests.
-    if: github.actor != 'dependabot[bot]'
+    # Requieres the dependabot-metadata job to have run successfully.
+    needs: [dependabot-metadata]
+
+    # Always allow non-Dependabot PRs and pushes.
+    # For Dependabot PRs, only run when the update is for composer (skip github-actions updates).
+    if: |
+      always() &&
+      (
+        github.actor != 'dependabot[bot]' ||
+        needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
+      )
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
