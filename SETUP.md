@@ -42,6 +42,15 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 nvm install 24
 ```
 
+### WP-CLI
+
+If [wp-cli](https://wp-cli.org/) is not installed on your local environment, install it using:
+```bash
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+sudo mv wp-cli.phar /usr/local/bin/wp
+```
+
 ### Clone Repository
 
 Using your preferred Git client or command line, clone this repository into the `wp-content/plugins/` folder of your local WordPress installation.
@@ -137,7 +146,7 @@ Our change above tells WordPress to use the test database for our test requests,
 ChromeDriver is a headless (i.e. non-GUI) browser that our test suite uses to run End to End tests, interacting with the Kit
 Plugin just as a user would - including full JavaScript execution, user inputs etc.
 
-Download ChromeDriver for your Google Chrome version and OS from https://sites.google.com/chromium.org/driver/downloads?authuser=0
+Download ChromeDriver for your Google Chrome version and OS from https://googlechromelabs.github.io/chrome-for-testing/#stable
 
 For Mac users, copy the unzipped executable to `/usr/local/bin`.
 
@@ -146,7 +155,7 @@ For Mac users, copy the unzipped executable to `/usr/local/bin`.
 First, run the ChromeDriver in a separate Terminal window:
 
 ```bash
-chromedriver --url-base=/wd/hub
+chromedriver --port=9515 --url-base=/wd/hub
 ```
 
 ![ChromeDriver Screenshot](/.github/docs/chromedriver.png?raw=true)
