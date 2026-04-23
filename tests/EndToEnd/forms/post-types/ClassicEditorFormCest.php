@@ -863,7 +863,7 @@ class ClassicEditorFormCest
 
 	/**
 	 * Test that the Modal Form is output once when the LiteSpeed Cache Plugin is active and
-	 * its "Load JS Deferred" setting is enabled for a WordPress Page, Post or Article.
+	 * its "Load JS Deferred" and "JS Combine" settings are enabled for a WordPress Page, Post or Article.
 	 *
 	 * @since   2.4.5
 	 *
@@ -879,8 +879,8 @@ class ClassicEditorFormCest
 		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
 		$I->enableCachingLiteSpeedCachePlugin($I);
 
-		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
-		$I->enableLiteSpeedCacheLoadJSDeferred($I);
+		// Enable LiteSpeed Cache's "Load JS Deferred" and "JS Combine" settings.
+		$I->enableLiteSpeedCacheLoadJSDeferredAndCombine($I);
 
 		// Test each Post Type.
 		foreach ( $this->postTypes as $postType ) {
