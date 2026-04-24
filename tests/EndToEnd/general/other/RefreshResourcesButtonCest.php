@@ -288,6 +288,10 @@ class RefreshResourcesButtonCest
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
 
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('#wp-convertkit-quick-edit-restrict_content optgroup[data-resource="forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->selectOption('#wp-convertkit-quick-edit-restrict_content', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('#wp-convertkit-quick-edit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
 		$I->selectOption('#wp-convertkit-quick-edit-restrict_content', $_ENV['CONVERTKIT_API_TAG_NAME']);
@@ -374,6 +378,10 @@ class RefreshResourcesButtonCest
 
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
+
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('#wp-convertkit-bulk-edit-restrict_content optgroup[data-resource="forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->selectOption('#wp-convertkit-bulk-edit-restrict_content', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('#wp-convertkit-bulk-edit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
