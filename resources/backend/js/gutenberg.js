@@ -935,7 +935,17 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 		const el = element.createElement;
 		const { registerPlugin } = plugins;
 		const { PluginSidebar } = editor;
-		const { TextControl, SelectControl, PanelBody, PanelRow } = components;
+		const { useState } = element;
+		const {
+			Icon,
+			TextControl,
+			SelectControl,
+			Flex,
+			FlexItem,
+			PanelBody,
+			PanelRow,
+			Button,
+		} = components;
 		const { useSelect, useDispatch, select } = data;
 
 		/**
@@ -1006,98 +1016,248 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 				// Define additional Field Properties and the Field Element,
 				// depending on the Field Type (select, textarea, text etc).
 				switch (field.type) {
-					case 'select':
-						// Check if any values are optgroups.
-						const hasOptgroups = Object.keys(field.values).some(
-							(subKey) =>
-								typeof field.values[subKey] === 'object' &&
-								field.values[subKey].label &&
-								field.values[subKey].values
+					case 'resource':
+						return el(
+							Flex,
+							{
+								align: 'start',
+							},
+							[
+								el(
+									FlexItem,
+									{
+										key: key + '-select',
+									},
+									getSelectField(field, fieldProperties)
+								),
+								el(
+									FlexItem,
+									{
+										key: key + '-refresh',
+									},
+									InlineRefreshButton(field.resource)
+								),
+							]
 						);
 
-						if (hasOptgroups) {
-							const children = [];
-
-							for (const value of Object.keys(field.values)) {
-								if (
-									typeof field.values[value] === 'object' &&
-									field.values[value].label &&
-									field.values[value].values
-								) {
-									// Optgroup.
-									const groupChildren = [];
-									for (const groupValue of Object.keys(
-										field.values[value].values
-									)) {
-										groupChildren.push(
-											el(
-												'option',
-												{
-													value: groupValue,
-													key: groupValue,
-												},
-												field.values[value].values[
-													groupValue
-												]
-											)
-										);
-									}
-									children.push(
-										el(
-											'optgroup',
-											{
-												label: field.values[value]
-													.label,
-												key: value,
-											},
-											...groupChildren
-										)
-									);
-								} else {
-									// Option within optgroup.
-									children.push(
-										el(
-											'option',
-											{ value, key: value },
-											field.values[value]
-										)
-									);
-								}
-							}
-
-							return el(
-								SelectControl,
-								fieldProperties,
-								...children
-							);
-						}
-
-						// Options only, no optgroups.
-						const fieldOptions = [];
-						for (const value of Object.keys(field.values)) {
-							fieldOptions.push({
-								label: field.values[value],
-								value,
-							});
-						}
-
-						// Sort options alphabetically by label.
-						fieldOptions.sort(function (x, y) {
-							const a = x.label.toUpperCase(),
-								b = y.label.toUpperCase();
-							return a.localeCompare(b);
-						});
-
-						// Assign options to field properties.
-						fieldProperties.options = fieldOptions;
-
-						// Return field element.
-						return el(SelectControl, fieldProperties);
+					case 'select':
+						return getSelectField(field, fieldProperties);
 
 					default:
 						// Return field element.
 						return el(TextControl, fieldProperties);
 				}
+			};
+
+			/**
+			 * Returns a select field element, with optgroups and options
+			 * depending on the field's values.
+			 *
+			 * @since   3.3.1
+			 *
+			 * @param {Object} field           Field properties.
+			 * @param {Object} fieldProperties Field properties.
+			 * @return {Object}       Select field element.
+			 */
+			const getSelectField = function (field, fieldProperties) {
+				// Check if any values are optgroups.
+				const hasOptgroups = Object.keys(field.values).some(
+					(subKey) =>
+						typeof field.values[subKey] === 'object' &&
+						field.values[subKey].label &&
+						field.values[subKey].values
+				);
+
+				if (hasOptgroups) {
+					const children = [];
+
+					for (const value of Object.keys(field.values)) {
+						if (
+							typeof field.values[value] === 'object' &&
+							field.values[value].label &&
+							field.values[value].values
+						) {
+							// Optgroup.
+							const groupChildren = [];
+							for (const groupValue of Object.keys(
+								field.values[value].values
+							)) {
+								groupChildren.push(
+									el(
+										'option',
+										{
+											value: groupValue,
+											key: groupValue,
+										},
+										field.values[value].values[groupValue]
+									)
+								);
+							}
+							children.push(
+								el(
+									'optgroup',
+									{
+										label: field.values[value].label,
+										key: value,
+									},
+									...groupChildren
+								)
+							);
+						} else {
+							// Option within optgroup.
+							children.push(
+								el(
+									'option',
+									{ value, key: value },
+									field.values[value]
+								)
+							);
+						}
+					}
+
+					return el(SelectControl, fieldProperties, ...children);
+				}
+
+				// Options only, no optgroups.
+				const fieldOptions = [];
+				for (const value of Object.keys(field.values)) {
+					fieldOptions.push({
+						label: field.values[value],
+						value,
+					});
+				}
+
+				// Sort options alphabetically by label.
+				fieldOptions.sort(function (x, y) {
+					const a = x.label.toUpperCase(),
+						b = y.label.toUpperCase();
+					return a.localeCompare(b);
+				});
+
+				// Assign options to field properties.
+				fieldProperties.options = fieldOptions;
+
+				// Return field element.
+				return el(SelectControl, fieldProperties);
+			};
+
+			/**
+			 * Returns a WordPress Icon element.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {string} iconName Icon Name.
+			 * @return {Object} 		 Icon.
+			 */
+			const iconType = function (iconName) {
+				return el(Icon, {
+					icon: iconName,
+				});
+			};
+
+			/**
+			 * Returns an inline refresh button, used to refresh a block's resources.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {string} resource Resource type (forms,tags,landing_pages,restrict_content).
+			 * @return {Object} 	     Button.
+			 */
+			const InlineRefreshButton = function (resource) {
+				const [buttonDisabled, setButtonDisabled] = useState(false);
+
+				return el(Button, {
+					key: resource + '-refresh-button',
+					className:
+						'button button-secondary wp-convertkit-refresh-resources' +
+						(buttonDisabled ? ' is-refreshing' : ''),
+					disabled: buttonDisabled,
+					icon: iconType('update'),
+					onClick() {
+						// Refresh resources.
+						refreshResources(resource, setButtonDisabled);
+					},
+				});
+			};
+
+			/**
+			 * Refreshes resources for the given resource type.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {string}   resource          Resource type (forms,tags,landing_pages,restrict_content).
+			 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
+			 */
+			const refreshResources = function (resource, setButtonDisabled) {
+				// Disable the button.
+				setButtonDisabled(true);
+
+				// Send AJAX request.
+				fetch(convertkit_gutenberg.refresh_resources_url + resource, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-WP-Nonce':
+							convertkit_gutenberg.refresh_resources_nonce,
+					},
+				})
+					.then(function (response) {
+						// Convert response JSON string to object.
+						return response.json();
+					})
+					.then(function (response) {
+						if (convertkit_gutenberg.debug) {
+							console.log(response);
+						}
+
+						// If the response includes a code, show an error notice.
+						if (typeof response.code !== 'undefined') {
+							// Show an error in the Gutenberg editor.
+							wp.data
+								.dispatch('core/notices')
+								.createErrorNotice('Kit: ' + response.message, {
+									id: 'convertkit-error',
+								});
+
+							// Enable refresh button.
+							setButtonDisabled(false);
+							return;
+						}
+
+						// @TODO Update something here - convertkit_plugin_sidebars?
+
+						// @TODO Refresh/redraw the field?
+						// The below code is how we do it for a block, but that doesn't apply to a block editor sidebar.
+						/*
+						// Update global ConvertKit Blocks object, so that any updated resources
+						// are reflected when adding new ConvertKit Blocks.
+						convertkit_blocks = response;
+
+						// Update this block's properties, so that has_access_token, has_resources
+						// and the resources properties are updated.
+						block = convertkit_blocks[block.name];
+
+						// Call setAttributes on props to trigger the editBlock() function, which will re-render
+						// the block, reflecting any changes to its properties.
+						props.setAttributes({
+							refresh: Date.now(),
+						});
+						*/
+
+						// Enable refresh button.
+						setButtonDisabled(false);
+					})
+					.catch(function (error) {
+						// Show an error in the Gutenberg editor.
+						wp.data
+							.dispatch('core/notices')
+							.createErrorNotice('Kit: ' + error, {
+								id: 'convertkit-error',
+							});
+
+						// Enable refresh button.
+						setButtonDisabled(false);
+					});
 			};
 
 			/**
