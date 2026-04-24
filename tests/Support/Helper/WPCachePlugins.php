@@ -61,14 +61,20 @@ class WPCachePlugins extends \Codeception\Module
 	 *
 	 * @param   EndToEndTester $I      EndToEnd Tester.
 	 */
-	public function enableLiteSpeedCacheLoadJSDeferred($I)
+	public function enableLiteSpeedCacheLoadJSDeferredAndCombine($I)
 	{
 		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
 		$I->amOnAdminPage('admin.php?page=litespeed-page_optm#settings_js');
 
 		// Wait for the LiteSpeed Cache settings to load.
+		$I->waitForElementVisible('label[for=input_radio_optmjs_comb_1]');
 		$I->waitForElementVisible('label[for=input_radio_optmjs_defer_1]');
+
+		// Enable JS Combine and Deferred.
+		$I->click('label[for=input_radio_optmjs_comb_1]');
 		$I->click('label[for=input_radio_optmjs_defer_1]');
+
+		// Save.
 		$I->click('Save Changes');
 
 		// Confirm LiteSpeed Cache settings saved.
