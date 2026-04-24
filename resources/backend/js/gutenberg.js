@@ -942,6 +942,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			SelectControl,
 			Flex,
 			FlexItem,
+			FlexBlock,
 			PanelBody,
 			PanelRow,
 			Button,
@@ -1038,30 +1039,60 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 						// If the field has a resource_type, wrap the select in a
 						// Flex container alongside a refresh button.
 						if (field.resource_type) {
+							const selectFieldProperties = Object.assign(
+								{},
+								fieldProperties,
+								{ help: undefined }
+							);
+
 							return el(
-								Flex,
+								'div',
 								{
-									align: 'start',
+									key:
+										'convertkit_plugin_sidebar_' +
+										key +
+										'_wrapper',
 								},
-								[
-									el(
-										FlexItem,
-										{
-											key: key + '-select',
-										},
-										getSelectField(field, fieldProperties)
-									),
-									el(
-										FlexItem,
-										{
-											key: key + '-refresh',
-										},
-										el(InlineRefreshButton, {
-											resource: field.resource_type,
-											fieldKey: key,
-										})
-									),
-								]
+								el(
+									Flex,
+									{
+										align: 'end',
+										gap: 2,
+									},
+									[
+										el(
+											FlexBlock,
+											{
+												key: key + '-select',
+											},
+											getSelectField(
+												field,
+												selectFieldProperties
+											)
+										),
+										el(
+											FlexItem,
+											{
+												key: key + '-refresh',
+											},
+											el(InlineRefreshButton, {
+												resource: field.resource_type,
+												fieldKey: key,
+											})
+										),
+									]
+								),
+								fieldProperties.help
+									? el(
+											'p',
+											{
+												key: key + '-help',
+												className:
+													'components-base-control__help',
+											},
+											fieldProperties.help
+										)
+									: null
 							);
 						}
 
