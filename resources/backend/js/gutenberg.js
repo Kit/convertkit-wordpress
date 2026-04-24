@@ -1243,7 +1243,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			 * @param {Object} existingValues Current values map for the field.
 			 * @return {Object}               Rebuilt values map.
 			 */
-			const buildFlatValues = function (items, existingValues) {
+			const buildSelectValues = function (items, existingValues) {
 				const values = {};
 
 				// Preserve existing placeholder options (Default, None, etc.)
@@ -1279,7 +1279,10 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			 * @param {Object} existingValues Current values map for the field.
 			 * @return {Object}               Rebuilt values map.
 			 */
-			const buildOptgroupValues = function (groups, existingValues) {
+			const buildSelectOptGroupValues = function (
+				groups,
+				existingValues
+			) {
 				const values = {};
 
 				// Preserve any top-level placeholder options (e.g. 'Do not restrict...').
@@ -1324,10 +1327,6 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			 * Refreshes resources for the given resource type, updating
 			 * the specified field's values on success so the SelectControl
 			 * re-renders with the latest options.
-			 *
-			 * The values shape is inferred from the API response: an array
-			 * produces a flat list of options; an object keyed by group name
-			 * produces optgroups.
 			 *
 			 * @since 	3.3.1
 			 *
@@ -1377,9 +1376,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 
 						// Rebuild the field's values from the response, and
 						// update state so the SelectControl re-renders with
-						// the latest options. The currently-selected value is
-						// stored in post meta and so is preserved automatically.
-						//
+						// the latest options.
 						// The response shape determines the values shape:
 						// an array produces a flat list; an object keyed by
 						// group name (e.g. { forms: [...], tags: [...] })
@@ -1387,8 +1384,8 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 						setFieldValues(function (prev) {
 							const existing = prev[fieldKey] || {};
 							const values = Array.isArray(response)
-								? buildFlatValues(response, existing)
-								: buildOptgroupValues(response, existing);
+								? buildSelectValues(response, existing)
+								: buildSelectOptGroupValues(response, existing);
 
 							return Object.assign({}, prev, {
 								[fieldKey]: values,
