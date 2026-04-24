@@ -122,6 +122,14 @@ class RefreshResourcesButtonCest
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
 
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('select#wp-convertkit-restrict_content optgroup[data-resource="forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-restrict_content-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('select#wp-convertkit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
 		$I->fillSelect2Field(
@@ -195,6 +203,10 @@ class RefreshResourcesButtonCest
 
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
+
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('#convertkit_plugin_sidebar_restrict_content optgroup[label="Forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->selectOption('#convertkit_plugin_sidebar_restrict_content', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('#convertkit_plugin_sidebar_restrict_content optgroup[label="Tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
