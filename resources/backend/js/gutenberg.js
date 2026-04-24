@@ -1014,6 +1014,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 				// Define some field properties shared across all field types.
 				const fieldProperties = {
 					key: 'convertkit_plugin_sidebar_' + key,
+					id: 'convertkit_plugin_sidebar_' + key,
 					label: field.label,
 					help: Array.isArray(field.description)
 						? field.description.join('\n\n')
@@ -1230,6 +1231,9 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 						(buttonDisabled ? ' is-refreshing' : ''),
 					disabled: buttonDisabled,
 					icon: iconType('update'),
+					// `data-resource` is used by tests and as a stable hook
+					// matching the classic-editor refresh button.
+					'data-resource': resource,
 					onClick() {
 						// Refresh resources.
 						refreshResources(resource, fieldKey, setButtonDisabled);
