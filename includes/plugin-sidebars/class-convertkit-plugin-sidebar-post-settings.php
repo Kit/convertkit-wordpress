@@ -194,37 +194,37 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 
 		return array(
 			'form'             => array(
-				'label'       => __( 'Form', 'convertkit' ),
-				'type'        => 'resource',
-				'description' => array(
+				'label'         => __( 'Form', 'convertkit' ),
+				'type'          => 'select',
+				'description'   => array(
 					__( 'Default', 'convertkit' ) . ': ' . __( 'Uses the form specified on the settings page.', 'convertkit' ),
 					__( 'None', 'convertkit' ) . ': ' . __( 'do not display a form.', 'convertkit' ),
 					__( 'Any other option will display that form after the main content.', 'convertkit' ),
 				),
-				'values'      => $forms,
-				'resource'    => 'forms',
+				'values'        => $forms,
+				'resource_type' => 'forms',
 			),
 			'landing_page'     => array(
-				'label'       => __( 'Landing Page', 'convertkit' ),
-				'type'        => 'resource',
-				'description' => __( 'Select a landing page to make it appear in place of this page.', 'convertkit' ),
-				'values'      => $landing_pages,
-				'post_type'   => 'page',
-				'resource'    => 'landing_pages',
+				'label'         => __( 'Landing Page', 'convertkit' ),
+				'type'          => 'select',
+				'description'   => __( 'Select a landing page to make it appear in place of this page.', 'convertkit' ),
+				'values'        => $landing_pages,
+				'post_type'     => 'page',
+				'resource_type' => 'landing_pages',
 			),
 			'tag'              => array(
-				'label'       => __( 'Tag', 'convertkit' ),
-				'type'        => 'resource',
-				'description' => __( 'Select a tag to apply to visitors of this page who are subscribed. A visitor is deemed to be subscribed if they have clicked a link in an email to this site which includes their subscriber ID, or have entered their email address in a Kit Form on this site.', 'convertkit' ),
-				'values'      => $tags,
-				'resource'    => 'tags',
+				'label'         => __( 'Tag', 'convertkit' ),
+				'type'          => 'select',
+				'description'   => __( 'Select a tag to apply to visitors of this page who are subscribed. A visitor is deemed to be subscribed if they have clicked a link in an email to this site which includes their subscriber ID, or have entered their email address in a Kit Form on this site.', 'convertkit' ),
+				'values'        => $tags,
+				'resource_type' => 'tags',
 			),
 			'restrict_content' => array(
-				'label'       => __( 'Restrict Content', 'convertkit' ),
-				'type'        => 'resource',
-				'description' => __( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this member-only content.', 'convertkit' ),
-				'values'      => $restrict_content,
-				'resource'    => 'restrict_content',
+				'label'         => __( 'Restrict Content', 'convertkit' ),
+				'type'          => 'select',
+				'description'   => __( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this member-only content.', 'convertkit' ),
+				'values'        => $restrict_content,
+				'resource_type' => 'restrict_content',
 			),
 		);
 

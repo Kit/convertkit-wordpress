@@ -964,6 +964,18 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			const settings = meta[sidebar.meta_key] || sidebar.default_values;
 			const currentPostType = select('core/editor').getCurrentPostType();
 
+			// Seed each field's `values` into component state, so that when a
+			// refresh button is clicked we can update the field's options
+			// and trigger a re-render without mutating the global
+			// convertkit_plugin_sidebars object.
+			const [fieldValues, setFieldValues] = useState(function () {
+				const initial = {};
+				for (const key in sidebar.fields) {
+					initial[key] = sidebar.fields[key].values;
+				}
+				return initial;
+			});
+
 			/**
 			 * Updates the Post meta meta_key object.
 			 *
@@ -992,6 +1004,12 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			 * @return {Object}        Field element.
 			 */
 			const getField = function (field, key) {
+				// Override field.values with the latest values from state, which
+				// may have been refreshed by clicking the refresh button.
+				field = Object.assign({}, field, {
+					values: fieldValues[key] || field.values,
+				});
+
 				// Define some field properties shared across all field types.
 				const fieldProperties = {
 					key: 'convertkit_plugin_sidebar_' + key,
@@ -1016,31 +1034,37 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 				// Define additional Field Properties and the Field Element,
 				// depending on the Field Type (select, textarea, text etc).
 				switch (field.type) {
-					case 'resource':
-						return el(
-							Flex,
-							{
-								align: 'start',
-							},
-							[
-								el(
-									FlexItem,
-									{
-										key: key + '-select',
-									},
-									getSelectField(field, fieldProperties)
-								),
-								el(
-									FlexItem,
-									{
-										key: key + '-refresh',
-									},
-									InlineRefreshButton(field.resource)
-								),
-							]
-						);
-
 					case 'select':
+						// If the field has a resource_type, wrap the select in a
+						// Flex container alongside a refresh button.
+						if (field.resource_type) {
+							return el(
+								Flex,
+								{
+									align: 'start',
+								},
+								[
+									el(
+										FlexItem,
+										{
+											key: key + '-select',
+										},
+										getSelectField(field, fieldProperties)
+									),
+									el(
+										FlexItem,
+										{
+											key: key + '-refresh',
+										},
+										el(InlineRefreshButton, {
+											resource: field.resource_type,
+											fieldKey: key,
+										})
+									),
+								]
+							);
+						}
+
 						return getSelectField(field, fieldProperties);
 
 					default:
@@ -1156,18 +1180,20 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 			};
 
 			/**
-			 * Returns an inline refresh button, used to refresh a block's resources.
+			 * Returns an inline refresh button, used to refresh a sidebar field's resources.
 			 *
 			 * @since 	3.3.1
 			 *
-			 * @param {string} resource Resource type (forms,tags,landing_pages,restrict_content).
-			 * @return {Object} 	     Button.
+			 * @param {Object} props          Component props.
+			 * @param {string} props.resource Resource type (forms,tags,landing_pages,restrict_content).
+			 * @param {string} props.fieldKey The sidebar field key whose values should be updated on refresh.
+			 * @return {Object} 	          Button.
 			 */
-			const InlineRefreshButton = function (resource) {
+			const InlineRefreshButton = function ({ resource, fieldKey }) {
 				const [buttonDisabled, setButtonDisabled] = useState(false);
 
 				return el(Button, {
-					key: resource + '-refresh-button',
+					key: fieldKey + '-refresh-button',
 					className:
 						'button button-secondary wp-convertkit-refresh-resources' +
 						(buttonDisabled ? ' is-refreshing' : ''),
@@ -1175,20 +1201,145 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					icon: iconType('update'),
 					onClick() {
 						// Refresh resources.
-						refreshResources(resource, setButtonDisabled);
+						refreshResources(resource, fieldKey, setButtonDisabled);
 					},
 				});
 			};
 
 			/**
-			 * Refreshes resources for the given resource type.
+			 * Returns a label for a resource item. If the item has a `format`
+			 * property (as forms do), append it in square brackets; otherwise
+			 * return the name on its own.
 			 *
 			 * @since 	3.3.1
 			 *
-			 * @param {string}   resource          Resource type (forms,tags,landing_pages,restrict_content).
+			 * @param {Object} item API response item.
+			 * @return {string}     Label.
+			 */
+			const labelForItem = function (item) {
+				// Detect whether this collection of items includes a `format`
+				// property anywhere in the item (legacy forms may omit it, in
+				// which case we fall back to 'inline').
+				if (Object.prototype.hasOwnProperty.call(item, 'format')) {
+					return (
+						item.name +
+						' [' +
+						(item.format ? item.format : 'inline') +
+						']'
+					);
+				}
+
+				return item.name;
+			};
+
+			/**
+			 * Builds a flat values map from an array of API items, preserving
+			 * any existing placeholder options (those whose value is a string,
+			 * rather than an optgroup object) from the current field values.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {Array}  items          API response items.
+			 * @param {Object} existingValues Current values map for the field.
+			 * @return {Object}               Rebuilt values map.
+			 */
+			const buildFlatValues = function (items, existingValues) {
+				const values = {};
+
+				// Preserve existing placeholder options (Default, None, etc.)
+				// from the current values. Placeholders are identified by
+				// having a string value rather than an optgroup object.
+				for (const existingKey in existingValues) {
+					if (typeof existingValues[existingKey] === 'string') {
+						values[existingKey] = existingValues[existingKey];
+					}
+				}
+
+				// Add the refreshed items.
+				items.forEach(function (item) {
+					values[item.id] = labelForItem(item);
+				});
+
+				return values;
+			};
+
+			/**
+			 * Builds an optgroup-style values map from a response object whose
+			 * keys are group names and whose values are arrays of items. Each
+			 * option key within an optgroup is prefixed with the singularized
+			 * group name (e.g. `forms` => `form_123`), matching the
+			 * prefixing convention used on the PHP side for grouped fields.
+			 *
+			 * Preserves any existing top-level placeholder options from the
+			 * current field values.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {Object} groups         API response keyed by group name.
+			 * @param {Object} existingValues Current values map for the field.
+			 * @return {Object}               Rebuilt values map.
+			 */
+			const buildOptgroupValues = function (groups, existingValues) {
+				const values = {};
+
+				// Preserve any top-level placeholder options (e.g. 'Do not restrict...').
+				for (const existingKey in existingValues) {
+					if (typeof existingValues[existingKey] !== 'object') {
+						values[existingKey] = existingValues[existingKey];
+					}
+				}
+
+				// Build each optgroup from the response.
+				for (const groupKey in groups) {
+					const items = groups[groupKey];
+					if (!Array.isArray(items) || items.length === 0) {
+						continue;
+					}
+
+					// Derive the per-item key prefix from the group name
+					// (e.g. 'forms' => 'form_', 'tags' => 'tag_').
+					const itemKeyPrefix = groupKey.replace(/s$/, '') + '_';
+
+					// Label the optgroup using the group name with the first
+					// letter capitalized (e.g. 'forms' => 'Forms').
+					const label =
+						groupKey.charAt(0).toUpperCase() + groupKey.slice(1);
+
+					const groupValues = {};
+					items.forEach(function (item) {
+						groupValues[itemKeyPrefix + item.id] =
+							labelForItem(item);
+					});
+
+					values[groupKey] = {
+						label,
+						values: groupValues,
+					};
+				}
+
+				return values;
+			};
+
+			/**
+			 * Refreshes resources for the given resource type, updating
+			 * the specified field's values on success so the SelectControl
+			 * re-renders with the latest options.
+			 *
+			 * The values shape is inferred from the API response: an array
+			 * produces a flat list of options; an object keyed by group name
+			 * produces optgroups.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {string}   resource          Resource type, appended to the refresh URL.
+			 * @param {string}   fieldKey          The sidebar field key whose values should be updated.
 			 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
 			 */
-			const refreshResources = function (resource, setButtonDisabled) {
+			const refreshResources = function (
+				resource,
+				fieldKey,
+				setButtonDisabled
+			) {
 				// Disable the button.
 				setButtonDisabled(true);
 
@@ -1224,25 +1375,25 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 							return;
 						}
 
-						// @TODO Update something here - convertkit_plugin_sidebars?
+						// Rebuild the field's values from the response, and
+						// update state so the SelectControl re-renders with
+						// the latest options. The currently-selected value is
+						// stored in post meta and so is preserved automatically.
+						//
+						// The response shape determines the values shape:
+						// an array produces a flat list; an object keyed by
+						// group name (e.g. { forms: [...], tags: [...] })
+						// produces optgroups.
+						setFieldValues(function (prev) {
+							const existing = prev[fieldKey] || {};
+							const values = Array.isArray(response)
+								? buildFlatValues(response, existing)
+								: buildOptgroupValues(response, existing);
 
-						// @TODO Refresh/redraw the field?
-						// The below code is how we do it for a block, but that doesn't apply to a block editor sidebar.
-						/*
-						// Update global ConvertKit Blocks object, so that any updated resources
-						// are reflected when adding new ConvertKit Blocks.
-						convertkit_blocks = response;
-
-						// Update this block's properties, so that has_access_token, has_resources
-						// and the resources properties are updated.
-						block = convertkit_blocks[block.name];
-
-						// Call setAttributes on props to trigger the editBlock() function, which will re-render
-						// the block, reflecting any changes to its properties.
-						props.setAttributes({
-							refresh: Date.now(),
+							return Object.assign({}, prev, {
+								[fieldKey]: values,
+							});
 						});
-						*/
 
 						// Enable refresh button.
 						setButtonDisabled(false);
