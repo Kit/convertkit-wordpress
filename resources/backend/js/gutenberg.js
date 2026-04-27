@@ -1328,20 +1328,27 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 				}
 
 				// Build each optgroup from the response.
-				for (const groupKey in groups) {
-					const items = groups[groupKey];
+				for (const optGroupKey in groups) {
+					// Skip if this optgroup doesn't have any options.
+					const items = groups[optGroupKey];
 					if (!Array.isArray(items) || items.length === 0) {
 						continue;
 					}
 
 					// Derive the per-item key prefix from the group name
 					// (e.g. 'forms' => 'form_', 'tags' => 'tag_').
-					const itemKeyPrefix = groupKey.replace(/s$/, '') + '_';
+					const itemKeyPrefix = optGroupKey.replace(/s$/, '') + '_';
 
-					// Label the optgroup using the group name with the first
-					// letter capitalized (e.g. 'forms' => 'Forms').
+					// Reuse the existing optgroup label if one exists, falling
+					// back to the capitalized group key if not.
+					const existingGroup = existingValues[optGroupKey];
 					const label =
-						groupKey.charAt(0).toUpperCase() + groupKey.slice(1);
+						existingGroup &&
+						typeof existingGroup === 'object' &&
+						existingGroup.label
+							? existingGroup.label
+							: optGroupKey.charAt(0).toUpperCase() +
+								optGroupKey.slice(1);
 
 					const groupValues = {};
 					items.forEach(function (item) {
@@ -1349,7 +1356,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 							labelForItem(item);
 					});
 
-					values[groupKey] = {
+					values[optGroupKey] = {
 						label,
 						values: groupValues,
 					};
