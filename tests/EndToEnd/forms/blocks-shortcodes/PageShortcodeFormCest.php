@@ -665,7 +665,7 @@ class PageShortcodeFormCest
 
 	/**
 	 * Test that the Form <script> embed is output in the content, and not the footer of the site
-	 * when the LiteSpeed Cache Plugin is active and its "Load JS Deferred" setting is enabled.
+	 * when the LiteSpeed Cache Plugin is active and its "Load JS Deferred" and "JS Combine" settings are enabled.
 	 *
 	 * @since   2.4.5
 	 *
@@ -681,8 +681,8 @@ class PageShortcodeFormCest
 		$I->activateThirdPartyPlugin($I, 'litespeed-cache');
 		$I->enableCachingLiteSpeedCachePlugin($I);
 
-		// Enable LiteSpeed Cache's "Load JS Deferred" setting.
-		$I->enableLiteSpeedCacheLoadJSDeferred($I);
+		// Enable LiteSpeed Cache's "Load JS Deferred" and "JS Combine" settings.
+		$I->enableLiteSpeedCacheLoadJSDeferredAndCombine($I);
 
 		// Add a Page using the Classic Editor.
 		$I->addClassicEditorPage(
