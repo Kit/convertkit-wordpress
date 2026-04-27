@@ -96,7 +96,26 @@ function convertKitRefreshResources(button) {
 			// Depending on the resource we're refreshing, populate the <select> options.
 			switch (resource) {
 				case 'restrict_content':
-					// Populate select `optgroup`` from response data, which comprises of Tags and Products.
+					// Populate select `optgroup` from response data, which comprises of Forms, Tags and Products.
+					// Forms.
+					response.forms.forEach(function (item) {
+						document
+							.querySelector(
+								field + ' optgroup[data-resource=forms]'
+							)
+							.appendChild(
+								new Option(
+									item.name +
+										' [' +
+										(item.format ? item.format : 'inline') +
+										']',
+									'form_' + item.id,
+									false,
+									selectedOption === 'form_' + item.id
+								)
+							);
+					});
+
 					// Tags.
 					response.tags.forEach(function (item) {
 						document
