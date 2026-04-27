@@ -323,9 +323,11 @@ class ConvertKit_Gutenberg {
 			'convertkit-gutenberg',
 			'convertkit_gutenberg',
 			array(
-				'ajaxurl'           => rest_url( 'kit/v1/blocks' ),
-				'block_api_version' => $this->get_block_api_version(),
-				'get_blocks_nonce'  => wp_create_nonce( 'wp_rest' ),
+				'ajaxurl'                 => rest_url( 'kit/v1/blocks' ),
+				'block_api_version'       => $this->get_block_api_version(),
+				'get_blocks_nonce'        => wp_create_nonce( 'wp_rest' ),
+				'refresh_resources_url'   => rest_url( 'kit/v1/resources/refresh/' ),
+				'refresh_resources_nonce' => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 
