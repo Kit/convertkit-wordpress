@@ -80,7 +80,7 @@ class ForminatorCest
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
-			formID: $_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_ID'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}
@@ -283,6 +283,13 @@ class ForminatorCest
 		// Confirm that the subscriber is inactive, as a form was used.
 		// This honors a Form's double optin setting.
 		$I->assertEquals('inactive', $subscriber['state']);
+
+		// Check that the subscriber has the expected form value set.
+		$I->apiCheckSubscriberHasForm(
+			$I,
+			subscriberID: $subscriber['id'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID']
+		);
 	}
 
 	/**

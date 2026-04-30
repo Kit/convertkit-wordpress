@@ -47,17 +47,24 @@ class WishListMemberCest
 		$userID = $this->_createUser($I, $emailAddress);
 
 		// Configure mapping.
-		$this->_configureMapping($I, $wlmLevelID, 'add', $_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_NAME']);
+		$this->_configureMapping($I, $wlmLevelID, 'add', $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME']);
 
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$susbcriber = $I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
 		// Confirm that the subscriber is inactive, as a form was used.
 		// This honors a Form's double optin setting.
 		$I->assertEquals('inactive', $subscriber['state']);
+
+		// Check that the subscriber has the expected form value set.
+		$I->apiCheckSubscriberHasForm(
+			$I,
+			subscriberID: $subscriber['id'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID']
+		);
 	}
 
 	/**
