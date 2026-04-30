@@ -222,6 +222,17 @@ class KitPlugin extends \Codeception\Module
 		$I->haveOptionInDatabase(
 			'convertkit_forms',
 			[
+				2765143 => [
+					'id'         => 2765143,
+					'name'       => 'Double Optin Form',
+					'created_at' => '2021-11-11T15:31:28Z',
+					'type'       => 'embed',
+					'format'     => 'inline',
+					'embed_js'   => 'https://cheerful-architect-3237.kit.com/a04b384fc6/index.js',
+					'embed_url'  => 'https://cheerful-architect-3237.kit.com/a04b384fc6',
+					'archived'   => false,
+					'uid'        => 'a04b384fc6',
+				],
 				3003590 => [
 					'id'         => 3003590,
 					'name'       => 'Third Party Integrations Form',

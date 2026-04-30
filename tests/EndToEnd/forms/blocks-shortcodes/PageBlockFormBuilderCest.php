@@ -309,7 +309,7 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
 			blockConfiguration: [
-				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME'] ],
 			]
 		);
 
@@ -373,11 +373,15 @@ class PageBlockFormBuilderCest
 			firstName: 'First'
 		);
 
+		// Confirm that the subscriber is inactive, as a form was used.
+		// This honors a Form's double optin setting.
+		$I->assertEquals('inactive', $subscriber['state']);
+
 		// Confirm that the subscriber has the form.
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}
