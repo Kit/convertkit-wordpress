@@ -53,7 +53,7 @@ class ContactForm7FormCest
 		// Setup Contact form 7 Form and configuration for this test.
 		$pageID = $this->_contactForm7SetupForm(
 			$I,
-			$_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_NAME']
+			$_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_NAME']
 		);
 
 		// Define email address for this test.
@@ -72,11 +72,15 @@ class ContactForm7FormCest
 		// Confirm that the email address was added to Kit.
 		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
 
+		// Confirm that the subscriber is inactive, as a form was used.
+		// This honors a Form's double optin setting.
+		$I->assertEquals('inactive', $subscriber['state']);
+
 		// Check that the subscriber has the expected form and referrer value set.
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
-			formID: $_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_ID'],
+			formID: $_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}
