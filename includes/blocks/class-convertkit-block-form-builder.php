@@ -194,11 +194,20 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a form was specified, add the subscriber to the form.
 		if ( $form_id ) {
-			$result = $api->add_subscriber_to_form(
-				$form_id,
-				$result['subscriber']['id'],
-				get_permalink( absint( $form_data['post_id'] ) )
-			);
+			// For Legacy Forms, a different endpoint is used.
+			$forms = new ConvertKit_Resource_Forms();
+			if ( $forms->is_legacy( $form_id ) ) {
+				$result = $api->add_subscriber_to_legacy_form(
+					$form_id,
+					$result['subscriber']['id']
+				);
+			} else {
+				$result = $api->add_subscriber_to_form(
+					$form_id,
+					$result['subscriber']['id'],
+					get_permalink( absint( $form_data['post_id'] ) )
+				);
+			}
 
 			if ( $form_data['store_entries'] ) {
 				$entries->upsert(
