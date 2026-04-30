@@ -56,6 +56,7 @@ modules:
             capabilities:
               "goog:chromeOptions":
                 args:
+                  - "--headless"
                   - "--disable-gpu"
                   - "--disable-dev-shm-usage"
                   - "--disable-software-rasterizer"
