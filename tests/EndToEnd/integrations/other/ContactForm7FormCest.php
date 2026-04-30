@@ -53,7 +53,7 @@ class ContactForm7FormCest
 		// Setup Contact form 7 Form and configuration for this test.
 		$pageID = $this->_contactForm7SetupForm(
 			$I,
-			$_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_NAME']
+			$_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME']
 		);
 
 		// Define email address for this test.
@@ -80,7 +80,7 @@ class ContactForm7FormCest
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
-			formID: $_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_ID'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
 		);
 	}

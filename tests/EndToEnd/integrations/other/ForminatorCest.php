@@ -53,7 +53,7 @@ class ForminatorCest
 		// Setup Forminator Form and configuration for this test.
 		$pageID = $this->_forminatorSetupForm(
 			$I,
-			$_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_NAME']
+			$_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME']
 		);
 
 		// Define email address for this test.
@@ -261,7 +261,7 @@ class ForminatorCest
 		// Setup Forminator Quiz and configuration for this test.
 		$pageID = $this->_forminatorSetupQuiz(
 			$I,
-			$_ENV['CONVERTKIT_API_DOUBLE_OPTIN_FORM_NAME']
+			$_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME']
 		);
 
 		// Define email address for this test.
