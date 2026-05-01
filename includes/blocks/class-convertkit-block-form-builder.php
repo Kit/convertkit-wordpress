@@ -138,11 +138,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'block_form_builder'
 		);
 
+		// Determine the subscriber state.
+		// If a Form is specified, mark the subscriber as inactive, so the form's double optin is honored.
+		// If a Tag or Sequence is specified, mark the subscriber as active, as there's no double optin for tags or sequences.
+		$subscriber_state = $form_id !== false ? 'inactive' : 'active';
+
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
 			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
-			'active',
+			$subscriber_state,
 			$custom_fields
 		);
 
