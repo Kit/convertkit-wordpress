@@ -71,6 +71,7 @@ class KitAPI extends \Codeception\Module
 		);
 
 		// Check at least one subscriber was returned and it matches the email address.
+		$I->assertNotFalse($results);
 		$I->assertGreaterThan(0, $results['pagination']['total_count']);
 		$I->assertEquals($emailAddress, $results['subscribers'][0]['email_address']);
 
@@ -351,7 +352,7 @@ class KitAPI extends \Codeception\Module
 	 * @return  mixed                The truthy value returned by $callback, or
 	 *                                false if all attempts are exhausted.
 	 */
-	private function retryUntil(callable $callback, $attempts = 3, $delay = 2)
+	private function retryUntil(callable $callback, $attempts = 4, $delay = 3)
 	{
 		for ($i = 0; $i < $attempts; $i++) {
 			$result = $callback();
