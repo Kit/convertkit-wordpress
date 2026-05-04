@@ -66,7 +66,7 @@ class KitAPI extends \Codeception\Module
 
 				// Return the results only if a subscriber was found, so
 				// retryUntil() will keep trying otherwise.
-				return ($results['pagination']['total_count'] > 0) ? $results : false;
+				return ( $results['pagination']['total_count'] > 0 ) ? $results : false;
 			}
 		);
 
