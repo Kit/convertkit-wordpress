@@ -49,6 +49,9 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberExists($I, $emailAddress, $firstName = false)
 	{
+		// Wait for the API to update.
+		$I->wait(3);
+
 		// Retry the API request as sometimes there's a lag before the subscriber is queryable via the API.
 		$results = $this->retryUntil(
 			function () use ($emailAddress) {
@@ -201,6 +204,9 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberDoesNotExist($I, $emailAddress)
 	{
+		// Wait for the API to update.
+		$I->wait(3);
+
 		// Run request.
 		$results = $this->apiRequest(
 			'subscribers',
