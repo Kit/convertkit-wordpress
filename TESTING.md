@@ -243,6 +243,17 @@ To run a specific End to End test in a specific folder (for example, `ActivateDe
 vendor/bin/codecept run EndtoEnd general/ActivateDeactivatePluginCest
 ```
 
+### Headed vs. headless Chrome
+
+End to End tests run Chrome in **headed** mode by default, so you can watch the browser as tests execute. This is useful when developing or debugging a test.
+
+To run tests in headless mode (no visible browser window), pass `--env headless`:
+```bash
+vendor/bin/codecept run EndToEnd --env headless
+```
+
+GitHub Actions runs tests with `--env headless`. Headed mode is for local development only.
+
 For a full list of available wp-browser and Codeception functions that can be used for testing, see:
 - [wp-browser](https://wpbrowser.wptestkit.dev/modules)
 - [Codeception](https://codeception.com/docs/AcceptanceTests)
