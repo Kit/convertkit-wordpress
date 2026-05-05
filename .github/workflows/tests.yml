@@ -103,6 +103,7 @@ jobs:
           'EndToEnd/general/plugin-screens',
           'EndToEnd/integrations/divi-builder',
           'EndToEnd/integrations/divi-theme',
+          'EndToEnd/integrations/elementor',
           'EndToEnd/integrations/other',
           'EndToEnd/integrations/wlm',
           'EndToEnd/integrations/woocommerce',

@@ -155,7 +155,6 @@ class PageBlockFormBuilderCest
 		$I->seeElementInDOM('button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
-		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -366,7 +365,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -471,7 +469,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -575,7 +572,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -710,7 +706,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -1033,7 +1028,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -1096,7 +1090,6 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was not added to Kit, as reCAPTCHA score failed.
-		$I->wait(3);
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
@@ -1167,7 +1160,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
