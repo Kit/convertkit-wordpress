@@ -11,6 +11,29 @@ on:
       - main
 
 jobs:
+  dependabot-metadata:
+    # Name.
+    name: Dependabot Metadata
+
+    # Virtual Environment to use.
+    # @see: https://github.com/actions/virtual-environments
+    runs-on: ubuntu-latest
+
+    # Don't run if the PR is not from Dependabot.
+    if: github.actor == 'dependabot[bot]'
+
+    # Outputs.
+    outputs:
+      package-ecosystem: ${{ steps.metadata.outputs.package-ecosystem }}
+
+    # Steps to fetch Dependabot metadata.
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
   tests:
     # Name.
     name: ${{ matrix.test-groups }} / WordPress ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
@@ -18,6 +41,18 @@ jobs:
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
+
+    # Requieres the dependabot-metadata job to have run successfully.
+    needs: [dependabot-metadata]
+
+    # Always allow non-Dependabot PRs and pushes.
+    # For Dependabot PRs, only run when the update is for composer (skip github-actions updates).
+    if: |
+      always() &&
+      (
+        github.actor != 'dependabot[bot]' ||
+        needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
+      )
 
     # Environment Variables.
     # Accessible by using ${{ env.NAME }}
@@ -31,8 +66,7 @@ jobs:
       DB_HOST: localhost
       WORDPRESS_V3_BLOCK_EDITOR_ENABLED: false # Test apiVersion 2 blocks against WordPress 6.2.8
       WORDPRESS_DB_SQL_DUMP_FILE: tests/Support/Data/dump-6.2.8.sql # Used to populate the test site database for WordPress 6.2.8
-      INSTALL_PLUGINS: "autoptimize debloat litespeed-cache rocket-lazy-load sg-cachepress" # Don't include this repository's Plugin here.
-      INSTALL_PLUGINS_URLS: "http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip https://downloads.wordpress.org/plugin/block-visibility.3.3.0.zip https://downloads.wordpress.org/plugin/jetpack-boost.3.5.0.zip" # URLs to specific third party Plugins or versions that support WordPress 6.2.8
+      INSTALL_PLUGINS_URLS: "https://downloads.wordpress.org/plugin/block-visibility.3.3.0.zip" # URLs to specific third party Plugins or versions that support WordPress 6.2.8
       CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }} # ConvertKit API Key, stored in the repository's Settings > Secrets
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }} # ConvertKit API Secret, stored in the repository's Settings > Secrets
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }} # ConvertKit API Key for ConvertKit account with no data, stored in the repository's Settings > Secrets
@@ -77,7 +111,7 @@ jobs:
       # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
       # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
       - name: Checkout Plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
 
@@ -120,21 +154,10 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
 
-      # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
-      - name: Install Free Third Party WordPress Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
-
       # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions of third party Plugins.
       - name: Install Free Third Party WordPress Specific Version Plugins
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
-
-      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
-      # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
-      - name: Install Paid Third Party WordPress Plugins
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
 
       # Move Plugin
       - name: Move Plugin
@@ -336,28 +359,28 @@ jobs:
       # Run Codeception Tests.
       - name: Run tests/${{ matrix.test-groups }}
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept run tests/${{ matrix.test-groups }} --fail-fast
+        run: php vendor/bin/codecept run tests/${{ matrix.test-groups }} --env headless --fail-fast
 
       # Artifacts are data generated by this workflow that we want to access, such as log files, screenshots, HTML output.
       # The if: failure() directive means that this will run when the workflow fails e.g. if a test fails, which is needed
       # because we want to see why a test failed.
       - name: Upload nginx Error Log to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nginx-error-log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.log
           path: /var/log/nginx/error.log
 
       - name: Upload Test Results to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
           path: ${{ env.PLUGIN_DIR }}/tests/_output/
 
       - name: Upload Plugin Log File to Artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt

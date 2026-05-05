@@ -235,6 +235,28 @@ class ResourceLandingPagesTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the exist() function returns false when invalid data is stored in the options table.
+	 *
+	 * @since   3.2.5
+	 */
+	public function testExistWithInvalidData()
+	{
+		// Define invalid landing page data.
+		update_option(
+			$this->resource->settings_name,
+			[
+				12345 => 'Landing Page Name',
+			]
+		);
+
+		// Initialize the resource class we want to test.
+		$resource = new \ConvertKit_Resource_Landing_Pages();
+
+		// Confirm that the function returns false, because resources are invalid.
+		$this->assertFalse($resource->exist());
+	}
+
+	/**
 	 * Test that the get_html() function returns the expected data.
 	 *
 	 * @since   2.0.4

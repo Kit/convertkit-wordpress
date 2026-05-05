@@ -146,15 +146,6 @@ class PluginSettingsGeneralCest
 		$I->see('Disconnect');
 		$I->seeElementInDOM('input#submit');
 
-		// Check the order of the Form resources are alphabetical, with 'None' as the first choice.
-		$I->checkSelectFormOptionOrder(
-			$I,
-			'#_wp_convertkit_settings_page_form',
-			[
-				'None',
-			]
-		);
-
 		// Save Changes to confirm credentials are not lost.
 		$I->click('Save Changes');
 
@@ -170,12 +161,46 @@ class PluginSettingsGeneralCest
 
 		// Check that no notice is displayed that the API credentials are invalid.
 		$I->dontSeeErrorNotice($I, 'Kit: Authorization failed. Please connect your Kit account.');
+	}
+
+	/**
+	 * Test that the credentials and resources are deleted on disconnect.
+	 *
+	 * @since   3.2.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testCredentialsAndResourcesAreDeletedOnDisconnect(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
 
+		// Fake the API Key, API Secret, Access and Refresh Tokens; if we revoke the tokens used for tests, future tests will fail.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'access_token'  => 'fakeAccessToken',
+				'refresh_token' => 'fakeRefreshToken',
+				'token_expires' => time() + 3600,
+				'api_key'       => 'fakeAPIKey',
+				'api_secret'    => 'fakeAPISecret',
+			]
+		);
+
 		// Disconnect the Plugin connection to Kit.
 		$I->click('Disconnect');
+
+		// Check credentials are removed from the settings.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
+		$I->assertEmpty($settings['access_token']);
+		$I->assertEmpty($settings['refresh_token']);
+		$I->assertEmpty($settings['token_expires']);
+		$I->assertEmpty($settings['api_key']);
+		$I->assertEmpty($settings['api_secret']);
 
 		// Check cached resources are removed from the database on disconnection.
 		$I->dontSeeOptionInDatabase('convertkit_creator_network_recommendations');
@@ -191,14 +216,6 @@ class PluginSettingsGeneralCest
 		$I->see('Connect');
 		$I->dontSee('Disconnect');
 		$I->dontSeeElementInDOM('input#submit');
-
-		// Check that the option table no longer contains cached resources.
-		$I->dontSeeOptionInDatabase('convertkit_creator_network_recommendations');
-		$I->dontSeeOptionInDatabase('convertkit_forms');
-		$I->dontSeeOptionInDatabase('convertkit_landing_pages');
-		$I->dontSeeOptionInDatabase('convertkit_posts');
-		$I->dontSeeOptionInDatabase('convertkit_products');
-		$I->dontSeeOptionInDatabase('convertkit_tags');
 	}
 
 	/**

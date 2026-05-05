@@ -667,9 +667,14 @@ class ConvertKit_Settings {
 
 		$this->save(
 			array(
+				// OAuth.
 				'access_token'  => '',
 				'refresh_token' => '',
 				'token_expires' => '',
+
+				// API Key.
+				'api_key'       => '',
+				'api_secret'    => '',
 			)
 		);
 

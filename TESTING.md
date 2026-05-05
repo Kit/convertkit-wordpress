@@ -215,7 +215,7 @@ In a Terminal window, run the ChromeDriver.  This is used by our test to mimic u
 and other elements just as a user would see them:
 
 ```bash
-chromedriver --url-base=/wd/hub
+chromedriver --port=9515 --url-base=/wd/hub
 ```
 
 In a second Terminal window, run the test to confirm it works:
@@ -242,6 +242,17 @@ To run a specific End to End test in a specific folder (for example, `ActivateDe
 ```bash
 vendor/bin/codecept run EndtoEnd general/ActivateDeactivatePluginCest
 ```
+
+### Headed vs. headless Chrome
+
+End to End tests run Chrome in **headed** mode by default, so you can watch the browser as tests execute. This is useful when developing or debugging a test.
+
+To run tests in headless mode (no visible browser window), pass `--env headless`:
+```bash
+vendor/bin/codecept run EndToEnd --env headless
+```
+
+GitHub Actions runs tests with `--env headless`. Headed mode is for local development only.
 
 For a full list of available wp-browser and Codeception functions that can be used for testing, see:
 - [wp-browser](https://wpbrowser.wptestkit.dev/modules)
@@ -450,7 +461,7 @@ Once you have written your code and test(s), run the tests to make sure there ar
 If ChromeDriver isn't running, open a new Terminal window and enter the following command:
 
 ```bash
-chromedriver --url-base=/wd/hub
+chromedriver --port=9515 --url-base=/wd/hub
 ```
 
 To run the tests, enter the following commands in a separate Terminal window:

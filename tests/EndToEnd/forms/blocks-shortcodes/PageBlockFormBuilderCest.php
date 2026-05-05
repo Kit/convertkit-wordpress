@@ -84,12 +84,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -158,7 +155,6 @@ class PageBlockFormBuilderCest
 		$I->seeElementInDOM('button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
-		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -188,12 +184,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -284,14 +277,14 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
-	 * Test the Form Builder block works when added and a Form is specified
-	 * to subscribe the subscriber to.
+	 * Test the Form Builder block works when added and that the subscriber's state
+	 * is active when a single optin Form is specified.
 	 *
 	 * @since   3.0.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testFormBuilderBlockWithFormEnabled(EndToEndTester $I)
+	public function testFormBuilderBlockWithSingleOptinFormEnabled(EndToEndTester $I)
 	{
 		// Setup Plugin and Resources.
 		$I->setupKitPlugin($I);
@@ -304,12 +297,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -318,7 +308,115 @@ class PageBlockFormBuilderCest
 			blockName: 'Kit Form Builder',
 			blockProgrammaticName: 'convertkit-form-builder',
 			blockConfiguration: [
-				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
+				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_FORM_SINGLE_OPTIN_NAME'] ],
+			]
+		);
+
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'text',
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'email',
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'text',
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'email',
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
+		);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
+		$subscriber = $I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
+
+		// Confirm that the subscriber is active, as a form was used.
+		// This honors a Form's single optin setting.
+		$I->assertEquals('active', $subscriber['state']);
+
+		// Confirm that the subscriber has the form.
+		$I->apiCheckSubscriberHasForm(
+			$I,
+			subscriberID: $subscriber['id'],
+			formID: $_ENV['CONVERTKIT_API_FORM_SINGLE_OPTIN_ID'],
+			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
+		);
+	}
+
+	/**
+	 * Test the Form Builder block works when added and that the subscriber's state
+	 * is inactive when a double optin Form is specified.
+	 *
+	 * @since   3.0.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithDoubleOptinFormEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Form Enabled'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME'] ],
 			]
 		);
 
@@ -382,12 +480,113 @@ class PageBlockFormBuilderCest
 			firstName: 'First'
 		);
 
+		// Confirm that the subscriber is inactive, as a form was used.
+		// This honors a Form's double optin setting.
+		$I->assertEquals('inactive', $subscriber['state']);
+
 		// Confirm that the subscriber has the form.
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
-			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
+		);
+	}
+
+	/**
+	 * Test the Form Builder block works when added and a Legacy Form is specified
+	 * to subscribe the subscriber to.
+	 *
+	 * @since   3.3.2
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithLegacyFormEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Form Enabled'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
+			]
+		);
+
+		// Confirm the block template was used as the default.
+		$this->seeFormBuilderBlock($I);
+		$this->seeFormBuilderButtonBlock($I);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'text',
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'email',
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div[data-type="convertkit/form-builder"]'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm that the Form is output in the DOM.
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'text',
+			fieldName: 'first_name',
+			fieldID: 'first_name',
+			label: 'First name',
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
+		);
+		$this->seeFormBuilderField(
+			$I,
+			fieldType: 'email',
+			fieldName: 'email',
+			fieldID: 'email',
+			label: 'Email address',
+			container: 'div.wp-block-convertkit-form-builder',
+			isFrontend: true
+		);
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
+		$I->wait(3);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
 		);
 	}
 
@@ -412,12 +611,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -483,7 +679,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -519,12 +714,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -590,7 +782,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -625,12 +816,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -728,7 +916,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -761,12 +948,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page, setting the Form setting to the value specified in the .env file.
@@ -915,12 +1099,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Confirm the Form Field blocks cannot be added, as we are not within the Form Builder block.
@@ -974,12 +1155,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add the Form Builder block.
@@ -1031,12 +1209,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -1063,7 +1238,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,
@@ -1098,12 +1272,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -1129,7 +1300,6 @@ class PageBlockFormBuilderCest
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was not added to Kit, as reCAPTCHA score failed.
-		$I->wait(3);
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
@@ -1154,12 +1324,9 @@ class PageBlockFormBuilderCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page.
@@ -1203,7 +1370,6 @@ class PageBlockFormBuilderCest
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
 		$subscriber = $I->apiCheckSubscriberExists(
 			$I,
 			emailAddress: $emailAddress,

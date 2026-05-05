@@ -44,15 +44,6 @@ class EditFormLinkCest
 			title: 'Kit: Page: Form: Default: Edit Link'
 		);
 
-		// Configure metabox's Form setting = Default.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'Default' ],
-			]
-		);
-
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
@@ -86,12 +77,9 @@ class EditFormLinkCest
 		);
 
 		// Configure metabox's Form setting = None.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -186,12 +174,9 @@ class EditFormLinkCest
 		);
 
 		// Configure metabox's Form setting = Legacy.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-			]
+			form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
 		);
 
 		// Publish and view the Page on the frontend site.
@@ -227,12 +212,9 @@ class EditFormLinkCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page, setting the Form setting to the value specified in the .env file.
@@ -279,12 +261,9 @@ class EditFormLinkCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add block to Page, setting the Form setting to the value specified in the .env file.

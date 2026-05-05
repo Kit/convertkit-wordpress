@@ -5,16 +5,16 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for Kit Landing Pages on WordPress Pages.
+ * Tests for Kit Landing Pages on WordPress Pages when using the Classic Editor.
  *
- * @since   1.9.6
+ * @since   3.3.0
  */
-class PageLandingPageCest
+class ClassicEditorLandingPageCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   1.9.6
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -22,6 +22,9 @@ class PageLandingPageCest
 	{
 		// Activate and Setup Kit plugin.
 		$I->activateKitPlugin($I);
+
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
 
 		// Setup Kit Plugin with no default form specified.
 		$I->setupKitPluginNoDefaultForms($I);
@@ -32,25 +35,16 @@ class PageLandingPageCest
 	 * Test that 'None' Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   1.9.6
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function testAddNewPageUsingNoLandingPage(EndToEndTester $I)
 	{
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: None'
-		);
-
-		// Check the order of the Landing Page resources are alphabetical, with the None option prepending the Landing Pages.
-		$I->checkSelectLandingPageOptionOrder(
-			$I,
-			selectElement: '#wp-convertkit-landing_page',
-			prependOptions:[
-				'None',
-			]
 		);
 
 		// Configure metabox's Landing Page setting = None.
@@ -62,8 +56,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		// Publish and view the Post Type on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that no Kit Landing Page is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
@@ -74,14 +68,14 @@ class PageLandingPageCest
 	 * creating and viewing a new WordPress Page, and that the Landing Page's
 	 * "Redirect to an external page" setting in Kit is honored.
 	 *
-	 * @since   1.9.6
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function testAddNewPageUsingDefinedLandingPage(EndToEndTester $I)
 	{
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -95,11 +89,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		// Publish and view the Post Type on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
@@ -109,7 +100,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Subscribe.
 		$I->fillField('email_address', $I->generateEmailAddress());
@@ -120,7 +111,7 @@ class PageLandingPageCest
 	 * Test that the WordPress site icon is output as the favicon on a Landing Page,
 	 * when defined.
 	 *
-	 * @since   2.3.0
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -130,8 +121,8 @@ class PageLandingPageCest
 		$imageID = $I->haveAttachmentInDatabase(codecept_data_dir('icon.png'));
 		$I->haveOptionInDatabase('site_icon', $imageID);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: Site Icon: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -145,11 +136,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
@@ -163,20 +151,20 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
 	 * Test that character encoding is correct when a Landing Page is output.
 	 *
-	 * @since   1.9.6.1
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function testLandingPageCharacterEncoding(EndToEndTester $I)
 	{
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_CHARACTER_ENCODING_NAME']
 		);
@@ -190,11 +178,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
@@ -207,14 +192,14 @@ class PageLandingPageCest
 	 * Test that the Legacy Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page.
 	 *
-	 * @since   1.9.6.3
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function testAddNewPageUsingDefinedLegacyLandingPage(EndToEndTester $I)
 	{
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
 		);
@@ -228,11 +213,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I);
@@ -246,7 +228,7 @@ class PageLandingPageCest
 	 * Test that the WordPress site icon is output as the favicon on a Legacy Landing Page,
 	 * when defined.
 	 *
-	 * @since   2.3.0
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -256,8 +238,8 @@ class PageLandingPageCest
 		$imageID = $I->haveAttachmentInDatabase(codecept_data_dir('icon.png'));
 		$I->haveOptionInDatabase('site_icon', $imageID);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Legacy Landing Page: Site Icon: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
 		);
@@ -271,11 +253,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I);
@@ -297,7 +276,7 @@ class PageLandingPageCest
 	 * the Landing Page was defined by the Kit Plugin < 1.9.6, which used a URL
 	 * instead of an ID.
 	 *
-	 * @since   1.9.6.3
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -340,7 +319,7 @@ class PageLandingPageCest
 	 * Test that the Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, with Autoptimize's Lazy-load images active.
 	 *
-	 * @since   3.0.1
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -361,8 +340,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: Autoptimize: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -376,11 +355,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
@@ -390,7 +366,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Autoptimize has not lazy loaded assets.
 		$I->dontSeeElementInDOM('img[data-bg]');
@@ -404,7 +380,7 @@ class PageLandingPageCest
 	 * Test that the Landing Page specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, with Perfmatters active.
 	 *
-	 * @since   2.5.1
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -428,8 +404,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: Perfmatters: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -443,11 +419,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
+		$I->publishAndViewClassicEditorPage($I);
 
 		// Confirm that the basic HTML structure is correct.
 		$I->seeLandingPageOutput($I, true);
@@ -457,7 +430,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Perfmatters has not lazy loaded assets.
 		$I->dontSeeElementInDOM('.perfmatters-lazy');
@@ -472,7 +445,7 @@ class PageLandingPageCest
 	 * creating and viewing a new WordPress Page, with the WP-Rocket caching
 	 * and minification Plugin active.
 	 *
-	 * @since   2.4.4
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -486,8 +459,8 @@ class PageLandingPageCest
 		$I->enableWPRocketMinifyConcatenateJSAndCSS($I);
 		$I->enableWPRocketLazyLoad($I);
 
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		// Add a Page using the Classic Editor.
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: WP Rocket: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -501,11 +474,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
 		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewGutenbergPage($I);
+		$url = $I->publishClassicEditorPage($I);
 
 		// Log out, as WP Rocket won't cache or minify for logged in WordPress Users.
 		$I->logOut();
@@ -521,7 +491,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that WP Rocket has not minified any CSS or JS assets.
 		// WP Rocket now always includes a minified file for its own Plugin, so we can't reliably check for data-minify="1"
@@ -545,7 +515,7 @@ class PageLandingPageCest
 	 *
 	 * This differs from the WP-Rocket Plugin.
 	 *
-	 * @since   3.1.0
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -564,7 +534,7 @@ class PageLandingPageCest
 		);
 
 		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
+		$I->addClassicEditorPage(
 			$I,
 			title: 'Kit: Page: Landing Page: Rocket LazyLoad: ' . $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']
 		);
@@ -578,11 +548,8 @@ class PageLandingPageCest
 			]
 		);
 
-		// Get Landing Page ID.
-		$landingPageID = $I->grabValueFrom('#wp-convertkit-landing_page');
-
-		// Publish and view the Page on the frontend site.
-		$url = $I->publishAndViewGutenbergPage($I);
+		// Publish page.
+		$url = $I->publishClassicEditorPage($I);
 
 		// Log out.
 		$I->logOut();
@@ -598,7 +565,7 @@ class PageLandingPageCest
 
 		// Confirm that the Kit Landing Page displays.
 		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeElementInDOM('form[data-sv-form="' . $landingPageID . '"]'); // Kit injected its Landing Page Form, which is correct.
+		$I->seeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'] . '"]'); // Kit injected its Landing Page Form, which is correct.
 
 		// Confirm that Rocket LazyLoad has not attempted to lazy load images.
 		$I->dontSeeElementInDOM('img[data-lazy-src]');
@@ -608,17 +575,49 @@ class PageLandingPageCest
 	}
 
 	/**
+	 * Test that no Landing Page option is displayed in the Plugin Settings when
+	 * creating and viewing a new WordPress Post, and that no attempt to check
+	 * for a Landing Page is made when viewing a Post.
+	 *
+	 * @since   3.3.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewPostDoesNotDisplayLandingPageOption(EndToEndTester $I)
+	{
+		// Add a Post using the Gutenberg editor.
+		$I->addClassicEditorPage(
+			$I,
+			postType: 'post',
+			title: 'Kit: Post: Landing Page'
+		);
+
+		// Check that the metabox is displayed.
+		$I->seeElementInDOM('#wp-convertkit-meta-box');
+
+		// Check that no Landing Page option is displayed.
+		$I->dontSeeElementInDOM('#wp-convertkit-landing_page');
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewClassicEditorPage($I);
+
+		// Confirm that no Kit Form is displayed.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   1.9.6.7
+	 * @since   3.3.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function _passed(EndToEndTester $I)
 	{
 		$I->deactivateKitPlugin($I);
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 		$I->resetKitPlugin($I);
 	}
 }

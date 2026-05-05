@@ -28,14 +28,18 @@ class RefreshResourcesButtonCest
 	}
 
 	/**
-	 * Test that the refresh buttons for Forms, Landing Pages, Tags and Restrict Content works when adding a new Page.
+	 * Test that the refresh buttons for Forms, Landing Pages, Tags and Restrict Content works when adding a new Page
+	 * using the Classic Editor.
 	 *
 	 * @since   1.9.8.0
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testRefreshResourcesOnPage(EndToEndTester $I)
+	public function testRefreshResourcesInClassicEditor(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Setup Kit Plugin.
 		$I->setupKitPlugin($I);
 
@@ -118,6 +122,14 @@ class RefreshResourcesButtonCest
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
 
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('select#wp-convertkit-restrict_content optgroup[data-resource="forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-wp-convertkit-restrict_content-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('select#wp-convertkit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
 		$I->fillSelect2Field(
@@ -133,6 +145,79 @@ class RefreshResourcesButtonCest
 			container: '#select2-wp-convertkit-restrict_content-container',
 			value: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
+	}
+
+	/**
+	 * Test that the refresh buttons for Forms, Landing Pages, Tags and Restrict Content works when adding a new Page
+	 * using the Gutenberg editor.
+	 *
+	 * @since   3.3.1
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRefreshResourcesInGutenbergEditor(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPlugin($I);
+
+		// Add a Post using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Refresh Resources: Gutenberg Editor',
+			postType: 'page'
+		);
+
+		// Open the Plugin sidebar settings.
+		$I->openPluginSidebarSettings($I);
+
+		// Click the Forms refresh button.
+		$I->click('button.wp-convertkit-refresh-resources[data-resource="forms"]');
+
+		// Wait for button to change its state from disabled.
+		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="forms"]:not(:disabled)');
+
+		// Change resource to value specified in the .env file, which should now be available.
+		// If the expected dropdown value does not exist in the Select field, this will fail the test.
+		$I->selectOption('#convertkit_plugin_sidebar_form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Click the Landing Pages refresh button.
+		$I->click('button.wp-convertkit-refresh-resources[data-resource="landing_pages"]');
+
+		// Wait for button to change its state from disabled.
+		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="landing_pages"]:not(:disabled)');
+
+		// Change resource to value specified in the .env file, which should now be available.
+		$I->selectOption('#convertkit_plugin_sidebar_landing_page', $_ENV['CONVERTKIT_API_LANDING_PAGE_NAME']);
+
+		// Click the Tags refresh button.
+		$I->click('button.wp-convertkit-refresh-resources[data-resource="tags"]');
+
+		// Wait for button to change its state from disabled.
+		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="tags"]:not(:disabled)');
+
+		// Change resource to value specified in the .env file, which should now be available.
+		$I->selectOption('#convertkit_plugin_sidebar_tag', $_ENV['CONVERTKIT_API_TAG_NAME']);
+
+		// Click the Restrict Content refresh button.
+		$I->click('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]');
+
+		// Wait for button to change its state from disabled.
+		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
+
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('#convertkit_plugin_sidebar_restrict_content optgroup[label="Forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->selectOption('#convertkit_plugin_sidebar_restrict_content', $_ENV['CONVERTKIT_API_FORM_NAME']);
+
+		// Confirm that the expected Tag is within the Tags option group and selectable.
+		$I->seeElementInDOM('#convertkit_plugin_sidebar_restrict_content optgroup[label="Tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
+		$I->selectOption('#convertkit_plugin_sidebar_restrict_content', $_ENV['CONVERTKIT_API_TAG_NAME']);
+
+		// Confirm that the expected Product is within the Products option group and selectable.
+		$I->seeElementInDOM('#convertkit_plugin_sidebar_restrict_content optgroup[label="Products"] option[value="product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '"]');
+		$I->selectOption('#convertkit_plugin_sidebar_restrict_content', $_ENV['CONVERTKIT_API_PRODUCT_NAME']);
+
+		// Close the Plugin sidebar settings.
+		$I->closePluginSidebarSettings($I);
 	}
 
 	/**
@@ -202,6 +287,10 @@ class RefreshResourcesButtonCest
 
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
+
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('#wp-convertkit-quick-edit-restrict_content optgroup[data-resource="forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->selectOption('#wp-convertkit-quick-edit-restrict_content', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('#wp-convertkit-quick-edit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
@@ -289,6 +378,10 @@ class RefreshResourcesButtonCest
 
 		// Wait for button to change its state from disabled.
 		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="restrict_content"]:not(:disabled)');
+
+		// Confirm that the expected Form is within the Forms option group and selectable.
+		$I->seeElementInDOM('#wp-convertkit-bulk-edit-restrict_content optgroup[data-resource="forms"] option[value="form_' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]');
+		$I->selectOption('#wp-convertkit-bulk-edit-restrict_content', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
 		// Confirm that the expected Tag is within the Tags option group and selectable.
 		$I->seeElementInDOM('#wp-convertkit-bulk-edit-restrict_content optgroup[data-resource="tags"] option[value="tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]');
@@ -915,38 +1008,6 @@ class RefreshResourcesButtonCest
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewClassicEditorPage($I);
-	}
-
-	/**
-	 * Test that the refresh button triggers an error message when the AJAX request fails,
-	 * or the Kit API returns an error, when adding a Page using the Gutenberg editor.
-	 *
-	 * @since   1.9.8.3
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRefreshResourcesErrorNoticeOnPage(EndToEndTester $I)
-	{
-		// Setup Kit Plugin with invalid API credentials, so that the AJAX request returns an error.
-		$I->setupKitPluginFakeAPIKey($I);
-
-		// Navigate to Pages > Add New.
-		$I->amOnAdminPage('post-new.php?post_type=page');
-
-		// Click the Forms refresh button.
-		$I->click('button.wp-convertkit-refresh-resources[data-resource="forms"]');
-
-		// Wait for button to change its state from disabled.
-		$I->waitForElementVisible('button.wp-convertkit-refresh-resources[data-resource="forms"]:not(:disabled)');
-
-		// Confirm that an error notification is displayed on screen, with the expected error message.
-		$I->seeElementInDOM('div.components-notice-list div.is-error');
-		$I->see('Kit: The access token is invalid');
-
-		// Confirm that the notice is dismissible.
-		$I->click('div.components-notice-list div.is-error button.components-notice__dismiss');
-		$I->wait(1);
-		$I->dontSeeElementInDOM('div.components-notice-list div.is-error');
 	}
 
 	/**

@@ -39,6 +39,19 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to delete the Kit Plugin, checking
+	 * it deleted and no errors were output.
+	 *
+	 * @since   3.2.4
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function deleteKitPlugin($I)
+	{
+		$I->deleteThirdPartyPlugin($I, 'convertkit');
+	}
+
+	/**
 	 * Helper method to programmatically setup the Plugin's settings, as if the
 	 * user configured the Plugin at `Settings > Kit`.
 	 *
@@ -55,6 +68,7 @@ class KitPlugin extends \Codeception\Module
 	 *     @type string $no_css                     Disable CSS (default: off).
 	 *     @type string $post_form                  Default Form ID for Posts (if specified, used instead of CONVERTKIT_API_FORM_ID).
 	 *     @type string $page_form                  Default Form ID for Pages (if specified, used instead of CONVERTKIT_API_FORM_ID).
+	 *     @type string $article_form               Default Form ID for Articles (if specified, used instead of CONVERTKIT_API_FORM_ID).
 	 *     @type string $product_form               Default Form ID for WooCommerce Products (if specified, used instead of CONVERTKIT_API_FORM_ID).
 	 *     @type string $non_inline_form            Default Global non-inline Form ID (if specified, none if false).
 	 *     @type string $recaptcha_site_key         reCAPTCHA Site Key (if specified, used instead of CONVERTKIT_API_RECAPTCHA_SITE_KEY).
@@ -76,6 +90,7 @@ class KitPlugin extends \Codeception\Module
 			'usage_tracking'                     => '',
 			'post_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'page_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'article_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'non_inline_form'                    => array(),
 			'non_inline_form_honor_none_setting' => '',
@@ -158,6 +173,7 @@ class KitPlugin extends \Codeception\Module
 			[
 				'post_form'    => '',
 				'page_form'    => '',
+				'article_form' => '',
 				'product_form' => '',
 			]
 		);
@@ -206,6 +222,28 @@ class KitPlugin extends \Codeception\Module
 		$I->haveOptionInDatabase(
 			'convertkit_forms',
 			[
+				3059218 => [
+					'id'         => 3059218,
+					'name'       => 'Auto Confirm Form',
+					'created_at' => '2022-03-07T15:57:51Z',
+					'type'       => 'embed',
+					'format'     => 'inline',
+					'embed_js'   => 'https://cheerful-architect-3237.kit.com/bfac9ed794/index.js',
+					'embed_url'  => 'https://cheerful-architect-3237.kit.com/bfac9ed794',
+					'archived'   => false,
+					'uid'        => 'bfac9ed794',
+				],
+				2765143 => [
+					'id'         => 2765143,
+					'name'       => 'Double Optin Form',
+					'created_at' => '2021-11-11T15:31:28Z',
+					'type'       => 'embed',
+					'format'     => 'inline',
+					'embed_js'   => 'https://cheerful-architect-3237.kit.com/a04b384fc6/index.js',
+					'embed_url'  => 'https://cheerful-architect-3237.kit.com/a04b384fc6',
+					'archived'   => false,
+					'uid'        => 'a04b384fc6',
+				],
 				3003590 => [
 					'id'         => 3003590,
 					'name'       => 'Third Party Integrations Form',
@@ -764,6 +802,10 @@ class KitPlugin extends \Codeception\Module
 				$nth = 'nth-child(' . ( $i + 1 ) . ')';
 			}
 
+			// Wait for the option to be visible.
+			$I->waitForElementVisible('select' . $selectElement . ' option:' . $nth);
+
+			// Assert that the option text matches the expected value.
 			$I->assertEquals(
 				$I->grabTextFrom('select' . $selectElement . ' option:' . $nth),
 				$value

@@ -193,9 +193,35 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Delete Access Token.
+		// Get Settings class.
 		$settings = new ConvertKit_Settings();
-		$settings->delete_credentials();
+
+		// Setup API.
+		$api = new ConvertKit_API_V4(
+			CONVERTKIT_OAUTH_CLIENT_ID,
+			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
+			$settings->get_access_token(),
+			$settings->get_refresh_token(),
+			$settings->debug_enabled(),
+			'settings'
+		);
+
+		// Check that we're using the Kit WordPress Libraries 2.1.4 or higher.
+		// If another Kit Plugin is active and out of date, its libraries might
+		// be loaded that don't have this method.
+		if ( ! method_exists( $api, 'revoke_tokens' ) ) { // @phpstan-ignore-line Older WordPress Libraries won't have this function.
+			$this->output_error( __( 'The Kit WordPress Libraries is missing the `revoke_tokens` method. Please update all Kit WordPress Plugins to their latest versions, and click Disconnect again.', 'convertkit' ) );
+			return;
+		}
+
+		// Revoke Access and Refresh Tokens.
+		// See convertkit_delete_credentials() method in functions.php, which is called
+		// by the `convertkit_api_revoke_tokens` action and deletes credentials from the Plugin's settings.
+		$result = $api->revoke_tokens();
+		if ( is_wp_error( $result ) ) {
+			$this->output_error( $result->get_error_message() );
+			return;
+		}
 
 		// Delete cached resources.
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();

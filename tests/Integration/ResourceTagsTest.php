@@ -233,4 +233,26 @@ class ResourceTagsTest extends WPTestCase
 		$result = $this->resource->exist();
 		$this->assertSame($result, true);
 	}
+
+	/**
+	 * Test that the exist() function returns false when invalid data is stored in the options table.
+	 *
+	 * @since   3.2.5
+	 */
+	public function testExistWithInvalidData()
+	{
+		// Define invalid tag data.
+		update_option(
+			$this->resource->settings_name,
+			[
+				12345 => 'Tag Name',
+			]
+		);
+
+		// Initialize the resource class we want to test.
+		$resource = new \ConvertKit_Resource_Tags();
+
+		// Confirm that the function returns false, because resources are invalid.
+		$this->assertFalse($resource->exist());
+	}
 }

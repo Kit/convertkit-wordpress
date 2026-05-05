@@ -6,6 +6,11 @@ includes:
 
 # Parameters
 parameters:
+    # Analyse against the minimum supported PHP version.
+    # This flags features (union types, enums, str_contains, etc.) that would
+    # fail on older PHP versions regardless of which PHP version PHPStan runs on.
+    phpVersion: 70100
+    
     # Paths to scan
     # This should comprise of the base Plugin PHP file, plus directories that contain Plugin PHP files
     paths:

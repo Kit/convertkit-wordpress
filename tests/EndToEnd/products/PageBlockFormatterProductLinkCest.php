@@ -43,12 +43,9 @@ class PageBlockFormatterProductLinkCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add paragraph to Page.
@@ -96,12 +93,9 @@ class PageBlockFormatterProductLinkCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add paragraph to Page.
@@ -159,12 +153,9 @@ class PageBlockFormatterProductLinkCest
 		);
 
 		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form' => [ 'select2', 'None' ],
-			]
+			form: 'None'
 		);
 
 		// Add paragraph to Page.

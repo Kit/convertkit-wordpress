@@ -19,8 +19,17 @@ if (convertKitGutenbergEnabled()) {
 		convertKitGutenbergRegisterBlock(convertkit_blocks[block]);
 	}
 
-	// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
 	if (convertKitEditingPostInGutenberg()) {
+		// Register Plugin Sidebars in Gutenberg if we're editing a Post.
+		if (typeof convertkit_plugin_sidebars !== 'undefined') {
+			for (const pluginSidebar in convertkit_plugin_sidebars) {
+				convertKitGutenbergRegisterPluginSidebar(
+					convertkit_plugin_sidebars[pluginSidebar]
+				);
+			}
+		}
+
+		// Register ConvertKit Pre-publish actions in Gutenberg if we're editing a Post.
 		if (typeof convertkit_pre_publish_actions !== 'undefined') {
 			convertKitGutenbergRegisterPrePublishActions(
 				convertkit_pre_publish_actions
@@ -910,6 +919,596 @@ function convertKitGutenbergRegisterBlock(block) {
 		window.wp.blockEditor,
 		window.wp.element,
 		window.wp.components
+	);
+}
+
+/**
+ * Registers a Plugin Sidebar in Gutenberg.
+ *
+ * @since 3.3.0
+ *
+ * @param {Object} sidebar Plugin Sidebars
+ */
+function convertKitGutenbergRegisterPluginSidebar(sidebar) {
+	(function (plugins, editor, element, components, data) {
+		// Define some constants for the various items we'll use.
+		const el = element.createElement;
+		const { registerPlugin } = plugins;
+		const { PluginSidebar } = editor;
+		const { useState } = element;
+		const {
+			Icon,
+			TextControl,
+			SelectControl,
+			Flex,
+			FlexItem,
+			FlexBlock,
+			PanelBody,
+			PanelRow,
+			Button,
+		} = components;
+		const { useSelect, useDispatch, select } = data;
+
+		/**
+		 * Returns a PluginDocumentSettingPanel for this plugin, containing
+		 * post-level settings.
+		 *
+		 * @since 3.3.0
+		 */
+		const RenderPanel = function () {
+			const meta = useSelect(function (wpSelect) {
+				return (
+					wpSelect('core/editor').getEditedPostAttribute('meta') || {}
+				);
+			}, []);
+			const { editPost: wpEditPost } = useDispatch('core/editor');
+			const settings = meta[sidebar.meta_key] || sidebar.default_values;
+			const currentPostType = select('core/editor').getCurrentPostType();
+
+			// Seed each field's `values` into component state, so that when a
+			// refresh button is clicked we can update the field's options
+			// and trigger a re-render without mutating the global
+			// convertkit_plugin_sidebars object.
+			const [fieldValues, setFieldValues] = useState(function () {
+				const initial = {};
+				for (const key in sidebar.fields) {
+					initial[key] = sidebar.fields[key].values;
+				}
+				return initial;
+			});
+
+			/**
+			 * Updates the Post meta meta_key object.
+			 *
+			 * @since 3.3.0
+			 *
+			 * @param {string} key   Sub key within the meta_key object.
+			 * @param {string} value Value to assign to the sub key.
+			 */
+			const updateSetting = function (key, value) {
+				wpEditPost({
+					meta: {
+						[sidebar.meta_key]: Object.assign({}, settings, {
+							[key]: value,
+						}),
+					},
+				});
+			};
+
+			/**
+			 * Return a field element for the settings panel.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @param {Object} field Field properties.
+			 * @param {string} key   Field name.
+			 * @return {Object}        Field element.
+			 */
+			const getField = function (field, key) {
+				// Override field.values with the latest values from state, which
+				// may have been refreshed by clicking the refresh button.
+				field = Object.assign({}, field, {
+					values: fieldValues[key] || field.values,
+				});
+
+				// Define some field properties shared across all field types.
+				const fieldProperties = {
+					key: 'convertkit_plugin_sidebar_' + key,
+					id: 'convertkit_plugin_sidebar_' + key,
+					label: field.label,
+					help: Array.isArray(field.description)
+						? field.description.join('\n\n')
+						: field.description,
+					value: settings[key] || field.default_value || '',
+
+					// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
+					// preventing deprecation notices in the block editor and opt in to the new styles
+					// from 7.0.
+					__next40pxDefaultSize: true,
+					__nextHasNoMarginBottom: true,
+
+					// Save Post Meta on value change.
+					onChange(value) {
+						updateSetting(key, value);
+					},
+				};
+
+				// Define additional Field Properties and the Field Element,
+				// depending on the Field Type (select, textarea, text etc).
+				switch (field.type) {
+					case 'select':
+						// If the field has a resource_type, wrap the select in a
+						// Flex container alongside a refresh button.
+						if (field.resource_type) {
+							const selectFieldProperties = Object.assign(
+								{},
+								fieldProperties,
+								{ help: undefined }
+							);
+
+							return el(
+								'div',
+								{
+									key:
+										'convertkit_plugin_sidebar_' +
+										key +
+										'_wrapper',
+								},
+								el(
+									Flex,
+									{
+										align: 'end',
+										gap: 2,
+									},
+									[
+										el(
+											FlexBlock,
+											{
+												key: key + '-select',
+											},
+											getSelectField(
+												field,
+												selectFieldProperties
+											)
+										),
+										el(
+											FlexItem,
+											{
+												key: key + '-refresh',
+											},
+											el(InlineRefreshButton, {
+												resource: field.resource_type,
+												fieldKey: key,
+											})
+										),
+									]
+								),
+								fieldProperties.help
+									? el(
+											'p',
+											{
+												key: key + '-help',
+												className:
+													'components-base-control__help',
+											},
+											fieldProperties.help
+										)
+									: null
+							);
+						}
+
+						return getSelectField(field, fieldProperties);
+
+					default:
+						// Return field element.
+						return el(TextControl, fieldProperties);
+				}
+			};
+
+			/**
+			 * Returns a select field element, with optgroups and options
+			 * depending on the field's values.
+			 *
+			 * @since   3.3.1
+			 *
+			 * @param {Object} field           Field properties.
+			 * @param {Object} fieldProperties Field properties.
+			 * @return {Object}       Select field element.
+			 */
+			const getSelectField = function (field, fieldProperties) {
+				// Check if any values are optgroups.
+				const hasOptgroups = Object.keys(field.values).some(
+					(subKey) =>
+						typeof field.values[subKey] === 'object' &&
+						field.values[subKey].label &&
+						field.values[subKey].values
+				);
+
+				if (hasOptgroups) {
+					const children = [];
+
+					for (const value of Object.keys(field.values)) {
+						if (
+							typeof field.values[value] === 'object' &&
+							field.values[value].label &&
+							field.values[value].values
+						) {
+							// Optgroup.
+							const groupChildren = [];
+							for (const groupValue of Object.keys(
+								field.values[value].values
+							)) {
+								groupChildren.push(
+									el(
+										'option',
+										{
+											value: groupValue,
+											key: groupValue,
+										},
+										field.values[value].values[groupValue]
+									)
+								);
+							}
+							children.push(
+								el(
+									'optgroup',
+									{
+										label: field.values[value].label,
+										key: value,
+									},
+									...groupChildren
+								)
+							);
+						} else {
+							// Option within optgroup.
+							children.push(
+								el(
+									'option',
+									{ value, key: value },
+									field.values[value]
+								)
+							);
+						}
+					}
+
+					return el(SelectControl, fieldProperties, ...children);
+				}
+
+				// Options only, no optgroups.
+				const fieldOptions = [];
+				for (const value of Object.keys(field.values)) {
+					fieldOptions.push({
+						label: field.values[value],
+						value,
+					});
+				}
+
+				// Sort options alphabetically by label.
+				fieldOptions.sort(function (x, y) {
+					const a = x.label.toUpperCase(),
+						b = y.label.toUpperCase();
+					return a.localeCompare(b);
+				});
+
+				// Assign options to field properties.
+				fieldProperties.options = fieldOptions;
+
+				// Return field element.
+				return el(SelectControl, fieldProperties);
+			};
+
+			/**
+			 * Returns a WordPress Icon element.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {string} iconName Icon Name.
+			 * @return {Object} 		 Icon.
+			 */
+			const iconType = function (iconName) {
+				return el(Icon, {
+					icon: iconName,
+				});
+			};
+
+			/**
+			 * Returns an inline refresh button, used to refresh a sidebar field's resources.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {Object} props          Component props.
+			 * @param {string} props.resource Resource type (forms,tags,landing_pages,restrict_content).
+			 * @param {string} props.fieldKey The sidebar field key whose values should be updated on refresh.
+			 * @return {Object} 	          Button.
+			 */
+			const InlineRefreshButton = function ({ resource, fieldKey }) {
+				const [buttonDisabled, setButtonDisabled] = useState(false);
+
+				return el(Button, {
+					key: fieldKey + '-refresh-button',
+					className:
+						'button button-secondary wp-convertkit-refresh-resources' +
+						(buttonDisabled ? ' is-refreshing' : ''),
+					disabled: buttonDisabled,
+					icon: iconType('update'),
+					// `data-resource` is used by tests and as a stable hook
+					// matching the classic-editor refresh button.
+					'data-resource': resource,
+					onClick() {
+						// Refresh resources.
+						refreshResources(resource, fieldKey, setButtonDisabled);
+					},
+				});
+			};
+
+			/**
+			 * Returns a label for a resource item. If the item has a `format`
+			 * property (as forms do), append it in square brackets; otherwise
+			 * return the name on its own.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {Object} item API response item.
+			 * @return {string}     Label.
+			 */
+			const labelForItem = function (item) {
+				// Detect whether this collection of items includes a `format`
+				// property anywhere in the item (legacy forms may omit it, in
+				// which case we fall back to 'inline').
+				if (Object.prototype.hasOwnProperty.call(item, 'format')) {
+					return (
+						item.name +
+						' [' +
+						(item.format ? item.format : 'inline') +
+						']'
+					);
+				}
+
+				return item.name;
+			};
+
+			/**
+			 * Builds a flat values map from an array of API items, preserving
+			 * any existing placeholder options (those whose value is a string,
+			 * rather than an optgroup object) from the current field values.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {Array}  items          API response items.
+			 * @param {Object} existingValues Current values map for the field.
+			 * @return {Object}               Rebuilt values map.
+			 */
+			const buildSelectValues = function (items, existingValues) {
+				const values = {};
+
+				// Preserve existing placeholder options (Default, None, etc.)
+				// from the current values. Placeholders are identified by
+				// having a string value rather than an optgroup object.
+				for (const existingKey in existingValues) {
+					if (typeof existingValues[existingKey] === 'string') {
+						values[existingKey] = existingValues[existingKey];
+					}
+				}
+
+				// Add the refreshed items.
+				items.forEach(function (item) {
+					values[item.id] = labelForItem(item);
+				});
+
+				return values;
+			};
+
+			/**
+			 * Builds an optgroup-style values map from a response object whose
+			 * keys are group names and whose values are arrays of items. Each
+			 * option key within an optgroup is prefixed with the singularized
+			 * group name (e.g. `forms` => `form_123`), matching the
+			 * prefixing convention used on the PHP side for grouped fields.
+			 *
+			 * Preserves any existing top-level placeholder options from the
+			 * current field values.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {Object} groups         API response keyed by group name.
+			 * @param {Object} existingValues Current values map for the field.
+			 * @return {Object}               Rebuilt values map.
+			 */
+			const buildSelectOptGroupValues = function (
+				groups,
+				existingValues
+			) {
+				const values = {};
+
+				// Preserve any top-level placeholder options (e.g. 'Do not restrict...').
+				for (const existingKey in existingValues) {
+					if (typeof existingValues[existingKey] !== 'object') {
+						values[existingKey] = existingValues[existingKey];
+					}
+				}
+
+				// Build each optgroup from the response.
+				for (const optGroupKey in groups) {
+					// Skip if this optgroup doesn't have any options.
+					const items = groups[optGroupKey];
+					if (!Array.isArray(items) || items.length === 0) {
+						continue;
+					}
+
+					// Derive the per-item key prefix from the group name
+					// (e.g. 'forms' => 'form_', 'tags' => 'tag_').
+					const itemKeyPrefix = optGroupKey.replace(/s$/, '') + '_';
+
+					// Reuse the existing optgroup label if one exists, falling
+					// back to the capitalized group key if not.
+					const existingGroup = existingValues[optGroupKey];
+					const label =
+						existingGroup &&
+						typeof existingGroup === 'object' &&
+						existingGroup.label
+							? existingGroup.label
+							: optGroupKey.charAt(0).toUpperCase() +
+								optGroupKey.slice(1);
+
+					const groupValues = {};
+					items.forEach(function (item) {
+						groupValues[itemKeyPrefix + item.id] =
+							labelForItem(item);
+					});
+
+					values[optGroupKey] = {
+						label,
+						values: groupValues,
+					};
+				}
+
+				return values;
+			};
+
+			/**
+			 * Refreshes resources for the given resource type, updating
+			 * the specified field's values on success so the SelectControl
+			 * re-renders with the latest options.
+			 *
+			 * @since 	3.3.1
+			 *
+			 * @param {string}   resource          Resource type, appended to the refresh URL.
+			 * @param {string}   fieldKey          The sidebar field key whose values should be updated.
+			 * @param {Function} setButtonDisabled Function to enable or disable the refresh button.
+			 */
+			const refreshResources = function (
+				resource,
+				fieldKey,
+				setButtonDisabled
+			) {
+				// Disable the button.
+				setButtonDisabled(true);
+
+				// Send AJAX request.
+				fetch(convertkit_gutenberg.refresh_resources_url + resource, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-WP-Nonce':
+							convertkit_gutenberg.refresh_resources_nonce,
+					},
+				})
+					.then(function (response) {
+						// Convert response JSON string to object.
+						return response.json();
+					})
+					.then(function (response) {
+						if (convertkit_gutenberg.debug) {
+							console.log(response);
+						}
+
+						// If the response includes a code, show an error notice.
+						if (typeof response.code !== 'undefined') {
+							// Show an error in the Gutenberg editor.
+							wp.data
+								.dispatch('core/notices')
+								.createErrorNotice('Kit: ' + response.message, {
+									id: 'convertkit-error',
+								});
+
+							// Enable refresh button.
+							setButtonDisabled(false);
+							return;
+						}
+
+						// Rebuild the field's values from the response, and
+						// update state so the SelectControl re-renders with
+						// the latest options.
+						// The response shape determines the values shape:
+						// an array produces a flat list; an object keyed by
+						// group name (e.g. { forms: [...], tags: [...] })
+						// produces optgroups.
+						setFieldValues(function (prev) {
+							const existing = prev[fieldKey] || {};
+							const values = Array.isArray(response)
+								? buildSelectValues(response, existing)
+								: buildSelectOptGroupValues(response, existing);
+
+							return Object.assign({}, prev, {
+								[fieldKey]: values,
+							});
+						});
+
+						// Enable refresh button.
+						setButtonDisabled(false);
+					})
+					.catch(function (error) {
+						// Show an error in the Gutenberg editor.
+						wp.data
+							.dispatch('core/notices')
+							.createErrorNotice('Kit: ' + error, {
+								id: 'convertkit-error',
+							});
+
+						// Enable refresh button.
+						setButtonDisabled(false);
+					});
+			};
+
+			/**
+			 * Return an array of field elements to display in the settings panel.
+			 *
+			 * @since   3.3.0
+			 *
+			 * @param {Object} fields Fields to display.
+			 * @return {Array}         Panel rows.
+			 */
+			const getFields = function (fields) {
+				const rows = [];
+
+				for (const key in fields) {
+					// Skip if the Post Type being edited is not the same as the Post Type specified in the field's post_type property.
+					if (
+						typeof fields[key].post_type !== 'undefined' &&
+						fields[key].post_type !== currentPostType
+					) {
+						continue;
+					}
+
+					rows.push(
+						el(
+							PanelRow,
+							{
+								key,
+							},
+							getField(fields[key], key)
+						)
+					);
+				}
+
+				return el(PanelBody, {}, rows);
+			};
+
+			// Return the settings sidebar panel with fields.
+			return el(
+				PluginSidebar,
+				{
+					name: sidebar.name,
+					title: sidebar.title,
+					className: sidebar.name,
+					icon: element.RawHTML({
+						children: sidebar.gutenberg_icon,
+					}),
+				},
+				getFields(sidebar.fields)
+			);
+		};
+
+		// Register the plugin sidebar.
+		registerPlugin('convertkit-' + sidebar.name.replace(/_/g, '-'), {
+			render: RenderPanel,
+		});
+	})(
+		window.wp.plugins,
+		window.wp.editPost,
+		window.wp.element,
+		window.wp.components,
+		window.wp.data
 	);
 }
 

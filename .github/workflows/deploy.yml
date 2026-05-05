@@ -17,7 +17,7 @@ jobs:
     steps:
       # Checkout (copy) this repository's Plugin to this VM.
       - name: Checkout Plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Installs required packages that must be included in the Plugin
       # as specified in composer.json's "require" section.

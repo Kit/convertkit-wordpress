@@ -45,13 +45,10 @@ class RestrictContentFormCest
 		);
 
 		// Configure metabox's Restrict Content setting = Form name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
 		// Add blocks.
@@ -95,13 +92,10 @@ class RestrictContentFormCest
 		);
 
 		// Configure metabox's Restrict Content setting = Form name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration:[
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
 		// Add blocks.
@@ -187,13 +181,10 @@ class RestrictContentFormCest
 		);
 
 		// Configure metabox's Restrict Content setting = Form name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			'wp-convertkit-meta-box',
-			[
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_FORM_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_FORM_NAME']
 		);
 
 		// Add blocks.

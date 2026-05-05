@@ -33,6 +33,9 @@ class PostCest
 	 */
 	public function testAddNewPostShowsLinkToPluginSettingsWhenNoAPICredentialsSpecified(EndToEndTester $I)
 	{
+		// Activate Classic Editor Plugin.
+		$I->activateThirdPartyPlugin($I, 'classic-editor');
+
 		// Navigate to Posts > Add New.
 		$I->amOnAdminPage('post-new.php');
 
@@ -63,6 +66,9 @@ class PostCest
 		// Confirm the Kit hosted OAuth login screen is displayed.
 		$I->waitForElementVisible('body.sessions');
 		$I->seeInSource('oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID']);
+
+		// Deactivate Classic Editor Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'classic-editor');
 	}
 
 	/**

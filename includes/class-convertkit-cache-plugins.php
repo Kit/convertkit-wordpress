@@ -67,6 +67,10 @@ class ConvertKit_Cache_Plugins {
 		add_filter( 'convertkit_output_script_footer', array( $this, 'litespeed_cache_exclude_js_defer' ) );
 		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'litespeed_cache_exclude_js_defer' ) );
 
+		// LiteSpeed: Exclude Forms from JS optimization.
+		add_filter( 'convertkit_output_script_footer', array( $this, 'litespeed_cache_exclude_js_optimize' ) );
+		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'litespeed_cache_exclude_js_optimize' ) );
+
 		// Perfmatters: Exclude Forms from Delay JavaScript.
 		add_filter( 'convertkit_output_script_footer', array( $this, 'perfmatters_exclude_delay_js' ) );
 		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'perfmatters_exclude_delay_js' ) );
@@ -151,6 +155,26 @@ class ConvertKit_Cache_Plugins {
 			$script,
 			array(
 				'data-no-defer' => '1',
+			)
+		);
+
+	}
+
+	/**
+	 * Disable JS Optimization on Kit scripts when the LiteSpeed Cache Plugin is installed, active
+	 * and its "JS Combine" setting is enabled.
+	 *
+	 * @since   3.3.1
+	 *
+	 * @param   array $script     Script key/value pairs to output as <script> tag.
+	 * @return  array
+	 */
+	public function litespeed_cache_exclude_js_optimize( $script ) {
+
+		return array_merge(
+			$script,
+			array(
+				'data-no-optimize' => '1',
 			)
 		);
 

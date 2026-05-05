@@ -105,6 +105,15 @@ class ConvertKit_Admin_Refresh_Resources {
 				break;
 
 			case 'restrict_content':
+				// Fetch Forms.
+				$forms         = new ConvertKit_Resource_Forms( 'user_refresh_resource' );
+				$results_forms = $forms->refresh();
+
+				// Bail if an error occured.
+				if ( is_wp_error( $results_forms ) ) {
+					return rest_ensure_response( $results_forms );
+				}
+
 				// Fetch Tags.
 				$tags         = new ConvertKit_Resource_Tags( 'user_refresh_resource' );
 				$results_tags = $tags->refresh();
@@ -126,6 +135,7 @@ class ConvertKit_Admin_Refresh_Resources {
 				// Return resources.
 				return rest_ensure_response(
 					array(
+						'forms'    => array_values( $results_forms ),
 						'tags'     => array_values( $results_tags ),
 						'products' => array_values( $results_products ),
 					)

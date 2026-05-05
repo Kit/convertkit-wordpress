@@ -58,13 +58,10 @@ class RestrictContentCacheCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -146,13 +143,10 @@ class RestrictContentCacheCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -240,13 +234,10 @@ class RestrictContentCacheCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -333,13 +324,10 @@ class RestrictContentCacheCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -419,13 +407,10 @@ class RestrictContentCacheCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
@@ -503,13 +488,10 @@ class RestrictContentCacheCest
 		);
 
 		// Configure metabox's Restrict Content setting = Product name.
-		$I->configureMetaboxSettings(
+		$I->configurePluginSidebarSettings(
 			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $_ENV['CONVERTKIT_API_PRODUCT_NAME'] ],
-			]
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
 		);
 
 		// Add blocks.
