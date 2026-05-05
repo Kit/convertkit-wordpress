@@ -866,7 +866,7 @@ add_filter( 'convertkit_block_broadcasts_build_html_list_item', function( $html,
 </pre>
 <h3 id="convertkit_block_form_builder_render">
 						convertkit_block_form_builder_render
-						<code>includes/blocks/class-convertkit-block-form-builder.php::675</code>
+						<code>includes/blocks/class-convertkit-block-form-builder.php::689</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -2371,7 +2371,7 @@ do_action( 'convertkit_pre_publish_action_run_  this-get_name', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts">
 						convertkit_gutenberg_enqueue_scripts
-						<code>includes/class-convertkit-gutenberg.php::343</code>
+						<code>includes/class-convertkit-gutenberg.php::345</code>
 					</h3><h4>Overview</h4>
 						<p>Enqueue any additional scripts for Gutenberg blocks that have been registered.</p><h4>Parameters</h4>
 					<table>
@@ -2400,7 +2400,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts', function( $blocks, $block_for
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles">
 						convertkit_gutenberg_enqueue_styles
-						<code>includes/class-convertkit-gutenberg.php::367</code>
+						<code>includes/class-convertkit-gutenberg.php::369</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2420,7 +2420,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts_editor_and_frontend">
 						convertkit_gutenberg_enqueue_scripts_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::391</code>
+						<code>includes/class-convertkit-gutenberg.php::393</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2440,7 +2440,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts_editor_and_frontend', function(
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles_editor_and_frontend">
 						convertkit_gutenberg_enqueue_styles_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::415</code>
+						<code>includes/class-convertkit-gutenberg.php::417</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

@@ -138,11 +138,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'block_form_builder'
 		);
 
+		// Determine the subscriber state.
+		// If a Form is specified, mark the subscriber as inactive, so the form's double optin is honored.
+		// If a Tag or Sequence is specified, mark the subscriber as active, as there's no double optin for tags or sequences.
+		$subscriber_state = $form_id !== false ? 'inactive' : 'active';
+
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
 			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
-			'active',
+			$subscriber_state,
 			$custom_fields
 		);
 
@@ -189,11 +194,20 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a form was specified, add the subscriber to the form.
 		if ( $form_id ) {
-			$result = $api->add_subscriber_to_form(
-				$form_id,
-				$result['subscriber']['id'],
-				get_permalink( absint( $form_data['post_id'] ) )
-			);
+			// For Legacy Forms, a different endpoint is used.
+			$forms = new ConvertKit_Resource_Forms();
+			if ( $forms->is_legacy( $form_id ) ) {
+				$result = $api->add_subscriber_to_legacy_form(
+					$form_id,
+					$result['subscriber']['id']
+				);
+			} else {
+				$result = $api->add_subscriber_to_form(
+					$form_id,
+					$result['subscriber']['id'],
+					get_permalink( absint( $form_data['post_id'] ) )
+				);
+			}
 
 			if ( $form_data['store_entries'] ) {
 				$entries->upsert(
