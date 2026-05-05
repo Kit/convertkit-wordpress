@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 3.3.0
+Stable tag: 3.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -342,6 +342,16 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.3.2 2026-05-05
+* Fix: Form Builder: Set `inactive` subscriber state when a Kit Form is specified
+* Fix: Form Builder: Support subscribing to a Legacy Form
+* Fix: Block Editor: Settings Sidebar: Correct logo size in options menu
+
+### 3.3.1 2026-04-27
+* Added: Block Editor: Settings Sidebar: Refresh Resources
+* Fix: Page/Post Settings: Member Content: Include Forms when Refresh Resources button clicked
+* Fix: LiteSpeed Cache: Exclude Forms from LiteSpeed Cache's `JS Combine` setting, ensuring Forms display
 
 ### 3.3.0 2026-04-22
 * Added: Block Editor: Form, Landing Page, Tag and Member Content settings moved to block editor sidebar

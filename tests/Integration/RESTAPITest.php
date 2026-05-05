@@ -295,6 +295,11 @@ class RESTAPITest extends WPRestApiTestCase
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
 
+		// Assert forms response data has the expected keys.
+		$this->assertArrayHasKey( 'forms', $data );
+		$this->assertIsArray( $data['forms'] );
+		$this->assertArrayHasKeys( $data['forms'][0], [ 'id', 'name', 'created_at' ] );
+
 		// Assert tags response data has the expected keys.
 		$this->assertArrayHasKey( 'tags', $data );
 		$this->assertIsArray( $data['tags'] );

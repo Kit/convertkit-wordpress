@@ -56,7 +56,6 @@ modules:
             capabilities:
               "goog:chromeOptions":
                 args:
-                  - "--headless"
                   - "--disable-gpu"
                   - "--disable-dev-shm-usage"
                   - "--disable-software-rasterizer"
@@ -84,4 +83,27 @@ modules:
             wpRootFolder: '%WORDPRESS_ROOT_DIR%'
             dbUrl: '%WORDPRESS_DB_URL%'
             domain: '%WORDPRESS_DOMAIN%'
- 
+
+# Environments
+#
+# Run with `vendor/bin/codecept run EndToEnd --env headless` to run Chrome in
+# headless mode (used by GitHub Actions). Without `--env headless`, Chrome runs
+# in headed mode so a developer can watch tests execute locally.
+env:
+    headless:
+        modules:
+            config:
+                lucatume\WPBrowser\Module\WPWebDriver:
+                    capabilities:
+                      "goog:chromeOptions":
+                        args:
+                          - "--headless"
+                          - "--disable-gpu"
+                          - "--disable-dev-shm-usage"
+                          - "--disable-software-rasterizer"
+                          - "--proxy-server='direct://'"
+                          - "--proxy-bypass-list=*"
+                          - "--no-sandbox"
+                          - "--user-agent=%TEST_SITE_HTTP_USER_AGENT%"
+                        prefs:
+                          download.default_directory: '%WORDPRESS_ROOT_DIR%'
