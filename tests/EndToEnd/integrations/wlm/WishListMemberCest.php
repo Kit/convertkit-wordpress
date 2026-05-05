@@ -28,14 +28,14 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Test that WishList Member Level to Kit Form Mapping works,
-	 * and the email address is added to Kit when assigned the WishList Member Level
+	 * Test the WishList Member Level to Kit Double Optin works, and that the subscriber's state is active
+	 * when a single optin Form is specified.
 	 *
-	 * @since   1.9.6
+	 * @since   3.3.2
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testWLMToKitFormMappingOnLevelAdded(EndToEndTester $I)
+	public function testWLMToKitSingleOptinFormMappingOnLevelAdded(EndToEndTester $I)
 	{
 		// Get WishList Member Level ID defined.
 		$wlmLevelID = $this->_getWishListMemberLevelID($I);
@@ -47,13 +47,64 @@ class WishListMemberCest
 		$userID = $this->_createUser($I, $emailAddress);
 
 		// Configure mapping.
-		$this->_configureMapping($I, $wlmLevelID, 'add', $_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_NAME']);
+		$this->_configureMapping($I, $wlmLevelID, 'add', $_ENV['CONVERTKIT_API_FORM_SINGLE_OPTIN_NAME']);
 
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
 
 		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
+
+		// Confirm that the subscriber is active, as a form was used.
+		// This honors a Form's single optin setting.
+		$I->assertEquals('active', $subscriber['state']);
+
+		// Check that the subscriber has the expected form value set.
+		$I->apiCheckSubscriberHasForm(
+			$I,
+			subscriberID: $subscriber['id'],
+			formID: $_ENV['CONVERTKIT_API_FORM_SINGLE_OPTIN_ID']
+		);
+	}
+
+	/**
+	 * Test the WishList Member Level to Kit Double Optin works, and that the subscriber's state is inactive
+	 * when a double optin Form is specified.
+	 *
+	 * @since   3.3.2
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testWLMToKitDoubleOptinFormMappingOnLevelAdded(EndToEndTester $I)
+	{
+		// Get WishList Member Level ID defined.
+		$wlmLevelID = $this->_getWishListMemberLevelID($I);
+
+		// Define email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Create a test WordPress User.
+		$userID = $this->_createUser($I, $emailAddress);
+
+		// Configure mapping.
+		$this->_configureMapping($I, $wlmLevelID, 'add', $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_NAME']);
+
+		// Assign level to user.
+		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
+
+		// Confirm that the email address was added to Kit.
+		$subscriber = $I->apiCheckSubscriberExists($I, $emailAddress);
+
+		// Confirm that the subscriber is inactive, as a form was used.
+		// This honors a Form's double optin setting.
+		$I->assertEquals('inactive', $subscriber['state']);
+
+		// Check that the subscriber has the expected form value set.
+		$I->apiCheckSubscriberHasForm(
+			$I,
+			subscriberID: $subscriber['id'],
+			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID']
+		);
 	}
 
 	/**
