@@ -193,6 +193,19 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: xdebug
 
+      # Workaround for PHP 8.3 (and potentially other versions): the GitHub
+      # Actions ubuntu-latest runner ships with a pre-installed PHP that leaves
+      # an empty regular file at /run/php/php<version>-fpm.sock. setup-php
+      # installs a different patch version on top, but PHP-FPM never replaces
+      # the stale file with a real Unix socket, so nginx returns 502.
+      # Removing the stale file and restarting PHP-FPM forces a clean socket.
+      - name: Restart PHP-FPM
+        run: |
+          sudo rm -f /run/php/php${{ matrix.php-versions }}-fpm.sock
+          sudo systemctl restart php${{ matrix.php-versions }}-fpm
+          sleep 1
+          ls -la /run/php/
+
       # Configure nginx to use the PHP version and WordPress installation at /var/www/html
       - name: Configure nginx site
         run: |
