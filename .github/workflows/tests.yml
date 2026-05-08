@@ -332,6 +332,14 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: composer update
 
+      # Install the WordPress MCP Adapter, which requires PHP 7.4+. We don't
+      # include it in composer.json because the Plugin must support PHP 7.1+,
+      # and Composer cannot conditionally require packages by PHP version.
+      # All test matrix entries run on PHP 7.4+, so this is always safe here.
+      - name: Install MCP Adapter
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: composer require wordpress/mcp-adapter:^0.5.0
+
       # Build the frontend CSS and JS assets
       - name: Run npm
         working-directory: ${{ env.PLUGIN_DIR }}
@@ -350,11 +358,13 @@ jobs:
             "resources/frontend/css/frontend.css"
             "resources/frontend/js/dist/frontend.min.asset.php"
             "resources/frontend/js/dist/frontend.min.js"
+            "vendor/autoload.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+            "vendor/wordpress/mcp-adapter/mcp-adapter.php"
           )
 
           for file in "${files[@]}"; do

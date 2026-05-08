@@ -144,11 +144,6 @@ class ConvertKit_MCP {
 		// Get abilities.
 		$abilities = convertkit_get_abilities();
 
-		// Bail if no abilities are available.
-		if ( ! count( $abilities ) ) {
-			return;
-		}
-
 		// Build array of ability names.
 		$ability_names = array();
 		foreach ( $abilities as $ability ) {

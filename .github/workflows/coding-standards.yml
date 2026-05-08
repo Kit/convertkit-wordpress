@@ -144,9 +144,22 @@ jobs:
           tools: cs2pr
 
       # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
+      # --ignore-platform-req=php is required as wordpress/mcp-adapter otherwise won't install
+      # on PHP 7.2 and 7.3, resulting in composer errors.
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: composer update
+        run: |
+          if [[ "${{ matrix.php-versions }}" == "7.2" || "${{ matrix.php-versions }}" == "7.3" ]]; then
+            composer update --ignore-platform-req=php
+          else
+            composer update
+          fi
+
+      # Remove the wordpress/mcp-adapter package. We don't need it for coding standards, and composer
+      # commands will fail if it's installed and using PHP 7.2 or 7.3.
+      - name: Remove wordpress/mcp-adapter
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: composer remove wordpress/mcp-adapter --no-update
 
       - name: Build PHP Autoloader
         working-directory: ${{ env.PLUGIN_DIR }}
