@@ -16,6 +16,8 @@ jobs:
     secrets: inherit
 
   tests:
+    name: ${{ matrix.test-group }} / WordPress ${{ matrix.wp-version }} / PHP ${{ matrix.php-version }}
+
     needs: [dependabot-metadata]
 
     # Always allow non-Dependabot PRs and pushes.
@@ -27,34 +29,39 @@ jobs:
         needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
       )
 
+    strategy:
+      fail-fast: false
+      matrix:
+        wp-version: [ 'latest' ]
+        php-version: [ '8.1', '8.2', '8.3', '8.4' ]
+        test-group:
+          - 'EndToEnd/broadcasts/blocks-shortcodes'
+          - 'EndToEnd/broadcasts/import-export'
+          - 'EndToEnd/forms/blocks-shortcodes'
+          - 'EndToEnd/forms/general'
+          - 'EndToEnd/forms/post-types'
+          - 'EndToEnd/general/other'
+          - 'EndToEnd/general/uninstall'
+          - 'EndToEnd/general/plugin-screens'
+          - 'EndToEnd/integrations/divi-builder'
+          - 'EndToEnd/integrations/divi-theme'
+          - 'EndToEnd/integrations/elementor'
+          - 'EndToEnd/integrations/other'
+          - 'EndToEnd/integrations/wlm'
+          - 'EndToEnd/integrations/woocommerce'
+          - 'EndToEnd/landing-pages'
+          - 'EndToEnd/products'
+          - 'EndToEnd/restrict-content/general'
+          - 'EndToEnd/restrict-content/post-types'
+          - 'EndToEnd/tags'
+          - 'Integration'
+
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit
     with:
-      wp-versions: '["latest"]'
-      php-versions: '["8.1","8.2","8.3","8.4"]'
-      test-groups: |
-        [
-          "EndToEnd/broadcasts/blocks-shortcodes",
-          "EndToEnd/broadcasts/import-export",
-          "EndToEnd/forms/blocks-shortcodes",
-          "EndToEnd/forms/general",
-          "EndToEnd/forms/post-types",
-          "EndToEnd/general/other",
-          "EndToEnd/general/uninstall",
-          "EndToEnd/general/plugin-screens",
-          "EndToEnd/integrations/divi-builder",
-          "EndToEnd/integrations/divi-theme",
-          "EndToEnd/integrations/elementor",
-          "EndToEnd/integrations/other",
-          "EndToEnd/integrations/wlm",
-          "EndToEnd/integrations/woocommerce",
-          "EndToEnd/landing-pages",
-          "EndToEnd/products",
-          "EndToEnd/restrict-content/general",
-          "EndToEnd/restrict-content/post-types",
-          "EndToEnd/tags",
-          "Integration"
-        ]
+      wp-version: ${{ matrix.wp-version }}
+      php-version: ${{ matrix.php-version }}
+      test-group: ${{ matrix.test-group }}
       block-editor-v3-enabled: 'true'
       db-sql-dump-file: 'tests/Support/Data/dump.sql'
       install-plugins: "admin-menu-editor autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui debloat elementor forminator jetpack-boost mailchimp-for-wp rocket-lazy-load woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress"

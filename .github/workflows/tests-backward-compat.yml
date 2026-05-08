@@ -16,6 +16,8 @@ jobs:
     secrets: inherit
 
   tests:
+    name: ${{ matrix.test-group }} / WordPress ${{ matrix.wp-version }} / PHP ${{ matrix.php-version }}
+
     needs: [dependabot-metadata]
 
     # Always allow non-Dependabot PRs and pushes.
@@ -27,22 +29,27 @@ jobs:
         needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
       )
 
+    # WordPress 6.2.8 with apiVersion 2 blocks. We test specific block tests
+    # that historically depended on apiVersion 2 behaviour.
+    strategy:
+      fail-fast: false
+      matrix:
+        wp-version: [ '6.2.8' ]
+        php-version: [ '8.1' ]
+        test-group:
+          - 'EndToEnd/broadcasts/blocks-shortcodes/PageBlockBroadcastsCest'
+          - 'EndToEnd/forms/blocks-shortcodes/PageBlockFormBuilderCest'
+          - 'EndToEnd/forms/blocks-shortcodes/PageBlockFormCest'
+          - 'EndToEnd/forms/blocks-shortcodes/PageBlockFormTriggerCest'
+          - 'EndToEnd/products/PageBlockFormatterProductLinkCest'
+          - 'EndToEnd/products/PageBlockProductCest'
+
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit
     with:
-      # WordPress 6.2.8 with apiVersion 2 blocks. We test specific block tests
-      # that historically depended on apiVersion 2 behaviour.
-      wp-versions: '["6.2.8"]'
-      php-versions: '["8.1"]'
-      test-groups: |
-        [
-          "EndToEnd/broadcasts/blocks-shortcodes/PageBlockBroadcastsCest",
-          "EndToEnd/forms/blocks-shortcodes/PageBlockFormBuilderCest",
-          "EndToEnd/forms/blocks-shortcodes/PageBlockFormCest",
-          "EndToEnd/forms/blocks-shortcodes/PageBlockFormTriggerCest",
-          "EndToEnd/products/PageBlockFormatterProductLinkCest",
-          "EndToEnd/products/PageBlockProductCest"
-        ]
+      wp-version: ${{ matrix.wp-version }}
+      php-version: ${{ matrix.php-version }}
+      test-group: ${{ matrix.test-group }}
       block-editor-v3-enabled: 'false'
       db-sql-dump-file: 'tests/Support/Data/dump-6.2.8.sql'
       install-plugins-urls: 'https://downloads.wordpress.org/plugin/block-visibility.3.3.0.zip'

@@ -1,6 +1,6 @@
 name: Run Test Matrix
 
-# Reusable workflow that runs the Codeception test matrix.
+# Reusable workflow that runs a single Codeception test group.
 # Consumed by tests.yml and tests-backward-compat.yml via `uses:`.
 #
 # Inputs that vary per workflow are passed in. Everything else (env, steps,
@@ -9,16 +9,16 @@ name: Run Test Matrix
 on:
   workflow_call:
     inputs:
-      wp-versions:
-        description: 'JSON-encoded array of WordPress versions, e.g. ''["latest"]'' or ''["6.2.8"]''.'
+      wp-version:
+        description: 'WordPress version (e.g. "latest" or "6.2.8").'
         required: true
         type: string
-      php-versions:
-        description: 'JSON-encoded array of PHP versions, e.g. ''["8.1","8.2","8.3","8.4"]''.'
+      php-version:
+        description: 'PHP version (e.g. "8.1").'
         required: true
         type: string
-      test-groups:
-        description: 'JSON-encoded array of test group paths, e.g. ''["EndToEnd/forms/general","Integration"]''.'
+      test-group:
+        description: 'Test group path (e.g. "EndToEnd/forms/general").'
         required: true
         type: string
       block-editor-v3-enabled:
@@ -47,8 +47,6 @@ on:
 
 jobs:
   tests:
-    name: ${{ matrix.test-groups }} / WordPress ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
-
     runs-on: ubuntu-latest
 
     env:
@@ -76,19 +74,12 @@ jobs:
       CONVERTKIT_API_RECAPTCHA_SITE_KEY: ${{ secrets.CONVERTKIT_API_RECAPTCHA_SITE_KEY }}
       CONVERTKIT_API_RECAPTCHA_SECRET_KEY: ${{ secrets.CONVERTKIT_API_RECAPTCHA_SECRET_KEY }}
 
-    strategy:
-      fail-fast: false
-      matrix:
-        wp-versions: ${{ fromJSON(inputs.wp-versions) }}
-        php-versions: ${{ fromJSON(inputs.php-versions) }}
-        test-groups: ${{ fromJSON(inputs.test-groups) }}
-
     steps:
       - name: Define Test Group Name
         id: test-group
         uses: mad9000/actions-find-and-replace-string@5
         with:
-          source: ${{ matrix.test-groups }}
+          source: ${{ inputs.test-group }}
           find: '/'
           replace: '-'
           replaceAll: true
@@ -111,7 +102,7 @@ jobs:
       - name: Download and Extract WordPress
         uses: ./convertkit/.github/actions/download-wordpress
         with:
-          wp-version: ${{ matrix.wp-versions }}
+          wp-version: ${{ inputs.wp-version }}
           target-dir: ${{ env.ROOT_DIR }}
 
       - name: Install WordPress via WP-CLI
@@ -168,7 +159,7 @@ jobs:
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
       # WP_DEBUG = false for other integration tests, as Elementor in PHP 8.4 throws a deprecation notice.
       - name: Enable WP_DEBUG
-        if: ${{ matrix.test-groups != 'EndToEnd/integrations/other' && matrix.php-versions != '8.4' }}
+        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' && inputs.php-version != '8.4' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_DEBUG true --raw
 
@@ -182,7 +173,7 @@ jobs:
       # We don't enable DISALLOW_FILE_MODS for the UninstallCest test, as tests will perform a Plugin deletion
       # which requires DISALLOW_FILE_MODS to not be true.
       - name: Enable DISALLOW_FILE_MODS
-        if: ${{ matrix.test-groups != 'EndToEnd/general/uninstall' }}
+        if: ${{ inputs.test-group != 'EndToEnd/general/uninstall' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set DISALLOW_FILE_MODS true --raw
 
@@ -197,7 +188,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ inputs.php-version }}
           coverage: xdebug
 
       # Configure nginx to use the PHP version and WordPress installation at /var/www/html
@@ -221,7 +212,7 @@ jobs:
 
             location ~ \.php$ {
                 include snippets/fastcgi-php.conf;
-                fastcgi_pass unix:/run/php/php${{ matrix.php-versions }}-fpm.sock;
+                fastcgi_pass unix:/run/php/php${{ inputs.php-version }}-fpm.sock;
 
                 # Prevent 502 Bad Gateway error "upstream sent too big header while reading response header from upstream"
                 fastcgi_buffers 16 16k;
@@ -253,12 +244,12 @@ jobs:
       - name: Exchange API Key and Secret for OAuth Tokens
         id: get-oauth-tokens
         run: |
-          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}")
           access_token=$(echo "$response" | jq -r '.oauth.access_token')
           refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
           echo "CONVERTKIT_OAUTH_ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
           echo "CONVERTKIT_OAUTH_REFRESH_TOKEN=$refresh_token" >> $GITHUB_ENV
-          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}")
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}")
           access_token=$(echo "$response" | jq -r '.oauth.access_token')
           refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
           echo "CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=$access_token" >> $GITHUB_ENV
@@ -357,28 +348,28 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/codecept build
 
-      - name: Run tests/${{ matrix.test-groups }}
+      - name: Run tests/${{ inputs.test-group }}
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: php vendor/bin/codecept run tests/${{ matrix.test-groups }} --env headless --fail-fast
+        run: php vendor/bin/codecept run tests/${{ inputs.test-group }} --env headless --fail-fast
 
       # Artifacts are data generated by this workflow that we want to access on test failure.
       - name: Upload nginx Error Log to Artifact
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: nginx-error-log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.log
+          name: nginx-error-log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.log
           path: /var/log/nginx/error.log
 
       - name: Upload Test Results to Artifact
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: test-results-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}
+          name: test-results-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}
           path: ${{ env.PLUGIN_DIR }}/tests/_output/
 
       - name: Upload Plugin Log File to Artifact
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: log-${{ steps.test-group.outputs.value }}-${{ matrix.php-versions }}.txt
+          name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
