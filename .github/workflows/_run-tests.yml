@@ -47,6 +47,8 @@ on:
 
 jobs:
   tests:
+    name: PHP ${{ inputs.php-version }}
+
     runs-on: ubuntu-latest
 
     env:
