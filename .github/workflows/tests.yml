@@ -42,7 +42,7 @@ jobs:
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
 
-    # Requieres the dependabot-metadata job to have run successfully.
+    # Requires the dependabot-metadata job to have run successfully.
     needs: [dependabot-metadata]
 
     # Always allow non-Dependabot PRs and pushes.
@@ -204,7 +204,7 @@ jobs:
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
       
       # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for other integraiton tests, as Elementor in PHP 8.4 throws a deprecation notice
+      # WP_DEBUG = false for other integration tests, as Elementor in PHP 8.4 throws a deprecation notice
       - name: Enable WP_DEBUG
         if: ${{ matrix.test-groups != 'EndToEnd/integrations/other' && matrix.php-versions != '8.4' }}
         working-directory: ${{ env.ROOT_DIR }}
