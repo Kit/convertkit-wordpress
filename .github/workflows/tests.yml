@@ -89,30 +89,11 @@ jobs:
       fail-fast: false
       matrix:
         wp-versions: [ 'latest' ] #[ '6.1.1', 'latest' ]
-        php-versions: [ '8.1', '8.2', '8.3', '8.4' ] #[ '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.3' ] #[ '7.4', '8.0', '8.1' ]
 
         # Folder names within the 'tests' folder to run tests in parallel.
         test-groups: [
-          'EndToEnd/broadcasts/blocks-shortcodes',
-          'EndToEnd/broadcasts/import-export',
-          'EndToEnd/forms/blocks-shortcodes',
-          'EndToEnd/forms/general',
-          'EndToEnd/forms/post-types',
-          'EndToEnd/general/other',
-          'EndToEnd/general/uninstall',
-          'EndToEnd/general/plugin-screens',
-          'EndToEnd/integrations/divi-builder',
-          'EndToEnd/integrations/divi-theme',
-          'EndToEnd/integrations/elementor',
-          'EndToEnd/integrations/other',
-          'EndToEnd/integrations/wlm',
-          'EndToEnd/integrations/woocommerce',
-          'EndToEnd/landing-pages',
-          'EndToEnd/products',
-          'EndToEnd/restrict-content/general',
-          'EndToEnd/restrict-content/post-types',
-          'EndToEnd/tags',
-          'Integration'
+          'EndToEnd/broadcasts/blocks-shortcodes'
         ]
 
     # Steps to install, configure and run tests
@@ -278,6 +259,27 @@ jobs:
 
       - name: Start nginx
         run: sudo systemctl start nginx.service
+
+      # Debug: confirm whether multiple PHP installs / FPM units / socket
+      # permission issues are causing the 502 on PHP 8.3.
+      - name: Debug PHP and FPM state
+        run: |
+          echo "=== which php ==="
+          which php || true
+          echo "=== php --version ==="
+          php --version || true
+          echo "=== /run/php contents ==="
+          ls -la /run/php/ || true
+          echo "=== FPM pool config (listen settings) ==="
+          cat /etc/php/${{ matrix.php-versions }}/fpm/pool.d/www.conf | grep -E '^(listen|user|group)' || true
+          echo "=== systemd PHP-FPM units ==="
+          systemctl list-units --no-pager --all | grep -i php || true
+          echo "=== nginx user ==="
+          ps aux | grep nginx | head -5 || true
+          echo "=== installed php packages ==="
+          dpkg -l | grep -E '^ii\s+php' || true
+          echo "=== curl test against nginx ==="
+          curl -v -s http://127.0.0.1/ 2>&1 | head -30 || true
 
       # Start chromedriver
       - name: Start chromedriver
