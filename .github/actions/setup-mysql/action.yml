@@ -1,0 +1,41 @@
+name: 'Set up MySQL'
+description: >
+  Starts MySQL, creates the test database, and switches the user to
+  mysql_native_password authentication so WordPress can connect on MySQL 8.0.
+  Used by every workflow that runs WordPress against MySQL.
+
+inputs:
+  db-name:
+    description: 'Database name to create.'
+    required: false
+    default: 'test'
+  db-user:
+    description: 'MySQL user.'
+    required: false
+    default: 'root'
+  db-pass:
+    description: 'MySQL password.'
+    required: false
+    default: 'root'
+  db-host:
+    description: 'MySQL host.'
+    required: false
+    default: 'localhost'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Start MySQL
+      shell: bash
+      run: sudo systemctl start mysql.service
+
+    - name: Create MySQL Database
+      shell: bash
+      run: |
+        mysql -e 'CREATE DATABASE ${{ inputs.db-name }};' -u${{ inputs.db-user }} -p${{ inputs.db-pass }}
+        mysql -e 'SHOW DATABASES;' -u${{ inputs.db-user }} -p${{ inputs.db-pass }}
+
+    # WordPress won't be able to connect to the DB if we don't perform this step.
+    - name: Permit MySQL Password Auth for MySQL 8.0
+      shell: bash
+      run: mysql -e "ALTER USER '${{ inputs.db-user }}'@'${{ inputs.db-host }}' IDENTIFIED WITH mysql_native_password BY '${{ inputs.db-pass }}';" -u${{ inputs.db-user }} -p${{ inputs.db-pass }}
