@@ -311,11 +311,13 @@ jobs:
             "resources/frontend/css/frontend.css"
             "resources/frontend/js/dist/frontend.min.asset.php"
             "resources/frontend/js/dist/frontend.min.js"
+            "vendor/autoload.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+            "vendor/wordpress/mcp-adapter/mcp-adapter.php"
           )
 
           for file in "${files[@]}"; do

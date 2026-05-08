@@ -27,7 +27,6 @@ class MCPTest extends WPRestApiTestCase
 	{
 		parent::setUp();
 		activate_plugins('convertkit/wp-convertkit.php');
-		activate_plugins('mcp-adapter/mcp-adapter.php');
 	}
 
 	/**
@@ -37,7 +36,6 @@ class MCPTest extends WPRestApiTestCase
 	 */
 	public function tearDown(): void
 	{
-		deactivate_plugins('mcp-adapter/mcp-adapter.php');
 		deactivate_plugins('convertkit/wp-convertkit.php');
 		parent::tearDown();
 	}

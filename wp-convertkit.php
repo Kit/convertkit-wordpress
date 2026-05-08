@@ -31,6 +31,13 @@ define( 'CONVERTKIT_PLUGIN_VERSION', '3.3.2' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 
+// Load the WordPress MCP Adapter via composer's autoload.
+// Only load on PHP 7.4+, since the MCP Adapter requires it.
+if ( version_compare( PHP_VERSION, '7.4', '>=' )
+	&& file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
+	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
+}
+
 // Load shared classes, if they have not been included by another Kit Plugin.
 if ( ! trait_exists( 'ConvertKit_API_Traits' ) && ! trait_exists( 'ConvertKit_API\ConvertKit_API_Traits' ) ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php';
