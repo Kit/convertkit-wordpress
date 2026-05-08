@@ -37,8 +37,7 @@ if ( file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
 
 	// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
 	// integration pattern.
-	//
-	// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin
+	// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin.
 	if ( class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
 		\WP\MCP\Core\McpAdapter::instance();
 	}
