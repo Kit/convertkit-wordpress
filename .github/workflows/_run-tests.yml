@@ -201,8 +201,8 @@ jobs:
       # Removing the stale file and restarting PHP-FPM forces a clean socket.
       - name: Restart PHP-FPM
         run: |
-          sudo rm -f /run/php/php${{ matrix.php-versions }}-fpm.sock
-          sudo systemctl restart php${{ matrix.php-versions }}-fpm
+          sudo rm -f /run/php/php${{ inputs.php-version }}-fpm.sock
+          sudo systemctl restart php${{ inputs.php-version }}-fpm
           sleep 1
           ls -la /run/php/
 
