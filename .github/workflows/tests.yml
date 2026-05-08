@@ -273,27 +273,6 @@ jobs:
       - name: Start nginx
         run: sudo systemctl start nginx.service
 
-      # Debug: confirm whether multiple PHP installs / FPM units / socket
-      # permission issues are causing the 502 on PHP 8.3.
-      - name: Debug PHP and FPM state
-        run: |
-          echo "=== which php ==="
-          which php || true
-          echo "=== php --version ==="
-          php --version || true
-          echo "=== /run/php contents ==="
-          ls -la /run/php/ || true
-          echo "=== FPM pool config (listen settings) ==="
-          cat /etc/php/${{ matrix.php-versions }}/fpm/pool.d/www.conf | grep -E '^(listen|user|group)' || true
-          echo "=== systemd PHP-FPM units ==="
-          systemctl list-units --no-pager --all | grep -i php || true
-          echo "=== nginx user ==="
-          ps aux | grep nginx | head -5 || true
-          echo "=== installed php packages ==="
-          dpkg -l | grep -E '^ii\s+php' || true
-          echo "=== curl test against nginx ==="
-          curl -v -s http://127.0.0.1/ 2>&1 | head -30 || true
-
       # Start chromedriver
       - name: Start chromedriver
         run: |
