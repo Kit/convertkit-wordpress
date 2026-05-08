@@ -31,8 +31,9 @@ define( 'CONVERTKIT_PLUGIN_VERSION', '3.3.2' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 
-// Load Composer autoloader. Provides the WordPress MCP Adapter classes.
-if ( file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
+// Load WordPress MCP Adapter if the Abilities API is available (WordPress 6.9+)
+// and PHP 7.4+ is installed.
+if ( file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) && function_exists( 'wp_register_ability' ) && version_compare( PHP_VERSION, '7.4', '>=' ) ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
 
 	// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
