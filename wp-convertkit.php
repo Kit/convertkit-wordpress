@@ -34,8 +34,13 @@ define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/r
 // Load Composer autoloader. Provides the WordPress MCP Adapter classes.
 if ( file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
-	if ( class_exists( 'WP\\MCP\\Plugin' ) ) {
-		\WP\MCP\Plugin::instance();
+
+	// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
+	// integration pattern.
+	//
+	// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin
+	if ( class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+		\WP\MCP\Core\McpAdapter::instance();
 	}
 }
 // Load shared classes, if they have not been included by another Kit Plugin.
