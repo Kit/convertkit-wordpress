@@ -984,8 +984,14 @@ class KitPlugin extends \Codeception\Module
 			$I->switchToGutenbergIFrameEditor($I);
 		}
 
+		// Wait for the block to load the expected class.
+		$I->waitForElementVisible('div.convertkit-no-content');
+
 		// Switch to iframe preview for the Form block.
 		$I->switchToIFrame('iframe[class="components-sandbox"]');
+
+		// Wait for the iframe to load.
+		$I->waitForElementVisible('div');
 
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
