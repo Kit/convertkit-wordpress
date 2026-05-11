@@ -136,11 +136,6 @@ class ConvertKit_MCP {
 	 */
 	public function register_mcp_server( $adapter ) {
 
-		// Bail if the adapter is not an object or does not have the create_server method.
-		if ( ! is_object( $adapter ) || ! method_exists( $adapter, 'create_server' ) ) {
-			return;
-		}
-
 		// Get abilities.
 		$abilities = convertkit_get_abilities();
 
