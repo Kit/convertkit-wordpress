@@ -71,7 +71,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 		// Call parent refresh method.
 		$result = parent::refresh();
 
-		// If an error occured, maybe delete credentials from the Plugin's settings
+		// If an error occurred, maybe delete credentials from the Plugin's settings
 		// if the error is a 401 unauthorized.
 		if ( is_wp_error( $result ) ) {
 			convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );

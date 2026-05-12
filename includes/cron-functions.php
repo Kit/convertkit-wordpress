@@ -37,7 +37,7 @@ function convertkit_refresh_token() {
 	// Refresh the token.
 	$result = $api->refresh_token();
 
-	// If an error occured, don't save the new tokens.
+	// If an error occurred, don't save the new tokens.
 	// Logging is handled by the ConvertKit_API_V4 class.
 	if ( is_wp_error( $result ) ) {
 		return;
@@ -86,7 +86,7 @@ function convertkit_resource_refresh_posts() {
 	$posts  = new ConvertKit_Resource_Posts( 'cron' );
 	$result = $posts->refresh();
 
-	// Bail if an error occured.
+	// Bail if an error occurred.
 	if ( is_wp_error( $result ) ) {
 		// Delete credentials if the error is a 401.
 		convertkit_maybe_delete_credentials( $result, CONVERTKIT_OAUTH_CLIENT_ID );
