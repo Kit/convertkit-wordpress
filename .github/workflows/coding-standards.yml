@@ -118,9 +118,12 @@ jobs:
           tools: cs2pr
 
       # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
+      # jq is used to remove the wordpress/mcp-adapter package from composer.json, as it requires PHP 7.4+.
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: composer update
+        run: |
+          jq 'del(.require."wordpress/mcp-adapter")' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
+          composer update
 
       # Installs WordPress scripts for CSS and JS Coding Standards.
       - name: Run npm install
