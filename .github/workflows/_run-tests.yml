@@ -1,0 +1,390 @@
+name: Run Test Matrix
+
+# Reusable workflow that runs a single Codeception test group.
+# Consumed by tests.yml and tests-backward-compat.yml via `uses:`.
+#
+# Inputs that vary per workflow are passed in. Everything else (env, steps,
+# install logic) is defined here so it lives in one place.
+
+on:
+  workflow_call:
+    inputs:
+      wp-version:
+        description: 'WordPress version (e.g. "latest" or "6.2.8").'
+        required: true
+        type: string
+      php-version:
+        description: 'PHP version (e.g. "8.1").'
+        required: true
+        type: string
+      test-group:
+        description: 'Test group path (e.g. "EndToEnd/forms/general").'
+        required: true
+        type: string
+      block-editor-v3-enabled:
+        description: 'Whether to enable WordPress 6.3+ apiVersion 3 blocks (true/false).'
+        required: true
+        type: string
+      db-sql-dump-file:
+        description: 'Path to the SQL dump file used to populate the test database.'
+        required: true
+        type: string
+      install-plugins:
+        description: 'Space-separated WordPress.org plugin slugs to install via wp-cli.'
+        required: false
+        type: string
+        default: ''
+      install-plugins-urls:
+        description: 'Space-separated plugin zip URLs to install via wp-cli.'
+        required: false
+        type: string
+        default: ''
+      install-themes-urls:
+        description: 'Space-separated theme zip URLs to install via wp-cli.'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  tests:
+    name: PHP ${{ inputs.php-version }}
+
+    runs-on: ubuntu-latest
+
+    env:
+      ROOT_DIR: /var/www/html
+      PLUGIN_DIR: /var/www/html/wp-content/plugins/convertkit
+      CACHE_DIR: /var/www/html/wp-content/plugins/wp-super-cache/
+      DB_NAME: test
+      DB_USER: root
+      DB_PASS: root
+      DB_HOST: localhost
+      WORDPRESS_V3_BLOCK_EDITOR_ENABLED: ${{ inputs.block-editor-v3-enabled }}
+      WORDPRESS_DB_SQL_DUMP_FILE: ${{ inputs.db-sql-dump-file }}
+      INSTALL_PLUGINS: ${{ inputs.install-plugins }}
+      INSTALL_PLUGINS_URLS: ${{ inputs.install-plugins-urls }}
+      INSTALL_THEMES_URLS: ${{ inputs.install-themes-urls }}
+      CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }}
+      CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }}
+      CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }}
+      CONVERTKIT_API_SECRET_NO_DATA: ${{ secrets.CONVERTKIT_API_SECRET_NO_DATA }}
+      CONVERTKIT_OAUTH_CLIENT_ID: ${{ secrets.CONVERTKIT_OAUTH_CLIENT_ID }}
+      CONVERTKIT_OAUTH_REDIRECT_URI: ${{ secrets.CONVERTKIT_OAUTH_REDIRECT_URI }}
+      KIT_OAUTH_REDIRECT_URI: ${{ secrets.KIT_OAUTH_REDIRECT_URI }}
+      CONVERTKIT_API_SIGNED_SUBSCRIBER_ID: ${{ secrets.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID }}
+      CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS: ${{ secrets.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS }}
+      CONVERTKIT_API_RECAPTCHA_SITE_KEY: ${{ secrets.CONVERTKIT_API_RECAPTCHA_SITE_KEY }}
+      CONVERTKIT_API_RECAPTCHA_SECRET_KEY: ${{ secrets.CONVERTKIT_API_RECAPTCHA_SECRET_KEY }}
+
+    steps:
+      - name: Define Test Group Name
+        id: test-group
+        uses: mad9000/actions-find-and-replace-string@5
+        with:
+          source: ${{ inputs.test-group }}
+          find: '/'
+          replace: '-'
+          replaceAll: true
+
+      # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
+      # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
+      - name: Checkout Plugin
+        uses: actions/checkout@v6
+        with:
+          path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
+
+      - name: Set up MySQL
+        uses: ./convertkit/.github/actions/setup-mysql
+        with:
+          db-name: ${{ env.DB_NAME }}
+          db-user: ${{ env.DB_USER }}
+          db-pass: ${{ env.DB_PASS }}
+          db-host: ${{ env.DB_HOST }}
+
+      - name: Download and Extract WordPress
+        uses: ./convertkit/.github/actions/download-wordpress
+        with:
+          wp-version: ${{ inputs.wp-version }}
+          target-dir: ${{ env.ROOT_DIR }}
+
+      - name: Install WordPress via WP-CLI
+        uses: ./convertkit/.github/actions/install-wordpress
+        with:
+          root-dir: ${{ env.ROOT_DIR }}
+          db-name: ${{ env.DB_NAME }}
+          db-user: ${{ env.DB_USER }}
+          db-pass: ${{ env.DB_PASS }}
+          db-host: ${{ env.DB_HOST }}
+
+      # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
+      - name: Install Free Third Party WordPress Plugins
+        if: ${{ env.INSTALL_PLUGINS != '' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
+
+      # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions of third party Plugins.
+      - name: Install Free Third Party WordPress Specific Version Plugins
+        if: ${{ env.INSTALL_PLUGINS_URLS != '' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
+
+      # env.INSTALL_THEMES_URLS is a list of Theme URLs, space separated, to install specific versions of third party Themes.
+      - name: Install Free Third Party WordPress Specific Version Themes
+        if: ${{ env.INSTALL_THEMES_URLS != '' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli theme install ${{ env.INSTALL_THEMES_URLS }}
+
+      # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
+      # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
+      # Skipped silently if the secret is not defined (e.g. backward-compat workflow doesn't need paid plugins).
+      - name: Install Paid Third Party WordPress Plugins
+        working-directory: ${{ env.ROOT_DIR }}
+        env:
+          PAID_URLS: ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
+        run: |
+          if [ -n "$PAID_URLS" ]; then
+            wp-cli plugin install $PAID_URLS
+          else
+            echo "CONVERTKIT_PAID_PLUGIN_URLS secret not set; skipping."
+          fi
+
+      # Install 2021 Theme, which provides support for widgets.
+      # 2021 Theme isn't included in WordPress 6.4 or higher, but is required for our widget tests.
+      - name: Install WordPress Themes
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli theme install twentytwentyone
+
+      # Move Plugin to PLUGIN_DIR.
+      - name: Move Plugin
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
+
+      # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
+      # WP_DEBUG = false for other integration tests, as Elementor in PHP 8.4 throws a deprecation notice.
+      - name: Enable WP_DEBUG
+        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' && inputs.php-version != '8.4' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli config set WP_DEBUG true --raw
+
+      # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
+      - name: Enable FS_METHOD
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli config set FS_METHOD direct
+
+      # DISALLOW_FILE_MODS = true is required to disable the block directory's "Available to Install" suggestions, which trips up
+      # tests that search and wait for block results.
+      # We don't enable DISALLOW_FILE_MODS for the UninstallCest test, as tests will perform a Plugin deletion
+      # which requires DISALLOW_FILE_MODS to not be true.
+      - name: Enable DISALLOW_FILE_MODS
+        if: ${{ inputs.test-group != 'EndToEnd/general/uninstall' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli config set DISALLOW_FILE_MODS true --raw
+
+      # Prevent WordPress auto updating to the latest version, as we specifically want to use a specific version of WordPress.
+      - name: Disable WP_AUTO_UPDATE_CORE
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli config set WP_AUTO_UPDATE_CORE false --raw
+
+      # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
+      # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
+      # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          coverage: xdebug
+
+      # Workaround for PHP 8.3 (and potentially other versions): the GitHub
+      # Actions ubuntu-latest runner ships with a pre-installed PHP that leaves
+      # an empty regular file at /run/php/php<version>-fpm.sock. setup-php
+      # installs a different patch version on top, but PHP-FPM never replaces
+      # the stale file with a real Unix socket, so nginx returns 502.
+      # Removing the stale file and restarting PHP-FPM forces a clean socket.
+      - name: Restart PHP-FPM
+        run: |
+          sudo rm -f /run/php/php${{ inputs.php-version }}-fpm.sock
+          sudo systemctl restart php${{ inputs.php-version }}-fpm
+          sleep 1
+          ls -la /run/php/
+
+      # Configure nginx to use the PHP version and WordPress installation at /var/www/html
+      - name: Configure nginx site
+        run: |
+          sudo rm -f /etc/nginx/sites-enabled/default
+          sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+
+          server {
+            listen 80 default_server;
+            listen [::]:80 default_server;
+
+            root /var/www/html;
+            index index.php;
+
+            server_name localhost;
+
+            location / {
+                try_files $uri $uri/ /index.php?$args;
+            }
+
+            location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php${{ inputs.php-version }}-fpm.sock;
+
+                # Prevent 502 Bad Gateway error "upstream sent too big header while reading response header from upstream"
+                fastcgi_buffers 16 16k;
+                fastcgi_buffer_size 32k;
+                fastcgi_busy_buffers_size 64k;
+            }
+
+            location ~ /\.ht {
+                deny all;
+            }
+          }
+          EOF
+
+          sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default || true
+
+      - name: Test nginx
+        run: sudo nginx -t
+
+      - name: Start nginx
+        run: sudo systemctl start nginx.service
+
+      - name: Start chromedriver
+        run: |
+          export DISPLAY=:99
+          chromedriver --port=9515 --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
+
+      # Exchange API Keys and Secrets for OAuth Tokens.
+      - name: Exchange API Key and Secret for OAuth Tokens
+        id: get-oauth-tokens
+        run: |
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY }}&api_secret=${{ env.CONVERTKIT_API_SECRET }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN=$refresh_token" >> $GITHUB_ENV
+          response=$(curl -s -X POST "${{ secrets.CONVERTKIT_EXCHANGE_API_KEYS_ENDPOINT }}?api_key=${{ env.CONVERTKIT_API_KEY_NO_DATA }}&api_secret=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}&client_id=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}&redirect_uri=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}&tenant_name=github-actions-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}")
+          access_token=$(echo "$response" | jq -r '.oauth.access_token')
+          refresh_token=$(echo "$response" | jq -r '.oauth.refresh_token')
+          echo "CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=$access_token" >> $GITHUB_ENV
+          echo "CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA=$refresh_token" >> $GITHUB_ENV
+
+      # Write any secrets, such as API keys, to the .env.testing file now.
+      - name: Define GitHub Secrets in .env.testing
+        uses: DamianReeves/write-file-action@v1.3
+        with:
+          path: ${{ env.PLUGIN_DIR }}/.env.testing
+          contents: |
+            WORDPRESS_V3_BLOCK_EDITOR_ENABLED=${{ env.WORDPRESS_V3_BLOCK_EDITOR_ENABLED }}
+            WORDPRESS_DB_SQL_DUMP_FILE=${{ env.WORDPRESS_DB_SQL_DUMP_FILE }}
+            CONVERTKIT_API_KEY=${{ env.CONVERTKIT_API_KEY }}
+            CONVERTKIT_API_SECRET=${{ env.CONVERTKIT_API_SECRET }}
+            CONVERTKIT_API_KEY_NO_DATA=${{ env.CONVERTKIT_API_KEY_NO_DATA }}
+            CONVERTKIT_API_SECRET_NO_DATA=${{ env.CONVERTKIT_API_SECRET_NO_DATA }}
+            CONVERTKIT_OAUTH_ACCESS_TOKEN=${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN }}
+            CONVERTKIT_OAUTH_REFRESH_TOKEN=${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN }}
+            CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA=${{ env.CONVERTKIT_OAUTH_ACCESS_TOKEN_NO_DATA }}
+            CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA=${{ env.CONVERTKIT_OAUTH_REFRESH_TOKEN_NO_DATA }}
+            CONVERTKIT_OAUTH_CLIENT_ID=${{ env.CONVERTKIT_OAUTH_CLIENT_ID }}
+            CONVERTKIT_OAUTH_REDIRECT_URI=${{ env.CONVERTKIT_OAUTH_REDIRECT_URI }}
+            KIT_OAUTH_REDIRECT_URI=${{ env.KIT_OAUTH_REDIRECT_URI }}
+            CONVERTKIT_API_SIGNED_SUBSCRIBER_ID=${{ env.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID }}
+            CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS=${{ env.CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS }}
+            CONVERTKIT_API_RECAPTCHA_SITE_KEY=${{ env.CONVERTKIT_API_RECAPTCHA_SITE_KEY }}
+            CONVERTKIT_API_RECAPTCHA_SECRET_KEY=${{ env.CONVERTKIT_API_RECAPTCHA_SECRET_KEY }}
+
+          write-mode: overwrite
+
+      # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
+      - name: Run Composer
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: composer update
+
+      # Build the frontend CSS and JS assets
+      - name: Run npm
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: |
+          npm install
+          npm run build
+
+      # Confirm that expected files exist if e.g. `composer install` or `npm run build` fails
+      - name: Check Kit WordPress Libraries and Assets Exists
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: |
+          set -e
+
+          files=(
+            "resources/frontend/css/frontend.css"
+            "resources/frontend/js/dist/frontend.min.asset.php"
+            "resources/frontend/js/dist/frontend.min.js"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-v4.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php"
+            "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
+          )
+
+          for file in "${files[@]}"; do
+            echo "Checking: $file"
+            test -f "$file" || { echo "❌ Missing required file: $file"; exit 1; }
+          done
+
+          echo "✅ All required files exist."
+
+      # Build PHP Autoloader.
+      - name: Build PHP Autoloader
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: composer dump-autoload
+
+      # This ensures that applicable files and folders can be written to by WordPress and cache Plugins.
+      - name: Set File and Folder Permissions
+        run: |
+          sudo chmod 767 ${{ env.ROOT_DIR }}
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}
+
+          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-config.php
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-config.php
+
+          sudo chmod 767 ${{ env.ROOT_DIR }}/wp-content
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content
+
+          sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
+          sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
+
+      # This ensures the Plugin's log file can be written to.
+      # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
+      - name: Set Permissions for Plugin Directory
+        run: |
+          sudo chmod g+w ${{ env.PLUGIN_DIR }}
+          sudo chown www-data:www-data ${{ env.PLUGIN_DIR }}
+
+      - name: Build Tests
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: php vendor/bin/codecept build
+
+      - name: Run tests/${{ inputs.test-group }}
+        working-directory: ${{ env.PLUGIN_DIR }}
+        run: php vendor/bin/codecept run tests/${{ inputs.test-group }} --env headless --fail-fast
+
+      # Artifacts are data generated by this workflow that we want to access on test failure.
+      - name: Upload nginx Error Log to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nginx-error-log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.log
+          path: /var/log/nginx/error.log
+
+      - name: Upload Test Results to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}
+          path: ${{ env.PLUGIN_DIR }}/tests/_output/
+
+      - name: Upload Plugin Log File to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
+          path: ${{ env.PLUGIN_DIR }}/log/log.txt

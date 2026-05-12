@@ -195,7 +195,7 @@ class ConvertKit_Output_Restrict_Content {
 						$post_id
 					);
 
-					// If an error occured, build the email form view with the error message.
+					// If an error occurred, build the email form view with the error message.
 					if ( is_wp_error( $result ) ) {
 						// Set error to display on screen.
 						$output_restrict_content->error = $result;
@@ -287,7 +287,7 @@ class ConvertKit_Output_Restrict_Content {
 					// Run subscriber authentication.
 					$result = $output_restrict_content->subscriber_authentication_verify( $post_id, $token, $subscriber_code );
 
-					// If an error occured, build the code form view with the error message.
+					// If an error occurred, build the code form view with the error message.
 					if ( is_wp_error( $result ) ) {
 						// Set error to display on screen.
 						$output_restrict_content->error = $result;
@@ -408,7 +408,7 @@ class ConvertKit_Output_Restrict_Content {
 			// Tag subscriber.
 			$result = $this->api->tag_subscribe( $this->resource_id, $email );
 
-			// Bail if an error occured.
+			// Bail if an error occurred.
 			if ( is_wp_error( $result ) ) {
 				$this->error = $result;
 				return;
@@ -436,7 +436,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Run subscriber authentication.
 		$result = $this->subscriber_authentication_send_code( $email, $this->post_id );
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $result ) ) {
 			$this->error = $result;
 			return;
@@ -497,7 +497,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Run subscriber verification.
 		$subscriber_id = $this->subscriber_authentication_verify( $this->post_id, sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ), sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) ) );
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $subscriber_id ) ) {
 			$this->error = $subscriber_id;
 			return;
@@ -526,7 +526,7 @@ class ConvertKit_Output_Restrict_Content {
 			$this->get_url( $post_id )
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $token ) ) {
 			return $token;
 		}
@@ -558,7 +558,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Verify the token and subscriber code.
 		$subscriber_id = $this->api->subscriber_authentication_verify( $token, $subscriber_code );
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $subscriber_id ) ) {
 			return $subscriber_id;
 		}
@@ -1127,7 +1127,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Get products that the subscriber has access to.
 		$result = $this->api->profile( $signed_subscriber_id );
 
-		// If an error occured, the subscriber ID is invalid.
+		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $result ) ) {
 			return false;
 		}
@@ -1157,7 +1157,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Get products that the subscriber has access to.
 		$result = $this->api->profile( $signed_subscriber_id );
 
-		// If an error occured, the subscriber ID is invalid.
+		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $result ) ) {
 			return false;
 		}
@@ -1187,7 +1187,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Get products that the subscriber has access to.
 		$result = $this->api->profile( $signed_subscriber_id );
 
-		// If an error occured, the subscriber ID is invalid.
+		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $result ) ) {
 			return false;
 		}
@@ -1217,7 +1217,7 @@ class ConvertKit_Output_Restrict_Content {
 		// Get tags that the subscriber has been assigned.
 		$tags = $this->api->get_subscriber_tags( $subscriber_id );
 
-		// If an error occured, the subscriber ID is invalid.
+		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $tags ) ) {
 			return false;
 		}
@@ -1253,7 +1253,7 @@ class ConvertKit_Output_Restrict_Content {
 		$subscriber    = new ConvertKit_Subscriber();
 		$subscriber_id = $subscriber->get_subscriber_id();
 
-		// If an error occured, the subscriber ID in the request/cookie is not a valid subscriber.
+		// If an error occurred, the subscriber ID in the request/cookie is not a valid subscriber.
 		if ( is_wp_error( $subscriber_id ) ) {
 			return 0;
 		}
