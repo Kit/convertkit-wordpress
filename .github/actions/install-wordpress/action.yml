@@ -1,0 +1,67 @@
+name: 'Install WordPress via WP-CLI'
+description: >
+  Installs WP-CLI, generates wp-config.php, and runs the WordPress core
+  installer. Assumes WordPress core files have already been downloaded and
+  extracted into the working directory.
+
+inputs:
+  root-dir:
+    description: 'Path to the WordPress root (where wp-config.php will live).'
+    required: true
+  db-name:
+    description: 'Database name.'
+    required: false
+    default: 'test'
+  db-user:
+    description: 'MySQL user.'
+    required: false
+    default: 'root'
+  db-pass:
+    description: 'MySQL password.'
+    required: false
+    default: 'root'
+  db-host:
+    description: 'MySQL host.'
+    required: false
+    default: 'localhost'
+  site-url:
+    description: 'WordPress site URL passed to wp-cli core install.'
+    required: false
+    default: '127.0.0.1'
+  site-title:
+    description: 'WordPress site title.'
+    required: false
+    default: 'ConvertKit'
+  admin-user:
+    description: 'WordPress admin username.'
+    required: false
+    default: 'admin'
+  admin-password:
+    description: 'WordPress admin password.'
+    required: false
+    default: 'password'
+  admin-email:
+    description: 'WordPress admin email.'
+    required: false
+    default: 'wordpress@convertkit.local'
+
+runs:
+  using: 'composite'
+  steps:
+    # We install WP-CLI, as it provides useful commands to setup and install WordPress through the command line.
+    - name: Install WP-CLI
+      shell: bash
+      run: |
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        sudo mv wp-cli.phar /usr/local/bin/wp-cli
+
+    - name: Setup wp-config.php
+      shell: bash
+      working-directory: ${{ inputs.root-dir }}
+      run: wp-cli config create --dbname=${{ inputs.db-name }} --dbuser=${{ inputs.db-user }} --dbpass=${{ inputs.db-pass }} --dbhost=${{ inputs.db-host }} --locale=en_DB
+
+    - name: Install WordPress
+      shell: bash
+      working-directory: ${{ inputs.root-dir }}
+      run: wp-cli core install --url=${{ inputs.site-url }} --title=${{ inputs.site-title }} --admin_user=${{ inputs.admin-user }} --admin_password=${{ inputs.admin-password }} --admin_email=${{ inputs.admin-email }}

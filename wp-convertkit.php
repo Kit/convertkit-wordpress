@@ -17,7 +17,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-// Bail if Kit is alread loaded.
+// Bail if Kit is already loaded.
 if ( class_exists( 'WP_ConvertKit' ) ) {
 	return;
 }

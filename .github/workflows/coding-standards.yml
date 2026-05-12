@@ -12,27 +12,8 @@ on:
 
 jobs:
   dependabot-metadata:
-    # Name.
-    name: Dependabot Metadata
-
-    # Virtual Environment to use.
-    # @see: https://github.com/actions/virtual-environments
-    runs-on: ubuntu-latest
-
-    # Don't run if the PR is not from Dependabot.
-    if: github.actor == 'dependabot[bot]'
-
-    # Outputs.
-    outputs:
-      package-ecosystem: ${{ steps.metadata.outputs.package-ecosystem }}
-
-    # Steps to fetch Dependabot metadata.
-    steps:
-      - name: Fetch Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v3
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+    uses: ./.github/workflows/_dependabot-metadata.yml
+    secrets: inherit
 
   tests:
     # Name.
@@ -42,7 +23,7 @@ jobs:
     # @see: https://github.com/actions/virtual-environments
     runs-on: ubuntu-latest
 
-    # Requieres the dependabot-metadata job to have run successfully.
+    # Requires the dependabot-metadata job to have run successfully.
     needs: [dependabot-metadata]
 
     # Always allow non-Dependabot PRs and pushes.
@@ -75,54 +56,43 @@ jobs:
 
     # Steps to install, configure and run tests
     steps:
-      - name: Start MySQL
-        run: sudo systemctl start mysql.service
-
-      - name: Create MySQL Database
-        run: |
-          mysql -e 'CREATE DATABASE test;' -u${{ env.DB_USER }} -p${{ env.DB_PASS }}
-          mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASS }}
-
-      # WordPress won't be able to connect to the DB if we don't perform this step.
-      - name: Permit MySQL Password Auth for MySQL 8.0
-        run: mysql -e "ALTER USER '${{ env.DB_USER }}'@'${{ env.DB_HOST }}' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASS }}';"  -u${{ env.DB_USER }} -p${{ env.DB_PASS }} 
-
-      # Some workflows checkout WordPress from GitHub, but that seems to bring a bunch of uncompiled files with it.
-      # Instead download from wordpress.org stable.
-      - name: Download WordPress
-        run: wget https://wordpress.org/wordpress-${{ matrix.wp-versions }}.tar.gz
-
-      - name: Extract WordPress
-        run: tar xfz wordpress-${{ matrix.wp-versions }}.tar.gz
-
-      # Checkout (copy) this repository's Plugin to this VM.
+      # Checkout Plugin to /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
+      # We cannot checkout to ${{ env.PLUGIN_DIR }} as GitHub Actions require it be first placed in /home/runner/work/repo/repo
       - name: Checkout Plugin
         uses: actions/checkout@v6
         with:
-          path: ${{ env.PLUGIN_DIR }}
+          path: /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit
+
+      - name: Set up MySQL
+        uses: ./convertkit/.github/actions/setup-mysql
+        with:
+          db-name: ${{ env.DB_NAME }}
+          db-user: ${{ env.DB_USER }}
+          db-pass: ${{ env.DB_PASS }}
+          db-host: ${{ env.DB_HOST }}
+
+      - name: Download and Extract WordPress
+        uses: ./convertkit/.github/actions/download-wordpress
+        with:
+          wp-version: ${{ matrix.wp-versions }}
+          target-dir: ${{ env.ROOT_DIR }}
 
       # This step is deliberate, to force PHP 7.4 for WP-CLI to work.
       # PHP 8.x results in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
-      - name: Install PHP 7.4.26
-        uses: shivammathur/setup-php@v2
+      #- name: Install PHP 7.4.26
+      #  uses: shivammathur/setup-php@v2
+      #  with:
+      #    php-version: 7.4.26
+      #    coverage: xdebug
+
+      - name: Install WordPress via WP-CLI
+        uses: ./convertkit/.github/actions/install-wordpress
         with:
-          php-version: 7.4.26
-          coverage: xdebug
-
-      # We install WP-CLI, as it provides useful commands to setup and install WordPress through the command line.
-      - name: Install WP-CLI
-        run: |
-          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-          chmod +x wp-cli.phar
-          sudo mv wp-cli.phar /usr/local/bin/wp-cli
-
-      - name: Setup wp-config.php
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli config create --dbname=${{ env.DB_NAME }} --dbuser=${{ env.DB_USER }} --dbpass=${{ env.DB_PASS }} --dbhost=${{ env.DB_HOST }} --locale=en_DB
-
-      - name: Install WordPress
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli core install --url=127.0.0.1 --title=ConvertKit --admin_user=admin --admin_password=password --admin_email=wordpress@convertkit.local
+          root-dir: ${{ env.ROOT_DIR }}
+          db-name: ${{ env.DB_NAME }}
+          db-user: ${{ env.DB_USER }}
+          db-pass: ${{ env.DB_PASS }}
+          db-host: ${{ env.DB_HOST }}
 
       # env.INSTALL_PLUGINS is a list of Plugin slugs, space separated e.g. contact-form-7 woocommerce.
       - name: Install Free Third Party WordPress Plugins
@@ -135,7 +105,11 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli plugin install ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }} --activate
 
-      # Install PHP version to run tests against.
+      # Move Plugin to PLUGIN_DIR.
+      - name: Move Plugin
+        run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
+
+      # Install PHP version to run coding standards / static analysis against.
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -144,12 +118,9 @@ jobs:
           tools: cs2pr
 
       # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
-      # jq is used to remove the wordpress/mcp-adapter package from composer.json, as it requires PHP 7.4+.
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: |
-          jq 'del(.require."wordpress/mcp-adapter")' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
-          composer update
+        run: composer update
 
       # Installs WordPress scripts for CSS and JS Coding Standards.
       - name: Run npm install

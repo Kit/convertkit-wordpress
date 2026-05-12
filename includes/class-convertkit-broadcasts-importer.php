@@ -171,7 +171,7 @@ class ConvertKit_Broadcasts_Importer {
 		// Unset API class.
 		unset( $api );
 
-		// Bail if an error occured fetching the Broadcast.
+		// Bail if an error occurred fetching the Broadcast.
 		if ( is_wp_error( $broadcast ) ) {
 			$this->maybe_log( 'ConvertKit_Broadcasts_Importer::refresh(): Broadcast #' . $broadcast_id . '. Error fetching from API: ' . $broadcast->get_error_message() );
 			return $broadcast;
@@ -190,7 +190,7 @@ class ConvertKit_Broadcasts_Importer {
 			true
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $post_id ) ) {
 			$this->maybe_log( 'ConvertKit_Broadcasts_Importer::refresh(): Broadcast #' . $broadcast_id . '. Error on wp_insert_post(): ' . $post_id->get_error_message() );
 			return $post_id;
@@ -211,7 +211,7 @@ class ConvertKit_Broadcasts_Importer {
 			true
 		);
 
-		// Bail if an error occured updating the Post.
+		// Bail if an error occurred updating the Post.
 		if ( is_wp_error( $post_id ) ) {
 			$this->maybe_log( 'ConvertKit_Broadcasts_Importer::refresh(): Broadcast #' . $broadcast_id . '. Error on wp_update_post() when adding Broadcast content: ' . $post_id->get_error_message() );
 			return $post_id;
@@ -251,7 +251,7 @@ class ConvertKit_Broadcasts_Importer {
 			true
 		);
 
-		// Maybe log if an error occured updating the Post to the publish status.
+		// Maybe log if an error occurred updating the Post to the publish status.
 		if ( is_wp_error( $post_id ) ) {
 			$this->maybe_log( 'ConvertKit_Broadcasts_Importer::refresh(): Broadcast #' . $broadcast_id . '. Error on wp_update_post() when transitioning post status from draft to publish: ' . $post_id->get_error_message() );
 			return $post_id;
@@ -643,7 +643,7 @@ class ConvertKit_Broadcasts_Importer {
 			$broadcast['thumbnail_alt']
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $image_id ) ) {
 			return $image_id;
 		}
