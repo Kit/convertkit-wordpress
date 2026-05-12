@@ -112,7 +112,7 @@ class ConvertKit_Broadcasts_Exporter {
 		// Export Post to a draft ConvertKit Broadcast.
 		$result = $this->export_post_to_broadcast( $post_id );
 
-		// If an error occured, display an error message.
+		// If an error occurred, display an error message.
 		if ( is_wp_error( $result ) ) {
 			wp_die( esc_html( $result->get_error_message() ) );
 		}
@@ -237,7 +237,7 @@ class ConvertKit_Broadcasts_Exporter {
 			$post->post_excerpt
 		);
 
-		// If an error occured, return it now.
+		// If an error occurred, return it now.
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
