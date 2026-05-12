@@ -31,6 +31,18 @@ define( 'CONVERTKIT_PLUGIN_VERSION', '3.3.2' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 
+// Load WordPress MCP Adapter if the Abilities API is available (WordPress 6.9+)
+// and PHP 7.4+ is installed.
+if ( file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) && function_exists( 'wp_register_ability' ) && version_compare( PHP_VERSION, '7.4', '>=' ) ) {
+	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
+
+	// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
+	// integration pattern.
+	// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin.
+	if ( class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+		\WP\MCP\Core\McpAdapter::instance();
+	}
+}
 // Load shared classes, if they have not been included by another Kit Plugin.
 if ( ! trait_exists( 'ConvertKit_API_Traits' ) && ! trait_exists( 'ConvertKit_API\ConvertKit_API_Traits' ) ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-api-traits.php';
@@ -98,6 +110,8 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-p
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-ability.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';

@@ -201,12 +201,13 @@ class WP_ConvertKit {
 		$this->classes['broadcasts_importer']                         = new ConvertKit_Broadcasts_Importer();
 		$this->classes['elementor']                                   = new ConvertKit_Elementor();
 		$this->classes['gutenberg']                                   = new ConvertKit_Gutenberg();
-		$this->classes['media_library']                               = new ConvertKit_Media_Library();
-		$this->classes['output_restrict_content']                     = new ConvertKit_Output_Restrict_Content();
-		$this->classes['review_request']                              = new ConvertKit_Review_Request( 'Kit', 'convertkit', CONVERTKIT_PLUGIN_PATH );
-		$this->classes['preview_output']                              = new ConvertKit_Preview_Output();
-		$this->classes['setup']                                       = new ConvertKit_Setup();
-		$this->classes['shortcodes']                                  = new ConvertKit_Shortcodes();
+		$this->classes['mcp']                     = new ConvertKit_MCP();
+		$this->classes['media_library']           = new ConvertKit_Media_Library();
+		$this->classes['output_restrict_content'] = new ConvertKit_Output_Restrict_Content();
+		$this->classes['review_request']          = new ConvertKit_Review_Request( 'Kit', 'convertkit', CONVERTKIT_PLUGIN_PATH );
+		$this->classes['preview_output']          = new ConvertKit_Preview_Output();
+		$this->classes['setup']                   = new ConvertKit_Setup();
+		$this->classes['shortcodes']              = new ConvertKit_Shortcodes();
 
 		/**
 		 * Initialize integration classes for the frontend web site.
