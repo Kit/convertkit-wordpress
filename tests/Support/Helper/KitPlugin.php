@@ -992,7 +992,10 @@ class KitPlugin extends \Codeception\Module
 
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->waitForText($message, 3);
+		$I->waitForJS(
+			"return document.body && document.body.innerText.includes(" . json_encode($message) . ")",
+			10
+		);
 
 		// Switch back to main window.
 		$I->switchToIFrame();
