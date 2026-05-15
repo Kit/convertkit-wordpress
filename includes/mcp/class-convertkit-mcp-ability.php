@@ -125,10 +125,7 @@ abstract class ConvertKit_MCP_Ability {
 	abstract public function get_output_schema();
 
 	/**
-	 * Returns the MCP annotations for this ability.
-	 *
-	 * Defaults to a non-readonly, non-destructive, non-idempotent action.
-	 * Subclasses override the returned array to set the appropriate hints.
+	 * Define the annotations for the ability.
 	 *
 	 * @since   3.4.0
 	 *
