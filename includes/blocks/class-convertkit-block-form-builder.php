@@ -151,7 +151,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$custom_fields
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $result ) ) {
 			// Store entry and return.
 			if ( $form_data['store_entries'] ) {
