@@ -67,7 +67,11 @@ class PageShortcodeFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			isShortcode: true
+		);
 	}
 
 	/**
@@ -114,7 +118,11 @@ class PageShortcodeFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			isShortcode: true
+		);
 	}
 
 	/**
@@ -177,7 +185,11 @@ class PageShortcodeFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			isShortcode: true
+		);
 	}
 
 	/**
@@ -260,7 +272,11 @@ class PageShortcodeFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			isShortcode: true
+		);
 	}
 
 	/**

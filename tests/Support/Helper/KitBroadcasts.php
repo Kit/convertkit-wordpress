@@ -54,6 +54,9 @@ class KitBroadcasts extends \Codeception\Module
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Confirm that the settings were saved.
+		$I->waitForElementVisible('.notice-success');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 	}

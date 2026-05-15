@@ -20,8 +20,9 @@ class KitForms extends \Codeception\Module
 	 * @param   bool|string    $position       Position of the form in the DOM relative to the content.
 	 * @param   bool|string    $element        Element the form should display after.
 	 * @param   bool|string    $elementIndex   Number of elements before the form should display.
+	 * @param   bool           $isShortcode    Test if this is a form shortcode or block.
 	 */
-	public function seeFormOutput($I, $formID, $position = false, $element = false, $elementIndex = 0)
+	public function seeFormOutput($I, $formID, $position = false, $element = false, $elementIndex = 0, $isShortcode = false)
 	{
 		// Calculate how many times the Form should be in the DOM.
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
@@ -53,7 +54,7 @@ class KitForms extends \Codeception\Module
 				// The block editor automatically adds CSS classes to some elements.
 				switch ( $element ) {
 					case 'p':
-						$I->seeInSource('<' . $element . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+						$I->seeInSource('<' . $element . ( $isShortcode ? '' : ' class="wp-block-paragraph"' ) . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
 						break;
 
 					case 'img':
@@ -62,7 +63,7 @@ class KitForms extends \Codeception\Module
 
 					// Headings.
 					default:
-						$I->seeInSource('<' . $element . ' class="wp-block-heading">Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+						$I->seeInSource('<' . $element . ( $isShortcode ? '' : ' class="wp-block-heading"' ) . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
 						break;
 				}
 				break;
