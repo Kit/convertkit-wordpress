@@ -36,8 +36,8 @@ class ConvertKit_Block_Post_Helper {
 		}
 
 		// Parse blocks.
-		$blocks           = parse_blocks( $post->post_content );
-		$found            = array();
+		$blocks = parse_blocks( $post->post_content );
+		$found  = array();
 
 		$occurrence_index = 0;
 
@@ -49,7 +49,7 @@ class ConvertKit_Block_Post_Helper {
 			$found[] = array(
 				'index'            => (int) $index,
 				'occurrence_index' => (int) $occurrence_index,
-				'attrs'            => isset( $block['attrs'] ) ? (array) $block['attrs'] : array(),
+				'attrs'            => $block['attrs'],
 			);
 
 			++$occurrence_index;
@@ -74,7 +74,7 @@ class ConvertKit_Block_Post_Helper {
 	 * @param   array  $attrs       Block Attributes.
 	 * @param   string $position    One of 'prepend', 'append', 'index'.
 	 * @param   int    $index       Zero-based top-level block index; only used when $position is 'index'.
-	 * @return  int|WP_Error
+	 * @return  WP_Error|array
 	 */
 	public static function insert( $post_id, $block_name, $attrs, $position = 'append', $index = 0 ) {
 
@@ -151,7 +151,7 @@ class ConvertKit_Block_Post_Helper {
 	 * @param   string $block_name        Programmatic Block Name.
 	 * @param   int    $occurrence_index  Position to update block.
 	 * @param   array  $attrs             Block Attributes.
-	 * @return  int|WP_Error
+	 * @return  WP_Error|array
 	 */
 	public static function update( $post_id, $block_name, $occurrence_index, $attrs ) {
 
@@ -228,7 +228,7 @@ class ConvertKit_Block_Post_Helper {
 	 * @param   int    $post_id           Post ID.
 	 * @param   string $block_name        Programmatic Block Name.
 	 * @param   int    $occurrence_index  Zero-based index among this block's occurrences in the post.
-	 * @return  int|WP_Error
+	 * @return  WP_Error|array
 	 */
 	public static function delete( $post_id, $block_name, $occurrence_index ) {
 
