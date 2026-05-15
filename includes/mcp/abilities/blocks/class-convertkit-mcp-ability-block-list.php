@@ -25,7 +25,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @var     bool
 	 */
-	private $readonly = true;
+	private $readonly = true; // @phpstan-ignore-line
 
 	/**
 	 * Sets whether the ability is idempotent.
@@ -34,7 +34,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @var     bool
 	 */
-	private $idempotent = true;
+	private $idempotent = true; // @phpstan-ignore-line
 
 	/**
 	 * Returns the verb this ability represents.

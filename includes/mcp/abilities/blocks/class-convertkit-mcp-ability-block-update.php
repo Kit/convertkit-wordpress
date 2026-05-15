@@ -28,7 +28,7 @@ class ConvertKit_MCP_Ability_Block_Update extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @var     bool
 	 */
-	private $idempotent = true;
+	private $idempotent = true; // @phpstan-ignore-line
 
 	/**
 	 * Returns the verb this ability represents.

@@ -25,7 +25,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 	 *
 	 * @var     bool
 	 */
-	private $destructive = true;
+	private $destructive = true; // @phpstan-ignore-line
 
 	/**
 	 * Returns the verb this ability represents.

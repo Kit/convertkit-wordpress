@@ -27,9 +27,6 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 		// Register this as a Gutenberg block in the ConvertKit Plugin.
 		add_filter( 'convertkit_blocks', array( $this, 'register' ) );
 
-		// Register this block's MCP abilities.
-		add_filter( 'convertkit_abilities', array( $this, 'register_abilities' ) );
-
 		// Enqueue scripts for this Gutenberg Block in the editor view.
 		add_action( 'convertkit_gutenberg_enqueue_scripts', array( $this, 'enqueue_scripts_editor' ) );
 

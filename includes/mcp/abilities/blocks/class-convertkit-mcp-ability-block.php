@@ -145,10 +145,6 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 		$properties = array();
 		$fields     = $this->block->get_fields();
 
-		if ( ! is_array( $fields ) ) {
-			return $properties;
-		}
-
 		foreach ( $fields as $field_name => $field ) {
 			$properties[ $field_name ] = array(
 				'description' => isset( $field['label'] ) ? (string) $field['label'] : '',
