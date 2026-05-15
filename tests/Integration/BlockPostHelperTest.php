@@ -48,6 +48,13 @@ class BlockPostHelperTest extends WPTestCase
 		16,
 	];
 
+	/**
+	 * Holds the total number of blocks in the Post.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     int
+	 */
 	private $totalBlocks = 28;
 
 	/**
