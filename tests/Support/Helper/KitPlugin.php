@@ -993,7 +993,7 @@ class KitPlugin extends \Codeception\Module
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
 		$I->waitForJS(
-			"return document.body && document.body.innerText.includes(" . json_encode($message) . ")",
+			'return document.body && document.body.innerText.includes(' . json_encode($message) . ')', // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 			10
 		);
 
