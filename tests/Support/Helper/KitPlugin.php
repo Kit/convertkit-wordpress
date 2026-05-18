@@ -974,13 +974,14 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           EndToEndTester.
-	 * @param   string         $message     Message.
+	 * @param   EndToEndTester $I            EndToEndTester.
+	 * @param   string         $message      Message.
+	 * @param   bool           $isPostEditor If the block editor is being used on a Post edit screen.
 	 */
-	public function seeFormBlockIFrameHasMessage($I, $message)
+	public function seeFormBlockIFrameHasMessage($I, $message, $isPostEditor = true)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($I->isGutenbergIFrameEditorEnabled()) {
+		if ($I->isGutenbergIFrameEditorEnabled() && $isPostEditor) {
 			$I->switchToGutenbergIFrameEditor($I);
 		}
 
