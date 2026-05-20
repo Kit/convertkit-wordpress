@@ -123,9 +123,12 @@ body.settings_page__wp_convertkit_settings p.submit {
 
 body.settings_page__wp_convertkit_settings .button {
 	margin: 0 5px 0 0;
-	padding: 4px 12px;
+	padding: 0 12px;
 	font-size: 14px;
 	border-radius: 10px;
+
+	/* Required for WordPress 7.0 styling */
+	line-height: 2.9;
 
 	/* Required for WordPress 5.x styling */
 	height: auto;
