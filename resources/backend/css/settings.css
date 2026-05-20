@@ -128,7 +128,7 @@ body.settings_page__wp_convertkit_settings .button {
 	border-radius: 10px;
 
 	/* Required for WordPress 7.0 styling */
-	line-height: 2.9;
+	line-height: 2.8;
 
 	/* Required for WordPress 5.x styling */
 	height: auto;
