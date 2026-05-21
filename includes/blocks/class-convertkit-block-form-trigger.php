@@ -362,7 +362,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 			$this->is_block_editor_request()
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $html ) ) {
 			if ( $settings->debug_enabled() ) {
 				return '<!-- ' . $html->get_error_message() . ' -->';

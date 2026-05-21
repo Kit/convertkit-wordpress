@@ -83,7 +83,7 @@ class ConvertKit_Subscriber {
 		// Get subscriber by email, to ensure they exist.
 		$subscriber_id = $api->get_subscriber_id( $subscriber_email );
 
-		// Bail if no subscriber exists with the given subscriber ID, or an error occured.
+		// Bail if no subscriber exists with the given subscriber ID, or an error occurred.
 		if ( is_wp_error( $subscriber_id ) ) {
 			// Delete the cookie.
 			$this->forget();

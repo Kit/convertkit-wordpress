@@ -161,7 +161,11 @@ class ClassicEditorFormCest
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
-			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				isShortcode: true
+			);
 		}
 	}
 
@@ -207,7 +211,8 @@ class ClassicEditorFormCest
 			$I->seeFormOutput(
 				$I,
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-				position: 'before_content'
+				position: 'before_content',
+				isShortcode: true
 			);
 		}
 	}
@@ -253,7 +258,8 @@ class ClassicEditorFormCest
 			$I->seeFormOutput(
 				$I,
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-				position: 'before_after_content'
+				position: 'before_after_content',
+				isShortcode: true
 			);
 		}
 	}
@@ -310,7 +316,8 @@ class ClassicEditorFormCest
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
 				position: 'after_element',
 				element: 'p',
-				elementIndex: 3
+				elementIndex: 3,
+				isShortcode: true
 			);
 
 			// Confirm character encoding is not broken due to using DOMDocument.
@@ -437,7 +444,8 @@ class ClassicEditorFormCest
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
 				position: 'after_element',
 				element: 'h2',
-				elementIndex: 2
+				elementIndex: 2,
+				isShortcode: true
 			);
 
 			// Confirm character encoding is not broken due to using DOMDocument.
@@ -503,7 +511,8 @@ class ClassicEditorFormCest
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
 				position: 'after_element',
 				element: 'img',
-				elementIndex: 2
+				elementIndex: 2,
+				isShortcode: true
 			);
 
 			// Confirm character encoding is not broken due to using DOMDocument.
@@ -568,7 +577,8 @@ class ClassicEditorFormCest
 			$I->seeFormOutput(
 				$I,
 				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-				position: 'after_content'
+				position: 'after_content',
+				isShortcode: true
 			);
 
 			// Confirm character encoding is not broken due to using DOMDocument.
@@ -702,7 +712,11 @@ class ClassicEditorFormCest
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
-			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				isShortcode: true
+			);
 		}
 	}
 
@@ -1180,7 +1194,11 @@ class ClassicEditorFormCest
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
-			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_ID']);
+			$I->seeFormOutput(
+				$I,
+				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+				isShortcode: true
+			);
 		}
 	}
 

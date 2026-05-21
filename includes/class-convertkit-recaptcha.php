@@ -91,7 +91,7 @@ class ConvertKit_Recaptcha {
 			)
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}

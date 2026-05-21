@@ -855,6 +855,7 @@ class KitPlugin extends \Codeception\Module
 
 		// Switch to the Gutenberg IFrame.
 		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
 			$I->switchToGutenbergIFrameEditor($I);
 		}
 
@@ -973,22 +974,29 @@ class KitPlugin extends \Codeception\Module
 	 *
 	 * @since   2.7.7
 	 *
-	 * @param   EndToEndTester $I           EndToEndTester.
-	 * @param   string         $message     Message.
+	 * @param   EndToEndTester $I            EndToEndTester.
+	 * @param   string         $message      Message.
+	 * @param   bool           $isPostEditor If the block editor is being used on a Post edit screen.
 	 */
-	public function seeFormBlockIFrameHasMessage($I, $message)
+	public function seeFormBlockIFrameHasMessage($I, $message, $isPostEditor = true)
 	{
 		// Switch to the Gutenberg IFrame.
-		if ($I->isGutenbergIFrameEditorEnabled()) {
+		if ($I->isGutenbergIFrameEditorEnabled() && $isPostEditor) {
 			$I->switchToGutenbergIFrameEditor($I);
 		}
+
+		// Wait for the block to load the expected class.
+		$I->waitForElementVisible('div.convertkit-no-content');
 
 		// Switch to iframe preview for the Form block.
 		$I->switchToIFrame('iframe[class="components-sandbox"]');
 
 		// Confirm that the Form block iframe sandbox preview displays that the Modal form was selected, and to view the frontend
 		// site to see it (we cannot preview Modal forms in the Gutenberg editor due to Gutenberg using an iframe).
-		$I->see($message);
+		$I->waitForJS(
+			'return document.body && document.body.innerText.includes(' . json_encode($message) . ')', // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+			10
+		);
 
 		// Switch back to main window.
 		$I->switchToIFrame();

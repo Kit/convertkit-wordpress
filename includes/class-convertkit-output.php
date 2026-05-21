@@ -115,7 +115,7 @@ class ConvertKit_Output {
 					$subscriber    = new ConvertKit_Subscriber();
 					$subscriber_id = $subscriber->validate_and_store_subscriber_email( $email );
 
-					// Bail if an error occured i.e. API hasn't been configured.
+					// Bail if an error occurred i.e. API hasn't been configured.
 					if ( is_wp_error( $subscriber_id ) ) {
 						return rest_ensure_response( $subscriber_id );
 					}
@@ -202,7 +202,7 @@ class ConvertKit_Output {
 		if ( ! is_numeric( $this->subscriber_id ) ) {
 			$result = $api->profile( $this->subscriber_id );
 
-			// If an error occured, the subscriber ID is invalid.
+			// If an error occurred, the subscriber ID is invalid.
 			if ( is_wp_error( $result ) ) {
 				return;
 			}
@@ -292,7 +292,7 @@ class ConvertKit_Output {
 		// Get Landing Page.
 		$landing_page = $this->landing_pages->get_html( $this->post_settings->get_landing_page() );
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $landing_page ) ) {
 			return;
 		}
@@ -372,7 +372,7 @@ class ConvertKit_Output {
 		// Get Form HTML.
 		$form = $this->forms->get_html( $form_id, $post_id );
 
-		// If an error occured, it could be because the specified Form ID for the Post either:
+		// If an error occurred, it could be because the specified Form ID for the Post either:
 		// - belongs to another ConvertKit account (i.e. API credentials were changed in the Plugin, but this Post's specified Form was not changed), or
 		// - the form was deleted from the ConvertKit account.
 		// Attempt to fallback to the default form for this Post Type.
@@ -396,7 +396,7 @@ class ConvertKit_Output {
 			// Get Form HTML.
 			$form = $this->forms->get_html( $form_id, $post_id );
 
-			// If an error occured again, the default form doesn't exist in this ConvertKit account.
+			// If an error occurred again, the default form doesn't exist in this ConvertKit account.
 			// Just return the Post Content, unedited.
 			if ( is_wp_error( $form ) ) {
 				if ( $this->settings->debug_enabled() ) {
@@ -840,7 +840,7 @@ class ConvertKit_Output {
 		$subscriber    = new ConvertKit_Subscriber();
 		$subscriber_id = $subscriber->get_subscriber_id();
 
-		// If an error occured, the subscriber ID in the request/cookie is not a valid subscriber.
+		// If an error occurred, the subscriber ID in the request/cookie is not a valid subscriber.
 		if ( is_wp_error( $subscriber_id ) ) {
 			return;
 		}

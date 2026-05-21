@@ -621,7 +621,7 @@ class ConvertKit_Setup {
 			get_site_url()
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $result ) ) {
 			return;
 		}

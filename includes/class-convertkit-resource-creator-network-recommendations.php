@@ -76,7 +76,7 @@ class ConvertKit_Resource_Creator_Network_Recommendations extends ConvertKit_Res
 		// Get script from API.
 		$result = $this->api->recommendations_script();
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $result ) ) {
 			delete_option( $this->settings_name );
 			return false;

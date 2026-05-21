@@ -170,7 +170,7 @@ class ConvertKit_Forminator {
 				// Subscribe.
 				$subscriber = $api->create_subscriber( $email, $first_name );
 
-				// If an error occured, don't attempt to add the subscriber to the Form, as it won't work.
+				// If an error occurred, don't attempt to add the subscriber to the Form, as it won't work.
 				if ( is_wp_error( $subscriber ) ) {
 					return;
 				}
@@ -185,7 +185,7 @@ class ConvertKit_Forminator {
 				// Subscribe.
 				$subscriber = $api->create_subscriber( $email, $first_name );
 
-				// If an error occured, don't attempt to add the subscriber to the Form, as it won't work.
+				// If an error occurred, don't attempt to add the subscriber to the Form, as it won't work.
 				if ( is_wp_error( $subscriber ) ) {
 					return;
 				}

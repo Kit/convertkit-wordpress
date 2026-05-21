@@ -141,7 +141,7 @@ class ConvertKit_Wishlist {
 				// Get subscriber ID.
 				$subscriber_id = $api->get_subscriber_id( $email );
 
-				// Bail if an error occured e.g. no subscriber exists.
+				// Bail if an error occurred e.g. no subscriber exists.
 				if ( is_wp_error( $subscriber_id ) ) {
 					return $subscriber_id;
 				}
@@ -173,7 +173,7 @@ class ConvertKit_Wishlist {
 					// Subscribe with inactive state.
 					$subscriber = $api->create_subscriber( $email, $first_name, 'inactive' );
 
-					// If an error occured, don't attempt to add the subscriber to the Form, as it won't work.
+					// If an error occurred, don't attempt to add the subscriber to the Form, as it won't work.
 					if ( is_wp_error( $subscriber ) ) {
 						break;
 					}
@@ -196,7 +196,7 @@ class ConvertKit_Wishlist {
 					// Subscribe.
 					$subscriber = $api->create_subscriber( $email, $first_name );
 
-					// If an error occured, don't attempt to add the subscriber to the Form, as it won't work.
+					// If an error occurred, don't attempt to add the subscriber to the Form, as it won't work.
 					if ( is_wp_error( $subscriber ) ) {
 						break;
 					}
@@ -212,7 +212,7 @@ class ConvertKit_Wishlist {
 					// Subscribe with inactive state.
 					$subscriber = $api->create_subscriber( $email, $first_name );
 
-					// If an error occured, don't attempt to add the subscriber to the Form, as it won't work.
+					// If an error occurred, don't attempt to add the subscriber to the Form, as it won't work.
 					if ( is_wp_error( $subscriber ) ) {
 						break;
 					}
@@ -237,7 +237,7 @@ class ConvertKit_Wishlist {
 		// Get WishList Member.
 		$wlm_get_member = wlmapi_get_member( $id );
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( 0 === $wlm_get_member['success'] ) {
 			return false;
 		}

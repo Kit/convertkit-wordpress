@@ -1,0 +1,30 @@
+name: Dependabot Metadata
+
+# Reusable workflow that fetches Dependabot metadata for the calling workflow.
+# Consumed via `uses: ./.github/workflows/_dependabot-metadata.yml`.
+
+on:
+  workflow_call:
+    outputs:
+      package-ecosystem:
+        description: 'The Dependabot package ecosystem (e.g. composer, github-actions).'
+        value: ${{ jobs.dependabot-metadata.outputs.package-ecosystem }}
+
+jobs:
+  dependabot-metadata:
+    name: Dependabot Metadata
+
+    runs-on: ubuntu-latest
+
+    # Only run when the actor is Dependabot.
+    if: github.actor == 'dependabot[bot]'
+
+    outputs:
+      package-ecosystem: ${{ steps.metadata.outputs.package-ecosystem }}
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"

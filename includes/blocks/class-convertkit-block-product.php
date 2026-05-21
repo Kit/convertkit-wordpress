@@ -418,7 +418,7 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 			)
 		);
 
-		// Bail if an error occured.
+		// Bail if an error occurred.
 		if ( is_wp_error( $html ) ) {
 			if ( $settings->debug_enabled() ) {
 				return '<!-- ' . $html->get_error_message() . ' -->';

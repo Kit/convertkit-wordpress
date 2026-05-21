@@ -1,0 +1,28 @@
+name: 'Download and Extract WordPress'
+description: >
+  Downloads WordPress from wordpress.org, extracts it into the target
+  directory, flattens the contents, and cleans up the archive.
+
+inputs:
+  wp-version:
+    description: 'WordPress version to download (e.g. "latest" or "6.2.8").'
+    required: true
+  target-dir:
+    description: 'Directory to extract WordPress into. Will be created and chowned to the runner.'
+    required: false
+    default: '/var/www/html'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download and Extract WordPress
+      shell: bash
+      run: |
+        sudo mkdir -p ${{ inputs.target-dir }}
+        sudo chown -R runner:docker ${{ inputs.target-dir }}
+        ls -la ${{ inputs.target-dir }}
+        cd ${{ inputs.target-dir }}
+        wget https://wordpress.org/wordpress-${{ inputs.wp-version }}.tar.gz
+        tar xfz wordpress-${{ inputs.wp-version }}.tar.gz
+        mv wordpress/* .
+        rm -rf wordpress wordpress-${{ inputs.wp-version }}.tar.gz
