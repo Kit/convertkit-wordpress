@@ -337,41 +337,41 @@ class WPClassicEditor extends \Codeception\Module
 				],
 				'post_content' => 'Item #1
 
-<h2 class="wp-block-heading">Item #1</h2>
+<h2>Item #1</h2>
 
 Item #2: Adhaésionés altéram improbis mi pariendarum sit stulti triarium
 
 <figure class="wp-block-image size-large"><img src="https://placehold.co/600x400" alt="Image #1" /></figure>
 
-<h2 class="wp-block-heading">Item #2</h2>
+<h2>Item #2</h2>
 
 Item #3
 
 <figure class="wp-block-image size-full"><img src="https://placehold.co/600x400" alt="Image #2" /></figure>
 
-<h3 class="wp-block-heading">Item #1</h3>
+<h3>Item #1</h3>
 
 Item #4
 
-<h4 class="wp-block-heading">Item #1</h4>
+<h4>Item #1</h4>
 
 Item #5
 
-<h5 class="wp-block-heading">Item #1</h5>
+<h5>Item #1</h5>
 
 Item #6
 
-<h6 class="wp-block-heading">Item #1</h6>
+<h6>Item #1</h6>
 
 Item #7
 
-<h3 class="wp-block-heading">Item #2</h3>
+<h3>Item #2</h3>
 
-<h4 class="wp-block-heading">Item #2</h4>
+<h4>Item #2</h4>
 
-<h5 class="wp-block-heading">Item #2</h5>
+<h5>Item #2</h5>
 
-<h6 class="wp-block-heading">Item #2</h6>',
+<h6>Item #2</h6>',
 			]
 		);
 	}
