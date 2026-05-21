@@ -98,14 +98,8 @@ class BroadcastsExportPostClassicEditorCest
 			title: 'Kit: Broadcasts: Export: Previously published'
 		);
 
-		// Scroll to Publish meta box, so its buttons are not hidden.
-		$I->scrollTo('#submitdiv');
-
-		// Click the Publish button.
-		$I->click('input#publish');
-
-		// Wait for notice to display.
-		$I->waitForElementVisible('.notice-success');
+		// Publish the Post.
+		$I->publishClassicEditorPage($I);
 
 		// Confirm no Create Broadcast option is displayed.
 		$I->dontSeeElementInDOM('#convertkit_action_broadcast_export');
@@ -137,14 +131,8 @@ class BroadcastsExportPostClassicEditorCest
 			title: 'Kit: Broadcasts: Export: Disabled in Post'
 		);
 
-		// Scroll to Publish meta box, so its buttons are not hidden.
-		$I->scrollTo('#submitdiv');
-
-		// Click the Publish button.
-		$I->click('input#publish');
-
-		// Wait for notice to display.
-		$I->waitForElementVisible('.notice-success');
+		// Publish the Post.
+		$I->publishClassicEditorPage($I);
 
 		// Get Post ID.
 		$postID = $I->grabValueFrom('post_ID');
@@ -187,14 +175,8 @@ class BroadcastsExportPostClassicEditorCest
 		// Enable the Create Broadcast option.
 		$I->checkOption('#convertkit_action_broadcast_export');
 
-		// Scroll to Publish meta box, so its buttons are not hidden.
-		$I->scrollTo('#submitdiv');
-
-		// Click the Publish button.
-		$I->click('input#publish');
-
-		// Wait for notice to display.
-		$I->waitForElementVisible('.notice-success');
+		// Publish the Post.
+		$I->publishClassicEditorPage($I);
 
 		// Get Post ID.
 		$postID = $I->grabValueFrom('post_ID');
