@@ -1,3 +1,6 @@
+### 3.3.3 2026-05-20
+* Fix: Settings: Button height in WordPress 7.0
+
 ### 3.3.2 2026-05-05
 * Fix: Form Builder: Set `inactive` subscriber state when a Kit Form is specified
 * Fix: Form Builder: Support subscribing to a Legacy Form
