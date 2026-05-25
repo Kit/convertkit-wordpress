@@ -82,12 +82,6 @@ class ConvertKit_MCP {
 	 */
 	public function register_abilities_category() {
 
-		// Bail if the MCP server is not enabled.
-		$settings = new ConvertKit_Settings_MCP();
-		if ( ! $settings->enabled() ) {
-			return;
-		}
-
 		wp_register_ability_category(
 			self::CATEGORY_SLUG,
 			array(
@@ -104,12 +98,6 @@ class ConvertKit_MCP {
 	 * @since   3.4.0
 	 */
 	public function register_abilities() {
-
-		// Bail if the MCP server is not enabled.
-		$settings = new ConvertKit_Settings_MCP();
-		if ( ! $settings->enabled() ) {
-			return;
-		}
 
 		// Get abilities.
 		$abilities = convertkit_get_abilities();
@@ -142,12 +130,6 @@ class ConvertKit_MCP {
 	 * @return  void
 	 */
 	public function register_mcp_server( $adapter ) {
-
-		// Bail if the MCP server is not enabled.
-		$settings = new ConvertKit_Settings_MCP();
-		if ( ! $settings->enabled() ) {
-			return;
-		}
 
 		// Get abilities.
 		$abilities = convertkit_get_abilities();

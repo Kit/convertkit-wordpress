@@ -575,6 +575,7 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('_wp_convertkit_settings');
 		$I->dontHaveOptionInDatabase('_wp_convertkit_settings_restrict_content');
 		$I->dontHaveOptionInDatabase('_wp_convertkit_settings_broadcasts');
+		$I->dontHaveOptionInDatabase('_wp_convertkit_settings_mcp');
 		$I->dontHaveOptionInDatabase('convertkit_version');
 
 		// Resources.

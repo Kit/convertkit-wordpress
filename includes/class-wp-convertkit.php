@@ -226,17 +226,23 @@ class WP_ConvertKit {
 	 */
 	public function initialize_mcp() {
 
+		// Bail if the MCP server is not enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
+
 		// Bail if the Abilities API is unavailable (WordPress < 6.9).
 		if ( ! function_exists( 'wp_register_ability' ) ) {
 			return;
 		}
 
-		// Bail if PHP 7.4+ is not installed.
+		// Bail if PHP 7.4+ is not installed, as this is required for the MCP Adapter classes.
 		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
 			return;
 		}
 
-		// Bail if the WordPress MCP Adapter is not installed.
+		// Bail if the WordPress MCP Adapter autoloader is missing.
 		if ( ! file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
 			return;
 		}

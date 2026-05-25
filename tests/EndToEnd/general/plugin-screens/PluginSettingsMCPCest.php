@@ -36,6 +36,9 @@ class PluginSettingsMCPCest
 	 */
 	public function testEnableAndDisableMCPServerSetting(EndToEndTester $I)
 	{
+		// Check that the MCP server is not registered.
+		$I->doesNotHaveRoute($I, '/kit-mcp');
+
 		// Go to the Plugin's MCP Screen.
 		$I->loadKitSettingsMCPScreen($I);
 
@@ -49,6 +52,9 @@ class PluginSettingsMCPCest
 		// Check that the MCP server is enabled.
 		$I->seeCheckboxIsChecked('#enabled');
 
+		// Check that the MCP server is registered.
+		$I->hasRoute($I, '/kit-mcp');
+
 		// Disable MCP server.
 		$I->uncheckOption('#enabled');
 		$I->click('Save Changes');
@@ -58,6 +64,9 @@ class PluginSettingsMCPCest
 
 		// Check that the MCP server is disabled.
 		$I->dontSeeCheckboxIsChecked('#enabled');
+
+		// Check that the MCP server is not registered.
+		$I->doesNotHaveRoute($I, '/kit-mcp');
 	}
 
 	/**
