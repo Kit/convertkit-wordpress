@@ -95,7 +95,7 @@ class ShortcodePostHelperTest extends WPTestCase
 	{
 		// Find the shortcode.
 		$shortcodes = \ConvertKit_Shortcode_Post_Helper::find( $this->postID, 'convertkit_form' );
-		
+
 		$this->assertIsArray( $shortcodes );
 		$this->assertCount( 2, $shortcodes );
 
