@@ -356,12 +356,6 @@ class ConvertKit_Shortcode_Post_Helper {
 		// expects only the attributes, without the surrounding brackets or tag name.
 		$attrs = shortcode_parse_atts( $shortcode['atts'] );
 
-		// shortcode_parse_atts() returns an empty string when there are no
-		// attributes; normalise that to an array.
-		if ( ! is_array( $attrs ) ) {
-			return array();
-		}
-
 		// Discard any positional (non-string keyed) attributes, keeping only
 		// named attributes.
 		foreach ( array_keys( $attrs ) as $key ) {
