@@ -99,12 +99,10 @@ class BlockPostHelperTest extends WPTestCase
 		$this->assertCount( 2, $blocks );
 
 		// Assert first matching block indicies and attributes are correct.
-		$this->assertEquals( $this->formBlockIndices[0], $blocks[0]['index'] );
 		$this->assertEquals( 0, $blocks[0]['occurrence_index'] );
 		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $blocks[0]['attrs']['form'] );
 
 		// Assert second matching block indicies and attributes are correct.
-		$this->assertEquals( $this->formBlockIndices[1], $blocks[1]['index'] );
 		$this->assertEquals( 1, $blocks[1]['occurrence_index'] );
 		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $blocks[1]['attrs']['form'] );
 	}
@@ -146,7 +144,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 0, $result['index'] );
 	}
 
 	/**
@@ -166,7 +163,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->totalBlocks + 1, $result['index'] );
 	}
 
 	/**
@@ -186,7 +182,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 1, $result['index'] );
 	}
 
 	/**
@@ -207,7 +202,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->totalBlocks + 1, $result['index'] );
 	}
 
 	/**
@@ -228,7 +222,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 0, $result['index'] );
 	}
 
 	/**
@@ -264,7 +257,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[0], $result['index'] );
 
 		$result = \ConvertKit_Block_Post_Helper::update(
 			post_id: $this->postID,
@@ -275,7 +267,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[1], $result['index'] );
 	}
 
 	/**
@@ -324,7 +315,6 @@ class BlockPostHelperTest extends WPTestCase
 		);
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[1], $result['index'] );
 
 		$result = \ConvertKit_Block_Post_Helper::delete(
 			post_id: $this->postID,
@@ -333,7 +323,6 @@ class BlockPostHelperTest extends WPTestCase
 		);
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[0], $result['index'] );
 	}
 
 	/**

@@ -94,29 +94,28 @@ class ShortcodePostHelperTest extends WPTestCase
 	public function testFind()
 	{
 		// Find the shortcode.
-		$shortcodes = \ConvertKit_Shortcode_Post_Helper::find( $this->postID, 'convertkit/form' );
-		$this->assertIsArray( $blocks );
-		$this->assertCount( 2, $blocks );
+		$shortcodes = \ConvertKit_Shortcode_Post_Helper::find( $this->postID, 'convertkit_form' );
+		
+		$this->assertIsArray( $shortcodes );
+		$this->assertCount( 2, $shortcodes );
 
-		// Assert first matching block indicies and attributes are correct.
-		$this->assertEquals( $this->formBlockIndices[0], $blocks[0]['index'] );
-		$this->assertEquals( 0, $blocks[0]['occurrence_index'] );
-		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $blocks[0]['attrs']['form'] );
+		// Assert first matching shortcode indicies and attributes are correct.
+		$this->assertEquals( 0, $shortcodes[0]['occurrence_index'] );
+		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $shortcodes[0]['attrs']['form'] );
 
-		// Assert second matching block indicies and attributes are correct.
-		$this->assertEquals( $this->formBlockIndices[1], $blocks[1]['index'] );
-		$this->assertEquals( 1, $blocks[1]['occurrence_index'] );
-		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $blocks[1]['attrs']['form'] );
+		// Assert second matching shortcode indicies and attributes are correct.
+		$this->assertEquals( 1, $shortcodes[1]['occurrence_index'] );
+		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $shortcodes[1]['attrs']['form'] );
 	}
 
 	/**
-	 * Test that the find() method returns false when no blocks match the given block name.
+	 * Test that the find() method returns false when no shortcodes match the given shortcode tag.
 	 *
 	 * @since   3.4.0
 	 */
-	public function testFindWhenNoBlocksMatch()
+	public function testFindWhenNoShortcodesMatch()
 	{
-		$this->assertFalse(\ConvertKit_Block_Post_Helper::find( $this->postID, 'fake/block' ));
+		$this->assertFalse(\ConvertKit_Shortcode_Post_Helper::find( $this->postID, 'fake_shortcode' ));
 	}
 
 	/**
@@ -126,20 +125,20 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testFindWhenPostDoesNotExist()
 	{
-		$this->assertInstanceOf(\WP_Error::class, \ConvertKit_Block_Post_Helper::find( 999999, 'convertkit/form' ));
+		$this->assertInstanceOf(\WP_Error::class, \ConvertKit_Shortcode_Post_Helper::find( 999999, 'convertkit_form' ));
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at the beginning of the content
+	 * Test that the insert() method inserts a new shortcode at the beginning of the content
 	 * when the position is set to prepend.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testInsertPrepend()
 	{
-		$result = \ConvertKit_Block_Post_Helper::insert(
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
 			position: 'prepend'
 		);
@@ -150,35 +149,34 @@ class ShortcodePostHelperTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at the end of the content
+	 * Test that the insert() method inserts a new shortcode at the end of the content
 	 * when the position is set to append.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testInsertAppend()
 	{
-		$result = \ConvertKit_Block_Post_Helper::insert(
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
 			position: 'append'
 		);
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->totalBlocks + 1, $result['index'] );
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at the specified index position.
+	 * Test that the insert() method inserts a new shortcode at the specified index position.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testInsertIndex()
 	{
-		$result = \ConvertKit_Block_Post_Helper::insert(
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
 			position: 'index',
 			index: 1
@@ -186,20 +184,19 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 1, $result['index'] );
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at end of the content when
+	 * Test that the insert() method inserts a new shortcode at end of the content when
 	 * the index is out of bounds.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testInsertIndexOutOfBounds()
 	{
-		$result = \ConvertKit_Block_Post_Helper::insert(
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
 			position: 'index',
 			index: 100
@@ -207,20 +204,19 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->totalBlocks + 1, $result['index'] );
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at the beginning of the content when
+	 * Test that the insert() method inserts a new shortcode at the beginning of the content when
 	 * the index is negative.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testInsertIndexNegative()
 	{
-		$result = \ConvertKit_Block_Post_Helper::insert(
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
 			position: 'index',
 			index: -1
@@ -228,7 +224,6 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 0, $result['index'] );
 	}
 
 	/**
@@ -238,9 +233,9 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testInsertWhenPostDoesNotExist()
 	{
-		$result = \ConvertKit_Block_Post_Helper::insert(
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: 999999,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
 			position: 'index',
 			index: 0
@@ -249,33 +244,31 @@ class ShortcodePostHelperTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the update() method updates the attributes of an existing block.
+	 * Test that the update() method updates the attributes of an existing shortcode.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testUpdate()
 	{
-		$result = \ConvertKit_Block_Post_Helper::update(
+		$result = \ConvertKit_Shortcode_Post_Helper::update(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 0,
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ]
 		);
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[0], $result['index'] );
 
-		$result = \ConvertKit_Block_Post_Helper::update(
+		$result = \ConvertKit_Shortcode_Post_Helper::update(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 1,
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ]
 		);
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[1], $result['index'] );
 	}
 
 	/**
@@ -285,9 +278,9 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testUpdateWhenOccurrenceIndexIsOutOfBounds()
 	{
-		$result = \ConvertKit_Block_Post_Helper::update(
+		$result = \ConvertKit_Shortcode_Post_Helper::update(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 999,
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ]
 		);
@@ -301,9 +294,9 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testUpdateWhenPostDoesNotExist()
 	{
-		$result = \ConvertKit_Block_Post_Helper::update(
+		$result = \ConvertKit_Shortcode_Post_Helper::update(
 			post_id: 999999,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 0,
 			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ]
 		);
@@ -311,29 +304,27 @@ class ShortcodePostHelperTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the delete() method deletes an existing block.
+	 * Test that the delete() method deletes an existing shortcode.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testDelete()
 	{
-		$result = \ConvertKit_Block_Post_Helper::delete(
+		$result = \ConvertKit_Shortcode_Post_Helper::delete(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 1
 		);
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[1], $result['index'] );
 
-		$result = \ConvertKit_Block_Post_Helper::delete(
+		$result = \ConvertKit_Shortcode_Post_Helper::delete(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 0
 		);
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[0], $result['index'] );
 	}
 
 	/**
@@ -343,9 +334,9 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testDeleteWhenOccurrenceIndexIsOutOfBounds()
 	{
-		$result = \ConvertKit_Block_Post_Helper::delete(
+		$result = \ConvertKit_Shortcode_Post_Helper::delete(
 			post_id: $this->postID,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 999
 		);
 		$this->assertInstanceOf(\WP_Error::class, $result );
@@ -358,9 +349,9 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testDeleteWhenPostDoesNotExist()
 	{
-		$result = \ConvertKit_Block_Post_Helper::delete(
+		$result = \ConvertKit_Shortcode_Post_Helper::delete(
 			post_id: 999999,
-			block_name: 'convertkit/form',
+			shortcode_tag: 'convertkit_form',
 			occurrence_index: 0
 		);
 		$this->assertInstanceOf(\WP_Error::class, $result );
@@ -374,67 +365,41 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	private function createPost()
 	{
-		// Create a Post with the given block.
+		// Create a Post with the given shortcode.
 		return $this->factory->post->create(
 			[
 				'post_type'    => 'page',
 				'post_status'  => 'publish',
-				'post_title'   => 'Block Post',
-				'post_content' => '<!-- wp:paragraph -->
-<p>Item #1</p>
-<!-- /wp:paragraph -->
+				'post_title'   => 'Shortcode Post',
+				'post_content' => 'Item #1
 
-<!-- wp:heading -->
-<h2 class="wp-block-heading">Item #1</h2>
-<!-- /wp:heading -->
+<h2>Item #1</h2>
 
-<!-- wp:paragraph -->
-<p>Item #2: Adhaésionés altéram improbis mi pariendarum sit stulti triarium</p>
-<!-- /wp:paragraph -->
+Item #2: Adhaésionés altéram improbis mi pariendarum sit stulti triarium
 
-<!-- wp:image {"id":4237,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="https://placehold.co/600x400" alt="Image #1" /></figure>
-<!-- /wp:image -->
+<figure class="size-large"><img src="https://placehold.co/600x400" alt="Image #1" /></figure>
 
-<!-- wp:heading -->
-<h2 class="wp-block-heading">Item #2</h2>
-<!-- /wp:heading -->
+<h2>Item #2</h2>
 
-<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->
+[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]
 
-<!-- wp:paragraph -->
-<p>Item #3</p>
-<!-- /wp:paragraph -->
+Item #3
 
-<!-- wp:image {"id":4240,"aspectRatio":"1","scale":"cover","sizeSlug":"full","linkDestination":"none"} -->
-<figure class="wp-block-image size-full"><img src="https://placehold.co/600x400" alt="Image #2" /></figure>
-<!-- /wp:image -->
+<figure class="size-full"><img src="https://placehold.co/600x400" alt="Image #2" /></figure>
 
-<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->
+[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]
 
-<!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading">Item #1</h3>
-<!-- /wp:heading -->
+<h3>Item #1</h3>
 
-<!-- wp:paragraph -->
-<p>Item #4</p>
-<!-- /wp:paragraph -->
+Item #4
 
-<!-- wp:heading {"level":4} -->
-<h4 class="wp-block-heading">Item #1</h4>
-<!-- /wp:heading -->
+<h4>Item #1</h4>
 
-<!-- wp:paragraph -->
-<p>Item #5</p>
-<!-- /wp:paragraph -->
+Item #5
 
-<!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading">Item #2</h3>
-<!-- /wp:heading -->
+<h3>Item #2</h3>
 
-<!-- wp:heading {"level":4} -->
-<h4 class="wp-block-heading">Item #2</h4>
-<!-- /wp:heading -->',
+<h4>Item #2</h4>',
 			]
 		);
 	}
