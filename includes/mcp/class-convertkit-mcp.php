@@ -37,7 +37,7 @@ class ConvertKit_MCP {
 	 *
 	 * @var     string
 	 */
-	const SERVER_ID = 'kit-mcp';
+	const SERVER_ID = 'kit/mcp';
 
 	/**
 	 * The REST namespace used by the MCP server.
@@ -46,7 +46,7 @@ class ConvertKit_MCP {
 	 *
 	 * @var     string
 	 */
-	const SERVER_NAMESPACE = 'kit-mcp';
+	const SERVER_NAMESPACE = 'kit/mcp';
 
 	/**
 	 * The REST version number used by the MCP server.
@@ -145,7 +145,7 @@ class ConvertKit_MCP {
 			self::SERVER_ID,
 			self::SERVER_NAMESPACE,
 			self::SERVER_ROUTE,
-			__( 'Kit MCP', 'convertkit' ),
+			__( 'Kit WordPress Plugin MCP', 'convertkit' ),
 			__( 'Exposes Kit Plugin abilities over the Model Context Protocol.', 'convertkit' ),
 			'1.0.0',
 			array( 'WP\\MCP\\Transport\\HttpTransport' ),

@@ -93,7 +93,11 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				'name'        => 'enabled',
 				'label_for'   => 'enabled',
 				'label'       => __( 'When enabled, allows AI clients to connect to the Kit Plugin using MCP.', 'convertkit' ),
-				'description' => '',
+				'description' => sprintf(
+					'%s<br /><code>%s</code>',
+					__( 'Go to your AI tool to add a custom connector by pasting this URL to connect to this plugin:', 'convertkit' ),
+					get_site_url() . '/wp-json/kit/mcp/v1'
+				),
 			)
 		);
 
