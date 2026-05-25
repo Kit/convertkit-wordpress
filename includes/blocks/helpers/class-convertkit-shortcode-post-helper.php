@@ -57,10 +57,8 @@ class ConvertKit_Shortcode_Post_Helper {
 
 		foreach ( $matches as $occurrence_index => $match ) {
 			$found[] = array(
-				// Shortcodes have no top-level block array, so index and
-				// occurrence_index are the same value, keeping the return
-				// shape identical to ConvertKit_Block_Post_Helper::find().
-				'index'            => (int) $occurrence_index,
+				// Zero-based index of this occurrence among occurrences of
+				// this shortcode in the post.
 				'occurrence_index' => (int) $occurrence_index,
 				'attrs'            => self::parse_attrs( $match ),
 			);
@@ -80,17 +78,6 @@ class ConvertKit_Shortcode_Post_Helper {
 	 * position.
 	 *
 	 * @since   3.4.0
-	 *
-	 * For shortcodes, positions are resolved against the Post's top-level
-	 * elements (the same element-level HTML elements wpautop() recognises):
-	 *
-	 * - prepend   Insert before all existing content.
-	 * - append    Insert after all existing content.
-	 * - index     Insert after the Nth top-level element. If the content has
-	 *             no top-level elements, this falls back to 'append'.
-	 *
-	 * The shortcode is spliced into the content string by byte offset, so all
-	 * other content is left byte-for-byte unchanged.
 	 *
 	 * @param   int    $post_id          Post ID.
 	 * @param   string $shortcode_tag    Programmatic Shortcode Tag.
@@ -115,7 +102,7 @@ class ConvertKit_Shortcode_Post_Helper {
 		$shortcode = self::build_shortcode( $shortcode_tag, $attrs );
 		$content   = $post->post_content;
 
-		// Determine the byte offsets immediately after each top-level element.
+		// Determine the byte offset immediately after each top-level element.
 		$offsets = self::get_element_offsets( $content );
 
 		// Resolve $position into a concrete byte offset within the content.
@@ -317,10 +304,11 @@ class ConvertKit_Shortcode_Post_Helper {
 	 * Returns all matches of the given shortcode tag within the content, in
 	 * document order.
 	 *
-	 * Each match is an array: 'text' (the full matched shortcode string) and
-	 * 'offset' (its byte offset within the content). The offset is used by
-	 * replace_match() to target a specific occurrence even when several
-	 * occurrences have identical text.
+	 * Each match is an array of:
+	 * - 'text'   The full matched shortcode string (e.g. `[convertkit_form form="1"]`).
+	 * - 'offset' Its byte offset within the content.
+	 * - 'atts'   The raw attribute string only (e.g. `form="1"`), suitable for
+	 *            passing directly to shortcode_parse_atts().
 	 *
 	 * @since   3.4.0
 	 *
@@ -338,11 +326,14 @@ class ConvertKit_Shortcode_Post_Helper {
 			return array();
 		}
 
+		// WordPress' shortcode regex captures the attribute string in group 3.
+		// With PREG_OFFSET_CAPTURE each group is a [ value, offset ] pair.
 		$found = array();
-		foreach ( $matches[0] as $match ) {
+		foreach ( $matches[0] as $i => $match ) {
 			$found[] = array(
 				'text'   => $match[0],
 				'offset' => (int) $match[1],
+				'atts'   => isset( $matches[3][ $i ][0] ) ? trim( (string) $matches[3][ $i ][0] ) : '',
 			);
 		}
 
@@ -356,20 +347,23 @@ class ConvertKit_Shortcode_Post_Helper {
 	 *
 	 * @since   3.4.0
 	 *
-	 * @param   array $match   A match from match_shortcodes().
+	 * @param   array $shortcode   A match from match_shortcodes().
 	 * @return  array
 	 */
-	private static function parse_attrs( $match ) {
+	private static function parse_attrs( $shortcode ) {
 
-		$attrs = shortcode_parse_atts( $match['text'] );
+		// Parse the raw attribute string (e.g. `form="1"`). shortcode_parse_atts()
+		// expects only the attributes, without the surrounding brackets or tag name.
+		$attrs = shortcode_parse_atts( $shortcode['atts'] );
 
-		// shortcode_parse_atts() returns a string for an empty shortcode, and
-		// the parsed array includes the tag name itself as element 0; strip
-		// any non-string keys so only named attributes remain.
+		// shortcode_parse_atts() returns an empty string when there are no
+		// attributes; normalise that to an array.
 		if ( ! is_array( $attrs ) ) {
 			return array();
 		}
 
+		// Discard any positional (non-string keyed) attributes, keeping only
+		// named attributes.
 		foreach ( array_keys( $attrs ) as $key ) {
 			if ( ! is_string( $key ) ) {
 				unset( $attrs[ $key ] );
@@ -416,17 +410,17 @@ class ConvertKit_Shortcode_Post_Helper {
 	 * @since   3.4.0
 	 *
 	 * @param   string $content       Post content.
-	 * @param   array  $match         A match from match_shortcodes().
+	 * @param   array  $atts          A match from match_shortcodes().
 	 * @param   string $replacement   Replacement string (empty string to delete).
 	 * @return  string
 	 */
-	private static function replace_match( $content, $match, $replacement ) {
+	private static function replace_match( $content, $atts, $replacement ) {
 
 		return substr_replace(
 			$content,
 			$replacement,
-			$match['offset'],
-			strlen( $match['text'] )
+			$atts['offset'],
+			strlen( $atts['text'] )
 		);
 
 	}
@@ -435,16 +429,12 @@ class ConvertKit_Shortcode_Post_Helper {
 	 * Wraps a shortcode snippet in blank-line padding so that, once inserted
 	 * at the given offset, it sits as its own top-level element.
 	 *
-	 * Padding is only added on a side that is not already preceded / followed
-	 * by a blank line (or the start / end of the content), so inserting next
-	 * to existing whitespace does not pile up extra blank lines.
-	 *
 	 * @since   3.4.0
 	 *
 	 * @param   string $shortcode   The shortcode string to insert.
 	 * @param   string $content     The content the shortcode is being inserted into.
 	 * @param   int    $offset      Byte offset within $content the shortcode will be inserted at.
-	 * @return  string               The padded shortcode snippet.
+	 * @return  string
 	 */
 	private static function pad_snippet( $shortcode, $content, $offset ) {
 
@@ -465,8 +455,8 @@ class ConvertKit_Shortcode_Post_Helper {
 	}
 
 	/**
-	 * Returns the byte offset within the content immediately after each
-	 * top-level element, in document order.
+	 * Returns the byte offset immediately after each top-level element in the
+	 * content, in document order.
 	 *
 	 * A top-level element is a single top-level element-level HTML element
 	 * (e.g. a whole `<p>...</p>`). These are the Classic content analogue of
@@ -475,9 +465,7 @@ class ConvertKit_Shortcode_Post_Helper {
 	 * in both mechanisms.
 	 *
 	 * The returned offsets are the points *after* each element, suitable for
-	 * use as a `substr_replace()` insertion point. For content with N
-	 * top-level elements this returns N offsets; `index` 0 inserts after the
-	 * first element, and so on.
+	 * use as a `substr_replace()` insertion point.
 	 *
 	 * @since   3.4.0
 	 *

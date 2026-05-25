@@ -131,14 +131,14 @@ class ConvertKit_MCP_Ability_Content_List extends ConvertKit_MCP_Ability_Content
 					'type'  => 'array',
 					'items' => array(
 						'type'       => 'object',
-						'required'   => array( 'index', 'attrs' ),
+						'required'   => array( 'occurrence_index', 'attrs' ),
 						'properties' => array(
-							'index' => array(
+							'occurrence_index' => array(
 								'type'        => 'integer',
 								'minimum'     => 0,
 								'description' => __( 'Zero-based occurrence index among this element\'s appearances in the post.', 'convertkit' ),
 							),
-							'attrs' => array(
+							'attrs'            => array(
 								'type'        => 'object',
 								'description' => __( 'Element attributes for this occurrence.', 'convertkit' ),
 							),

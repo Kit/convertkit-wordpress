@@ -41,13 +41,12 @@ class ConvertKit_Block_Post_Helper {
 
 		$occurrence_index = 0;
 
-		foreach ( $blocks as $index => $block ) {
+		foreach ( $blocks as $block ) {
 			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $block_name ) {
 				continue;
 			}
 
 			$found[] = array(
-				'index'            => (int) $index,
 				'occurrence_index' => (int) $occurrence_index,
 				'attrs'            => $block['attrs'],
 			);
@@ -120,6 +119,15 @@ class ConvertKit_Block_Post_Helper {
 		// Splice in the new block.
 		array_splice( $blocks, $insert_at, 0, array( $new_block ) );
 
+		// Determine the occurrence index of the newly inserted block, by
+		// counting how many blocks of the same name precede it.
+		$occurrence_index = 0;
+		for ( $i = 0; $i < $insert_at; $i++ ) {
+			if ( isset( $blocks[ $i ]['blockName'] ) && $blocks[ $i ]['blockName'] === $block_name ) {
+				++$occurrence_index;
+			}
+		}
+
 		// Update Post.
 		$result = wp_update_post(
 			array(
@@ -134,10 +142,10 @@ class ConvertKit_Block_Post_Helper {
 			return $result;
 		}
 
-		// Return the index the block was inserted at.
+		// Return the occurrence index of the newly inserted block.
 		return array(
-			'post_id' => $post_id,
-			'index'   => $insert_at,
+			'post_id'          => $post_id,
+			'occurrence_index' => $occurrence_index,
 		);
 
 	}
@@ -167,13 +175,10 @@ class ConvertKit_Block_Post_Helper {
 
 		// Parse blocks.
 		$blocks      = parse_blocks( $post->post_content );
-		$update_at   = 0;
 		$block_index = 0;
 		$matched     = false;
 
 		foreach ( $blocks as $key => $block ) {
-			++$update_at;
-
 			// Skip if the block name does not match.
 			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $block_name ) {
 				continue;
@@ -212,10 +217,10 @@ class ConvertKit_Block_Post_Helper {
 			return $result;
 		}
 
-		// Return the index the block was updated at.
+		// Return the occurrence index of the block that was updated.
 		return array(
-			'post_id' => $post_id,
-			'index'   => ( $update_at - 1 ),
+			'post_id'          => $post_id,
+			'occurrence_index' => (int) $occurrence_index,
 		);
 
 	}
@@ -244,19 +249,16 @@ class ConvertKit_Block_Post_Helper {
 
 		// Parse blocks.
 		$blocks      = parse_blocks( $post->post_content );
-		$delete_at   = 0;
 		$block_index = 0;
 		$matched     = false;
 
 		foreach ( $blocks as $key => $block ) {
-			++$delete_at;
-
 			// Skip if the block name does not match.
 			if ( ! isset( $block['blockName'] ) || $block['blockName'] !== $block_name ) {
 				continue;
 			}
 
-			// Update the block if the occurrence index matches.
+			// Delete the block if the occurrence index matches.
 			if ( $block_index === (int) $occurrence_index ) {
 				unset( $blocks[ $key ] );
 				$blocks  = array_values( $blocks );
@@ -290,10 +292,10 @@ class ConvertKit_Block_Post_Helper {
 			return $result;
 		}
 
-		// Return the index the block was deleted from.
+		// Return the occurrence index of the block that was deleted.
 		return array(
-			'post_id' => $post_id,
-			'index'   => ( $delete_at - 1 ),
+			'post_id'          => $post_id,
+			'occurrence_index' => (int) $occurrence_index,
 		);
 
 	}
