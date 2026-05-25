@@ -41,12 +41,36 @@ class MCPTest extends WPRestApiTestCase
 	}
 
 	/**
+	 * Test that the Kit MCP server is not created when the MCP server setting is disabled.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testKitMCPServerNotCreatedWhenDisabled()
+	{
+		// Make request.
+		$request = new \WP_REST_Request('POST', '/kit-mcp/v1');
+		$request->set_header('Content-Type', 'application/json');
+		$response = rest_get_server()->dispatch($request);
+
+		// Assert response is 404 not found.
+		$this->assertSame( 404, $response->get_status() );
+	}
+
+	/**
 	 * Test that the /wp-json/kit-mcp/v1 REST API route returns a 401 when the user is not authorized.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testWhenUnauthorized()
 	{
+		// Enable MCP server.
+		update_option(
+			'_wp_convertkit_settings_mcp',
+			[
+				'enabled' => 'on',
+			]
+		);
+
 		// Make request.
 		$request  = new \WP_REST_Request( 'GET', '/kit-mcp/v1' );
 		$response = rest_get_server()->dispatch( $request );
@@ -61,10 +85,18 @@ class MCPTest extends WPRestApiTestCase
 	 *
 	 * @since   3.4.0
 	 */
-	public function testKitMCPServerCreated()
+	public function testKitMCPServerCreatedWhenEnabled()
 	{
 		// Create and become administrator.
 		$this->actAsAdministrator();
+
+		// Enable MCP server.
+		update_option(
+			'_wp_convertkit_settings_mcp',
+			[
+				'enabled' => 'on',
+			]
+		);
 
 		// Make request.
 		$request = new \WP_REST_Request('POST', '/kit-mcp/v1');
