@@ -1,22 +1,21 @@
 <?php
 /**
- * Kit MCP Ability: Block base class.
+ * Kit MCP Ability: Content base class.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Base class for abilities that target Kit Gutenberg blocks (e.g. convertkit/form)
- * inside a WordPress post's content.
+ * Base class for abilities that insert, update or remove a Kit element
+ * (Broadcast, Form, Form Trigger, Product) within a WordPress Post's content.
  *
- * Each subclass represents a single verb (list / insert / update / delete) and
- * works against any Kit block.
+ * Each subclass represents a single verb (list / insert / update / delete).
  *
  * @package ConvertKit
  * @author  ConvertKit
  */
-abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
+abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 
 	/**
 	 * The block this ability operates on.
@@ -41,10 +40,10 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	}
 
 	/**
-	 * Returns the ability name, derived from the block's name and the verb
+	 * Returns the ability name, derived from the Kit element's name and the verb
 	 * returned by get_verb().
 	 *
-	 * For example, the Form block's insert ability would be named `kit/form-block-insert`.
+	 * For example, the Form element's insert ability is named `kit/form-insert`.
 	 *
 	 * @since   3.4.0
 	 *
@@ -52,7 +51,7 @@ abstract class ConvertKit_MCP_Ability_Block extends ConvertKit_MCP_Ability {
 	 */
 	public function get_name() {
 
-		return 'kit/' . $this->block->get_name() . '-block-' . $this->get_verb();
+		return 'kit/' . $this->block->get_name() . '-' . $this->get_verb();
 
 	}
 

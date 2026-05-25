@@ -1,22 +1,22 @@
 <?php
 /**
- * Kit MCP Ability: Delete a block from a post.
+ * Kit MCP Ability: Delete a Kit Element from a post.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Ability that removes an occurrence of a Kit block from a WordPress post's
- * content.
+ * Ability that removes a single occurrence of a Kit element
+ * (Broadcast, Form, Form Trigger, Product) from a WordPress Post's content.
  *
- * Registered by a block opting in via the `convertkit_abilities` filter and
- * produces an ability named `kit/<block-name>-delete` (e.g. `kit/form-delete`).
+ * Registered by an element opting in via the `convertkit_abilities` filter and
+ * produces an ability named `kit/<element>-delete` (e.g. `kit/form-delete`).
  *
  * @package ConvertKit
  * @author  ConvertKit
  */
-class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
+class ConvertKit_MCP_Ability_Content_Delete extends ConvertKit_MCP_Ability_Content {
 
 	/**
 	 * Sets whether the ability is destructive.
@@ -51,7 +51,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Delete an existing %s block from a post', 'convertkit' ),
+			__( 'Delete an existing %s element from a post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -68,7 +68,7 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Removes a single occurrence of the %1$s (%2$s) block from the given post.', 'convertkit' ),
+			__( 'Removes a single occurrence of the %1$s (%2$s) element from the given post.', 'convertkit' ),
 			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
@@ -91,12 +91,12 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 				'post_id'          => array(
 					'type'        => 'integer',
 					'minimum'     => 1,
-					'description' => __( 'ID of the post containing the block.', 'convertkit' ),
+					'description' => __( 'ID of the post containing the element.', 'convertkit' ),
 				),
 				'occurrence_index' => array(
 					'type'        => 'integer',
 					'minimum'     => 0,
-					'description' => __( 'The zero-based occurrence index of the block to delete.', 'convertkit' ),
+					'description' => __( 'The zero-based occurrence index of the element to delete.', 'convertkit' ),
 				),
 			),
 		);
@@ -127,8 +127,8 @@ class ConvertKit_MCP_Ability_Block_Delete extends ConvertKit_MCP_Ability_Block {
 		// Get occurrence index.
 		$occurrence_index = isset( $input['occurrence_index'] ) ? (int) $input['occurrence_index'] : 0;
 
-		// Delete block from post.
-		return ConvertKit_Block_Post_Helper::delete( $post_id, 'convertkit/' . $this->block->get_name(), $occurrence_index );
+		// Delete the element from the post.
+		return ConvertKit_Content_Post_Helper::delete( $post_id, $this->block->get_name(), $occurrence_index );
 
 	}
 
