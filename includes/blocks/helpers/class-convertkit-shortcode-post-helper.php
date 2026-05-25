@@ -15,6 +15,22 @@
 class ConvertKit_Shortcode_Post_Helper {
 
 	/**
+	 * The element-level HTML tags treated as top-level element boundaries when
+	 * resolving an insertion position.
+	 *
+	 * This is the same set WordPress' wpautop() recognises as element-level,
+	 * so the segmentation matches how WordPress itself conceptualises Classic
+	 * editor content.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     string
+	 */
+	const ELEMENT_LEVEL_TAGS = 'address|article|aside|blockquote|details|dd|div|dl|dt|' .
+		'figcaption|figure|footer|form|h1|h2|h3|h4|h5|h6|header|hgroup|hr|' .
+		'main|menu|nav|ol|p|pre|section|table|ul';
+
+	/**
 	 * Finds all occurrences of the given shortcode in a Post's content.
 	 *
 	 * @since   3.4.0
@@ -65,11 +81,22 @@ class ConvertKit_Shortcode_Post_Helper {
 	 *
 	 * @since   3.4.0
 	 *
+	 * For shortcodes, positions are resolved against the Post's top-level
+	 * elements (the same element-level HTML elements wpautop() recognises):
+	 *
+	 * - prepend   Insert before all existing content.
+	 * - append    Insert after all existing content.
+	 * - index     Insert after the Nth top-level element. If the content has
+	 *             no top-level elements, this falls back to 'append'.
+	 *
+	 * The shortcode is spliced into the content string by byte offset, so all
+	 * other content is left byte-for-byte unchanged.
+	 *
 	 * @param   int    $post_id          Post ID.
 	 * @param   string $shortcode_tag    Programmatic Shortcode Tag.
 	 * @param   array  $attrs            Shortcode Attributes.
 	 * @param   string $position         One of 'prepend', 'append', 'index'.
-	 * @param   int    $index            Zero-based paragraph index; only used when $position is 'index'.
+	 * @param   int    $index            Zero-based top-level element index; only used when $position is 'index'.
 	 * @return  WP_Error|array
 	 */
 	public static function insert( $post_id, $shortcode_tag, $attrs, $position = 'append', $index = 0 ) {
@@ -86,34 +113,55 @@ class ConvertKit_Shortcode_Post_Helper {
 
 		// Build the shortcode string to insert.
 		$shortcode = self::build_shortcode( $shortcode_tag, $attrs );
+		$content   = $post->post_content;
 
-		// Split content into top-level paragraphs.
-		$paragraphs = self::split_paragraphs( $post->post_content );
+		// Determine the byte offsets immediately after each top-level element.
+		$offsets = self::get_element_offsets( $content );
 
-		// Resolve $position into a concrete zero-based splice point.
+		// Resolve $position into a concrete byte offset within the content.
 		switch ( $position ) {
 			case 'prepend':
 				$insert_at = 0;
 				break;
 
 			case 'index':
-				$insert_at = max( 0, min( (int) $index + 1, count( $paragraphs ) ) );
+				// Insert after the Nth top-level element. If no elements
+				// exist, or the index is beyond the last element, fall back
+				// to appending after all existing content.
+				if ( empty( $offsets ) || (int) $index >= count( $offsets ) ) {
+					$insert_at = strlen( $content );
+				} else {
+					$insert_at = $offsets[ max( 0, (int) $index ) ];
+				}
 				break;
 
 			case 'append':
 			default:
-				$insert_at = count( $paragraphs );
+				$insert_at = strlen( $content );
 				break;
 		}
 
-		// Splice in the new shortcode as its own paragraph.
-		array_splice( $paragraphs, $insert_at, 0, array( $shortcode ) );
+		// Determine the occurrence index the new shortcode will have, by
+		// counting how many existing occurrences of the same shortcode start
+		// before the insertion offset.
+		$occurrence_index = 0;
+		foreach ( self::match_shortcodes( $content, $shortcode_tag ) as $match ) {
+			if ( $match['offset'] < $insert_at ) {
+				++$occurrence_index;
+			}
+		}
+
+		// Splice the shortcode into the content at the resolved offset,
+		// wrapped in blank lines so it sits as its own top-level element.
+		// All other content is left byte-for-byte unchanged.
+		$snippet = self::pad_snippet( $shortcode, $content, $insert_at );
+		$content = substr_replace( $content, $snippet, $insert_at, 0 );
 
 		// Update Post.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => self::join_paragraphs( $paragraphs ),
+				'post_content' => $content,
 			),
 			true
 		);
@@ -123,10 +171,10 @@ class ConvertKit_Shortcode_Post_Helper {
 			return $result;
 		}
 
-		// Return the index the shortcode was inserted at.
+		// Return the occurrence index of the newly inserted shortcode.
 		return array(
-			'post_id' => $post_id,
-			'index'   => $insert_at,
+			'post_id'          => $post_id,
+			'occurrence_index' => $occurrence_index,
 		);
 
 	}
@@ -195,8 +243,8 @@ class ConvertKit_Shortcode_Post_Helper {
 
 		// Return the occurrence index that was updated.
 		return array(
-			'post_id' => $post_id,
-			'index'   => (int) $occurrence_index,
+			'post_id'          => $post_id,
+			'occurrence_index' => (int) $occurrence_index,
 		);
 
 	}
@@ -259,8 +307,8 @@ class ConvertKit_Shortcode_Post_Helper {
 
 		// Return the occurrence index that was deleted.
 		return array(
-			'post_id' => $post_id,
-			'index'   => (int) $occurrence_index,
+			'post_id'          => $post_id,
+			'occurrence_index' => (int) $occurrence_index,
 		);
 
 	}
@@ -384,38 +432,88 @@ class ConvertKit_Shortcode_Post_Helper {
 	}
 
 	/**
-	 * Splits Post content into top-level paragraphs (text blocks separated by
-	 * one or more blank lines), discarding empty fragments.
+	 * Wraps a shortcode snippet in blank-line padding so that, once inserted
+	 * at the given offset, it sits as its own top-level element.
+	 *
+	 * Padding is only added on a side that is not already preceded / followed
+	 * by a blank line (or the start / end of the content), so inserting next
+	 * to existing whitespace does not pile up extra blank lines.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   string $shortcode   The shortcode string to insert.
+	 * @param   string $content     The content the shortcode is being inserted into.
+	 * @param   int    $offset      Byte offset within $content the shortcode will be inserted at.
+	 * @return  string               The padded shortcode snippet.
+	 */
+	private static function pad_snippet( $shortcode, $content, $offset ) {
+
+		// Determine the text immediately before and after the insertion point.
+		$before = substr( $content, 0, $offset );
+		$after  = substr( $content, $offset );
+
+		// Add a leading blank line unless the shortcode is at the start of the
+		// content, or already preceded by a blank line.
+		$lead = ( '' === $before || (bool) preg_match( '/\R\R\s*$/', $before ) ) ? '' : "\n\n";
+
+		// Add a trailing blank line unless the shortcode is at the end of the
+		// content, or already followed by a blank line.
+		$trail = ( '' === $after || (bool) preg_match( '/^\s*\R\R/', $after ) ) ? '' : "\n\n";
+
+		return $lead . $shortcode . $trail;
+
+	}
+
+	/**
+	 * Returns the byte offset within the content immediately after each
+	 * top-level element, in document order.
+	 *
+	 * A top-level element is a single top-level element-level HTML element
+	 * (e.g. a whole `<p>...</p>`). These are the Classic content analogue of
+	 * the top-level blocks that ConvertKit_Block_Post_Helper works against:
+	 * counting them lets a caller-supplied `index` mean the same kind of unit
+	 * in both mechanisms.
+	 *
+	 * The returned offsets are the points *after* each element, suitable for
+	 * use as a `substr_replace()` insertion point. For content with N
+	 * top-level elements this returns N offsets; `index` 0 inserts after the
+	 * first element, and so on.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   string $content   Post content.
-	 * @return  array
+	 * @return  int[]              Zero-indexed array of byte offsets.
 	 */
-	private static function split_paragraphs( $content ) {
+	private static function get_element_offsets( $content ) {
 
 		// Bail with an empty array if there is no content.
 		if ( '' === trim( (string) $content ) ) {
 			return array();
 		}
 
-		$paragraphs = preg_split( '/\R{2,}/', trim( (string) $content ) );
+		// Match each top-level element-level element in document order. The
+		// 's' flag lets the element span multiple lines; the lazy quantifier
+		// and \1 backreference keep the match scoped to a single element.
+		//
+		// Note: this does not handle an element-level tag nested inside
+		// another of the same name (e.g. a <div> within a <div>). Such
+		// nesting is rare in Classic editor content, and parsing it correctly
+		// requires a full HTML parser, which is avoided here to keep the
+		// content modification surgical (see insert()).
+		$pattern = '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>.*?<\/\1>/is';
 
-		return is_array( $paragraphs ) ? array_values( array_filter( $paragraphs, 'strlen' ) ) : array();
+		// Bail with an empty array if no top-level elements are found.
+		if ( ! preg_match_all( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
+			return array();
+		}
 
-	}
+		// Record the byte offset immediately after each matched element.
+		$offsets = array();
+		foreach ( $matches[0] as $match ) {
+			$offsets[] = (int) $match[1] + strlen( $match[0] );
+		}
 
-	/**
-	 * Joins paragraphs back into Post content, separated by blank lines.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @param   array $paragraphs   Paragraphs.
-	 * @return  string
-	 */
-	private static function join_paragraphs( $paragraphs ) {
-
-		return implode( "\n\n", $paragraphs );
+		return $offsets;
 
 	}
 
