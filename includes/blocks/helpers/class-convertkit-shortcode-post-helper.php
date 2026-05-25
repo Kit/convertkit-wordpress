@@ -7,15 +7,7 @@
  */
 
 /**
- * Helper methods to find, insert, update and delete Kit shortcodes within a
- * Classic editor WordPress Post's content.
- *
- * Mirrors the public API of ConvertKit_Block_Post_Helper (find / insert /
- * update / delete) so that ConvertKit_Content_Post_Helper can delegate to
- * either helper interchangeably.
- *
- * All Kit shortcodes are self-closing (e.g. `[convertkit_form form="123"]`),
- * so this helper does not handle enclosing shortcode content.
+ * Helper methods to find, insert, update and delete shortcodes within a WordPress Post's content.
  *
  * @package ConvertKit
  * @author  ConvertKit
@@ -23,12 +15,12 @@
 class ConvertKit_Shortcode_Post_Helper {
 
 	/**
-	 * Finds all occurrences of the given Kit shortcode in a Post's content.
+	 * Finds all occurrences of the given shortcode in a Post's content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id          Post ID.
-	 * @param   string $shortcode_tag    Shortcode tag (e.g. `convertkit_form`).
+	 * @param   string $shortcode_tag    Programmatic Shortcode Tag.
 	 * @return  WP_Error|bool|array
 	 */
 	public static function find( $post_id, $shortcode_tag ) {
@@ -68,21 +60,14 @@ class ConvertKit_Shortcode_Post_Helper {
 	}
 
 	/**
-	 * Inserts a new Kit shortcode into the Post's content at the specified
+	 * Inserts a new shortcode into the Post's content at the specified
 	 * position.
-	 *
-	 * For shortcodes, positions are resolved against the Post's top-level
-	 * paragraphs (text separated by blank lines):
-	 *
-	 * - prepend   Insert before all existing content.
-	 * - append    Insert after all existing content.
-	 * - index     Insert after the Nth top-level paragraph.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id          Post ID.
-	 * @param   string $shortcode_tag    Shortcode tag (e.g. `convertkit_form`).
-	 * @param   array  $attrs            Shortcode attributes.
+	 * @param   string $shortcode_tag    Programmatic Shortcode Tag.
+	 * @param   array  $attrs            Shortcode Attributes.
 	 * @param   string $position         One of 'prepend', 'append', 'index'.
 	 * @param   int    $index            Zero-based paragraph index; only used when $position is 'index'.
 	 * @return  WP_Error|array
@@ -112,7 +97,6 @@ class ConvertKit_Shortcode_Post_Helper {
 				break;
 
 			case 'index':
-				// Insert after the Nth paragraph, clamped to the valid range.
 				$insert_at = max( 0, min( (int) $index + 1, count( $paragraphs ) ) );
 				break;
 
@@ -148,16 +132,14 @@ class ConvertKit_Shortcode_Post_Helper {
 	}
 
 	/**
-	 * Updates the attributes of an existing Kit shortcode in the Post's content.
-	 *
-	 * Provided attributes are merged into the existing attributes.
+	 * Updates the attributes of an existing shortcode in the Post's content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id            Post ID.
-	 * @param   string $shortcode_tag      Shortcode tag (e.g. `convertkit_form`).
+	 * @param   string $shortcode_tag      Programmatic Shortcode Tag.
 	 * @param   int    $occurrence_index   Zero-based occurrence index to update.
-	 * @param   array  $attrs              Shortcode attributes to merge in.
+	 * @param   array  $attrs              Shortcode Attributes.
 	 * @return  WP_Error|array
 	 */
 	public static function update( $post_id, $shortcode_tag, $occurrence_index, $attrs ) {
@@ -190,9 +172,9 @@ class ConvertKit_Shortcode_Post_Helper {
 		}
 
 		// Build the replacement shortcode, merging new attributes over existing.
-		$match         = $matches[ (int) $occurrence_index ];
-		$merged_attrs  = array_merge( self::parse_attrs( $match ), (array) $attrs );
-		$replacement   = self::build_shortcode( $shortcode_tag, $merged_attrs );
+		$match        = $matches[ (int) $occurrence_index ];
+		$merged_attrs = array_merge( self::parse_attrs( $match ), (array) $attrs );
+		$replacement  = self::build_shortcode( $shortcode_tag, $merged_attrs );
 
 		// Replace the matched shortcode text with the rebuilt shortcode.
 		$content = self::replace_match( $post->post_content, $match, $replacement );
@@ -220,12 +202,12 @@ class ConvertKit_Shortcode_Post_Helper {
 	}
 
 	/**
-	 * Deletes a specific Kit shortcode from the Post's content.
+	 * Deletes a specific shortcode from the Post's content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id            Post ID.
-	 * @param   string $shortcode_tag      Shortcode tag (e.g. `convertkit_form`).
+	 * @param   string $shortcode_tag      Programmatic Shortcode Tag.
 	 * @param   int    $occurrence_index   Zero-based occurrence index to delete.
 	 * @return  WP_Error|array
 	 */
@@ -295,7 +277,7 @@ class ConvertKit_Shortcode_Post_Helper {
 	 * @since   3.4.0
 	 *
 	 * @param   string $content         Post content.
-	 * @param   string $shortcode_tag   Shortcode tag.
+	 * @param   string $shortcode_tag   Programmatic Shortcode Tag.
 	 * @return  array
 	 */
 	private static function match_shortcodes( $content, $shortcode_tag ) {
@@ -355,8 +337,8 @@ class ConvertKit_Shortcode_Post_Helper {
 	 *
 	 * @since   3.4.0
 	 *
-	 * @param   string $shortcode_tag   Shortcode tag.
-	 * @param   array  $attrs           Shortcode attributes.
+	 * @param   string $shortcode_tag   Programmatic Shortcode Tag.
+	 * @param   array  $attrs           Shortcode Attributes.
 	 * @return  string
 	 */
 	private static function build_shortcode( $shortcode_tag, $attrs ) {

@@ -96,7 +96,7 @@ class ConvertKit_Content_Post_Helper {
 					$position,
 					$index
 				);
-			
+
 			case 'shortcode':
 				return ConvertKit_Shortcode_Post_Helper::insert(
 					$post_id,
