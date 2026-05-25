@@ -29,15 +29,15 @@
 class ConvertKit_Content_Post_Helper {
 
 	/**
-	 * Finds all occurrences of the given Kit feature in a Post's content.
+	 * Finds all occurrences of the given Kit element in a Post's content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id        Post ID.
-	 * @param   string $feature_name   Kit feature name (e.g. `form`), without prefix.
+	 * @param   string $element_name   Kit Element name (e.g. `form`), without prefix.
 	 * @return  WP_Error|bool|array
 	 */
-	public static function find( $post_id, $feature_name ) {
+	public static function find( $post_id, $element_name ) {
 
 		// Determine how this post stores its content.
 		$mechanism = self::detect_mechanism( $post_id );
@@ -51,7 +51,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::find(
 					$post_id,
-					'convertkit/' . $feature_name
+					'convertkit/' . $element_name
 				);
 		}
 
@@ -60,18 +60,18 @@ class ConvertKit_Content_Post_Helper {
 	}
 
 	/**
-	 * Inserts a new occurrence of the given Kit feature into a Post's content.
+	 * Inserts a new occurrence of the given Kit Element into a Post's content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id        Post ID.
-	 * @param   string $feature_name   Kit feature name (e.g. `form`), without prefix.
-	 * @param   array  $attrs          Feature attributes.
+	 * @param   string $element_name   Kit Element name (e.g. `form`), without prefix.
+	 * @param   array  $attrs          Element attributes.
 	 * @param   string $position       One of 'prepend', 'append', 'index'.
 	 * @param   int    $index          Zero-based top-level index; only used when $position is 'index'.
 	 * @return  WP_Error|array
 	 */
-	public static function insert( $post_id, $feature_name, $attrs, $position = 'append', $index = 0 ) {
+	public static function insert( $post_id, $element_name, $attrs, $position = 'append', $index = 0 ) {
 
 		// Determine how this post stores its content.
 		$mechanism = self::detect_mechanism( $post_id );
@@ -85,7 +85,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::insert(
 					$post_id,
-					'convertkit/' . $feature_name,
+					'convertkit/' . $element_name,
 					$attrs,
 					$position,
 					$index
@@ -97,18 +97,18 @@ class ConvertKit_Content_Post_Helper {
 	}
 
 	/**
-	 * Updates the attributes of an existing occurrence of the given Kit feature
+	 * Updates the attributes of an existing occurrence of the given Kit Element
 	 * in a Post's content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id            Post ID.
-	 * @param   string $feature_name       Kit feature name (e.g. `form`), without prefix.
+	 * @param   string $element_name       Kit Element name (e.g. `form`), without prefix.
 	 * @param   int    $occurrence_index   Zero-based occurrence index to update.
-	 * @param   array  $attrs              Feature attributes.
+	 * @param   array  $attrs              Element attributes.
 	 * @return  WP_Error|array
 	 */
-	public static function update( $post_id, $feature_name, $occurrence_index, $attrs ) {
+	public static function update( $post_id, $element_name, $occurrence_index, $attrs ) {
 
 		// Determine how this post stores its content.
 		$mechanism = self::detect_mechanism( $post_id );
@@ -122,7 +122,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::update(
 					$post_id,
-					'convertkit/' . $feature_name,
+					'convertkit/' . $element_name,
 					$occurrence_index,
 					$attrs
 				);
@@ -133,17 +133,17 @@ class ConvertKit_Content_Post_Helper {
 	}
 
 	/**
-	 * Deletes a specific occurrence of the given Kit feature from a Post's
+	 * Deletes a specific occurrence of the given Kit Element from a Post's
 	 * content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   int    $post_id            Post ID.
-	 * @param   string $feature_name       Kit feature name (e.g. `form`), without prefix.
+	 * @param   string $element_name       Kit Element name (e.g. `form`), without prefix.
 	 * @param   int    $occurrence_index   Zero-based occurrence index to delete.
 	 * @return  WP_Error|array
 	 */
-	public static function delete( $post_id, $feature_name, $occurrence_index ) {
+	public static function delete( $post_id, $element_name, $occurrence_index ) {
 
 		// Determine how this post stores its content.
 		$mechanism = self::detect_mechanism( $post_id );
@@ -157,7 +157,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::delete(
 					$post_id,
-					'convertkit/' . $feature_name,
+					'convertkit/' . $element_name,
 					$occurrence_index
 				);
 		}
@@ -206,7 +206,7 @@ class ConvertKit_Content_Post_Helper {
 				'convertkit_content_post_helper_page_builder_unsupported',
 				sprintf(
 					/* translators: %s: page builder name */
-					__( 'This content is built with %s, which is not yet supported. Add the Kit feature using the page builder editor instead.', 'convertkit' ),
+					__( 'This content is built with %s, which is not yet supported. Add the Kit Element using the page builder editor instead.', 'convertkit' ),
 					$page_builder
 				)
 			);
