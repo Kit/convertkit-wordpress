@@ -109,6 +109,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-f
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-product.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-block-post-helper.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-content-post-helper.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-shortcode-post-helper.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';

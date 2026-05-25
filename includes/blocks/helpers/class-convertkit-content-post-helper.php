@@ -53,6 +53,12 @@ class ConvertKit_Content_Post_Helper {
 					$post_id,
 					'convertkit/' . $feature_name
 				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::find(
+					$post_id,
+					'convertkit_' . $feature_name
+				);
 		}
 
 		return self::unsupported_mechanism_error( $mechanism );
@@ -86,6 +92,15 @@ class ConvertKit_Content_Post_Helper {
 				return ConvertKit_Block_Post_Helper::insert(
 					$post_id,
 					'convertkit/' . $feature_name,
+					$attrs,
+					$position,
+					$index
+				);
+			
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::insert(
+					$post_id,
+					'convertkit_' . $feature_name,
 					$attrs,
 					$position,
 					$index
@@ -126,6 +141,14 @@ class ConvertKit_Content_Post_Helper {
 					$occurrence_index,
 					$attrs
 				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::update(
+					$post_id,
+					'convertkit_' . $feature_name,
+					$occurrence_index,
+					$attrs
+				);
 		}
 
 		return self::unsupported_mechanism_error( $mechanism );
@@ -158,6 +181,13 @@ class ConvertKit_Content_Post_Helper {
 				return ConvertKit_Block_Post_Helper::delete(
 					$post_id,
 					'convertkit/' . $feature_name,
+					$occurrence_index
+				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::delete(
+					$post_id,
+					'convertkit_' . $feature_name,
 					$occurrence_index
 				);
 		}
