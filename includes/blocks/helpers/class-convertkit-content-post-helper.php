@@ -7,17 +7,16 @@
  */
 
 /**
- * Mechanism-agnostic helper to find, insert, update and delete a Kit feature
- * (form, broadcasts, product, etc.) within a WordPress Post's content.
+ * Mechanism-agnostic helper to find, insert, update and delete a Kit element
+ * (Broadcast, Form, Form Trigger, Product) within a WordPress Post's content.
  *
  * This is the entry point used by the Content MCP abilities. It decides how the
- * given Post stores its content — Gutenberg blocks or Classic editor / shortcode
+ * given Post stores its content — Gutenberg blocks, Classic editor / shortcode
  * markup — and delegates to the appropriate mechanism-specific helper:
  *
  * - ConvertKit_Block_Post_Helper     for block-based content.
- * - ConvertKit_Shortcode_Post_Helper for Classic editor / shortcode content.
  *
- * Callers pass a feature name (e.g. `form`); this class applies the correct
+ * Callers pass an element name (e.g. `form`); this class applies the correct
  * prefix for the chosen mechanism (`convertkit/form` for blocks,
  * `convertkit_form` for shortcodes).
  *
@@ -46,17 +45,13 @@ class ConvertKit_Content_Post_Helper {
 			return $mechanism;
 		}
 
+		// Find the element in the post, depending on the mechanism.
+		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::find(
 					$post_id,
 					'convertkit/' . $feature_name
-				);
-
-			case 'shortcode':
-				return ConvertKit_Shortcode_Post_Helper::find(
-					$post_id,
-					'convertkit_' . $feature_name
 				);
 		}
 
@@ -84,28 +79,13 @@ class ConvertKit_Content_Post_Helper {
 			return $mechanism;
 		}
 
+		// Insert the element into the post, depending on the mechanism.
+		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::insert(
 					$post_id,
 					'convertkit/' . $feature_name,
-					$attrs,
-					$position,
-					$index
-				);
-
-			case 'shortcode':
-				// The Form Builder feature is block-only; it has no shortcode.
-				if ( 'form-builder' === $feature_name ) {
-					return new WP_Error(
-						'convertkit_content_post_helper_feature_block_only',
-						__( 'The Form Builder can only be added to block-based content.', 'convertkit' )
-					);
-				}
-
-				return ConvertKit_Shortcode_Post_Helper::insert(
-					$post_id,
-					'convertkit_' . $feature_name,
 					$attrs,
 					$position,
 					$index
@@ -136,19 +116,13 @@ class ConvertKit_Content_Post_Helper {
 			return $mechanism;
 		}
 
+		// Updates the existing occurrence of the element in the post, depending on the mechanism.
+		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::update(
 					$post_id,
 					'convertkit/' . $feature_name,
-					$occurrence_index,
-					$attrs
-				);
-
-			case 'shortcode':
-				return ConvertKit_Shortcode_Post_Helper::update(
-					$post_id,
-					'convertkit_' . $feature_name,
 					$occurrence_index,
 					$attrs
 				);
@@ -177,18 +151,13 @@ class ConvertKit_Content_Post_Helper {
 			return $mechanism;
 		}
 
+		// Delete the element from the post, depending on the mechanism.
+		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::delete(
 					$post_id,
 					'convertkit/' . $feature_name,
-					$occurrence_index
-				);
-
-			case 'shortcode':
-				return ConvertKit_Shortcode_Post_Helper::delete(
-					$post_id,
-					'convertkit_' . $feature_name,
 					$occurrence_index
 				);
 		}
