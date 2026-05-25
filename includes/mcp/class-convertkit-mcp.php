@@ -64,11 +64,6 @@ class ConvertKit_MCP {
 	 */
 	public function __construct() {
 
-		// Bail if the Abilities API is unavailable (WordPress < 6.9).
-		if ( ! function_exists( 'wp_register_ability' ) ) {
-			return;
-		}
-
 		// Register the ability category.
 		add_action( 'wp_abilities_api_categories_init', array( $this, 'register_abilities_category' ) );
 
@@ -87,6 +82,12 @@ class ConvertKit_MCP {
 	 */
 	public function register_abilities_category() {
 
+		// Bail if the MCP server is not enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
+
 		wp_register_ability_category(
 			self::CATEGORY_SLUG,
 			array(
@@ -103,6 +104,12 @@ class ConvertKit_MCP {
 	 * @since   3.4.0
 	 */
 	public function register_abilities() {
+
+		// Bail if the MCP server is not enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
 
 		// Get abilities.
 		$abilities = convertkit_get_abilities();
@@ -135,6 +142,12 @@ class ConvertKit_MCP {
 	 * @return  void
 	 */
 	public function register_mcp_server( $adapter ) {
+
+		// Bail if the MCP server is not enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
 
 		// Get abilities.
 		$abilities = convertkit_get_abilities();

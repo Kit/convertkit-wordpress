@@ -226,12 +226,6 @@ class WP_ConvertKit {
 	 */
 	public function initialize_mcp() {
 
-		// Bail if the MCP server is not enabled.
-		$settings = new ConvertKit_Settings_MCP();
-		if ( ! $settings->enabled() ) {
-			return;
-		}
-
 		// Bail if the Abilities API is unavailable (WordPress < 6.9).
 		if ( ! function_exists( 'wp_register_ability' ) ) {
 			return;
