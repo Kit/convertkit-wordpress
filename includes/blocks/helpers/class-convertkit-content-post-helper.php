@@ -57,7 +57,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'shortcode':
 				return ConvertKit_Shortcode_Post_Helper::find(
 					$post_id,
-					'convertkit_' . $feature_name
+					'convertkit_' . $element_name
 				);
 		}
 
@@ -100,7 +100,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'shortcode':
 				return ConvertKit_Shortcode_Post_Helper::insert(
 					$post_id,
-					'convertkit_' . $feature_name,
+					'convertkit_' . $element_name,
 					$attrs,
 					$position,
 					$index
@@ -145,7 +145,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'shortcode':
 				return ConvertKit_Shortcode_Post_Helper::update(
 					$post_id,
-					'convertkit_' . $feature_name,
+					'convertkit_' . $element_name,
 					$occurrence_index,
 					$attrs
 				);
@@ -187,7 +187,7 @@ class ConvertKit_Content_Post_Helper {
 			case 'shortcode':
 				return ConvertKit_Shortcode_Post_Helper::delete(
 					$post_id,
-					'convertkit_' . $feature_name,
+					'convertkit_' . $element_name,
 					$occurrence_index
 				);
 		}
