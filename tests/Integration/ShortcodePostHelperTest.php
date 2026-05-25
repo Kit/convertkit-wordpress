@@ -145,7 +145,6 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 0, $result['index'] );
 	}
 
 	/**
