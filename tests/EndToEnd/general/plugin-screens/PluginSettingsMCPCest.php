@@ -50,10 +50,12 @@ class PluginSettingsMCPCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Check that the MCP server is enabled.
+		$I->waitForElementVisible('#enabled');
 		$I->seeCheckboxIsChecked('#enabled');
 
 		// Check that the MCP server is registered.
-		$I->hasRoute($I, '/kit-mcp');
+		$I->hasRoute($I, '/kit/mcp');
+		$I->hasRoute($I, '/kit/mcp/v1');
 
 		// Disable MCP server.
 		$I->uncheckOption('#enabled');
@@ -63,10 +65,16 @@ class PluginSettingsMCPCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Check that the MCP server is disabled.
+		$I->waitForElementVisible('#enabled');
 		$I->dontSeeCheckboxIsChecked('#enabled');
 
+		// Go to the Plugin's MCP Screen.
+		$I->loadKitSettingsMCPScreen($I);
+		$I->wait(2);
+
 		// Check that the MCP server is not registered.
-		$I->doesNotHaveRoute($I, '/kit-mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp/v1');
 	}
 
 	/**
