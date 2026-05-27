@@ -51,7 +51,7 @@ class ConvertKit_MCP_Ability_Content_Update extends ConvertKit_MCP_Ability_Conte
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Update an existing %s element in a post', 'convertkit' ),
+			__( 'Update Existing %s in a Page, Post or Custom Post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -67,10 +67,9 @@ class ConvertKit_MCP_Ability_Content_Update extends ConvertKit_MCP_Ability_Conte
 	public function get_description() {
 
 		return sprintf(
-			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Updates the attributes of a single occurrence of the %1$s (%2$s) element in the given post. By default the provided attributes are merged into the existing attributes.', 'convertkit' ),
-			'convertkit/' . $this->block->get_name(),
-			$this->block->get_title()
+			/* translators: Block Name */
+			__( 'Updates the attributes of an existing %s in a Page, Post or Custom Post. The provided attributes are merged into the existing attributes.', 'convertkit' ),
+			$this->block->get_title_plural()
 		);
 
 	}
