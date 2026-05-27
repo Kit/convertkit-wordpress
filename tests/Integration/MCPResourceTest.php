@@ -102,7 +102,7 @@ class MCPResourceTest extends WPTestCase
 	 *
 	 * @return  array<string, array{0: \ConvertKit_MCP_Ability_Resource, 1: object}>
 	 */
-	public function abilityProvider(): array
+	private function abilityProvider(): array
 	{
 		return [
 			'forms'         => [
@@ -125,16 +125,30 @@ class MCPResourceTest extends WPTestCase
 	}
 
 	/**
-	 * Test that each ability's name is the expected `kit/<resource>-list`.
+	 * Test that the four resource-list abilities are registered with the
+	 * `convertkit_abilities` filter, so they are picked up by the Abilities
+	 * API and exposed by the MCP server.
 	 *
 	 * @since   3.4.0
 	 */
-	public function testAbilityNames()
+	public function testAbilitiesRegistered()
 	{
-		$this->assertSame('kit/forms-list', ( new \ConvertKit_MCP_Ability_Resource_Forms() )->get_name());
-		$this->assertSame('kit/tags-list', ( new \ConvertKit_MCP_Ability_Resource_Tags() )->get_name());
-		$this->assertSame('kit/landing-pages-list', ( new \ConvertKit_MCP_Ability_Resource_Landing_Pages() )->get_name());
-		$this->assertSame('kit/products-list', ( new \ConvertKit_MCP_Ability_Resource_Products() )->get_name());
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
+
+		// The ability names and classes expected to be registered.
+		$expected = array(
+			'kit/forms-list'         => \ConvertKit_MCP_Ability_Resource_Forms::class,
+			'kit/tags-list'          => \ConvertKit_MCP_Ability_Resource_Tags::class,
+			'kit/landing-pages-list' => \ConvertKit_MCP_Ability_Resource_Landing_Pages::class,
+			'kit/products-list'      => \ConvertKit_MCP_Ability_Resource_Products::class,
+		);
+
+		// Assert that the abilities are registered and are instances of the expected classes.
+		foreach ( $expected as $name => $class ) {
+			$this->assertArrayHasKey($name, $abilities);
+			$this->assertInstanceOf($class, $abilities[ $name ]);
+		}
 	}
 
 	/**
@@ -256,7 +270,7 @@ class MCPResourceTest extends WPTestCase
 
 		foreach ($result['items'] as $item) {
 			$this->assertArrayHasKey('format', $item);
-			$this->assertContains($item['format'],$allowedFormats);
+			$this->assertContains($item['format'], $allowedFormats);
 		}
 	}
 
@@ -290,7 +304,7 @@ class MCPResourceTest extends WPTestCase
 			sort($itemSchemaKeys);
 			sort($itemKeys);
 
-			$this->assertSame($itemSchemaKeys,$itemKeys);
+			$this->assertSame($itemSchemaKeys, $itemKeys);
 		}
 	}
 }

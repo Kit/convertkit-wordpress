@@ -95,10 +95,10 @@ class ConvertKit_MCP {
 		return array_merge(
 			$abilities,
 			array(
-				new ConvertKit_MCP_Ability_Resource_Forms(),
-				new ConvertKit_MCP_Ability_Resource_Tags(),
-				new ConvertKit_MCP_Ability_Resource_Landing_Pages(),
-				new ConvertKit_MCP_Ability_Resource_Products(),
+				'kit/forms-list'         => new ConvertKit_MCP_Ability_Resource_Forms(),
+				'kit/tags-list'          => new ConvertKit_MCP_Ability_Resource_Tags(),
+				'kit/landing-pages-list' => new ConvertKit_MCP_Ability_Resource_Landing_Pages(),
+				'kit/products-list'      => new ConvertKit_MCP_Ability_Resource_Products(),
 			)
 		);
 
