@@ -223,11 +223,13 @@ class MCPContentFormTest extends WPTestCase
 		$abilities = convertkit_get_abilities();
 
 		// Execute the ability.
-		$result = $abilities['kit/form-insert']->execute_callback(array(
-			'post_id'  => $this->postID,
-			'attrs'    => array( 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ),
-			'position' => 'append',
-		));
+		$result = $abilities['kit/form-insert']->execute_callback(
+			array(
+				'post_id'  => $this->postID,
+				'attrs'    => array( 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ),
+				'position' => 'append',
+			)
+		);
 
 		$this->assertIsArray($result);
 		$this->assertSame($this->postID, $result['post_id']);
@@ -251,11 +253,13 @@ class MCPContentFormTest extends WPTestCase
 
 		// Update the second Form block (occurrence_index 1) to a different form ID.
 		$new_form_id = (string) ( (int) $_ENV['CONVERTKIT_API_FORM_ID'] + 1 );
-		$result      = $abilities['kit/form-update']->execute_callback(array(
-			'post_id'          => $this->postID,
-			'occurrence_index' => 1,
-			'attrs'            => array( 'form' => $new_form_id ),
-		));
+		$result      = $abilities['kit/form-update']->execute_callback(
+			array(
+				'post_id'          => $this->postID,
+				'occurrence_index' => 1,
+				'attrs'            => array( 'form' => $new_form_id ),
+			)
+		);
 
 		$this->assertIsArray($result);
 		$this->assertSame(1, $result['occurrence_index']);
@@ -286,10 +290,12 @@ class MCPContentFormTest extends WPTestCase
 		$abilities = convertkit_get_abilities();
 
 		// Execute the ability.
-		$result = $abilities['kit/form-delete']->execute_callback(array(
-			'post_id'          => $this->postID,
-			'occurrence_index' => 0,
-		));
+		$result = $abilities['kit/form-delete']->execute_callback(
+			array(
+				'post_id'          => $this->postID,
+				'occurrence_index' => 0,
+			)
+		);
 
 		$this->assertIsArray($result);
 		$this->assertSame(0, $result['occurrence_index']);
@@ -312,11 +318,13 @@ class MCPContentFormTest extends WPTestCase
 		$abilities = convertkit_get_abilities();
 
 		// Execute the ability.
-		$result = $abilities['kit/form-update']->execute_callback(array(
-			'post_id'          => $this->postID,
-			'occurrence_index' => 99,
-			'attrs'            => array( 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ),
-		));
+		$result = $abilities['kit/form-update']->execute_callback(
+			array(
+				'post_id'          => $this->postID,
+				'occurrence_index' => 99,
+				'attrs'            => array( 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ),
+			)
+		);
 
 		// Assert that the result is a WP_Error.
 		$this->assertInstanceOf(\WP_Error::class, $result);
@@ -332,11 +340,12 @@ class MCPContentFormTest extends WPTestCase
 	 */
 	private function createPostWithFormBlocks(): int
 	{
-		return $this->factory->post->create(array(
-			'post_type'    => 'page',
-			'post_status'  => 'publish',
-			'post_title'   => 'Form Abilities Fixture',
-			'post_content' => '<!-- wp:paragraph -->
+		return $this->factory->post->create(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Form Abilities Fixture',
+				'post_content' => '<!-- wp:paragraph -->
 <p>Intro paragraph.</p>
 <!-- /wp:paragraph -->
 
@@ -351,6 +360,7 @@ class MCPContentFormTest extends WPTestCase
 <!-- wp:paragraph -->
 <p>Closing paragraph.</p>
 <!-- /wp:paragraph -->',
-		));
+			)
+		);
 	}
 }
