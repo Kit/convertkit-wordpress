@@ -70,8 +70,37 @@ class ConvertKit_MCP {
 		// Register abilities.
 		add_action( 'wp_abilities_api_init', array( $this, 'register_abilities' ) );
 
+		// Register resource-list abilities (Forms, Tags, Landing Pages, Products).
+		// These are owned by the Plugin (not by any single block or feature),
+		// so they're added here rather than via a per-class register_abilities().
+		add_filter( 'convertkit_abilities', array( $this, 'register_resource_abilities' ) );
+
 		// Register the MCP server.
 		add_action( 'mcp_adapter_init', array( $this, 'register_mcp_server' ) );
+
+	}
+
+	/**
+	 * Appends the resource-list abilities (Forms, Tags, Landing Pages,
+	 * Products) to the convertkit_abilities filter, so they are registered
+	 * with the Abilities API and exposed via the MCP server.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities   Abilities to register.
+	 * @return  array
+	 */
+	public function register_resource_abilities( $abilities ) {
+
+		return array_merge(
+			$abilities,
+			array(
+				new ConvertKit_MCP_Ability_Resource_Forms(),
+				new ConvertKit_MCP_Ability_Resource_Tags(),
+				new ConvertKit_MCP_Ability_Resource_Landing_Pages(),
+				new ConvertKit_MCP_Ability_Resource_Products(),
+			)
+		);
 
 	}
 
