@@ -68,10 +68,10 @@ class ConvertKit_Block {
 		return array_merge(
 			$abilities,
 			array(
-				new ConvertKit_MCP_Ability_Content_List( $this ),
-				new ConvertKit_MCP_Ability_Content_Insert( $this ),
-				new ConvertKit_MCP_Ability_Content_Update( $this ),
-				new ConvertKit_MCP_Ability_Content_Delete( $this ),
+				'kit/' . $this->get_name() . '-list'   => new ConvertKit_MCP_Ability_Content_List( $this ),
+				'kit/' . $this->get_name() . '-insert' => new ConvertKit_MCP_Ability_Content_Insert( $this ),
+				'kit/' . $this->get_name() . '-update' => new ConvertKit_MCP_Ability_Content_Update( $this ),
+				'kit/' . $this->get_name() . '-delete' => new ConvertKit_MCP_Ability_Content_Delete( $this ),
 			)
 		);
 
