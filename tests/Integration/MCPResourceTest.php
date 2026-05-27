@@ -250,7 +250,7 @@ class MCPResourceTest extends WPTestCase
 		$abilities = convertkit_get_abilities();
 
 		// Execute the ability.
-		$result    = $abilities['kit/forms-list']->execute_callback([]);
+		$result = $abilities['kit/forms-list']->execute_callback([]);
 
 		// Assert that the result is an array.
 		$this->assertGreaterThan(0, $result['count']);
