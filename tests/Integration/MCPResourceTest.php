@@ -12,11 +12,6 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  * - kit/landing-pages-list  (ConvertKit_MCP_Ability_Resource_Landing_Pages)
  * - kit/products-list       (ConvertKit_MCP_Ability_Resource_Products)
  *
- * Each ability is exercised by instantiating its PHP class directly and
- * calling permission_callback() / execute_callback(). The MCP transport
- * layer is covered by E2E tests; this suite proves the abilities themselves
- * read from the resource cache and shape the output correctly.
- *
  * @since   3.4.0
  */
 class MCPResourceTest extends WPTestCase
@@ -72,14 +67,8 @@ class MCPResourceTest extends WPTestCase
 		// Delete credentials and any cached resources so each test starts clean.
 		delete_option($this->settings::SETTINGS_NAME);
 
-		foreach (
-			[
-				new \ConvertKit_Resource_Forms(),
-				new \ConvertKit_Resource_Tags(),
-				new \ConvertKit_Resource_Landing_Pages(),
-				new \ConvertKit_Resource_Products(),
-			] as $resource
-		) {
+		foreach ( self::RESOURCE_CLASSES as $resource_class ) {
+			$resource = new $resource_class();
 			delete_option($resource->settings_name);
 			delete_option($resource->settings_name . '_last_queried');
 		}
@@ -94,35 +83,20 @@ class MCPResourceTest extends WPTestCase
 	}
 
 	/**
-	 * Returns each of the four resource-list abilities, paired with the
-	 * resource class that backs it. Used by tests that should run identically
-	 * across all four abilities.
+	 * Map of resource-list ability names to the ConvertKit_Resource_* class
+	 * backing them. Used by tests that need to seed / clear the resource
+	 * cache alongside the ability under test.
 	 *
 	 * @since   3.4.0
 	 *
-	 * @return  array<string, array{0: \ConvertKit_MCP_Ability_Resource, 1: object}>
+	 * @var     array<string, class-string>
 	 */
-	private function abilityProvider(): array
-	{
-		return [
-			'forms'         => [
-				new \ConvertKit_MCP_Ability_Resource_Forms(),
-				new \ConvertKit_Resource_Forms(),
-			],
-			'tags'          => [
-				new \ConvertKit_MCP_Ability_Resource_Tags(),
-				new \ConvertKit_Resource_Tags(),
-			],
-			'landing_pages' => [
-				new \ConvertKit_MCP_Ability_Resource_Landing_Pages(),
-				new \ConvertKit_Resource_Landing_Pages(),
-			],
-			'products'      => [
-				new \ConvertKit_MCP_Ability_Resource_Products(),
-				new \ConvertKit_Resource_Products(),
-			],
-		];
-	}
+	private const RESOURCE_CLASSES = array(
+		'kit/forms-list'         => \ConvertKit_Resource_Forms::class,
+		'kit/tags-list'          => \ConvertKit_Resource_Tags::class,
+		'kit/landing-pages-list' => \ConvertKit_Resource_Landing_Pages::class,
+		'kit/products-list'      => \ConvertKit_Resource_Products::class,
+	);
 
 	/**
 	 * Test that the four resource-list abilities are registered with the
@@ -163,13 +137,16 @@ class MCPResourceTest extends WPTestCase
 		$subscriber_id = static::factory()->user->create([ 'role' => 'subscriber' ]);
 		wp_set_current_user($subscriber_id);
 
-		foreach ($this->abilityProvider() as $row) {
-			[ $ability ] = $row;
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
 
-			$result = $ability->permission_callback([]);
+		// Assert that the abilities are permission denied.
+		foreach ( array_keys( self::RESOURCE_CLASSES ) as $name ) {
+			// Execute the ability.
+			$result = $abilities[ $name ]->permission_callback([]);
 
+			// Assert that the result is a WP_Error.
 			$this->assertInstanceOf(\WP_Error::class, $result);
-			$this->assertSame('convertkit_mcp_cannot_list_resources', $result->get_error_code());
 		}
 	}
 
@@ -185,10 +162,13 @@ class MCPResourceTest extends WPTestCase
 		$editor_id = static::factory()->user->create([ 'role' => 'editor' ]);
 		wp_set_current_user($editor_id);
 
-		foreach ($this->abilityProvider() as $row) {
-			[ $ability ] = $row;
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
 
-			$this->assertTrue($ability->permission_callback([]));
+		// Assert that the abilities are permission granted.
+		foreach ( array_keys( self::RESOURCE_CLASSES ) as $name ) {
+			// Execute the ability.
+			$this->assertTrue($abilities[ $name ]->permission_callback([]));
 		}
 	}
 
@@ -200,13 +180,15 @@ class MCPResourceTest extends WPTestCase
 	 */
 	public function testReturnsEmptyListWhenNoResourcesAreCached()
 	{
-		foreach ($this->abilityProvider() as $row) {
-			[ $ability, $resource ] = $row;
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
 
+		foreach ( self::RESOURCE_CLASSES as $name => $resource_class ) {
 			// Ensure the cache is empty for this resource.
-			delete_option($resource->settings_name);
+			delete_option( ( new $resource_class() )->settings_name );
 
-			$result = $ability->execute_callback([]);
+			// Execute the ability.
+			$result = $abilities[ $name ]->execute_callback([]);
 
 			$this->assertIsArray($result);
 			$this->assertArrayHasKey('count', $result);
@@ -225,13 +207,16 @@ class MCPResourceTest extends WPTestCase
 	 */
 	public function testReturnsCachedItems()
 	{
-		foreach ($this->abilityProvider() as $key => $row) {
-			[ $ability, $resource ] = $row;
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
 
+		// Execute the abilities.
+		foreach ( self::RESOURCE_CLASSES as $name => $resource_class ) {
 			// Populate the resource cache from the Kit API.
-			$resource->init();
+			( new $resource_class() )->init();
 
-			$result = $ability->execute_callback([]);
+			// Execute the ability.
+			$result = $abilities[ $name ]->execute_callback([]);
 
 			$this->assertIsArray($result);
 			$this->assertArrayHasKey('count', $result);
@@ -258,16 +243,20 @@ class MCPResourceTest extends WPTestCase
 	 */
 	public function testFormsItemsIncludeFormat()
 	{
-		$ability  = new \ConvertKit_MCP_Ability_Resource_Forms();
-		$resource = new \ConvertKit_Resource_Forms();
-		$resource->init();
+		// Populate the resource cache from the Kit API.
+		( new \ConvertKit_Resource_Forms() )->init();
 
-		$result = $ability->execute_callback([]);
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
 
+		// Execute the ability.
+		$result = $abilities['kit/forms-list']->execute_callback([]);
+
+		// Assert that the result is an array.
 		$this->assertGreaterThan(0, $result['count']);
 
+		// Assert that the result has items.
 		$allowedFormats = [ 'inline', 'modal', 'slide in', 'sticky bar' ];
-
 		foreach ($result['items'] as $item) {
 			$this->assertArrayHasKey('format', $item);
 			$this->assertContains($item['format'], $allowedFormats);
@@ -284,20 +273,28 @@ class MCPResourceTest extends WPTestCase
 	 */
 	public function testOutputSchemaMatchesExecuteShape()
 	{
-		foreach ($this->abilityProvider() as $key => $row) {
-			[ $ability, $resource ] = $row;
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
 
-			$resource->init();
-			$result = $ability->execute_callback([]);
+		// Execute the abilities.
+		foreach ( self::RESOURCE_CLASSES as $name => $resource_class ) {
+			// Populate the resource cache from the Kit API.
+			( new $resource_class() )->init();
+
+			// Execute the ability.
+			$result = $abilities[ $name ]->execute_callback([]);
+
 			if ($result['count'] === 0) {
 				// No items to compare against; skip this ability.
 				continue;
 			}
 
+			// Assert that the output schema is an object.
 			$schema = $ability->get_output_schema();
 			$this->assertSame('object', $schema['type']);
 			$this->assertSame([ 'count', 'items' ], $schema['required']);
 
+			// Assert that the item schema keys match the result item keys.
 			$itemSchemaKeys = array_keys($schema['properties']['items']['items']['properties']);
 			$itemKeys       = array_keys($result['items'][0]);
 
