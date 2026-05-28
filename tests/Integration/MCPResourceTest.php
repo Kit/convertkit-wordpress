@@ -290,7 +290,7 @@ class MCPResourceTest extends WPTestCase
 			}
 
 			// Assert that the output schema is an object.
-			$schema = $ability->get_output_schema();
+			$schema = $abilities[ $name ]->get_output_schema();
 			$this->assertSame('object', $schema['type']);
 			$this->assertSame([ 'count', 'items' ], $schema['required']);
 
