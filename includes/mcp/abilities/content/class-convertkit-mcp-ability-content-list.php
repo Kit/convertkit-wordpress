@@ -177,11 +177,6 @@ class ConvertKit_MCP_Ability_Content_List extends ConvertKit_MCP_Ability_Content
 			return $occurrences;
 		}
 
-		// Normalise a "no occurrences" result (false) to an empty array.
-		if ( false === $occurrences ) {
-			$occurrences = array();
-		}
-
 		// Return result.
 		return array(
 			'post_id'     => $post_id,

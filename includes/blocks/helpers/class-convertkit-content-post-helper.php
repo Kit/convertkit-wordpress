@@ -35,7 +35,7 @@ class ConvertKit_Content_Post_Helper {
 	 *
 	 * @param   int    $post_id        Post ID.
 	 * @param   string $element_name   Kit Element name (e.g. `form`), without prefix.
-	 * @return  WP_Error|bool|array
+	 * @return  WP_Error|array
 	 */
 	public static function find( $post_id, $element_name ) {
 
