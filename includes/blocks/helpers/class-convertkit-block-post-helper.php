@@ -21,7 +21,7 @@ class ConvertKit_Block_Post_Helper {
 	 *
 	 * @param   int    $post_id     Post ID.
 	 * @param   string $block_name  Programmatic Block Name.
-	 * @return  WP_Error|bool|array
+	 * @return  WP_Error|array
 	 */
 	public static function find( $post_id, $block_name ) {
 
@@ -53,11 +53,6 @@ class ConvertKit_Block_Post_Helper {
 			);
 
 			++$occurrence_index;
-		}
-
-		// If no blocks found, return false.
-		if ( empty( $found ) ) {
-			return false;
 		}
 
 		return $found;
