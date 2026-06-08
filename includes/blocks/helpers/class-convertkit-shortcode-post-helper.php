@@ -88,6 +88,18 @@ class ConvertKit_Shortcode_Post_Helper {
 	 */
 	public static function insert( $post_id, $shortcode_tag, $attrs, $position = 'append', $index = 0 ) {
 
+		// If the index is negative, bail.
+		if ( $position === 'index' && (int) $index < 0 ) {
+			return new WP_Error(
+				'convertkit_shortcode_post_helper_invalid_index',
+				sprintf(
+					/* translators: %d: index */
+					__( 'The supplied index (%d) must be zero or a positive integer.', 'convertkit' ),
+					(int) $index
+				)
+			);
+		}
+
 		// Get Post.
 		$post = get_post( $post_id );
 		if ( ! $post ) {
@@ -102,8 +114,8 @@ class ConvertKit_Shortcode_Post_Helper {
 		$shortcode = self::build_shortcode( $shortcode_tag, $attrs );
 		$content   = $post->post_content;
 
-		// Determine the byte offset immediately after each top-level element.
-		$offsets = self::get_element_offsets( $content );
+		// Determine the byte offset of the start of each top-level element.
+		$starts = self::get_element_starts( $content );
 
 		// Resolve $position into a concrete byte offset within the content.
 		switch ( $position ) {
@@ -112,13 +124,14 @@ class ConvertKit_Shortcode_Post_Helper {
 				break;
 
 			case 'index':
-				// Insert after the Nth top-level element. If no elements
-				// exist, or the index is beyond the last element, fall back
-				// to appending after all existing content.
-				if ( empty( $offsets ) || (int) $index >= count( $offsets ) ) {
+				// Insert before the Nth top-level element. If no elements
+				// exist, or the index is equal to / beyond count(), append
+				// after all existing content — mirroring how array_splice()
+				// treats an index equal to the array length.
+				if ( empty( $starts ) || (int) $index >= count( $starts ) ) {
 					$insert_at = strlen( $content );
 				} else {
-					$insert_at = $offsets[ max( 0, (int) $index ) ];
+					$insert_at = $starts[ (int) $index ];
 				}
 				break;
 
@@ -449,53 +462,112 @@ class ConvertKit_Shortcode_Post_Helper {
 	}
 
 	/**
-	 * Returns the byte offset immediately after each top-level element in the
-	 * content, in document order.
+	 * Returns the byte offset of the start of each top-level element in
+	 * the content, in document order.
 	 *
-	 * A top-level element is a single top-level element-level HTML element
-	 * (e.g. a whole `<p>...</p>`). These are the Classic content analogue of
-	 * the top-level blocks that ConvertKit_Block_Post_Helper works against:
-	 * counting them lets a caller-supplied `index` mean the same kind of unit
-	 * in both mechanisms.
+	 * Uses WP_HTML_Tag_Processor when available (WordPress 6.2+), which is a
+	 * streaming HTML parser that does not rewrite the content (unlike
+	 * DOMDocument), preserving the byte-for-byte guarantee that update() /
+	 * delete() rely on.
 	 *
-	 * The returned offsets are the points *after* each element, suitable for
-	 * use as a `substr_replace()` insertion point.
+	 * Falls back to a regex for older WordPress versions, which
+	 * cannot handle same-tag nesting (e.g. <div> inside <div>) — rare in
+	 * Classic editor content.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   string $content   Post content.
 	 * @return  int[]              Zero-indexed array of byte offsets.
 	 */
-	private static function get_element_offsets( $content ) {
+	private static function get_element_starts( $content ) {
 
 		// Bail with an empty array if there is no content.
-		if ( '' === trim( (string) $content ) ) {
+		if ( trim( (string) $content ) === '' ) {
 			return array();
 		}
 
-		// Match each top-level element-level element in document order. The
-		// 's' flag lets the element span multiple lines; the lazy quantifier
-		// and \1 backreference keep the match scoped to a single element.
-		//
-		// Note: this does not handle an element-level tag nested inside
-		// another of the same name (e.g. a <div> within a <div>). Such
-		// nesting is rare in Classic editor content, and parsing it correctly
-		// requires a full HTML parser, which is avoided here to keep the
-		// content modification surgical (see insert()).
-		$pattern = '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>.*?<\/\1>/is';
+		// Prefer WP_HTML_Tag_Processor where available (WordPress 6.2+) —
+		// it is a streaming HTML parser that handles nested same-name tags
+		// correctly, and does not re-serialise / normalise content.
+		if ( class_exists( 'WP_HTML_Tag_Processor' ) ) {
+			return self::get_element_starts_via_html_processor( $content );
+		}
 
-		// Bail with an empty array if no top-level elements are found.
+		// Fallback: regex-based detection of top-level element-level elements.
+		// This matches the same set of tags as wpautop() treats as block-level,
+		// but does not handle same-tag nesting (e.g. a <div> within a <div>).
+		// Used only on WordPress versions older than 6.2.
+		$pattern = '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>.*?<\/\1>/is';
 		if ( ! preg_match_all( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
 			return array();
 		}
 
-		// Record the byte offset immediately after each matched element.
-		$offsets = array();
+		$starts = array();
 		foreach ( $matches[0] as $match ) {
-			$offsets[] = (int) $match[1] + strlen( $match[0] );
+			$starts[] = (int) $match[1];
 		}
 
-		return $offsets;
+		return $starts;
+
+	}
+
+	/**
+	 * Returns top-level element start offsets, computed using
+	 * WP_HTML_Tag_Processor.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   string $content   Post content.
+	 * @return  int[]
+	 */
+	private static function get_element_starts_via_html_processor( $content ) {
+
+		$processor = new WP_HTML_Tag_Processor( $content );
+
+		$starts             = array();
+		$depth              = 0;
+		$element_level_tags = array_flip( explode( '|', strtoupper( self::ELEMENT_LEVEL_TAGS ) ) );
+
+		while ( $processor->next_tag( array( 'tag_closers' => 'visit' ) ) ) {
+
+			$tag = $processor->get_tag();
+
+			// Only element-level tags participate in depth tracking.
+			if ( ! isset( $element_level_tags[ $tag ] ) ) {
+				continue;
+			}
+
+			if ( $processor->is_tag_closer() ) {
+				if ( $depth > 0 ) {
+					--$depth;
+				}
+				continue;
+			}
+
+			// Opening tag at depth zero: this is a top-level element.
+			if ( 0 === $depth ) {
+				// Bookmark the opener so we can read its absolute start byte
+				// offset. WP_HTML_Tag_Processor::get_bookmark() returns an
+				// object whose `->start` property is the offset of the `<`.
+				$processor->set_bookmark( 'el' );
+				$bookmark = $processor->get_bookmark( 'el' );
+
+				if ( is_object( $bookmark ) && isset( $bookmark->start ) ) {
+					$starts[] = (int) $bookmark->start;
+				}
+			}
+
+			// Void elements (hr) do not increase depth; everything else does.
+			// WP_HTML_Tag_Processor returns is_tag_closer() === false for both
+			// void and non-void openers, so we approximate void-vs-non-void
+			// by checking the tag name. `hr` is the only void element in our
+			// ELEMENT_LEVEL_TAGS list.
+			if ( 'HR' !== $tag ) {
+				++$depth;
+			}
+		}
+
+		return $starts;
 
 	}
 

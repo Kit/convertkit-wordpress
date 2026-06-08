@@ -72,6 +72,18 @@ class ConvertKit_Block_Post_Helper {
 	 */
 	public static function insert( $post_id, $block_name, $attrs, $position = 'append', $index = 0 ) {
 
+		// If the index is negative, bail.
+		if ( $position === 'index' && (int) $index < 0 ) {
+			return new WP_Error(
+				'convertkit_block_post_helper_invalid_index',
+				sprintf(
+					/* translators: %d: index */
+					__( 'The supplied index (%d) must be zero or a positive integer.', 'convertkit' ),
+					(int) $index
+				)
+			);
+		}
+
 		// Get Post.
 		$post = get_post( $post_id );
 		if ( ! $post ) {
