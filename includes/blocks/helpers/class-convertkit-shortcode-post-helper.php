@@ -339,8 +339,7 @@ class ConvertKit_Shortcode_Post_Helper {
 			return array();
 		}
 
-		// WordPress' shortcode regex captures the attribute string in group 3.
-		// With PREG_OFFSET_CAPTURE each group is a [ value, offset ] pair.
+		// Build array of shortcode matches.
 		$found = array();
 		foreach ( $matches[0] as $i => $match ) {
 			$found[] = array(
@@ -411,8 +410,7 @@ class ConvertKit_Shortcode_Post_Helper {
 
 	/**
 	 * Replaces a single matched shortcode occurrence with the replacement
-	 * string, targeting it by byte offset so identical occurrences elsewhere
-	 * are left untouched.
+	 * string.
 	 *
 	 * @since   3.4.0
 	 *
@@ -451,88 +449,65 @@ class ConvertKit_Shortcode_Post_Helper {
 
 		// Add a leading blank line unless the shortcode is at the start of the
 		// content, or already preceded by a blank line.
-		$lead = ( '' === $before || (bool) preg_match( '/\R\R\s*$/', $before ) ) ? '' : "\n\n";
+		$lead = ( $before === '' || preg_match( '/\R\R\s*$/', $before ) ) ? '' : "\n\n";
 
 		// Add a trailing blank line unless the shortcode is at the end of the
 		// content, or already followed by a blank line.
-		$trail = ( '' === $after || (bool) preg_match( '/^\s*\R\R/', $after ) ) ? '' : "\n\n";
+		$trail = ( $after === '' || preg_match( '/^\s*\R\R/', $after ) ) ? '' : "\n\n";
 
 		return $lead . $shortcode . $trail;
 
 	}
 
 	/**
-	 * Returns the byte offset of the start of each top-level element in
-	 * the content, in document order.
+	 * Returns the byte offset of the start of each top-level element in the
+	 * content, in document order.
 	 *
-	 * Uses WP_HTML_Tag_Processor when available (WordPress 6.2+), which is a
-	 * streaming HTML parser that does not rewrite the content (unlike
-	 * DOMDocument), preserving the byte-for-byte guarantee that update() /
-	 * delete() rely on.
-	 *
-	 * Falls back to a regex for older WordPress versions, which
-	 * cannot handle same-tag nesting (e.g. <div> inside <div>) — rare in
-	 * Classic editor content.
+	 * Uses WP_HTML_Tag_Processor (WP 6.2+) for nesting-aware structure, paired
+	 * with a regex for the byte offsets the tag processor does not expose.
+	 * Falls back to regex alone on older WordPress versions.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @param   string $content   Post content.
-	 * @return  int[]              Zero-indexed array of byte offsets.
+	 * @return  array
 	 */
 	private static function get_element_starts( $content ) {
 
-		// Bail with an empty array if there is no content.
 		if ( trim( (string) $content ) === '' ) {
 			return array();
 		}
 
-		// Prefer WP_HTML_Tag_Processor where available (WordPress 6.2+) —
-		// it is a streaming HTML parser that handles nested same-name tags
-		// correctly, and does not re-serialise / normalise content.
-		if ( class_exists( 'WP_HTML_Tag_Processor' ) ) {
-			return self::get_element_starts_via_html_processor( $content );
-		}
-
-		// Fallback: regex-based detection of top-level element-level elements.
-		// This matches the same set of tags as wpautop() treats as block-level,
-		// but does not handle same-tag nesting (e.g. a <div> within a <div>).
-		// Used only on WordPress versions older than 6.2.
+		// Candidate offsets, one per regex-matched element-level opener.
 		$pattern = '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>.*?<\/\1>/is';
 		if ( ! preg_match_all( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
 			return array();
 		}
 
-		$starts = array();
-		foreach ( $matches[0] as $match ) {
-			$starts[] = (int) $match[1];
+		// Fallback for WP < 6.2: regex offsets verbatim, no nesting awareness.
+		if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+			$starts = array();
+			foreach ( $matches[0] as $match ) {
+				$starts[] = (int) $match[1];
+			}
+			return $starts;
 		}
 
-		return $starts;
+		// Per-tag queue of regex offsets in document order.
+		$queues = array();
+		foreach ( $matches[1] as $i => $tag_match ) {
+			$queues[ strtoupper( $tag_match[0] ) ][] = (int) $matches[0][ $i ][1];
+		}
 
-	}
-
-	/**
-	 * Returns top-level element start offsets, computed using
-	 * WP_HTML_Tag_Processor.
-	 *
-	 * @since   3.4.0
-	 *
-	 * @param   string $content   Post content.
-	 * @return  int[]
-	 */
-	private static function get_element_starts_via_html_processor( $content ) {
-
-		$processor = new WP_HTML_Tag_Processor( $content );
-
+		// Walk with depth tracking; record offsets only for depth-zero openers.
+		$processor          = new WP_HTML_Tag_Processor( $content );
 		$starts             = array();
 		$depth              = 0;
 		$element_level_tags = array_flip( explode( '|', strtoupper( self::ELEMENT_LEVEL_TAGS ) ) );
 
 		while ( $processor->next_tag( array( 'tag_closers' => 'visit' ) ) ) {
-
 			$tag = $processor->get_tag();
 
-			// Only element-level tags participate in depth tracking.
 			if ( ! isset( $element_level_tags[ $tag ] ) ) {
 				continue;
 			}
@@ -544,25 +519,13 @@ class ConvertKit_Shortcode_Post_Helper {
 				continue;
 			}
 
-			// Opening tag at depth zero: this is a top-level element.
-			if ( 0 === $depth ) {
-				// Bookmark the opener so we can read its absolute start byte
-				// offset. WP_HTML_Tag_Processor::get_bookmark() returns an
-				// object whose `->start` property is the offset of the `<`.
-				$processor->set_bookmark( 'el' );
-				$bookmark = $processor->get_bookmark( 'el' );
+			$offset = array_shift( $queues[ $tag ] );
 
-				if ( is_object( $bookmark ) && isset( $bookmark->start ) ) {
-					$starts[] = (int) $bookmark->start;
-				}
+			if ( $depth === 0 ) {
+				$starts[] = $offset;
 			}
 
-			// Void elements (hr) do not increase depth; everything else does.
-			// WP_HTML_Tag_Processor returns is_tag_closer() === false for both
-			// void and non-void openers, so we approximate void-vs-non-void
-			// by checking the tag name. `hr` is the only void element in our
-			// ELEMENT_LEVEL_TAGS list.
-			if ( 'HR' !== $tag ) {
+			if ( $tag !== 'HR' ) {
 				++$depth;
 			}
 		}

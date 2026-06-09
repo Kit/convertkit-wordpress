@@ -207,8 +207,7 @@ class BlockPostHelperTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at the beginning of the content when
-	 * the index is negative.
+	 * Test that the insert() method returns a WP_Error when the index is negative.
 	 *
 	 * @since   3.4.0
 	 */
@@ -221,9 +220,7 @@ class BlockPostHelperTest extends WPTestCase
 			position: 'index',
 			index: -1
 		);
-
-		$this->assertIsArray( $result );
-		$this->assertEquals( $this->postID, $result['post_id'] );
+		$this->assertInstanceOf(\WP_Error::class, $result );
 	}
 
 	/**
