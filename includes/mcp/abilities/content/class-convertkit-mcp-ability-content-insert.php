@@ -1,22 +1,22 @@
 <?php
 /**
- * Kit MCP Ability: Insert a block into a post.
+ * Kit MCP Ability: Insert a Kit Element into a post.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Ability that inserts an occurrence of a Kit block into a WordPress post's
- * content.
+ * Ability that inserts a single occurrence of a Kit element
+ * (Broadcast, Form, Form Trigger, Product) within a WordPress Post's content.
  *
- * Registered by a block opting in via the `convertkit_abilities` filter and
- * produces an ability named `kit/<block-name>-insert` (e.g. `kit/form-insert`).
+ * Registered by an element opting in via the `convertkit_abilities` filter and
+ * produces an ability named `kit/<element>-insert` (e.g. `kit/form-insert`).
  *
  * @package ConvertKit
  * @author  ConvertKit
  */
-class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
+class ConvertKit_MCP_Ability_Content_Insert extends ConvertKit_MCP_Ability_Content {
 
 	/**
 	 * Returns the verb this ability represents.
@@ -42,7 +42,7 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Insert a %s block into a post', 'convertkit' ),
+			__( 'Insert a %s element into a post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -59,7 +59,7 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Inserts a new %1$s (%2$s) block into the given post\'s content. The block can be appended (default), prepended, or positioned relative to an existing block using a zero-based index.', 'convertkit' ),
+			__( 'Inserts a new %1$s (%2$s) element into the given post\'s content. The element can be appended (default), prepended, or positioned relative to an existing element using a zero-based index.', 'convertkit' ),
 			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
@@ -82,22 +82,22 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 				'post_id'  => array(
 					'type'        => 'integer',
 					'minimum'     => 1,
-					'description' => __( 'Page / Post / Custom Post Type ID to insert the block into.', 'convertkit' ),
+					'description' => __( 'Page / Post / Custom Post Type ID to insert the element into.', 'convertkit' ),
 				),
 				'position' => array(
 					'type'        => 'string',
 					'enum'        => array( 'append', 'prepend', 'index' ),
 					'default'     => 'append',
-					'description' => __( 'Where to insert the new block. "index" requires the "index" property.', 'convertkit' ),
+					'description' => __( 'Where to insert the new element. "index" requires the "index" property.', 'convertkit' ),
 				),
 				'index'    => array(
 					'type'        => 'integer',
 					'minimum'     => 0,
-					'description' => __( 'When position is "index", the zero-based top-level block index at which to insert the new block.', 'convertkit' ),
+					'description' => __( 'When position is "index", the zero-based top-level element index at which to insert the new element.', 'convertkit' ),
 				),
 				'attrs'    => array(
 					'type'        => 'object',
-					'description' => __( 'Block attributes.', 'convertkit' ),
+					'description' => __( 'Element attributes.', 'convertkit' ),
 					'properties'  => $this->get_input_schema_properties(),
 				),
 			),
@@ -131,8 +131,8 @@ class ConvertKit_MCP_Ability_Block_Insert extends ConvertKit_MCP_Ability_Block {
 		$position = isset( $input['position'] ) ? (string) $input['position'] : 'append';
 		$index    = isset( $input['index'] ) ? (int) $input['index'] : 0;
 
-		// Insert block into post.
-		return ConvertKit_Block_Post_Helper::insert( $post_id, 'convertkit/' . $this->block->get_name(), $attrs, $position, $index );
+		// Insert the element into the post.
+		return ConvertKit_Content_Post_Helper::insert( $post_id, $this->block->get_name(), $attrs, $position, $index );
 
 	}
 

@@ -110,13 +110,15 @@ class BlockPostHelperTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the find() method returns false when no blocks match the given block name.
+	 * Test that the find() method returns an empty array when no blocks match the given block name.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testFindWhenNoBlocksMatch()
 	{
-		$this->assertFalse(\ConvertKit_Block_Post_Helper::find( $this->postID, 'fake/block' ));
+		$blocks = \ConvertKit_Block_Post_Helper::find( $this->postID, 'fake/block' );
+		$this->assertIsArray($blocks);
+		$this->assertCount(0, $blocks);
 	}
 
 	/**

@@ -1,22 +1,22 @@
 <?php
 /**
- * Kit MCP Ability: List blocks in a post.
+ * Kit MCP Ability: List Kit Elements in a post.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Ability that lists all occurrences of a given Kit block within a WordPress
- * post's content.
+ * Ability that lists all occurrences of a given Kit element
+ * (Broadcast, Form, Form Trigger, Product) within a WordPress Post's content.
  *
- * Registered by a block opting in via the `convertkit_abilities` filter and
- * produces an ability named `kit/<block-name>-list` (e.g. `kit/form-list`).
+ * Registered by an element opting in via the `convertkit_abilities` filter and
+ * produces an ability named `kit/<element>-list` (e.g. `kit/form-list`).
  *
  * @package ConvertKit
  * @author  ConvertKit
  */
-class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
+class ConvertKit_MCP_Ability_Content_List extends ConvertKit_MCP_Ability_Content {
 
 	/**
 	 * Sets whether the ability is readonly.
@@ -60,7 +60,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'List %s blocks in a post', 'convertkit' ),
+			__( 'List %s elements in a post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -77,7 +77,7 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Lists every occurrence of the %1$s (%2$s) block in the given post, including each occurrence\'s zero-based index and current attribute values.', 'convertkit' ),
+			__( 'Lists every occurrence of the %1$s (%2$s) element in the given post, including each occurrence\'s zero-based index and current attribute values.', 'convertkit' ),
 			'convertkit/' . $this->block->get_name(),
 			$this->block->get_title()
 		);
@@ -136,11 +136,11 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 							'index' => array(
 								'type'        => 'integer',
 								'minimum'     => 0,
-								'description' => __( 'Zero-based occurrence index among this block\'s appearances in the post.', 'convertkit' ),
+								'description' => __( 'Zero-based occurrence index among this element\'s appearances in the post.', 'convertkit' ),
 							),
 							'attrs' => array(
 								'type'        => 'object',
-								'description' => __( 'Block attributes for this occurrence.', 'convertkit' ),
+								'description' => __( 'Element attributes for this occurrence.', 'convertkit' ),
 							),
 						),
 					),
@@ -171,8 +171,8 @@ class ConvertKit_MCP_Ability_Block_List extends ConvertKit_MCP_Ability_Block {
 			);
 		}
 
-		// Find blocks in post.
-		$occurrences = ConvertKit_Block_Post_Helper::find( $post_id, 'convertkit/' . $this->block->get_name() );
+		// Find element occurrences in post.
+		$occurrences = ConvertKit_Content_Post_Helper::find( $post_id, $this->block->get_name() );
 		if ( is_wp_error( $occurrences ) ) {
 			return $occurrences;
 		}
