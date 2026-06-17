@@ -86,7 +86,6 @@ class ConvertKit_Content_Post_Helper {
 		}
 
 		// Insert the element into the post, depending on the mechanism.
-		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::insert(
@@ -132,7 +131,6 @@ class ConvertKit_Content_Post_Helper {
 		}
 
 		// Updates the existing occurrence of the element in the post, depending on the mechanism.
-		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::update(

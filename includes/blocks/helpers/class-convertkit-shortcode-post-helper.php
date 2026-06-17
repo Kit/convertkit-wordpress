@@ -530,6 +530,26 @@ class ConvertKit_Shortcode_Post_Helper {
 			}
 		}
 
+		// Treat blank line separated text as paragraphs, matching the logic in wpautop().
+		$opener_prefix = '/^<(?:' . self::ELEMENT_LEVEL_TAGS . ')\b/i';
+		$offset        = 0;
+		foreach ( preg_split( '/(\R\R+)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE ) as $i => $chunk ) {
+			// Odd indices are the delimiters captured by PREG_SPLIT_DELIM_CAPTURE.
+			if ( $i % 2 === 1 ) {
+				$offset += strlen( $chunk );
+				continue;
+			}
+
+			$trimmed = trim( $chunk );
+			if ( $trimmed !== '' && ! preg_match( $opener_prefix, $trimmed ) ) {
+				$starts[] = $offset + ( strlen( $chunk ) - strlen( ltrim( $chunk ) ) );
+			}
+
+			$offset += strlen( $chunk );
+		}
+
+		sort( $starts, SORT_NUMERIC );
+
 		return $starts;
 
 	}

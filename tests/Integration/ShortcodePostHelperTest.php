@@ -143,8 +143,13 @@ class ShortcodePostHelperTest extends WPTestCase
 			position: 'prepend'
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the shortcode is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringStartsWith( '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', $post->post_content );
 	}
 
 	/**
@@ -162,8 +167,13 @@ class ShortcodePostHelperTest extends WPTestCase
 			position: 'append'
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the shortcode is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringEndsWith( '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', $post->post_content );
 	}
 
 	/**
@@ -181,8 +191,13 @@ class ShortcodePostHelperTest extends WPTestCase
 			index: 1
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the shortcode is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringContainsString( "Item #1\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', $post->post_content );
 	}
 
 	/**
@@ -201,8 +216,37 @@ class ShortcodePostHelperTest extends WPTestCase
 			index: 100
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the shortcode is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringEndsWith( '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', $post->post_content );
+	}
+
+	/**
+	 * Test that the insert() method inserts a new shortcode at the specified index position.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testInsertIndexZero()
+	{
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
+			post_id: $this->postID,
+			shortcode_tag: 'convertkit_form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'index',
+			index: 0
+		);
+
+		// Confirm result is an array and the post ID is correct.
+		$this->assertIsArray( $result );
+		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the shortcode is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringStartsWith( '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', $post->post_content );
 	}
 
 	/**
