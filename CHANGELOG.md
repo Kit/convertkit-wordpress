@@ -1,3 +1,6 @@
+### 3.3.4 2026-06-17
+* Fix: Settings: Update Beta label color to match Kit
+
 ### 3.3.3 2026-05-20
 * Fix: Settings: Button height in WordPress 7.0
 
