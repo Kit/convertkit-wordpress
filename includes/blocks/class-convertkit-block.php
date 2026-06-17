@@ -106,6 +106,19 @@ class ConvertKit_Block {
 	}
 
 	/**
+	 * Returns this block's plural title.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_title_plural() {
+
+		return '';
+
+	}
+
+	/**
 	 * Returns this block's icon.
 	 *
 	 * @since   3.1.1
