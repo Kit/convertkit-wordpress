@@ -1,5 +1,5 @@
 .wrap .page-title-action.convertkit-action {
-	width: 124px;
+	width: 127px;
 	background: url(../images/logomark.svg);
 	background-repeat: no-repeat;
 	background-size: 16px 16px;
@@ -14,7 +14,7 @@
 	padding: 5px 0 0 0;
 }
 
-.wrap .page-title-action.convertkit-action span {
+.wrap .page-title-action.convertkit-action span.convertkit-actions {
 	visibility: hidden;
 	display: none;
 	opacity: 0;
@@ -22,20 +22,33 @@
 	margin: 0;
 	padding: 10px;
 	left: -1px;
+	z-index: 99999;
 	background-color: #f0f0f1;
 	border-left: 1px solid #0a4b78;
 	border-right: 1px solid #0a4b78;
 	border-bottom: 1px solid #0a4b78;
 }
 
-.wrap .page-title-action.convertkit-action span a {
+.wrap .page-title-action.convertkit-action span.convertkit-actions a {
 	display: block;
 	text-decoration: none;
 }
 
-.wrap .page-title-action.convertkit-action:hover > span,
-.wrap .page-title-action.convertkit-action span:hover {
+.wrap .page-title-action.convertkit-action:hover > span.convertkit-actions,
+.wrap .page-title-action.convertkit-action span.convertkit-actions:hover {
 	visibility: visible;
 	opacity: 1;
 	display: block;
 }
+
+@media screen and (max-width: 782px) {
+
+	.wrap .page-title-action.convertkit-action {
+		width: 134px;
+	}
+
+	.wrap .page-title-action.convertkit-action::after {
+		padding-top: 10px;
+	}
+}
+
