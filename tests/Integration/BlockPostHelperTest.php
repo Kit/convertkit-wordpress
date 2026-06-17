@@ -144,8 +144,13 @@ class BlockPostHelperTest extends WPTestCase
 			position: 'prepend'
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringStartsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
@@ -163,8 +168,13 @@ class BlockPostHelperTest extends WPTestCase
 			position: 'append'
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringEndsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
@@ -182,8 +192,37 @@ class BlockPostHelperTest extends WPTestCase
 			index: 1
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringContainsString( "<!-- wp:paragraph -->\n<p>Item #1</p>\n<!-- /wp:paragraph --><!-- wp:convertkit/form {\"form\":\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
+	}
+
+	/**
+	 * Test that the insert() method inserts a new block at the specified index position.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testInsertIndexZero()
+	{
+		$result = \ConvertKit_Block_Post_Helper::insert(
+			post_id: $this->postID,
+			block_name: 'convertkit/form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'index',
+			index: 0
+		);
+
+		// Confirm result is an array and the post ID is correct.
+		$this->assertIsArray( $result );
+		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringStartsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
@@ -202,8 +241,13 @@ class BlockPostHelperTest extends WPTestCase
 			index: 100
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringEndsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
