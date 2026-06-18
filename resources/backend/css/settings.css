@@ -116,6 +116,11 @@ body.settings_page__wp_convertkit_settings .wrap .postbox p {
 	font-size: 14px;
 }
 
+body.settings_page__wp_convertkit_settings .wrap .postbox input,
+body.settings_page__wp_convertkit_settings .wrap .postbox select {
+	vertical-align: middle;
+}
+
 body.settings_page__wp_convertkit_settings p.submit {
 	margin-bottom: 20px;
 	padding: 0;
