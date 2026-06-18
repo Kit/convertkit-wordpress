@@ -119,7 +119,7 @@ class ConvertKit_MCP_Ability_Settings_Update extends ConvertKit_MCP_Ability_Sett
 	public function execute_callback( $input ) {
 
 		// Bail if no input is provided.
-		if ( ! is_array( $input ) ) {
+		if ( ! count( $input ) ) {
 			return new WP_Error(
 				'convertkit_mcp_settings_invalid_input',
 				__( 'Input must be an object of settings keys and values.', 'convertkit' )
