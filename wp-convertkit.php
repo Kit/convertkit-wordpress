@@ -114,6 +114,9 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-c
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-tags.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-landing-pages.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-products.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-get.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-update.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';

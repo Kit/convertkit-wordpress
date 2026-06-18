@@ -93,6 +93,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		add_action( 'convertkit_admin_settings_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'convertkit_admin_settings_enqueue_styles', array( $this, 'enqueue_styles' ) );
 
+		// Register MCP abilities.
+		add_filter( 'convertkit_abilities', array( $this, 'register_abilities' ) );
+
 		parent::__construct();
 
 		$this->check_credentials();

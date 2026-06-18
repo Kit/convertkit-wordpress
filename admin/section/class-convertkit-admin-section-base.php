@@ -100,6 +100,26 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Registers this settings section's MCP abilities.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities     Abilities to Register.
+	 * @return  array
+	 */
+	public function register_abilities( $abilities ) {
+
+		return array_merge(
+			$abilities,
+			array(
+				'kit/' . $this->settings->get_name() . '-get'   => new ConvertKit_MCP_Ability_Settings_Get( $this->settings ),
+				'kit/' . $this->settings->get_name() . '-update' => new ConvertKit_MCP_Ability_Settings_Update( $this->settings ),
+			)
+		);
+
+	}
+
+	/**
 	 * Helper method to determine if we're viewing the current settings screen.
 	 *
 	 * @since   2.5.0
