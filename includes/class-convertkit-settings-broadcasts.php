@@ -218,6 +218,108 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
+	 * Returns this settings group's programmatic name.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_name() {
+
+		return 'broadcasts';
+
+	}
+
+	/**
+	 * Returns the title of this settings group.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_title() {
+
+		return __( 'Broadcasts Settings', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns the keys in this settings group that hold credentials or other
+	 * sensitive values.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_secret_keys() {
+
+		return array();
+
+	}
+
+	/**
+	 * Returns the JSON Schema describing this settings group, in the shape
+	 * stored by save() / returned by get(), excluding secret keys.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_schema() {
+
+		return array(
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => array(
+				'enabled'               => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether importing Broadcasts from Kit to WordPress Posts is enabled.', 'convertkit' ),
+				),
+				'author_id'             => array(
+					'type'        => 'integer',
+					'minimum'     => 1,
+					'description' => __( 'WordPress User ID to assign as the Post author when importing Broadcasts.', 'convertkit' ),
+				),
+				'post_status'           => array(
+					'type'        => 'string',
+					'description' => __( 'WordPress Post status to assign to Posts created from imported Broadcasts (e.g. publish, draft).', 'convertkit' ),
+				),
+				'category_id'           => array(
+					'type'        => array( 'integer', 'string' ),
+					'description' => __( 'WordPress Category ID to assign to Posts created from imported Broadcasts. Blank for none.', 'convertkit' ),
+				),
+				'import_thumbnail'      => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether to import the Broadcast thumbnail as the Post\'s Featured Image.', 'convertkit' ),
+				),
+				'import_images'         => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether to import images referenced in the Broadcast\'s content into the WordPress Media Library.', 'convertkit' ),
+				),
+				'published_at_min_date' => array(
+					'type'        => 'string',
+					'format'      => 'date',
+					'description' => __( 'Earliest published_at date (YYYY-MM-DD) of Broadcasts to import.', 'convertkit' ),
+				),
+				'enabled_export'        => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether exporting WordPress Posts to Kit Broadcasts is enabled.', 'convertkit' ),
+				),
+				'no_styles'             => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether inline styles on imported Broadcast content should be stripped.', 'convertkit' ),
+				),
+			),
+		);
+
+	}
+
+	/**
 	 * The default settings, used when the ConvertKit Broadcasts Settings haven't been saved
 	 * e.g. on a new installation.
 	 *

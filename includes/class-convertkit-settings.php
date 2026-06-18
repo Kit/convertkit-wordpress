@@ -600,7 +600,7 @@ class ConvertKit_Settings {
 	 *
 	 * @since   3.4.0
 	 *
-	 * @return  string[]
+	 * @return  array
 	 */
 	public function get_secret_keys() {
 
