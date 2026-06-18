@@ -107,7 +107,7 @@ class ConvertKit_MCP_Ability_Settings_Update extends ConvertKit_MCP_Ability_Sett
 
 	/**
 	 * Executes the ability.
-	 * 
+	 *
 	 * Validates the input, rejecting unknown and secret keys
 	 * and saves via the settings class.
 	 *
@@ -127,7 +127,7 @@ class ConvertKit_MCP_Ability_Settings_Update extends ConvertKit_MCP_Ability_Sett
 		}
 
 		// Get the public schema, allowed and secret keys.
-		$schema 	  = $this->get_public_schema();
+		$schema       = $this->get_public_schema();
 		$allowed_keys = array_keys( $schema['properties'] );
 		$secret_keys  = $this->settings->get_secret_keys();
 
