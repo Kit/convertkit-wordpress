@@ -197,9 +197,25 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 				'label'         => __( 'Form', 'convertkit' ),
 				'type'          => 'select',
 				'description'   => array(
-					__( 'Default', 'convertkit' ) . ': ' . __( 'Uses the form specified on the settings page.', 'convertkit' ),
-					__( 'None', 'convertkit' ) . ': ' . __( 'do not display a form.', 'convertkit' ),
+					sprintf(
+						'<code>%s</code>: %s <a href="%s" target="_blank">%s</a>',
+						esc_html__( 'Default', 'convertkit' ),
+						esc_html__( 'Uses the form specified on the', 'convertkit' ),
+						esc_url( convertkit_get_settings_link() ),
+						esc_html__( 'settings page', 'convertkit' )
+					),
+					sprintf(
+						'<code>%s</code>: %s',
+						esc_html__( 'None', 'convertkit' ),
+						esc_html__( 'do not display a form.', 'convertkit' )
+					),
 					__( 'Any other option will display that form after the main content.', 'convertkit' ),
+					sprintf(
+						'%s <a href="%s" target="_blank">%s</a>',
+						esc_html__( 'To make changes to your forms,', 'convertkit' ),
+						esc_url( convertkit_get_sign_in_url() ),
+						esc_html__( 'sign in to Kit', 'convertkit' )
+					),
 				),
 				'values'        => $forms,
 				'resource_type' => 'forms',
@@ -207,7 +223,14 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 			'landing_page'     => array(
 				'label'         => __( 'Landing Page', 'convertkit' ),
 				'type'          => 'select',
-				'description'   => __( 'Select a landing page to make it appear in place of this page.', 'convertkit' ),
+				'description'   => array(
+					esc_html__( 'Select a landing page to make it appear in place of this page.', 'convertkit' ),
+					sprintf(
+						/* translators: Link to sign in to ConvertKit */
+						esc_html__( 'To make changes to your landing pages, %s', 'convertkit' ),
+						'<a href="' . esc_url( convertkit_get_sign_in_url() ) . '" target="_blank">' . esc_html__( 'sign in to Kit', 'convertkit' ) . '</a>'
+					),
+				),
 				'values'        => $landing_pages,
 				'post_type'     => 'page',
 				'resource_type' => 'landing_pages',
@@ -215,14 +238,34 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 			'tag'              => array(
 				'label'         => __( 'Tag', 'convertkit' ),
 				'type'          => 'select',
-				'description'   => __( 'Select a tag to apply to visitors of this page who are subscribed. A visitor is deemed to be subscribed if they have clicked a link in an email to this site which includes their subscriber ID, or have entered their email address in a Kit Form on this site.', 'convertkit' ),
+				'description'   => array(
+					esc_html__( 'Select a tag to apply to visitors of this page who are subscribed.', 'convertkit' ),
+					esc_html__( 'A visitor is deemed to be subscribed if they have clicked a link in an email to this site which includes their subscriber ID, or have entered their email address in a Kit Form on this site.', 'convertkit' ),
+				),
 				'values'        => $tags,
 				'resource_type' => 'tags',
 			),
 			'restrict_content' => array(
 				'label'         => __( 'Restrict Content', 'convertkit' ),
 				'type'          => 'select',
-				'description'   => __( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this member-only content.', 'convertkit' ),
+				'description'   => array(
+					esc_html__( 'Select the Kit form, tag or product that the visitor must be subscribed to, permitting them access to view this member-only content.', 'convertkit' ),
+					sprintf(
+						'<code>%s</code>: %s',
+						esc_html__( 'Form', 'convertkit' ),
+						esc_html__( 'Displays the Kit form. On submission, the email address will be subscribed to the selected form, granting access to the member-only content. Useful to gate free content in return for an email address.', 'convertkit' )
+					),
+					sprintf(
+						'<code>%s</code>: %s',
+						esc_html__( 'Tag', 'convertkit' ),
+						esc_html__( 'Displays a WordPress styled subscription form. On submission, the email address will be subscribed to the selected tag, granting access to the member-only content. Useful to gate free content in return for an email address.', 'convertkit' )
+					),
+					sprintf(
+						'<code>%s</code>: %s',
+						esc_html__( 'Product', 'convertkit' ),
+						esc_html__( 'Displays a link to the Kit product, and a login form. Useful to gate content that can only be accessed by purchasing the Kit product.', 'convertkit' )
+					),
+				),
 				'values'        => $restrict_content,
 				'resource_type' => 'restrict_content',
 			),
