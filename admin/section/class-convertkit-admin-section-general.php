@@ -53,8 +53,8 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$this->settings_key = $this->settings::SETTINGS_NAME;
 
 		// Define the programmatic name, Title and Tab Text.
-		$this->name     = 'general';
-		$this->title    = __( 'General Settings', 'convertkit' );
+		$this->name     = $this->settings->get_name();
+		$this->title    = $this->settings->get_title();
 		$this->tab_text = __( 'General', 'convertkit' );
 
 		// Define settings sections.

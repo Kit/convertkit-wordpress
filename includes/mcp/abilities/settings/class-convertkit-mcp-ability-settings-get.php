@@ -57,9 +57,9 @@ class ConvertKit_MCP_Ability_Settings_Get extends ConvertKit_MCP_Ability_Setting
 	public function get_label() {
 
 		return sprintf(
-			/* translators: %s: Settings group slug, e.g. 'general'. */
-			__( 'Get Kit %s settings', 'convertkit' ),
-			$this->settings->get_name()
+			/* translators: %s: Settings Title, e.g. 'General Settings'. */
+			__( 'Get Kit Plugin %s', 'convertkit' ),
+			$this->settings->get_title()
 		);
 
 	}
@@ -74,9 +74,9 @@ class ConvertKit_MCP_Ability_Settings_Get extends ConvertKit_MCP_Ability_Setting
 	public function get_description() {
 
 		return sprintf(
-			/* translators: %s: Settings group slug, e.g. 'general'. */
-			__( 'Returns the current values of the Kit "%s" settings group.', 'convertkit' ),
-			$this->settings->get_name()
+			/* translators: %s: Settings Title, e.g. 'General Settings'. */
+			__( 'Returns the current values of the Kit Plugin "%s".', 'convertkit' ),
+			$this->settings->get_title()
 		);
 
 	}

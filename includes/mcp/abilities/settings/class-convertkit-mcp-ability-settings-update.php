@@ -49,9 +49,9 @@ class ConvertKit_MCP_Ability_Settings_Update extends ConvertKit_MCP_Ability_Sett
 	public function get_label() {
 
 		return sprintf(
-			/* translators: %s: Settings group slug, e.g. 'general'. */
-			__( 'Update Kit %s settings', 'convertkit' ),
-			$this->settings->get_slug()
+			/* translators: %s: Settings Title, e.g. 'General Settings'. */
+			__( 'Update Kit Plugin %s', 'convertkit' ),
+			$this->settings->get_title()
 		);
 
 	}
@@ -66,9 +66,9 @@ class ConvertKit_MCP_Ability_Settings_Update extends ConvertKit_MCP_Ability_Sett
 	public function get_description() {
 
 		return sprintf(
-			/* translators: %s: Settings group slug, e.g. 'general'. */
-			__( 'Updates one or more values in the Kit "%s" settings group. Only keys declared in the input schema can be updated; secret values (API keys, OAuth tokens) cannot be set via this ability.', 'convertkit' ),
-			$this->settings->get_name()
+			/* translators: %s: Settings Title, e.g. 'General Settings'. */
+			__( 'Updates one or more values in the Kit Plugin "%s". Only keys declared in the input schema can be updated; secret values (API keys, OAuth tokens) cannot be set via this ability.', 'convertkit' ),
+			$this->settings->get_title()
 		);
 
 	}

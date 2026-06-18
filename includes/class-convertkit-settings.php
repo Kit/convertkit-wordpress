@@ -582,6 +582,19 @@ class ConvertKit_Settings {
 	}
 
 	/**
+	 * Returns the title of this settings group.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_title() {
+
+		return __( 'General Settings', 'convertkit' );
+
+	}
+
+	/**
 	 * Returns the keys in this settings group that hold credentials or other
 	 * sensitive values.
 	 *
@@ -636,7 +649,7 @@ class ConvertKit_Settings {
 					'description' => __( 'Google reCAPTCHA v3 site key.', 'convertkit' ),
 				),
 				'recaptcha_minimum_score'            => array(
-					'type'        => 'number',
+					'type'        => 'float',
 					'minimum'     => 0,
 					'maximum'     => 1,
 					'description' => __( 'Minimum Google reCAPTCHA v3 score (0.0 - 1.0) below which a request is treated as spam.', 'convertkit' ),
