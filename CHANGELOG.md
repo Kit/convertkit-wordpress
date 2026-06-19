@@ -1,5 +1,9 @@
-### 3.3.4 2026-06-17
-* Fix: Settings: Update Beta label color to match Kit
+### 3.3.4 2026-06-19
+* Fix: Pages: Add New: Dropdown menu alignment and mobile layout
+* Fix: Block Editor: Refresh button icon alignment
+* Fix: Block Editor: Settings Sidebar: Improve descriptions and links to match Classic Editor
+* Fix: Settings: Broadcasts: Refresh settings on save
+* Removed: Unused methods `restrict_content_enabled` and `restrict_content` on `ConvertKit_Settings_Broadcasts` class
 
 ### 3.3.3 2026-05-20
 * Fix: Settings: Button height in WordPress 7.0
