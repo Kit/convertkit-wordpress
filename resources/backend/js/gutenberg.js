@@ -1011,14 +1011,35 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					values: fieldValues[key] || field.values,
 				});
 
+				// Build the help element. Supports HTML in the description by
+				// rendering each line as a paragraph via element.RawHTML, which
+				// allows inline tags like <code> and <a> to render correctly.
+				let helpElement;
+				if (Array.isArray(field.description)) {
+					helpElement = el(
+						'span',
+						{},
+						field.description.map(function (line, index) {
+							return el(
+								'p',
+								{
+									key: 'help-' + index,
+									style: { margin: '0 0 0.5em 0' },
+								},
+								el(element.RawHTML, {}, line)
+							);
+						})
+					);
+				} else if (field.description) {
+					helpElement = el(element.RawHTML, {}, field.description);
+				}
+
 				// Define some field properties shared across all field types.
 				const fieldProperties = {
 					key: 'convertkit_plugin_sidebar_' + key,
 					id: 'convertkit_plugin_sidebar_' + key,
 					label: field.label,
-					help: Array.isArray(field.description)
-						? field.description.join('\n\n')
-						: field.description,
+					help: helpElement,
 					value: settings[key] || field.default_value || '',
 
 					// Add __next40pxDefaultSize and __nextHasNoMarginBottom properties,
