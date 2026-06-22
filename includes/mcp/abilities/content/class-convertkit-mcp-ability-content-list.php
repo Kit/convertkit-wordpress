@@ -60,8 +60,8 @@ class ConvertKit_MCP_Ability_Content_List extends ConvertKit_MCP_Ability_Content
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'List %s elements in a post', 'convertkit' ),
-			$this->block->get_title()
+			__( 'List %s in a Post, Page or Custom Post', 'convertkit' ),
+			$this->block->get_title_plural()
 		);
 
 	}
@@ -76,10 +76,9 @@ class ConvertKit_MCP_Ability_Content_List extends ConvertKit_MCP_Ability_Content
 	public function get_description() {
 
 		return sprintf(
-			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Lists every occurrence of the %1$s (%2$s) element in the given post, including each occurrence\'s zero-based index and current attribute values.', 'convertkit' ),
-			'convertkit/' . $this->block->get_name(),
-			$this->block->get_title()
+			/* translators: Block Name */
+			__( 'Lists every %s in the given Post, Page or Custom Post, including each occurrence\'s zero-based index and current attribute values.', 'convertkit' ),
+			$this->block->get_title_plural()
 		);
 
 	}

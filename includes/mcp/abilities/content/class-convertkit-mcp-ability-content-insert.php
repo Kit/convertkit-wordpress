@@ -42,7 +42,7 @@ class ConvertKit_MCP_Ability_Content_Insert extends ConvertKit_MCP_Ability_Conte
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Insert a %s element into a post', 'convertkit' ),
+			__( 'Insert %s into a Page, Post or Custom Post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -59,9 +59,8 @@ class ConvertKit_MCP_Ability_Content_Insert extends ConvertKit_MCP_Ability_Conte
 
 		return sprintf(
 			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Inserts a new %1$s (%2$s) element into the given post\'s content. The element can be appended (default), prepended, or positioned relative to an existing element using a zero-based index.', 'convertkit' ),
-			'convertkit/' . $this->block->get_name(),
-			$this->block->get_title()
+			__( 'Inserts a new %s in a Page, Post or Custom Post\'s content. The element can be appended (default), prepended, or inserted relative to an existing element using a zero-based index.', 'convertkit' ),
+			$this->block->get_title_plural()
 		);
 
 	}
