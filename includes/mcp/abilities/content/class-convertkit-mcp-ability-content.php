@@ -165,6 +165,9 @@ abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 
 		switch ( $type ) {
 			case 'resource':
+			case 'text':
+			case 'color':
+			case 'select':
 				return 'string';
 
 			case 'number':
@@ -174,7 +177,8 @@ abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 				return 'boolean';
 
 			default:
-				return $type;
+				// Unknown field type — fall back to string.
+				return 'string';
 		}
 
 	}
