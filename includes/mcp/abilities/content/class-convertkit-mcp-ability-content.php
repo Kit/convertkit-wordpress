@@ -108,7 +108,7 @@ abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 
 		return array(
 			'type'       => 'object',
-			'required'   => array( 'post_id', 'occurrence_index', 'index' ),
+			'required'   => array( 'post_id', 'occurrence_index' ),
 			'properties' => array(
 				'post_id'          => array(
 					'type'        => 'integer',
@@ -116,11 +116,7 @@ abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 				),
 				'occurrence_index' => array(
 					'type'        => 'integer',
-					'description' => __( 'The zero-based occurrence index of the block in the post.', 'convertkit' ),
-				),
-				'index'            => array(
-					'type'        => 'integer',
-					'description' => __( 'The zero-based index of the block in the post.', 'convertkit' ),
+					'description' => __( 'The zero-based occurrence index of the Kit element in the post.', 'convertkit' ),
 				),
 			),
 		);
@@ -169,6 +165,9 @@ abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 
 		switch ( $type ) {
 			case 'resource':
+			case 'text':
+			case 'color':
+			case 'select':
 				return 'string';
 
 			case 'number':
@@ -178,7 +177,8 @@ abstract class ConvertKit_MCP_Ability_Content extends ConvertKit_MCP_Ability {
 				return 'boolean';
 
 			default:
-				return $type;
+				// Unknown field type — fall back to string.
+				return 'string';
 		}
 
 	}

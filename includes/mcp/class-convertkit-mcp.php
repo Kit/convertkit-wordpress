@@ -37,7 +37,7 @@ class ConvertKit_MCP {
 	 *
 	 * @var     string
 	 */
-	const SERVER_ID = 'kit-mcp';
+	const SERVER_ID = 'kit/mcp';
 
 	/**
 	 * The REST namespace used by the MCP server.
@@ -46,7 +46,7 @@ class ConvertKit_MCP {
 	 *
 	 * @var     string
 	 */
-	const SERVER_NAMESPACE = 'kit-mcp';
+	const SERVER_NAMESPACE = 'kit/mcp';
 
 	/**
 	 * The REST version number used by the MCP server.
@@ -64,19 +64,43 @@ class ConvertKit_MCP {
 	 */
 	public function __construct() {
 
-		// Bail if the Abilities API is unavailable (WordPress < 6.9).
-		if ( ! function_exists( 'wp_register_ability' ) ) {
-			return;
-		}
-
 		// Register the ability category.
 		add_action( 'wp_abilities_api_categories_init', array( $this, 'register_abilities_category' ) );
 
 		// Register abilities.
 		add_action( 'wp_abilities_api_init', array( $this, 'register_abilities' ) );
 
+		// Register resource-list abilities (Forms, Tags, Landing Pages, Products).
+		// These are owned by the Plugin (not by any single block or feature),
+		// so they're added here rather than via a per-class register_abilities().
+		add_filter( 'convertkit_abilities', array( $this, 'register_resource_abilities' ) );
+
 		// Register the MCP server.
 		add_action( 'mcp_adapter_init', array( $this, 'register_mcp_server' ) );
+
+	}
+
+	/**
+	 * Appends the resource-list abilities (Forms, Tags, Landing Pages,
+	 * Products) to the convertkit_abilities filter, so they are registered
+	 * with the Abilities API and exposed via the MCP server.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities   Abilities to register.
+	 * @return  array
+	 */
+	public function register_resource_abilities( $abilities ) {
+
+		return array_merge(
+			$abilities,
+			array(
+				'kit/forms-list'         => new ConvertKit_MCP_Ability_Resource_Forms(),
+				'kit/tags-list'          => new ConvertKit_MCP_Ability_Resource_Tags(),
+				'kit/landing-pages-list' => new ConvertKit_MCP_Ability_Resource_Landing_Pages(),
+				'kit/products-list'      => new ConvertKit_MCP_Ability_Resource_Products(),
+			)
+		);
 
 	}
 
@@ -150,7 +174,7 @@ class ConvertKit_MCP {
 			self::SERVER_ID,
 			self::SERVER_NAMESPACE,
 			self::SERVER_ROUTE,
-			__( 'Kit MCP', 'convertkit' ),
+			__( 'Kit WordPress Plugin MCP', 'convertkit' ),
 			__( 'Exposes Kit Plugin abilities over the Model Context Protocol.', 'convertkit' ),
 			'1.0.0',
 			array( 'WP\\MCP\\Transport\\HttpTransport' ),

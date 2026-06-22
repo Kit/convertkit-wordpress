@@ -53,6 +53,12 @@ class ConvertKit_Content_Post_Helper {
 					$post_id,
 					'convertkit/' . $element_name
 				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::find(
+					$post_id,
+					'convertkit_' . $element_name
+				);
 		}
 
 		return self::unsupported_mechanism_error( $mechanism );
@@ -80,12 +86,20 @@ class ConvertKit_Content_Post_Helper {
 		}
 
 		// Insert the element into the post, depending on the mechanism.
-		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::insert(
 					$post_id,
 					'convertkit/' . $element_name,
+					$attrs,
+					$position,
+					$index
+				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::insert(
+					$post_id,
+					'convertkit_' . $element_name,
 					$attrs,
 					$position,
 					$index
@@ -117,12 +131,19 @@ class ConvertKit_Content_Post_Helper {
 		}
 
 		// Updates the existing occurrence of the element in the post, depending on the mechanism.
-		// A switch is used as shortcodes and other mechanisms will be supported in the future.
 		switch ( $mechanism ) {
 			case 'block':
 				return ConvertKit_Block_Post_Helper::update(
 					$post_id,
 					'convertkit/' . $element_name,
+					$occurrence_index,
+					$attrs
+				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::update(
+					$post_id,
+					'convertkit_' . $element_name,
 					$occurrence_index,
 					$attrs
 				);
@@ -158,6 +179,13 @@ class ConvertKit_Content_Post_Helper {
 				return ConvertKit_Block_Post_Helper::delete(
 					$post_id,
 					'convertkit/' . $element_name,
+					$occurrence_index
+				);
+
+			case 'shortcode':
+				return ConvertKit_Shortcode_Post_Helper::delete(
+					$post_id,
+					'convertkit_' . $element_name,
 					$occurrence_index
 				);
 		}

@@ -64,6 +64,7 @@ class WP_ConvertKit {
 		$this->initialize_cli_cron();
 		$this->initialize_frontend();
 		$this->initialize_global();
+		$this->initialize_mcp();
 
 	}
 
@@ -215,6 +216,49 @@ class WP_ConvertKit {
 		 * @since   1.9.6
 		 */
 		do_action( 'convertkit_initialize_global' );
+
+	}
+
+	/**
+	 * Initializes the MCP server if enabled in the Plugin's settings.
+	 *
+	 * @since   3.4.0
+	 */
+	public function initialize_mcp() {
+
+		// Bail if the MCP server is not enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
+
+		// Bail if the Abilities API is unavailable (WordPress < 6.9).
+		if ( ! function_exists( 'wp_register_ability' ) ) {
+			return;
+		}
+
+		// Bail if PHP 7.4+ is not installed, as this is required for the MCP Adapter classes.
+		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
+			return;
+		}
+
+		// Bail if the WordPress MCP Adapter autoloader is missing.
+		if ( ! file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
+			return;
+		}
+
+		// Load MCP Adapter.
+		require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
+
+		// Bail if the MCP Adapter class doesn't exist - something went wrong with the autoloader.
+		if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+			return;
+		}
+
+		// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
+		// integration pattern.
+		// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin.
+		\WP\MCP\Core\McpAdapter::instance();
 
 	}
 

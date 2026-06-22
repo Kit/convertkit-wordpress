@@ -99,12 +99,10 @@ class BlockPostHelperTest extends WPTestCase
 		$this->assertCount( 2, $blocks );
 
 		// Assert first matching block indicies and attributes are correct.
-		$this->assertEquals( $this->formBlockIndices[0], $blocks[0]['index'] );
 		$this->assertEquals( 0, $blocks[0]['occurrence_index'] );
 		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $blocks[0]['attrs']['form'] );
 
 		// Assert second matching block indicies and attributes are correct.
-		$this->assertEquals( $this->formBlockIndices[1], $blocks[1]['index'] );
 		$this->assertEquals( 1, $blocks[1]['occurrence_index'] );
 		$this->assertEquals( $_ENV['CONVERTKIT_API_FORM_ID'], $blocks[1]['attrs']['form'] );
 	}
@@ -146,9 +144,13 @@ class BlockPostHelperTest extends WPTestCase
 			position: 'prepend'
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 0, $result['index'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringStartsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
@@ -166,9 +168,13 @@ class BlockPostHelperTest extends WPTestCase
 			position: 'append'
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->totalBlocks + 1, $result['index'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringEndsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
@@ -186,9 +192,37 @@ class BlockPostHelperTest extends WPTestCase
 			index: 1
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 1, $result['index'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringContainsString( "<!-- wp:paragraph -->\n<p>Item #1</p>\n<!-- /wp:paragraph --><!-- wp:convertkit/form {\"form\":\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
+	}
+
+	/**
+	 * Test that the insert() method inserts a new block at the specified index position.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testInsertIndexZero()
+	{
+		$result = \ConvertKit_Block_Post_Helper::insert(
+			post_id: $this->postID,
+			block_name: 'convertkit/form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'index',
+			index: 0
+		);
+
+		// Confirm result is an array and the post ID is correct.
+		$this->assertIsArray( $result );
+		$this->assertEquals( $this->postID, $result['post_id'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringStartsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
@@ -207,14 +241,17 @@ class BlockPostHelperTest extends WPTestCase
 			index: 100
 		);
 
+		// Confirm result is an array and the post ID is correct.
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->totalBlocks + 1, $result['index'] );
+
+		// Confirm content has been updated and the block is inserted at the correct position.
+		$post = get_post($this->postID);
+		$this->assertStringEndsWith( '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"} /-->', $post->post_content );
 	}
 
 	/**
-	 * Test that the insert() method inserts a new block at the beginning of the content when
-	 * the index is negative.
+	 * Test that the insert() method returns a WP_Error when the index is negative.
 	 *
 	 * @since   3.4.0
 	 */
@@ -227,10 +264,7 @@ class BlockPostHelperTest extends WPTestCase
 			position: 'index',
 			index: -1
 		);
-
-		$this->assertIsArray( $result );
-		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( 0, $result['index'] );
+		$this->assertInstanceOf(\WP_Error::class, $result );
 	}
 
 	/**
@@ -266,7 +300,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[0], $result['index'] );
 
 		$result = \ConvertKit_Block_Post_Helper::update(
 			post_id: $this->postID,
@@ -277,7 +310,6 @@ class BlockPostHelperTest extends WPTestCase
 
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[1], $result['index'] );
 	}
 
 	/**
@@ -326,7 +358,6 @@ class BlockPostHelperTest extends WPTestCase
 		);
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[1], $result['index'] );
 
 		$result = \ConvertKit_Block_Post_Helper::delete(
 			post_id: $this->postID,
@@ -335,7 +366,6 @@ class BlockPostHelperTest extends WPTestCase
 		);
 		$this->assertIsArray( $result );
 		$this->assertEquals( $this->postID, $result['post_id'] );
-		$this->assertEquals( $this->formBlockIndices[0], $result['index'] );
 	}
 
 	/**

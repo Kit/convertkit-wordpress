@@ -51,7 +51,7 @@ class ConvertKit_MCP_Ability_Content_Delete extends ConvertKit_MCP_Ability_Conte
 
 		return sprintf(
 			/* translators: %s: block title */
-			__( 'Delete an existing %s element from a post', 'convertkit' ),
+			__( 'Delete Existing %s from a Post, Page or Custom Post', 'convertkit' ),
 			$this->block->get_title()
 		);
 
@@ -67,10 +67,9 @@ class ConvertKit_MCP_Ability_Content_Delete extends ConvertKit_MCP_Ability_Conte
 	public function get_description() {
 
 		return sprintf(
-			/* translators: 1: block full name e.g. convertkit/form, 2: block title */
-			__( 'Removes a single occurrence of the %1$s (%2$s) element from the given post.', 'convertkit' ),
-			'convertkit/' . $this->block->get_name(),
-			$this->block->get_title()
+			/* translators: Block Name */
+			__( 'Removes an existing %s from a Post, Page or Custom Post using the supplied zero-based occurrence index.', 'convertkit' ),
+			$this->block->get_title_plural()
 		);
 
 	}
