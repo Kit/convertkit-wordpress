@@ -109,6 +109,11 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-con
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-insert.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-update.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-delete.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-forms.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-tags.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-landing-pages.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-products.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';
