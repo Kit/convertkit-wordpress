@@ -191,33 +191,6 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
-	 * Returns whether imported Broadcasts should have their Restrict Content
-	 * setting defined, if the Broadcast is marked as paid.
-	 *
-	 * @since   2.2.9
-	 *
-	 * @return  bool
-	 */
-	public function restrict_content_enabled() {
-
-		return ! empty( $this->settings['restrict_content'] );
-
-	}
-
-	/**
-	 * Returns the Restrict Content setting to assign to imported Broadcasts
-	 *
-	 * @since   2.2.9
-	 *
-	 * @return  string
-	 */
-	public function restrict_content() {
-
-		return $this->settings['restrict_content'];
-
-	}
-
-	/**
 	 * The default settings, used when the ConvertKit Broadcasts Settings haven't been saved
 	 * e.g. on a new installation.
 	 *
@@ -266,6 +239,27 @@ class ConvertKit_Settings_Broadcasts {
 	public function save( $settings ) {
 
 		update_option( self::SETTINGS_NAME, array_merge( $this->get(), $settings ) );
+
+		// Reload settings in class, to reflect changes.
+		$this->refresh_settings();
+
+	}
+
+	/**
+	 * Reloads settings from the options table so this instance has the latest values.
+	 *
+	 * @since  3.3.4
+	 */
+	private function refresh_settings() {
+
+		$settings = get_option( self::SETTINGS_NAME );
+
+		if ( ! $settings ) {
+			$this->settings = $this->get_defaults();
+			return;
+		}
+
+		$this->settings = array_merge( $this->get_defaults(), $settings );
 
 	}
 

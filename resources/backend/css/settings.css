@@ -116,6 +116,11 @@ body.settings_page__wp_convertkit_settings .wrap .postbox p {
 	font-size: 14px;
 }
 
+body.settings_page__wp_convertkit_settings .wrap .postbox input,
+body.settings_page__wp_convertkit_settings .wrap .postbox select {
+	vertical-align: middle;
+}
+
 body.settings_page__wp_convertkit_settings p.submit {
 	margin-bottom: 20px;
 	padding: 0;
@@ -167,24 +172,25 @@ body.settings_page__wp_convertkit_settings .wrap .postbox textarea.convertkit-mo
  * Beta Label
  */
 body.settings_page__wp_convertkit_settings ul.convertkit-tabs li a span.convertkit-beta-label {
-	background-color: #f0fff3;
+	background-color: #f3e3f9;
 	border-radius: 9999px;
-	color: #4ec776;
+	color: #4a265a;
 	margin: 0 0 0 12px;
-	padding: 1px 8px;
-	font-weight: 400;
+	padding: 3px 8px;
+	font-weight: 600;
 	font-size: 12px;
 }
 
 body.settings_page__wp_convertkit_settings .wrap .postbox.convertkit-beta span.convertkit-beta-label {
 	display: inline-block;
-	background-color: #f0fff3;
+	background-color: #f3e3f9;
 	border-radius: 9999px;
-	color: #4ec776;
+	color: #4a265a;
 	border-width: 1px;
-	margin: 7px 0 0 12px;
-	padding: 1px 8px;
+	margin: 4px 0 0 12px;
+	padding: 4px 8px;
 	vertical-align: top;
+	font-weight: 600;
 	font-size: 12px;
 }
 
