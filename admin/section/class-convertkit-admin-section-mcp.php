@@ -15,6 +15,15 @@
 class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 	/**
+	 * The authorization header to display on screen.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     bool|string
+	 */
+	private $authorization_header = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   3.4.0
@@ -44,7 +53,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			),
 		);
 
-		// Maybe revoke the Application Password.
+		$this->maybe_generate_authentication_header();
 		$this->maybe_revoke_application_password();
 
 		// Register and maybe output notices for this settings screen, and the Intercom messenger.
@@ -56,6 +65,39 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		add_action( 'convertkit_admin_settings_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		parent::__construct();
+
+	}
+
+	/**
+	 * Generates the authentication header to display on screen, if the user
+	 * has just created an Application Password.
+	 *
+	 * @since   3.4.0
+	 */
+	private function maybe_generate_authentication_header() {
+
+		// Bail if we're not on the settings screen.
+		if ( ! $this->on_settings_screen( $this->name ) ) {
+			return;
+		}
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_mcp_create_application_password'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_mcp_create_application_password'] ), 'convertkit-mcp-create-application-password' ) ) {
+			return;
+		}
+
+		// Bail if the user login and password are not included in the request.
+		if ( ! isset( $_REQUEST['user_login'] ) || ! isset( $_REQUEST['password'] ) ) {
+			return;
+		}
+
+		// Build the authorization header to display on screen.
+		$user_login                 = sanitize_text_field( wp_unslash( $_REQUEST['user_login'] ) );
+		$password                   = sanitize_text_field( wp_unslash( $_REQUEST['password'] ) );
+		$this->authorization_header = base64_encode( $user_login . ':' . $password ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 
 	}
 
@@ -151,13 +193,23 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		}
 
 		// If an Application Password exists for this Plugin, display the instructions and revoke section.
-		add_settings_field(
-			'connect',
-			__( 'Connect a client', 'convertkit' ),
-			array( $this, $this->get_application_password() === false ? 'connect_callback' : 'instructions_disconnect_callback' ),
-			$this->settings_key,
-			$this->name
-		);
+		if ( $this->get_application_password() ) {
+			add_settings_field(
+				'connect',
+				__( 'Connection', 'convertkit' ),
+				array( $this, 'instructions_disconnect_callback' ),
+				$this->settings_key,
+				$this->name
+			);
+		} else {
+			add_settings_field(
+				'connect',
+				__( 'Connection', 'convertkit' ),
+				array( $this, 'connect_callback' ),
+				$this->settings_key,
+				$this->name
+			);
+		}
 
 	}
 
@@ -170,7 +222,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 		?>
 		<span class="convertkit-beta-label"><?php esc_html_e( 'Beta', 'convertkit' ); ?></span>
-		<p class="description"><?php esc_html_e( 'Defines whether AI clients can connect to the Kit Plugin using MCP.', 'convertkit' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Defines whether AI clients can connect to the Kit Plugin using MCP, and provides instructions for connecting.', 'convertkit' ); ?></p>
 		<?php
 
 	}
@@ -220,20 +272,23 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 		// Build the WordPress authorize-application.php URL.
 		// See: https://developer.wordpress.org/advanced-administration/security/application-passwords/.
-		$authorize_url = add_query_arg(
-			array(
-				'app_name'    => CONVERTKIT_MCP_APP_NAME,
-				'success_url' => $this->get_settings_url( array( 'application_password' => 1 ) ),
-				'reject_url'  => $this->get_settings_url(),
-			),
-			admin_url( 'authorize-application.php' )
-		);
+		// We don't use add_query_arg(), as rawurlencode() is needed for authorize-application.php's JS to work correctly.
+		$authorize_url = admin_url( 'authorize-application.php' )
+			. '?app_name=' . rawurlencode( CONVERTKIT_MCP_APP_NAME )
+			. '&success_url=' . rawurlencode(
+				$this->get_settings_url(
+					array(
+						'_convertkit_settings_mcp_create_application_password' => wp_create_nonce( 'convertkit-mcp-create-application-password' ),
+					)
+				)
+			)
+			. '&reject_url=' . rawurlencode( $this->get_settings_url() );
 		?>
 		<p>
 			<?php esc_html_e( 'Click Create Application Password to create a password that AI clients can use to connect to this site\'s MCP server.', 'convertkit' ); ?>
 		</p>
 		<p>
-			<a href="<?php echo esc_url( $authorize_url ); ?>" class="button button-primary">
+			<a href="<?php echo esc_attr( $authorize_url ); ?>" class="button button-primary">
 				<?php esc_html_e( 'Create Application Password', 'convertkit' ); ?>
 			</a>
 		</p>
@@ -249,25 +304,34 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	public function instructions_disconnect_callback() {
 
 		// Build disconnect URL.
-		$disconnect_url = $this->get_settings_url( array( '_convertkit_settings_mcp_revoke_application_password' => wp_create_nonce( 'convertkit-mcp-revoke-application-password' ) ) ); 
+		$disconnect_url = $this->get_settings_url( array( '_convertkit_settings_mcp_revoke_application_password' => wp_create_nonce( 'convertkit-mcp-revoke-application-password' ) ) );
 
 		// Fetch query parameters to build the Basic auth header.
-		if ( array_key_exists( 'user_login', $_REQUEST ) && array_key_exists( 'password', $_REQUEST ) ) {
-			$user_login = $_REQUEST['user_login'];
-			$password = $_REQUEST['password'];
-			$basic = base64_encode( $user_login . ':' . $password );
+		if ( $this->authorization_header ) {
+			?>
+			<p>
+				<strong><?php esc_html_e( 'Authentication Header:', 'convertkit' ); ?></strong>
+				<code>Basic <?php echo esc_html( $this->authorization_header ); ?></code>
+			</p>
+			<p>
+				<?php esc_html_e( 'Copy the above. It won\'t be displayed again. If you lose this, you\'ll need to revoke the Application Password and create a new one.', 'convertkit' ); ?>
+			</p>
+			<?php
+		} else {
+			?>
+			<p>
+				<?php esc_html_e( 'An Application Password was previously created for this Plugin. It is not displayed here for security.', 'convertkit' ); ?>
+				<br />
+				<?php esc_html_e( 'If you forgot your Application Password, you can revoke it using the Revoke Application Password button below, and then create a new one.', 'convertkit' ); ?>
+			</p>
+			<?php
 		}
 		?>
 		<p>
-			<?php esc_html_e( 'Copy the configuration for your AI client below now — you will not see the password again.', 'convertkit' ); ?>
-
-			<?php
-			$application_password = $this->get_application_password();
-			var_dump( $application_password );
-			?>
+			<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
 		</p>
 		<p>
-			<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
+			@TODO Configs here.
 		</p>
 		<?php
 
@@ -275,7 +339,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 	/**
 	 * Returns the URL for the this settings screen.
-	 * 
+	 *
 	 * @since   3.4.0
 	 *
 	 * @param   array $query_args   Query arguments to add to the URL.
@@ -287,7 +351,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			array_merge(
 				array(
 					'page' => '_wp_convertkit_settings',
-					'tab' => $this->name,
+					'tab'  => $this->name,
 				),
 				$query_args
 			),
