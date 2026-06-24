@@ -44,6 +44,9 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			),
 		);
 
+		// Maybe revoke the Application Password.
+		$this->maybe_revoke_application_password();
+
 		// Register and maybe output notices for this settings screen, and the Intercom messenger.
 		if ( $this->on_settings_screen( $this->name ) ) {
 			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_notices' ) );
@@ -53,6 +56,47 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		add_action( 'convertkit_admin_settings_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		parent::__construct();
+
+	}
+
+	/**
+	 * Revokes the Application Password, if the user clicked the Revoke Application Password button.
+	 *
+	 * @since   3.4.0
+	 */
+	private function maybe_revoke_application_password() {
+
+		// Bail if we're not on the settings screen.
+		if ( ! $this->on_settings_screen( $this->name ) ) {
+			return;
+		}
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_mcp_revoke_application_password'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_mcp_revoke_application_password'] ), 'convertkit-mcp-revoke-application-password' ) ) {
+			return;
+		}
+
+		// Get the Application Password.
+		$application_password = $this->get_application_password();
+
+		// Bail if no Application Password exists.
+		if ( ! $application_password ) {
+			return;
+		}
+
+		// Revoke the Application Password.
+		$result = WP_Application_Passwords::delete_application_password( get_current_user_id(), $application_password['uuid'] );
+		if ( is_wp_error( $result ) ) {
+			$this->output_error( $result->get_error_message() );
+			return;
+		}
+
+		// Reload the settings screen.
+		wp_safe_redirect( $this->get_settings_url() );
+		exit();
 
 	}
 
@@ -204,6 +248,9 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 */
 	public function instructions_disconnect_callback() {
 
+		// Build disconnect URL.
+		$disconnect_url = $this->get_settings_url( array( '_convertkit_settings_mcp_revoke_application_password' => wp_create_nonce( 'convertkit-mcp-revoke-application-password' ) ) ); 
+
 		// Fetch query parameters to build the Basic auth header.
 		if ( array_key_exists( 'user_login', $_REQUEST ) && array_key_exists( 'password', $_REQUEST ) ) {
 			$user_login = $_REQUEST['user_login'];
@@ -219,7 +266,33 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			var_dump( $application_password );
 			?>
 		</p>
+		<p>
+			<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
+		</p>
 		<?php
+
+	}
+
+	/**
+	 * Returns the URL for the this settings screen.
+	 * 
+	 * @since   3.4.0
+	 *
+	 * @param   array $query_args   Query arguments to add to the URL.
+	 * @return  string
+	 */
+	private function get_settings_url( $query_args = array() ) {
+
+		return add_query_arg(
+			array_merge(
+				array(
+					'page' => '_wp_convertkit_settings',
+					'tab' => $this->name,
+				),
+				$query_args
+			),
+			admin_url( 'options-general.php' )
+		);
 
 	}
 
@@ -243,7 +316,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 		// Iterate through the Application Passwords and return the password that matches the app name.
 		foreach ( $passwords as $password ) {
-			if ( $password['name'] === self::APP_NAME ) {
+			if ( $password['name'] === CONVERTKIT_MCP_APP_NAME ) {
 				return $password;
 			}
 		}
