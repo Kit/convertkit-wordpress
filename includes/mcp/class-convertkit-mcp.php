@@ -66,7 +66,7 @@ class ConvertKit_MCP {
 	 */
 	public static function get_server_url() {
 
-		return rest_url( self::SERVER_NAMESPACE . '/' . self::SERVER_ROUTE . '/mcp' );
+		return rest_url( self::SERVER_NAMESPACE . '/' . self::SERVER_ROUTE );
 
 	}
 

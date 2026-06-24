@@ -330,8 +330,107 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		<p>
 			<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
 		</p>
+
+		<?php
+		// Build server URL and pre-encoded Basic auth header for use in the
+		// per-client configuration snippets below.
+		$server_url  = ConvertKit_MCP::get_server_url();
+		$auth_header = $this->authorization_header
+			? 'Basic ' . $this->authorization_header
+			: __( 'Your base64 encoded username and application password', 'convertkit' );
+
+		// Claude desktop / Cline JSON.
+		//
+		// The Authorization header value is inlined (not passed via the
+		// `env` block + `${VAR}` substitution as the mcp-remote docs
+		// suggest), because mcp-remote's variable substitution is unreliable
+		// with Basic auth values that contain `$` characters in their
+		// base64 payload — the substitution silently leaves the literal
+		// `${KIT_AUTH}` string in place, producing 401s.
+		$claude_desktop_config = wp_json_encode(
+			array(
+				'mcpServers' => array(
+					'kit-wordpress' => array(
+						'command' => 'npx',
+						'args'    => array(
+							'-y',
+							'mcp-remote',
+							$server_url,
+							'--header',
+							'Authorization: ' . $auth_header,
+						),
+					),
+				),
+			),
+			JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+		);
+
+		// Cursor JSON.
+		$cursor_config = wp_json_encode(
+			array(
+				'mcpServers' => array(
+					'kit-wordpress' => array(
+						'url'     => $server_url,
+						'headers' => array(
+							'Authorization' => $auth_header,
+						),
+					),
+				),
+			),
+			JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+		);
+		?>
+
+		<h3><?php esc_html_e( 'Claude', 'convertkit' ); ?></h3>
 		<p>
-			@TODO Configs here.
+			<?php
+			printf(
+				/* translators: %s: Path to Claude desktop config file. */
+				esc_html__( 'Add the following to your %s file, then restart Claude desktop:', 'convertkit' ),
+				'<code>~/Library/Application Support/Claude/claude_desktop_config.json</code>'
+			);
+			?>
+		</p>
+		<pre><code><?php echo esc_html( $claude_desktop_config ); ?></code></pre>
+
+		<h3><?php esc_html_e( 'Claude Code', 'convertkit' ); ?></h3>
+		<p>
+			<?php esc_html_e( 'Run the following command in your terminal. Claude Code connects to the Kit MCP server over HTTP using the site-specific URL and the Basic Authorization header below.', 'convertkit' ); ?>
+			<br />
+			<code>
+				<?php
+				printf(
+					'claude mcp add --transport http kit-wordpress %s --header "Authorization: %s"',
+					esc_html( $server_url ),
+					esc_html( $auth_header )
+				);
+				?>
+			</code>
+		</p>
+
+		<h3><?php esc_html_e( 'Cursor', 'convertkit' ); ?></h3>
+		<p>
+			<?php
+			printf(
+				/* translators: %s: Path to Cursor MCP config file. */
+				esc_html__( 'Add the following to your %s file, then restart Cursor:', 'convertkit' ),
+				'<code>~/.cursor/mcp.json</code>'
+			);
+			?>
+		</p>
+		<pre><code><?php echo esc_html( $cursor_config ); ?></code></pre>
+
+		<h3><?php esc_html_e( 'Other clients', 'convertkit' ); ?></h3>
+		<p>
+			<?php esc_html_e( 'For any other MCP client, provide it with the following:', 'convertkit' ); ?>
+		</p>
+		<p>
+			<strong><?php esc_html_e( 'Server URL:', 'convertkit' ); ?></strong>
+			<code><?php echo esc_html( $server_url ); ?></code>
+		</p>
+		<p>
+			<strong><?php esc_html_e( 'Authorization header:', 'convertkit' ); ?></strong>
+			<code><?php echo esc_html( $auth_header ); ?></code>
 		</p>
 		<?php
 
