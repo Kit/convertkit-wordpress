@@ -95,10 +95,24 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				'label'       => __( 'When enabled, allows AI clients to connect to the Kit Plugin using MCP.', 'convertkit' ),
 				'description' => sprintf(
 					'%s<br /><code>%s</code>',
-					__( 'Go to your AI tool to add a custom connector by pasting this URL to connect to this plugin:', 'convertkit' ),
-					get_site_url() . '/wp-json/kit/mcp/v1'
+					__( 'MCP server URL:', 'convertkit' ),
+					esc_url( ConvertKit_MCP::get_server_url() )
 				),
 			)
+		);
+
+		// Bail if MCP is not enabled — none of the connect UI applies.
+		if ( ! $this->settings->enabled() ) {
+			return;
+		}
+
+		// If an Application Password exists for this Plugin, display the instructions and revoke section.
+		add_settings_field(
+			'connect',
+			__( 'Connect a client', 'convertkit' ),
+			array( $this, $this->get_application_password() === false ? 'connect_callback' : 'instructions_disconnect_callback' ),
+			$this->settings_key,
+			$this->name
 		);
 
 	}
@@ -149,6 +163,92 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			$args['description'],
 			array( 'convertkit-conditional-display' )
 		);
+
+	}
+
+	/**
+	 * Renders the Connect a client setting, to allow the user to generate an Application Password
+	 * for this Plugin which is used to connect AI clients to the MCP Server.
+	 *
+	 * @since   3.4.0
+	 */
+	public function connect_callback() {
+
+		// Build the WordPress authorize-application.php URL.
+		// See: https://developer.wordpress.org/advanced-administration/security/application-passwords/.
+		$authorize_url = add_query_arg(
+			array(
+				'app_name'    => CONVERTKIT_MCP_APP_NAME,
+				'success_url' => $this->get_settings_url( array( 'application_password' => 1 ) ),
+				'reject_url'  => $this->get_settings_url(),
+			),
+			admin_url( 'authorize-application.php' )
+		);
+		?>
+		<p>
+			<?php esc_html_e( 'Click Create Application Password to create a password that AI clients can use to connect to this site\'s MCP server.', 'convertkit' ); ?>
+		</p>
+		<p>
+			<a href="<?php echo esc_url( $authorize_url ); ?>" class="button button-primary">
+				<?php esc_html_e( 'Create Application Password', 'convertkit' ); ?>
+			</a>
+		</p>
+		<?php
+
+	}
+
+	/**
+	 * Renders the instructions and Disconnect section.
+	 *
+	 * @since   3.4.0
+	 */
+	public function instructions_disconnect_callback() {
+
+		// Fetch query parameters to build the Basic auth header.
+		if ( array_key_exists( 'user_login', $_REQUEST ) && array_key_exists( 'password', $_REQUEST ) ) {
+			$user_login = $_REQUEST['user_login'];
+			$password = $_REQUEST['password'];
+			$basic = base64_encode( $user_login . ':' . $password );
+		}
+		?>
+		<p>
+			<?php esc_html_e( 'Copy the configuration for your AI client below now — you will not see the password again.', 'convertkit' ); ?>
+
+			<?php
+			$application_password = $this->get_application_password();
+			var_dump( $application_password );
+			?>
+		</p>
+		<?php
+
+	}
+
+	/**
+	 * Finds the UUID of the most recently-created Application Password for the
+	 * currently logged in user
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  bool|string
+	 */
+	private function get_application_password() {
+
+		// Get the user's Application Passwords.
+		$passwords = WP_Application_Passwords::get_user_application_passwords( get_current_user_id() );
+
+		// Return false if no Application Passwords exist.
+		if ( empty( $passwords ) ) {
+			return false;
+		}
+
+		// Iterate through the Application Passwords and return the password that matches the app name.
+		foreach ( $passwords as $password ) {
+			if ( $password['name'] === self::APP_NAME ) {
+				return $password;
+			}
+		}
+
+		return false;
 
 	}
 
