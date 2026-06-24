@@ -75,8 +75,44 @@ class ConvertKit_MCP {
 		// so they're added here rather than via a per-class register_abilities().
 		add_filter( 'convertkit_abilities', array( $this, 'register_resource_abilities' ) );
 
+		// Register settings get / update abilities for each Plugin settings
+		// These are owned by the Plugin (not by any single feature),
+		// so they're added here rather than via a per-class register_abilities().
+		add_filter( 'convertkit_abilities', array( $this, 'register_settings_abilities' ) );
+
 		// Register the MCP server.
 		add_action( 'mcp_adapter_init', array( $this, 'register_mcp_server' ) );
+
+	}
+
+	/**
+	 * Appends the settings get / update abilities for each Plugin settings
+	 * group to the convertkit_abilities filter, so they are registered with
+	 * the Abilities API and exposed via the MCP server.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities   Abilities to register.
+	 * @return  array
+	 */
+	public function register_settings_abilities( $abilities ) {
+
+		// Settings instances to register with MCP.
+		$groups = array(
+			new ConvertKit_Settings(),
+			new ConvertKit_Settings_Broadcasts(),
+		);
+
+		// Iterate through settings groups, registering the get and update abilities.
+		foreach ( $groups as $settings ) {
+			$get    = new ConvertKit_MCP_Ability_Settings_Get( $settings );
+			$update = new ConvertKit_MCP_Ability_Settings_Update( $settings );
+
+			$abilities[ $get->get_name() ]    = $get;
+			$abilities[ $update->get_name() ] = $update;
+		}
+
+		return $abilities;
 
 	}
 

@@ -569,6 +569,122 @@ class ConvertKit_Settings {
 	}
 
 	/**
+	 * Returns this settings group's programmatic name.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_name() {
+
+		return 'general';
+
+	}
+
+	/**
+	 * Returns the title of this settings group.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_title() {
+
+		return __( 'General Settings', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns the keys in this settings group that hold credentials or other
+	 * sensitive values.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string[]
+	 */
+	public function get_secret_keys() {
+
+		return array(
+			'access_token',
+			'refresh_token',
+			'token_expires',
+			'api_key',
+			'api_secret',
+			'recaptcha_secret_key',
+		);
+
+	}
+
+	/**
+	 * Returns the JSON Schema describing this settings group, in the shape
+	 * stored by save() / returned by get(), excluding secret keys.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_schema() {
+
+		return array(
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => array(
+				'non_inline_form'                    => array(
+					'type'        => 'array',
+					'items'       => array( 'type' => 'integer' ),
+					'description' => __( 'IDs of non-inline Forms to display site-wide.', 'convertkit' ),
+				),
+				'non_inline_form_honor_none_setting' => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether the site-wide non-inline Form honors a per-Page / per-Post "None" Form setting.', 'convertkit' ),
+				),
+				'non_inline_form_limit_per_session'  => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether to limit non-inline Form display to once per session.', 'convertkit' ),
+				),
+				'recaptcha_site_key'                 => array(
+					'type'        => 'string',
+					'description' => __( 'Google reCAPTCHA v3 site key.', 'convertkit' ),
+				),
+				'recaptcha_minimum_score'            => array(
+					'type'        => 'number',
+					'minimum'     => 0,
+					'maximum'     => 1,
+					'description' => __( 'Minimum Google reCAPTCHA v3 score (0.0 - 1.0) below which a request is treated as spam.', 'convertkit' ),
+				),
+				'debug'                              => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether debug logging is enabled.', 'convertkit' ),
+				),
+				'no_scripts'                         => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether the Plugin\'s frontend JavaScript is disabled.', 'convertkit' ),
+				),
+				'no_css'                             => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether the Plugin\'s frontend CSS is disabled.', 'convertkit' ),
+				),
+				'no_add_new_button'                  => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether the "Add New" button for Landing Pages / Member Content is hidden in the WordPress Admin.', 'convertkit' ),
+				),
+				'usage_tracking'                     => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether anonymous usage tracking is enabled.', 'convertkit' ),
+				),
+			),
+		);
+
+	}
+
+	/**
 	 * The default settings, used when the ConvertKit Plugin Settings haven't been saved
 	 * e.g. on a new installation.
 	 *
