@@ -41,6 +41,7 @@ modules:
         - \Tests\Support\Helper\WPGutenberg
         - \Tests\Support\Helper\WPMetabox
         - \Tests\Support\Helper\WPNotices
+        - \Tests\Support\Helper\WPRestAPI
         - \Tests\Support\Helper\WPQuickEdit
         - \Tests\Support\Helper\WPWidget
         - \Tests\Support\Helper\Xdebug
