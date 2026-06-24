@@ -100,6 +100,7 @@ class ConvertKit_MCP {
 		// Settings instances to register with MCP.
 		$groups = array(
 			new ConvertKit_Settings(),
+			new ConvertKit_Settings_Broadcasts(),
 		);
 
 		// Iterate through settings groups, registering the get and update abilities.

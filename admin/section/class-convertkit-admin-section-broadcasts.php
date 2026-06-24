@@ -28,8 +28,8 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		$this->settings_key = $this->settings::SETTINGS_NAME;
 
 		// Define the programmatic name, Title and Tab Text.
-		$this->name     = 'broadcasts';
-		$this->title    = __( 'Broadcasts', 'convertkit' );
+		$this->name     = $this->settings->get_name();
+		$this->title    = $this->settings->get_title();
 		$this->tab_text = __( 'Broadcasts', 'convertkit' );
 
 		// Identify that this is beta functionality.
