@@ -9,7 +9,7 @@
  * Plugin Name: Kit (formerly ConvertKit)
  * Plugin URI: https://kit.com/
  * Description: Display Kit (formerly ConvertKit) email subscription forms, landing pages, products, broadcasts and more.
- * Version: 3.4.0
+ * Version: 3.3.4
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
@@ -27,7 +27,7 @@ define( 'CONVERTKIT_PLUGIN_NAME', 'ConvertKit' ); // Used for user-agent in API 
 define( 'CONVERTKIT_PLUGIN_FILE', plugin_basename( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
-define( 'CONVERTKIT_PLUGIN_VERSION', '3.4.0' );
+define( 'CONVERTKIT_PLUGIN_VERSION', '3.3.4' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 
@@ -114,6 +114,9 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-c
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-tags.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-landing-pages.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-products.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-get.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-update.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';
