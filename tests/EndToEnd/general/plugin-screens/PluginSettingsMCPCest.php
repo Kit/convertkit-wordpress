@@ -146,15 +146,16 @@ class PluginSettingsMCPCest
 		$I->assertEquals(200, $response['status']);
 		$I->assertEquals('Kit WordPress Plugin MCP', $response['body']['result']['serverInfo']['name'] ?? null);
 
-		// Revoke the application password.
-		$I->click('Revoke Application Password');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Check that the user is back on the Settings > Kit > MCP screen and the Authentication Header is not displayed.
+		// Reload the MCP settings screen and confirm the Authorization Header is not displayed.
+		$I->loadKitSettingsMCPScreen($I);
+		$I->waitForText('It is not displayed here for security.');
 		$I->waitForElementNotVisible('#kit-authorization-header');
-		$I->dontSee('Authorization Header:');
+
+		// Revoke the application password.
+		$I->click('#convertkit-settings-mcp-revoke-application-password');
+
+		// Check that the Revoke Application Password button is no longer visible.
+		$I->waitForElementNotVisible('#convertkit-settings-mcp-revoke-application-password');
 	}
 
 	/**

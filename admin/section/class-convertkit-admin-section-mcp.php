@@ -288,7 +288,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			<?php esc_html_e( 'Click Create Application Password to create a password that AI clients can use to connect to this site\'s MCP server.', 'convertkit' ); ?>
 		</p>
 		<p>
-			<a href="<?php echo esc_attr( $authorize_url ); ?>" class="button button-primary">
+			<a href="<?php echo esc_attr( $authorize_url ); ?>" id="convertkit-settings-mcp-create-application-password" class="button button-primary">
 				<?php esc_html_e( 'Create Application Password', 'convertkit' ); ?>
 			</a>
 		</p>
@@ -310,8 +310,8 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		if ( $this->authorization_header ) {
 			?>
 			<p>
-				<strong><?php esc_html_e( 'Authentication Header:', 'convertkit' ); ?></strong>
-				<code>Basic <?php echo esc_html( $this->authorization_header ); ?></code>
+				<strong><?php esc_html_e( 'Authorization Header:', 'convertkit' ); ?></strong>
+				<code id="kit-authorization-header">Basic <?php echo esc_html( $this->authorization_header ); ?></code>
 			</p>
 			<p>
 				<?php esc_html_e( 'Copy the above. It won\'t be displayed again. If you lose this, you\'ll need to revoke the Application Password and create a new one.', 'convertkit' ); ?>
@@ -328,7 +328,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		}
 		?>
 		<p>
-			<a href="<?php echo esc_url( $disconnect_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
+			<a href="<?php echo esc_url( $disconnect_url ); ?>" id="convertkit-settings-mcp-revoke-application-password" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
 		</p>
 
 		<?php
@@ -387,15 +387,19 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			printf(
 				/* translators: %s: Path to Claude desktop config file. */
 				esc_html__( 'Add the following to your %s file, then restart Claude desktop:', 'convertkit' ),
-				'<code>~/Library/Application Support/Claude/claude_desktop_config.json</code>'
+				'<code>claude_desktop_config.json</code>',
 			);
 			?>
+			<br />
+			macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+			<br />
+			Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>
 		</p>
 		<pre><code><?php echo esc_html( $claude_desktop_config ); ?></code></pre>
 
 		<h3><?php esc_html_e( 'Claude Code', 'convertkit' ); ?></h3>
 		<p>
-			<?php esc_html_e( 'Run the following command in your terminal. Claude Code connects to the Kit MCP server over HTTP using the site-specific URL and the Basic Authorization header below.', 'convertkit' ); ?>
+			<?php esc_html_e( 'Run the following command in your terminal.', 'convertkit' ); ?>
 			<br />
 			<code>
 				<?php
