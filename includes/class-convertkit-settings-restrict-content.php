@@ -311,6 +311,27 @@ class ConvertKit_Settings_Restrict_Content {
 
 		update_option( self::SETTINGS_NAME, array_merge( $this->get(), $settings ) );
 
+		// Reload settings in class, to reflect changes.
+		$this->refresh_settings();
+
+	}
+
+	/**
+	 * Reloads settings from the options table so this instance has the latest values.
+	 *
+	 * @since  3.3.5
+	 */
+	private function refresh_settings() {
+
+		$settings = get_option( self::SETTINGS_NAME );
+
+		if ( ! $settings ) {
+			$this->settings = $this->get_defaults();
+			return;
+		}
+
+		$this->settings = array_merge( $this->get_defaults(), $settings );
+
 	}
 
 }
