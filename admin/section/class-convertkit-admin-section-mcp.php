@@ -121,16 +121,16 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Get the Application Password.
-		$application_password = $this->get_application_password();
+		// Get the Application Password UUID.
+		$application_password_uuid = $this->get_application_password_uuid();
 
-		// Bail if no Application Password exists.
-		if ( ! $application_password ) {
+		// Bail if no Application Password UUID exists.
+		if ( ! $application_password_uuid ) {
 			return;
 		}
 
 		// Revoke the Application Password.
-		$result = WP_Application_Passwords::delete_application_password( get_current_user_id(), $application_password['uuid'] );
+		$result = WP_Application_Passwords::delete_application_password( get_current_user_id(), $application_password_uuid );
 		if ( is_wp_error( $result ) ) {
 			$this->output_error( $result->get_error_message() );
 			return;
@@ -193,7 +193,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		}
 
 		// If an Application Password exists for this Plugin, display the instructions and revoke section.
-		if ( $this->get_application_password() ) {
+		if ( $this->get_application_password_uuid() ) {
 			add_settings_field(
 				'connect',
 				__( 'Connection', 'convertkit' ),
@@ -471,7 +471,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 *
 	 * @return  bool|string
 	 */
-	private function get_application_password() {
+	private function get_application_password_uuid() {
 
 		// Get the user's Application Passwords.
 		$passwords = WP_Application_Passwords::get_user_application_passwords( get_current_user_id() );
@@ -484,7 +484,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		// Iterate through the Application Passwords and return the password that matches the app name.
 		foreach ( $passwords as $password ) {
 			if ( $password['name'] === CONVERTKIT_MCP_APP_NAME ) {
-				return $password;
+				return $password['uuid'];
 			}
 		}
 
