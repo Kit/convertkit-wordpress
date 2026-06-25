@@ -58,6 +58,19 @@ class ConvertKit_MCP {
 	const SERVER_ROUTE = 'v1';
 
 	/**
+	 * Returns the absolute URL that MCP clients connect to.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public static function get_server_url() {
+
+		return rest_url( self::SERVER_NAMESPACE . '/' . self::SERVER_ROUTE );
+
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   3.4.0
