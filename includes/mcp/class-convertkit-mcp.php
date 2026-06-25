@@ -101,6 +101,7 @@ class ConvertKit_MCP {
 		$groups = array(
 			new ConvertKit_Settings(),
 			new ConvertKit_Settings_Broadcasts(),
+			new ConvertKit_Settings_Restrict_Content(),
 		);
 
 		// Iterate through settings groups, registering the get and update abilities.

@@ -116,6 +116,138 @@ class ConvertKit_Settings_Restrict_Content {
 	}
 
 	/**
+	 * Returns this settings group's programmatic name.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_name() {
+
+		return 'restrict-content';
+
+	}
+
+	/**
+	 * Returns the title of this settings group.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_title() {
+
+		return __( 'Member Content Settings', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns the keys in this settings group that hold credentials or other
+	 * sensitive values.
+	 *
+	 * Member Content settings hold no secrets; returned for interface
+	 * consistency.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string[]
+	 */
+	public function get_secret_keys() {
+
+		return array();
+
+	}
+
+	/**
+	 * Returns the JSON Schema describing this settings group, in the shape
+	 * stored by save() / returned by get(), excluding secret keys.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  array
+	 */
+	public function get_schema() {
+
+		return array(
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => array(
+				'permit_crawlers'        => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether search engine crawlers are permitted to index Member Content.', 'convertkit' ),
+				),
+				'no_access_text_form'    => array(
+					'type'        => 'string',
+					'description' => __( 'Message shown to a visitor without access when content is restricted by Form.', 'convertkit' ),
+				),
+				'subscribe_heading'      => array(
+					'type'        => 'string',
+					'description' => __( 'Heading shown above the subscribe call-to-action when content is restricted by Product.', 'convertkit' ),
+				),
+				'subscribe_text'         => array(
+					'type'        => 'string',
+					'description' => __( 'Body text shown alongside the subscribe call-to-action when content is restricted by Product.', 'convertkit' ),
+				),
+				'no_access_text'         => array(
+					'type'        => 'string',
+					'description' => __( 'Message shown to a visitor without access when content is restricted by Product.', 'convertkit' ),
+				),
+				'subscribe_heading_tag'  => array(
+					'type'        => 'string',
+					'description' => __( 'Heading shown above the subscribe call-to-action when content is restricted by Tag.', 'convertkit' ),
+				),
+				'subscribe_text_tag'     => array(
+					'type'        => 'string',
+					'description' => __( 'Body text shown alongside the subscribe call-to-action when content is restricted by Tag.', 'convertkit' ),
+				),
+				'require_tag_login'      => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether visitors must log in by email to access Member Content restricted by Tag.', 'convertkit' ),
+				),
+				'no_access_text_tag'     => array(
+					'type'        => 'string',
+					'description' => __( 'Message shown to a visitor without access when content is restricted by Tag.', 'convertkit' ),
+				),
+				'subscribe_button_label' => array(
+					'type'        => 'string',
+					'description' => __( 'Label for the Subscribe button.', 'convertkit' ),
+				),
+				'email_text'             => array(
+					'type'        => 'string',
+					'description' => __( 'Body text shown above the email log-in form.', 'convertkit' ),
+				),
+				'email_button_label'     => array(
+					'type'        => 'string',
+					'description' => __( 'Label for the email log-in button.', 'convertkit' ),
+				),
+				'email_heading'          => array(
+					'type'        => 'string',
+					'description' => __( 'Heading shown above the email log-in form.', 'convertkit' ),
+				),
+				'email_description_text' => array(
+					'type'        => 'string',
+					'description' => __( 'Description shown beneath the email log-in heading.', 'convertkit' ),
+				),
+				'email_check_heading'    => array(
+					'type'        => 'string',
+					'description' => __( 'Heading shown after the visitor requests a magic log-in code.', 'convertkit' ),
+				),
+				'email_check_text'       => array(
+					'type'        => 'string',
+					'description' => __( 'Body text shown after the visitor requests a magic log-in code.', 'convertkit' ),
+				),
+				'container_css_classes'  => array(
+					'type'        => 'string',
+					'description' => __( 'Additional CSS classes appended to the Restrict Content container element.', 'convertkit' ),
+				),
+			),
+		);
+
+	}
+
+	/**
 	 * The default settings, used when the ConvertKit Restrict Content Settings haven't been saved
 	 * e.g. on a new installation.
 	 *
@@ -178,6 +310,27 @@ class ConvertKit_Settings_Restrict_Content {
 	public function save( $settings ) {
 
 		update_option( self::SETTINGS_NAME, array_merge( $this->get(), $settings ) );
+
+		// Reload settings in class, to reflect changes.
+		$this->refresh_settings();
+
+	}
+
+	/**
+	 * Reloads settings from the options table so this instance has the latest values.
+	 *
+	 * @since  3.3.5
+	 */
+	private function refresh_settings() {
+
+		$settings = get_option( self::SETTINGS_NAME );
+
+		if ( ! $settings ) {
+			$this->settings = $this->get_defaults();
+			return;
+		}
+
+		$this->settings = array_merge( $this->get_defaults(), $settings );
 
 	}
 
