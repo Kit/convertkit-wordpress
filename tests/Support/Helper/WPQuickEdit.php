@@ -69,11 +69,13 @@ class WPQuickEdit extends \Codeception\Module
 
 		// Display all row actions by adding the `visible` class, as
 		// moveMouseOver() is flaky.
-		$I->executeJS('
+		$I->executeJS(
+			'
 			document.querySelectorAll(".row-actions").forEach(function(el){
 				el.classList.add("visible");
 			});
-		');
+		'
+		);
 
 		// Click Quick Edit link for the Post.
 		$I->click('tr#post-' . $postID . ' button.editinline');
