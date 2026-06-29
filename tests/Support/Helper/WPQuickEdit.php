@@ -64,13 +64,18 @@ class WPQuickEdit extends \Codeception\Module
 		// Wait for the WP_List_Table to load.
 		$I->waitForElementVisible('table.wp-list-table');
 
-		// Hover mouse over Post's table row.
-		$I->moveMouseOver('tr#post-' . $postID);
+		// Wait for the Post's row to exist in the table.
+		$I->waitForElementVisible('tr#post-' . $postID);
 
-		// Wait for Quick edit link to be visible.
-		$I->waitForElementVisible('tr#post-' . $postID . ' button.editinline');
+		// Display all row actions by adding the `visible` class, as
+		// moveMouseOver() is flaky.
+		$I->executeJS('
+			document.querySelectorAll(".row-actions").forEach(function(el){
+				el.classList.add("visible");
+			});
+		');
 
-		// Click Quick Edit link.
+		// Click Quick Edit link for the Post.
 		$I->click('tr#post-' . $postID . ' button.editinline');
 	}
 }
