@@ -300,6 +300,9 @@ class WPClassicEditor extends \Codeception\Module
 		// Publish Page.
 		$I->publishClassicEditorPage($I);
 
+		// Wait for the notice to display.
+		$I->waitForElementVisible('.notice-success');
+
 		// Load the Page on the frontend site.
 		$I->click('.notice-success a');
 

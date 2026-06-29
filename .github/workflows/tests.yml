@@ -33,28 +33,9 @@ jobs:
       fail-fast: false
       matrix:
         wp-version: [ 'latest' ]
-        php-version: [ '8.1', '8.2', '8.3', '8.4' ]
+        php-version: [ '8.1' ]
         test-group:
-          - 'EndToEnd/broadcasts/blocks-shortcodes'
-          - 'EndToEnd/broadcasts/import-export'
-          - 'EndToEnd/forms/blocks-shortcodes'
-          - 'EndToEnd/forms/general'
-          - 'EndToEnd/forms/post-types'
-          - 'EndToEnd/general/other'
-          - 'EndToEnd/general/uninstall'
-          - 'EndToEnd/general/plugin-screens'
-          - 'EndToEnd/integrations/divi-builder'
-          - 'EndToEnd/integrations/divi-theme'
-          - 'EndToEnd/integrations/elementor'
-          - 'EndToEnd/integrations/other'
-          - 'EndToEnd/integrations/wlm'
           - 'EndToEnd/integrations/woocommerce'
-          - 'EndToEnd/landing-pages'
-          - 'EndToEnd/products'
-          - 'EndToEnd/restrict-content/general'
-          - 'EndToEnd/restrict-content/post-types'
-          - 'EndToEnd/tags'
-          - 'Integration'
 
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit

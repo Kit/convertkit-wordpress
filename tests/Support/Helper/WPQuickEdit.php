@@ -61,6 +61,9 @@ class WPQuickEdit extends \Codeception\Module
 		// Navigate to Post Type's WP_List_Table.
 		$I->amOnAdminPage('edit.php?post_type=' . $postType);
 
+		// Wait for the WP_List_Table to load.
+		$I->waitForElementVisible('table.wp-list-table');
+
 		// Hover mouse over Post's table row.
 		$I->moveMouseOver('tr#post-' . $postID);
 
