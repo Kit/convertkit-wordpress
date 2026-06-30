@@ -288,7 +288,7 @@ abstract class ConvertKit_Admin_Importer {
 
 		return preg_replace(
 			$pattern,
-			'[convertkit_form id="' . $form_id . '"]',
+			'[convertkit_form form="' . $form_id . '"]',
 			$content
 		);
 
