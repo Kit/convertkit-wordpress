@@ -1,13 +1,13 @@
 <?php
 /**
- * ConvertKit Admin Importer MC4WP class.
+ * ConvertKit Admin Importer Kit Legacy Forms class.
  *
  * @package ConvertKit
  * @author ConvertKit
  */
 
 /**
- * Import and migrate data from Mailchimp (MC4WP) to Kit.
+ * Import and migrate data from Kit Legacy Forms to Kit.
  *
  * @package ConvertKit
  * @author ConvertKit
