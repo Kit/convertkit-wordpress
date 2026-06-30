@@ -38,126 +38,6 @@ class ImporterTest extends WPTestCase
 
 		// Activate Plugin.
 		activate_plugins('convertkit/wp-convertkit.php');
-
-		// Define Forms as if the Forms resource class populated them from the API.
-		update_option(
-			'convertkit_forms',
-			[
-				3059218 => [
-					'id'         => 3059218,
-					'name'       => 'Auto Confirm Form',
-					'created_at' => '2022-03-07T15:57:51Z',
-					'type'       => 'embed',
-					'format'     => 'inline',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/bfac9ed794/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/bfac9ed794',
-					'archived'   => false,
-					'uid'        => 'bfac9ed794',
-				],
-				2765143 => [
-					'id'         => 2765143,
-					'name'       => 'Double Optin Form',
-					'created_at' => '2021-11-11T15:31:28Z',
-					'type'       => 'embed',
-					'format'     => 'inline',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/a04b384fc6/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/a04b384fc6',
-					'archived'   => false,
-					'uid'        => 'a04b384fc6',
-				],
-				3003590 => [
-					'id'         => 3003590,
-					'name'       => 'Third Party Integrations Form',
-					'created_at' => '2022-02-17T15:05:31.000Z',
-					'type'       => 'embed',
-					'format'     => 'inline',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/71cbcc4042/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/71cbcc4042',
-					'archived'   => false,
-					'uid'        => '71cbcc4042',
-				],
-				2780977 => [
-					'id'         => 2780977,
-					'name'       => 'Modal Form',
-					'created_at' => '2021-11-17T04:22:06.000Z',
-					'type'       => 'embed',
-					'format'     => 'modal',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/397e876257/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/397e876257',
-					'archived'   => false,
-					'uid'        => '397e876257',
-				],
-				2780979 => [
-					'id'         => 2780979,
-					'name'       => 'Slide In Form',
-					'created_at' => '2021-11-17T04:22:24.000Z',
-					'type'       => 'embed',
-					'format'     => 'slide in',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/e0d65bed9d/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/e0d65bed9d',
-					'archived'   => false,
-					'uid'        => 'e0d65bed9d',
-				],
-				2765139 => [
-					'id'         => 2765139,
-					'name'       => 'Page Form',
-					'created_at' => '2021-11-11T15:30:40.000Z',
-					'type'       => 'embed',
-					'format'     => 'inline',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/85629c512d/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/85629c512d',
-					'archived'   => false,
-					'uid'        => '85629c512d',
-				],
-				470099  => [
-					'id'                  => 470099,
-					'name'                => 'Legacy Form',
-					'created_at'          => null,
-					'type'                => 'embed',
-					'url'                 => 'https://app.kit.com/landing_pages/470099',
-					'embed_js'            => 'https://api.kit.com/api/v3/forms/470099.js?api_key=' . $_ENV['CONVERTKIT_API_KEY'],
-					'embed_url'           => 'https://api.kit.com/api/v3/forms/470099.html?api_key=' . $_ENV['CONVERTKIT_API_KEY'],
-					'title'               => 'Join the newsletter',
-					'description'         => '<p>Subscribe to get our latest content by email.</p>',
-					'sign_up_button_text' => 'Subscribe',
-					'success_message'     => 'Success! Now check your email to confirm your subscription.',
-					'archived'            => false,
-				],
-				2780980 => [
-					'id'         => 2780980,
-					'name'       => 'Sticky Bar Form',
-					'created_at' => '2021-11-17T04:22:42.000Z',
-					'type'       => 'embed',
-					'format'     => 'sticky bar',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/9f5c601482/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/9f5c601482',
-					'archived'   => false,
-					'uid'        => '9f5c601482',
-				],
-				3437554 => [
-					'id'         => 3437554,
-					'name'       => 'AAA Test',
-					'created_at' => '2022-07-15T15:06:32.000Z',
-					'type'       => 'embed',
-					'format'     => 'inline',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/3bb15822a2/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/3bb15822a2',
-					'archived'   => false,
-					'uid'        => '3bb15822a2',
-				],
-				2765149 => [
-					'id'         => 2765149,
-					'name'       => 'WooCommerce Product Form',
-					'created_at' => '2021-11-11T15:32:54.000Z',
-					'type'       => 'embed',
-					'format'     => 'inline',
-					'embed_js'   => 'https://cheerful-architect-3237.kit.com/7e238f3920/index.js',
-					'embed_url'  => 'https://cheerful-architect-3237.kit.com/7e238f3920',
-					'archived'   => false,
-					'uid'        => '7e238f3920',
-				],
-			]
-		);
 	}
 
 	/**
@@ -172,9 +52,6 @@ class ImporterTest extends WPTestCase
 
 		// Deactivate Plugin.
 		deactivate_plugins('convertkit/wp-convertkit.php');
-
-		// Delete the Forms resource.
-		delete_option( 'convertkit_forms' );
 
 		parent::tearDown();
 	}
