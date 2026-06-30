@@ -648,26 +648,28 @@ class ImporterTest extends WPTestCase
 		$shortcodes = [
 			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]',
 			'[convertkit_form form=' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . ']',
+			'[convertkit_form id="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]',
+			'[convertkit_form id=' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . ']',
 		];
 
 		// Test each shortcode is replaced with the Kit form shortcode.
 		foreach ( $shortcodes as $shortcode ) {
 			$this->assertEquals(
-				'[convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+				'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
 				$this->importer->replace_shortcodes_in_content( $shortcode, $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'], $_ENV['CONVERTKIT_API_FORM_ID'] )
 			);
 
 			// Prepend and append some content.
 			$content = 'Some content before the shortcode: ' . $shortcode . ' Some content after the shortcode.';
 			$this->assertEquals(
-				'Some content before the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode.',
+				'Some content before the shortcode: [convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode.',
 				$this->importer->replace_shortcodes_in_content( $content, $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'], $_ENV['CONVERTKIT_API_FORM_ID'] )
 			);
 
 			// Prepend and append some content and duplicate the shortcode.
 			$content = 'Some content before the shortcode: ' . $shortcode . ' Some content after the shortcode: ' . $shortcode;
 			$this->assertEquals(
-				'Some content before the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode: [convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+				'Some content before the shortcode: [convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Some content after the shortcode: [convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
 				$this->importer->replace_shortcodes_in_content( $content, $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'], $_ENV['CONVERTKIT_API_FORM_ID'] )
 			);
 		}
@@ -688,7 +690,8 @@ class ImporterTest extends WPTestCase
 
 		// Define the shortcodes to test.
 		$shortcodes = [
-			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]',
+			'[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+			'[convertkit_form id="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
 			'[a_random_shortcode]',
 		];
 
