@@ -773,10 +773,6 @@ class ImporterTest extends WPTestCase
 	 */
 	public function testGetKitLegacyFormsFormIDsFromContentForBlocks()
 	{
-		// Populate the Forms resource so the importer can determine which form
-		// IDs are legacy. Without this, the override has nothing to filter against.
-		$this->setupKitFormsResource();
-
 		// Initialize the class we want to test.
 		$this->importer = new \ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms();
 
@@ -810,10 +806,6 @@ class ImporterTest extends WPTestCase
 	 */
 	public function testGetKitLegacyFormsInPosts()
 	{
-		// Populate the Forms resource so the importer can determine which form
-		// IDs are legacy. Without this, the override has nothing to filter against.
-		$this->setupKitFormsResource();
-
 		// Initialize the class we want to test.
 		$this->importer = new \ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms();
 
@@ -875,31 +867,6 @@ class ImporterTest extends WPTestCase
 		$this->assertContains( $legacyBlockPostID, $post_ids );
 		$this->assertNotContains( $nonLegacyShortcodePostID, $post_ids );
 		$this->assertNotContains( $nonLegacyBlockPostID, $post_ids );
-	}
-
-	/**
-	 * Populates the Kit Forms resource cache by storing credentials and
-	 * fetching forms from the API. Required by the Kit Legacy Forms importer
-	 * tests that exercise the legacy-filtering overrides.
-	 *
-	 * @since   3.3.5
-	 */
-	private function setupKitFormsResource()
-	{
-		// Store credentials in the Plugin's settings.
-		$settings = new \ConvertKit_Settings();
-		update_option(
-			$settings::SETTINGS_NAME,
-			[
-				'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
-				'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
-			]
-		);
-
-		// Refresh the Forms resource so is_legacy() can determine which form IDs
-		// are legacy.
-		$resource = new \ConvertKit_Resource_Forms();
-		$resource->refresh();
 	}
 
 	/**
