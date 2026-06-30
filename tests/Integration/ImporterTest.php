@@ -621,7 +621,7 @@ class ImporterTest extends WPTestCase
 		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
 
 		// Define the content to test.
-		$content = 'Legacy Form: [convertkit_form form="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"] non-Legacy Form: [convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Different shortcode: [aweber formid="12"]';
+		$content = 'Legacy Form: [convertkit_form form="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"] Legacy Form ID: [convertkit_form id="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"] non-Legacy Form: [convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"] Different shortcode: [aweber formid="12"]';
 
 		// Extract form IDs from content.
 		$form_ids = $this->importer->get_form_ids_from_content( $content );
@@ -634,7 +634,7 @@ class ImporterTest extends WPTestCase
 	/**
 	 * Test that the replace_shortcodes_in_content() method replaces the Kit legacy form shortcode with the Kit form shortcode.
 	 *
-	 * @since   3.1.0
+	 * @since   3.3.5
 	 */
 	public function testKitLegacyFormsReplaceShortcodesInContent()
 	{
@@ -678,7 +678,7 @@ class ImporterTest extends WPTestCase
 	/**
 	 * Test that the replace_shortcodes_in_content() method ignores non-Kit legacy form shortcodes.
 	 *
-	 * @since   3.1.0
+	 * @since   3.3.5
 	 */
 	public function testKitLegacyFormsReplaceShortcodesInContentIgnoringOtherShortcodes()
 	{
@@ -708,7 +708,7 @@ class ImporterTest extends WPTestCase
 	 * Test that the replace_blocks_in_post() method replaces the third party form block with the Kit form block,
 	 * and special characters are not stripped when the Post is saved.
 	 *
-	 * @since   3.1.6
+	 * @since   3.3.5
 	 */
 	public function testKitLegacyFormsReplaceBlocksInPost()
 	{
@@ -812,8 +812,7 @@ class ImporterTest extends WPTestCase
 		// Confirm initialization didn't result in an error.
 		$this->assertNotInstanceOf(\WP_Error::class, $this->importer);
 
-		// Create a post containing a non-legacy Kit Form shortcode. This post
-		// should NOT be returned by the Legacy Forms importer.
+		// Create a post containing a non-legacy Kit Form shortcode.
 		$nonLegacyShortcodePostID = $this->factory->post->create(
 			[
 				'post_type'    => 'page',
@@ -823,8 +822,7 @@ class ImporterTest extends WPTestCase
 			]
 		);
 
-		// Create a post containing a non-legacy Kit Form block. This post
-		// should NOT be returned by the Legacy Forms importer.
+		// Create a post containing a non-legacy Kit Form block.
 		$nonLegacyBlockPostID = $this->factory->post->create(
 			[
 				'post_type'    => 'page',
@@ -834,8 +832,7 @@ class ImporterTest extends WPTestCase
 			]
 		);
 
-		// Create a post containing a legacy Kit Form shortcode. This post
-		// SHOULD be returned by the Legacy Forms importer.
+		// Create a post containing a legacy Kit Form shortcode.
 		$legacyShortcodePostID = $this->factory->post->create(
 			[
 				'post_type'    => 'page',
@@ -845,8 +842,7 @@ class ImporterTest extends WPTestCase
 			]
 		);
 
-		// Create a post containing a legacy Kit Form block. This post
-		// SHOULD be returned by the Legacy Forms importer.
+		// Create a post containing a legacy Kit Form block.
 		$legacyBlockPostID = $this->factory->post->create(
 			[
 				'post_type'    => 'page',
