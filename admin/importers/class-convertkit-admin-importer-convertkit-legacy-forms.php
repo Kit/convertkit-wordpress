@@ -42,13 +42,16 @@ class ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms extends ConvertKit_Admin
 	public $shortcode_name = 'convertkit_form';
 
 	/**
-	 * Holds the ID attribute name for ConvertKit Legacy Forms.
+	 * Holds the ID attribute names for Kit Legacy Form shortcodes.
+	 *
+	 * Both `form` and `id` are matched because Kit's `[convertkit_form]`
+	 * shortcode has supported both attribute names historically.
 	 *
 	 * @since   3.3.5
 	 *
-	 * @var     string
+	 * @var     array
 	 */
-	public $shortcode_id_attribute = 'form';
+	public $shortcode_id_attribute = array( 'form', 'id' );
 
 	/**
 	 * Holds the block name for ConvertKit Legacy Forms.
@@ -60,13 +63,16 @@ class ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms extends ConvertKit_Admin
 	public $block_name = 'convertkit/form';
 
 	/**
-	 * Holds the ID attribute name for ConvertKit Legacy Forms.
+	 * Holds the ID attribute names for Kit Legacy Form blocks.
+	 *
+	 * Both `form` and `id` are matched because Kit's form block has supported
+	 * both attribute names historically.
 	 *
 	 * @since   3.3.5
 	 *
-	 * @var     string
+	 * @var     array
 	 */
-	public $block_id_attribute = 'form';
+	public $block_id_attribute = array( 'form', 'id' );
 
 	/**
 	 * Constructor
@@ -196,6 +202,10 @@ class ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms extends ConvertKit_Admin
 
 		$form_ids = array();
 
+		// Normalise the block ID attribute(s) to an array so we can match
+		// against multiple attribute names (e.g. both `form` and `id`).
+		$id_attributes = (array) $this->block_id_attribute;
+
 		foreach ( $blocks as $block ) {
 			if ( ! empty( $block['innerBlocks'] ) ) {
 				$form_ids = array_merge(
@@ -208,11 +218,16 @@ class ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms extends ConvertKit_Admin
 				continue;
 			}
 
-			if ( empty( $block['attrs'][ $this->block_id_attribute ] ) ) {
-				continue;
+			// Record the form ID from the first matching attribute. If a block
+			// somehow has both `form` and `id` set, they'd be the same value, so
+			// we stop after the first match to avoid double-counting.
+			foreach ( $id_attributes as $id_attribute ) {
+				if ( empty( $block['attrs'][ $id_attribute ] ) ) {
+					continue;
+				}
+				$form_ids[] = (string) $block['attrs'][ $id_attribute ];
+				break;
 			}
-
-			$form_ids[] = (string) $block['attrs'][ $this->block_id_attribute ];
 		}
 
 		return $form_ids;
