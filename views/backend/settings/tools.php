@@ -118,11 +118,15 @@
 
 			<p class="description">
 				<?php
-				printf(
-					/* translators: %s: Importer title */
-					esc_html__( 'Automatically replace %s form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ),
-					esc_html( $importer['title'] )
-				);
+				if ( ! empty( $importer['description'] ) ) {
+					echo esc_html( $importer['description'] );
+				} else {
+					printf(
+						/* translators: %s: Importer title */
+						esc_html__( 'Automatically replace %s form shortcodes and blocks with Kit form shortcodes and blocks.', 'convertkit' ),
+						esc_html( $importer['title'] )
+					);
+				}
 				?>
 				<br />
 			</p>
