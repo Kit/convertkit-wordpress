@@ -33,6 +33,15 @@ abstract class ConvertKit_Admin_Importer {
 	public $title = '';
 
 	/**
+	 * Holds the importer description.
+	 *
+	 * @since   3.3.5
+	 *
+	 * @var     string
+	 */
+	public $description = '';
+
+	/**
 	 * Holds the shortcode name for the third party Form plugin.
 	 *
 	 * @since   3.1.0
@@ -107,9 +116,10 @@ abstract class ConvertKit_Admin_Importer {
 
 		// Add this importer to the list of importers.
 		$importers[ $this->name ] = array(
-			'name'  => $this->name,
-			'title' => $this->title,
-			'forms' => $this->get_forms(),
+			'name'        => $this->name,
+			'title'       => $this->title,
+			'description' => $this->description,
+			'forms'       => $this->get_forms(),
 		);
 
 		return $importers;
