@@ -349,11 +349,13 @@ jobs:
           sudo chmod -R 767 ${{ env.ROOT_DIR }}/wp-content/uploads
           sudo chown www-data:www-data ${{ env.ROOT_DIR }}/wp-content/uploads
 
-      # This ensures the Plugin's log file can be written to.
-      # We don't recursively do this, as it'll prevent Codeception from writing to the /tests/_output directory.
+      # Make plugin files writable by all users so PHP-FPM (running as www-data)
+      # can delete them during uninstall tests. `runner` retains write access
+      # for Codeception to write screenshots, logs, and artifacts to
+      # tests/_output.
       - name: Set Permissions for Plugin Directory
         run: |
-          sudo chmod g+w ${{ env.PLUGIN_DIR }}
+          sudo chmod -R 777 ${{ env.PLUGIN_DIR }}
           sudo chown www-data:www-data ${{ env.PLUGIN_DIR }}
 
       - name: Build Tests
@@ -385,19 +387,3 @@ jobs:
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
-
-      # On failure, dump the plugin directory's ownership + permissions so we
-      # can see whether files inside PLUGIN_DIR are owned by runner or www-data.
-      # If PLUGIN_DIR is www-data but its contents are runner, WordPress can't
-      # delete plugin files during uninstall tests.
-      - name: Debug Plugin File Ownership
-        if: failure()
-        run: |
-          echo "=== ${{ env.PLUGIN_DIR }} itself ==="
-          stat -c '%U:%G %a %n' ${{ env.PLUGIN_DIR }} || true
-          echo ""
-          echo "=== Contents of ${{ env.PLUGIN_DIR }} (top level) ==="
-          ls -la ${{ env.PLUGIN_DIR }} || true
-          echo ""
-          echo "=== Full recursive ownership summary (sorted by owner:group) ==="
-          find ${{ env.PLUGIN_DIR }} -printf '%u:%g\n' 2>/dev/null | sort | uniq -c | sort -rn || true
