@@ -165,6 +165,13 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_DEBUG true --raw
 
+      # WP_DEBUG_LOG writes PHP errors and notices to wp-content/debug.log,
+      # so we can inspect them as a CI artifact on test failure.
+      - name: Enable WP_DEBUG_LOG
+        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' && inputs.php-version != '8.4' }}
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli config set WP_DEBUG_LOG true --raw
+
       # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
       - name: Enable FS_METHOD
         working-directory: ${{ env.ROOT_DIR }}
@@ -385,3 +392,11 @@ jobs:
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
+
+      - name: Upload WordPress Debug Log to Artifact
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: wp-debug-log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.log
+          path: ${{ env.ROOT_DIR }}/wp-content/debug.log
+          if-no-files-found: ignore
