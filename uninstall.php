@@ -12,6 +12,11 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die;
 }
 
+// DIAGNOSTIC: give PHP up to 5 minutes to complete uninstall, in case the
+// default max_execution_time is killing the script during the OAuth revoke
+// calls. 0 = infinite, 300 = 5 minutes.
+@set_time_limit( 300 );
+
 // DIAGNOSTIC: mark that uninstall.php entered execution.
 $__uninstall_marker = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR . '/uninstall-marker.txt' : ABSPATH . 'wp-content/uninstall-marker.txt';
 file_put_contents( $__uninstall_marker, 'STAGE_1: uninstall.php reached, WP_UNINSTALL_PLUGIN defined at ' . date( 'c' ) . "\n", FILE_APPEND );
