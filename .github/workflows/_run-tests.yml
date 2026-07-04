@@ -206,6 +206,27 @@ jobs:
           sleep 1
           ls -la /run/php/
 
+      # Raise the PHP-FPM pool's max_children and disable per-request timeouts,
+      # so long-running admin operations (plugin uninstall with OAuth revoke
+      # calls) don't get killed mid-flight when the pool is under load from
+      # concurrent asset requests during the same page load.
+      - name: Configure PHP-FPM Pool
+        run: |
+          POOL_CONF=/etc/php/${{ inputs.php-version }}/fpm/pool.d/www.conf
+          sudo sed -i 's/^pm.max_children = .*/pm.max_children = 20/' "$POOL_CONF"
+          sudo sed -i 's/^pm.start_servers = .*/pm.start_servers = 5/' "$POOL_CONF"
+          sudo sed -i 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 10/' "$POOL_CONF"
+          # Disable per-request timeout (workers won't be killed for taking too long).
+          # Use a heredoc to append if the directive doesn't already exist.
+          if ! grep -q '^request_terminate_timeout' "$POOL_CONF"; then
+            echo 'request_terminate_timeout = 0' | sudo tee -a "$POOL_CONF"
+          else
+            sudo sed -i 's/^request_terminate_timeout = .*/request_terminate_timeout = 0/' "$POOL_CONF"
+          fi
+          echo "--- Updated pool config ---"
+          sudo grep -E '^(pm|request_terminate)' "$POOL_CONF"
+          sudo systemctl restart php${{ inputs.php-version }}-fpm
+
       # Configure nginx to use the PHP version and WordPress installation at /var/www/html
       - name: Configure nginx site
         run: |
@@ -233,6 +254,13 @@ jobs:
                 fastcgi_buffers 16 16k;
                 fastcgi_buffer_size 32k;
                 fastcgi_busy_buffers_size 64k;
+
+                # Long timeouts so nginx doesn't disconnect FPM mid-request
+                # during slow operations like OAuth token revocation during
+                # plugin uninstall.
+                fastcgi_read_timeout 120s;
+                fastcgi_send_timeout 120s;
+                fastcgi_connect_timeout 120s;
             }
 
             location ~ /\.ht {
@@ -388,41 +416,3 @@ jobs:
           name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
 
-      # Full diagnostic dump for the uninstall test.
-      - name: Debug Uninstall Marker and Settings
-        if: failure()
-        run: |
-          echo "=== Uninstall marker file (${{ env.ROOT_DIR }}/wp-content/uninstall-marker.txt) ==="
-          if [ -f "${{ env.ROOT_DIR }}/wp-content/uninstall-marker.txt" ]; then
-            sudo cat "${{ env.ROOT_DIR }}/wp-content/uninstall-marker.txt"
-          else
-            echo "Marker file does not exist. uninstall.php was never executed."
-          fi
-          echo ""
-          echo "=== Current _wp_convertkit_settings option in DB ==="
-          mysql -u${{ env.DB_USER }} -p${{ env.DB_PASS }} ${{ env.DB_NAME }} -e "SELECT option_value FROM wp_options WHERE option_name = '_wp_convertkit_settings';" 2>/dev/null || true
-          echo ""
-          echo "=== PHP-FPM pool config: request_terminate_timeout and related ==="
-          for f in /etc/php/*/fpm/pool.d/www.conf; do
-            echo "--- $f ---"
-            grep -E '^(request_terminate_timeout|request_slowlog_timeout|pm|process_control_timeout|user|group|listen)' "$f" 2>/dev/null || true
-          done
-          echo ""
-          echo "=== PHP-FPM error log (last 100 lines) ==="
-          for f in /var/log/php*-fpm.log; do
-            if [ -f "$f" ]; then
-              echo "--- $f ---"
-              sudo tail -100 "$f" || true
-            fi
-          done
-          echo ""
-          echo "=== nginx error log (last 100 lines) ==="
-          sudo tail -100 /var/log/nginx/error.log 2>/dev/null || true
-          echo ""
-          echo "=== nginx access log (last 30 lines) ==="
-          sudo tail -30 /var/log/nginx/access.log 2>/dev/null || true
-          echo ""
-          echo "=== Curl test: can we hit Kit's revoke endpoint from the runner? ==="
-          curl -v -m 15 -X POST 'https://api.kit.com/v4/oauth/revoke' \
-            -H 'Content-Type: application/x-www-form-urlencoded' \
-            -d 'client_id=HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y&token=dummy_token' 2>&1 | head -50 || true
