@@ -388,9 +388,7 @@ jobs:
           name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
 
-      # On failure, dump the uninstall.php marker file (if it exists) and the
-      # current value of the Kit settings option in the DB, to determine
-      # whether uninstall.php ran, how far it got, and what's still in the DB.
+      # Full diagnostic dump for the uninstall test.
       - name: Debug Uninstall Marker and Settings
         if: failure()
         run: |
@@ -403,3 +401,28 @@ jobs:
           echo ""
           echo "=== Current _wp_convertkit_settings option in DB ==="
           mysql -u${{ env.DB_USER }} -p${{ env.DB_PASS }} ${{ env.DB_NAME }} -e "SELECT option_value FROM wp_options WHERE option_name = '_wp_convertkit_settings';" 2>/dev/null || true
+          echo ""
+          echo "=== PHP-FPM pool config: request_terminate_timeout and related ==="
+          for f in /etc/php/*/fpm/pool.d/www.conf; do
+            echo "--- $f ---"
+            grep -E '^(request_terminate_timeout|request_slowlog_timeout|pm|process_control_timeout|user|group|listen)' "$f" 2>/dev/null || true
+          done
+          echo ""
+          echo "=== PHP-FPM error log (last 100 lines) ==="
+          for f in /var/log/php*-fpm.log; do
+            if [ -f "$f" ]; then
+              echo "--- $f ---"
+              sudo tail -100 "$f" || true
+            fi
+          done
+          echo ""
+          echo "=== nginx error log (last 100 lines) ==="
+          sudo tail -100 /var/log/nginx/error.log 2>/dev/null || true
+          echo ""
+          echo "=== nginx access log (last 30 lines) ==="
+          sudo tail -30 /var/log/nginx/access.log 2>/dev/null || true
+          echo ""
+          echo "=== Curl test: can we hit Kit's revoke endpoint from the runner? ==="
+          curl -v -m 15 -X POST 'https://api.kit.com/v4/oauth/revoke' \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            -d 'client_id=HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y&token=dummy_token' 2>&1 | head -50 || true
