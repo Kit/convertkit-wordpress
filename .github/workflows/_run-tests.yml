@@ -387,3 +387,19 @@ jobs:
         with:
           name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
+
+      # On failure, dump the uninstall.php marker file (if it exists) and the
+      # current value of the Kit settings option in the DB, to determine
+      # whether uninstall.php ran, how far it got, and what's still in the DB.
+      - name: Debug Uninstall Marker and Settings
+        if: failure()
+        run: |
+          echo "=== Uninstall marker file (${{ env.ROOT_DIR }}/wp-content/uninstall-marker.txt) ==="
+          if [ -f "${{ env.ROOT_DIR }}/wp-content/uninstall-marker.txt" ]; then
+            sudo cat "${{ env.ROOT_DIR }}/wp-content/uninstall-marker.txt"
+          else
+            echo "Marker file does not exist. uninstall.php was never executed."
+          fi
+          echo ""
+          echo "=== Current _wp_convertkit_settings option in DB ==="
+          mysql -u${{ env.DB_USER }} -p${{ env.DB_PASS }} ${{ env.DB_NAME }} -e "SELECT option_value FROM wp_options WHERE option_name = '_wp_convertkit_settings';" 2>/dev/null || true
