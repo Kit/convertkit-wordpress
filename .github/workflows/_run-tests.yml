@@ -165,13 +165,6 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_DEBUG true --raw
 
-      # WP_DEBUG_LOG writes PHP errors and notices to wp-content/debug.log,
-      # so we can inspect them as a CI artifact on test failure.
-      - name: Enable WP_DEBUG_LOG
-        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' && inputs.php-version != '8.4' }}
-        working-directory: ${{ env.ROOT_DIR }}
-        run: wp-cli config set WP_DEBUG_LOG true --raw
-
       # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
       - name: Enable FS_METHOD
         working-directory: ${{ env.ROOT_DIR }}
@@ -393,10 +386,18 @@ jobs:
           name: log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.txt
           path: ${{ env.PLUGIN_DIR }}/log/log.txt
 
-      - name: Upload WordPress Debug Log to Artifact
+      # On failure, dump the plugin directory's ownership + permissions so we
+      # can see whether files inside PLUGIN_DIR are owned by runner or www-data.
+      # If PLUGIN_DIR is www-data but its contents are runner, WordPress can't
+      # delete plugin files during uninstall tests.
+      - name: Debug Plugin File Ownership
         if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: wp-debug-log-${{ steps.test-group.outputs.value }}-${{ inputs.php-version }}.log
-          path: ${{ env.ROOT_DIR }}/wp-content/debug.log
-          if-no-files-found: ignore
+        run: |
+          echo "=== ${{ env.PLUGIN_DIR }} itself ==="
+          stat -c '%U:%G %a %n' ${{ env.PLUGIN_DIR }} || true
+          echo ""
+          echo "=== Contents of ${{ env.PLUGIN_DIR }} (top level) ==="
+          ls -la ${{ env.PLUGIN_DIR }} || true
+          echo ""
+          echo "=== Full recursive ownership summary (sorted by owner:group) ==="
+          find ${{ env.PLUGIN_DIR }} -printf '%u:%g\n' 2>/dev/null | sort | uniq -c | sort -rn || true
