@@ -24,6 +24,7 @@ if ( ! $settings ) {
 	return;
 }
 
+/*
 // Revoke Access Token.
 if ( array_key_exists( 'access_token', $settings ) && ! empty( $settings['access_token'] ) ) {
 	wp_remote_post(
@@ -63,6 +64,7 @@ if ( array_key_exists( 'refresh_token', $settings ) && ! empty( $settings['refre
 		)
 	);
 }
+*/
 
 // Remove credentials from settings.
 $settings['access_token']  = '';
