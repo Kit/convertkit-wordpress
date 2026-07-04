@@ -34,42 +34,54 @@ if ( ! $settings ) {
 
 // Revoke Access Token.
 if ( array_key_exists( 'access_token', $settings ) && ! empty( $settings['access_token'] ) ) {
-	wp_remote_post(
+	file_put_contents( $__uninstall_marker, "STAGE_2b: about to revoke access_token\n", FILE_APPEND );
+
+	$access_result = wp_remote_post(
 		'https://api.kit.com/v4/oauth/revoke',
 		array(
 			'headers' => array(
 				'Accept'       => 'application/json',
-				'Content-Type' => 'application/json',
+				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
-			'body'    => wp_json_encode(
-				array(
-					'client_id' => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
-					'token'     => $settings['access_token'],
-				)
+			'body'    => array(
+				'client_id' => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
+				'token'     => $settings['access_token'],
 			),
-			'timeout' => 5,
+			'timeout' => 15,
 		)
 	);
+
+	if ( is_wp_error( $access_result ) ) {
+		file_put_contents( $__uninstall_marker, 'STAGE_2c: access_token revoke returned WP_Error: ' . $access_result->get_error_message() . "\n", FILE_APPEND );
+	} else {
+		file_put_contents( $__uninstall_marker, 'STAGE_2c: access_token revoke HTTP ' . wp_remote_retrieve_response_code( $access_result ) . ' body: ' . wp_remote_retrieve_body( $access_result ) . "\n", FILE_APPEND );
+	}
 }
 
 // Revoke Refresh Token.
 if ( array_key_exists( 'refresh_token', $settings ) && ! empty( $settings['refresh_token'] ) ) {
-	wp_remote_post(
+	file_put_contents( $__uninstall_marker, "STAGE_2d: about to revoke refresh_token\n", FILE_APPEND );
+
+	$refresh_result = wp_remote_post(
 		'https://api.kit.com/v4/oauth/revoke',
 		array(
 			'headers' => array(
 				'Accept'       => 'application/json',
-				'Content-Type' => 'application/json',
+				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
-			'body'    => wp_json_encode(
-				array(
-					'client_id' => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
-					'token'     => $settings['refresh_token'],
-				)
+			'body'    => array(
+				'client_id' => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
+				'token'     => $settings['refresh_token'],
 			),
-			'timeout' => 5,
+			'timeout' => 15,
 		)
 	);
+
+	if ( is_wp_error( $refresh_result ) ) {
+		file_put_contents( $__uninstall_marker, 'STAGE_2e: refresh_token revoke returned WP_Error: ' . $refresh_result->get_error_message() . "\n", FILE_APPEND );
+	} else {
+		file_put_contents( $__uninstall_marker, 'STAGE_2e: refresh_token revoke HTTP ' . wp_remote_retrieve_response_code( $refresh_result ) . ' body: ' . wp_remote_retrieve_body( $refresh_result ) . "\n", FILE_APPEND );
+	}
 }
 
 // DIAGNOSTIC: mark that revoke requests completed.

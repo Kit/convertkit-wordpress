@@ -150,8 +150,10 @@ class ThirdPartyPlugin extends \Codeception\Module
 		// Click the confirmation dialog.
 		$I->acceptPopup();
 
-		// Wait for the Plugin to be marked as deleted.
-		$I->waitForElementNotVisible('table.plugins tr.deleted[data-slug=' . $name . ']');
+		// Wait for the Plugin to be marked as deleted. Longer timeout for slower
+		// CI runners where the uninstall routine (including network calls to
+		// revoke OAuth tokens) can take several seconds.
+		$I->waitForElementNotVisible('table.plugins tr.deleted[data-slug=' . $name . ']', 30);
 	}
 
 	/**
