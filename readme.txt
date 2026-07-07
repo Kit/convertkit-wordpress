@@ -328,6 +328,9 @@ Comprehensive documentation is available at: [Kit WordPress Plugin Setup Guide](
 
 The documentation covers newsletter form setup, landing page configuration, membership site creation, email marketing automation, subscriber segmentation, and all plugin features for growing your email newsletter.
 
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the Kit (formerly ConvertKit) plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/1010ebe1-02b2-4144-8297-b8cddba0ce7d). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. Create stunning email newsletter subscription forms and landing pages in Kit's visual editor optimized for email subscriber conversion
