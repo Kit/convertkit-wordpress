@@ -63,8 +63,10 @@ class UninstallCest
 		// Delete the Plugin.
 		$I->deleteKitPlugin($I);
 
+		// Allow the uninstallation routine time to complete.
+		$I->wait(10);
+
 		// Confirm the credentials have been removed from the Plugin's settings.
-		$I->wait(3);
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
 		$I->assertEmpty($settings['access_token']);
 		$I->assertEmpty($settings['refresh_token']);

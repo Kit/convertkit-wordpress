@@ -30,14 +30,12 @@ if ( array_key_exists( 'access_token', $settings ) && ! empty( $settings['access
 		'https://api.kit.com/v4/oauth/revoke',
 		array(
 			'headers' => array(
-				'Accept'       => 'application/json',
-				'Content-Type' => 'application/json',
+				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
-			'body'    => wp_json_encode(
-				array(
-					'client_id' => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
-					'token'     => $settings['access_token'],
-				)
+			'body'    => array(
+				'client_id'       => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
+				'token'           => $settings['access_token'],
+				'token_type_hint' => 'access_token',
 			),
 			'timeout' => 5,
 		)
@@ -50,14 +48,12 @@ if ( array_key_exists( 'refresh_token', $settings ) && ! empty( $settings['refre
 		'https://api.kit.com/v4/oauth/revoke',
 		array(
 			'headers' => array(
-				'Accept'       => 'application/json',
-				'Content-Type' => 'application/json',
+				'Content-Type' => 'application/x-www-form-urlencoded',
 			),
-			'body'    => wp_json_encode(
-				array(
-					'client_id' => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
-					'token'     => $settings['refresh_token'],
-				)
+			'body'    => array(
+				'client_id'       => 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y',
+				'token'           => $settings['refresh_token'],
+				'token_type_hint' => 'refresh_token',
 			),
 			'timeout' => 5,
 		)
