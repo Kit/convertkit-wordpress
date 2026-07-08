@@ -1,3 +1,9 @@
+### 3.3.5 2026-07-07
+* Added: Settings: Tools: Kit Legacy Forms: Migrate from legacy forms to newer Kit forms
+* Fix: Settings: Tools: Migrations: Use `form` instead of `id` for [convertkit_form] shortcode when migrating from third party form Plugins
+* Fix: Uninstall: Improve Access and Refresh Token revokation
+* Updated: WordPress Libraries to 2.1.7
+
 ### 3.3.4 2026-06-19
 * Fix: Pages: Add New: Dropdown menu alignment and mobile layout
 * Fix: Block Editor: Refresh button icon alignment
