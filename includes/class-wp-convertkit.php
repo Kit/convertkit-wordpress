@@ -80,23 +80,24 @@ class WP_ConvertKit {
 			return;
 		}
 
-		$this->classes['admin_bulk_edit']                     = new ConvertKit_Admin_Bulk_Edit();
-		$this->classes['admin_cache_plugins']                 = new ConvertKit_Admin_Cache_Plugins();
-		$this->classes['admin_category']                      = new ConvertKit_Admin_Category();
-		$this->classes['admin_landing_page']                  = new ConvertKit_Admin_Landing_Page();
-		$this->classes['admin_importer_activecampaign']       = new ConvertKit_Admin_Importer_ActiveCampaign();
-		$this->classes['admin_importer_aweber']               = new ConvertKit_Admin_Importer_AWeber();
-		$this->classes['admin_importer_campaignmonitor']      = new ConvertKit_Admin_Importer_CampaignMonitor();
-		$this->classes['admin_importer_mc4wp']                = new ConvertKit_Admin_Importer_MC4WP();
-		$this->classes['admin_importer_mailpoet']             = new ConvertKit_Admin_Importer_Mailpoet();
-		$this->classes['admin_importer_newsletter']           = new ConvertKit_Admin_Importer_Newsletter();
-		$this->classes['admin_post']                          = new ConvertKit_Admin_Post();
-		$this->classes['admin_quick_edit']                    = new ConvertKit_Admin_Quick_Edit();
-		$this->classes['admin_restrict_content']              = new ConvertKit_Admin_Restrict_Content();
-		$this->classes['admin_settings']                      = new ConvertKit_Admin_Settings();
-		$this->classes['admin_setup_wizard_landing_page']     = new ConvertKit_Admin_Setup_Wizard_Landing_Page();
-		$this->classes['admin_setup_wizard_plugin']           = new ConvertKit_Admin_Setup_Wizard_Plugin();
-		$this->classes['admin_setup_wizard_restrict_content'] = new ConvertKit_Admin_Setup_Wizard_Restrict_Content();
+		$this->classes['admin_bulk_edit']                        = new ConvertKit_Admin_Bulk_Edit();
+		$this->classes['admin_cache_plugins']                    = new ConvertKit_Admin_Cache_Plugins();
+		$this->classes['admin_category']                         = new ConvertKit_Admin_Category();
+		$this->classes['admin_landing_page']                     = new ConvertKit_Admin_Landing_Page();
+		$this->classes['admin_importer_activecampaign']          = new ConvertKit_Admin_Importer_ActiveCampaign();
+		$this->classes['admin_importer_aweber']                  = new ConvertKit_Admin_Importer_AWeber();
+		$this->classes['admin_importer_campaignmonitor']         = new ConvertKit_Admin_Importer_CampaignMonitor();
+		$this->classes['admin_importer_convertkit_legacy_forms'] = new ConvertKit_Admin_Importer_ConvertKit_Legacy_Forms();
+		$this->classes['admin_importer_mc4wp']                   = new ConvertKit_Admin_Importer_MC4WP();
+		$this->classes['admin_importer_mailpoet']                = new ConvertKit_Admin_Importer_Mailpoet();
+		$this->classes['admin_importer_newsletter']              = new ConvertKit_Admin_Importer_Newsletter();
+		$this->classes['admin_post']                             = new ConvertKit_Admin_Post();
+		$this->classes['admin_quick_edit']                       = new ConvertKit_Admin_Quick_Edit();
+		$this->classes['admin_restrict_content']                 = new ConvertKit_Admin_Restrict_Content();
+		$this->classes['admin_settings']                         = new ConvertKit_Admin_Settings();
+		$this->classes['admin_setup_wizard_landing_page']        = new ConvertKit_Admin_Setup_Wizard_Landing_Page();
+		$this->classes['admin_setup_wizard_plugin']              = new ConvertKit_Admin_Setup_Wizard_Plugin();
+		$this->classes['admin_setup_wizard_restrict_content']    = new ConvertKit_Admin_Setup_Wizard_Restrict_Content();
 
 		/**
 		 * Initialize integration classes for the WordPress Administration interface.
