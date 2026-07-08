@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 3.3.4
+Stable tag: 3.3.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -328,6 +328,9 @@ Comprehensive documentation is available at: [Kit WordPress Plugin Setup Guide](
 
 The documentation covers newsletter form setup, landing page configuration, membership site creation, email marketing automation, subscriber segmentation, and all plugin features for growing your email newsletter.
 
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the Kit (formerly ConvertKit) plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/1010ebe1-02b2-4144-8297-b8cddba0ce7d). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. Create stunning email newsletter subscription forms and landing pages in Kit's visual editor optimized for email subscriber conversion
@@ -342,6 +345,12 @@ The documentation covers newsletter form setup, landing page configuration, memb
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.3.5 2026-07-07
+* Added: Settings: Tools: Kit Legacy Forms: Migrate from legacy forms to newer Kit forms
+* Fix: Settings: Tools: Migrations: Use `form` instead of `id` for [convertkit_form] shortcode when migrating from third party form Plugins
+* Fix: Uninstall: Improve Access and Refresh Token revokation
+* Updated: WordPress Libraries to 2.1.7
 
 ### 3.3.4 2026-06-19
 * Fix: Pages: Add New: Dropdown menu alignment and mobile layout
