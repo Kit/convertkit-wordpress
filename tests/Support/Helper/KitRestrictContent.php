@@ -308,7 +308,7 @@ class KitRestrictContent extends \Codeception\Module
 
 	/**
 	 * Run frontend tests for restricted content by Kit Tag, to confirm that visible and member's content
-	 * is / is not displayed when the 'Require Login' option is enabled, and the login modal method works.
+	 * is / is not displayed and the login modal method works.
 	 *
 	 * @since   2.7.3
 	 *

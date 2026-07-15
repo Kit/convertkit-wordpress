@@ -12,7 +12,7 @@ echo $form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 ?>
 <div id="convertkit-restrict-content">
 	<?php
-	// Output a login link or form, if require login enabled.
+	// Output a login link or form.
 	require 'login.php';
 	?>
 </div>
