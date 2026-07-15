@@ -345,11 +345,11 @@ class ConvertKit_Output_Restrict_Content {
 
 	/**
 	 * If the user isn't using JavaScript, or the Plugin's Disable JS is enabled, checks if the request is a Restrict Content request with an email address.
-	 * Also runs if restrict content by tag and require login is disabled, as we immediately tag and redirect if this is the case.
 	 * If so, calls the API depending on the Restrict Content resource that's required:
-	 * - tag: subscribes the email address to the tag, storing the subscriber ID in a cookie and redirecting
-	 * - product: calls the API to send the subscriber a magic link by email containing a code. See maybe_run_subscriber_verification()
-	 * for logic once they click the link in the email or enter the code on screen.
+	 * - tag: subscribes the email address to the tag, and calls the API to send the subscriber a magic link by email containing a code.
+	 * - form + product: calls the API to send the subscriber a magic link by email containing a code.
+	 * 
+	 * See maybe_run_subscriber_verification() for logic once they click the link in the email or enter the code on screen.
 	 *
 	 * @since   2.1.0
 	 */
