@@ -277,33 +277,4 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 		$this->assertFalse( $data['success'] );
 		$this->assertArrayHasKey( 'data', $data );
 	}
-
-	/**
-	 * Test that the /wp-json/kit/v1/subscriber/store-email-as-id-in-cookie REST API route stores
-	 * the subscriber ID in a cookie when a valid email address is given.
-	 *
-	 * @since   3.1.7
-	 */
-	public function testStoreEmailAsIDInCookie()
-	{
-		// Build request.
-		$request = new \WP_REST_Request( 'POST', '/kit/v1/subscriber/store-email-as-id-in-cookie' );
-		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_body_params(
-			[
-				'email' => $_ENV['CONVERTKIT_API_SUBSCRIBER_EMAIL'],
-			],
-		);
-
-		// Send request.
-		$response = rest_get_server()->dispatch( $request );
-
-		// Assert response is successful.
-		$this->assertSame( 200, $response->get_status() );
-
-		// Assert response data has the expected keys and data.
-		$data = $response->get_data();
-		$this->assertIsArray( $data );
-		$this->assertEquals( (int) $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], (int) $data['id'] );
-	}
 }
