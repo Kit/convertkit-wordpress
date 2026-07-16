@@ -141,7 +141,10 @@ class KitAPI extends \Codeception\Module
 		// Run request.
 		$results = $this->apiRequest(
 			'sequences/' . $sequenceID . '/subscribers',
-			'GET'
+			'GET',
+			[
+				'status' => 'all',
+			]
 		);
 
 		// Iterate through subscribers.
