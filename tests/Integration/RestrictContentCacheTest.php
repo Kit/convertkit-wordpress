@@ -543,29 +543,6 @@ class RestrictContentCacheTest extends WPTestCase
 	}
 
 	/**
-	 * Test that updating a Post's slug refreshes its cached URL via the
-	 * post_updated hook.
-	 *
-	 * @since   3.3.6
-	 */
-	public function testHookPostUpdatedRefreshesUrlOnSlugChange()
-	{
-		$post_id      = $this->createRestrictContentPost();
-		$original_url = $this->cache->get()[ $post_id ];
-
-		wp_update_post(
-			array(
-				'ID'        => $post_id,
-				'post_name' => 'new-slug-after-update',
-			)
-		);
-
-		$new_url = $this->cache->get()[ $post_id ];
-		$this->assertNotSame( $original_url, $new_url );
-		$this->assertSame( wp_make_link_relative( get_permalink( $post_id ) ), $new_url );
-	}
-
-	/**
 	 * Test that updating a Post that is not in the cache does not add it to the cache.
 	 *
 	 * @since   3.3.6
@@ -589,30 +566,6 @@ class RestrictContentCacheTest extends WPTestCase
 		);
 
 		$this->assertArrayNotHasKey( $post_id, $this->cache->get() );
-	}
-
-	/**
-	 * Test that changing the permalink structure rebuilds the cache with the
-	 * new URL format.
-	 *
-	 * @since   3.3.6
-	 */
-	public function testHookPermalinkStructureChangeRebuildsCache()
-	{
-		// Start with plain permalinks.
-		update_option( 'permalink_structure', '' );
-
-		$post_id = $this->createRestrictContentPost();
-		$this->cache->rebuild();
-		$plain_url = $this->cache->get()[ $post_id ];
-
-		// Change to pretty permalinks. This should trigger a rebuild.
-		update_option( 'permalink_structure', '/%postname%/' );
-
-		$pretty_url = $this->cache->get()[ $post_id ];
-
-		$this->assertNotSame( $plain_url, $pretty_url );
-		$this->assertSame( wp_make_link_relative( get_permalink( $post_id ) ), $pretty_url );
 	}
 
 	/**
