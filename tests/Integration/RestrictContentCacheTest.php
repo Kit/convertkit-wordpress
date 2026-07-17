@@ -686,6 +686,26 @@ class RestrictContentCacheTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the SiteGround Speed Optimizer filter integration returns the
+	 * restrict content post URLs. This proves the end-to-end integration:
+	 * ConvertKit_Cache_Plugins::exclude_restrict_content_pages_from_caching()
+	 * consumes the cache and merges the URLs into the excluded URLs list.
+	 *
+	 * @since   3.3.6
+	 */
+	public function testSitegroundExcludeRestrictContentUrlsFilter()
+	{
+		$post_id = $this->createRestrictContentPost();
+
+		$excluded_urls = apply_filters( 'sgo_exclude_urls_from_cache', array() );
+
+		$this->assertContains(
+			wp_make_link_relative( get_permalink( $post_id ) ),
+			$excluded_urls
+		);
+	}
+
+	/**
 	 * Helper: create a Post with Kit meta setting restrict_content to the given value.
 	 *
 	 * @since   3.3.6

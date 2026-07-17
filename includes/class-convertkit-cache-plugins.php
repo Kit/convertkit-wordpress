@@ -80,6 +80,9 @@ class ConvertKit_Cache_Plugins {
 		add_filter( 'convertkit_output_script_footer', array( $this, 'siteground_speed_optimizer_exclude_js_combine' ) );
 		add_filter( 'convertkit_resource_forms_output_script', array( $this, 'siteground_speed_optimizer_exclude_js_combine' ) );
 
+		// Siteground Speed Optimizer: Set Member Content Pages in "Exclude URLs from Caching".
+		add_filter( 'sgo_exclude_urls_from_cache', array( $this, 'exclude_restrict_content_pages_from_caching' ) );
+
 		// Rocket LazyLoad: Exclude images from lazy loading.
 		add_filter( 'rocket_lazyload_excluded_src', array( $this, 'exclude_hosts' ) );
 
@@ -337,6 +340,33 @@ class ConvertKit_Cache_Plugins {
 	public function exclude_local_js_from_minification( $scripts ) {
 
 		return array_merge( $scripts, $this->exclude_plugin_js );
+
+	}
+
+	/**
+	 * Exclude Restrict Content Pages from caching when the Siteground Speed Optimizer Plugin is installed, active
+	 * and its "Exclude URLs from Caching" setting is enabled.
+	 *
+	 * @since   3.3.6
+	 *
+	 * @param   array $excluded_urls    URLs to exclude from caching.
+	 * @return  array
+	 */
+	public function exclude_restrict_content_pages_from_caching( $excluded_urls ) {
+
+		// Get the list of relative URLs for posts with restrict_content enabled
+		// from the Plugin's cache.
+		$restrict_content_cache = WP_ConvertKit()->get_class( 'restrict_content_cache' );
+		if ( ! $restrict_content_cache ) {
+			return $excluded_urls;
+		}
+
+		// Cache stores Restrict Content pages as id => relative url pairs.
+		// Siteground just needs to the relative URLs.
+		$restrict_content_urls = array_values( $restrict_content_cache->get() );
+
+		// Merge the list of relative URLs with the list of URLs already excluded from caching.
+		return array_merge( $excluded_urls, $restrict_content_urls );
 
 	}
 
