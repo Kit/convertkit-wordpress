@@ -20,7 +20,7 @@
 		echo wp_kses( $button, convertkit_kses_allowed_html() );
 	}
 
-	// Output a login link or form, if require login enabled.
+	// Output a login link or form.
 	require 'login.php';
 
 	// Output notices.
