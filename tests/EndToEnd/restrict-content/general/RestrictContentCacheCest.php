@@ -540,6 +540,96 @@ class RestrictContentCacheCest
 	}
 
 	/**
+	 * Tests that the SiteGround Speed Optimizer Plugin does not interfere with
+	 * Restrict Content output when a ck_subscriber_id cookie is present, and
+	 * that the Restrict Content Page is registered against the
+	 * sgo_exclude_urls_from_cache filter via the Plugin's cache option.
+	 *
+	 * @since   3.3.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentSitegroundSpeedOptimizer(EndToEndTester $I)
+	{
+		// Activate SiteGround Speed Optimizer Plugin.
+		$I->activateThirdPartyPlugin($I, 'sg-cachepress');
+
+		// Enable SG Speed Optimizer's Dynamic Cache so its exclusion logic is active.
+		$I->haveOptionInDatabase('siteground_optimizer_enable_cache', 1);
+
+		// Configure SG Speed Optimizer's Heartbeat, to prevent the Plugin from
+		// making requests to the site during the test.
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_post_interval', 120);
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_dashboard_interval', 120);
+		$I->haveOptionInDatabase('siteground_optimizer_heartbeat_frontend_interval', 120);
+
+		// Confirm the Plugin's Restrict Content cache option is empty, as no
+		// Restrict Content Page has been configured yet.
+		$cache = $I->grabOptionFromDatabase('_wp_convertkit_restrict_content_posts');
+		$I->assertTrue( empty( $cache ) );
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Restrict Content: Product: SG Speed Optimizer'
+		);
+
+		// Configure metabox's Restrict Content setting = Product name.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_PRODUCT_NAME']
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Load the Dashboard.
+		$I->amOnAdminPage('index.php');
+		$I->waitForElementVisible('body.index-php');
+
+		// Confirm the Plugin's Restrict Content cache option now includes
+		// the relative URL for this Page. This URL is fed to
+		// SiteGround Speed Optimizer via the sgo_exclude_urls_from_cache
+		// filter at runtime, so that SG excludes the Restrict Content Page
+		// from its cache.
+		$cache = $I->grabOptionFromDatabase('_wp_convertkit_restrict_content_posts');
+		$I->assertIsArray($cache);
+		$I->assertContains(wp_make_link_relative($url), array_values($cache));
+
+		// Log out, so that caching is honored.
+		$I->logOut();
+
+		// Navigate to the page.
+		$I->amOnUrl($url);
+
+		// Test that the restricted content CTA displays when no valid signed subscriber ID is used,
+		// to confirm caching does not show member-only content.
+		$I->testRestrictContentByProductHidesContentWithCTA($I);
+
+		// Test that the restricted content displays when a valid signed subscriber ID is used,
+		// to confirm caching does not show the incorrect content.
+		$I->setRestrictContentCookieAndReload(
+			$I,
+			subscriberID: $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'],
+			urlOrPageID: $url
+		);
+		$I->testRestrictContentDisplaysContent($I);
+
+		// Deactivate SiteGround Speed Optimizer Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'sg-cachepress');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
