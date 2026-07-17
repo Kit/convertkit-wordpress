@@ -52,9 +52,9 @@ class ConvertKit_Restrict_Content_Cache {
 		add_action( 'post_updated', array( $this, 'on_post_updated' ), 10, 3 );
 
 		// Rebuild the cache when the permalink structure or site URL changes.
-		add_action( 'update_option_permalink_structure', array( $this, 'rebuild' ) );
-		add_action( 'update_option_siteurl', array( $this, 'rebuild' ) );
-		add_action( 'update_option_home', array( $this, 'rebuild' ) );
+		add_action( 'update_option_permalink_structure', array( $this, 'on_permalink_change' ) );
+		add_action( 'update_option_siteurl', array( $this, 'on_permalink_change' ) );
+		add_action( 'update_option_home', array( $this, 'on_permalink_change' ) );
 
 	}
 
@@ -373,6 +373,22 @@ class ConvertKit_Restrict_Content_Cache {
 
 		// Update the cache.
 		$this->add( $post_id );
+
+	}
+
+	/**
+	 * Hook: fires when the permalink structure, site URL or home URL changes.
+	 * Rebuilds the cache so cached relative URLs reflect the new structure.
+	 *
+	 * This is a void wrapper around rebuild() so it can be safely used as an
+	 * action callback (rebuild() returns the rebuilt cache for programmatic
+	 * callers).
+	 *
+	 * @since   3.3.6
+	 */
+	public function on_permalink_change() {
+
+		$this->rebuild();
 
 	}
 
