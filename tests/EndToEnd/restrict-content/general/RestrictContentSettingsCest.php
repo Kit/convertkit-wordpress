@@ -102,7 +102,6 @@ class RestrictContentSettingsCest
 			'subscribe_heading_tag'  => '',
 			'subscribe_text_tag'     => '',
 			'no_access_text_tag'     => '',
-			'require_tag_login'      => '',
 
 			// All.
 			'subscribe_button_label' => '',
@@ -157,7 +156,6 @@ class RestrictContentSettingsCest
 			'subscribe_heading_tag'  => 'Subscribe Heading Tag',
 			'subscribe_text_tag'     => 'Subscribe Text Tag',
 			'no_access_text_tag'     => 'No Access Text Tag',
-			'require_tag_login'      => 'on',
 
 			// All.
 			'subscribe_button_label' => 'Subscribe Button Label',
@@ -240,7 +238,6 @@ class RestrictContentSettingsCest
 			foreach ( $settings as $key => $value ) {
 				switch ( $key ) {
 					case 'permit_crawlers':
-					case 'require_tag_login':
 						if ( $value ) {
 							$I->checkOption('_wp_convertkit_settings_restrict_content[' . $key . ']');
 						} else {

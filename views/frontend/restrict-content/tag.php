@@ -43,8 +43,9 @@
 		</form>
 
 		<?php
-		// Maybe output a login link or form, if require login enabled.
-		if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
+		// Output a login link or form if scripts are enabled. Login is always
+		// required for tag-restricted content, matching form/product behaviour.
+		if ( ! $this->settings->scripts_disabled() ) {
 			require 'login.php';
 		}
 

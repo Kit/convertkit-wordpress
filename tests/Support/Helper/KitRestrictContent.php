@@ -68,7 +68,6 @@ class KitRestrictContent extends \Codeception\Module
 			'subscribe_heading_tag'  => 'Subscribe to keep reading',
 			'subscribe_text_tag'     => 'This post is free to read but only available to subscribers. Join today to get access to all posts.',
 			'no_access_text_tag'     => 'Your account does not have access to this content. Please use the form above to subscribe.',
-			'require_tag_login'      => '',
 
 			// All.
 			'subscribe_button_label' => 'Subscribe',
@@ -93,7 +92,6 @@ class KitRestrictContent extends \Codeception\Module
 		foreach ( $settings as $key => $value ) {
 			switch ( $key ) {
 				case 'permit_crawlers':
-				case 'require_tag_login':
 					if ( $value ) {
 						$I->seeCheckboxIsChecked('_wp_convertkit_settings_restrict_content[' . $key . ']');
 					} else {
@@ -256,58 +254,6 @@ class KitRestrictContent extends \Codeception\Module
 	 * Run frontend tests for restricted content by Kit Tag, to confirm that visible and member's content
 	 * is / is not displayed when logging in with valid and invalid subscriber email addresses.
 	 *
-	 * @since   2.1.0
-	 *
-	 * @param   EndToEndTester $I                  Tester.
-	 * @param   string|int     $urlOrPageID        URL or ID of Restricted Content Page.
-	 * @param   string         $emailAddress       Email Address.
-	 * @param   bool|array     $options {
-	 *         Optional. An array of settings.
-	 *
-	 *     @type string $visible_content            Content that should always be visible.
-	 *     @type string $member_content             Content that should only be available to authenticated subscribers.
-	 *     @type array  $settings                   Restrict content settings. If not defined, uses expected defaults.
-	 * }
-	 * @param   bool           $testRecaptcha        Whether to test reCAPTCHA.
-	 */
-	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false, $testRecaptcha = false)
-	{
-		// Setup test.
-		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
-
-		// Confirm Restrict Content CSS is output.
-		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
-
-		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByTagHidesContentWithCTA($I, $options, $testRecaptcha);
-
-		// Set cookie with signed subscriber ID and reload the restricted content page, as if we entered the
-		// code sent in the email as a Kit subscriber who has not subscribed to the tag.
-		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
-
-		// Confirm an inline error message is displayed.
-		$this->seeRestrictContentError($I, $options['settings']['no_access_text_tag']);
-
-		// Check content is not displayed, and CTA displays with expected text.
-		$this->testRestrictContentByTagHidesContentWithCTA($I, $options, $testRecaptcha);
-
-		// Enter the email address and submit the form.
-		$this->loginToRestrictContentWithEmail($I, $emailAddress);
-
-		// Wait for reCAPTCHA to fully load.
-		if ($testRecaptcha) {
-			$I->wait(3);
-		}
-
-		// Confirm that the restricted content is now displayed.
-		$this->testRestrictContentDisplaysContent($I, $options);
-	}
-
-	/**
-	 * Run frontend tests for restricted content by Kit Tag, to confirm that visible and member's content
-	 * is / is not displayed when the 'Require Login' option is enabled, therefore requiring
-	 * the use of signed subscriber IDs.
-	 *
 	 * @since   2.7.1
 	 *
 	 * @param   EndToEndTester $I                  Tester.
@@ -322,7 +268,7 @@ class KitRestrictContent extends \Codeception\Module
 	 * }
 	 * @param   bool           $testRecaptcha        Whether to test reCAPTCHA.
 	 */
-	public function testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled($I, $urlOrPageID, $emailAddress, $options = false, $testRecaptcha = false)
+	public function testRestrictedContentByTagOnFrontend($I, $urlOrPageID, $emailAddress, $options = false, $testRecaptcha = false)
 	{
 		// Setup test.
 		$options = $this->setupRestrictContentTest($I, $options, $urlOrPageID);
@@ -362,7 +308,7 @@ class KitRestrictContent extends \Codeception\Module
 
 	/**
 	 * Run frontend tests for restricted content by Kit Tag, to confirm that visible and member's content
-	 * is / is not displayed when the 'Require Login' option is enabled, and the login modal method works.
+	 * is / is not displayed and the login modal method works.
 	 *
 	 * @since   2.7.3
 	 *
