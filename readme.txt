@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 3.3.5
+Stable tag: 3.3.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -345,6 +345,10 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.3.6 2026-07-20
+* Fix: Member Content: Tags: Require Login is now always enabled, to ensure subscribers authenticate to access gated content
+* Removed: Kit Forms: Store subscriber ID as cookie when submitting an embedded Kit form
 
 ### 3.3.5 2026-07-07
 * Added: Settings: Tools: Kit Legacy Forms: Migrate from legacy forms to newer Kit forms
