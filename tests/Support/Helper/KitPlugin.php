@@ -603,6 +603,7 @@ class KitPlugin extends \Codeception\Module
 
 		// Cache.
 		$I->dontHaveOptionInDatabase('convertkit_restrict_content_enabled');
+		$I->dontHaveOptionInDatabase('_wp_convertkit_restrict_content_posts');
 
 		// Cookies.
 		$I->resetCookie('ck_subscriber_id');
