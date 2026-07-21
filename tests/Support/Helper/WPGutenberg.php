@@ -33,9 +33,15 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function switchToGutenbergIFrameEditor($I)
 	{
-		// Don't switch if the iframe doesn't exist e.g. Divi is active, which prevents
-		// the iframe block editor in WordPress 7.0+ from being used.
-		if ( ! $I->tryToSeeElement('iframe[name="editor-canvas"]')) {
+		// Wait for the iframe to mount. In WordPress 7.1+ the editor iframe
+		// can take longer to appear in the DOM than a tryToSeeElement()
+		// check, causing the switch to be silently skipped. Catch the timeout
+		// so that environments which intentionally have no iframe (e.g. Divi
+		// is active, which prevents the iframe block editor from being used)
+		// still fall through to the non-iframe path.
+		try {
+			$I->waitForElement('iframe[name="editor-canvas"]', 10);
+		} catch (\Facebook\WebDriver\Exception\TimeoutException $e) {
 			return;
 		}
 
