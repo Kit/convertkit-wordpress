@@ -345,11 +345,11 @@ class ConvertKit_Output_Restrict_Content {
 
 	/**
 	 * If the user isn't using JavaScript, or the Plugin's Disable JS is enabled, checks if the request is a Restrict Content request with an email address.
-	 * Also runs if restrict content by tag and require login is disabled, as we immediately tag and redirect if this is the case.
 	 * If so, calls the API depending on the Restrict Content resource that's required:
-	 * - tag: subscribes the email address to the tag, storing the subscriber ID in a cookie and redirecting
-	 * - product: calls the API to send the subscriber a magic link by email containing a code. See maybe_run_subscriber_verification()
-	 * for logic once they click the link in the email or enter the code on screen.
+	 * - tag: subscribes the email address to the tag, and calls the API to send the subscriber a magic link by email containing a code.
+	 * - form + product: calls the API to send the subscriber a magic link by email containing a code.
+	 *
+	 * See maybe_run_subscriber_verification() for logic once they click the link in the email or enter the code on screen.
 	 *
 	 * @since   2.1.0
 	 */
@@ -413,26 +413,8 @@ class ConvertKit_Output_Restrict_Content {
 				$this->error = $result;
 				return;
 			}
-
-			// If require login is disabled, return now.
-			if ( ! $this->restrict_content_settings->require_tag_login() ) {
-				// Clear any existing subscriber ID cookie, as the authentication flow has started by sending the email.
-				$subscriber = new ConvertKit_Subscriber();
-				$subscriber->forget();
-
-				// Fetch the subscriber ID from the result.
-				$subscriber_id = $result['subscriber']['id'];
-
-				// Store subscriber ID in cookie.
-				$this->store_subscriber_id_in_cookie( $subscriber_id );
-
-				// Redirect.
-				$this->redirect( $this->post_id );
-				return;
-			}
 		}
 
-		// If here, require login is enabled for tags or this is a product/form.
 		// Run subscriber authentication.
 		$result = $this->subscriber_authentication_send_code( $email, $this->post_id );
 
@@ -1077,32 +1059,14 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function subscriber_has_access( $subscriber_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 
-		// Depending on the resource type, determine if the subscriber has access to it.
-		// This is deliberately a switch statement, because we will likely add in support
-		// for restrict by tag and form later.
 		switch ( $this->resource_type ) {
 			case 'product':
-				// For products, the subscriber ID has to be a signed subscriber ID string.
 				return $this->subscriber_has_access_to_product_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
 			case 'form':
-				// For forms, the subscriber ID has to be a signed subscriber ID string.
 				return $this->subscriber_has_access_to_form_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
 			case 'tag':
-				// If the subscriber ID is numeric, check using get_subscriber_tags().
-				if ( is_numeric( $subscriber_id ) ) {
-					// If require login is enabled, only a signed subscriber ID is accepted, as this is generated
-					// via the subscriber verify email flow.
-					if ( $this->restrict_content_settings->require_tag_login() ) {
-						return false;
-					}
-
-					return $this->subscriber_has_access_to_tag_by_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
-				}
-
-				// The subscriber ID is a signed subscriber ID string.
-				// Check using profile().
 				return $this->subscriber_has_access_to_tag_by_signed_subscriber_id( $subscriber_id, absint( $this->resource_id ) );
 
 		}
@@ -1199,44 +1163,6 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Return if the subscriber is subscribed to the tag or not.
 		return in_array( $tag_id, $result['tags'], true );
-
-	}
-
-	/**
-	 * Determines if the given signed subscriber ID has an active subscription to
-	 * the given tag.
-	 *
-	 * @since   2.7.1
-	 *
-	 * @param   int $subscriber_id  Subscriber ID.
-	 * @param   int $tag_id         Tag ID.
-	 * @return  bool                Has access to tag
-	 */
-	private function subscriber_has_access_to_tag_by_subscriber_id( $subscriber_id, $tag_id ) {
-
-		// Get tags that the subscriber has been assigned.
-		$tags = $this->api->get_subscriber_tags( $subscriber_id );
-
-		// If an error occurred, the subscriber ID is invalid.
-		if ( is_wp_error( $tags ) ) {
-			return false;
-		}
-
-		// If no tags exist, there's no access.
-		if ( ! count( $tags['tags'] ) ) {
-			return false;
-		}
-
-		// Iterate through the subscriber's tags to see if they have the required tag.
-		foreach ( $tags['tags'] as $tag ) {
-			if ( $tag['id'] === $tag_id ) {
-				// Subscriber has the required tag assigned to them - grant access.
-				return true;
-			}
-		}
-
-		// If here, the subscriber does not have the tag.
-		return false;
 
 	}
 
@@ -1530,9 +1456,9 @@ class ConvertKit_Output_Restrict_Content {
 				$heading = $this->restrict_content_settings->get_by_key( 'subscribe_heading_tag' );
 				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text_tag' );
 
-				// If require login is enabled and scripts are enabled, output the email login form in a modal, which will be displayed
+				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
-				if ( $this->restrict_content_settings->require_tag_login() && ! $this->settings->scripts_disabled() ) {
+				if ( ! $this->settings->scripts_disabled() ) {
 					add_action(
 						'wp_footer',
 						function () use ( $post_id, $resource_id, $resource_type ) {

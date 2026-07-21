@@ -166,20 +166,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			)
 		);
 
-		add_settings_field(
-			'require_tag_login',
-			__( 'Require Login', 'convertkit' ),
-			array( $this, 'require_tag_login_callback' ),
-			$this->settings_key,
-			$this->name . '-tags',
-			array(
-				'name'        => 'require_tag_login',
-				'label_for'   => 'require_tag_login',
-				'label'       => __( 'When checked, subscribers are sent a code in an email to login after being subscribed and tagged.', 'convertkit' ),
-				'description' => '',
-			)
-		);
-
 		// All.
 		add_settings_field(
 			'subscribe_button_label',
@@ -447,26 +433,6 @@ class ConvertKit_Admin_Section_Restrict_Content extends ConvertKit_Admin_Section
 			$args['name'],
 			'on',
 			$this->settings->permit_crawlers(),
-			$args['label'],
-			$args['description']
-		);
-
-	}
-
-	/**
-	 * Renders the input for the Require Login setting.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @param   array $args   Setting field arguments (name,description).
-	 */
-	public function require_tag_login_callback( $args ) {
-
-		// Output field.
-		$this->output_checkbox_field(
-			$args['name'],
-			'on',
-			$this->settings->require_tag_login(),
 			$args['label'],
 			$args['description']
 		);

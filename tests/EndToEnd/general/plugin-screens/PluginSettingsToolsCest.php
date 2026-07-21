@@ -154,7 +154,7 @@ class PluginSettingsToolsCest
 		$I->setupKitPluginRestrictContent(
 			$I,
 			[
-				'require_tag_login' => 'on',
+				'permit_crawlers' => 'on',
 			]
 		);
 		$I->setupKitPluginBroadcasts(
@@ -184,8 +184,7 @@ class PluginSettingsToolsCest
 		$I->seeInThisFile('{"settings":{"access_token":"' . $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'] . '","refresh_token":"' . $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'] . '"');
 
 		// Confirm some expected Restrict Content settings data is included.
-		$I->seeInThisFile('"restrict_content":{"permit_crawlers":');
-		$I->seeInThisFile('require_tag_login":"on"');
+		$I->seeInThisFile('"restrict_content":{"permit_crawlers":"on"');
 
 		// Confirm some expected Broadcasts settings data is included.
 		$I->seeInThisFile('"broadcasts":{"enabled":"on"');
@@ -221,8 +220,8 @@ class PluginSettingsToolsCest
 
 		// Assert Restrict Content settings updated from imported configuration.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings_restrict_content');
-		$I->assertArrayHasKey('require_tag_login', $settings);
-		$I->assertEquals($settings['require_tag_login'], 'on');
+		$I->assertArrayHasKey('permit_crawlers', $settings);
+		$I->assertEquals($settings['permit_crawlers'], 'on');
 
 		// Assert Broadcasts settings updated from imported configuration.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings_broadcasts');
