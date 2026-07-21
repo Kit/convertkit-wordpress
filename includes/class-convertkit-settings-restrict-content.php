@@ -78,19 +78,6 @@ class ConvertKit_Settings_Restrict_Content {
 	}
 
 	/**
-	 * Returns whether login by email is required for Member Content by Tag functionality.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @return  bool
-	 */
-	public function require_tag_login() {
-
-		return ( $this->settings['require_tag_login'] === 'on' ? true : false );
-
-	}
-
-	/**
 	 * Returns Restrict Content settings value for the given key.
 	 *
 	 * @since   2.1.0
@@ -272,7 +259,6 @@ class ConvertKit_Settings_Restrict_Content {
 			// Restrict by Tag.
 			'subscribe_heading_tag'  => __( 'Subscribe to keep reading', 'convertkit' ),
 			'subscribe_text_tag'     => __( 'This post is free to read but only available to subscribers. Join today to get access to all posts.', 'convertkit' ),
-			'require_tag_login'      => '', // blank|on.
 			'no_access_text_tag'     => __( 'Your account does not have access to this content. Please use the form above to subscribe.', 'convertkit' ),
 
 			// All.

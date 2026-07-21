@@ -73,135 +73,6 @@ class RestrictContentTagCest
 
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when:
-	 * - the Plugin is set to Require Login,
-	 * - creating and viewing a new WordPress Page,
-	 * - entering an email address displays the code verification screen
-	 * - using a signed subscriber ID that has access to the Tag displays the content.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRestrictContentByTagWithRequireLoginEnabled(EndToEndTester $I)
-	{
-		// Setup Kit Plugin, disabling JS.
-		$I->setupKitPluginDisableJS($I);
-		$I->setupKitPluginResources($I);
-
-		// Setup Restrict Content functionality with Require Login enabled.
-		$I->setupKitPluginRestrictContent(
-			$I,
-			[
-				'require_tag_login' => 'on',
-			]
-		);
-
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Tag: Require Login'
-		);
-
-		// Configure metabox's Restrict Content setting = Tag name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_TAG_NAME']
-		);
-
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
-
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
-
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled(
-			$I,
-			urlOrPageID: $url,
-			emailAddress: $I->generateEmailAddress()
-		);
-	}
-
-	/**
-	 * Test that restricting content by a Tag specified in the Page Settings works when:
-	 * - the Plugin is set to Require Login,
-	 * - the Plugin has its Recaptcha settings defined,
-	 * - creating and viewing a new WordPress Page,
-	 * - entering an email address displays the code verification screen
-	 * - using a signed subscriber ID that has access to the Tag displays the content.
-	 *
-	 * @since   2.7.2
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testRestrictContentByTagWithRecaptchaAndRequireLoginEnabled(EndToEndTester $I)
-	{
-		// Setup Kit Plugin.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'recaptcha_site_key'      => $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY'],
-				'recaptcha_secret_key'    => $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY'],
-				'recaptcha_minimum_score' => '0.01', // Set a low score to ensure reCAPTCHA passes the subscriber.
-			]
-		);
-		$I->setupKitPluginResources($I);
-
-		// Define reCAPTCHA settings.
-		$options = [
-			'settings' => [
-				'require_tag_login' => 'on',
-			],
-		];
-
-		// Setup Restrict Content functionality with Require Login and reCAPTCHA enabled.
-		$I->setupKitPluginRestrictContent($I, $options['settings']);
-
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Restrict Content: Tag: Recaptcha and Require Login'
-		);
-
-		// Configure metabox's Restrict Content setting = Tag name.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None',
-			restrictContent: $_ENV['CONVERTKIT_API_TAG_NAME']
-		);
-
-		// Add blocks.
-		$I->addGutenbergParagraphBlock($I, 'Visible content.');
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'More',
-			blockProgrammaticName: 'more'
-		);
-		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
-
-		// Publish Page.
-		$url = $I->publishGutenbergPage($I);
-
-		// Test Restrict Content functionality.
-		$I->testRestrictedContentByTagOnFrontendWhenRequireLoginEnabled(
-			$I,
-			urlOrPageID: $url,
-			emailAddress: $I->generateEmailAddress(),
-			options: $options,
-			testRecaptcha: true,
-		);
-	}
-
-	/**
-	 * Test that restricting content by a Tag specified in the Page Settings works when:
-	 * - the Plugin is set to Require Login,
 	 * - creating and viewing a new WordPress Page,
 	 * - entering an email address displays the code verification screen
 	 * - using a signed subscriber ID that has access to the Tag displays the content.
@@ -216,15 +87,12 @@ class RestrictContentTagCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Define Restrict Content settings.
+		// Setup Restrict Content functionality. Login is always required for
+		// tag restrictions, matching form / product restriction behaviour.
 		$options = [
-			'settings' => [
-				'require_tag_login' => 'on',
-			],
+			'settings' => [],
 		];
-
-		// Setup Restrict Content functionality with Require Login enabled.
-		$I->setupKitPluginRestrictContent($I, $options['settings']);
+		$I->setupKitPluginRestrictContent($I);
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(

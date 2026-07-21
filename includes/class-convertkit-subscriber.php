@@ -51,56 +51,6 @@ class ConvertKit_Subscriber {
 	}
 
 	/**
-	 * Validates the given subscriber email by querying the API to confirm
-	 * the subscriber exists before storing their ID in a cookie.
-	 *
-	 * @since   2.0.0
-	 *
-	 * @param   string $subscriber_email   Possible Subscriber Email.
-	 * @return  WP_Error|int|string                     Error | Confirmed Subscriber ID or Signed Subscriber ID
-	 */
-	public function validate_and_store_subscriber_email( $subscriber_email ) {
-
-		// Bail if the API hasn't been configured.
-		$settings = new ConvertKit_Settings();
-		if ( ! $settings->has_access_and_refresh_token() ) {
-			return new WP_Error(
-				'convertkit_subscriber_get_subscriber_id_from_request_error',
-				__( 'Access Token not configured in Plugin Settings.', 'convertkit' )
-			);
-		}
-
-		// Initialize the API.
-		$api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$settings->get_access_token(),
-			$settings->get_refresh_token(),
-			$settings->debug_enabled(),
-			'subscriber'
-		);
-
-		// Get subscriber by email, to ensure they exist.
-		$subscriber_id = $api->get_subscriber_id( $subscriber_email );
-
-		// Bail if no subscriber exists with the given subscriber ID, or an error occurred.
-		if ( is_wp_error( $subscriber_id ) ) {
-			// Delete the cookie.
-			$this->forget();
-
-			// Return error.
-			return $subscriber_id;
-		}
-
-		// Store the subscriber ID as a cookie.
-		$this->set( $subscriber_id );
-
-		// Return subscriber ID.
-		return $subscriber_id;
-
-	}
-
-	/**
 	 * Gets the subscriber ID from the `ck_subscriber_id` cookie.
 	 *
 	 * @since   2.0.0

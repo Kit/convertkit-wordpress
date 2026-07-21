@@ -1,3 +1,7 @@
+### 3.3.6 2026-07-20
+* Fix: Member Content: Tags: Require Login is now always enabled, to ensure subscribers authenticate to access gated content
+* Removed: Kit Forms: Store subscriber ID as cookie when submitting an embedded Kit form
+
 ### 3.3.5 2026-07-07
 * Added: Settings: Tools: Kit Legacy Forms: Migrate from legacy forms to newer Kit forms
 * Fix: Settings: Tools: Migrations: Use `form` instead of `id` for [convertkit_form] shortcode when migrating from third party form Plugins
