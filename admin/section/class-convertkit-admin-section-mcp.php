@@ -387,7 +387,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			printf(
 				/* translators: %s: Path to Claude desktop config file. */
 				esc_html__( 'Add the following to your %s file, then restart Claude desktop:', 'convertkit' ),
-				'<code>claude_desktop_config.json</code>',
+				'<code>claude_desktop_config.json</code>'
 			);
 			?>
 			<br />
