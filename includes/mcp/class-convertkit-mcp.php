@@ -66,7 +66,7 @@ class ConvertKit_MCP {
 	 */
 	public static function get_server_url() {
 
-		return rest_url( self::SERVER_NAMESPACE . '/' . self::SERVER_ROUTE . '/mcp' );
+		return rest_url( self::SERVER_NAMESPACE . '/' . self::SERVER_ROUTE );
 
 	}
 
@@ -92,6 +92,12 @@ class ConvertKit_MCP {
 		// These are owned by the Plugin (not by any single feature),
 		// so they're added here rather than via a per-class register_abilities().
 		add_filter( 'convertkit_abilities', array( $this, 'register_settings_abilities' ) );
+
+		// Register the per-Post Kit settings get / update abilities. These
+		// operate on the `_wp_convertkit_post_meta` post meta (form,
+		// landing_page, tag, restrict_content) rather than any Plugin-wide
+		// settings group.
+		add_filter( 'convertkit_abilities', array( $this, 'register_post_settings_abilities' ) );
 
 		// Register the MCP server.
 		add_action( 'mcp_adapter_init', array( $this, 'register_mcp_server' ) );
@@ -125,6 +131,25 @@ class ConvertKit_MCP {
 			$abilities[ $get->get_name() ]    = $get;
 			$abilities[ $update->get_name() ] = $update;
 		}
+
+		return $abilities;
+
+	}
+
+	/**
+	 * Appends the per-Post Kit settings abilities to the convertkit_abilities
+	 * filter, so they are registered with the Abilities API and exposed via
+	 * the MCP server.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities   Abilities to register.
+	 * @return  array
+	 */
+	public function register_post_settings_abilities( $abilities ) {
+
+		$abilities['kit/post-settings-get']    = new ConvertKit_MCP_Ability_Post_Settings_Get();
+		$abilities['kit/post-settings-update'] = new ConvertKit_MCP_Ability_Post_Settings_Update();
 
 		return $abilities;
 
