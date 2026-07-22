@@ -165,10 +165,34 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_DEBUG true --raw
 
-      # Set WP_ENVIRONMENT_TYPE to local so Application Passwords are supported.
+      # Set WP_ENVIRONMENT_TYPE to local. Note: this does NOT enable
+      # Application Passwords on its own — WordPress core gates the UI
+      # for those on is_ssl() only. The MU-plugin below handles that.
       - name: Set WP_ENVIRONMENT_TYPE
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_ENVIRONMENT_TYPE local
+
+      # Force Application Passwords available on plain-HTTP CI.
+      # WordPress' wp_is_application_passwords_supported() returns is_ssl(),
+      # so on our HTTP nginx setup the admin authorize screen renders as
+      # "Application passwords are not available." This filter overrides that
+      # so the MCP tests can generate an app password. The generated password
+      # itself works fine over HTTP; only the UI gate requires SSL.
+      - name: Enable Application Passwords via MU-plugin
+        run: |
+          sudo mkdir -p ${{ env.ROOT_DIR }}/wp-content/mu-plugins
+          sudo tee ${{ env.ROOT_DIR }}/wp-content/mu-plugins/ci-app-passwords.php > /dev/null << 'EOF'
+          <?php
+          /**
+           * Plugin Name: CI: Enable Application Passwords
+           * Description: Forces Application Passwords available on plain-HTTP CI so
+           *              MCP tests can generate an app password via WP core's screen.
+           *              WordPress' wp_is_application_passwords_supported() returns
+           *              is_ssl(), and CI serves over HTTP.
+           */
+          add_filter( 'wp_is_application_passwords_available', '__return_true' );
+          EOF
+          sudo chown -R www-data:www-data ${{ env.ROOT_DIR }}/wp-content/mu-plugins
 
       # FS_METHOD = direct is required for WP_Filesystem to operate without suppressed PHP fopen() errors that trip up tests.
       - name: Enable FS_METHOD
