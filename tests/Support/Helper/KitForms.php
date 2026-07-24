@@ -27,6 +27,16 @@ class KitForms extends \Codeception\Module
 		// Calculate how many times the Form should be in the DOM.
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
 
+		// Wait for the Form to be injected into the DOM by Kit's async JS.
+		$I->waitForJS(
+			sprintf(
+				'return document.querySelectorAll(\'form[data-sv-form="%s"]\').length >= %d;',
+				$formID,
+				$count
+			),
+			10
+		);
+
 		// Confirm the Form is in the DOM the expected number of times.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $formID . '"]', $count);
 
