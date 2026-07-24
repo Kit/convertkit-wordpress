@@ -99,6 +99,11 @@ class ConvertKit_MCP {
 		// settings group.
 		add_filter( 'convertkit_abilities', array( $this, 'register_post_settings_abilities' ) );
 
+		// Register the per-Category Kit settings get / update abilities.
+		// These operate on the `_wp_convertkit_term_meta` term meta (form,
+		// form_position) for the WordPress `category` taxonomy.
+		add_filter( 'convertkit_abilities', array( $this, 'register_category_settings_abilities' ) );
+
 		// Register the MCP server.
 		add_action( 'mcp_adapter_init', array( $this, 'register_mcp_server' ) );
 
@@ -150,6 +155,25 @@ class ConvertKit_MCP {
 
 		$abilities['kit/post-settings-get']    = new ConvertKit_MCP_Ability_Post_Settings_Get();
 		$abilities['kit/post-settings-update'] = new ConvertKit_MCP_Ability_Post_Settings_Update();
+
+		return $abilities;
+
+	}
+
+	/**
+	 * Appends the per-Category Kit settings abilities to the convertkit_abilities
+	 * filter, so they are registered with the Abilities API and exposed via
+	 * the MCP server.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array $abilities   Abilities to register.
+	 * @return  array
+	 */
+	public function register_category_settings_abilities( $abilities ) {
+
+		$abilities['kit/category-settings-get']    = new ConvertKit_MCP_Ability_Category_Settings_Get();
+		$abilities['kit/category-settings-update'] = new ConvertKit_MCP_Ability_Category_Settings_Update();
 
 		return $abilities;
 
