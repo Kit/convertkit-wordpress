@@ -191,6 +191,31 @@ class MCPPostSettingsUpdateTest extends WPTestCase
 	}
 
 	/**
+	 * Test that update accepts `0` for restrict_content as a synonym for
+	 * "no restriction". Matches what ConvertKit_Post::get_default_settings()
+	 * returns and what the metabox / Gutenberg sidebar submit for the "None"
+	 * option, so the get -> update round-trip works for defaulted posts.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdateAcceptsZeroForRestrictContent()
+	{
+		$post_id = $this->createPostAsAdmin();
+
+		$abilities = convertkit_get_abilities();
+
+		$result = $abilities[ self::ABILITY_NAME ]->execute_callback(
+			[
+				'post_id'          => $post_id,
+				'restrict_content' => '0',
+			]
+		);
+
+		$this->assertIsArray($result);
+		$this->assertSame('0', $result['restrict_content']);
+	}
+
+	/**
 	 * Test that update rejects a malformed restrict_content prefix
 	 * (must be form_, tag_ or product_).
 	 *
