@@ -30,6 +30,7 @@ define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
 define( 'CONVERTKIT_PLUGIN_VERSION', '3.3.6' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
+define( 'CONVERTKIT_MCP_APP_NAME', 'Kit WordPress Plugin: MCP Server' );
 
 // Load shared classes, if they have not been included by another Kit Plugin.
 if ( ! trait_exists( 'ConvertKit_API_Traits' ) && ! trait_exists( 'ConvertKit_API\ConvertKit_API_Traits' ) ) {
@@ -118,6 +119,12 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-c
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-get.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-update.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings-get.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings-update.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings-get.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings-update.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';

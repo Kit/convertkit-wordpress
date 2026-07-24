@@ -36,6 +36,51 @@ class WPRestAPI extends \Codeception\Module
 	}
 
 	/**
+	 * Call a REST API endpoint.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   string $endpoint            Endpoint.
+	 * @param   string $authorizationHeader Authorization Header.
+	 * @param   string $method              Method.
+	 * @param   array  $body                Body.
+	 * @return  array
+	 */
+	public function callRestEndpoint( $endpoint, $authorizationHeader, $method = 'GET', $body = null ) {
+		$url = $_ENV['WORDPRESS_URL'] . '/wp-json' . $endpoint;
+
+		$args = [
+			'method'  => $method,
+			'headers' => [
+				'Authorization' => $authorizationHeader,
+				'Content-Type'  => 'application/json',
+			],
+			'timeout' => 10,
+		];
+
+		// Only attach a body when there's something to send. WP's HTTP layer
+		// calls http_build_query() on `body` when the method is GET, which
+		// fails if we've already JSON-encoded the value to a string.
+		if ( ! empty( $body ) ) {
+			$args['body'] = wp_json_encode( $body );
+		}
+
+		$response = wp_remote_request( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			return [
+				'status' => 0,
+				'body'   => $response->get_error_message(),
+			];
+		}
+
+		return [
+			'status' => wp_remote_retrieve_response_code( $response ),
+			'body'   => json_decode( wp_remote_retrieve_body( $response ), true ),
+		];
+	}
+
+	/**
 	 * Get the routes registered in the REST API.
 	 *
 	 * @since   3.4.0
