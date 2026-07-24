@@ -28,14 +28,37 @@ class KitForms extends \Codeception\Module
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
 
 		// Wait for the Form to be injected into the DOM by Kit's async JS.
-		$I->waitForJS(
-			sprintf(
-				'return document.querySelectorAll(\'form[data-sv-form="%s"]\').length >= %d;',
-				$formID,
-				$count
-			),
-			10
-		);
+		try {
+			$I->waitForJS(
+				sprintf(
+					'return document.querySelectorAll(\'form[data-sv-form="%s"]\').length >= %d;',
+					$formID,
+					$count
+				),
+				10
+			);
+		} catch ( \Facebook\WebDriver\Exception\TimeoutException $e ) {
+			// Diagnostic: dump the browser-side state so CI failures show
+			// why Kit's embed script didn't inject the form (CDN blocked,
+			// script errored, hostname rejected, etc.). Remove once the
+			// underlying cause is understood.
+			$diag = $I->executeJS(
+				sprintf(
+					'return JSON.stringify({
+						script_tags: Array.from(document.querySelectorAll(\'script[src*=".kit.com"]\')).map(s => ({src: s.src, async: s.async})),
+						form_count: document.querySelectorAll(\'form[data-sv-form="%s"]\').length,
+						any_kit_form_count: document.querySelectorAll(\'form[data-sv-form]\').length,
+						page_url: document.location.href,
+						page_host: document.location.hostname,
+						user_agent: navigator.userAgent,
+						webdriver: navigator.webdriver,
+					});',
+					$formID
+				)
+			);
+			codecept_debug( 'Kit form injection failed. State: ' . $diag );
+			throw $e;
+		}
 
 		// Confirm the Form is in the DOM the expected number of times.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $formID . '"]', $count);
