@@ -64,6 +64,7 @@ class WP_ConvertKit {
 		$this->initialize_cli_cron();
 		$this->initialize_frontend();
 		$this->initialize_global();
+		$this->initialize_mcp();
 
 	}
 
@@ -202,13 +203,14 @@ class WP_ConvertKit {
 		$this->classes['broadcasts_importer']                         = new ConvertKit_Broadcasts_Importer();
 		$this->classes['elementor']                                   = new ConvertKit_Elementor();
 		$this->classes['gutenberg']                                   = new ConvertKit_Gutenberg();
-		$this->classes['media_library']                               = new ConvertKit_Media_Library();
-		$this->classes['output_restrict_content']                     = new ConvertKit_Output_Restrict_Content();
-		$this->classes['restrict_content_cache']                      = new ConvertKit_Restrict_Content_Cache();
-		$this->classes['review_request']                              = new ConvertKit_Review_Request( 'Kit', 'convertkit', CONVERTKIT_PLUGIN_PATH );
-		$this->classes['preview_output']                              = new ConvertKit_Preview_Output();
-		$this->classes['setup']                                       = new ConvertKit_Setup();
-		$this->classes['shortcodes']                                  = new ConvertKit_Shortcodes();
+		$this->classes['mcp']                     = new ConvertKit_MCP();
+		$this->classes['media_library']           = new ConvertKit_Media_Library();
+		$this->classes['output_restrict_content'] = new ConvertKit_Output_Restrict_Content();
+		$this->classes['restrict_content_cache']  = new ConvertKit_Restrict_Content_Cache();
+		$this->classes['review_request']          = new ConvertKit_Review_Request( 'Kit', 'convertkit', CONVERTKIT_PLUGIN_PATH );
+		$this->classes['preview_output']          = new ConvertKit_Preview_Output();
+		$this->classes['setup']                   = new ConvertKit_Setup();
+		$this->classes['shortcodes']              = new ConvertKit_Shortcodes();
 
 		/**
 		 * Initialize integration classes for the frontend web site.
@@ -216,6 +218,49 @@ class WP_ConvertKit {
 		 * @since   1.9.6
 		 */
 		do_action( 'convertkit_initialize_global' );
+
+	}
+
+	/**
+	 * Initializes the MCP server if enabled in the Plugin's settings.
+	 *
+	 * @since   3.4.0
+	 */
+	public function initialize_mcp() {
+
+		// Bail if the MCP server is not enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
+
+		// Bail if the Abilities API is unavailable (WordPress < 6.9).
+		if ( ! function_exists( 'wp_register_ability' ) ) {
+			return;
+		}
+
+		// Bail if PHP 7.4+ is not installed, as this is required for the MCP Adapter classes.
+		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
+			return;
+		}
+
+		// Bail if the WordPress MCP Adapter autoloader is missing.
+		if ( ! file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
+			return;
+		}
+
+		// Load MCP Adapter.
+		require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
+
+		// Bail if the MCP Adapter class doesn't exist - something went wrong with the autoloader.
+		if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+			return;
+		}
+
+		// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
+		// integration pattern.
+		// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin.
+		\WP\MCP\Core\McpAdapter::instance();
 
 	}
 
