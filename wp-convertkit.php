@@ -119,6 +119,12 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-c
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-get.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-update.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings-get.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings-update.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings-get.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings-update.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';
