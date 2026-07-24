@@ -314,9 +314,9 @@ class ConvertKit_Post {
 
 		$defaults = array(
 			'form'             => '-1', // -1: Plugin Default Form, 0: No Form, 1+: Specific Form ID on ConvertKit.
-			'landing_page'     => '',
-			'tag'              => '',
-			'restrict_content' => '',
+			'landing_page'     => '0',  // 0: None, 1+: Specific Landing Page ID.
+			'tag'              => '0',  // 0: None, 1+: Specific Tag ID.
+			'restrict_content' => '0',  // 0: None, form_<id> / tag_<id> / product_<id>: restrict to that resource.
 		);
 
 		/**
