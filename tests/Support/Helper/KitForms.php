@@ -31,7 +31,7 @@ class KitForms extends \Codeception\Module
 		$url = $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl();
 
 		// Change user agent.
-		$I->changeUserAgent('WordPress/7.0.1;PHP/8.4.1;ConvertKit/3.3.6;http://example.com');
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
 
 		// Load page.
 		$I->amOnUrl($url);

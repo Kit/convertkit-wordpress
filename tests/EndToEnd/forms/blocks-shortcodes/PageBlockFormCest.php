@@ -160,12 +160,12 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
-
 		// Confirm that the Form block container is not output.
 		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 	}
 
 	/**
@@ -223,7 +223,7 @@ class PageBlockFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 
 		// Confirm that the Form block container is not output.
 		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
@@ -272,12 +272,12 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID'] . '"]', 1);
-
 		// Confirm that the Form block container is not output.
 		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID']);
 	}
 
 	/**
@@ -333,12 +333,12 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID'] . '"]', 1);
-
 		// Confirm that the Form block container is not output.
 		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_SLIDE_IN_ID']);
 	}
 
 	/**
@@ -384,12 +384,12 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
-
 		// Confirm that the Form block container is not output.
 		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 	}
 
 	/**
@@ -445,12 +445,12 @@ class PageBlockFormCest
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
 
-		// Confirm that one Kit Form is output in the DOM.
-		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
-
 		// Confirm that the Form block container is not output.
 		$I->dontSeeElementInDOM('div.convertkit-form.wp-block-convertkit-form');
+
+		// Confirm that one Kit Form is output in the DOM.
+		// This confirms that there is only one script on the page for this form, which renders the form.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 	}
 
 	/**

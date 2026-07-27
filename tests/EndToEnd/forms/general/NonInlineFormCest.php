@@ -71,14 +71,14 @@ class NonInlineFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global');
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 
 		// View a search page.
 		$I->amOnPage('/?s=test');
@@ -129,15 +129,15 @@ class NonInlineFormCest
 		$I->amOnPage('/');
 
 		// Confirm that two Kit Forms are output in the DOM.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global-forms');
 
 		// Confirm that two Kit Forms are output in the DOM.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 
 		// View a search page.
 		$I->amOnPage('/?s=test');
@@ -697,7 +697,7 @@ class NonInlineFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 
 		// View Page.
 		$I->amOnPage('/kit-non-inline-form-limit-per-session');
@@ -750,7 +750,7 @@ class NonInlineFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 
 		// Confirm no cookie is set.
 		$I->dontSeeCookie('ck_non_inline_form_displayed');
@@ -760,7 +760,7 @@ class NonInlineFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 
 		// Confirm no cookie is set.
 		$I->dontSeeCookie('ck_non_inline_form_displayed');
@@ -803,14 +803,14 @@ class NonInlineFormCest
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 
 		// View Page.
 		$I->amOnPage('/kit-default-non-inline-global-upgrade');
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'] . '"]', 1);
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
 	}
 
 	/**

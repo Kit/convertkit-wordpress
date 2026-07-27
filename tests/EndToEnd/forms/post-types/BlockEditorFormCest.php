@@ -311,7 +311,7 @@ class BlockEditorFormCest
 
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 
 			// Confirm character encoding is not broken due to using DOMDocument.
 			$I->seeInSource('Adhaésionés altéram improbis mi pariendarum sit stulti triarium');
@@ -676,7 +676,7 @@ class BlockEditorFormCest
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
 			// and that Autoptimize hasn't moved the script embed to the footer of the site.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate Autoptimize Plugin.
@@ -725,7 +725,7 @@ class BlockEditorFormCest
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
 			// and that Debloat hasn't moved the script embed to the footer of the site.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate Debloat Plugin.
@@ -776,7 +776,7 @@ class BlockEditorFormCest
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
 			// and that Jetpack Boost hasn't moved the script embed to the footer of the site.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate Jetpack Boost Plugin.
@@ -826,7 +826,7 @@ class BlockEditorFormCest
 			// Confirm that one Kit Form is output in the DOM.
 			// This confirms that there is only one script on the page for this form, which renders the form,
 			// and that LiteSpeed Cache hasn't moved the script embed to the footer of the site.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate LiteSpeed Cache Plugin.
@@ -877,7 +877,7 @@ class BlockEditorFormCest
 			$I->publishAndViewGutenbergPage($I);
 
 			// Confirm that one Kit Form is output in the DOM.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate Siteground Speed Optimizer Plugin.
@@ -934,7 +934,7 @@ class BlockEditorFormCest
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
 			// This confirms that there is only one script on the page for this form, which renders the form.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate Perfmatters Plugin.
@@ -983,7 +983,7 @@ class BlockEditorFormCest
 
 			// Confirm that one Kit Form is output in the DOM within the <main> element.
 			// This confirms that there is only one script on the page for this form, which renders the form.
-			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]', 1);
+			$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID']);
 		}
 
 		// Deactivate WP Rocket Plugin.

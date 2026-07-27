@@ -304,6 +304,9 @@ class CategoryFormCest
 			]
 		);
 
+		// Change user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
+
 		// Load the Category archive on the frontend site.
 		$I->amOnPage('/category/kit-position-before');
 
@@ -316,6 +319,9 @@ class CategoryFormCest
 
 	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
+
+		// Revert user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT'], false);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -366,6 +372,9 @@ class CategoryFormCest
 			]
 		);
 
+		// Change user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
+
 		// Load the Category archive on the frontend site.
 		$I->amOnPage('/category/kit-position-after');
 
@@ -377,6 +386,9 @@ class CategoryFormCest
 			'</div>
 	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
+
+		// Revert user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT'], false);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -437,6 +449,9 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Change user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
+
 		// Load the Category archive on the frontend site.
 		$I->amOnPage('/category/kit-edit-position-before');
 
@@ -449,6 +464,9 @@ class CategoryFormCest
 
 	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
+
+		// Revert user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT'], false);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
@@ -509,6 +527,9 @@ class CategoryFormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
+		// Change user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
+
 		// Load the Category archive on the frontend site.
 		$I->amOnPage('/category/kit-edit-position-after');
 
@@ -520,6 +541,9 @@ class CategoryFormCest
 			'</div>
 	<div class="convertkit-form wp-block-convertkit-form" style=""><form action="https://app.kit.com/forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscriptions"'
 		);
+
+		// Revert user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT'], false);
 
 		// Confirm that one Kit Form is output in the DOM.
 		// This confirms that there is only one script on the page for this form, which renders the form.
