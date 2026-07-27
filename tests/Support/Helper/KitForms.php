@@ -104,6 +104,15 @@ class KitForms extends \Codeception\Module
 	 */
 	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
+		// Get current URL.
+		$url = $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl();
+
+		// Change user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
+
+		// Load page.
+		$I->amOnUrl($url);
+
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
@@ -172,6 +181,9 @@ class KitForms extends \Codeception\Module
 		// Click the button to confirm that the Kit modal displays.
 		$I->click('a.convertkit-formtrigger');
 		$I->waitForElementVisible('div.formkit-overlay');
+
+		// Revert user agent.
+		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
