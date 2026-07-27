@@ -1176,6 +1176,27 @@ class KitPlugin extends \Codeception\Module
 	}
 
 	/**
+	 * Changes the WPWebBrowser Chrome User Agent and reloads the current URL.
+	 *
+	 * @since   3.3.6
+	 *
+	 * @param   EndToEndTester $I           EndToEndTester.
+	 * @param   string         $userAgent   User Agent.
+	 * @param   bool           $isMobile    Whether the user agent is for a mobile device.
+	 */
+	public function changeUserAgentAndReloadCurrentURL($I, $userAgent, $isMobile = false)
+	{
+		// Get current URL.
+		$url = $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl();
+
+		// Change user agent.
+		$I->changeUserAgent($userAgent, $isMobile);
+
+		// Load page.
+		$I->amOnUrl($url);
+	}
+
+	/**
 	 * Truncates the given database table.
 	 *
 	 * @since   3.0.0

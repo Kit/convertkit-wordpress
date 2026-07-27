@@ -24,17 +24,11 @@ class KitForms extends \Codeception\Module
 	 */
 	public function seeFormOutput($I, $formID, $position = false, $element = false, $elementIndex = 0, $isShortcode = false)
 	{
+		// Change user agent and reload current URL.
+		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
+
 		// Calculate how many times the Form should be in the DOM.
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
-
-		// Get current URL.
-		$url = $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl();
-
-		// Change user agent.
-		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
-
-		// Load page.
-		$I->amOnUrl($url);
 
 		// Wait for the injected <form> before asserting on it.
 		$I->waitForElement('form[data-sv-form="' . $formID . '"]', 10);
@@ -44,7 +38,7 @@ class KitForms extends \Codeception\Module
 
 		// If no position is specified, revert user agent and return.
 		if ( ! $position) {
-			$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT']);
+			$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 			return;
 		}
 
@@ -82,8 +76,8 @@ class KitForms extends \Codeception\Module
 				break;
 		}
 
-		// Revert user agent.
-		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT']);
+		// Revert user agent and reload current URL.
+		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
@@ -104,14 +98,8 @@ class KitForms extends \Codeception\Module
 	 */
 	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
-		// Get current URL.
-		$url = $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl();
-
-		// Change user agent.
-		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
-
-		// Load page.
-		$I->amOnUrl($url);
+		// Change user agent and reload current URL.
+		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
 
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
@@ -182,8 +170,8 @@ class KitForms extends \Codeception\Module
 		$I->click('a.convertkit-formtrigger');
 		$I->waitForElementVisible('div.formkit-overlay');
 
-		// Revert user agent.
-		$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT']);
+		// Revert user agent and reload current URL.
+		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
