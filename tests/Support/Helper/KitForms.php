@@ -42,8 +42,9 @@ class KitForms extends \Codeception\Module
 		// Confirm the Form is in the DOM the expected number of times.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $formID . '"]', $count);
 
-		// Assert position of form, if required.
+		// If no position is specified, revert user agent and return.
 		if ( ! $position) {
+			$I->changeUserAgent($_ENV['TEST_SITE_HTTP_USER_AGENT']);
 			return;
 		}
 
