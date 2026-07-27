@@ -27,46 +27,76 @@ class KitForms extends \Codeception\Module
 		// Calculate how many times the Form should be in the DOM.
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
 
-		// Confirm the Form is in the DOM the expected number of times.
-		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $formID . '"]', $count);
-
-		// Assert position of form, if required.
-		if ( ! $position) {
-			return;
-		}
-
-		// Assert that the first and/or last child element is the Form ID, depending on the position.
-		switch ($position) {
-			case 'before_after_content':
-				$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:first-child', 'data-sv-form'));
-				$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:last-child', 'data-sv-form'));
-				break;
-
-			case 'before_content':
-				$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:first-child', 'data-sv-form'));
-				break;
-
-			case 'after_content':
-				$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:last-child', 'data-sv-form'));
-				break;
-
-			case 'after_element':
-				// The block editor automatically adds CSS classes to some elements.
-				switch ( $element ) {
-					case 'p':
-						$I->seeInSource('<' . $element . ( $isShortcode ? '' : ' class="wp-block-paragraph"' ) . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
-						break;
-
-					case 'img':
-						$I->seeInSource('<' . $element . ' decoding="async" src="https://placehold.co/600x400" alt="Image #' . $elementIndex . '"><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
-						break;
-
-					// Headings.
-					default:
-						$I->seeInSource('<' . $element . ( $isShortcode ? '' : ' class="wp-block-heading"' ) . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
-						break;
+		try {
+			// Set user agent that permits form embeds.
+			$I->executeInSelenium(
+				function ($driver) {
+					$driver->executeCdpCommand(
+						'Network.setUserAgentOverride',
+						[ 'userAgent' => 'WordPress/7.0.1;PHP/8.4.1;ConvertKit/3.3.6;http://example.com' ]
+					);
 				}
-				break;
+			);
+
+			// Reload page with new user agent.
+			$I->reloadPage();
+
+			// Wait for the injected <form> before asserting on it.
+			$I->waitForElement('form[data-sv-form="' . $formID . '"]', 10);
+
+			// Confirm the Form is in the DOM the expected number of times.
+			$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $formID . '"]', $count);
+
+			// Assert position of form, if required.
+			if ( ! $position) {
+				return;
+			}
+
+			// Assert that the first and/or last child element is the Form ID, depending on the position.
+			switch ($position) {
+				case 'before_after_content':
+					$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:first-child', 'data-sv-form'));
+					$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:last-child', 'data-sv-form'));
+					break;
+
+				case 'before_content':
+					$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:first-child', 'data-sv-form'));
+					break;
+
+				case 'after_content':
+					$I->assertEquals($formID, $I->grabAttributeFrom('div.entry-content > *:last-child', 'data-sv-form'));
+					break;
+
+				case 'after_element':
+					// The block editor automatically adds CSS classes to some elements.
+					switch ( $element ) {
+						case 'p':
+							$I->seeInSource('<' . $element . ( $isShortcode ? '' : ' class="wp-block-paragraph"' ) . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+							break;
+
+						case 'img':
+							$I->seeInSource('<' . $element . ' decoding="async" src="https://placehold.co/600x400" alt="Image #' . $elementIndex . '"><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+							break;
+
+						// Headings.
+						default:
+							$I->seeInSource('<' . $element . ( $isShortcode ? '' : ' class="wp-block-heading"' ) . '>Item #' . $elementIndex . '</' . $element . '><form action="https://app.kit.com/forms/' . $formID . '/subscriptions" ');
+							break;
+					}
+					break;
+			}
+		} finally {
+			// Always reset the User-Agent, even if any of the assertions
+			// above failed, so a test failure can't leak the plugin UA
+			// into later tests and break WP admin rendering.
+			$I->executeInSelenium(
+				function ($driver) {
+					$driver->executeCdpCommand(
+						'Network.setUserAgentOverride',
+						[ 'userAgent' => $_ENV['TEST_SITE_HTTP_USER_AGENT'] ]
+					);
+				}
+			);
 		}
 	}
 
