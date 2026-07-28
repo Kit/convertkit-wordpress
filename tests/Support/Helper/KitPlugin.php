@@ -1104,35 +1104,9 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function enableMobileEmulation()
 	{
-		$this->getModule(\lucatume\WPBrowser\Module\WPWebDriver::class)->_restart(
-			[
-				'browser'      => 'chrome',
-				'capabilities' => [
-					'goog:chromeOptions' => [
-						'args'            => [
-							'--headless',
-							'--disable-gpu',
-							'--disable-dev-shm-usage',
-							"--proxy-server='direct://'",
-							'--proxy-bypass-list=*',
-							'--no-sandbox',
-							'--user-agent=' . $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
-						],
-						'mobileEmulation' => [
-							'deviceMetrics' => [
-								'width'      => 430,
-								'height'     => 932,
-								'pixelRatio' => 1,
-							],
-							'clientHints'   => [
-								'platform' => 'Android',
-								'mobile'   => true,
-							],
-							'userAgent'     => $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
-						],
-					],
-				],
-			]
+		$this->changeUserAgent(
+			userAgent: $_ENV['TEST_SITE_HTTP_USER_AGENT_MOBILE'],
+			isMobile: true
 		);
 	}
 
@@ -1144,22 +1118,59 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function disableMobileEmulation()
 	{
+		$this->changeUserAgent(
+			userAgent: $_ENV['TEST_SITE_HTTP_USER_AGENT'],
+			isMobile: false
+		);
+	}
+
+	/**
+	 * Changes the WPWebBrowser Chrome User Agent,
+	 * restarting the headless Chrome instance.
+	 *
+	 * @since   3.3.6
+	 *
+	 * @param   string $userAgent User Agent.
+	 * @param   bool   $isMobile  Whether the user agent is for a mobile device.
+	 */
+	public function changeUserAgent($userAgent, $isMobile = false)
+	{
+		// Build base options.
+		$options = [
+			'args' => [
+				'--headless',
+				'--disable-gpu',
+				'--disable-dev-shm-usage',
+				'--disable-software-rasterizer',
+				"--proxy-server='direct://'",
+				'--proxy-bypass-list=*',
+				'--no-sandbox',
+				'--user-agent=' . $userAgent,
+			],
+		];
+
+		// If mobile, add mobile emulation options.
+		if ($isMobile) {
+			$options['mobileEmulation'] = [
+				'deviceMetrics' => [
+					'width'      => 430,
+					'height'     => 932,
+					'pixelRatio' => 1,
+				],
+				'clientHints'   => [
+					'platform' => 'Android',
+					'mobile'   => true,
+				],
+				'userAgent'     => $userAgent,
+			];
+		}
+
+		// Restart chromedriver with the new options.
 		$this->getModule(\lucatume\WPBrowser\Module\WPWebDriver::class)->_restart(
 			[
 				'browser'      => 'chrome',
 				'capabilities' => [
-					'goog:chromeOptions' => [
-						'args' => [
-							'--headless',
-							'--disable-gpu',
-							'--disable-dev-shm-usage',
-							"--proxy-server='direct://'",
-							'--proxy-bypass-list=*',
-							'--no-sandbox',
-							'--user-agent=' . $_ENV['TEST_SITE_HTTP_USER_AGENT'],
-						],
-						// excluding mobileEmulation arguments here makes chromedriver behave in desktop mode.
-					],
+					'goog:chromeOptions' => $options,
 				],
 			]
 		);
