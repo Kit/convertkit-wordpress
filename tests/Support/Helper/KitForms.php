@@ -24,21 +24,14 @@ class KitForms extends \Codeception\Module
 	 */
 	public function seeFormOutput($I, $formID, $position = false, $element = false, $elementIndex = 0, $isShortcode = false)
 	{
-		// Change user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
-
 		// Calculate how many times the Form should be in the DOM.
 		$count = ( ( $position === 'before_after_content' ) ? 2 : 1 );
-
-		// Wait for the injected <form> before asserting on it.
-		$I->waitForElement('form[data-sv-form="' . $formID . '"]', 10);
 
 		// Confirm the Form is in the DOM the expected number of times.
 		$I->seeNumberOfElementsInDOM('form[data-sv-form="' . $formID . '"]', $count);
 
-		// If no position is specified, revert user agent and return.
+		// Assert position of form, if required.
 		if ( ! $position) {
-			$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 			return;
 		}
 
@@ -75,9 +68,6 @@ class KitForms extends \Codeception\Module
 				}
 				break;
 		}
-
-		// Revert user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
@@ -98,9 +88,6 @@ class KitForms extends \Codeception\Module
 	 */
 	public function seeFormTriggerOutput($I, $formURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
-		// Change user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
-
 		// Confirm that the button stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
@@ -169,9 +156,6 @@ class KitForms extends \Codeception\Module
 		// Click the button to confirm that the Kit modal displays.
 		$I->click('a.convertkit-formtrigger');
 		$I->waitForElementVisible('div.formkit-overlay');
-
-		// Revert user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
