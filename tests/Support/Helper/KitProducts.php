@@ -22,9 +22,6 @@ class KitProducts extends \Codeception\Module
 	 */
 	public function seeProductLink($I, $productURL, $text = false)
 	{
-		// Change user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
-
 		// Confirm that the commerce.js script exists.
 		$I->seeInSource('commerce.js');
 
@@ -43,9 +40,6 @@ class KitProducts extends \Codeception\Module
 		// necessary Kit scripts have been loaded.
 		$I->click('a[href="' . $productURL . '"]');
 		$I->seeElementInDOM('iframe[data-active]');
-
-		// Revert user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
@@ -66,9 +60,6 @@ class KitProducts extends \Codeception\Module
 	 */
 	public function seeProductOutput($I, $productURL, $text = false, $textColor = false, $backgroundColor = false, $cssClasses = false, $styles = false, $isBlock = false)
 	{
-		// Change user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT_FRONTEND']);
-
 		// Confirm that the product stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
@@ -140,9 +131,6 @@ class KitProducts extends \Codeception\Module
 		// necessary Kit scripts have been loaded.
 		$I->click('a.convertkit-product');
 		$I->seeElementInDOM('iframe[data-active]');
-
-		// Revert user agent and reload current URL.
-		$I->changeUserAgentAndReloadCurrentURL($I, $_ENV['TEST_SITE_HTTP_USER_AGENT']);
 	}
 
 	/**
