@@ -44,10 +44,6 @@ class ElementorBroadcastsCest
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
 
-		// When Elementor loads, dismiss the browser incompatibility message.
-		$I->waitForElementVisible('#elementor-fatal-error-dialog');
-		$I->click('#elementor-fatal-error-dialog button.dialog-confirm-ok');
-
 		// Search for the Kit Broadcasts block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Broadcasts');
@@ -73,10 +69,6 @@ class ElementorBroadcastsCest
 
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
-
-		// When Elementor loads, dismiss the browser incompatibility message.
-		$I->waitForElementVisible('#elementor-fatal-error-dialog');
-		$I->click('#elementor-fatal-error-dialog button.dialog-confirm-ok');
 
 		// Search for the Kit Broadcasts block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
