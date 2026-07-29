@@ -94,9 +94,12 @@ class KitPlugin extends \Codeception\Module
 			'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
 			'non_inline_form'                    => array(),
 			'non_inline_form_honor_none_setting' => '',
+			'spam_protection_provider'           => 'recaptcha',
 			'recaptcha_site_key'                 => '',
 			'recaptcha_secret_key'               => '',
 			'recaptcha_minimum_score'            => '',
+			'cloudflare_turnstile_site_key'      => '',
+			'cloudflare_turnstile_secret_key'    => '',
 		];
 
 		// If supplied options are an array, merge them with the defaults.
