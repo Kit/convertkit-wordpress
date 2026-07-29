@@ -21,8 +21,20 @@
 			<div id="convertkit-restrict-content-email-field" class="<?php echo sanitize_html_class( ( is_wp_error( $this->error ) ? 'convertkit-restrict-content-error' : '' ) ); ?>">
 				<input type="email" name="convertkit_email" id="convertkit_email" value="" placeholder="<?php esc_attr_e( 'Email Address', 'convertkit' ); ?>" required />
 				<?php
-				// Output submit button, depending on whether Google reCAPTCHA is enabled.
-				if ( $this->settings->has_recaptcha_site_and_secret_keys() ) {
+				// Output submit button, plus a Turnstile widget div if Cloudflare Turnstile
+				// is the active spam protection provider. For reCAPTCHA v3 (invisible),
+				// the challenge is attached to the button itself.
+				$spam_provider = ConvertKit_Spam_Protection::get_active_provider();
+
+				if ( $spam_provider instanceof ConvertKit_Cloudflare_Turnstile ) {
+					?>
+					<div class="cf-turnstile"
+						data-sitekey="<?php echo esc_attr( $this->settings->turnstile_site_key() ); ?>"
+						data-appearance="interaction-only"
+						data-callback="convertKitTurnstileFormSubmit"></div>
+					<input type="submit" class="wp-block-button__link wp-block-button__link" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>" />
+					<?php
+				} elseif ( $spam_provider instanceof ConvertKit_Recaptcha ) {
 					?>
 					<input type="submit" class="wp-block-button__link wp-block-button__link g-recaptcha" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>"
 							data-sitekey="<?php echo esc_attr( $this->settings->recaptcha_site_key() ); ?>"

@@ -392,16 +392,12 @@ class ConvertKit_Output_Restrict_Content {
 
 		// If Restrict Content is by tag, tag the subscriber.
 		if ( $this->resource_type === 'tag' ) {
-			// Check reCAPTCHA.
-			$recaptcha          = new ConvertKit_Recaptcha();
-			$recaptcha_response = $recaptcha->verify_recaptcha(
-				( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
-				'convertkit_restrict_content_tag'
-			);
+			// Check spam protection (reCAPTCHA or Cloudflare Turnstile, depending on Plugin settings).
+			$spam_check = ConvertKit_Spam_Protection::verify( 'convertkit_restrict_content_tag' );
 
-			// Bail if reCAPTCHA failed.
-			if ( is_wp_error( $recaptcha_response ) ) {
-				$this->error = $recaptcha_response;
+			// Bail if spam protection failed.
+			if ( is_wp_error( $spam_check ) ) {
+				$this->error = $spam_check;
 				return;
 			}
 
@@ -1469,9 +1465,11 @@ class ConvertKit_Output_Restrict_Content {
 					);
 				}
 
-				// Enqueue Google reCAPTCHA JS.
-				$recaptcha = new ConvertKit_Recaptcha();
-				$recaptcha->enqueue_scripts();
+				// Enqueue the active spam protection provider's client-side script.
+				$spam_provider = ConvertKit_Spam_Protection::get_active_provider();
+				if ( $spam_provider !== null ) {
+					$spam_provider->enqueue_scripts();
+				}
 
 				// Output.
 				ob_start();

@@ -77,15 +77,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
-		// Check reCAPTCHA.
-		$recaptcha          = new ConvertKit_Recaptcha();
-		$recaptcha_response = $recaptcha->verify_recaptcha(
-			( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
-			'convertkit_form_builder'
-		);
+		// Check spam protection (reCAPTCHA or Cloudflare Turnstile, depending on Plugin settings).
+		$spam_check = ConvertKit_Spam_Protection::verify( 'convertkit_form_builder' );
 
-		// Bail if reCAPTCHA failed.
-		if ( is_wp_error( $recaptcha_response ) ) {
+		// Bail if spam protection failed.
+		if ( is_wp_error( $spam_check ) ) {
 			return;
 		}
 
@@ -721,23 +717,36 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$block_content
 		);
 
-		// Return the button if reCAPTCHA does not need to be used.
-		$settings = new ConvertKit_Settings();
-		if ( ! $settings->has_recaptcha_site_and_secret_keys() ) {
+		// Return the button as-is if no spam protection provider is active.
+		$provider = ConvertKit_Spam_Protection::get_active_provider();
+		if ( $provider === null ) {
 			return $block_content;
 		}
 
-		// Enqueue reCAPTCHA JS.
-		$recaptcha = new ConvertKit_Recaptcha();
-		$recaptcha->enqueue_scripts();
+		// Enqueue the provider's client-side script.
+		$provider->enqueue_scripts();
 
-		// Add reCAPTCHA attributes to button.
-		$parser = new ConvertKit_HTML_Parser( $block_content );
-		$button = $parser->xpath->query( '//button' )->item( 0 );
-		$button->setAttribute( 'data-sitekey', esc_attr( $settings->recaptcha_site_key() ) ); // @phpstan-ignore-line
-		$button->setAttribute( 'data-callback', 'convertKitRecaptchaFormSubmit' ); // @phpstan-ignore-line
-		$button->setAttribute( 'data-action', 'convertkit_form_builder' ); // @phpstan-ignore-line
-		$button->setAttribute( 'class', trim( $button->getAttribute( 'class' ) . ' g-recaptcha' ) ); // @phpstan-ignore-line
+		$settings = new ConvertKit_Settings();
+		$parser   = new ConvertKit_HTML_Parser( $block_content );
+		$button   = $parser->xpath->query( '//button' )->item( 0 );
+
+		if ( $provider instanceof ConvertKit_Cloudflare_Turnstile ) {
+			// Prepend a Turnstile widget div immediately before the button.
+			// interaction-only appearance keeps the widget invisible unless
+			// Cloudflare determines a challenge is required.
+			$widget = $parser->html->createElement( 'div' );
+			$widget->setAttribute( 'class', 'cf-turnstile' );
+			$widget->setAttribute( 'data-sitekey', esc_attr( $settings->turnstile_site_key() ) );
+			$widget->setAttribute( 'data-appearance', 'interaction-only' );
+			$widget->setAttribute( 'data-callback', 'convertKitTurnstileFormSubmit' );
+			$button->parentNode->insertBefore( $widget, $button ); // @phpstan-ignore-line phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		} else {
+			// reCAPTCHA v3 invisible: attach attributes to the submit button.
+			$button->setAttribute( 'data-sitekey', esc_attr( $settings->recaptcha_site_key() ) ); // @phpstan-ignore-line
+			$button->setAttribute( 'data-callback', 'convertKitRecaptchaFormSubmit' ); // @phpstan-ignore-line
+			$button->setAttribute( 'data-action', 'convertkit_form_builder' ); // @phpstan-ignore-line
+			$button->setAttribute( 'class', trim( $button->getAttribute( 'class' ) . ' g-recaptcha' ) ); // @phpstan-ignore-line
+		}
 
 		// Return button HTML.
 		return $parser->get_body_html();

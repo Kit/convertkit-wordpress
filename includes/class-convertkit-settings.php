@@ -425,6 +425,19 @@ class ConvertKit_Settings {
 	}
 
 	/**
+	 * Returns the active spam protection provider Plugin setting.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string  none|recaptcha|turnstile
+	 */
+	public function spam_protection_provider() {
+
+		return $this->settings['spam_protection_provider'];
+
+	}
+
+	/**
 	 * Returns the reCAPTCHA Site Key Plugin setting.
 	 *
 	 * @since   3.0.0
@@ -500,6 +513,72 @@ class ConvertKit_Settings {
 	public function recaptcha_minimum_score() {
 
 		return (float) $this->settings['recaptcha_minimum_score'];
+
+	}
+
+	/**
+	 * Returns the Cloudflare Turnstile Site Key Plugin setting.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function turnstile_site_key() {
+
+		return $this->settings['turnstile_site_key'];
+
+	}
+
+	/**
+	 * Returns whether the Cloudflare Turnstile Site Key has been set in the Plugin settings.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  bool
+	 */
+	public function has_turnstile_site_key() {
+
+		return ! empty( $this->turnstile_site_key() );
+
+	}
+
+	/**
+	 * Returns the Cloudflare Turnstile Secret Key Plugin setting.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function turnstile_secret_key() {
+
+		return $this->settings['turnstile_secret_key'];
+
+	}
+
+	/**
+	 * Returns whether the Cloudflare Turnstile Secret Key has been set in the Plugin settings.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  bool
+	 */
+	public function has_turnstile_secret_key() {
+
+		return ! empty( $this->turnstile_secret_key() );
+
+	}
+
+	/**
+	 * Returns whether the Cloudflare Turnstile Site Key and Secret Key are defined
+	 * in the Plugin settings.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  bool
+	 */
+	public function has_turnstile_site_and_secret_keys() {
+
+		return $this->has_turnstile_site_key() && $this->has_turnstile_secret_key();
 
 	}
 
@@ -593,10 +672,17 @@ class ConvertKit_Settings {
 			'non_inline_form_honor_none_setting' => '', // blank|on.
 			'non_inline_form_limit_per_session'  => '', // blank|on.
 
+			// Spam Protection.
+			'spam_protection_provider'           => 'recaptcha', // none|recaptcha|turnstile.
+
 			// reCAPTCHA.
 			'recaptcha_site_key'                 => '', // string.
 			'recaptcha_secret_key'               => '', // string.
 			'recaptcha_minimum_score'            => 0.5, // float.
+
+			// Cloudflare Turnstile.
+			'turnstile_site_key'                 => '', // string.
+			'turnstile_secret_key'               => '', // string.
 
 			// Advanced.
 			'debug'                              => '', // blank|on.
