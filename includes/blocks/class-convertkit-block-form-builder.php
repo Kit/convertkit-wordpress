@@ -732,7 +732,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$button = $parser->xpath->query( '//button' )->item( 0 );
 
 		// Attach the spam protection provider's attributes/elements to the form/button as necessary.
-		$provider->attach_to_form_button_dom( $parser, $button, 'convertkit_form_builder' );
+		// $button is narrowed from DOMNode to DOMElement by the //button xpath expression above.
+		$provider->attach_to_form_button_dom( $parser, $button, 'convertkit_form_builder' ); // @phpstan-ignore-line
 
 		// Return button HTML.
 		return $parser->get_body_html();
