@@ -21,26 +21,18 @@
 			<div id="convertkit-restrict-content-email-field" class="<?php echo sanitize_html_class( ( is_wp_error( $this->error ) ? 'convertkit-restrict-content-error' : '' ) ); ?>">
 				<input type="email" name="convertkit_email" id="convertkit_email" value="" placeholder="<?php esc_attr_e( 'Email Address', 'convertkit' ); ?>" required />
 				<?php
-				// Output submit button, plus a Turnstile widget div if Cloudflare Turnstile
-				// is the active spam protection provider. For reCAPTCHA v3 (invisible),
-				// the challenge is attached to the button itself.
-				$spam_provider = ConvertKit_Spam_Protection::get_active_provider();
+				// Output the submit button. If a spam protection provider is active
+				// it renders the button plus any accompanying widget div; otherwise a
+				// plain submit button is output.
+				$spam          = new ConvertKit_Spam_Protection();
+				$spam_provider = $spam->get_active_provider();
 
-				if ( $spam_provider instanceof ConvertKit_Cloudflare_Turnstile ) {
-					?>
-					<div class="cf-turnstile"
-						data-sitekey="<?php echo esc_attr( $this->settings->turnstile_site_key() ); ?>"
-						data-appearance="interaction-only"
-						data-callback="convertKitTurnstileFormSubmit"></div>
-					<input type="submit" class="wp-block-button__link wp-block-button__link" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>" />
-					<?php
-				} elseif ( $spam_provider instanceof ConvertKit_Recaptcha ) {
-					?>
-					<input type="submit" class="wp-block-button__link wp-block-button__link g-recaptcha" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>"
-							data-sitekey="<?php echo esc_attr( $this->settings->recaptcha_site_key() ); ?>"
-							data-callback="convertKitRecaptchaFormSubmit"
-							data-action="convertkit_restrict_content_tag" />
-					<?php
+				if ( $spam_provider !== null ) {
+					echo $spam_provider->get_submit_button_html( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
+						'convertkit_restrict_content_tag',
+						array( 'wp-block-button__link', 'wp-block-button__link' )
+					);
 				} else {
 					?>
 					<input type="submit" class="wp-block-button__link wp-block-button__link" value="<?php echo esc_attr( $this->restrict_content_settings->get_by_key( 'subscribe_button_label' ) ); ?>" />

@@ -59,12 +59,12 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Define settings sections.
 		$this->settings_sections = array(
-			'general'   => array(
+			'general'         => array(
 				'title'    => $this->title,
 				'callback' => array( $this, 'print_section_info' ),
 				'wrap'     => true,
 			),
-			'site-wide' => array(
+			'site-wide'       => array(
 				'title'    => __( 'Non-inline Forms', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_site_wide' ),
 				'wrap'     => true,
@@ -74,7 +74,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				'callback' => array( $this, 'print_section_info_spam_protection' ),
 				'wrap'     => true,
 			),
-			'advanced'  => array(
+			'advanced'        => array(
 				'title'    => __( 'Advanced', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_advanced' ),
 				'wrap'     => true,
@@ -276,28 +276,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		wp_enqueue_script( 'convertkit-admin-preview-output', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/preview-output.js', array( 'jquery' ), CONVERTKIT_PLUGIN_VERSION, true );
 		wp_enqueue_script( 'convertkit-admin-settings-conditional-display', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/settings-conditional-display.js', array( 'jquery' ), CONVERTKIT_PLUGIN_VERSION, true );
 
-		// Inline: show/hide provider-specific rows based on the Spam Protection provider dropdown.
-		wp_add_inline_script(
-			'convertkit-admin-settings-conditional-display',
-			'document.addEventListener("DOMContentLoaded", function () {
-				var providerSelect = document.getElementById("spam_protection_provider");
-				if ( ! providerSelect ) { return; }
-				function convertKitToggleSpamProtectionRows() {
-					var value = providerSelect.value;
-					var rows = document.querySelectorAll("tr.convertkit-spam-protection-recaptcha, tr.convertkit-spam-protection-turnstile");
-					rows.forEach(function ( row ) {
-						if ( row.classList.contains("convertkit-spam-protection-" + value) ) {
-							row.style.display = "";
-						} else {
-							row.style.display = "none";
-						}
-					});
-				}
-				providerSelect.addEventListener("change", convertKitToggleSpamProtectionRows);
-				convertKitToggleSpamProtectionRows();
-			});'
-		);
-
 	}
 
 	/**
@@ -495,28 +473,28 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Cloudflare Turnstile.
 		add_settings_field(
-			'turnstile_site_key',
-			__( 'Turnstile: Site Key', 'convertkit' ),
-			array( $this, 'turnstile_site_key_callback' ),
+			'cloudflare_turnstile_site_key',
+			__( 'Cloudflare Turnstile: Site Key', 'convertkit' ),
+			array( $this, 'cloudflare_turnstile_site_key_callback' ),
 			$this->settings_key,
 			$this->name . '-spam-protection',
 			array(
-				'label_for'   => 'turnstile_site_key',
-				'class'       => 'convertkit-spam-protection-turnstile',
+				'label_for'   => 'cloudflare_turnstile_site_key',
+				'class'       => 'convertkit-spam-protection-cloudflare_turnstile',
 				'description' => array(
 					__( 'Enter your Cloudflare Turnstile Site Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
 				),
 			)
 		);
 		add_settings_field(
-			'turnstile_secret_key',
-			__( 'Turnstile: Secret Key', 'convertkit' ),
-			array( $this, 'turnstile_secret_key_callback' ),
+			'cloudflare_turnstile_secret_key',
+			__( 'Cloudflare Turnstile: Secret Key', 'convertkit' ),
+			array( $this, 'cloudflare_turnstile_secret_key_callback' ),
 			$this->settings_key,
 			$this->name . '-spam-protection',
 			array(
-				'label_for'   => 'turnstile_secret_key',
-				'class'       => 'convertkit-spam-protection-turnstile',
+				'label_for'   => 'cloudflare_turnstile_secret_key',
+				'class'       => 'convertkit-spam-protection-cloudflare_turnstile',
 				'description' => array(
 					__( 'Enter your Cloudflare Turnstile Secret Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
 				),
@@ -619,7 +597,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	/**
 	 * Prints help info for the spam protection section of the settings screen.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 */
 	public function print_section_info_spam_protection() {
 		?>
@@ -992,7 +970,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	/**
 	 * Renders the dropdown for choosing the active spam protection provider.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
@@ -1002,11 +980,12 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'spam_protection_provider',
 			esc_attr( $this->settings->spam_protection_provider() ),
 			array(
-				'none'      => esc_html__( 'None', 'convertkit' ),
-				'recaptcha' => esc_html__( 'Google reCAPTCHA v3', 'convertkit' ),
-				'turnstile' => esc_html__( 'Cloudflare Turnstile', 'convertkit' ),
+				'recaptcha'            => esc_html__( 'Google reCAPTCHA v3', 'convertkit' ),
+				'cloudflare_turnstile' => esc_html__( 'Cloudflare Turnstile', 'convertkit' ),
 			),
-			$args['description']
+			$args['description'],
+			array( 'convertkit-conditional-display' ),
+			array( 'data-conditional-class-prefix' => 'convertkit-spam-protection-' )
 		);
 
 	}
@@ -1080,15 +1059,15 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	/**
 	 * Renders the input for the Cloudflare Turnstile Site Key setting.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
-	public function turnstile_site_key_callback( $args ) {
+	public function cloudflare_turnstile_site_key_callback( $args ) {
 
 		$this->output_text_field(
-			'turnstile_site_key',
-			esc_attr( $this->settings->turnstile_site_key() ),
+			'cloudflare_turnstile_site_key',
+			esc_attr( $this->settings->cloudflare_turnstile_site_key() ),
 			$args['description'],
 			array(
 				'widefat',
@@ -1100,15 +1079,15 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	/**
 	 * Renders the input for the Cloudflare Turnstile Secret Key setting.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
-	public function turnstile_secret_key_callback( $args ) {
+	public function cloudflare_turnstile_secret_key_callback( $args ) {
 
 		$this->output_text_field(
-			'turnstile_secret_key',
-			esc_attr( $this->settings->turnstile_secret_key() ),
+			'cloudflare_turnstile_secret_key',
+			esc_attr( $this->settings->cloudflare_turnstile_secret_key() ),
 			$args['description'],
 			array(
 				'widefat',

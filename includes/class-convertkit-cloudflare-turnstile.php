@@ -9,14 +9,14 @@
 /**
  * Handles Cloudflare Turnstile verification.
  *
- * @since   3.4.0
+ * @since   3.3.7
  */
 class ConvertKit_Cloudflare_Turnstile {
 
 	/**
 	 * The endpoint used to validate Turnstile tokens server-side.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
 	 * @var     string
 	 */
@@ -25,7 +25,7 @@ class ConvertKit_Cloudflare_Turnstile {
 	/**
 	 * The URL of the Turnstile client-side script.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
 	 * @var     string
 	 */
@@ -34,7 +34,7 @@ class ConvertKit_Cloudflare_Turnstile {
 	/**
 	 * Holds the settings class.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
 	 * @var     bool|ConvertKit_Settings
 	 */
@@ -43,7 +43,7 @@ class ConvertKit_Cloudflare_Turnstile {
 	/**
 	 * Constructor.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 */
 	public function __construct() {
 
@@ -52,15 +52,15 @@ class ConvertKit_Cloudflare_Turnstile {
 	}
 
 	/**
-	 * Enqueues the Turnstile client-side script if Turnstile site and secret keys are set,
-	 * and scripts are enabled.
+	 * Enqueues the Cloudflare Turnstile client-side script if Cloudflare Turnstile
+	 * site and secret keys are set and scripts are enabled.
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 */
 	public function enqueue_scripts() {
 
-		// Don't run if Turnstile or scripts are disabled.
-		if ( ! $this->settings->has_turnstile_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
+		// Don't run if Cloudflare Turnstile or scripts are disabled.
+		if ( ! $this->settings->has_cloudflare_turnstile_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
 			return;
 		}
 
@@ -83,22 +83,21 @@ class ConvertKit_Cloudflare_Turnstile {
 	}
 
 	/**
-	 * Verifies a Turnstile response token against the Siteverify API, if Turnstile
-	 * site and secret keys are set, and scripts are enabled.
+	 * Verifies a Cloudflare Turnstile response token against the Siteverify API,
+	 * if Cloudflare Turnstile site and secret keys are set, and scripts are enabled.
 	 *
 	 * Mirrors the request format documented at
 	 * https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
 	 *
-	 * @since   3.4.0
+	 * @since   3.3.7
 	 *
-	 * @param   string $turnstile_response  The Turnstile response token from the client.
-	 * @return  bool|WP_Error               True on success or when Turnstile is not
-	 *                                      configured / disabled; WP_Error on failure.
+	 * @param   string $cloudflare_turnstile_response  Cloudflare Turnstile response token from the client.
+	 * @return  bool|WP_Error
 	 */
-	public function verify( $turnstile_response ) {
+	public function verify( $cloudflare_turnstile_response ) {
 
 		// Don't run if Turnstile or scripts are disabled.
-		if ( ! $this->settings->has_turnstile_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
+		if ( ! $this->settings->has_cloudflare_turnstile_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
 			return true;
 		}
 
@@ -107,8 +106,8 @@ class ConvertKit_Cloudflare_Turnstile {
 			self::SITEVERIFY_URL,
 			array(
 				'body' => array(
-					'secret'   => $this->settings->turnstile_secret_key(),
-					'response' => $turnstile_response,
+					'secret'   => $this->settings->cloudflare_turnstile_secret_key(),
+					'response' => $cloudflare_turnstile_response,
 					'remoteip' => ( isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '' ),
 				),
 			)
@@ -125,29 +124,76 @@ class ConvertKit_Cloudflare_Turnstile {
 		// If the response body couldn't be decoded, treat that as a failure.
 		if ( ! is_array( $body ) ) {
 			return new WP_Error(
-				'convertkit_turnstile_failed',
+				'convertkit_cloudflare_turnstile_failed',
 				__( 'Cloudflare Turnstile failure: invalid response from Siteverify.', 'convertkit' )
 			);
 		}
 
-		// Cloudflare returns { success: bool, "error-codes": [...] }.
-		if ( empty( $body['success'] ) ) {
-			$error_codes = ( isset( $body['error-codes'] ) && is_array( $body['error-codes'] ) )
-				? $body['error-codes']
-				: array( 'unknown-error' );
-
-			return new WP_Error(
-				'convertkit_turnstile_failed',
-				sprintf(
-					/* translators: Error codes */
-					__( 'Cloudflare Turnstile failure: %s', 'convertkit' ),
-					implode( ', ', $error_codes )
-				)
-			);
+		// If the token verified, return true.
+		if ( $body['success'] === true ) {
+			return true;
 		}
 
-		// Token verified.
-		return true;
+		// Return an error.
+		return new WP_Error(
+			'convertkit_cloudflare_turnstile_failed',
+			sprintf(
+				/* translators: Error codes */
+				__( 'Cloudflare Turnstile failure: %s', 'convertkit' ),
+				implode( ', ', $body['error-codes'] )
+			)
+		);
+
+	}
+
+	/**
+	 * Inserts a Cloudflare Turnstile widget div immediately before the given
+	 * submit button within an existing DOM tree. `data-appearance=interaction-only`
+	 * keeps the widget invisible unless Cloudflare determines a challenge is
+	 * required, and the `convertKitTurnstileFormSubmit` callback submits the
+	 * enclosing form once the challenge is solved.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   ConvertKit_HTML_Parser $parser         Parser wrapping the DOM.
+	 * @param   DOMElement             $button         <button> element.
+	 * @param   string                 $plugin_action  Plugin action string (unused).
+	 */
+	public function attach_to_form_button_dom( $parser, $button, $plugin_action ) {
+
+		unset( $plugin_action );
+
+		$widget = $parser->html->createElement( 'div' );
+		$widget->setAttribute( 'class', 'cf-turnstile' );
+		$widget->setAttribute( 'data-sitekey', esc_attr( $this->settings->cloudflare_turnstile_site_key() ) );
+		$widget->setAttribute( 'data-appearance', 'interaction-only' );
+		$widget->setAttribute( 'data-callback', 'convertKitTurnstileFormSubmit' );
+		$button->parentNode->insertBefore( $widget, $button ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
+	}
+
+	/**
+	 * Returns the HTML for a Cloudflare Turnstile widget div followed by a
+	 * plain submit button, used by templates that don't have a DOM parser
+	 * available (e.g. the Restrict Content tag view).
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   string   $label          The button's visible label.
+	 * @param   string   $plugin_action  The plugin action string (unused).
+	 * @param   string[] $css_classes    CSS classes for the button.
+	 * @return  string
+	 */
+	public function get_submit_button_html( $label, $plugin_action, $css_classes = array() ) {
+
+		unset( $plugin_action );
+
+		return sprintf(
+			'<div class="cf-turnstile" data-sitekey="%1$s" data-appearance="interaction-only" data-callback="convertKitTurnstileFormSubmit"></div><input type="submit" class="%2$s" value="%3$s" />',
+			esc_attr( $this->settings->cloudflare_turnstile_site_key() ),
+			esc_attr( implode( ' ', $css_classes ) ),
+			esc_attr( $label )
+		);
 
 	}
 
