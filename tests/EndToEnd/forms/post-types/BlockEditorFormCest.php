@@ -41,6 +41,97 @@ class BlockEditorFormCest
 	}
 
 	/**
+	 * Test that a Post with a legacy Form ID saved in its Kit post meta
+	 * continues to show the legacy form as the selected option in the
+	 * Gutenberg plugin sidebar's Form dropdown, even though legacy forms
+	 * are no longer offered as new selection choices.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testPluginSidebarPreservesSelectedLegacyForm(EndToEndTester $I)
+	{
+		$I->setupKitPlugin(
+			$I,
+			[
+				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
+				'page_form'  => '',
+				'post_form'  => '',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Preseed a Page with a legacy form ID in its Kit post meta,
+		// simulating an install upgrading from an earlier version.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'  => 'page',
+				'post_title' => 'Kit: Page: Plugin Sidebar Preserves Legacy',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'         => (string) $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Open the Gutenberg edit screen.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
+
+		// Open the Plugin sidebar and confirm the Form dropdown shows the
+		// legacy form as the selected option.
+		$I->openPluginSidebarSettings($I);
+		$formSelectXPath = '//label[text()="Form"]/following::select[1]';
+		$I->waitForElementVisible($formSelectXPath);
+		$I->seeOptionIsSelected(
+			$formSelectXPath,
+			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]'
+		);
+	}
+
+	/**
+	 * Test that the Gutenberg plugin sidebar's Form dropdown excludes legacy
+	 * forms on Pages, Posts and Custom Post Types.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testPluginSidebarFormDropdownExcludesLegacyForms(EndToEndTester $I)
+	{
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		foreach ($this->postTypes as $postType) {
+			// Add a Post Type using the Gutenberg editor.
+			$I->addGutenbergPage(
+				$I,
+				postType: $postType,
+				title: 'Kit: ' . $postType . ': Form: No Legacy In Plugin Sidebar'
+			);
+
+			// Open the Plugin sidebar settings so the Form dropdown renders.
+			$I->openPluginSidebarSettings($I);
+
+			// Assert the legacy form is not offered as a selectable option in
+			// the Form dropdown. Selector matches configurePluginSidebarSettings.
+			$formSelectXPath = '//label[text()="Form"]/following::select[1]';
+			$I->waitForElementVisible($formSelectXPath);
+			$I->dontSee(
+				$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]',
+				$formSelectXPath
+			);
+
+			// Close the sidebar so the next iteration can operate cleanly.
+			$I->closePluginSidebarSettings($I);
+		}
+	}
+
+	/**
 	 * Test that the 'Default' option for the Default Form setting in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and there is no Default Form specified in the Plugin
 	 * settings.
@@ -989,55 +1080,6 @@ class BlockEditorFormCest
 		// Deactivate WP Rocket Plugin.
 		$I->deactivateThirdPartyPlugin($I, 'wp-rocket');
 		$I->deactivateThirdPartyPlugin($I, 'disable-_load_textdomain_just_in_time-doing_it_wrong-notice');
-	}
-
-	/**
-	 * Test that the Legacy Form specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page, Post or Article.
-	 *
-	 * @since   1.9.6.3
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testAddNewPostTypeUsingDefinedLegacyForm(EndToEndTester $I)
-	{
-		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
-				'page_form'    => '',
-				'post_form'    => '',
-				'article_form' => '',
-			]
-		);
-		$I->setupKitPluginResources($I);
-
-		// Test each Post Type.
-		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Gutenberg editor.
-			$I->addGutenbergPage(
-				$I,
-				postType: $postType,
-				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-			);
-
-			// Configure metabox's Form setting = Legacy Form.
-			$I->configurePluginSidebarSettings(
-				$I,
-				form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-			);
-
-			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewGutenbergPage($I);
-
-			// Confirm that the Kit Legacy Form displays.
-			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
-
-			// Confirm that the Legacy Form title's character encoding is correct.
-			$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
-		}
 	}
 
 	/**

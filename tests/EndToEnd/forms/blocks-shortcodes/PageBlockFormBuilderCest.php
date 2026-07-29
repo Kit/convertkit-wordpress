@@ -24,6 +24,94 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block's sidebar `form_id` dropdown excludes
+	 * legacy forms.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockSidebarFormDropdownExcludesLegacyForms(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: No Legacy In Dropdown'
+		);
+
+		// Insert the Kit Form Builder block with no configuration. This opens
+		// the block sidebar containing the Form dropdown (`form_id`).
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// The block sidebar's Form select is at #convertkit_form_builder_form_id.
+		$I->waitForElementVisible('#convertkit_form_builder_form_id');
+		$I->dontSeeElementInDOM('#convertkit_form_builder_form_id option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		$I->dontSee($_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]', '#convertkit_form_builder_form_id');
+
+		// Save page to avoid alert when _passed() deactivates the Plugin.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
+	 * Test that a Page saved with a Kit Form Builder block whose form_id
+	 * attribute references a legacy form continues to show that legacy form
+	 * as the selected option in the sidebar dropdown.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockPreservesSelectedLegacyForm(EndToEndTester $I)
+	{
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Preseed a Page containing a Form Builder block whose form_id
+		// attribute references a legacy form, simulating an install upgrading
+		// from an earlier version where legacy could be selected.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Form Builder: Legacy Form Preserved',
+				'post_content' => '<!-- wp:convertkit/form-builder {"form_id":"' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"} -->
+<div class="wp-block-convertkit-form-builder"><!-- wp:convertkit/form-builder-field-name {"label":"First name"} /-->
+
+<!-- wp:convertkit/form-builder-field-email {"label":"Email address"} /-->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"className":"convertkit-form-builder-submit-button","lock":{"move":true,"remove":true}} -->
+<div class="wp-block-button convertkit-form-builder-submit-button"><a class="wp-block-button__link wp-element-button">Subscribe</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div>
+<!-- /wp:convertkit/form-builder -->',
+			]
+		);
+
+		// Open the page's edit screen.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
+
+		// Select the Form Builder block so the sidebar renders.
+		$I->waitForElementVisible('.wp-block-convertkit-form-builder');
+		$I->click('.wp-block-convertkit-form-builder');
+		$I->waitForElementVisible('#convertkit_form_builder_form_id');
+
+		// The legacy form should appear as an option and be selected.
+		$I->seeElementInDOM('#convertkit_form_builder_form_id option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		$I->seeOptionIsSelected(
+			'#convertkit_form_builder_form_id',
+			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]'
+		);
+	}
+
+	/**
 	 * Test the Form Builder block's conditional fields work.
 	 *
 	 * @since   3.0.6
@@ -490,103 +578,6 @@ class PageBlockFormBuilderCest
 			subscriberID: $subscriber['id'],
 			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID'],
 			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
-		);
-	}
-
-	/**
-	 * Test the Form Builder block works when added and a Legacy Form is specified
-	 * to subscribe the subscriber to.
-	 *
-	 * @since   3.3.2
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormBuilderBlockWithLegacyFormEnabled(EndToEndTester $I)
-	{
-		// Setup Plugin and Resources.
-		$I->setupKitPlugin($I);
-		$I->setupKitPluginResources($I);
-
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form Builder: Block: Form Enabled'
-		);
-
-		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None'
-		);
-
-		// Add block to Page.
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'Kit Form Builder',
-			blockProgrammaticName: 'convertkit-form-builder',
-			blockConfiguration: [
-				'form_id' => [ 'select', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-			]
-		);
-
-		// Confirm the block template was used as the default.
-		$this->seeFormBuilderBlock($I);
-		$this->seeFormBuilderButtonBlock($I);
-		$this->seeFormBuilderField(
-			$I,
-			fieldType: 'text',
-			fieldName: 'first_name',
-			fieldID: 'first_name',
-			label: 'First name',
-			container: 'div[data-type="convertkit/form-builder"]'
-		);
-		$this->seeFormBuilderField(
-			$I,
-			fieldType: 'email',
-			fieldName: 'email',
-			fieldID: 'email',
-			label: 'Email address',
-			container: 'div[data-type="convertkit/form-builder"]'
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
-
-		// Confirm that the Form is output in the DOM.
-		$this->seeFormBuilderField(
-			$I,
-			fieldType: 'text',
-			fieldName: 'first_name',
-			fieldID: 'first_name',
-			label: 'First name',
-			container: 'div.wp-block-convertkit-form-builder',
-			isFrontend: true
-		);
-		$this->seeFormBuilderField(
-			$I,
-			fieldType: 'email',
-			fieldName: 'email',
-			fieldID: 'email',
-			label: 'Email address',
-			container: 'div.wp-block-convertkit-form-builder',
-			isFrontend: true
-		);
-
-		// Generate email address for this test.
-		$emailAddress = $I->generateEmailAddress();
-
-		// Submit form.
-		$I->fillField('input[name="convertkit[first_name]"]', 'First');
-		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
-		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
-
-		// Confirm that the email address was added to Kit.
-		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->wait(3);
-		$I->apiCheckSubscriberExists(
-			$I,
-			emailAddress: $emailAddress,
-			firstName: 'First'
 		);
 	}
 

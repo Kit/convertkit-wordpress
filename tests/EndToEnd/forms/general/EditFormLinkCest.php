@@ -149,53 +149,6 @@ class EditFormLinkCest
 	}
 
 	/**
-	 * Test that the 'Edit form on Kit' link displays when a Legacy Form is specified
-	 * in the Page Settings, and the user previews the WordPress Page.
-	 *
-	 * @since   2.0.8
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testEditFormLinkOnPageWithLegacyForm(EndToEndTester $I)
-	{
-		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
-			]
-		);
-
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Form: Legacy: Edit Link'
-		);
-
-		// Configure metabox's Form setting = Legacy.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
-
-		// Confirm that no Edit Form link is displayed, because we did not preview the Page.
-		$I->dontSee('Edit form in Kit');
-
-		// View the Page as if we clicked Preview from the editor.
-		$I->amOnUrl($_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl() . '?preview=true');
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the Edit Form link is displayed.
-		$I->seeInSource('<a href="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/edit/?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank">Edit form in Kit</a>');
-	}
-
-	/**
 	 * Test that the 'Edit form on Kit' link displays when the Kit Form
 	 * block exists in the Page, and the user previews the WordPress Page.
 	 *

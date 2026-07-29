@@ -129,35 +129,6 @@ class ForminatorCest
 	}
 
 	/**
-	 * Test that saving a Forminator Form to Kit Legacy Form Mapping works.
-	 *
-	 * @since   2.5.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testSettingsForminatorFormToKitLegacyFormMapping(EndToEndTester $I)
-	{
-		// Setup Forminator Form and configuration for this test.
-		$pageID = $this->_forminatorSetupForm(
-			$I,
-			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-		);
-
-		// Define email address for this test.
-		$emailAddress = $I->generateEmailAddress();
-
-		// Complete and submit Forminator Form.
-		$this->_forminatorCompleteAndSubmitForm(
-			$I,
-			pageID: $pageID,
-			emailAddress: $emailAddress
-		);
-
-		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
-	}
-
-	/**
 	 * Test that saving a Forminator Form to Kit Tag Mapping works.
 	 *
 	 * @since   2.5.2

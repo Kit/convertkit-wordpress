@@ -67,57 +67,6 @@ class PageBlockFormCest
 	}
 
 	/**
-	 * Test the Form block works when a valid Legacy Form is selected.
-	 *
-	 * @since   1.9.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormBlockWithValidLegacyFormParameter(EndToEndTester $I)
-	{
-		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
-				'post_form'    => '',
-				'page_form'    => '',
-				'product_form' => '',
-			]
-		);
-		$I->setupKitPluginResources($I);
-
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Legacy Form: Block: Valid Form Param'
-		);
-
-		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
-		$I->configurePluginSidebarSettings(
-			$I,
-			form: 'None'
-		);
-
-		// Add block to Page, setting the Form setting to the value specified in the .env file.
-		$I->addGutenbergBlock(
-			$I,
-			blockName: 'Kit Form',
-			blockProgrammaticName: 'convertkit-form',
-			blockConfiguration: [
-				'form' => [ 'select', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-			]
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
-
-		// Confirm that the Kit Form is displayed.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
-	}
-
-	/**
 	 * Test the Form block displays a message explaining why the block cannot be previewed
 	 * in the Gutenberg editor when a valid Modal Form is selected.
 	 *
@@ -894,6 +843,108 @@ class PageBlockFormCest
 				'alignright',
 			]
 		);
+	}
+
+	/**
+	 * Test the Kit Form block's sidebar Form dropdown excludes legacy forms.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockSidebarDropdownExcludesLegacyForms(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form: Block: No Legacy In Dropdown'
+		);
+
+		// Configure metabox's Form setting = None so we only test the block.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Insert the Kit Form block with no configuration. This opens the
+		// block sidebar with the Form dropdown rendered.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form',
+			blockProgrammaticName: 'convertkit-form'
+		);
+
+		// The block sidebar's Form select is at #convertkit_form_form
+		// (constructed as convertkit_ + block name with underscores + attribute).
+		$I->waitForElementVisible('#convertkit_form_form');
+		$I->dontSeeElementInDOM('#convertkit_form_form option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		$I->dontSee($_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]', '#convertkit_form_form');
+
+		// Save page to avoid alert when _passed() deactivates the Plugin.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
+	 * Test that a Page saved with a Kit Form block referencing a legacy
+	 * form continues to render the legacy form as the block's selected
+	 * value in the sidebar dropdown, and continues to output the legacy
+	 * form on the frontend, even though legacy forms are no longer offered
+	 * as new selection choices.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBlockPreservesSelectedLegacyForm(EndToEndTester $I)
+	{
+		$I->setupKitPlugin(
+			$I,
+			[
+				'api_key'    => $_ENV['CONVERTKIT_API_KEY'],
+				'api_secret' => $_ENV['CONVERTKIT_API_SECRET'],
+				'page_form'  => '',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Create a Page containing a Kit Form block with the legacy form ID
+		// baked into its saved attributes, simulating an install upgrading
+		// from an earlier version where legacy could be selected.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Form Block: Legacy Form Preserved',
+				'post_content' => '<!-- wp:convertkit/form {"form":"' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"} /-->',
+			]
+		);
+
+		// Load the page's edit screen.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
+
+		// Wait for the block editor to finish loading, then open the block
+		// sidebar by clicking the Kit Form block. Once selected, the block
+		// sidebar renders with the Form dropdown showing the saved value.
+		$I->waitForElementVisible('.wp-block-convertkit-form');
+		$I->click('.wp-block-convertkit-form');
+		$I->waitForElementVisible('#convertkit_form_form');
+
+		// The legacy form should be present as an option AND be the selected
+		// value in the sidebar dropdown.
+		$I->seeElementInDOM('#convertkit_form_form option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		$I->seeOptionIsSelected(
+			'#convertkit_form_form',
+			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]'
+		);
+
+		// Visit the page on the frontend and confirm the legacy form still
+		// renders — proving that a saved legacy assignment continues to
+		// work at render time.
+		$I->amOnPage('/?p=' . $pageID);
+		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
 	/**
