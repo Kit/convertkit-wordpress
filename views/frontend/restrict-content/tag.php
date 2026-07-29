@@ -26,8 +26,7 @@
 				// plain submit button is output.
 				$spam          = new ConvertKit_Spam_Protection();
 				$spam_provider = $spam->get_active_provider();
-
-				if ( $spam_provider !== null ) {
+				if ( $spam_provider !== false ) {
 					echo $spam_provider->get_submit_button_html( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
 						'convertkit_restrict_content_tag',

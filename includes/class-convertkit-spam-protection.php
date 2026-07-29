@@ -40,28 +40,30 @@ class ConvertKit_Spam_Protection {
 	}
 
 	/**
-	 * Returns the configured spam protection provider instance, or null if the
+	 * Returns the configured spam protection provider instance, or false if the
 	 * selected provider is missing its site and secret keys (in which case the
 	 * caller should behave as if spam protection is disabled).
 	 *
 	 * @since   3.3.7
 	 *
-	 * @return  ConvertKit_Recaptcha|ConvertKit_Cloudflare_Turnstile|null
+	 * @return  ConvertKit_Recaptcha|ConvertKit_Cloudflare_Turnstile|bool
 	 */
 	public function get_active_provider() {
 
 		switch ( $this->settings->spam_protection_provider() ) {
 			case 'cloudflare_turnstile':
 				if ( ! $this->settings->has_cloudflare_turnstile_site_and_secret_keys() ) {
-					return null;
+					return false;
 				}
+
 				return new ConvertKit_Cloudflare_Turnstile();
 
 			case 'recaptcha':
 			default:
 				if ( ! $this->settings->has_recaptcha_site_and_secret_keys() ) {
-					return null;
+					return false;
 				}
+
 				return new ConvertKit_Recaptcha();
 		}
 
@@ -123,7 +125,7 @@ class ConvertKit_Spam_Protection {
 		$provider = $this->get_active_provider();
 
 		// No provider configured: allow the request through.
-		if ( $provider === null ) {
+		if ( ! $provider ) {
 			return true;
 		}
 

@@ -77,12 +77,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
-		// Check spam protection (reCAPTCHA or Cloudflare Turnstile, depending on Plugin settings).
-		$spam       = new ConvertKit_Spam_Protection();
-		$spam_check = $spam->verify( 'convertkit_form_builder' );
+		// Check spam protection.
+		$spam_protection = new ConvertKit_Spam_Protection();
 
 		// Bail if spam protection failed.
-		if ( is_wp_error( $spam_check ) ) {
+		if ( is_wp_error( $spam_protection->verify( 'convertkit_form_builder' ) ) ) {
 			return;
 		}
 
@@ -718,21 +717,21 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$block_content
 		);
 
-		// Return the button as-is if no spam protection provider is active.
-		$spam     = new ConvertKit_Spam_Protection();
-		$provider = $spam->get_active_provider();
-		if ( $provider === null ) {
+		// Return the button if no spam protection provider is active.
+		$spam_protection = new ConvertKit_Spam_Protection();
+		$provider        = $spam_protection->get_active_provider();
+		if ( ! $provider ) {
 			return $block_content;
 		}
 
-		// Enqueue the provider's client-side script and let it attach its
-		// widget / attributes to the button. Each provider handles its own
-		// DOM operation so this caller doesn't have to branch on the concrete
-		// class.
+		// Enqueue the spam protection provider's JS.
 		$provider->enqueue_scripts();
 
+		// Parse the button's DOM.
 		$parser = new ConvertKit_HTML_Parser( $block_content );
 		$button = $parser->xpath->query( '//button' )->item( 0 );
+
+		// Attach the spam protection provider's attributes/elements to the form/button as necessary.
 		$provider->attach_to_form_button_dom( $parser, $button, 'convertkit_form_builder' );
 
 		// Return button HTML.

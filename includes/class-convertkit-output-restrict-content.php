@@ -393,8 +393,8 @@ class ConvertKit_Output_Restrict_Content {
 		// If Restrict Content is by tag, tag the subscriber.
 		if ( $this->resource_type === 'tag' ) {
 			// Check spam protection (reCAPTCHA or Cloudflare Turnstile, depending on Plugin settings).
-			$spam       = new ConvertKit_Spam_Protection();
-			$spam_check = $spam->verify( 'convertkit_restrict_content_tag' );
+			$spam_protection = new ConvertKit_Spam_Protection();
+			$spam_check      = $spam_protection->verify( 'convertkit_restrict_content_tag' );
 
 			// Bail if spam protection failed.
 			if ( is_wp_error( $spam_check ) ) {
@@ -1469,7 +1469,7 @@ class ConvertKit_Output_Restrict_Content {
 				// Enqueue the active spam protection provider's client-side script.
 				$spam          = new ConvertKit_Spam_Protection();
 				$spam_provider = $spam->get_active_provider();
-				if ( $spam_provider !== null ) {
+				if ( $spam_provider !== false ) {
 					$spam_provider->enqueue_scripts();
 				}
 

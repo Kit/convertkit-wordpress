@@ -673,7 +673,7 @@ class ConvertKit_Settings {
 			'non_inline_form_limit_per_session'  => '', // blank|on.
 
 			// Spam Protection.
-			'spam_protection_provider'           => 'recaptcha', // none|recaptcha|turnstile.
+			'spam_protection_provider'           => 'recaptcha', // recaptcha|turnstile.
 
 			// reCAPTCHA.
 			'recaptcha_site_key'                 => '', // string.

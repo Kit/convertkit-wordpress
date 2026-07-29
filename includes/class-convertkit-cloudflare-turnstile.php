@@ -92,9 +92,12 @@ class ConvertKit_Cloudflare_Turnstile {
 	 * @since   3.3.7
 	 *
 	 * @param   string $cloudflare_turnstile_response  Cloudflare Turnstile response token from the client.
+	 * @param   string $plugin_action                  Plugin action string (unused).
 	 * @return  bool|WP_Error
 	 */
-	public function verify( $cloudflare_turnstile_response ) {
+	public function verify( $cloudflare_turnstile_response, $plugin_action ) {
+
+		unset( $plugin_action );
 
 		// Don't run if Turnstile or scripts are disabled.
 		if ( ! $this->settings->has_cloudflare_turnstile_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
