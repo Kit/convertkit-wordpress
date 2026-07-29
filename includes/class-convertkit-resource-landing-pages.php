@@ -57,6 +57,84 @@ class ConvertKit_Resource_Landing_Pages extends ConvertKit_Resource_V4 {
 	}
 
 	/**
+	 * Returns all non-legacy landing pages (v4 pages with an `embed_url`
+	 * property). Legacy landing pages have a `url` property instead and are
+	 * excluded here.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @return  bool|array
+	 */
+	public function get_non_legacy() {
+
+		$resources = $this->get();
+		if ( ! $resources ) {
+			return false;
+		}
+
+		$non_legacy = array();
+		foreach ( $resources as $id => $landing_page ) {
+			if ( isset( $landing_page['url'] ) ) {
+				continue;
+			}
+			$non_legacy[ $id ] = $landing_page;
+		}
+
+		return $non_legacy;
+
+	}
+
+	/**
+	 * Returns whether any non-legacy landing pages exist in the options table.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @return  bool
+	 */
+	public function non_legacy_exist() {
+
+		return (bool) $this->get_non_legacy();
+
+	}
+
+	/**
+	 * Determines whether the given identifier refers to a legacy landing page.
+	 *
+	 * Handles both storage shapes: a URL string (as saved by Plugin versions
+	 * < 1.9.6 which stored the landing page URL directly on the post), and a
+	 * numeric ID that resolves to a resource entry containing a `url` key.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   int|string $id_or_url  Landing Page ID or URL.
+	 * @return  bool
+	 */
+	public function is_legacy( $id_or_url ) {
+
+		// Bail if no value.
+		if ( ! $id_or_url ) {
+			return false;
+		}
+
+		// If the value is a URL string, it's a legacy landing page as stored
+		// by Plugin versions < 1.9.6.
+		if ( is_string( $id_or_url ) && strstr( $id_or_url, 'http' ) ) {
+			return true;
+		}
+
+		// Otherwise resolve the ID against the cached resources.
+		$landing_page = $this->get_by_id( (int) $id_or_url );
+
+		if ( ! $landing_page ) {
+			return false;
+		}
+
+		// Legacy landing pages carry a `url` key; v4 pages carry `embed_url`.
+		return isset( $landing_page['url'] );
+
+	}
+
+	/**
 	 * Returns the HTML/JS markup for the given Landing Page ID
 	 *
 	 * @since   1.9.6

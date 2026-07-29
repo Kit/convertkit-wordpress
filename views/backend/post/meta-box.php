@@ -69,15 +69,30 @@
 						<select name="wp-convertkit[landing_page]" id="wp-convertkit-landing_page" class="convertkit-select2">
 							<option <?php selected( '', $convertkit_post->get_landing_page() ); ?> value="0" data-preserve-on-refresh="1"><?php esc_html_e( 'None', 'convertkit' ); ?></option>
 							<?php
-							if ( $convertkit_landing_pages->exist() ) {
-								foreach ( $convertkit_landing_pages->get() as $landing_page ) {
-									if ( isset( $convertkit_landing_page['url'] ) ) {
+							$non_legacy_landing_pages = $convertkit_landing_pages->get_non_legacy();
+							if ( is_array( $non_legacy_landing_pages ) ) {
+								foreach ( $non_legacy_landing_pages as $landing_page ) {
+									?>
+									<option value="<?php echo esc_attr( $landing_page['id'] ); ?>"<?php selected( $landing_page['id'], $convertkit_post->get_landing_page() ); ?>><?php echo esc_attr( $landing_page['name'] ); ?></option>
+									<?php
+								}
+							}
+
+							// If the currently-saved landing page is a legacy resource, append
+							// it here so the dropdown truthfully reflects the saved value
+							// without offering other legacy pages as new selection choices.
+							$current_landing_page = $convertkit_post->get_landing_page();
+							if ( $current_landing_page && $convertkit_landing_pages->is_legacy( $current_landing_page ) ) {
+								// Pre-1.9.6 storage: the saved value is the legacy URL itself.
+								if ( is_string( $current_landing_page ) && strstr( $current_landing_page, 'http' ) ) {
+									?>
+									<option value="<?php echo esc_attr( $current_landing_page ); ?>" selected><?php echo esc_attr( $current_landing_page ); ?></option>
+									<?php
+								} else {
+									$legacy_landing_page = $convertkit_landing_pages->get_by_id( (int) $current_landing_page );
+									if ( $legacy_landing_page ) {
 										?>
-										<option value="<?php echo esc_attr( $landing_page['url'] ); ?>"<?php selected( $landing_page['url'], $convertkit_post->get_landing_page() ); ?>><?php echo esc_attr( $landing_page['name'] ); ?></option>
-										<?php
-									} else {
-										?>
-										<option value="<?php echo esc_attr( $landing_page['id'] ); ?>"<?php selected( $landing_page['id'], $convertkit_post->get_landing_page() ); ?>><?php echo esc_attr( $landing_page['name'] ); ?></option>
+										<option value="<?php echo esc_attr( $legacy_landing_page['id'] ); ?>" selected><?php echo esc_attr( $legacy_landing_page['name'] ); ?></option>
 										<?php
 									}
 								}
