@@ -158,7 +158,7 @@ class ConvertKit_Recaptcha {
 	 * attributes attached, used by templates that don't have a DOM parser
 	 * available (e.g. the Restrict Content tag view).
 	 *
-	 * @since   3.4.7
+	 * @since   3.3.7
 	 *
 	 * @param   string   $label          Button's visible label.
 	 * @param   string   $plugin_action  Plugin action string.
