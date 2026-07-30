@@ -354,6 +354,27 @@ class WPGutenberg extends \Codeception\Module
 	}
 
 	/**
+	 * Selects a block in the Document Overview sidebar.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I            EndToEnd Tester.
+	 * @param   string         $blockName    Block Name (e.g. 'Kit Form Builder').
+	 */
+	public function selectGutenbergBlockInDocumentOverview($I, $blockName)
+	{
+		// Open the Document Overview sidebar.
+		$I->waitForElementVisible('button.editor-document-tools__document-overview-toggle');
+		$I->click('button.editor-document-tools__document-overview-toggle');
+		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Document Overview"]');
+		$I->wait(2);
+
+		// Select the block.
+		$I->click($blockName, '.interface-interface-skeleton__secondary-sidebar[aria-label="Document Overview"]');
+		$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
+	}
+
+	/**
 	 * Asserts that the given block is available in the Gutenberg block library.
 	 *
 	 * Supports blocks whose programmatic names may be either "block/block" or just "block",
