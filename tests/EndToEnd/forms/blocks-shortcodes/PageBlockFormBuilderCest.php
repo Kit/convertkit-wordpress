@@ -52,11 +52,11 @@ class PageBlockFormBuilderCest
 		);
 
 		// The block sidebar's Form select is at #convertkit_form_builder_form_id.
-		$I->waitForElementVisible('#convertkit_form_builder_form_id');
-		$I->dontSeeElementInDOM('#convertkit_form_builder_form_id option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		$I->waitForElementVisible('select#convertkit_form_builder_form_id');
+		$I->dontSeeElementInDOM('select#convertkit_form_builder_form_id option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
 		$I->dontSee($_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]', '#convertkit_form_builder_form_id');
 
-		// Save page to avoid alert when _passed() deactivates the Plugin.
+		// Save page to avoid alert box when _passed() runs to deactivate the Plugin.
 		$I->publishGutenbergPage($I);
 	}
 
@@ -98,15 +98,13 @@ class PageBlockFormBuilderCest
 		// Open the page's edit screen.
 		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
 
-		// Select the Form Builder block so the sidebar renders.
-		$I->waitForElementVisible('.wp-block-convertkit-form-builder');
-		$I->click('.wp-block-convertkit-form-builder');
-		$I->waitForElementVisible('#convertkit_form_builder_form_id');
+		// Select the Form Builder block in the Document Overview sidebar.
+		$I->selectGutenbergBlockInDocumentOverview($I, 'Kit Form Builder');
 
-		// The legacy form should appear as an option and be selected.
-		$I->seeElementInDOM('#convertkit_form_builder_form_id option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		// Assert the legacy form is selected.
+		$I->waitForElementVisible('select#convertkit_form_builder_form_id');
 		$I->seeOptionIsSelected(
-			'#convertkit_form_builder_form_id',
+			'select#convertkit_form_builder_form_id',
 			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]'
 		);
 	}

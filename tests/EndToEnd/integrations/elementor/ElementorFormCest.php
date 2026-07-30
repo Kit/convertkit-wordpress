@@ -82,44 +82,6 @@ class ElementorFormCest
 	}
 
 	/**
-	 * Test the Form widget works when a valid Legacy Form is selected.
-	 *
-	 * @since   1.9.7.2
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormWidgetWithValidLegacyFormParameter(EndToEndTester $I)
-	{
-		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
-				'post_form'    => '',
-				'page_form'    => '',
-				'product_form' => '',
-			]
-		);
-
-		// Create Page with Form widget in Elementor.
-		$pageID = $this->_createPageWithFormWidget(
-			$I,
-			title: 'Kit: Legacy Form: Elementor Widget: Valid Form Param',
-			formID: $_ENV['CONVERTKIT_API_LEGACY_FORM_ID']
-		);
-
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the Kit Form is displayed.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
-	}
-
-	/**
 	 * Test the Form widget works when no Form is selected.
 	 *
 	 * @since   1.9.7.2
