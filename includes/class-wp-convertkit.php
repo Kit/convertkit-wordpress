@@ -83,6 +83,7 @@ class WP_ConvertKit {
 		$this->classes['admin_cache_plugins']                    = new ConvertKit_Admin_Cache_Plugins();
 		$this->classes['admin_category']                         = new ConvertKit_Admin_Category();
 		$this->classes['admin_landing_page']                     = new ConvertKit_Admin_Landing_Page();
+		$this->classes['admin_legacy_resource_notice']           = new ConvertKit_Admin_Legacy_Resource_Notice();
 		$this->classes['admin_importer_activecampaign']          = new ConvertKit_Admin_Importer_ActiveCampaign();
 		$this->classes['admin_importer_aweber']                  = new ConvertKit_Admin_Importer_AWeber();
 		$this->classes['admin_importer_campaignmonitor']         = new ConvertKit_Admin_Importer_CampaignMonitor();
