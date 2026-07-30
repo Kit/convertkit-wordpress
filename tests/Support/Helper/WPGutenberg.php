@@ -364,8 +364,8 @@ class WPGutenberg extends \Codeception\Module
 	public function selectGutenbergBlockInDocumentOverview($I, $blockName)
 	{
 		// Open the Document Overview sidebar.
-		$I->waitForElementVisible('button.editor-document-tools__document-overview-toggle');
-		$I->click('button.editor-document-tools__document-overview-toggle');
+		$I->waitForElementVisible('button[aria-label="Document Overview"]');
+		$I->click('button[aria-label="Document Overview"]');
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Document Overview"]');
 		$I->wait(2);
 
