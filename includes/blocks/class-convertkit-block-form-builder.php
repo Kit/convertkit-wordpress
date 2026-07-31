@@ -397,8 +397,18 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				),
 			),
 
+			// Help descriptions, displayed when no Access Token / resources exist and this block/shortcode is added.
+			'no_access_token'         => array(
+				'notice'           => __( 'Not connected to Kit.', 'convertkit' ),
+				'link'             => convertkit_get_setup_wizard_plugin_link(),
+				'link_text'        => __( 'Click here to connect your Kit account.', 'convertkit' ),
+				'instruction_text' => __( 'Connect your Kit account at Settings > Kit, and then refresh this page to configure this block.', 'convertkit' ),
+			),
+
 			'has_access_token'        => $settings->has_access_and_refresh_token(),
-			'has_resources'           => $convertkit_forms->exist(),
+
+			// This block works without resources, so we don't need to check if resources exist.
+			'has_resources'           => true,
 		);
 
 	}

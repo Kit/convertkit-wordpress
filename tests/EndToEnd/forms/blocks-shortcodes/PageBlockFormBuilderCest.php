@@ -24,6 +24,40 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block displays a message with a link that opens
+	 * a popup window with the Plugin's Setup Wizard, when the Plugin has
+	 * Not connected to Kit.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWhenNoCredentials(EndToEndTester $I)
+	{
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: No Credentials'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Test that the popup window works.
+		$I->testBlockNoCredentialsPopupWindow(
+			$I,
+			blockName: 'convertkit-form-builder'
+		);
+
+		// Save page to avoid a browser alert when _passed() runs to deactivate the Plugin.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
 	 * Test the Form Builder block's conditional fields work.
 	 *
 	 * @since   3.0.6
