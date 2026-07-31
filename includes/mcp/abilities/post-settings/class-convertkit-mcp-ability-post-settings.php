@@ -97,18 +97,18 @@ abstract class ConvertKit_MCP_Ability_Post_Settings extends ConvertKit_MCP_Abili
 			),
 			'landing_page'     => array(
 				'type'        => 'string',
-				'description' => __( 'Kit Landing Page ID to display instead of the Post content. Empty string for none.', 'convertkit' ),
+				'description' => __( 'Kit Landing Page ID to display instead of the Post content. `0` or empty string for none.', 'convertkit' ),
 				'pattern'     => '^([0-9]+)?$',
 			),
 			'tag'              => array(
 				'type'        => 'string',
-				'description' => __( 'Kit Tag ID to apply when the Post is viewed by a Kit subscriber. Empty string for none.', 'convertkit' ),
+				'description' => __( 'Kit Tag ID to apply when the Post is viewed by a Kit subscriber. `0` or empty string for none.', 'convertkit' ),
 				'pattern'     => '^([0-9]+)?$',
 			),
 			'restrict_content' => array(
 				'type'        => 'string',
-				'description' => __( 'Restrict Post content to Kit subscribers. Empty string for no restriction, or one of `form_<id>`, `tag_<id>`, `product_<id>` to require subscription to that resource.', 'convertkit' ),
-				'pattern'     => '^$|^(form|tag|product)_[1-9][0-9]*$',
+				'description' => __( 'Restrict Post content to Kit subscribers. Empty string or `0` for no restriction, or one of `form_<id>`, `tag_<id>`, `product_<id>` to require subscription to that resource.', 'convertkit' ),
+				'pattern'     => '^$|^0$|^(form|tag|product)_[1-9][0-9]*$',
 			),
 		);
 

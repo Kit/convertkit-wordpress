@@ -126,9 +126,9 @@ class MCPPostSettingsGetTest extends WPTestCase
 		$this->assertIsArray($result);
 		$this->assertSame($post_id, $result['post_id']);
 		$this->assertSame('-1', $result['form']);
-		$this->assertSame('', $result['landing_page']);
-		$this->assertSame('', $result['tag']);
-		$this->assertSame('', $result['restrict_content']);
+		$this->assertSame('0', $result['landing_page']);
+		$this->assertSame('0', $result['tag']);
+		$this->assertSame('0', $result['restrict_content']);
 	}
 
 	/**
