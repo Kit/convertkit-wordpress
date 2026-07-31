@@ -77,15 +77,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
-		// Check reCAPTCHA.
-		$recaptcha          = new ConvertKit_Recaptcha();
-		$recaptcha_response = $recaptcha->verify_recaptcha(
-			( isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '' ),
-			'convertkit_form_builder'
-		);
+		// Check spam protection.
+		$spam_protection = new ConvertKit_Spam_Protection();
 
-		// Bail if reCAPTCHA failed.
-		if ( is_wp_error( $recaptcha_response ) ) {
+		// Bail if spam protection failed.
+		if ( is_wp_error( $spam_protection->verify( 'convertkit_form_builder' ) ) ) {
 			return;
 		}
 
@@ -721,23 +717,23 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$block_content
 		);
 
-		// Return the button if reCAPTCHA does not need to be used.
-		$settings = new ConvertKit_Settings();
-		if ( ! $settings->has_recaptcha_site_and_secret_keys() ) {
+		// Return the button if no spam protection provider is active.
+		$spam_protection = new ConvertKit_Spam_Protection();
+		$provider        = $spam_protection->get_active_provider();
+		if ( ! $provider ) {
 			return $block_content;
 		}
 
-		// Enqueue reCAPTCHA JS.
-		$recaptcha = new ConvertKit_Recaptcha();
-		$recaptcha->enqueue_scripts();
+		// Enqueue the spam protection provider's JS.
+		$provider->enqueue_scripts();
 
-		// Add reCAPTCHA attributes to button.
+		// Parse the button's DOM.
 		$parser = new ConvertKit_HTML_Parser( $block_content );
 		$button = $parser->xpath->query( '//button' )->item( 0 );
-		$button->setAttribute( 'data-sitekey', esc_attr( $settings->recaptcha_site_key() ) ); // @phpstan-ignore-line
-		$button->setAttribute( 'data-callback', 'convertKitRecaptchaFormSubmit' ); // @phpstan-ignore-line
-		$button->setAttribute( 'data-action', 'convertkit_form_builder' ); // @phpstan-ignore-line
-		$button->setAttribute( 'class', trim( $button->getAttribute( 'class' ) . ' g-recaptcha' ) ); // @phpstan-ignore-line
+
+		// Attach the spam protection provider's attributes/elements to the form/button as necessary.
+		// $button is narrowed from DOMNode to DOMElement by the //button xpath expression above.
+		$provider->attach_to_form_button_dom( $parser, $button, 'convertkit_form_builder' ); // @phpstan-ignore-line
 
 		// Return button HTML.
 		return $parser->get_body_html();

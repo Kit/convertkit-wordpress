@@ -90,6 +90,40 @@ function convertKitRecaptchaFormSubmit(token) {
 // Scope the function to the window object as webpack will wrap everything in a closure,
 // resulting in the function not being available globally.
 window.convertKitRecaptchaFormSubmit = convertKitRecaptchaFormSubmit;
+
+/**
+ * Handles form submissions when Cloudflare Turnstile is enabled.
+ *
+ * Turnstile auto-populates a hidden `cf-turnstile-response` input inside the
+ * enclosing form once the challenge is solved, so we just need to submit the
+ * containing form when the callback fires.
+ *
+ * @param {string} token Turnstile response token.
+ */
+function convertKitTurnstileFormSubmit(token) {
+	// Find the Turnstile widget div with the data-callback attribute.
+	const widget = document.querySelector(
+		'.cf-turnstile[data-callback="convertKitTurnstileFormSubmit"]'
+	);
+
+	if (!widget) {
+		return;
+	}
+
+	// Get the parent form of the widget.
+	const form = widget.closest('form');
+
+	if (!form) {
+		return;
+	}
+
+	// Submit the form.
+	form.submit();
+}
+
+// Scope the function to the window object as webpack will wrap everything in a closure,
+// resulting in the function not being available globally.
+window.convertKitTurnstileFormSubmit = convertKitTurnstileFormSubmit;
 /* eslint-enable no-unused-vars */
 
 /**
