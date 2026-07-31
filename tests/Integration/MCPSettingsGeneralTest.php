@@ -158,6 +158,342 @@ class MCPSettingsGeneralTest extends WPTestCase
 		$this->assertArrayHasKey('no_css', $result);
 		$this->assertArrayHasKey('no_add_new_button', $result);
 		$this->assertArrayHasKey('usage_tracking', $result);
+
+		// Confirm per-post-type Default Form settings are returned for
+		// each supported post type (page, post at minimum).
+		$this->assertArrayHasKey('page_form', $result);
+		$this->assertArrayHasKey('page_form_position', $result);
+		$this->assertArrayHasKey('page_form_position_element', $result);
+		$this->assertArrayHasKey('page_form_position_element_index', $result);
+		$this->assertArrayHasKey('post_form', $result);
+		$this->assertArrayHasKey('post_form_position', $result);
+		$this->assertArrayHasKey('post_form_position_element', $result);
+		$this->assertArrayHasKey('post_form_position_element_index', $result);
+
+		// Confirm per-post-type Default Form values round-trip correctly.
+		$this->assertEquals( (int) $_ENV['CONVERTKIT_API_FORM_ID'], $result['page_form']);
+		$this->assertEquals('before_content', $result['page_form_position']);
+		$this->assertEquals('h2', $result['page_form_position_element']);
+		$this->assertEquals(2, $result['page_form_position_element_index']);
+	}
+
+	/**
+	 * Test that kit/settings-general-get returns all per-post-type Default
+	 * Form keys for each supported post type, exercising the dynamic
+	 * schema generation.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testGetReturnsPerPostTypeDefaultFormKeys()
+	{
+		$this->populateSettings();
+
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-get']->execute_callback([]);
+
+		foreach ( convertkit_get_supported_post_types() as $post_type ) {
+			$this->assertArrayHasKey($post_type . '_form', $result);
+			$this->assertArrayHasKey($post_type . '_form_position', $result);
+			$this->assertArrayHasKey($post_type . '_form_position_element', $result);
+			$this->assertArrayHasKey($post_type . '_form_position_element_index', $result);
+			$this->assertIsInt($result[ $post_type . '_form' ]);
+			$this->assertIsString($result[ $post_type . '_form_position' ]);
+			$this->assertIsString($result[ $post_type . '_form_position_element' ]);
+			$this->assertIsInt($result[ $post_type . '_form_position_element_index' ]);
+		}
+	}
+
+	/**
+	 * Test that kit/settings-general-update accepts a positive integer
+	 * Form ID for a per-post-type Default Form setting.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormAcceptsPositiveInteger()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form' => 123 ]
+		);
+
+		$this->assertIsArray($result);
+		$this->assertSame(123, $result['page_form']);
+	}
+
+	/**
+	 * Test that kit/settings-general-update accepts `-1` as the Plugin
+	 * Default sentinel value for a per-post-type Default Form setting.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormAcceptsMinusOne()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form' => -1 ]
+		);
+
+		$this->assertSame(-1, $result['page_form']);
+	}
+
+	/**
+	 * Test that kit/settings-general-update accepts `0` as the "None"
+	 * value for a per-post-type Default Form setting.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormAcceptsZero()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form' => 0 ]
+		);
+
+		$this->assertSame(0, $result['page_form']);
+	}
+
+	/**
+	 * Test that kit/settings-general-update rejects a Form value below the
+	 * schema minimum of `-1`.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormRejectsBelowMinimum()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form' => -99 ]
+		);
+
+		$this->assertInstanceOf(\WP_Error::class, $result);
+	}
+
+	/**
+	 * Test that kit/settings-general-update accepts every value in the
+	 * `<post_type>_form_position` enum.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormPositionAcceptsEnumValues()
+	{
+		$abilities = convertkit_get_abilities();
+
+		foreach ( [ 'before_content', 'after_content', 'before_after_content', 'after_element' ] as $position ) {
+			$result = $abilities['kit/settings-general-update']->execute_callback(
+				[ 'page_form_position' => $position ]
+			);
+
+			$this->assertIsArray($result, "Expected `$position` to be accepted.");
+			$this->assertSame($position, $result['page_form_position']);
+		}
+	}
+
+	/**
+	 * Test that kit/settings-general-update rejects a
+	 * `<post_type>_form_position` value outside the enum.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormPositionRejectsUnknownValue()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form_position' => 'middle' ]
+		);
+
+		$this->assertInstanceOf(\WP_Error::class, $result);
+	}
+
+	/**
+	 * Test that kit/settings-general-update accepts every value in the
+	 * `<post_type>_form_position_element` enum.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormPositionElementAcceptsEnumValues()
+	{
+		$abilities = convertkit_get_abilities();
+
+		foreach ( [ 'p', 'h2', 'h3', 'h4', 'h5', 'h6', 'img' ] as $element ) {
+			$result = $abilities['kit/settings-general-update']->execute_callback(
+				[ 'page_form_position_element' => $element ]
+			);
+
+			$this->assertIsArray($result, "Expected `$element` to be accepted.");
+			$this->assertSame($element, $result['page_form_position_element']);
+		}
+	}
+
+	/**
+	 * Test that kit/settings-general-update rejects `h1` for
+	 * `<post_type>_form_position_element`. h1 is deliberately excluded
+	 * from the enum because it's the post title.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormPositionElementRejectsH1()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form_position_element' => 'h1' ]
+		);
+
+		$this->assertInstanceOf(\WP_Error::class, $result);
+	}
+
+	/**
+	 * Test the acceptable range for
+	 * `<post_type>_form_position_element_index` (1..999 inclusive).
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormPositionElementIndexRange()
+	{
+		$abilities = convertkit_get_abilities();
+
+		// Boundary values are accepted.
+		foreach ( [ 1, 999 ] as $index ) {
+			$result = $abilities['kit/settings-general-update']->execute_callback(
+				[ 'page_form_position_element_index' => $index ]
+			);
+			$this->assertIsArray($result, "Expected index `$index` to be accepted.");
+			$this->assertSame($index, $result['page_form_position_element_index']);
+		}
+
+		// Out-of-range values are rejected.
+		foreach ( [ 0, 1000, -1 ] as $index ) {
+			$result = $abilities['kit/settings-general-update']->execute_callback(
+				[ 'page_form_position_element_index' => $index ]
+			);
+			$this->assertInstanceOf(\WP_Error::class, $result, "Expected index `$index` to be rejected.");
+		}
+	}
+
+	/**
+	 * Test that a partial update to `page_form` preserves other settings
+	 * — including other per-post-type keys and unrelated settings.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePartialPageFormPreservesOtherSettings()
+	{
+		// Seed a full settings state.
+		$this->populateSettings();
+
+		$abilities = convertkit_get_abilities();
+
+		// Update only page_form.
+		$result = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form' => 999 ]
+		);
+
+		$this->assertSame(999, $result['page_form']);
+
+		// Confirm unrelated settings are unchanged.
+		$this->assertEquals('on', $result['debug']);
+
+		// Confirm the other page_form_* keys are unchanged.
+		$this->assertEquals('before_content', $result['page_form_position']);
+		$this->assertEquals('h2', $result['page_form_position_element']);
+		$this->assertEquals(2, $result['page_form_position_element_index']);
+
+		// Confirm the post_form_* keys are unchanged.
+		$this->assertEquals( (int) $_ENV['CONVERTKIT_API_FORM_ID'], $result['post_form']);
+	}
+
+	/**
+	 * Test that update -> get round-trip returns the updated per-post-type
+	 * Default Form value.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdatePageFormRoundTrip()
+	{
+		$abilities = convertkit_get_abilities();
+
+		$abilities['kit/settings-general-update']->execute_callback(
+			[ 'page_form' => 555 ]
+		);
+
+		$get_result = $abilities['kit/settings-general-get']->execute_callback([]);
+
+		$this->assertSame(555, $get_result['page_form']);
+	}
+
+	/**
+	 * Test that a custom post type added via the
+	 * `convertkit_supported_post_types` filter is dynamically added to
+	 * the schema, and that get/update work against its keys.
+	 *
+	 * This proves the schema iterates the filter's supported post types
+	 * at request time rather than using a hardcoded list.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testGetIncludesCustomPostTypeRegisteredViaFilter()
+	{
+		// Register the CPT with WordPress first so the filter's output
+		// is meaningful (get_post_type_object() succeeds downstream).
+		register_post_type(
+			'kit_test_cpt',
+			[
+				'public' => true,
+				'label'  => 'Kit Test CPT',
+			]
+		);
+
+		// Append the CPT to the supported post types.
+		$filter = function ( $post_types ) {
+			$post_types[] = 'kit_test_cpt';
+			return $post_types;
+		};
+		add_filter('convertkit_supported_post_types', $filter);
+
+		try {
+			$abilities = convertkit_get_abilities();
+
+			// Get should include the CPT's four Default Form keys.
+			$get_result = $abilities['kit/settings-general-get']->execute_callback([]);
+			$this->assertArrayHasKey('kit_test_cpt_form', $get_result);
+			$this->assertArrayHasKey('kit_test_cpt_form_position', $get_result);
+			$this->assertArrayHasKey('kit_test_cpt_form_position_element', $get_result);
+			$this->assertArrayHasKey('kit_test_cpt_form_position_element_index', $get_result);
+
+			// Update should accept them.
+			$update_result = $abilities['kit/settings-general-update']->execute_callback(
+				[
+					'kit_test_cpt_form'                  => 777,
+					'kit_test_cpt_form_position'         => 'after_content',
+					'kit_test_cpt_form_position_element' => 'h3',
+					'kit_test_cpt_form_position_element_index' => 5,
+				]
+			);
+			$this->assertIsArray($update_result);
+			$this->assertSame(777, $update_result['kit_test_cpt_form']);
+			$this->assertSame('after_content', $update_result['kit_test_cpt_form_position']);
+			$this->assertSame('h3', $update_result['kit_test_cpt_form_position_element']);
+			$this->assertSame(5, $update_result['kit_test_cpt_form_position_element_index']);
+		} finally {
+			remove_filter('convertkit_supported_post_types', $filter);
+			unregister_post_type('kit_test_cpt');
+		}
+	}
+
+	/**
+	 * Test that kit/settings-general-update rejects a key that looks
+	 * post-type-shaped but is not a supported post type — proving
+	 * `additionalProperties: false` is enforced against the dynamic schema.
+	 *
+	 * @since   3.4.0
+	 */
+	public function testUpdateRejectsUnsupportedPostTypeFormKey()
+	{
+		$abilities = convertkit_get_abilities();
+		$result    = $abilities['kit/settings-general-update']->execute_callback(
+			[ 'unsupportedcpt_form' => 123 ]
+		);
+
+		$this->assertInstanceOf(\WP_Error::class, $result);
 	}
 
 	/**
@@ -256,10 +592,16 @@ class MCPSettingsGeneralTest extends WPTestCase
 				'no_css'                             => '',
 				'no_add_new_button'                  => '',
 				'usage_tracking'                     => '',
-				'post_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'page_form'                          => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'article_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
-				'product_form'                       => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form'                          => (int) $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form_position'                 => 'after_content',
+				'post_form_position_element'         => 'p',
+				'post_form_position_element_index'   => 1,
+				'page_form'                          => (int) $_ENV['CONVERTKIT_API_FORM_ID'],
+				'page_form_position'                 => 'before_content',
+				'page_form_position_element'         => 'h2',
+				'page_form_position_element_index'   => 2,
+				'article_form'                       => (int) $_ENV['CONVERTKIT_API_FORM_ID'],
+				'product_form'                       => (int) $_ENV['CONVERTKIT_API_FORM_ID'],
 				'non_inline_form'                    => array(),
 				'non_inline_form_honor_none_setting' => '',
 				'recaptcha_site_key'                 => '',

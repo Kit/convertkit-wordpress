@@ -625,61 +625,109 @@ class ConvertKit_Settings {
 	 */
 	public function get_schema() {
 
+		$properties = array(
+			'non_inline_form'                    => array(
+				'type'        => 'array',
+				'items'       => array( 'type' => 'integer' ),
+				'description' => __( 'IDs of non-inline Forms to display site-wide.', 'convertkit' ),
+			),
+			'non_inline_form_honor_none_setting' => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether the site-wide non-inline Form honors a per-Page / per-Post "None" Form setting.', 'convertkit' ),
+			),
+			'non_inline_form_limit_per_session'  => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether to limit non-inline Form display to once per session.', 'convertkit' ),
+			),
+			'recaptcha_site_key'                 => array(
+				'type'        => 'string',
+				'description' => __( 'Google reCAPTCHA v3 site key.', 'convertkit' ),
+			),
+			'recaptcha_minimum_score'            => array(
+				'type'        => 'number',
+				'minimum'     => 0,
+				'maximum'     => 1,
+				'description' => __( 'Minimum Google reCAPTCHA v3 score (0.0 - 1.0) below which a request is treated as spam.', 'convertkit' ),
+			),
+			'debug'                              => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether debug logging is enabled.', 'convertkit' ),
+			),
+			'no_scripts'                         => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether the Plugin\'s frontend JavaScript is disabled.', 'convertkit' ),
+			),
+			'no_css'                             => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether the Plugin\'s frontend CSS is disabled.', 'convertkit' ),
+			),
+			'no_add_new_button'                  => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether the "Add New" button for Landing Pages / Member Content is hidden in the WordPress Admin.', 'convertkit' ),
+			),
+			'usage_tracking'                     => array(
+				'type'        => 'string',
+				'enum'        => array( '', 'on' ),
+				'description' => __( 'Whether anonymous usage tracking is enabled.', 'convertkit' ),
+			),
+		);
+
+		// Per-post-type Default Form settings, mirroring get_defaults().
+		foreach ( convertkit_get_supported_post_types() as $post_type ) {
+			$properties[ $post_type . '_form' ] = array(
+				'type'        => 'integer',
+				'minimum'     => -1,
+				'description' => sprintf(
+					/* translators: Post type slug. */
+					__( 'Default Form ID to display on %s. `-1` = Plugin Default; `0` = None; positive integer = specific Kit Form ID.', 'convertkit' ),
+					$post_type
+				),
+			);
+
+			$properties[ $post_type . '_form_position' ] = array(
+				'type'        => 'string',
+				'enum'        => array( 'before_content', 'after_content', 'before_after_content', 'after_element' ),
+				'description' => sprintf(
+					/* translators: Post type slug. */
+					__( 'Where the Default Form displays relative to the %s content.', 'convertkit' ),
+					$post_type
+				),
+			);
+
+			$properties[ $post_type . '_form_position_element' ] = array(
+				'type'        => 'string',
+				'enum'        => array( 'p', 'h2', 'h3', 'h4', 'h5', 'h6', 'img' ),
+				'description' => sprintf(
+					/* translators: 1: Post type slug, 2: Post type slug. */
+					__( 'HTML element after which to display the Default Form on %1$s. Only used when `%2$s_form_position` is `after_element`.', 'convertkit' ),
+					$post_type,
+					$post_type
+				),
+			);
+
+			$properties[ $post_type . '_form_position_element_index' ] = array(
+				'type'        => 'integer',
+				'minimum'     => 1,
+				'maximum'     => 999,
+				'description' => sprintf(
+					/* translators: 1: Post type slug, 2: Post type slug. */
+					__( 'Nth occurrence of the element after which to display the Default Form on %1$s. Only used when `%2$s_form_position` is `after_element`.', 'convertkit' ),
+					$post_type,
+					$post_type
+				),
+			);
+		}
+
 		return array(
 			'type'                 => 'object',
 			'additionalProperties' => false,
-			'properties'           => array(
-				'non_inline_form'                    => array(
-					'type'        => 'array',
-					'items'       => array( 'type' => 'integer' ),
-					'description' => __( 'IDs of non-inline Forms to display site-wide.', 'convertkit' ),
-				),
-				'non_inline_form_honor_none_setting' => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether the site-wide non-inline Form honors a per-Page / per-Post "None" Form setting.', 'convertkit' ),
-				),
-				'non_inline_form_limit_per_session'  => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether to limit non-inline Form display to once per session.', 'convertkit' ),
-				),
-				'recaptcha_site_key'                 => array(
-					'type'        => 'string',
-					'description' => __( 'Google reCAPTCHA v3 site key.', 'convertkit' ),
-				),
-				'recaptcha_minimum_score'            => array(
-					'type'        => 'number',
-					'minimum'     => 0,
-					'maximum'     => 1,
-					'description' => __( 'Minimum Google reCAPTCHA v3 score (0.0 - 1.0) below which a request is treated as spam.', 'convertkit' ),
-				),
-				'debug'                              => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether debug logging is enabled.', 'convertkit' ),
-				),
-				'no_scripts'                         => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether the Plugin\'s frontend JavaScript is disabled.', 'convertkit' ),
-				),
-				'no_css'                             => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether the Plugin\'s frontend CSS is disabled.', 'convertkit' ),
-				),
-				'no_add_new_button'                  => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether the "Add New" button for Landing Pages / Member Content is hidden in the WordPress Admin.', 'convertkit' ),
-				),
-				'usage_tracking'                     => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether anonymous usage tracking is enabled.', 'convertkit' ),
-				),
-			),
+			'properties'           => $properties,
 		);
 
 	}
