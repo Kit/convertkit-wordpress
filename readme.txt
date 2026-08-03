@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 3.3.6
+Stable tag: 3.3.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -345,6 +345,11 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.3.7 2026-07-31
+* Added: Settings: Spam Protection: Cloudflare Turnstile option
+* Updated: Settings: reCAPTCHA: Moved to Spam Protection section
+* Fix: Form Builder: "This block has encountered an error" when Plugin disconnected from Kit
 
 ### 3.3.6 2026-07-20
 * Fix: Member Content: Tags: Require Login is now always enabled, to ensure subscribers authenticate to access gated content

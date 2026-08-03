@@ -624,6 +624,12 @@ class PluginSettingsGeneralCest
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
 
+		// Provider defaults to reCAPTCHA, so its fields should be visible.
+		$I->seeInField('#_wp_convertkit_settings_spam_protection_provider', 'Google reCAPTCHA v3');
+		$I->seeElement('#recaptcha_site_key');
+		$I->seeElement('#recaptcha_secret_key');
+		$I->seeElement('#recaptcha_minimum_score');
+
 		// Fill in reCAPTCHA settings.
 		$I->fillField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
 		$I->fillField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
@@ -655,6 +661,69 @@ class PluginSettingsGeneralCest
 		$I->dontSeeInField('#recaptcha_site_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SITE_KEY']);
 		$I->dontSeeInField('#recaptcha_secret_key', $_ENV['CONVERTKIT_API_RECAPTCHA_SECRET_KEY']);
 		$I->dontSeeInField('#recaptcha_minimum_score', '0.01');
+	}
+
+	/**
+	 * Test that the Spam Protection provider dropdown correctly toggles between
+	 * reCAPTCHA and Cloudflare Turnstile field visibility, and that Turnstile
+	 * settings can be saved and cleared without PHP errors.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testCloudflareTurnstileSettings(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Confirm no Cloudflare Turnstile fields are visible.
+		$I->waitForElementNotVisible('#cloudflare_turnstile_site_key');
+		$I->waitForElementNotVisible('#cloudflare_turnstile_secret_key');
+
+		// Switch provider to Cloudflare Turnstile.
+		$I->waitForElementVisible('#_wp_convertkit_settings_spam_protection_provider');
+		$I->selectOption('#_wp_convertkit_settings_spam_protection_provider', 'Cloudflare Turnstile');
+
+		// Turnstile fields should now be visible; reCAPTCHA fields hidden.
+		$I->waitForElementVisible('#cloudflare_turnstile_site_key');
+		$I->waitForElementVisible('#cloudflare_turnstile_secret_key');
+		$I->waitForElementNotVisible('#recaptcha_site_key');
+		$I->waitForElementNotVisible('#recaptcha_secret_key');
+		$I->waitForElementNotVisible('#recaptcha_minimum_score');
+
+		// Fill in Turnstile settings using placeholder values (the settings screen
+		// does not perform a live handshake with Cloudflare; we only need to verify
+		// the values persist).
+		$I->fillField('#cloudflare_turnstile_site_key', $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SITE_KEY']);
+		$I->fillField('#cloudflare_turnstile_secret_key', $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SECRET_KEY']);
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the Turnstile settings were saved and the provider selection persisted.
+		$I->waitForElementVisible('#_wp_convertkit_settings_spam_protection_provider');
+		$I->seeInField('#_wp_convertkit_settings_spam_protection_provider', 'Cloudflare Turnstile');
+		$I->seeInField('#cloudflare_turnstile_site_key', $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SITE_KEY']);
+		$I->seeInField('#cloudflare_turnstile_secret_key', $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SECRET_KEY']);
+
+		// Clear the Turnstile settings by reselecting Turnstile so the fields.
+		$I->clearField('#cloudflare_turnstile_site_key');
+		$I->clearField('#cloudflare_turnstile_secret_key');
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check the Turnstile settings were cleared.
+		$I->seeInField('#cloudflare_turnstile_site_key', '');
+		$I->seeInField('#cloudflare_turnstile_secret_key', '');
 	}
 
 	/**
