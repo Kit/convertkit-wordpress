@@ -24,6 +24,40 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block displays a message with a link that opens
+	 * a popup window with the Plugin's Setup Wizard, when the Plugin has
+	 * Not connected to Kit.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWhenNoCredentials(EndToEndTester $I)
+	{
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: No Credentials'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Test that the popup window works.
+		$I->testBlockNoCredentialsPopupWindow(
+			$I,
+			blockName: 'convertkit-form-builder'
+		);
+
+		// Save page to avoid a browser alert when _passed() runs to deactivate the Plugin.
+		$I->publishGutenbergPage($I);
+	}
+
+	/**
 	 * Test the Form Builder block's conditional fields work.
 	 *
 	 * @since   3.0.6
@@ -1180,6 +1214,71 @@ class PageBlockFormBuilderCest
 
 		// Publish and view the Page on the frontend site.
 		$I->publishAndViewGutenbergPage($I);
+	}
+
+	/**
+	 * Test the Form Builder block works when Cloudflare Turnstile is enabled
+	 * as the active spam protection provider.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderWithCloudflareTurnstileEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources, switching the active spam protection
+		// provider from the default (reCAPTCHA) to Cloudflare Turnstile.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'spam_protection_provider'        => 'cloudflare_turnstile',
+				'cloudflare_turnstile_site_key'   => $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SITE_KEY'],
+				'cloudflare_turnstile_secret_key' => $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SECRET_KEY'],
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Cloudflare Turnstile'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Confirm the Turnstile widget div is rendered inside the form, immediately
+		// before the submit button, and that the Turnstile client script is enqueued.
+		$I->seeElementInDOM('div.wp-block-convertkit-form-builder form div.cf-turnstile[data-appearance="interaction-only"]');
+		$I->seeElementInDOM('div.wp-block-convertkit-form-builder button[type="submit"]');
+		$I->dontSeeElementInDOM('div.wp-block-convertkit-form-builder button[type="submit"][class*="g-recaptcha"]');
+		$I->seeInSource('<script src="https://challenges.cloudflare.com/turnstile/v0/api.js"');
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Cloudflare Turnstile will block this submission as it's automated.
+		// Confirm no subscribed message is displayed.
+		$I->waitForElementNotVisible('.convertkit-form-builder-subscribed-message');
+		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
 
 	/**
