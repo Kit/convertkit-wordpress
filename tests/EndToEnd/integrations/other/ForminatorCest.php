@@ -706,7 +706,7 @@ class ForminatorCest
 	private function _createForminatorQuiz(EndToEndTester $I)
 	{
 		// Create Form for Leads.
-		// Forminator 1.55+ requires the lead form's post_status to be 'leads' (not 'publish');
+		// Forminator 1.55+ requires the lead form's post_status to be 'leads' (not 'publish').
 		$formLeadsID = $I->havePostInDatabase(
 			[
 				'post_name'   => 'forminator-form-leads',
