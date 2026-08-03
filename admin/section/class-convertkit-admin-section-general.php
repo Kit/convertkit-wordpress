@@ -157,9 +157,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			'settings'
 		);
 
-		// Get Account Details, which we'll use in account_name_callback(), but also lets us test
-		// whether the API credentials are valid.
-		$this->account = $this->api->get_account();
+		// Refresh account details.
+		$account       = new ConvertKit_Account();
+		$this->account = $account->refresh();
 
 		// If the request succeeded, no need to perform further actions.
 		if ( ! is_wp_error( $this->account ) ) {
@@ -224,6 +224,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Delete cached resources.
+		$account         = new ConvertKit_Account();
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();
 		$custom_fields   = new ConvertKit_Resource_Custom_Fields();
 		$forms           = new ConvertKit_Resource_Forms();
@@ -232,6 +233,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$products        = new ConvertKit_Resource_Products();
 		$sequences       = new ConvertKit_Resource_Sequences();
 		$tags            = new ConvertKit_Resource_Tags();
+		$account->delete();
 		$creator_network->delete();
 		$custom_fields->delete();
 		$forms->delete();

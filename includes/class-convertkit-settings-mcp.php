@@ -65,13 +65,21 @@ class ConvertKit_Settings_MCP {
 	}
 
 	/**
-	 * Returns whether the MCP server is enabled.
+	 * Returns whether the user has access to MCP via a paid plan,
+	 * and if so whether the MCP server is enabled in the Plugin's settings.
 	 *
 	 * @since   3.4.0
 	 *
 	 * @return  bool
 	 */
 	public function enabled() {
+
+		// Bail if the connected Kit account isn't on a paid plan.
+		// This queries the cached account details, so no live API call is made.
+		$account = new ConvertKit_Account();
+		if ( ! $account->is_paid_plan() ) {
+			return false;
+		}
 
 		return ( $this->settings['enabled'] === 'on' ? true : false );
 

@@ -24,6 +24,16 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	private $authorization_header = false;
 
 	/**
+	 * The Account class instance, used to check whether the connected Kit
+	 * account is on a paid plan (required for MCP access).
+	 *
+	 * @since   3.4.0
+	 *
+	 * @var     ConvertKit_Account
+	 */
+	private $account;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   3.4.0
@@ -52,6 +62,10 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				'wrap'     => true,
 			),
 		);
+
+		// Refresh account details.
+		$account       = new ConvertKit_Account();
+		$this->account = $account->refresh();
 
 		$this->maybe_generate_authentication_header();
 		$this->maybe_revoke_application_password();
@@ -168,6 +182,19 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 */
 	public function register_fields() {
 
+		// Only show MCP settings if the connected Kit account is on a paid plan.
+		if ( ! $this->account->is_paid_plan() ) {
+			add_settings_field(
+				'upgrade_required',
+				__( 'Paid Plan Required', 'convertkit' ),
+				array( $this, 'upgrade_required_callback' ),
+				$this->settings_key,
+				$this->name
+			);
+
+			return;
+		}
+
 		// Enable.
 		add_settings_field(
 			'enabled',
@@ -238,6 +265,27 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	public function documentation_url() {
 
 		return '#';
+
+	}
+
+	/**
+	 * Renders the upgrade CTA when the connected Kit account is on
+	 * the free plan.
+	 *
+	 * @since   3.4.0
+	 */
+	public function upgrade_required_callback() {
+
+		?>
+		<p>
+			<?php esc_html_e( 'MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.', 'convertkit' ); ?>
+		</p>
+		<p>
+			<a href="https://app.kit.com/account_settings/billing" class="button button-primary" target="_blank">
+				<?php esc_html_e( 'Upgrade Kit Account', 'convertkit' ); ?>
+			</a>
+		</p>
+		<?php
 
 	}
 
