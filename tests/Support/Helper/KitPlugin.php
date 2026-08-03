@@ -584,6 +584,9 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('_wp_convertkit_settings_mcp');
 		$I->dontHaveOptionInDatabase('convertkit_version');
 
+		// Account.
+		$I->dontHaveOptionInDatabase('convertkit_account');
+
 		// Resources.
 		$I->dontHaveOptionInDatabase('convertkit_broadcasts');
 		$I->dontHaveOptionInDatabase('convertkit_broadcasts_last_queried');
