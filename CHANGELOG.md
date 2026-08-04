@@ -1,3 +1,8 @@
+### 3.3.7 2026-07-31
+* Added: Settings: Spam Protection: Cloudflare Turnstile option
+* Updated: Settings: reCAPTCHA: Moved to Spam Protection section
+* Fix: Form Builder: "This block has encountered an error" when Plugin disconnected from Kit
+
 ### 3.3.6 2026-07-20
 * Fix: Member Content: Tags: Require Login is now always enabled, to ensure subscribers authenticate to access gated content
 * Removed: Kit Forms: Store subscriber ID as cookie when submitting an embedded Kit form

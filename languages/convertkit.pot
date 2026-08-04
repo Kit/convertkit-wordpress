@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.3.6\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.3.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-20T05:25:24+00:00\n"
+"POT-Creation-Date: 2026-07-31T00:43:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -41,7 +41,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:72
 #: includes/blocks/class-convertkit-block-form-builder-field-email.php:108
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:90
-#: includes/blocks/class-convertkit-block-form-builder.php:367
+#: includes/blocks/class-convertkit-block-form-builder.php:363
 #: includes/blocks/class-convertkit-block-form-trigger.php:104
 #: includes/blocks/class-convertkit-block-form.php:134
 #: includes/blocks/class-convertkit-block-product.php:126
@@ -284,7 +284,7 @@ msgid "Import now"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-broadcasts.php:501
-#: admin/section/class-convertkit-admin-section-general.php:746
+#: admin/section/class-convertkit-admin-section-general.php:794
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:125
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:140
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:150
@@ -385,7 +385,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-broadcasts.php:471
 #: includes/blocks/class-convertkit-block-content.php:159
 #: includes/blocks/class-convertkit-block-form-builder-field.php:245
-#: includes/blocks/class-convertkit-block-form-builder.php:604
+#: includes/blocks/class-convertkit-block-form-builder.php:610
 #: includes/blocks/class-convertkit-block-form-trigger.php:294
 #: includes/blocks/class-convertkit-block-form.php:307
 #: includes/blocks/class-convertkit-block-product.php:336
@@ -397,7 +397,7 @@ msgid "Non-inline Forms"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:73
-msgid "reCAPTCHA"
+msgid "Spam Protection"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:78
@@ -441,248 +441,280 @@ msgid "Limit Display"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:415
-msgid "reCAPTCHA: Site Key"
+msgid "Provider"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-general.php:422
+msgid "Select which spam protection service to use for the Member Content signup form and Form Builder block."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:430
+msgid "reCAPTCHA: Site Key"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:438
 msgid "Enter your Google reCAPTCHA v3 Site Key. When specified, this will be used to reduce spam signups."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:428
+#: admin/section/class-convertkit-admin-section-general.php:444
 msgid "reCAPTCHA: Secret Key"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:435
+#: admin/section/class-convertkit-admin-section-general.php:452
 msgid "Enter your Google reCAPTCHA v3 Secret Key. When specified, this will be used to reduce spam signups."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:441
+#: admin/section/class-convertkit-admin-section-general.php:458
 msgid "reCAPTCHA: Minimum Score"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:451
+#: admin/section/class-convertkit-admin-section-general.php:469
 msgid "Enter the minimum threshold for a subscriber to pass Google reCAPTCHA. A higher number will reduce spam signups (1.0 is very likely a good interaction, 0.0 is very likely a bot)."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:459
+#: admin/section/class-convertkit-admin-section-general.php:477
+msgid "Cloudflare Turnstile: Site Key"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:485
+msgid "Enter your Cloudflare Turnstile Site Key. When specified, this will be used to reduce spam signups."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:491
+msgid "Cloudflare Turnstile: Secret Key"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:499
+msgid "Enter your Cloudflare Turnstile Secret Key. When specified, this will be used to reduce spam signups."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:507
 msgid "Debug"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:470
+#: admin/section/class-convertkit-admin-section-general.php:518
 msgid "Disable JavaScript"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:481
+#: admin/section/class-convertkit-admin-section-general.php:529
 msgid "Disable CSS"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:492
+#: admin/section/class-convertkit-admin-section-general.php:540
 msgid "Disable Add New Landing Page / Member Content Button"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:503
+#: admin/section/class-convertkit-admin-section-general.php:551
 msgid "Usage Tracking"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:520
+#: admin/section/class-convertkit-admin-section-general.php:568
 msgid "Forms can be embedded before and/or after (or following number of elements) on every post or page (in single view only) across your site by using the settings below."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:521
+#: admin/section/class-convertkit-admin-section-general.php:569
 msgid "You can also configure non-inline forms to display site wide under the \"Non-inline Forms\" section below."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:522
+#: admin/section/class-convertkit-admin-section-general.php:570
 msgid "These default form settings can be overridden using the Kit meta box on a page or post's edit screen. For site wide non-inline forms to respect when a post/page has forms disabled, enable the \"Behavior\" option in the \"Non-inline Forms\" section below."
 msgstr ""
 
 #. translators: [convertkit] shortcode, wrapped in <code> tags
-#: admin/section/class-convertkit-admin-section-general.php:527
+#: admin/section/class-convertkit-admin-section-general.php:575
 #, php-format
 msgid "The default form can be inserted into the middle of post or page content by using either the %s shortcode or block."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:544
+#: admin/section/class-convertkit-admin-section-general.php:592
 msgid "Defines non-inline forms to display site wide, and if these forms should display on Pages / Posts that have the Kit Form setting = None."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:556
-msgid "Configure reCAPTCHA to protect the Member Content signup form and Form Builder block from spam and abuse."
+#: admin/section/class-convertkit-admin-section-general.php:604
+msgid "Configure a spam protection service to protect the Member Content signup form and Form Builder block from spam and abuse. Choose a provider below, then enter the corresponding site and secret keys."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:568
+#: admin/section/class-convertkit-admin-section-general.php:616
 msgid "Defines advanced configuration settings, usually when working with support or needing to disable JS or CSS."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:597
+#: admin/section/class-convertkit-admin-section-general.php:645
 msgid "(Not specified)"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:612
+#: admin/section/class-convertkit-admin-section-general.php:660
 msgid "Disconnect"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:706
+#: admin/section/class-convertkit-admin-section-general.php:754
 msgid "No Forms exist in Kit."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:707
+#: admin/section/class-convertkit-admin-section-general.php:755
 msgid "Click here to create your first form"
 msgstr ""
 
 #. translators: Post Type name, plural
-#: admin/section/class-convertkit-admin-section-general.php:720
-#: admin/section/class-convertkit-admin-section-general.php:730
+#: admin/section/class-convertkit-admin-section-general.php:768
+#: admin/section/class-convertkit-admin-section-general.php:778
 #, php-format
 msgid "Select a form above to automatically output below all %s."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:723
-#: admin/section/class-convertkit-admin-section-general.php:860
+#: admin/section/class-convertkit-admin-section-general.php:771
+#: admin/section/class-convertkit-admin-section-general.php:908
 #: includes/class-convertkit-broadcasts-exporter.php:150
 #: views/backend/setup-wizard/convertkit-setup/content-configuration.php:79
 #: views/backend/setup-wizard/convertkit-setup/content-configuration.php:120
 msgid "Click here"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:724
-#: admin/section/class-convertkit-admin-section-general.php:861
+#: admin/section/class-convertkit-admin-section-general.php:772
+#: admin/section/class-convertkit-admin-section-general.php:909
 msgid "to preview how this will display."
 msgstr ""
 
 #. translators: Post type singular name
-#: admin/section/class-convertkit-admin-section-general.php:773
+#: admin/section/class-convertkit-admin-section-general.php:821
 #, php-format
 msgid "Before %s content"
 msgstr ""
 
 #. translators: Post type singular name
-#: admin/section/class-convertkit-admin-section-general.php:778
+#: admin/section/class-convertkit-admin-section-general.php:826
 #, php-format
 msgid "After %s content"
 msgstr ""
 
 #. translators: Post type singular name
-#: admin/section/class-convertkit-admin-section-general.php:783
+#: admin/section/class-convertkit-admin-section-general.php:831
 #, php-format
 msgid "Before and after %s content"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:786
+#: admin/section/class-convertkit-admin-section-general.php:834
 msgid "After element"
 msgstr ""
 
 #. translators: Post Type name, plural
-#: admin/section/class-convertkit-admin-section-general.php:790
+#: admin/section/class-convertkit-admin-section-general.php:838
 #, php-format
 msgid "Where forms should display relative to the %s content"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:825
+#: admin/section/class-convertkit-admin-section-general.php:873
 msgid "Paragraphs"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:826
+#: admin/section/class-convertkit-admin-section-general.php:874
 msgid "Headings <h2>"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:827
+#: admin/section/class-convertkit-admin-section-general.php:875
 msgid "Headings <h3>"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:828
+#: admin/section/class-convertkit-admin-section-general.php:876
 msgid "Headings <h4>"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:829
+#: admin/section/class-convertkit-admin-section-general.php:877
 msgid "Headings <h5>"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:830
+#: admin/section/class-convertkit-admin-section-general.php:878
 msgid "Headings <h6>"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:831
+#: admin/section/class-convertkit-admin-section-general.php:879
 msgid "Images"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:833
+#: admin/section/class-convertkit-admin-section-general.php:881
 msgid "The number of elements before outputting the form."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:850
+#: admin/section/class-convertkit-admin-section-general.php:898
 msgid "No non-inline Forms exist in Kit."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:851
+#: admin/section/class-convertkit-admin-section-general.php:899
 msgid "Click here to create your first modal, slide in or sticky bar form"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:859
+#: admin/section/class-convertkit-admin-section-general.php:907
 msgid "Automatically display one or more modal, slide-in, or sticky bar forms across your site. This setting is overridden if a default non-inline form is set above, a specific non-inline form or \"None\" option is chosen for a post/page, or a non-inline form is specified in a block/shortcode."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:897
+#: admin/section/class-convertkit-admin-section-general.php:945
 msgid "If checked, do not display the site wide form(s) above on Pages / Posts that have their Kit Form setting = None."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:917
+#: admin/section/class-convertkit-admin-section-general.php:965
 msgid "If checked, one non-inline form will be displayed per session. This applies to all non-inline forms defined on this screen, Page / Post / Category settings, and any Form blocks or shortcodes specifying a non-inline form."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1000
+#: admin/section/class-convertkit-admin-section-general.php:983
+msgid "Google reCAPTCHA v3"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:984
+msgid "Cloudflare Turnstile"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-general.php:1111
 msgid "Log requests to file and output browser console messages."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1001
+#: admin/section/class-convertkit-admin-section-general.php:1112
 msgid "You can ignore this unless you're working with our support team to resolve an issue. Decheck this option to improve performance."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1018
+#: admin/section/class-convertkit-admin-section-general.php:1129
 msgid "Prevent plugin JavaScript files loading on the frontend site. This will disable the custom content and tagging features of the plugin. Does not apply to embedding forms or landing pages. Use with caution!"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1035
+#: admin/section/class-convertkit-admin-section-general.php:1146
 msgid "Prevents loading plugin CSS files. This will disable styling on broadcasts, form trigger buttons, product buttons and member's content. Use with caution!"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1039
+#: admin/section/class-convertkit-admin-section-general.php:1150
 msgid "To customize forms and their styling, use the"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1041
+#: admin/section/class-convertkit-admin-section-general.php:1152
 msgid "Kit form editor"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1043
+#: admin/section/class-convertkit-admin-section-general.php:1154
 msgid "For creators who require form designs to follow their WordPress theme, use the Kit Form Builder block in the block editor."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1046
+#: admin/section/class-convertkit-admin-section-general.php:1157
 msgid "For developers who require custom form designs through use of CSS, consider using the"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1047
+#: admin/section/class-convertkit-admin-section-general.php:1158
 msgid "or"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1048
+#: admin/section/class-convertkit-admin-section-general.php:1159
 msgid "integrations."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1067
+#: admin/section/class-convertkit-admin-section-general.php:1178
 msgid "Hide the \"Add New\" button on Pages for creating Landing Pages and Member Content."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1084
+#: admin/section/class-convertkit-admin-section-general.php:1195
 msgid "By allowing us to collect usage data, we can better understand which WordPress configurations, themes and plugins we should test."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1088
+#: admin/section/class-convertkit-admin-section-general.php:1199
 msgid "Complete documentation on usage tracking can be found"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-general.php:1090
+#: admin/section/class-convertkit-admin-section-general.php:1201
 #: views/backend/setup-wizard/convertkit-setup/content-configuration.php:150
 msgid "here"
 msgstr ""
@@ -1029,7 +1061,7 @@ msgid "Displays a modal, sticky bar or slide in form to display when the link is
 msgstr ""
 
 #: includes/block-formatters/class-convertkit-block-formatter-form-link.php:143
-#: includes/blocks/class-convertkit-block-form-builder.php:572
+#: includes/blocks/class-convertkit-block-form-builder.php:578
 #: includes/blocks/class-convertkit-block-form-trigger.php:105
 #: includes/blocks/class-convertkit-block-form-trigger.php:255
 #: includes/blocks/class-convertkit-block-form.php:135
@@ -1087,7 +1119,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:71
 #: includes/blocks/class-convertkit-block-form-builder-field-email.php:107
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:89
-#: includes/blocks/class-convertkit-block-form-builder.php:366
+#: includes/blocks/class-convertkit-block-form-builder.php:362
 #: includes/blocks/class-convertkit-block-form-trigger.php:103
 #: includes/blocks/class-convertkit-block-form.php:133
 #: includes/blocks/class-convertkit-block-product.php:125
@@ -1099,6 +1131,7 @@ msgid "Posts"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-broadcasts.php:228
+#: includes/blocks/class-convertkit-block-form-builder.php:402
 #: includes/blocks/class-convertkit-block-form-trigger.php:128
 #: includes/blocks/class-convertkit-block-form.php:158
 #: includes/blocks/class-convertkit-block-product.php:150
@@ -1106,6 +1139,7 @@ msgid "Not connected to Kit."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-broadcasts.php:230
+#: includes/blocks/class-convertkit-block-form-builder.php:404
 #: includes/blocks/class-convertkit-block-form-trigger.php:130
 #: includes/blocks/class-convertkit-block-form.php:160
 #: includes/blocks/class-convertkit-block-product.php:152
@@ -1250,7 +1284,7 @@ msgid "Content"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-content.php:140
-#: includes/blocks/class-convertkit-block-form-builder.php:578
+#: includes/blocks/class-convertkit-block-form-builder.php:584
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:88
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:75
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:72
@@ -1290,7 +1324,7 @@ msgid "The type of field to display."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:144
-#: includes/blocks/class-convertkit-block-form-builder.php:563
+#: includes/blocks/class-convertkit-block-form-builder.php:569
 msgid "Text"
 msgstr ""
 
@@ -1354,70 +1388,74 @@ msgstr ""
 msgid "Whether the field is required."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:124
+#: includes/blocks/class-convertkit-block-form-builder.php:120
 msgid "Plugin Access Token not configured"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:333
+#: includes/blocks/class-convertkit-block-form-builder.php:329
 msgid "Kit Form Builder"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:362
+#: includes/blocks/class-convertkit-block-form-builder.php:358
 msgid "Build a subscription form with Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:368
+#: includes/blocks/class-convertkit-block-form-builder.php:364
 msgid "Form Builder"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:548
+#: includes/blocks/class-convertkit-block-form-builder.php:405
+msgid "Connect your Kit account at Settings > Kit, and then refresh this page to configure this block."
+msgstr ""
+
+#: includes/blocks/class-convertkit-block-form-builder.php:554
 msgid "Redirect"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:550
+#: includes/blocks/class-convertkit-block-form-builder.php:556
 msgid "The URL to redirect to after the visitor subscribes. If not specified, the visitor will remain on the current page."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:553
+#: includes/blocks/class-convertkit-block-form-builder.php:559
 msgid "Store form submissions"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:555
+#: includes/blocks/class-convertkit-block-form-builder.php:561
 msgid "If enabled, stores copies of form submissions in the WordPress database. Submissions are always sent to Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:558
+#: includes/blocks/class-convertkit-block-form-builder.php:564
 msgid "Display form"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:560
+#: includes/blocks/class-convertkit-block-form-builder.php:566
 msgid "If enabled, displays the form if the visitor is already subscribed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:565
+#: includes/blocks/class-convertkit-block-form-builder.php:571
 msgid "The text to display if the visitor is already subscribed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:574
+#: includes/blocks/class-convertkit-block-form-builder.php:580
 msgid "The Kit form to add the subscriber to. Useful if you want to send an incentive email."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:580
+#: includes/blocks/class-convertkit-block-form-builder.php:586
 msgid "The Kit tag to add the subscriber to."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:584
+#: includes/blocks/class-convertkit-block-form-builder.php:590
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:90
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:77
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:74
 msgid "Sequence"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:586
+#: includes/blocks/class-convertkit-block-form-builder.php:592
 msgid "The Kit sequence to add the subscriber to."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:635
+#: includes/blocks/class-convertkit-block-form-builder.php:641
 msgid "Thanks for subscribing!"
 msgstr ""
 
@@ -1622,6 +1660,16 @@ msgstr ""
 msgid "Kit WordPress Libraries 1.3.7 or older detected, missing the `get_post` method."
 msgstr ""
 
+#: includes/class-convertkit-cloudflare-turnstile.php:131
+msgid "Cloudflare Turnstile failure: invalid response from Siteverify."
+msgstr ""
+
+#. translators: Error codes
+#: includes/class-convertkit-cloudflare-turnstile.php:145
+#, php-format
+msgid "Cloudflare Turnstile failure: %s"
+msgstr ""
+
 #: includes/class-convertkit-cron.php:33
 msgid "You are not allowed to run cron events."
 msgstr ""
@@ -1729,12 +1777,12 @@ msgid "Enter the code below to finish logging in"
 msgstr ""
 
 #. translators: %1$s: PHP class name
-#: includes/class-wp-convertkit.php:398
+#: includes/class-wp-convertkit.php:399
 #, php-format
 msgid "Kit Error: Could not load Plugin class <strong>%1$s</strong>"
 msgstr ""
 
-#: includes/class-wp-convertkit.php:408
+#: includes/class-wp-convertkit.php:409
 msgid "Kit Error"
 msgstr ""
 
