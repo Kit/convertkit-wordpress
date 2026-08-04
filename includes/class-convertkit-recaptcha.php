@@ -72,7 +72,7 @@ class ConvertKit_Recaptcha {
 	 * @param   string $plugin_action       The action to verify the reCAPTCHA response for.
 	 * @return  bool|WP_Error
 	 */
-	public function verify_recaptcha( $recaptcha_response, $plugin_action ) {
+	public function verify( $recaptcha_response, $plugin_action ) {
 
 		// Don't run if the reCAPTCHA or scripts are disabled.
 		if ( ! $this->settings->has_recaptcha_site_and_secret_keys() || $this->settings->scripts_disabled() ) {
@@ -127,6 +127,55 @@ class ConvertKit_Recaptcha {
 
 		// If here, the submission looks genuine. Continue the request.
 		return true;
+
+	}
+
+	/**
+	 * Attaches the reCAPTCHA v3 invisible-badge attributes to the given submit
+	 * button element within an existing DOM tree, so that the challenge is
+	 * executed when the button is clicked and the form is submitted via the
+	 * `convertKitRecaptchaFormSubmit` callback.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   ConvertKit_HTML_Parser $parser         Parser wrapping the DOM (unused).
+	 * @param   DOMElement             $button         <button> element to attach attributes to.
+	 * @param   string                 $plugin_action  Plugin action string.
+	 */
+	public function attach_to_form_button_dom( $parser, $button, $plugin_action ) {
+
+		unset( $parser );
+
+		$button->setAttribute( 'data-sitekey', esc_attr( $this->settings->recaptcha_site_key() ) );
+		$button->setAttribute( 'data-callback', 'convertKitRecaptchaFormSubmit' );
+		$button->setAttribute( 'data-action', $plugin_action );
+		$button->setAttribute( 'class', trim( $button->getAttribute( 'class' ) . ' g-recaptcha' ) );
+
+	}
+
+	/**
+	 * Returns the HTML for a submit button with reCAPTCHA v3 invisible-badge
+	 * attributes attached, used by templates that don't have a DOM parser
+	 * available (e.g. the Restrict Content tag view).
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   string   $label          Button's visible label.
+	 * @param   string   $plugin_action  Plugin action string.
+	 * @param   string[] $css_classes    CSS classes for the button.
+	 * @return  string
+	 */
+	public function get_submit_button_html( $label, $plugin_action, $css_classes = array() ) {
+
+		$css_classes[] = 'g-recaptcha';
+
+		return sprintf(
+			'<input type="submit" class="%1$s" value="%2$s" data-sitekey="%3$s" data-callback="convertKitRecaptchaFormSubmit" data-action="%4$s" />',
+			esc_attr( implode( ' ', $css_classes ) ),
+			esc_attr( $label ),
+			esc_attr( $this->settings->recaptcha_site_key() ),
+			esc_attr( $plugin_action )
+		);
 
 	}
 
