@@ -233,6 +233,12 @@ class WPGutenberg extends \Codeception\Module
 		$I->click('.wp-block-post-content');
 		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
 
+		// Wait for Gutenberg to finish committing the typed text to the DOM.
+		// fillField returns as soon as the keystrokes have been dispatched, but
+		// Gutenberg (particularly under the iframed editor enforced in WP 7.1)
+		// processes input asynchronously.
+		$I->waitForText(substr($text, -min(30, strlen($text))), 5, '.wp-block-post-content');
+
 		// Switch back to main window.
 		if ($this->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToIFrame();
