@@ -221,6 +221,65 @@ class RestrictContentTagCest
 
 	/**
 	 * Test that restricting content by a Tag specified in the Page Settings works when
+	 * creating and viewing a new WordPress Page, with Cloudflare Turnstile enabled
+	 * as the active spam protection provider.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByTagWithCloudflareTurnstileEnabled(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS and defining Cloudflare Turnstile as
+		// the active spam protection provider with its site and secret keys.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'no_scripts'                      => 'on',
+				'spam_protection_provider'        => 'cloudflare_turnstile',
+				'cloudflare_turnstile_site_key'   => $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SITE_KEY'],
+				'cloudflare_turnstile_secret_key' => $_ENV['CONVERTKIT_API_CLOUDFLARE_TURNSTILE_SECRET_KEY'],
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Setup Restrict Content functionality.
+		$I->setupKitPluginRestrictContent($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: Cloudflare Turnstile'
+		);
+
+		// Configure metabox's Restrict Content setting = Tag name.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_TAG_NAME']
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Load Page.
+		$I->amOnUrl($url);
+
+		// Confirm that the CTA form output includes the Cloudflare Turnstile widget.
+		$I->seeElementInDOM('#convertkit-restrict-content form div.cf-turnstile[data-appearance="interaction-only"]');
+	}
+
+	/**
+	 * Test that restricting content by a Tag specified in the Page Settings works when
 	 * creating and viewing a new WordPress Page, with Google's reCAPTCHA enabled.
 	 *
 	 * @since   2.6.8
