@@ -59,22 +59,22 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 		// Define settings sections.
 		$this->settings_sections = array(
-			'general'   => array(
+			'general'         => array(
 				'title'    => $this->title,
 				'callback' => array( $this, 'print_section_info' ),
 				'wrap'     => true,
 			),
-			'site-wide' => array(
+			'site-wide'       => array(
 				'title'    => __( 'Non-inline Forms', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_site_wide' ),
 				'wrap'     => true,
 			),
-			'recaptcha' => array(
-				'title'    => __( 'reCAPTCHA', 'convertkit' ),
-				'callback' => array( $this, 'print_section_info_recaptcha' ),
+			'spam-protection' => array(
+				'title'    => __( 'Spam Protection', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_spam_protection' ),
 				'wrap'     => true,
 			),
-			'advanced'  => array(
+			'advanced'        => array(
 				'title'    => __( 'Advanced', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info_advanced' ),
 				'wrap'     => true,
@@ -409,15 +409,31 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			)
 		);
 
+		// Spam Protection.
+		add_settings_field(
+			'spam_protection_provider',
+			__( 'Provider', 'convertkit' ),
+			array( $this, 'spam_protection_provider_callback' ),
+			$this->settings_key,
+			$this->name . '-spam-protection',
+			array(
+				'label_for'   => 'spam_protection_provider',
+				'description' => array(
+					__( 'Select which spam protection service to use for the Member Content signup form and Form Builder block.', 'convertkit' ),
+				),
+			)
+		);
+
 		// reCAPTCHA.
 		add_settings_field(
 			'recaptcha_site_key',
 			__( 'reCAPTCHA: Site Key', 'convertkit' ),
 			array( $this, 'recaptcha_site_key_callback' ),
 			$this->settings_key,
-			$this->name . '-recaptcha',
+			$this->name . '-spam-protection',
 			array(
 				'label_for'   => 'recaptcha_site_key',
+				'class'       => 'convertkit-spam-protection-recaptcha',
 				'description' => array(
 					__( 'Enter your Google reCAPTCHA v3 Site Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
 				),
@@ -428,9 +444,10 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			__( 'reCAPTCHA: Secret Key', 'convertkit' ),
 			array( $this, 'recaptcha_secret_key_callback' ),
 			$this->settings_key,
-			$this->name . '-recaptcha',
+			$this->name . '-spam-protection',
 			array(
 				'label_for'   => 'recaptcha_secret_key',
+				'class'       => 'convertkit-spam-protection-recaptcha',
 				'description' => array(
 					__( 'Enter your Google reCAPTCHA v3 Secret Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
 				),
@@ -441,14 +458,45 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			__( 'reCAPTCHA: Minimum Score', 'convertkit' ),
 			array( $this, 'recaptcha_minimum_score_callback' ),
 			$this->settings_key,
-			$this->name . '-recaptcha',
+			$this->name . '-spam-protection',
 			array(
 				'label_for'   => 'recaptcha_minimum_score',
+				'class'       => 'convertkit-spam-protection-recaptcha',
 				'min'         => 0,
 				'max'         => 1,
 				'step'        => 0.01,
 				'description' => array(
 					__( 'Enter the minimum threshold for a subscriber to pass Google reCAPTCHA. A higher number will reduce spam signups (1.0 is very likely a good interaction, 0.0 is very likely a bot).', 'convertkit' ),
+				),
+			)
+		);
+
+		// Cloudflare Turnstile.
+		add_settings_field(
+			'cloudflare_turnstile_site_key',
+			__( 'Cloudflare Turnstile: Site Key', 'convertkit' ),
+			array( $this, 'cloudflare_turnstile_site_key_callback' ),
+			$this->settings_key,
+			$this->name . '-spam-protection',
+			array(
+				'label_for'   => 'cloudflare_turnstile_site_key',
+				'class'       => 'convertkit-spam-protection-cloudflare_turnstile',
+				'description' => array(
+					__( 'Enter your Cloudflare Turnstile Site Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
+				),
+			)
+		);
+		add_settings_field(
+			'cloudflare_turnstile_secret_key',
+			__( 'Cloudflare Turnstile: Secret Key', 'convertkit' ),
+			array( $this, 'cloudflare_turnstile_secret_key_callback' ),
+			$this->settings_key,
+			$this->name . '-spam-protection',
+			array(
+				'label_for'   => 'cloudflare_turnstile_secret_key',
+				'class'       => 'convertkit-spam-protection-cloudflare_turnstile',
+				'description' => array(
+					__( 'Enter your Cloudflare Turnstile Secret Key. When specified, this will be used to reduce spam signups.', 'convertkit' ),
 				),
 			)
 		);
@@ -547,13 +595,13 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
-	 * Prints help info for the recaptcha section of the settings screen.
+	 * Prints help info for the spam protection section of the settings screen.
 	 *
-	 * @since   3.0.0
+	 * @since   3.3.7
 	 */
-	public function print_section_info_recaptcha() {
+	public function print_section_info_spam_protection() {
 		?>
-		<p class="description"><?php esc_html_e( 'Configure reCAPTCHA to protect the Member Content signup form and Form Builder block from spam and abuse.', 'convertkit' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Configure a spam protection service to protect the Member Content signup form and Form Builder block from spam and abuse. Choose a provider below, then enter the corresponding site and secret keys.', 'convertkit' ); ?></p>
 		<?php
 	}
 
@@ -920,6 +968,29 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Renders the dropdown for choosing the active spam protection provider.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function spam_protection_provider_callback( $args ) {
+
+		$this->output_select_field(
+			'spam_protection_provider',
+			esc_attr( $this->settings->spam_protection_provider() ),
+			array(
+				'recaptcha'            => esc_html__( 'Google reCAPTCHA v3', 'convertkit' ),
+				'cloudflare_turnstile' => esc_html__( 'Cloudflare Turnstile', 'convertkit' ),
+			),
+			$args['description'],
+			array( 'convertkit-conditional-display' ),
+			array( 'data-conditional-class-prefix' => 'convertkit-spam-protection-' )
+		);
+
+	}
+
+	/**
 	 * Renders the input for the reCAPTCHA Site Key setting.
 	 *
 	 * @since   3.0.0
@@ -977,6 +1048,46 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			$args['min'],
 			$args['max'],
 			$args['step'],
+			$args['description'],
+			array(
+				'widefat',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Cloudflare Turnstile Site Key setting.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function cloudflare_turnstile_site_key_callback( $args ) {
+
+		$this->output_text_field(
+			'cloudflare_turnstile_site_key',
+			esc_attr( $this->settings->cloudflare_turnstile_site_key() ),
+			$args['description'],
+			array(
+				'widefat',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Cloudflare Turnstile Secret Key setting.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function cloudflare_turnstile_secret_key_callback( $args ) {
+
+		$this->output_text_field(
+			'cloudflare_turnstile_secret_key',
+			esc_attr( $this->settings->cloudflare_turnstile_secret_key() ),
 			$args['description'],
 			array(
 				'widefat',

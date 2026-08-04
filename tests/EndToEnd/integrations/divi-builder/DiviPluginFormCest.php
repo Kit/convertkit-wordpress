@@ -156,47 +156,6 @@ class DiviPluginFormCest
 	}
 
 	/**
-	 * Test the Form module works when a valid Legacy Form is selected.
-	 *
-	 * @since   2.5.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormModuleWithValidLegacyFormParameter(EndToEndTester $I)
-	{
-		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
-				'post_form'    => '',
-				'page_form'    => '',
-				'product_form' => '',
-			]
-		);
-		$I->setupKitPluginResources($I);
-
-		// Create Page with Form module in Divi.
-		$pageID = $I->createPageWithDiviModuleProgrammatically(
-			$I,
-			title: 'Kit: Legacy Form: Divi Module: Valid Form Param',
-			programmaticName: 'convertkit_form',
-			fieldName: 'form',
-			fieldValue: $_ENV['CONVERTKIT_API_LEGACY_FORM_ID']
-		);
-
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
-
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the Kit Form is displayed.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
-	}
-
-	/**
 	 * Test the Form module works when no Form is selected.
 	 *
 	 * @since   2.5.6

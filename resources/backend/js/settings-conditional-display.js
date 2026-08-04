@@ -65,7 +65,31 @@ function convertKitConditionallyDisplaySettings(input) {
 			break;
 
 		default:
-			// Iterate through the table rows, hiding any settings.
+			// Group pattern: source has data-conditional-class-prefix; rows opt
+			// into the group by declaring a CSS class of the form
+			// "<prefix><value>". Rows in the group whose class matches the
+			// source's current value are shown; other rows in the group are
+			// hidden. Rows without any matching prefix class are left alone.
+			if (input.dataset.conditionalClassPrefix) {
+				const prefix = input.dataset.conditionalClassPrefix;
+				const expectedClass = prefix + input.value;
+				rows.forEach(function (row) {
+					const inGroup = Array.from(row.classList).some((c) =>
+						c.startsWith(prefix)
+					);
+					if (!inGroup) {
+						return;
+					}
+					row.style.display = row.classList.contains(expectedClass)
+						? ''
+						: 'none';
+				});
+				break;
+			}
+
+			// Single-target pattern: source has data-conditional-element (id)
+			// and data-conditional-value; the matching row is shown when the
+			// source value equals the expected value and hidden otherwise.
 			rows.forEach(function (row) {
 				// Skip if this table row is for the setting we've just changed.
 				if (row.querySelector(`[id = "${input.id}"]`)) {

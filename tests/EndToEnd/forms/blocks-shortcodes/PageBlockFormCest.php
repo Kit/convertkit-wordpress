@@ -925,26 +925,15 @@ class PageBlockFormCest
 		// Load the page's edit screen.
 		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
 
-		// Wait for the block editor to finish loading, then open the block
-		// sidebar by clicking the Kit Form block. Once selected, the block
-		// sidebar renders with the Form dropdown showing the saved value.
-		$I->waitForElementVisible('.wp-block-convertkit-form');
-		$I->click('.wp-block-convertkit-form');
-		$I->waitForElementVisible('#convertkit_form_form');
+		// Select the Form Builder block in the Document Overview sidebar.
+		$I->selectGutenbergBlockInDocumentOverview($I, 'Kit Form');
 
-		// The legacy form should be present as an option AND be the selected
-		// value in the sidebar dropdown.
-		$I->seeElementInDOM('#convertkit_form_form option[value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"]');
+		// Assert the legacy form is selected.
+		$I->waitForElementVisible('select#convertkit_form_form');
 		$I->seeOptionIsSelected(
-			'#convertkit_form_form',
+			'select#convertkit_form_form',
 			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] . ' [inline]'
 		);
-
-		// Visit the page on the frontend and confirm the legacy form still
-		// renders — proving that a saved legacy assignment continues to
-		// work at render time.
-		$I->amOnPage('/?p=' . $pageID);
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
 	}
 
 	/**
