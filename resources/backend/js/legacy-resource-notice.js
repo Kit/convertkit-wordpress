@@ -40,10 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			.join('\n');
 
 	// Create the notice.
-	wp.data
-		.dispatch('core/notices')
-		.createWarningNotice(message, {
-			id: convertkit_legacy_resource_notice.id,
-			isDismissible: false,
-		});
+	wp.data.dispatch('core/notices').createWarningNotice(message, {
+		id: convertkit_legacy_resource_notice.id,
+		isDismissible: false,
+	});
 });
