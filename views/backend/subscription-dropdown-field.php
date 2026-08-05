@@ -35,15 +35,34 @@
 
 	<optgroup label="<?php esc_attr_e( 'Forms', 'convertkit' ); ?>" id="convertkit-forms" data-option-value-prefix="form:">
 		<?php
-		if ( $forms->exist() ) {
-			foreach ( $forms->get() as $form ) {
+		$non_legacy_forms = $forms->get_non_legacy();
+		if ( is_array( $non_legacy_forms ) ) {
+			foreach ( $non_legacy_forms as $form ) {
 				printf(
 					'<option value="%s"%s>%s [%s]</option>',
 					esc_attr( 'form:' . $form['id'] ),
 					selected( 'form:' . $form['id'], $value, false ),
 					esc_attr( $form['name'] ),
-					( ! empty( $form['format'] ) ? esc_attr( $form['format'] ) : 'inline' )
+					esc_attr( $form['format'] )
 				);
+			}
+		}
+
+		// If the currently-selected value references a legacy form (which is
+		// no longer exposed as a new selection option), append it here so a
+		// previously-saved mapping continues to render as selected.
+		if ( is_string( $value ) && strpos( $value, 'form:' ) === 0 ) {
+			$selected_form_id = (int) substr( $value, 5 );
+			if ( $selected_form_id && $forms->is_legacy( $selected_form_id ) ) {
+				$legacy_form = $forms->get_by_id( $selected_form_id );
+				if ( $legacy_form ) {
+					printf(
+						'<option value="%s" selected>%s [%s]</option>',
+						esc_attr( 'form:' . $legacy_form['id'] ),
+						esc_attr( $legacy_form['name'] ),
+						'inline'
+					);
+				}
 			}
 		}
 		?>

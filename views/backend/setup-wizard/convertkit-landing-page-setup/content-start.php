@@ -16,9 +16,11 @@
 </p>
 
 <?php
-// If no Landing Pages exist on the ConvertKit account, show the user how to add a Landing Page to ConvertKit,
-// with an option to refresh this page so that they can then select the Landing Page.
-if ( ! $this->landing_pages->exist() ) {
+// If no non-legacy Landing Pages exist on the Kit account, show the user how to add
+// one, with an option to refresh this page so that they can then select it. Legacy
+// landing pages are intentionally excluded here; the wizard only offers v4 pages
+// for new selections.
+if ( ! $this->landing_pages->non_legacy_exist() ) {
 	?>
 	<p>
 		<?php
@@ -47,16 +49,10 @@ if ( ! $this->landing_pages->exist() ) {
 		<label for="landing_page"><?php esc_html_e( 'Which landing page would you like to display?', 'convertkit' ); ?></label>
 		<select name="landing_page" id="landing_page" class="convertkit-select2 widefat">
 			<?php
-			foreach ( $this->landing_pages->get() as $landing_page ) {
-				if ( isset( $convertkit_landing_page['url'] ) ) {
-					?>
-					<option value="<?php echo esc_attr( $landing_page['url'] ); ?>"><?php echo esc_attr( $landing_page['name'] ); ?></option>
-					<?php
-				} else {
-					?>
-					<option value="<?php echo esc_attr( $landing_page['id'] ); ?>"><?php echo esc_attr( $landing_page['name'] ); ?></option>
-					<?php
-				}
+			foreach ( $this->landing_pages->get_non_legacy() as $landing_page ) {
+				?>
+				<option value="<?php echo esc_attr( $landing_page['id'] ); ?>"><?php echo esc_attr( $landing_page['name'] ); ?></option>
+				<?php
 			}
 			?>
 		</select>
