@@ -83,16 +83,19 @@
 							// without offering other legacy pages as new selection choices.
 							$current_landing_page = $convertkit_post->get_landing_page();
 							if ( $current_landing_page && $convertkit_landing_pages->is_legacy( $current_landing_page ) ) {
+								// data-preserve-on-refresh keeps this option in place when
+								// the Refresh Resources button repopulates the dropdown,
+								// so the saved legacy selection isn't silently lost.
 								// Pre-1.9.6 storage: the saved value is the legacy URL itself.
 								if ( is_string( $current_landing_page ) && strstr( $current_landing_page, 'http' ) ) {
 									?>
-									<option value="<?php echo esc_attr( $current_landing_page ); ?>" selected><?php echo esc_attr( $current_landing_page ); ?></option>
+									<option value="<?php echo esc_attr( $current_landing_page ); ?>" data-preserve-on-refresh="1" selected><?php echo esc_attr( $current_landing_page ); ?></option>
 									<?php
 								} else {
 									$legacy_landing_page = $convertkit_landing_pages->get_by_id( (int) $current_landing_page );
 									if ( $legacy_landing_page ) {
 										?>
-										<option value="<?php echo esc_attr( $legacy_landing_page['id'] ); ?>" selected><?php echo esc_attr( $legacy_landing_page['name'] ); ?></option>
+										<option value="<?php echo esc_attr( $legacy_landing_page['id'] ); ?>" data-preserve-on-refresh="1" selected><?php echo esc_attr( $legacy_landing_page['name'] ); ?></option>
 										<?php
 									}
 								}
