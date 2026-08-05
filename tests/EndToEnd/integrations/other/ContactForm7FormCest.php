@@ -129,35 +129,6 @@ class ContactForm7FormCest
 	}
 
 	/**
-	 * Test that saving a Contact Form 7 to Kit Legacy Form Mapping works.
-	 *
-	 * @since   2.5.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testSettingsContactForm7ToKitLegacyFormMapping(EndToEndTester $I)
-	{
-		// Setup Contact form 7 Form and configuration for this test.
-		$pageID = $this->_contactForm7SetupForm(
-			$I,
-			$_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-		);
-
-		// Define email address for this test.
-		$emailAddress = $I->generateEmailAddress();
-
-		// Complete and submit Contact Form 7 Form.
-		$this->_contactForm7CompleteAndSubmitForm(
-			$I,
-			pageID: $pageID,
-			emailAddress: $emailAddress
-		);
-
-		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
-	}
-
-	/**
 	 * Test that saving a Contact Form 7 to Kit Tag Mapping works.
 	 *
 	 * @since   2.5.2

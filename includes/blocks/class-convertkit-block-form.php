@@ -262,30 +262,42 @@ class ConvertKit_Block_Form extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Get ConvertKit Forms.
+		// Get ConvertKit Forms. Non-legacy forms populate the sidebar dropdown;
+		// legacy forms are exposed separately as a fallback so the sidebar can
+		// keep displaying a previously-saved legacy form as the current
+		// selection without offering other legacy forms as new choices.
 		$forms            = array();
+		$legacy_forms     = array();
 		$convertkit_forms = new ConvertKit_Resource_Forms( 'block_edit' );
 		if ( $convertkit_forms->exist() ) {
 			foreach ( $convertkit_forms->get() as $form ) {
-				// Legacy forms don't include a `format` key, so define them as inline.
-				$forms[ absint( $form['id'] ) ] = sprintf(
+				$label = sprintf(
 					'%s [%s]',
 					sanitize_text_field( $form['name'] ),
+					// Legacy forms don't include a `format` key, so define them as inline.
 					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
 				);
+
+				if ( ! empty( $form['format'] ) ) {
+					$forms[ absint( $form['id'] ) ] = $label;
+				} else {
+					$legacy_forms[ absint( $form['id'] ) ] = $label;
+				}
 			}
 		}
 
 		return array(
 			'form' => array(
-				'label'    => __( 'Form', 'convertkit' ),
-				'type'     => 'resource',
-				'resource' => 'forms',
-				'values'   => $forms,
-				'data'     => array(
+				'label'         => __( 'Form', 'convertkit' ),
+				'type'          => 'resource',
+				'resource'      => 'forms',
+				'values'        => $forms,
+				'legacy_values' => $legacy_forms,
+				'data'          => array(
 					// Used by resources/backend/js/gutenberg-block-form.js to determine the selected form's format
 					// (modal, slide in, sticky bar) and output a message in the block editor for the preview to explain
-					// why some formats cannot be previewed.
+					// why some formats cannot be previewed. Includes legacy forms so the preview code can still find
+					// them when a saved block references a legacy form.
 					'forms' => ( $convertkit_forms->exist() ? $convertkit_forms->get() : array() ),
 				),
 			),

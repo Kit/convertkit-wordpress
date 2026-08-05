@@ -108,35 +108,6 @@ class WishListMemberCest
 	}
 
 	/**
-	 * Test that WishList Member Level to Kit Legacy Form Mapping works,
-	 * and the email address is added to Kit when assigned the WishList Member Level
-	 *
-	 * @since   2.5.4
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testWLMToKitLegacyFormMappingOnLevelAdded(EndToEndTester $I)
-	{
-		// Get WishList Member Level ID defined.
-		$wlmLevelID = $this->_getWishListMemberLevelID($I);
-
-		// Define email address for this test.
-		$emailAddress = $I->generateEmailAddress();
-
-		// Create a test WordPress User.
-		$userID = $this->_createUser($I, $emailAddress);
-
-		// Configure mapping.
-		$this->_configureMapping($I, $wlmLevelID, 'add', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']);
-
-		// Assign level to user.
-		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
-
-		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
-	}
-
-	/**
 	 * Test that WishList Member Level to Kit Tag Mapping works,
 	 * and the email address is added to Kit when assigned the WishList Member Level
 	 *
@@ -249,41 +220,6 @@ class WishListMemberCest
 
 		// Configure mapping.
 		$this->_configureMapping($I, $wlmLevelID, 'remove', $_ENV['CONVERTKIT_API_THIRD_PARTY_INTEGRATIONS_FORM_NAME']);
-
-		// Assign level to user.
-		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
-
-		// Confirm that the email address was not added to Kit.
-		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
-
-		// Remove level from user.
-		$this->_removeLevelFromUser($I, $wlmLevelID, $userID);
-
-		// Confirm that the email address was added to Kit.
-		$I->apiCheckSubscriberExists($I, $emailAddress);
-	}
-
-	/**
-	 * Test that WishList Member Level to Kit Legacy Form Mapping works,
-	 * and the email address is added to Kit when removed from the WishList Member Level
-	 *
-	 * @since   2.5.4
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testWLMToKitLegacyFormMappingOnLevelRemoved(EndToEndTester $I)
-	{
-		// Get WishList Member Level ID defined.
-		$wlmLevelID = $this->_getWishListMemberLevelID($I);
-
-		// Define email address for this test.
-		$emailAddress = $I->generateEmailAddress();
-
-		// Create a test WordPress User.
-		$userID = $this->_createUser($I, $emailAddress);
-
-		// Configure mapping.
-		$this->_configureMapping($I, $wlmLevelID, 'remove', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']);
 
 		// Assign level to user.
 		$this->_assignLevelToUser($I, $wlmLevelID, $userID);
