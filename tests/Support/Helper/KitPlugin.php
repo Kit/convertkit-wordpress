@@ -747,9 +747,12 @@ class KitPlugin extends \Codeception\Module
 	public function checkSelectLandingPageOptionOrder($I, $selectElement, $prependOptions = false)
 	{
 		// Define options.
+		// Legacy Landing Pages are hidden from dropdowns (as of the legacy
+		// landing page dropdown removal work), so `Landing Page` is now the
+		// last alphabetical entry rather than `Legacy Landing Page`.
 		$options = [
 			'Character Encoding', // First item.
-			'Legacy Landing Page', // Last item.
+			'Landing Page', // Last item.
 		];
 
 		// Prepend options, such as 'Default' and 'None' to the options, if required.

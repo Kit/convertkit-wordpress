@@ -119,29 +119,47 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 		$convertkit_tags          = new ConvertKit_Resource_Tags( 'post_settings' );
 		$convertkit_products      = new ConvertKit_Resource_Products( 'post_settings' );
 
-		// Get Forms.
-		$forms = array(
+		// Get Forms. Non-legacy forms populate the dropdown; legacy forms are
+		// exposed separately as a fallback so a previously-saved legacy form
+		// remains visible as the current selection without offering other
+		// legacy forms as new choices.
+		$forms        = array(
 			'-1' => esc_html__( 'Default', 'convertkit' ),
 			'0'  => esc_html__( 'None', 'convertkit' ),
 		);
+		$legacy_forms = array();
 		if ( $convertkit_forms->exist() ) {
 			foreach ( $convertkit_forms->get() as $form ) {
-				// Legacy forms don't include a `format` key, so define them as inline.
-				$forms[ absint( $form['id'] ) ] = sprintf(
+				$label = sprintf(
 					'%s [%s]',
 					sanitize_text_field( $form['name'] ),
+					// Legacy forms don't include a `format` key, so define them as inline.
 					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
 				);
+
+				if ( ! empty( $form['format'] ) ) {
+					$forms[ absint( $form['id'] ) ] = $label;
+				} else {
+					$legacy_forms[ absint( $form['id'] ) ] = $label;
+				}
 			}
 		}
 
-		// Get Landing Pages.
-		$landing_pages = array(
+		// Get Landing Pages. Non-legacy pages populate the dropdown; legacy
+		// pages are exposed separately as a fallback so a previously-saved
+		// legacy landing page remains visible as the current selection
+		// without offering other legacy pages as new choices.
+		$landing_pages        = array(
 			'0' => esc_html__( 'None', 'convertkit' ),
 		);
+		$legacy_landing_pages = array();
 		if ( $convertkit_landing_pages->exist() ) {
 			foreach ( $convertkit_landing_pages->get() as $landing_page ) {
-				$landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+				if ( isset( $landing_page['url'] ) ) {
+					$legacy_landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+				} else {
+					$landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+				}
 			}
 		}
 
@@ -156,21 +174,29 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 		}
 
 		// Get Products.
-		$restrict_content = array(
+		$restrict_content              = array(
 			'0' => esc_html__( 'Do not restrict content to member-only', 'convertkit' ),
 		);
+		$restrict_content_legacy_forms = array();
 		if ( $convertkit_forms->exist() ) {
 			$restrict_content['forms'] = array(
 				'label'  => esc_html__( 'Forms', 'convertkit' ),
 				'values' => array(),
 			);
 			foreach ( $convertkit_forms->get() as $form ) {
-				// Legacy forms don't include a `format` key, so define them as inline.
-				$restrict_content['forms']['values'][ 'form_' . absint( $form['id'] ) ] = sprintf(
+				$key   = 'form_' . absint( $form['id'] );
+				$label = sprintf(
 					'%s [%s]',
 					sanitize_text_field( $form['name'] ),
+					// Legacy forms don't include a `format` key, so define them as inline.
 					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
 				);
+
+				if ( ! empty( $form['format'] ) ) {
+					$restrict_content['forms']['values'][ $key ] = $label;
+				} else {
+					$restrict_content_legacy_forms[ $key ] = $label;
+				}
 			}
 		}
 		if ( $convertkit_tags->exist() ) {
@@ -218,6 +244,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 					),
 				),
 				'values'        => $forms,
+				'legacy_values' => $legacy_forms,
 				'resource_type' => 'forms',
 			),
 			'landing_page'     => array(
@@ -232,6 +259,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 					),
 				),
 				'values'        => $landing_pages,
+				'legacy_values' => $legacy_landing_pages,
 				'post_type'     => 'page',
 				'resource_type' => 'landing_pages',
 			),
@@ -267,6 +295,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 					),
 				),
 				'values'        => $restrict_content,
+				'legacy_values' => $restrict_content_legacy_forms,
 				'resource_type' => 'restrict_content',
 			),
 		);

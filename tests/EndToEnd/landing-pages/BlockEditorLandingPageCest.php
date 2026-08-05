@@ -175,83 +175,6 @@ class BlockEditorLandingPageCest
 
 	/**
 	 * Test that the Legacy Landing Page specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page.
-	 *
-	 * @since   1.9.6.3
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testAddNewPageUsingDefinedLegacyLandingPage(EndToEndTester $I)
-	{
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Landing Page: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
-		);
-
-		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configurePluginSidebarSettings(
-			$I,
-			landingPage: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
-
-		// Confirm that the basic HTML structure is correct.
-		$I->seeLandingPageOutput($I);
-
-		// Confirm that the Kit Landing Page displays.
-		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
-	}
-
-	/**
-	 * Test that the WordPress site icon is output as the favicon on a Legacy Landing Page,
-	 * when defined.
-	 *
-	 * @since   2.3.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testLegacyLandingPageSiteIcon(EndToEndTester $I)
-	{
-		// Define a WordPress Site Icon.
-		$imageID = $I->haveAttachmentInDatabase(codecept_data_dir('icon.png'));
-		$I->haveOptionInDatabase('site_icon', $imageID);
-
-		// Add a Page using the Gutenberg editor.
-		$I->addGutenbergPage(
-			$I,
-			title: 'Kit: Page: Legacy Landing Page: Site Icon: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
-		);
-
-		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configurePluginSidebarSettings(
-			$I,
-			landingPage: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewGutenbergPage($I);
-
-		// Confirm that the basic HTML structure is correct.
-		$I->seeLandingPageOutput($I);
-
-		// Confirm the WordPress Site Icon displays.
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-150x150.png" sizes="32x32">');
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png" sizes="192x192">');
-		$I->seeInSource('<link rel="apple-touch-icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
-		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
-		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.kit.com/templates/favicon.ico">');
-
-		// Confirm that the Kit Landing Page displays.
-		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
-	}
-
-	/**
-	 * Test that the Legacy Landing Page specified in the Page Settings works when
 	 * the Landing Page was defined by the Kit Plugin < 1.9.6, which used a URL
 	 * instead of an ID.
 	 *
@@ -570,6 +493,73 @@ class BlockEditorLandingPageCest
 
 		// Publish Page, so no browser warnings are displayed about unsaved changes.
 		$I->publishGutenbergPage($I);
+	}
+
+	/**
+	 * Test that the Gutenberg plugin sidebar's Landing Page dropdown does not
+	 * offer legacy landing pages as a selection option.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testLegacyLandingPagesExcludedFromPluginSidebar(EndToEndTester $I)
+	{
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: No Legacy Landing Pages In Plugin Sidebar'
+		);
+
+		// Open the Plugin sidebar so the Landing Page dropdown renders.
+		$I->openPluginSidebarSettings($I);
+		$landingPageSelectXPath = '//label[text()="Landing Page"]/following::select[1]';
+		$I->waitForElementVisible($landingPageSelectXPath);
+		$I->dontSee(
+			$_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'],
+			$landingPageSelectXPath
+		);
+	}
+
+	/**
+	 * Test that a Page preseeded with a legacy landing page ID in its post
+	 * meta continues to display that legacy landing page as the selected
+	 * option in the Gutenberg plugin sidebar.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testPluginSidebarPreservesSelectedLegacyLandingPage(EndToEndTester $I)
+	{
+		// Preseed a Page with a legacy landing page ID in its Kit post meta.
+		$pageID = $I->havePageInDatabase(
+			[
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Kit: Page: Plugin Sidebar Preserves Legacy Landing Page',
+				'post_name'   => 'kit-plugin-sidebar-preserves-legacy-landing-page',
+				'meta_input'  => [
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => (string) $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'],
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Open the Gutenberg edit screen and the Plugin sidebar. Confirm the
+		// legacy landing page is the selected option, even though it is no
+		// longer offered as a new selection choice.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
+		$I->openPluginSidebarSettings($I);
+		$landingPageSelectXPath = '//label[text()="Landing Page"]/following::select[1]';
+		$I->waitForElementVisible($landingPageSelectXPath);
+		$I->seeOptionIsSelected(
+			$landingPageSelectXPath,
+			$_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
+		);
 	}
 
 	/**

@@ -1095,58 +1095,6 @@ class ClassicEditorFormCest
 	}
 
 	/**
-	 * Test that the Legacy Form specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page, Post or Article.
-	 *
-	 * @since   1.9.6.3
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testAddNewPostTypeUsingDefinedLegacyForm(EndToEndTester $I)
-	{
-		// Setup Plugin with API Key and Secret, which is required for Legacy Forms to work.
-		$I->setupKitPlugin(
-			$I,
-			[
-				'api_key'      => $_ENV['CONVERTKIT_API_KEY'],
-				'api_secret'   => $_ENV['CONVERTKIT_API_SECRET'],
-				'page_form'    => '',
-				'post_form'    => '',
-				'article_form' => '',
-			]
-		);
-		$I->setupKitPluginResources($I);
-
-		// Test each Post Type.
-		foreach ( $this->postTypes as $postType ) {
-			// Add a Post Type using the Classic Editor.
-			$I->addClassicEditorPage(
-				$I,
-				postType: $postType,
-				title: 'Kit: ' . $postType . ': Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME']
-			);
-
-			// Configure metabox's Form setting = Legacy Form.
-			$I->configureMetaboxSettings(
-				$I,
-				metabox: 'wp-convertkit-meta-box',
-				configuration: [
-					'form' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'] ],
-				]
-			);
-
-			// Publish and view the Post Type on the frontend site.
-			$I->publishAndViewClassicEditorPage($I);
-
-			// Confirm that the Kit Legacy Form displays.
-			$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://api.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '/subscribe" data-remote="true">');
-
-			// Confirm that the Legacy Form title's character encoding is correct.
-			$I->seeInSource('Vantar þinn ungling sjálfstraust í stærðfræði?');
-		}
-	}
-
-	/**
 	 * Test that the Default Form for Pages displays when an invalid Form ID is specified
 	 * for a WordPress Page, Post or Article.
 	 *

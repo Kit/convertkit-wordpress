@@ -392,6 +392,91 @@ class ResourceFormsTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the get_non_legacy() function returns every v4 form (any
+	 * format) and excludes legacy forms.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testGetNonLegacy()
+	{
+		$result = $this->resource->get_non_legacy();
+
+		// Assert result is an array.
+		$this->assertIsArray($result);
+
+		// Assert v4 forms of all supported formats are present.
+		$this->assertArrayHasKey($_ENV['CONVERTKIT_API_FORM_ID'], $result);
+		$this->assertArrayHasKey($_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'], $result);
+		$this->assertArrayHasKey($_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'], $result);
+
+		// Assert the legacy form ID is NOT present.
+		$this->assertArrayNotHasKey($_ENV['CONVERTKIT_API_LEGACY_FORM_ID'], $result);
+
+		// Assert every returned form has a `format` key (legacy forms do not).
+		foreach ($result as $form) {
+			$this->assertArrayHasKey('format', $form);
+		}
+	}
+
+	/**
+	 * Test that non_legacy_exist() returns true when at least one v4 form
+	 * exists in the resources cache.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testNonLegacyExist()
+	{
+		$this->assertTrue($this->resource->non_legacy_exist());
+	}
+
+	/**
+	 * Test that get_select_field_all() renders no <option> for the legacy
+	 * form when it is not the currently-selected value.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testGetSelectFieldAllExcludesLegacyForms()
+	{
+		$html = $this->resource->get_select_field_all(
+			'form',
+			'form',
+			[ 'widefat' ],
+			$_ENV['CONVERTKIT_API_FORM_ID']
+		);
+
+		$this->assertStringNotContainsString(
+			'value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"',
+			$html
+		);
+	}
+
+	/**
+	 * Test that get_select_field_all() appends the legacy form as an option
+	 * when it is the currently-selected value, so a previously-saved legacy
+	 * form assignment continues to render as selected in the UI.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testGetSelectFieldAllPreservesSelectedLegacyForm()
+	{
+		$html = $this->resource->get_select_field_all(
+			'form',
+			'form',
+			[ 'widefat' ],
+			(string) $_ENV['CONVERTKIT_API_LEGACY_FORM_ID']
+		);
+
+		$this->assertStringContainsString(
+			'value="' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'] . '"',
+			$html
+		);
+		$this->assertMatchesRegularExpression(
+			'/<option value="' . preg_quote($_ENV['CONVERTKIT_API_LEGACY_FORM_ID'], '/') . '" selected/',
+			$html
+		);
+	}
+
+	/**
 	 * Test that the is_legacy() function returns false for a non-Legacy Form ID.
 	 *
 	 * @since   2.5.0
