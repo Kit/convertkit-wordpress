@@ -30,14 +30,14 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 	// Build the notice.
+	// Gutenberg's Notice component renders `message` as plain text with
+	// `white-space: normal`, so `\n` collapses to a space and any leading
+	// `- ` dashes look odd. Inline the items with `; ` separators instead —
+	// this reads naturally on the single line the component actually renders.
 	const message =
 		convertkit_legacy_resource_notice.intro +
-		'\n' +
-		convertkit_legacy_resource_notice.warnings
-			.map(function (warning) {
-				return '- ' + warning;
-			})
-			.join('\n');
+		' ' +
+		convertkit_legacy_resource_notice.warnings.join('; ');
 
 	// Create the notice.
 	wp.data.dispatch('core/notices').createWarningNotice(message, {

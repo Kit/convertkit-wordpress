@@ -178,7 +178,7 @@ class ClassicEditorLegacyNoticeCest
 		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
 
 		// Assert the notice is not present.
-		$I->dontSee('Kit: This page uses one or more legacy Kit resources');
+		$I->dontSee('The Kit settings for this post reference legacy resources');
 	}
 
 	/**

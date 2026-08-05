@@ -71,7 +71,7 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 		<div class="notice notice-warning">
 			<p>
 				<strong><?php esc_html_e( 'Kit', 'convertkit' ); ?>:</strong>
-				<?php esc_html_e( 'This page uses one or more legacy Kit resources that are no longer offered for new selections. The following continue to work, but we recommend migrating:', 'convertkit' ); ?>
+				<?php esc_html_e( 'The Kit settings for this post reference legacy resources. They still work, but should be migrated:', 'convertkit' ); ?>
 			</p>
 			<ul>
 				<?php
@@ -133,7 +133,7 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 			'convertkit_legacy_resource_notice',
 			array(
 				'id'       => self::GUTENBERG_NOTICE_ID,
-				'intro'    => __( 'Kit: This page uses one or more legacy Kit resources that are no longer offered for new selections. The following continue to work, but we recommend migrating:', 'convertkit' ),
+				'intro'    => __( 'Kit: The Kit settings for this post reference legacy resources. They still work, but should be migrated:', 'convertkit' ),
 				'warnings' => $warnings,
 			)
 		);
@@ -205,7 +205,7 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 	 */
 	private function get_form_display_name( $form_id, $forms ) {
 
-		$form = $forms->get_by_id( $form_id );
+		$form = $forms->get_by_id( (int) $form_id );
 		if ( $form && ! empty( $form['name'] ) ) {
 			return sanitize_text_field( $form['name'] );
 		}
