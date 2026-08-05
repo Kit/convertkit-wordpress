@@ -145,13 +145,21 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 			}
 		}
 
-		// Get Landing Pages.
-		$landing_pages = array(
+		// Get Landing Pages. Non-legacy pages populate the dropdown; legacy
+		// pages are exposed separately as a fallback so a previously-saved
+		// legacy landing page remains visible as the current selection
+		// without offering other legacy pages as new choices.
+		$landing_pages        = array(
 			'0' => esc_html__( 'None', 'convertkit' ),
 		);
+		$legacy_landing_pages = array();
 		if ( $convertkit_landing_pages->exist() ) {
 			foreach ( $convertkit_landing_pages->get() as $landing_page ) {
-				$landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+				if ( isset( $landing_page['url'] ) ) {
+					$legacy_landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+				} else {
+					$landing_pages[ absint( $landing_page['id'] ) ] = sanitize_text_field( $landing_page['name'] );
+				}
 			}
 		}
 
@@ -251,6 +259,7 @@ class ConvertKit_Plugin_Sidebar_Post_Settings extends ConvertKit_Plugin_Sidebar 
 					),
 				),
 				'values'        => $landing_pages,
+				'legacy_values' => $legacy_landing_pages,
 				'post_type'     => 'page',
 				'resource_type' => 'landing_pages',
 			),

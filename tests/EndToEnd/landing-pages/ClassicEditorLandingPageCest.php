@@ -190,89 +190,6 @@ class ClassicEditorLandingPageCest
 
 	/**
 	 * Test that the Legacy Landing Page specified in the Page Settings works when
-	 * creating and viewing a new WordPress Page.
-	 *
-	 * @since   3.3.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testAddNewPageUsingDefinedLegacyLandingPage(EndToEndTester $I)
-	{
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Landing Page: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
-		);
-
-		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'] ],
-			]
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the basic HTML structure is correct.
-		$I->seeLandingPageOutput($I);
-
-		// Confirm that the Kit Landing Page displays.
-		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
-	}
-
-	/**
-	 * Test that the WordPress site icon is output as the favicon on a Legacy Landing Page,
-	 * when defined.
-	 *
-	 * @since   3.3.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testLegacyLandingPageSiteIcon(EndToEndTester $I)
-	{
-		// Define a WordPress Site Icon.
-		$imageID = $I->haveAttachmentInDatabase(codecept_data_dir('icon.png'));
-		$I->haveOptionInDatabase('site_icon', $imageID);
-
-		// Add a Page using the Classic Editor.
-		$I->addClassicEditorPage(
-			$I,
-			title: 'Kit: Page: Legacy Landing Page: Site Icon: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
-		);
-
-		// Configure metabox's Landing Page setting to value specified in the .env file.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'landing_page' => [ 'select2', $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'] ],
-			]
-		);
-
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the basic HTML structure is correct.
-		$I->seeLandingPageOutput($I);
-
-		// Confirm the WordPress Site Icon displays.
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-150x150.png" sizes="32x32">');
-		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png" sizes="192x192">');
-		$I->seeInSource('<link rel="apple-touch-icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
-		$I->seeInSource('<meta name="msapplication-TileImage" content="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/icon-300x300.png">');
-		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.kit.com/templates/favicon.ico">');
-
-		// Confirm that the Kit Landing Page displays.
-		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
-	}
-
-	/**
-	 * Test that the Legacy Landing Page specified in the Page Settings works when
 	 * the Landing Page was defined by the Kit Plugin < 1.9.6, which used a URL
 	 * instead of an ID.
 	 *
@@ -603,6 +520,124 @@ class ClassicEditorLandingPageCest
 
 		// Confirm that no Kit Form is displayed.
 		$I->dontSeeElementInDOM('form[data-sv-form]');
+	}
+
+	/**
+	 * Test that the Post metabox Landing Page dropdown does not offer legacy
+	 * landing pages as a selection option.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testLegacyLandingPagesExcludedFromMetaboxDropdown(EndToEndTester $I)
+	{
+		// Add a Page using the Classic Editor.
+		$I->amOnAdminPage('post-new.php?post_type=page');
+
+		// The metabox Landing Page dropdown should not offer the legacy page
+		// as an option.
+		$I->dontSeeElementInDOM('#wp-convertkit-landing_page option[value="' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '"]');
+		$I->dontSee(
+			$_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'],
+			'#wp-convertkit-landing_page'
+		);
+	}
+
+	/**
+	 * Test that a Page preseeded with a legacy landing page ID in its post
+	 * meta continues to display that legacy landing page as the selected
+	 * option in the Classic editor metabox, and continues to render the
+	 * legacy landing page on the frontend.
+	 *
+	 * Also asserts that the WordPress site icon replaces the Kit favicon on
+	 * a legacy landing page, previously covered by the deleted
+	 * `testLegacyLandingPageSiteIcon` test that selected the legacy page
+	 * from the dropdown.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testMetaboxPreservesSelectedLegacyLandingPageByID(EndToEndTester $I)
+	{
+		// Define a WordPress Site Icon so the favicon-replacement assertion
+		// below has something to match.
+		$imageID = $I->haveAttachmentInDatabase(codecept_data_dir('icon.png'));
+		$I->haveOptionInDatabase('site_icon', $imageID);
+
+		// Preseed a Page with a legacy landing page ID in its Kit post meta.
+		$pageID = $I->havePageInDatabase(
+			[
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Kit: Page: Preserves Legacy Landing Page ID',
+				'post_name'   => 'kit-preserves-legacy-landing-page-id',
+				'meta_input'  => [
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => (string) $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'],
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Open the edit screen and confirm the legacy landing page shows as
+		// the selected option in the metabox dropdown, even though it is no
+		// longer offered as a new selection choice.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
+		$I->seeElementInDOM('#wp-convertkit-landing_page option[value="' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '"]');
+		$I->seeOptionIsSelected(
+			'#wp-convertkit-landing_page',
+			$_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
+		);
+
+		// View the page on the frontend and confirm the legacy landing page
+		// still renders, including the WordPress site icon replacing the Kit
+		// favicon.
+		$I->amOnPage('/?p=' . $pageID);
+		$I->dontSeeElementInDOM('body.page');
+		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">');
+		$I->seeInSource('<link rel="icon" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/uploads/' . date('Y') . '/' . date('m') . '/icon-150x150.png" sizes="32x32">');
+		$I->dontSeeInSource('<link rel="shortcut icon" type="image/x-icon" href="https://pages.kit.com/templates/favicon.ico">');
+	}
+
+	/**
+	 * Test that a Page preseeded with a legacy landing page URL string in its
+	 * post meta (as saved by Plugin versions < 1.9.6) continues to display
+	 * that legacy landing page as the selected option in the Classic editor
+	 * metabox.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testMetaboxPreservesSelectedLegacyLandingPageByURL(EndToEndTester $I)
+	{
+		// Preseed a Page with a legacy landing page URL string in its Kit
+		// post meta, mirroring how < 1.9.6 of the Plugin stored the value.
+		$pageID = $I->havePageInDatabase(
+			[
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Kit: Page: Preserves Legacy Landing Page URL',
+				'post_name'   => 'kit-preserves-legacy-landing-page-url',
+				'meta_input'  => [
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_URL'],
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Open the edit screen and confirm the legacy landing page shows as
+		// selected. When stored as a URL, the appended option carries the
+		// URL as its value.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=edit');
+		$I->seeElementInDOM('#wp-convertkit-landing_page option[value="' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_URL'] . '"]');
 	}
 
 	/**
