@@ -151,9 +151,26 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 	 */
 	private function get_legacy_warnings_for_post_settings( $post_id ) {
 
-		// Get Post settings.
 		$convertkit_post = new ConvertKit_Post( $post_id );
-		$settings        = $convertkit_post->get();
+
+		return $this->get_legacy_warnings_for_settings( $convertkit_post->get() );
+
+	}
+
+	/**
+	 * Returns an array of warning strings for the given Kit settings array,
+	 * if the settings reference a Legacy Form or Legacy Landing Page.
+	 *
+	 * Public so it can be exercised directly from integration tests without
+	 * having to create a real Post; the hook handlers use the private
+	 * post-ID wrapper above.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   array $settings   Kit settings array (form, landing_page, restrict_content).
+	 * @return  array
+	 */
+	public function get_legacy_warnings_for_settings( $settings ) {
 
 		// Get resources.
 		$forms         = new ConvertKit_Resource_Forms();
@@ -163,30 +180,35 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 		$warnings = array();
 
 		// Form.
-		if ( $forms->is_legacy( $convertkit_post->get_form() ) ) {
+		if ( ! empty( $settings['form'] ) && $forms->is_legacy( $settings['form'] ) ) {
 			$warnings[] = sprintf(
 				/* translators: %s: Form name */
 				__( 'Form: %s', 'convertkit' ),
-				$this->get_form_display_name( $convertkit_post->get_form(), $forms )
+				$this->get_form_display_name( $settings['form'], $forms )
 			);
 		}
 
 		// Landing Page.
-		if ( $landing_pages->is_legacy( $convertkit_post->get_landing_page() ) ) {
+		if ( ! empty( $settings['landing_page'] ) && $landing_pages->is_legacy( $settings['landing_page'] ) ) {
 			$warnings[] = sprintf(
 				/* translators: %s: Landing page name */
 				__( 'Landing Page: %s', 'convertkit' ),
-				$this->get_landing_page_display_name( $convertkit_post->get_landing_page(), $landing_pages )
+				$this->get_landing_page_display_name( $settings['landing_page'], $landing_pages )
 			);
 		}
 
-		// Restrict Content.
-		if ( $convertkit_post->get_restrict_content_type() === 'form' && $forms->is_legacy( $convertkit_post->get_restrict_content_id() ) ) {
-			$warnings[] = sprintf(
-				/* translators: %s: Form name */
-				__( 'Member Content: %s', 'convertkit' ),
-				$this->get_form_display_name( $convertkit_post->get_restrict_content_id(), $forms )
-			);
+		// Restrict Content. Value shape is `<type>_<id>` — e.g. `form_123`,
+		// `tag_456`, `product_789`. Only form types have a legacy variant.
+		if ( ! empty( $settings['restrict_content'] ) && strpos( (string) $settings['restrict_content'], '_' ) !== false ) {
+			list( $type, $id ) = explode( '_', (string) $settings['restrict_content'], 2 );
+
+			if ( 'form' === $type && $forms->is_legacy( $id ) ) {
+				$warnings[] = sprintf(
+					/* translators: %s: Form name */
+					__( 'Member Content: %s', 'convertkit' ),
+					$this->get_form_display_name( $id, $forms )
+				);
+			}
 		}
 
 		return $warnings;

@@ -67,7 +67,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testNoWarningsForV4Resources()
 	{
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'form'             => $_ENV['CONVERTKIT_API_FORM_ID'],
 				'landing_page'     => $_ENV['CONVERTKIT_API_LANDING_PAGE_ID'],
@@ -86,7 +86,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testWarningForLegacyForm()
 	{
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'form' => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 			]
@@ -105,7 +105,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testWarningForLegacyLandingPageByID()
 	{
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'landing_page' => $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'],
 			]
@@ -125,7 +125,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testWarningForLegacyLandingPageByURL()
 	{
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'landing_page' => $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_URL'],
 			]
@@ -144,7 +144,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testWarningForLegacyRestrictContentForm()
 	{
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'restrict_content' => 'form_' . $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 			]
@@ -164,12 +164,12 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testNoWarningForLegacyRestrictContentTagOrProduct()
 	{
-		$tag     = $this->notice->get_legacy_warnings_for_post_settings(
+		$tag     = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'restrict_content' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
 			]
 		);
-		$product = $this->notice->get_legacy_warnings_for_post_settings(
+		$product = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'restrict_content' => 'product_1',
 			]
@@ -188,7 +188,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	 */
 	public function testWarningsForMultipleLegacyResources()
 	{
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'form'             => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
 				'landing_page'     => $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'],
@@ -216,7 +216,7 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 		delete_option('convertkit_forms');
 		delete_option('convertkit_landing_pages');
 
-		$warnings = $this->notice->get_legacy_warnings_for_post_settings(
+		$warnings = $this->notice->get_legacy_warnings_for_settings(
 			[
 				'landing_page' => $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_URL'],
 			]
