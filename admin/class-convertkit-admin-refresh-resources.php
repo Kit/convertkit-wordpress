@@ -85,7 +85,8 @@ class ConvertKit_Admin_Refresh_Resources {
 
 				// Only return non-legacy forms.
 				if ( ! is_wp_error( $results ) ) {
-					$results = $forms->get_non_legacy();
+					$non_legacy = $forms->get_non_legacy();
+					$results    = is_array( $non_legacy ) ? $non_legacy : array();
 				}
 				break;
 
@@ -95,7 +96,8 @@ class ConvertKit_Admin_Refresh_Resources {
 
 				// Only return non-legacy landing pages.
 				if ( ! is_wp_error( $results ) ) {
-					$results = $landing_pages->get_non_legacy();
+					$non_legacy = $landing_pages->get_non_legacy();
+					$results    = is_array( $non_legacy ) ? $non_legacy : array();
 				}
 				break;
 
@@ -125,7 +127,8 @@ class ConvertKit_Admin_Refresh_Resources {
 				}
 
 				// Only return non-legacy forms.
-				$results_forms = $forms->get_non_legacy();
+				$non_legacy_forms = $forms->get_non_legacy();
+				$results_forms    = is_array( $non_legacy_forms ) ? $non_legacy_forms : array();
 
 				// Fetch Tags.
 				$tags         = new ConvertKit_Resource_Tags( 'user_refresh_resource' );
