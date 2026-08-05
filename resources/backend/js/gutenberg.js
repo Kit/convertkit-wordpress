@@ -201,6 +201,25 @@ function convertKitGutenbergRegisterBlock(block) {
 						});
 					}
 
+					// If the block's saved value references a legacy form that
+					// isn't in field.values (legacy forms are not offered as
+					// new selection choices), append it here so the dropdown
+					// still reflects the saved selection.
+					if (
+						fieldProperties.value &&
+						field.legacy_values &&
+						typeof field.legacy_values[fieldProperties.value] !==
+							'undefined' &&
+						!fieldOptions.some(
+							(option) => option.value === fieldProperties.value
+						)
+					) {
+						fieldOptions.push({
+							label: field.legacy_values[fieldProperties.value],
+							value: fieldProperties.value,
+						});
+					}
+
 					// Sort field's options alphabetically by label.
 					fieldOptions.sort(function (x, y) {
 						const a = x.label.toUpperCase(),
@@ -224,6 +243,25 @@ function convertKitGutenbergRegisterBlock(block) {
 						fieldOptions.push({
 							label: field.values[value],
 							value,
+						});
+					}
+
+					// If the block's saved value references a legacy form that
+					// isn't in field.values (because legacy forms are not
+					// offered as new selection choices), append it here so the
+					// dropdown still reflects the saved selection.
+					if (
+						fieldProperties.value &&
+						field.legacy_values &&
+						typeof field.legacy_values[fieldProperties.value] !==
+							'undefined' &&
+						!fieldOptions.some(
+							(option) => option.value === fieldProperties.value
+						)
+					) {
+						fieldOptions.push({
+							label: field.legacy_values[fieldProperties.value],
+							value: fieldProperties.value,
 						});
 					}
 
@@ -1147,6 +1185,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 
 				if (hasOptgroups) {
 					const children = [];
+					const seenValues = new Set();
 
 					for (const value of Object.keys(field.values)) {
 						if (
@@ -1159,6 +1198,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 							for (const groupValue of Object.keys(
 								field.values[value].values
 							)) {
+								seenValues.add(groupValue);
 								groupChildren.push(
 									el(
 										'option',
@@ -1182,6 +1222,7 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 							);
 						} else {
 							// Option within optgroup.
+							seenValues.add(value);
 							children.push(
 								el(
 									'option',
@@ -1190,6 +1231,28 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 								)
 							);
 						}
+					}
+
+					// If the saved value references a legacy form that isn't
+					// otherwise in the dropdown, append it so the current
+					// selection remains visible.
+					if (
+						fieldProperties.value &&
+						field.legacy_values &&
+						typeof field.legacy_values[fieldProperties.value] !==
+							'undefined' &&
+						!seenValues.has(fieldProperties.value)
+					) {
+						children.push(
+							el(
+								'option',
+								{
+									value: fieldProperties.value,
+									key: fieldProperties.value,
+								},
+								field.legacy_values[fieldProperties.value]
+							)
+						);
 					}
 
 					return el(SelectControl, fieldProperties, ...children);
@@ -1201,6 +1264,24 @@ function convertKitGutenbergRegisterPluginSidebar(sidebar) {
 					fieldOptions.push({
 						label: field.values[value],
 						value,
+					});
+				}
+
+				// If the saved value references a legacy form that isn't in
+				// field.values, append it so the current selection remains
+				// visible in the dropdown.
+				if (
+					fieldProperties.value &&
+					field.legacy_values &&
+					typeof field.legacy_values[fieldProperties.value] !==
+						'undefined' &&
+					!fieldOptions.some(
+						(option) => option.value === fieldProperties.value
+					)
+				) {
+					fieldOptions.push({
+						label: field.legacy_values[fieldProperties.value],
+						value: fieldProperties.value,
 					});
 				}
 

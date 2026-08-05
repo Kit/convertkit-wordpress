@@ -241,45 +241,26 @@ class PageLandingPageSetupWizardCest
 	}
 
 	/**
-	 * Test that the Add New Landing Page generates the expected Page
-	 * and displays the selected Legacy Landing Page.
+	 * Test that the Setup Wizard's Landing Page picker does not offer legacy
+	 * landing pages as a selection option.
 	 *
-	 * @since   2.5.5
+	 * @since   3.3.7
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testAddNewLegacyLandingPage(EndToEndTester $I)
+	public function testLegacyLandingPagesExcludedFromSetupWizard(EndToEndTester $I)
 	{
 		// Setup Plugin and navigate to Add New Landing Page screen.
 		$this->_setupAndLoadAddNewLandingPageScreen($I);
 
-		// Select a landing page and enter a slug.
-		$I->fillSelect2Field(
-			$I,
-			container: '#select2-landing_page-container',
-			value: $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME']
+		// The Setup Wizard's landing page dropdown should not offer the
+		// legacy landing page as an option.
+		$I->waitForElementVisible('#landing_page');
+		$I->dontSeeElementInDOM('#landing_page option[value="' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '"]');
+		$I->dontSee(
+			$_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'],
+			'#landing_page'
 		);
-		$I->fillField('post_name', 'landing-page-setup-wizard');
-
-		// Click create button.
-		$I->click('Create');
-
-		// Confirm that setup completed.
-		$I->waitForElementVisible('div.convertkit-setup-wizard-grid');
-		$I->see('Setup complete');
-
-		// Click the button to view the landing page.
-		$I->click('View landing page');
-
-		// Wait for the Landing Page to load.
-		$I->waitForElementNotVisible('body.convertkit');
-
-		// Confirm that the basic HTML structure is correct.
-		$I->seeLandingPageOutput($I);
-
-		// Confirm that the Kit Landing Page displays.
-		$I->dontSeeElementInDOM('body.page'); // WordPress didn't load its template, which is correct.
-		$I->seeInSource('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">'); // Kit injected its Landing Page Form, which is correct.
 	}
 
 	/**
