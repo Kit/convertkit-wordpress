@@ -201,6 +201,7 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 		// `tag_456`, `product_789`. Only form types have a legacy variant.
 		if ( ! empty( $settings['restrict_content'] ) && strpos( (string) $settings['restrict_content'], '_' ) !== false ) {
 			list( $type, $id ) = explode( '_', (string) $settings['restrict_content'], 2 );
+			$id                = (int) $id;
 
 			if ( 'form' === $type && $forms->is_legacy( $id ) ) {
 				$warnings[] = sprintf(
