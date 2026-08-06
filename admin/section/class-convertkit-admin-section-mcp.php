@@ -24,16 +24,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	private $authorization_header = false;
 
 	/**
-	 * The Account class instance, used to check whether the connected Kit
-	 * account is on a paid plan (required for MCP access).
-	 *
-	 * @since   3.4.0
-	 *
-	 * @var     ConvertKit_Account
-	 */
-	private $account;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since   3.4.0
@@ -62,9 +52,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				'wrap'     => true,
 			),
 		);
-
-		// Register the account class.
-		$this->account = new ConvertKit_Account();
 
 		$this->maybe_generate_authentication_header();
 		$this->maybe_revoke_application_password();
@@ -285,8 +272,8 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	public function enabled_callback( $args ) {
 
 		// If the user doesn't have a paid plan, show the upgrade required message.
-		$this->account = new ConvertKit_Account();
-		if ( ! $this->account->is_paid_plan() ) {
+		$account = new ConvertKit_Resource_Account();
+		if ( ! $account->is_paid_plan() ) {
 			// Disable saving settings.
 			$this->save_disabled = true;
 
