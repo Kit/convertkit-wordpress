@@ -566,11 +566,6 @@ class KitPlugin extends \Codeception\Module
 		$I->haveOptionInDatabase( 'convertkit_posts_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_products_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_tags_last_queried', strtotime( 'now' ) );
-		// Custom fields is instantiated by the Form Builder block's Custom Field
-		// block on every admin request. Without a fresh last-queried timestamp
-		// its constructor triggers refresh() → 401 against fake tokens →
-		// convertkit_maybe_delete_credentials wipes the fake tokens mid-request.
-		$I->haveOptionInDatabase( 'convertkit_custom_fields_last_queried', strtotime( 'now' ) );
 	}
 
 	/**
