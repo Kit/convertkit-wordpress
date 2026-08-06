@@ -512,7 +512,6 @@ class KitPlugin extends \Codeception\Module
 		);
 
 		// Define Custom Fields.
-		// Define Custom Fields.
 		$I->haveOptionInDatabase(
 			'convertkit_custom_fields',
 			[
@@ -524,32 +523,32 @@ class KitPlugin extends \Codeception\Module
 				],
 				276295  => [
 					'id'    => 276295,
-					'name'  => 'Payment Method',
-					'key'   => 'ck_field_276295_payment_method',
+					'name'  => 'ck_field_276295_payment_method',
+					'key'   => 'payment_method',
 					'label' => 'Payment Method',
 				],
 				276273  => [
 					'id'    => 276273,
-					'name'  => 'Billing Address',
-					'key'   => 'ck_field_276273_billing_address',
+					'name'  => 'ck_field_276273_billing_address',
+					'key'   => 'billing_address',
 					'label' => 'Billing Address',
 				],
 				276272  => [
 					'id'    => 276272,
-					'name'  => 'Shipping Address',
-					'key'   => 'ck_field_276272_shipping_address',
+					'name'  => 'ck_field_276272_shipping_address',
+					'key'   => 'shipping_address',
 					'label' => 'Shipping Address',
 				],
 				276271  => [
 					'id'    => 276271,
-					'name'  => 'Phone Number',
-					'key'   => 'ck_field_276271_phone_number',
+					'name'  => 'ck_field_276271_phone_number',
+					'key'   => 'phone_number',
 					'label' => 'Phone Number',
 				],
 				264073  => [
 					'id'    => 264073,
-					'name'  => 'Last Name',
-					'key'   => 'ck_field_264073_last_name',
+					'name'  => 'ck_field_264073_last_name',
+					'key'   => 'last_name',
 					'label' => 'Last Name',
 				],
 				258240  => [
