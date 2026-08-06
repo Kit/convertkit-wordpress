@@ -516,46 +516,46 @@ class KitPlugin extends \Codeception\Module
 			'convertkit_custom_fields',
 			[
 				1075083 => [
-					'id'         => 1075083,
-					'name'       => 'ck_field_1075083_url',
-					'key'        => 'url',
-					'label'      => 'URL',
+					'id'    => 1075083,
+					'name'  => 'ck_field_1075083_url',
+					'key'   => 'url',
+					'label' => 'URL',
 				],
-				276295 => [
-					'id'         => 276295,
-					'name'       => 'Payment Method',
-					'key'        => 'ck_field_276295_payment_method',
-					'label'      => 'Payment Method',
+				276295  => [
+					'id'    => 276295,
+					'name'  => 'Payment Method',
+					'key'   => 'ck_field_276295_payment_method',
+					'label' => 'Payment Method',
 				],
-				276273 => [
-					'id'         => 276273,
-					'name'       => 'Billing Address',
-					'key'        => 'ck_field_276273_billing_address',
-					'label'      => 'Billing Address',
+				276273  => [
+					'id'    => 276273,
+					'name'  => 'Billing Address',
+					'key'   => 'ck_field_276273_billing_address',
+					'label' => 'Billing Address',
 				],
-				276272 => [
-					'id'         => 276272,
-					'name'       => 'Shipping Address',
-					'key'        => 'ck_field_276272_shipping_address',
-					'label'      => 'Shipping Address',
+				276272  => [
+					'id'    => 276272,
+					'name'  => 'Shipping Address',
+					'key'   => 'ck_field_276272_shipping_address',
+					'label' => 'Shipping Address',
 				],
-				276271 => [
-					'id'         => 276271,
-					'name'       => 'Phone Number',
-					'key'        => 'ck_field_276271_phone_number',
-					'label'      => 'Phone Number',
+				276271  => [
+					'id'    => 276271,
+					'name'  => 'Phone Number',
+					'key'   => 'ck_field_276271_phone_number',
+					'label' => 'Phone Number',
 				],
-				264073 => [
-					'id'         => 264073,
-					'name'       => 'Last Name',
-					'key'        => 'ck_field_264073_last_name',
-					'label'      => 'Last Name',
+				264073  => [
+					'id'    => 264073,
+					'name'  => 'Last Name',
+					'key'   => 'ck_field_264073_last_name',
+					'label' => 'Last Name',
 				],
-				258240 => [
-					'id'         => 258240,
-					'name'       => 'ck_field_258240_notes',
-					'key'        => 'notes',
-					'label'      => 'Notes',
+				258240  => [
+					'id'    => 258240,
+					'name'  => 'ck_field_258240_notes',
+					'key'   => 'notes',
+					'label' => 'Notes',
 				],
 			]
 		);
