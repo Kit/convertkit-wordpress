@@ -129,7 +129,7 @@ class WPGutenberg extends \Codeception\Module
 			// Also add last segment after slash, for compatibility with older WordPress versions.
 			$parts = explode('/', $blockProgrammaticName);
 			if (count($parts) === 2) {
-				$potentialNames[] = $parts[1];
+				array_unshift($potentialNames, $parts[1]);
 			}
 		}
 
@@ -221,28 +221,15 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function addGutenbergParagraphBlock($I, $text)
 	{
-		// Add paragraph block.
-		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph/paragraph');
-
-		// Switch to the Gutenberg IFrame.
-		if ($this->isGutenbergIFrameEditorEnabled()) {
-			$I->switchToGutenbergIFrameEditor($I);
-		}
-
-		// Click the editor area and enter the text in the paragraph.
-		$I->click('.wp-block-post-content');
-		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
-
-		// Wait for Gutenberg to finish committing the typed text to the DOM.
-		// fillField returns as soon as the keystrokes have been dispatched, but
-		// Gutenberg (particularly under the iframed editor enforced in WP 7.1)
-		// processes input asynchronously.
-		$I->waitForText(substr($text, -min(30, strlen($text))), 5, '.wp-block-post-content');
-
-		// Switch back to main window.
-		if ($this->isGutenbergIFrameEditorEnabled()) {
-			$I->switchToIFrame();
-		}
+		// Programmatically insert a Paragraph block with the given content via
+		// Gutenberg's data store. Bypasses the block inserter + click +
+		// fillField sequence that WP 7.1's iframed editor makes unreliable.
+		// Resolve whichever window has it before dispatching.
+		$I->executeJS(
+			'var w = (typeof wp !== "undefined" && wp.data) ? window : (document.querySelector("iframe[name=\"editor-canvas\"]") || {}).contentWindow;' .
+			'w.wp.data.dispatch("core/block-editor").insertBlock(w.wp.blocks.createBlock("core/paragraph", {content: arguments[0]}));',
+			[ $text ]
+		);
 	}
 
 	/**
@@ -414,12 +401,18 @@ class WPGutenberg extends \Codeception\Module
 		$I->wait(2);
 
 		// Build potential programmatic block names.
+		// Try the short name (last segment after any `/`) FIRST — modern
+		// WordPress uses a class like `editor-block-list-item-paragraph`,
+		// which matches via a fast CSS selector. The full `paragraph/paragraph`
+		// form only matches an XPath that DOM classes can never satisfy (CSS
+		// classes can't contain `/`), so leaving it first burned the full
+		// waitForElementVisible timeout on every insertion.
 		$potentialNames = [ $blockProgrammaticName ];
 		if (strpos($blockProgrammaticName, '/') !== false) {
 			// Also add last segment after slash, for compatibility with older WordPress versions.
 			$parts = explode('/', $blockProgrammaticName);
 			if (count($parts) === 2) {
-				$potentialNames[] = $parts[1];
+				array_unshift($potentialNames, $parts[1]);
 			}
 		}
 
