@@ -74,12 +74,15 @@ class ConvertKit_Settings_MCP {
 	 */
 	public function enabled() {
 
+	/*
 		// Bail if the connected Kit account isn't on a paid plan.
 		// This queries the cached account details, so no live API call is made.
 		$account = new ConvertKit_Account();
 		if ( ! $account->is_paid_plan() ) {
+			error_log( 'not paid plan' );
 			return false;
 		}
+			*/
 
 		return ( $this->settings['enabled'] === 'on' ? true : false );
 

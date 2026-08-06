@@ -63,9 +63,8 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			),
 		);
 
-		// Refresh account details.
-		$account       = new ConvertKit_Account();
-		$this->account = $account->refresh();
+		// Register the account class.
+		$this->account = new ConvertKit_Account();
 
 		$this->maybe_generate_authentication_header();
 		$this->maybe_revoke_application_password();
@@ -182,19 +181,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 */
 	public function register_fields() {
 
-		// Only show MCP settings if the connected Kit account is on a paid plan.
-		if ( ! $this->account->is_paid_plan() ) {
-			add_settings_field(
-				'upgrade_required',
-				__( 'Paid Plan Required', 'convertkit' ),
-				array( $this, 'upgrade_required_callback' ),
-				$this->settings_key,
-				$this->name
-			);
-
-			return;
-		}
-
 		// Enable.
 		add_settings_field(
 			'enabled',
@@ -274,11 +260,11 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 *
 	 * @since   3.4.0
 	 */
-	public function upgrade_required_callback() {
+	public function output_upgrade_required_message() {
 
 		?>
 		<p>
-			<?php esc_html_e( 'MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.', 'convertkit' ); ?>
+			<?php esc_html_e( 'The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.', 'convertkit' ); ?>
 		</p>
 		<p>
 			<a href="https://app.kit.com/account_settings/billing" class="button button-primary" target="_blank">
@@ -297,6 +283,16 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
 	public function enabled_callback( $args ) {
+
+		// If the user doesn't have a paid plan, show the upgrade required message.
+		$this->account = new ConvertKit_Account();
+		if ( ! $this->account->is_paid_plan() ) {
+			// Disable saving settings.
+			$this->save_disabled = true;
+
+			$this->output_upgrade_required_message();
+			return;
+		}
 
 		// Output field.
 		$this->output_checkbox_field(

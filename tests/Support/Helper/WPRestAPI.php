@@ -19,6 +19,8 @@ class WPRestAPI extends \Codeception\Module
 	 */
 	public function hasRoute($I, $route)
 	{
+		var_dump( $this->getRoutes() );
+		die();
 		$I->assertTrue( in_array( $route, $this->getRoutes(), true ) );
 	}
 

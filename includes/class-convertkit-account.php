@@ -51,16 +51,19 @@ class ConvertKit_Account {
 	 *
 	 * @since   3.4.0
 	 *
-	 * @return  string|null
+	 * @return  bool|string
 	 */
 	public function get_plan_type() {
 
+		// Get account details from cache.
 		$account = $this->get();
 
+		// If no account details are found, or the plan type is not set, return false.
 		if ( ! $account || ! isset( $account['account']['plan_type'] ) ) {
-			return null;
+			return false;
 		}
 
+		// Return the plan type.
 		return (string) $account['account']['plan_type'];
 
 	}
@@ -74,12 +77,15 @@ class ConvertKit_Account {
 	 */
 	public function is_paid_plan() {
 
+		// Get the plan type from the account details.
 		$plan_type = $this->get_plan_type();
 
-		if ( $plan_type === null ) {
+		// If no plan type is found, return false.
+		if ( ! $plan_type ) {
 			return false;
 		}
 
+		// Return true if the plan type is not free, false otherwise.
 		return $plan_type !== 'free';
 
 	}

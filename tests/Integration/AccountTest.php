@@ -93,9 +93,9 @@ class AccountTest extends WPTestCase
 	 *
 	 * @since   3.4.0
 	 */
-	public function testGetPlanTypeReturnsNullWhenNoCache()
+	public function testGetPlanTypeReturnsFalseWhenNoCache()
 	{
-		$this->assertSame(null, $this->account->get_plan_type());
+		$this->assertSame(false, $this->account->get_plan_type());
 	}
 
 	/**

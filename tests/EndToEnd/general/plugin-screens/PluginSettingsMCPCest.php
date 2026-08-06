@@ -22,9 +22,6 @@ class PluginSettingsMCPCest
 	{
 		// Activate Kit Plugin.
 		$I->activateKitPlugin($I);
-
-		// Setup Plugin.
-		$I->setupKitPlugin($I);
 	}
 
 	/**
@@ -36,8 +33,20 @@ class PluginSettingsMCPCest
 	 */
 	public function testEnableAndDisableMCPServerSetting(EndToEndTester $I)
 	{
+		// Simulate a Kit account that is on a paid plan.
+		$I->setupKitPlugin($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'creator_pro',
+				],
+			]
+		);
+
 		// Check that the MCP server is not registered.
-		$I->doesNotHaveRoute($I, '/kit-mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp/v1');
 
 		// Go to the Plugin's MCP Screen.
 		$I->loadKitSettingsMCPScreen($I);
@@ -88,6 +97,17 @@ class PluginSettingsMCPCest
 	 */
 	public function testGenerateAndRevokeApplicationPassword(EndToEndTester $I)
 	{
+		// Simulate a Kit account that is on a paid plan.
+		$I->setupKitPlugin($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'creator_pro',
+				],
+			]
+		);
+
 		// Go to the Plugin's MCP Screen.
 		$I->loadKitSettingsMCPScreen($I);
 
@@ -171,6 +191,7 @@ class PluginSettingsMCPCest
 	{
 		// Simulate a Kit account that is on the free plan.
 		$I->setupKitPluginFakeAPIKey($I);
+		$I->setupKitPluginResources($I);
 		$I->haveOptionInDatabase(
 			'convertkit_account',
 			[
@@ -192,8 +213,7 @@ class PluginSettingsMCPCest
 		$I->loadKitSettingsMCPScreen($I);
 
 		// Assert that the upgrade CTA is shown.
-		$I->see('Paid Plan Required');
-		$I->see('MCP is available on paid Kit plans.');
+		$I->see('The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.');
 		$I->seeLink('Upgrade Kit Account');
 
 		// Assert no option to enable/disable the MCP server are shown.
@@ -216,7 +236,8 @@ class PluginSettingsMCPCest
 	public function testPaidPlanShowsEnableUI(EndToEndTester $I)
 	{
 		// Simulate a Kit account that is on a paid plan.
-		$I->setupKitPluginFakeAPIKey($I);
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
 		$I->haveOptionInDatabase(
 			'convertkit_account',
 			[
@@ -230,8 +251,8 @@ class PluginSettingsMCPCest
 		$I->loadKitSettingsMCPScreen($I);
 
 		// The upgrade CTA should not be shown.
-		$I->dontSee('Paid Plan Required');
-		$I->dontSee('Upgrade Kit Account');
+		$I->dontSee('The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.');
+		$I->dontSeeLink('Upgrade Kit Account');
 
 		// The Enable checkbox should be visible.
 		$I->seeElement('#enabled');
