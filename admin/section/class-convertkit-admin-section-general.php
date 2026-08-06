@@ -15,16 +15,7 @@
 class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 	/**
-	 * Holds the API instance.
-	 *
-	 * @since   1.9.6
-	 *
-	 * @var     ConvertKit_API_V4
-	 */
-	private $api;
-
-	/**
-	 * Holds the ConvertKit Account Name.
+	 * Holds the ConvertKit Account data.
 	 *
 	 * @since   1.9.6
 	 *
@@ -146,16 +137,6 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			);
 			exit();
 		}
-
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'settings'
-		);
 
 		// Refresh account details.
 		$account       = new ConvertKit_Account();
