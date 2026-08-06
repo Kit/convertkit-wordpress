@@ -71,6 +71,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-preview-output
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cloudflare-turnstile.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-recaptcha.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-spam-protection.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-account.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-creator-network-recommendations.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-restrict-content-cache.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-custom-fields.php';

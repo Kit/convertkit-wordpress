@@ -15,7 +15,7 @@
 class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 	/**
-	 * Holds the ConvertKit Account data.
+	 * Holds the ConvertKit Account Name.
 	 *
 	 * @since   1.9.6
 	 *
@@ -138,8 +138,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			exit();
 		}
 
-		// Refresh account details.
-		$account       = new ConvertKit_Account();
+		// Get Account Details, which we'll use in account_name_callback(), but also lets us test
+		// whether the API credentials are valid.
+		$account       = new ConvertKit_Resource_Account();
 		$this->account = $account->refresh();
 
 		// If the request succeeded, no need to perform further actions.
@@ -205,7 +206,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Delete cached resources.
-		$account         = new ConvertKit_Account();
+		$account         = new ConvertKit_Resource_Account();
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();
 		$custom_fields   = new ConvertKit_Resource_Custom_Fields();
 		$forms           = new ConvertKit_Resource_Forms();
