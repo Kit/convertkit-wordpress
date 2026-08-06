@@ -511,62 +511,12 @@ class KitPlugin extends \Codeception\Module
 			]
 		);
 
-		// Define Custom Fields.
-		$I->haveOptionInDatabase(
-			'convertkit_custom_fields',
-			[
-				1075083 => [
-					'id'    => 1075083,
-					'name'  => 'ck_field_1075083_url',
-					'key'   => 'url',
-					'label' => 'URL',
-				],
-				276295  => [
-					'id'    => 276295,
-					'name'  => 'Payment Method',
-					'key'   => 'ck_field_276295_payment_method',
-					'label' => 'Payment Method',
-				],
-				276273  => [
-					'id'    => 276273,
-					'name'  => 'Billing Address',
-					'key'   => 'ck_field_276273_billing_address',
-					'label' => 'Billing Address',
-				],
-				276272  => [
-					'id'    => 276272,
-					'name'  => 'Shipping Address',
-					'key'   => 'ck_field_276272_shipping_address',
-					'label' => 'Shipping Address',
-				],
-				276271  => [
-					'id'    => 276271,
-					'name'  => 'Phone Number',
-					'key'   => 'ck_field_276271_phone_number',
-					'label' => 'Phone Number',
-				],
-				264073  => [
-					'id'    => 264073,
-					'name'  => 'Last Name',
-					'key'   => 'ck_field_264073_last_name',
-					'label' => 'Last Name',
-				],
-				258240  => [
-					'id'    => 258240,
-					'name'  => 'ck_field_258240_notes',
-					'key'   => 'notes',
-					'label' => 'Notes',
-				],
-			]
-		);
-
 		// Define last queried to now for all resources, so they're not automatically immediately refreshed by the Plugin's logic.
 		$I->haveOptionInDatabase( 'convertkit_forms_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_landing_pages_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_posts_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_products_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_tags_last_queried', strtotime( 'now' ) );
-		$I->haveOptionInDatabase( 'convertkit_custom_fields_last_queried', strtotime( 'now' ) );
 	}
 
 	/**
@@ -639,9 +589,6 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('_wp_convertkit_settings_mcp');
 		$I->dontHaveOptionInDatabase('convertkit_version');
 
-		// Account.
-		$I->dontHaveOptionInDatabase('convertkit_account');
-
 		// Resources.
 		$I->dontHaveOptionInDatabase('convertkit_broadcasts');
 		$I->dontHaveOptionInDatabase('convertkit_broadcasts_last_queried');
@@ -655,8 +602,6 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('convertkit_products_last_queried');
 		$I->dontHaveOptionInDatabase('convertkit_tags');
 		$I->dontHaveOptionInDatabase('convertkit_tags_last_queried');
-		$I->dontHaveOptionInDatabase('convertkit_custom_fields');
-		$I->dontHaveOptionInDatabase('convertkit_custom_fields_last_queried');
 
 		// Persistent notices.
 		$I->dontHaveOptionInDatabase('convertkit-admin-notices');

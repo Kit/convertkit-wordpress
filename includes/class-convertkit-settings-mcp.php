@@ -76,7 +76,7 @@ class ConvertKit_Settings_MCP {
 
 		// Bail if the connected Kit account isn't on a paid plan.
 		// This queries the cached account details, so no live API call is made.
-		$account = new ConvertKit_Account();
+		$account = new ConvertKit_Resource_Account();
 		if ( ! $account->is_paid_plan() ) {
 			return false;
 		}
