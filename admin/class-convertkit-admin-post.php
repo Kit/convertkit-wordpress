@@ -267,6 +267,11 @@ class ConvertKit_Admin_Post {
 			return;
 		}
 
+		// Bail if the current user cannot edit this Post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
 		// Bail if no nonce field exists.
 		if ( ! isset( $_POST['wp-convertkit-save-meta-nonce'] ) ) {
 			return;
