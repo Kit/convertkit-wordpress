@@ -140,6 +140,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-quick-edit.
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-cache-plugins.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-category.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-landing-page.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-legacy-resource-notice.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-post.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-refresh-resources.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-restrict-content.php';
