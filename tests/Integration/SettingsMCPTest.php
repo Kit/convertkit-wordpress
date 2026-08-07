@@ -39,7 +39,7 @@ class SettingsMCPTest extends WPTestCase
 	public function tearDown(): void
 	{
 		delete_option(\ConvertKit_Settings_MCP::SETTINGS_NAME);
-		delete_option(\ConvertKit_Account::OPTION_NAME);
+		delete_option('convertkit_account');
 		deactivate_plugins('convertkit/wp-convertkit.php');
 		parent::tearDown();
 	}
@@ -54,7 +54,7 @@ class SettingsMCPTest extends WPTestCase
 	{
 		update_option(\ConvertKit_Settings_MCP::SETTINGS_NAME, [ 'enabled' => '' ]);
 		update_option(
-			\ConvertKit_Account::OPTION_NAME,
+			'convertkit_account',
 			[ 'account' => [ 'plan_type' => 'creator_pro' ] ]
 		);
 
@@ -71,7 +71,7 @@ class SettingsMCPTest extends WPTestCase
 	public function testEnabledFalseWhenToggleOnAndNoAccountCache()
 	{
 		update_option(\ConvertKit_Settings_MCP::SETTINGS_NAME, [ 'enabled' => 'on' ]);
-		delete_option(\ConvertKit_Account::OPTION_NAME);
+		delete_option('convertkit_account');
 
 		$settings = new \ConvertKit_Settings_MCP();
 		$this->assertSame(false, $settings->enabled());
@@ -87,7 +87,7 @@ class SettingsMCPTest extends WPTestCase
 	{
 		update_option(\ConvertKit_Settings_MCP::SETTINGS_NAME, [ 'enabled' => 'on' ]);
 		update_option(
-			\ConvertKit_Account::OPTION_NAME,
+			'convertkit_account',
 			[ 'account' => [ 'plan_type' => 'free' ] ]
 		);
 
@@ -105,7 +105,7 @@ class SettingsMCPTest extends WPTestCase
 	{
 		update_option(\ConvertKit_Settings_MCP::SETTINGS_NAME, [ 'enabled' => 'on' ]);
 		update_option(
-			\ConvertKit_Account::OPTION_NAME,
+			'convertkit_account',
 			[ 'account' => [ 'plan_type' => 'creator' ] ]
 		);
 
@@ -122,7 +122,7 @@ class SettingsMCPTest extends WPTestCase
 	{
 		update_option(\ConvertKit_Settings_MCP::SETTINGS_NAME, [ 'enabled' => 'on' ]);
 		update_option(
-			\ConvertKit_Account::OPTION_NAME,
+			'convertkit_account',
 			[ 'account' => [ 'plan_type' => 'creator_pro' ] ]
 		);
 
