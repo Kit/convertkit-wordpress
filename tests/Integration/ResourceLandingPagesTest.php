@@ -279,4 +279,82 @@ class ResourceLandingPagesTest extends WPTestCase
 		$this->assertNotInstanceOf(\WP_Error::class, $result);
 		$this->assertStringContainsString('<form id="ck_subscribe_form" class="ck_subscribe_form" action="https://app.kit.com/landing_pages/' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'] . '/subscribe" data-remote="true">', $result);
 	}
+
+	/**
+	 * Test that get_non_legacy() returns v4 landing pages and excludes legacy
+	 * pages (identified by the presence of a `url` key).
+	 *
+	 * @since   3.3.7
+	 */
+	public function testGetNonLegacy()
+	{
+		$result = $this->resource->get_non_legacy();
+
+		$this->assertIsArray($result);
+
+		// v4 landing pages should be present.
+		$this->assertArrayHasKey($_ENV['CONVERTKIT_API_LANDING_PAGE_ID'], $result);
+
+		// Legacy landing page should NOT be present.
+		$this->assertArrayNotHasKey($_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID'], $result);
+
+		// Every returned page should have `embed_url` and no `url` key.
+		foreach ($result as $landing_page) {
+			$this->assertArrayNotHasKey('url', $landing_page);
+			$this->assertArrayHasKey('embed_url', $landing_page);
+		}
+	}
+
+	/**
+	 * Test that non_legacy_exist() returns true when v4 landing pages exist
+	 * in the resources cache.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testNonLegacyExist()
+	{
+		$this->assertTrue($this->resource->non_legacy_exist());
+	}
+
+	/**
+	 * Test that is_legacy() returns true for a legacy landing page ID.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testIsLegacyWithLegacyID()
+	{
+		$this->assertTrue($this->resource->is_legacy($_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_ID']));
+	}
+
+	/**
+	 * Test that is_legacy() returns true when passed a URL string, matching
+	 * how Plugin versions < 1.9.6 stored legacy landing pages.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testIsLegacyWithURLString()
+	{
+		$this->assertTrue($this->resource->is_legacy($_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_URL']));
+	}
+
+	/**
+	 * Test that is_legacy() returns false for a v4 landing page ID.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testIsLegacyWithV4ID()
+	{
+		$this->assertFalse($this->resource->is_legacy($_ENV['CONVERTKIT_API_LANDING_PAGE_ID']));
+	}
+
+	/**
+	 * Test that is_legacy() returns false for a landing page ID that doesn't
+	 * resolve to any resource entry.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testIsLegacyWithInvalidID()
+	{
+		$this->assertFalse($this->resource->is_legacy(12345));
+	}
 }

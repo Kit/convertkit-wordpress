@@ -517,17 +517,27 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 */
 	public function get_fields() {
 
-		// Get Kit Forms.
-		$forms         = new ConvertKit_Resource_Forms( 'block_form_builder' );
-		$forms_options = array();
+		// Get Kit Forms. Non-legacy forms populate the sidebar dropdown;
+		// legacy forms are exposed separately as a fallback so the sidebar can
+		// keep displaying a previously-saved legacy form as the current
+		// selection without offering other legacy forms as new choices.
+		$forms                = new ConvertKit_Resource_Forms( 'block_form_builder' );
+		$forms_options        = array();
+		$forms_legacy_options = array();
 		if ( $forms->exist() ) {
 			foreach ( $forms->get() as $form ) {
-				// Legacy forms don't include a `format` key, so define them as inline.
-				$forms_options[ $form['id'] ] = sprintf(
+				$label = sprintf(
 					'%s [%s]',
 					sanitize_text_field( $form['name'] ),
+					// Legacy forms don't include a `format` key, so define them as inline.
 					( ! empty( $form['format'] ) ? sanitize_text_field( $form['format'] ) : 'inline' )
 				);
+
+				if ( ! empty( $form['format'] ) ) {
+					$forms_options[ $form['id'] ] = $label;
+				} else {
+					$forms_legacy_options[ $form['id'] ] = $label;
+				}
 			}
 		}
 
@@ -575,10 +585,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				),
 			),
 			'form_id'                    => array(
-				'label'       => __( 'Form', 'convertkit' ),
-				'type'        => 'select',
-				'description' => __( 'The Kit form to add the subscriber to. Useful if you want to send an incentive email.', 'convertkit' ),
-				'values'      => $forms_options,
+				'label'         => __( 'Form', 'convertkit' ),
+				'type'          => 'select',
+				'description'   => __( 'The Kit form to add the subscriber to. Useful if you want to send an incentive email.', 'convertkit' ),
+				'values'        => $forms_options,
+				'legacy_values' => $forms_legacy_options,
 			),
 			'tag_id'                     => array(
 				'label'       => __( 'Tag', 'convertkit' ),

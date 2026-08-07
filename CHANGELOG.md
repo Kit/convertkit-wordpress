@@ -1,3 +1,8 @@
+### 3.3.8 2026-08-10
+* Added: Post Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
+* Removed: Legacy Forms from settings dropdowns. Existing Legacy Form settings will be honored, but deprecated in the future
+* Removed: Legacy Landing Pages from settings dropdowns. Existing Legacy Form settings will be honored, but deprecated in the future
+
 ### 3.3.7 2026-07-31
 * Added: Settings: Spam Protection: Cloudflare Turnstile option
 * Updated: Settings: reCAPTCHA: Moved to Spam Protection section

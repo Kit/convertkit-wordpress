@@ -5,21 +5,21 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 3.3.7
+Stable tag: 3.3.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Build your email subscriber lists, send email marketing newsletters, sell more products and build your membership site with Kit (formerly ConvertKit).
+Build your email subscriber lists, send email marketing newsletters, create landing pages, build custom subscription forms with the Form Builder block, and grow your membership site with Kit (formerly ConvertKit).
 
 == Description ==
 
-[Kit](https://kit.com?utm_source=wordpress&utm_term=en_US&utm_content=readme) makes it easy to create, send and manage your email marketing campaigns; grow your email subscribers lists; send targeted email newsletters; sell more products and build your membership site - all by easily embedding email marketing / email subscriber forms anywhere on your WordPress web site.
+[Kit](https://kit.com?utm_source=wordpress&utm_term=en_US&utm_content=readme) makes it easy to create, send and manage your email marketing campaigns; grow your email subscribers lists; send targeted email newsletters; sell more products and build your membership site - all by easily embedding email marketing / email subscriber forms anywhere on your WordPress web site, either using pre-designed forms from Kit or building your own with the Form Builder block.
 
 **New to Kit? [Creating an account](https://app.kit.com/users/signup?plan=newsletter-free&utm_source=wordpress&utm_term=en_US&utm_content=readme) is 100% free for your first 10,000 subscribers, making Kit an email marketing solution for everyone - whether you're new to email newsletter marketing or a seasoned professional email newsletter marketer.**
 
 ## Email Newsletter and Email Marketing Features
 
-- Design [email newsletter subscription forms](https://kit.com/features/forms?utm_source=wordpress&utm_term=en_US&utm_content=readme) in Kit, automatically appending them to any WordPress post or page, or displaying forms within your WordPress content using the supplied Gutenberg block and shortcode options. Perfect for building your email subscribers lists and growing your newsletter audience.
+- Design [email newsletter subscription forms](https://kit.com/features/forms?utm_source=wordpress&utm_term=en_US&utm_content=readme) in Kit, automatically appending them to any WordPress post or page, or displaying forms within your WordPress content using the supplied Gutenberg block, shortcode options and the Form Builder block. Perfect for building your email subscribers lists and growing your newsletter audience.
 - Build [landing pages](https://kit.com/features/landing-pages?utm_source=wordpress&utm_term=en_US&utm_content=readme) in Kit, and display landing pages on a WordPress page to capture additional email subscribers for your newsletter
 - List past [email newsletters](https://kit.com/features/email-marketing?utm_source=wordpress&utm_term=en_US&utm_content=readme) on your WordPress site to engage your newsletter subscribers
 
@@ -75,6 +75,8 @@ This membership functionality transforms your WordPress site into a comprehensiv
 There's no limit to the number of Kit Products you can create for your membership site, and each can be assigned to one or more WordPress Pages and Posts, instantly turning them into membership-only content for your paid subscribers. Build a thriving membership community with ease.
 
 Whether you're creating a paid membership site, or offering free membership access, Kit's membership features provide the flexibility to monetize your content through membership subscriptions while growing your email subscribers list simultaneously.
+
+Pair membership content with a custom signup experience built using the Form Builder block, so visitors can join your membership site directly from the same page that pitches it - no separate landing page required.
 
 ## Send Email Newsletters and Email Marketing Campaigns
 
@@ -345,6 +347,11 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.3.8 2026-08-10
+* Added: Post Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
+* Removed: Legacy Forms from settings dropdowns. Existing Legacy Form settings will be honored, but deprecated in the future
+* Removed: Legacy Landing Pages from settings dropdowns. Existing Legacy Form settings will be honored, but deprecated in the future
 
 ### 3.3.7 2026-07-31
 * Added: Settings: Spam Protection: Cloudflare Turnstile option

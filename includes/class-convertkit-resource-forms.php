@@ -154,6 +154,42 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	}
 
 	/**
+	 * Returns all non-legacy forms (any v4 format: inline, modal, slide in
+	 * or sticky bar) based on the sort order. Legacy forms lack a `format`
+	 * key and are therefore excluded.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @return  bool|array
+	 */
+	public function get_non_legacy() {
+
+		// If the ConvertKit WordPress Libraries are < 1.3.6 (e.g. loaded by an outdated
+		// addon), or a WordPress site updates this Plugin before other ConvertKit Plugins,
+		// get_by() won't be available and will cause an E_ERROR, crashing the site.
+		// @see https://wordpress.org/support/topic/error-1795/.
+		if ( ! method_exists( $this, 'get_by' ) ) { // @phpstan-ignore-line Older WordPress Libraries won't have this function.
+			return false;
+		}
+
+		return $this->get_by( 'format', array( 'inline', 'modal', 'slide in', 'sticky bar' ) );
+
+	}
+
+	/**
+	 * Returns whether any non-legacy forms exist in the options table.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @return  bool
+	 */
+	public function non_legacy_exist() {
+
+		return (bool) $this->get_non_legacy();
+
+	}
+
+	/**
 	 * Determines if the given Form ID is a legacy Form or Landing Page.
 	 *
 	 * @since   2.5.0
@@ -196,7 +232,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	public function get_select_field_all( $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
 
 		return $this->get_select_field(
-			$this->get(),
+			$this->get_forms_for_select_field( $selected_option ),
 			$name,
 			$id,
 			$css_classes,
@@ -224,7 +260,7 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 	public function output_select_field_all( $name, $id, $css_classes, $selected_option, $prepend_options = false, $attributes = false, $description = false ) {
 
 		$this->output_select_field(
-			$this->get(),
+			$this->get_forms_for_select_field( $selected_option ),
 			$name,
 			$id,
 			$css_classes,
@@ -233,6 +269,37 @@ class ConvertKit_Resource_Forms extends ConvertKit_Resource_V4 {
 			$attributes,
 			$description
 		);
+
+	}
+
+	/**
+	 * Returns the array of forms to display in an "all forms" dropdown: every
+	 * non-legacy form, plus the currently-selected legacy form (if any) so
+	 * existing saved legacy assignments continue to render as selected in the
+	 * UI without exposing other legacy forms as new selection options.
+	 *
+	 * @since   3.3.7
+	 *
+	 * @param   string|int $selected_option Currently-selected form ID.
+	 * @return  array
+	 */
+	private function get_forms_for_select_field( $selected_option ) {
+
+		$forms = $this->get_non_legacy();
+		if ( ! is_array( $forms ) ) {
+			$forms = array();
+		}
+
+		// If the currently-selected form is a legacy form, append it so the
+		// dropdown shows the saved value as selected.
+		if ( $selected_option && $this->is_legacy( $selected_option ) ) {
+			$legacy_form = $this->get_by_id( (int) $selected_option );
+			if ( $legacy_form ) {
+				$forms[] = $legacy_form;
+			}
+		}
+
+		return $forms;
 
 	}
 
