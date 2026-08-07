@@ -77,12 +77,6 @@ class ConvertKit_MCP {
 	 */
 	public function __construct() {
 
-		// Bail if the MCP server isn't enabled.
-		$settings = new ConvertKit_Settings_MCP();
-		if ( ! $settings->enabled() ) {
-			return;
-		}
-
 		// Register the ability category.
 		add_action( 'wp_abilities_api_categories_init', array( $this, 'register_abilities_category' ) );
 
@@ -264,6 +258,12 @@ class ConvertKit_MCP {
 	 * @return  void
 	 */
 	public function register_mcp_server( $adapter ) {
+
+		// Bail if the MCP server isn't enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
 
 		// Get abilities.
 		$abilities = convertkit_get_abilities();
