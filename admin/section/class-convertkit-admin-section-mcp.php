@@ -242,6 +242,27 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Renders the upgrade CTA when the connected Kit account is on
+	 * the free plan.
+	 *
+	 * @since   3.4.0
+	 */
+	public function output_upgrade_required_message() {
+
+		?>
+		<p>
+			<?php esc_html_e( 'The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.', 'convertkit' ); ?>
+		</p>
+		<p>
+			<a href="https://app.kit.com/account_settings/billing" class="button button-primary" target="_blank">
+				<?php esc_html_e( 'Upgrade Kit Account', 'convertkit' ); ?>
+			</a>
+		</p>
+		<?php
+
+	}
+
+	/**
 	 * Renders the input for the Enable setting.
 	 *
 	 * @since   3.4.0
@@ -249,6 +270,16 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
 	public function enabled_callback( $args ) {
+
+		// If the user doesn't have a paid plan, show the upgrade required message.
+		$account = new ConvertKit_Resource_Account();
+		if ( ! $account->is_paid_plan() ) {
+			// Disable saving settings.
+			$this->save_disabled = true;
+
+			$this->output_upgrade_required_message();
+			return;
+		}
 
 		// Output field.
 		$this->output_checkbox_field(

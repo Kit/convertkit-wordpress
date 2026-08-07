@@ -259,6 +259,12 @@ class ConvertKit_MCP {
 	 */
 	public function register_mcp_server( $adapter ) {
 
+		// Bail if the MCP server isn't enabled.
+		$settings = new ConvertKit_Settings_MCP();
+		if ( ! $settings->enabled() ) {
+			return;
+		}
+
 		// Get abilities.
 		$abilities = convertkit_get_abilities();
 
