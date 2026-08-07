@@ -15,15 +15,6 @@
 class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Setup_Wizard {
 
 	/**
-	 * Holds the Post Type to generate Members Content for.
-	 *
-	 * @since   2.1.0
-	 *
-	 * @var     string
-	 */
-	public $post_type = 'page';
-
-	/**
 	 * Holds the type of Member's Content to generate (course|download).
 	 *
 	 * @since   2.1.0

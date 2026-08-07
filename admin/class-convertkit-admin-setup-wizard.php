@@ -38,6 +38,15 @@ class ConvertKit_Admin_Setup_Wizard {
 	public $error = false;
 
 	/**
+	 * Holds the Post Type to generate.
+	 *
+	 * @since   3.3.9
+	 *
+	 * @var     string
+	 */
+	public $post_type = 'page';
+
+	/**
 	 * The required user capability to access the setup wizard.
 	 *
 	 * @since   1.9.8.4

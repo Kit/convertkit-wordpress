@@ -15,15 +15,6 @@
 class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_Wizard {
 
 	/**
-	 * Holds the Post Type to generate.
-	 *
-	 * @since   2.5.5
-	 *
-	 * @var     string
-	 */
-	public $post_type = 'page';
-
-	/**
 	 * Holds the ConvertKit Products resource class.
 	 *
 	 * @since   2.5.5
