@@ -40,8 +40,18 @@ class Divi5Theme extends \Codeception\Module
 		// Edit Page.
 		$I->amOnPage('/wp-admin/post.php?post=' . $pageID . '&action=edit');
 
+		// Switch to the Gutenberg IFrame.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToGutenbergIFrameEditor($I);
+		}
+
 		// Click "Use The Divi Builder" button.
 		$I->click('#et-switch-to-divi');
+
+		// Switch back to main window.
+		if ($I->isGutenbergIFrameEditorEnabled()) {
+			$I->switchToIFrame();
+		}
 
 		// Wait for Divi Builder to load.
 		$I->waitForElementVisible('body.et_pb_pagebuilder_layout');
