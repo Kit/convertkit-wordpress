@@ -1,4 +1,4 @@
-=== Kit (formerly ConvertKit) - Email Newsletter, Email Marketing, Form Builder, Membership, Subscribers and Landing Pages ===
+=== Kit (formerly ConvertKit) - Email Newsletter, Email Marketing, Membership, Subscribers and Landing Pages ===
 Contributors: nathanbarry, growdev, travisnorthcutt, ggwicz
 Donate link: https://kit.com
 Tags: email marketing, email newsletter, subscribers, landing page, membership
