@@ -679,8 +679,19 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Also refresh Landing Pages, Tags and Posts. Whilst not displayed in the Plugin Settings, this ensures up to date
+		// Also refresh other resources. Whilst not displayed in the Plugin Settings, this ensures up to date
 		// lists are stored for when editing e.g. Pages.
+
+		// Refresh Custom Fields.
+		$custom_fields = new ConvertKit_Resource_Custom_Fields( 'settings' );
+		$result        = $custom_fields->refresh();
+
+		// Bail if an error occured.
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
+		// Refresh Landing Pages.
 		$landing_pages = new ConvertKit_Resource_Landing_Pages( 'settings' );
 		$result        = $landing_pages->refresh();
 
@@ -689,6 +700,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Refresh Posts.
 		remove_all_actions( 'convertkit_resource_refreshed_posts' );
 		$posts  = new ConvertKit_Resource_Posts( 'settings' );
 		$result = $posts->refresh();
@@ -698,6 +710,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Refresh Products.
 		$products = new ConvertKit_Resource_Products( 'settings' );
 		$result   = $products->refresh();
 
@@ -706,6 +719,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Refresh Sequences.
 		$sequences = new ConvertKit_Resource_Sequences( 'settings' );
 		$result    = $sequences->refresh();
 
@@ -714,6 +728,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Refresh Tags.
 		$tags   = new ConvertKit_Resource_Tags( 'settings' );
 		$result = $tags->refresh();
 
