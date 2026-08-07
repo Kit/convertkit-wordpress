@@ -181,6 +181,11 @@ class ConvertKit_Admin_Category {
 	 */
 	public function save_category_fields( $term_id ) {
 
+		// Bail if the current user cannot edit this Category.
+		if ( ! current_user_can( 'edit_term', $term_id ) ) {
+			return;
+		}
+
 		// Bail if no nonce field exists.
 		if ( ! isset( $_POST['wp-convertkit-save-meta-nonce'] ) ) {
 			return;
