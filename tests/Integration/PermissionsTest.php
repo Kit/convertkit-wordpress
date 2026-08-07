@@ -213,9 +213,9 @@ class PermissionsTest extends WPTestCase
 		// Become an Author, who cannot edit the Administrator's Post.
 		$this->actAs( 'author' );
 		$_REQUEST = array(
-			'nonce'              => wp_create_nonce( 'action-convertkit-broadcast-export' ),
+			'nonce'             => wp_create_nonce( 'action-convertkit-broadcast-export' ),
 			'convertkit-action' => 'broadcast-export',
-			'id'                 => $post_id,
+			'id'                => $post_id,
 		);
 
 		// Confirm the export stops before a Broadcast can be created.
