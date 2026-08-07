@@ -308,6 +308,30 @@ function convertkit_get_form_importers() {
 }
 
 /**
+ * Helper method to get registered abilities.
+ *
+ * @since   3.4.0
+ *
+ * @return  array   Abilities.
+ */
+function convertkit_get_abilities() {
+
+	$abilities = array();
+
+	/**
+	 * Registers abilities for the Kit Plugin.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   array   $abilities     Abilities.
+	 */
+	$abilities = apply_filters( 'convertkit_abilities', $abilities );
+
+	return $abilities;
+
+}
+
+/**
  * Helper method to return the Plugin Settings Link
  *
  * @since   1.9.6
