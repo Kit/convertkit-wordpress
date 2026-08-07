@@ -866,7 +866,7 @@ add_filter( 'convertkit_block_broadcasts_build_html_list_item', function( $html,
 </pre>
 <h3 id="convertkit_block_form_builder_render">
 						convertkit_block_form_builder_render
-						<code>includes/blocks/class-convertkit-block-form-builder.php::695</code>
+						<code>includes/blocks/class-convertkit-block-form-builder.php::706</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -897,7 +897,7 @@ add_filter( 'convertkit_block_form_builder_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_form_render">
 						convertkit_block_form_render
-						<code>includes/blocks/class-convertkit-block-form.php::457</code>
+						<code>includes/blocks/class-convertkit-block-form.php::469</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1667,7 +1667,7 @@ add_filter( 'convertkit_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_is_admin_or_frontend_editor">
 						convertkit_is_admin_or_frontend_editor
-						<code>includes/class-wp-convertkit.php::338</code>
+						<code>includes/class-wp-convertkit.php::339</code>
 					</h3><h4>Overview</h4>
 						<p>Filters whether the current request is a WordPress Administration / Frontend Editor request or not. Page Builders can set this to true to allow ConvertKit to load its administration functionality.</p><h4>Parameters</h4>
 					<table>
@@ -1694,7 +1694,7 @@ add_filter( 'convertkit_is_admin_or_frontend_editor', function( $is_admin_or_fro
 </pre>
 <h3 id="convertkit_resource_forms_output_script">
 						convertkit_resource_forms_output_script
-						<code>includes/class-convertkit-resource-forms.php::627</code>
+						<code>includes/class-convertkit-resource-forms.php::694</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the form <script> key/value pairs immediately before the script is output.</p><h4>Parameters</h4>
 					<table>
@@ -1918,6 +1918,12 @@ add_filter( 'convertkit_broadcasts_parse_broadcast_content_permitted_html_tags',
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_pre_publish_action_run_  this-get_name"><code>convertkit_pre_publish_action_run_  this-get_name</code></a></td>
 						<td>Run this pre-publish action, as the WordPress Post has just transitioned to publish from another state.</td>
+					</tr><tr>
+						<td colspan="3">includes/class-convertkit-resource-account.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_resource_refreshed_  this-type"><code>convertkit_resource_refreshed_  this-type</code></a></td>
+						<td>Perform any actions immediately after the resource has been refreshed.</td>
 					</tr><tr>
 						<td colspan="3">includes/class-convertkit-gutenberg.php</td>
 					</tr><tr>
@@ -2369,6 +2375,31 @@ do_action( 'convertkit_pre_publish_action_run_  this-get_name', function(  ) {
 	// ... your code here
 }, 10, 0 );
 </pre>
+<h3 id="convertkit_resource_refreshed_  this-type">
+						convertkit_resource_refreshed_  this-type
+						<code>includes/class-convertkit-resource-account.php::108</code>
+					</h3><h4>Overview</h4>
+						<p>Perform any actions immediately after the resource has been refreshed.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$results</td>
+							<td>array</td>
+							<td>Resources</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+do_action( 'convertkit_resource_refreshed_  this-type', function( $results ) {
+	// ... your code here
+}, 10, 1 );
+</pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts">
 						convertkit_gutenberg_enqueue_scripts
 						<code>includes/class-convertkit-gutenberg.php::345</code>
@@ -2533,7 +2564,7 @@ do_action( 'convertkit_output_landing_page_before', function( $landing_page, $la
 </pre>
 <h3 id="convertkit_initialize_admin">
 						convertkit_initialize_admin
-						<code>includes/class-wp-convertkit.php::105</code>
+						<code>includes/class-wp-convertkit.php::106</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2553,7 +2584,7 @@ do_action( 'convertkit_initialize_admin', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_admin_or_frontend_editor">
 						convertkit_initialize_admin_or_frontend_editor
-						<code>includes/class-wp-convertkit.php::126</code>
+						<code>includes/class-wp-convertkit.php::127</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2573,7 +2604,7 @@ do_action( 'convertkit_initialize_admin_or_frontend_editor', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_cli_cron">
 						convertkit_initialize_cli_cron
-						<code>includes/class-wp-convertkit.php::147</code>
+						<code>includes/class-wp-convertkit.php::148</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2593,7 +2624,7 @@ do_action( 'convertkit_initialize_cli_cron', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_frontend">
 						convertkit_initialize_frontend
-						<code>includes/class-wp-convertkit.php::172</code>
+						<code>includes/class-wp-convertkit.php::173</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2613,7 +2644,7 @@ do_action( 'convertkit_initialize_frontend', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_global">
 						convertkit_initialize_global
-						<code>includes/class-wp-convertkit.php::217</code>
+						<code>includes/class-wp-convertkit.php::218</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
