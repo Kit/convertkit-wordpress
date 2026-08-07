@@ -15,15 +15,6 @@
 class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 
 	/**
-	 * Holds the API instance.
-	 *
-	 * @since   1.9.6
-	 *
-	 * @var     ConvertKit_API_V4
-	 */
-	private $api;
-
-	/**
 	 * Holds the ConvertKit Account Name.
 	 *
 	 * @since   1.9.6
@@ -147,19 +138,10 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			exit();
 		}
 
-		// Initialize the API.
-		$this->api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$this->settings->get_access_token(),
-			$this->settings->get_refresh_token(),
-			$this->settings->debug_enabled(),
-			'settings'
-		);
-
 		// Get Account Details, which we'll use in account_name_callback(), but also lets us test
 		// whether the API credentials are valid.
-		$this->account = $this->api->get_account();
+		$account       = new ConvertKit_Resource_Account();
+		$this->account = $account->refresh();
 
 		// If the request succeeded, no need to perform further actions.
 		if ( ! is_wp_error( $this->account ) ) {
@@ -224,6 +206,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Delete cached resources.
+		$account         = new ConvertKit_Resource_Account();
 		$creator_network = new ConvertKit_Resource_Creator_Network_Recommendations();
 		$custom_fields   = new ConvertKit_Resource_Custom_Fields();
 		$forms           = new ConvertKit_Resource_Forms();
@@ -232,6 +215,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$products        = new ConvertKit_Resource_Products();
 		$sequences       = new ConvertKit_Resource_Sequences();
 		$tags            = new ConvertKit_Resource_Tags();
+		$account->delete();
 		$creator_network->delete();
 		$custom_fields->delete();
 		$forms->delete();
