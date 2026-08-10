@@ -125,6 +125,22 @@ class LegacyFormDropdownCest
 		$I->seeElementInDOM('#convertkit-legacy-settings-warning');
 		$I->see('Default Form (Pages): ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], '#convertkit-legacy-settings-warning');
 		$I->see('Default Form (Posts): ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], '#convertkit-legacy-settings-warning');
+
+		// Replace the Legacy Forms with a current Kit Form and save the settings.
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_page_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+		$I->fillSelect2Field(
+			$I,
+			container: '#select2-_wp_convertkit_settings_post_form-container',
+			value: $_ENV['CONVERTKIT_API_FORM_NAME']
+		);
+		$I->click('Save Changes');
+
+		// Confirm the warning is no longer displayed.
+		$I->waitForElementNotVisible('#convertkit-legacy-settings-warning');
 	}
 
 	/**

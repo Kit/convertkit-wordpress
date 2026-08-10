@@ -117,11 +117,11 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	}
 
 	/**
-	 * Test that current and empty Default Form settings do not produce warnings.
+	 * Test that Plugin settings with no Legacy Forms do not produce warnings.
 	 *
 	 * @since   3.3.7
 	 */
-	public function testNoWarningForCurrentOrEmptyPluginDefaultForms()
+	public function testNoWarningForPluginSettingsWithoutLegacyForms()
 	{
 		$warnings = $this->notice->get_legacy_warnings_for_plugin_settings(
 			[
