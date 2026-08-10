@@ -98,6 +98,36 @@ class LegacyFormDropdownCest
 	}
 
 	/**
+	 * Test that a warning is displayed on Settings > Kit > General when one or
+	 * more Default Form settings reference a Legacy Form.
+	 *
+	 * @since   3.3.9
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testWarningDisplayedForLegacyDefaultFormsSetting(EndToEndTester $I)
+	{
+		// Setup Plugin with a legacy form pre-assigned as the Default Form for
+		// both Pages and Posts, as would be the case for an upgraded install.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'page_form' => (string) $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+				'post_form' => (string) $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Go to the Plugin's Settings Screen.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Confirm the warning identifies each affected Default Form setting.
+		$I->seeElementInDOM('#convertkit-legacy-settings-warning');
+		$I->see('Default Form (Pages): ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], '#convertkit-legacy-settings-warning');
+		$I->see('Default Form (Posts): ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], '#convertkit-legacy-settings-warning');
+	}
+
+	/**
 	 * Test that a previously-saved legacy Form ID assigned to a Category
 	 * term continues to render as the selected option in the term edit
 	 * screen's Form dropdown, even though legacy forms are no longer offered

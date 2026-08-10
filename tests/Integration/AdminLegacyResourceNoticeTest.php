@@ -98,6 +98,42 @@ class AdminLegacyResourceNoticeTest extends WPTestCase
 	}
 
 	/**
+	 * Test that a legacy Default Form setting produces a warning containing
+	 * the Post Type label and Form name.
+	 *
+	 * @since   3.3.9
+	 */
+	public function testWarningForLegacyPluginDefaultForm()
+	{
+		$warnings = $this->notice->get_legacy_warnings_for_plugin_settings(
+			[
+				'page_form' => $_ENV['CONVERTKIT_API_LEGACY_FORM_ID'],
+			]
+		);
+
+		$this->assertCount(1, $warnings);
+		$this->assertStringContainsString('Default Form (Pages):', $warnings[0]);
+		$this->assertStringContainsString($_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], $warnings[0]);
+	}
+
+	/**
+	 * Test that current and empty Default Form settings do not produce warnings.
+	 *
+	 * @since   3.3.7
+	 */
+	public function testNoWarningForCurrentOrEmptyPluginDefaultForms()
+	{
+		$warnings = $this->notice->get_legacy_warnings_for_plugin_settings(
+			[
+				'page_form' => $_ENV['CONVERTKIT_API_FORM_ID'],
+				'post_form' => 0,
+			]
+		);
+
+		$this->assertSame([], $warnings);
+	}
+
+	/**
 	 * Test that a legacy landing page assignment (by numeric ID) produces
 	 * a landing-page-scoped warning containing the landing page's name.
 	 *
