@@ -22,9 +22,6 @@ class PluginSettingsMCPCest
 	{
 		// Activate Kit Plugin.
 		$I->activateKitPlugin($I);
-
-		// Setup Plugin.
-		$I->setupKitPlugin($I);
 	}
 
 	/**
@@ -36,8 +33,20 @@ class PluginSettingsMCPCest
 	 */
 	public function testEnableAndDisableMCPServerSetting(EndToEndTester $I)
 	{
+		// Simulate a Kit account that is on a paid plan.
+		$I->setupKitPlugin($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'creator_pro',
+				],
+			]
+		);
+
 		// Check that the MCP server is not registered.
-		$I->doesNotHaveRoute($I, '/kit-mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp/v1');
 
 		// Go to the Plugin's MCP Screen.
 		$I->loadKitSettingsMCPScreen($I);
@@ -88,6 +97,17 @@ class PluginSettingsMCPCest
 	 */
 	public function testGenerateAndRevokeApplicationPassword(EndToEndTester $I)
 	{
+		// Simulate a Kit account that is on a paid plan.
+		$I->setupKitPlugin($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'creator_pro',
+				],
+			]
+		);
+
 		// Go to the Plugin's MCP Screen.
 		$I->loadKitSettingsMCPScreen($I);
 
@@ -156,6 +176,86 @@ class PluginSettingsMCPCest
 
 		// Check that the Revoke Application Password button is no longer visible.
 		$I->waitForElementNotVisible('#convertkit-settings-mcp-revoke-application-password');
+	}
+
+	/**
+	 * Tests that a free-plan Kit account sees the upgrade CTA on the MCP tab
+	 * instead of the enable / connect UI, and that the MCP REST route is not
+	 * registered even when the enabled setting is on.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFreePlanShowsUpgradeCTA(EndToEndTester $I)
+	{
+		// Simulate a Kit account that is on the free plan.
+		$I->setupKitPluginFakeAPIKey($I);
+		$I->setupKitPluginResources($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'free',
+				],
+			]
+		);
+
+		// Enable MCP server.
+		$I->haveOptionInDatabase(
+			'_wp_convertkit_settings_mcp',
+			[
+				'enabled' => 'on',
+			]
+		);
+
+		// Load the MCP settings tab.
+		$I->loadKitSettingsMCPScreen($I);
+
+		// Assert that the upgrade CTA is shown.
+		$I->see('The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.');
+		$I->seeLink('Upgrade Kit Account');
+
+		// Assert no option to enable/disable the MCP server are shown.
+		$I->dontSeeElement('#enabled');
+		$I->dontSee('Create Application Password');
+
+		// Assert that the MCP server is not registered.
+		$I->doesNotHaveRoute($I, '/kit/mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp/v1');
+	}
+
+	/**
+	 * Tests that a paid-plan Kit account sees the enable UI on the MCP tab
+	 * (i.e. the upgrade CTA is not shown).
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testPaidPlanShowsEnableUI(EndToEndTester $I)
+	{
+		// Simulate a Kit account that is on a paid plan.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'creator_pro',
+				],
+			]
+		);
+
+		// Load the MCP settings tab.
+		$I->loadKitSettingsMCPScreen($I);
+
+		// The upgrade CTA should not be shown.
+		$I->dontSee('The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site.');
+		$I->dontSeeLink('Upgrade Kit Account');
+
+		// The Enable checkbox should be visible.
+		$I->seeElement('#enabled');
 	}
 
 	/**
