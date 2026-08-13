@@ -38,6 +38,15 @@ class ConvertKit_Admin_Setup_Wizard {
 	public $error = false;
 
 	/**
+	 * Holds the Post Type to generate.
+	 *
+	 * @since   3.3.9
+	 *
+	 * @var     string
+	 */
+	public $post_type = 'page';
+
+	/**
 	 * The required user capability to access the setup wizard.
 	 *
 	 * @since   1.9.8.4
@@ -504,6 +513,31 @@ class ConvertKit_Admin_Setup_Wizard {
 		}
 
 		return true;
+
+	}
+
+	/**
+	 * Sets the Post Type from the request, ensuring it is supported by the Plugin.
+	 *
+	 * @since   3.3.9
+	 */
+	protected function set_post_type() {
+
+		$this->post_type = ( filter_has_var( INPUT_GET, 'ck_post_type' ) ? filter_input( INPUT_GET, 'ck_post_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : 'page' );
+
+		if ( ! in_array( $this->post_type, convertkit_get_supported_post_types(), true ) ) {
+			wp_die(
+				sprintf(
+					/* translators: Post Type */
+					esc_html__( 'The post type `%s` is not supported for Member Content.', 'convertkit' ),
+					esc_html( $this->post_type )
+				),
+				esc_html__( 'WordPress Error', 'convertkit' ),
+				array(
+					'back_link' => true,
+				)
+			);
+		}
 
 	}
 

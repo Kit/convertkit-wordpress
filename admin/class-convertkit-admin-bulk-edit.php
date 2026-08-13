@@ -111,6 +111,13 @@ class ConvertKit_Admin_Bulk_Edit {
 
 		// Iterate through each Post, updating its settings.
 		foreach ( $post_ids as $post_id ) {
+			// Skip Posts the current user cannot edit.
+			// The post type's edit_posts capability checked above does not grant
+			// permission to edit every Post of that type.
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+
 			WP_ConvertKit()->get_class( 'admin_post' )->save_post_settings( $post_id, wp_unslash( $_REQUEST['wp-convertkit'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 

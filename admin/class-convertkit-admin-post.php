@@ -282,6 +282,11 @@ class ConvertKit_Admin_Post {
 			return;
 		}
 
+		// Bail if the current user cannot edit this Post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
 		// Save Post's settings.
 		$this->save_post_settings( $post_id, wp_unslash( $_POST['wp-convertkit'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
