@@ -54,6 +54,11 @@ class ConvertKit_Admin_Cache_Plugins {
 	 */
 	public function maybe_configure_cache_plugins() {
 
+		// Only allow Administrators to update third party Plugin settings.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// If no Pages, Posts or CPTs are configured to use Restrict Content, don't
 		// configure any caching plugins.
 		if ( ! WP_ConvertKit()->get_class( 'admin_restrict_content' )->restrict_content_enabled() ) {

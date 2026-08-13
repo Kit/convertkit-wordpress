@@ -211,6 +211,11 @@ class ConvertKit_Pre_Publish_Action {
 			return;
 		}
 
+		// Bail if the current user cannot edit this Post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
 		// Delete meta key if this action's checkbox has not been checked.
 		if ( ! array_key_exists( $this->meta_key, $_POST ) ) {
 			return delete_post_meta( $post_id, $this->meta_key );

@@ -182,6 +182,71 @@ class BulkQuickEditFormCest
 	}
 
 	/**
+	 * Test that Bulk Edit does not save Kit settings for a Post the current user cannot edit.
+	 *
+	 * @since   3.3.9
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBulkEditDoesNotSaveSettingsForPostUserCannotEdit(EndToEndTester $I)
+	{
+		// Create an Author and a Post that they own.
+		$authorID = $I->haveUserInDatabase('convertkit_bulk_edit_author', 'author');
+		$postID   = $I->havePostInDatabase(
+			[
+				'post_author' => $authorID,
+				'post_type'   => 'post',
+				'post_title'  => 'Kit: Bulk Edit: Author Post',
+			]
+		);
+
+		// Create a Post owned by the Administrator.
+		$administratorID = $I->grabUserIdFromDatabase($_ENV['WORDPRESS_ADMIN_USER']);
+		$otherPostID     = $I->havePostInDatabase(
+			[
+				'post_author' => $administratorID,
+				'post_type'   => 'post',
+				'post_title'  => 'Kit: Bulk Edit: Administrator Post',
+			]
+		);
+
+		// Login as the Author.
+		$I->logOut();
+		$I->loginAs('convertkit_bulk_edit_author', 'convertkit_bulk_edit_author');
+
+		// Open Bulk Edit for the Author's Post.
+		$I->openBulkEdit($I, 'post', [ $postID ]);
+
+		// Add an Administrator-owned Post ID to the submitted request.
+		$I->executeJS(
+			'
+				var postID = document.createElement("input");
+				postID.setAttribute("type", "hidden");
+				postID.setAttribute("name", "post[]");
+				postID.setAttribute("value", "' . $otherPostID . '");
+				document.querySelector("#bulk-edit").appendChild(postID);
+			'
+		);
+
+		// Set a Kit Form and save the Bulk Edit request.
+		$I->selectOption('#convertkit-bulk-edit #wp-convertkit-bulk-edit-form', $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('#bulk_edit');
+		$I->waitForElementVisible('div.updated');
+
+		// Confirm no settings were saved against the Administrator-owned Post.
+		$I->dontSeePostMetaInDatabase(
+			[
+				'post_id'  => $otherPostID,
+				'meta_key' => '_wp_convertkit_post_meta',
+			]
+		);
+
+		// Login as the Administrator so the test suite can deactivate the Plugin.
+		$I->logOut();
+		$I->doLoginAsAdmin($I);
+	}
+
+	/**
 	 * Test that the defined form displays when chosen via
 	 * WordPress' Bulk Edit functionality.
 	 *
