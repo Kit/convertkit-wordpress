@@ -15,15 +15,6 @@
 class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_Wizard {
 
 	/**
-	 * Holds the Post Type to generate.
-	 *
-	 * @since   2.5.5
-	 *
-	 * @var     string
-	 */
-	public $post_type = 'page';
-
-	/**
 	 * Holds the ConvertKit Products resource class.
 	 *
 	 * @since   2.5.5
@@ -128,6 +119,13 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 	 */
 	public function process_form( $step ) {
 
+		// Set and authorize the Post Type before processing data.
+		$this->set_post_type();
+		if ( ! convertkit_user_can_create_published_post_type( $this->post_type ) ) {
+			$this->error = __( 'You are not allowed to create and publish this type of content.', 'convertkit' );
+			return;
+		}
+
 		// Run security checks.
 		if ( ! isset( $_REQUEST['_wpnonce'] ) ) {
 			return;
@@ -181,26 +179,10 @@ class ConvertKit_Admin_Setup_Wizard_Landing_Page extends ConvertKit_Admin_Setup_
 			wp_die( esc_html__( 'Connect your Kit account in the Kit Plugin\'s settings to get started', 'convertkit' ) );
 		}
 
-		// Get Post Type.
-		if ( filter_has_var( INPUT_GET, 'ck_post_type' ) ) {
-			$this->post_type = filter_input( INPUT_GET, 'ck_post_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-		} else {
-			$this->post_type = 'page';
-		}
-
-		// Bail if the Post Type isn't supported.
-		if ( ! in_array( $this->post_type, convertkit_get_supported_post_types(), true ) ) {
-			wp_die(
-				sprintf(
-					/* translators: Post Type */
-					esc_html__( 'The post type `%s` is not supported for Member Content.', 'convertkit' ),
-					esc_html( $this->post_type )
-				),
-				esc_html__( 'WordPress Error', 'convertkit' ),
-				array(
-					'back_link' => true,
-				)
-			);
+		// Set and authorize the Post Type.
+		$this->set_post_type();
+		if ( ! convertkit_user_can_create_published_post_type( $this->post_type ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to create and publish this type of content.', 'convertkit' ) );
 		}
 
 		// Define Exit URL to take the user back to the WP_List_Table for the Post Type they were viewing.
