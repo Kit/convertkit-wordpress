@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         wp-version: [ '6.2.8' ]
-        php-version: [ '8.1' ]
+        php-version: [ '8.2' ]
         test-group:
           - 'EndToEnd/broadcasts/blocks-shortcodes/PageBlockBroadcastsCest'
           - 'EndToEnd/forms/blocks-shortcodes/PageBlockFormBuilderCest'
