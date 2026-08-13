@@ -201,11 +201,6 @@ class ConvertKit_Pre_Publish_Action {
 			return;
 		}
 
-		// Bail if the current user cannot edit this Post.
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return;
-		}
-
 		// Bail if no nonce field exists.
 		if ( ! isset( $_POST['wp-convertkit-pre-publish-actions-nonce'] ) ) {
 			return;
@@ -213,6 +208,11 @@ class ConvertKit_Pre_Publish_Action {
 
 		// Bail if the nonce verification fails.
 		if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wp-convertkit-pre-publish-actions-nonce'] ) ), 'wp-convertkit-pre-publish-actions' ) ) {
+			return;
+		}
+
+		// Bail if the current user cannot edit this Post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
