@@ -18,6 +18,8 @@ We follow [Semantic Versioning](https://semver.org/).
 
 - In `wp-convertkit.php`, change the Version header to the new version number.
 - In `wp-convertkit.php`, change the `CONVERTKIT_PLUGIN_VERSION` constant to the new version number.
+- In `readme.txt`, change the `Stable tag` to the new version number. This is the version wordpress.org serves to users, so it must be updated.
+- In `readme.txt`, change `Tested up to` if this release has been tested against a newer WordPress version.
 
 ## Update the Plugin's readme.txt Changelog
 
@@ -32,7 +34,7 @@ Provide meaningful, verbose updates to the Changelog, in the following format:
 Generic changelog items such as `Fix: Various bugfixes` or `Several edge-case bug fixes` should be avoided.  They don't tell users (or us, as developers)
 what took place in this version.
 
-Each line in the changelog should start with `Added`, `Fix` or `Updated`.
+Each line in the changelog should start with `Added`, `Fix`, `Updated` or `Removed`.
 
 ## Generate Localization File and Action/Filter Documentation
 
@@ -54,7 +56,7 @@ Commit the updated files, which should comprise of:
 
 ## Submit Release
 
-Once your test(s) are written and successfully run locally, submit your branch via a new [Pull Request](https://github.com/ConvertKit/convertkit-wordpress/compare).
+Submit your release branch via a new [Pull Request](https://github.com/ConvertKit/convertkit-wordpress/compare).
 
 It's best to create a Pull Request in draft mode, as this will trigger all tests to run as a GitHub Action, allowing you to
 double check all tests pass.
