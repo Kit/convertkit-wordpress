@@ -148,6 +148,26 @@ function convertkit_get_supported_post_types() {
 }
 
 /**
+ * Determines whether the current user can create and publish the given Post Type.
+ *
+ * @since   3.3.9
+ *
+ * @param   string $post_type    Post Type.
+ * @return  bool                User can create and publish Post Type.
+ */
+function convertkit_user_can_create_published_post_type( $post_type ) {
+
+	$post_type_object = get_post_type_object( $post_type );
+
+	if ( ! $post_type_object ) {
+		return false;
+	}
+
+	return current_user_can( $post_type_object->cap->create_posts ) && current_user_can( $post_type_object->cap->publish_posts );
+
+}
+
+/**
  * Helper method to get supported Post Types for Restricted Content (Member's Content)
  *
  * @since   2.1.0

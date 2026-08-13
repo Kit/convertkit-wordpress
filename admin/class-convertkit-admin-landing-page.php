@@ -54,6 +54,11 @@ class ConvertKit_Admin_Landing_Page {
 			return $buttons;
 		}
 
+		// Don't show the button if the user cannot create and publish Pages.
+		if ( ! convertkit_user_can_create_published_post_type( $post_type ) ) {
+			return $buttons;
+		}
+
 		// Register button.
 		$buttons['convertkit_landing_page_setup'] = array(
 			'url'   => add_query_arg(

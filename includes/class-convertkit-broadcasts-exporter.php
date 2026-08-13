@@ -109,6 +109,11 @@ class ConvertKit_Broadcasts_Exporter {
 			return;
 		}
 
+		// Bail if the current user cannot edit the Post being exported.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to export this Post.', 'convertkit' ) );
+		}
+
 		// Export Post to a draft ConvertKit Broadcast.
 		$result = $this->export_post_to_broadcast( $post_id );
 

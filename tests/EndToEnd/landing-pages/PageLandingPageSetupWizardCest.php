@@ -85,6 +85,53 @@ class PageLandingPageSetupWizardCest
 	}
 
 	/**
+	 * Test that the Add New Landing Page and Member Content buttons do not display when the user
+	 * cannot publish Pages.
+	 *
+	 * @since   3.3.9
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testAddNewContentButtonsNotDisplayedWhenUserCannotPublishPages(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+
+		// Create an Editor who cannot publish Pages.
+		$userID = $I->haveUserInDatabase('convertkit_pages_contributor', 'editor');
+		$I->dontHaveUserMetaInDatabase(
+			[
+				'user_id'  => $userID,
+				'meta_key' => $I->grabTablePrefix() . 'capabilities',
+			]
+		);
+		$I->haveUserMetaInDatabase(
+			$userID,
+			$I->grabTablePrefix() . 'capabilities',
+			serialize(
+				[
+					'editor'        => true,
+					'publish_pages' => false,
+				]
+			)
+		);
+
+		// Login as the user who cannot publish Pages.
+		$I->logOut();
+		$I->loginAs('convertkit_pages_contributor', 'convertkit_pages_contributor');
+
+		// Navigate to Pages.
+		$I->amOnAdminPage('edit.php?post_type=page');
+
+		// Confirm no content creation buttons are displayed.
+		$I->dontSeeElementInDOM('span.convertkit-action.page-title-action');
+
+		// Login as the Administrator so the test suite can deactivate the Plugin.
+		$I->logOut();
+		$I->doLoginAsAdmin($I);
+	}
+
+	/**
 	 * Test that the Dashboard submenu item for this wizard does not display when a
 	 * third party Admin Menu editor type Plugin is installed and active.
 	 *

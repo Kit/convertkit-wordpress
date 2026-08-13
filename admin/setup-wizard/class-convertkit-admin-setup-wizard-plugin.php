@@ -72,7 +72,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 	 *
 	 * @var     string
 	 */
-	public $required_capability = 'edit_posts';
+	public $required_capability = 'manage_options';
 
 	/**
 	 * The programmatic name for this wizard.

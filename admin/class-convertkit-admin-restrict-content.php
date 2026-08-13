@@ -251,6 +251,11 @@ class ConvertKit_Admin_Restrict_Content {
 			return $buttons;
 		}
 
+		// Don't show the button if the user cannot create and publish this Post Type.
+		if ( ! convertkit_user_can_create_published_post_type( $post_type ) ) {
+			return $buttons;
+		}
+
 		// Register button.
 		$buttons['convertkit_restrict_content_setup'] = array(
 			'url'   => add_query_arg(
