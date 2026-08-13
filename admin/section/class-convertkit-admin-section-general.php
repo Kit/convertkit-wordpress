@@ -78,6 +78,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		if ( $this->on_settings_screen( $this->name ) ) {
 			add_filter( 'convertkit_settings_base_register_notices', array( $this, 'register_notices' ) );
 			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_notices' ) );
+			add_action( 'convertkit_settings_base_render_before', array( $this, 'maybe_output_legacy_form_notice' ) );
 		}
 
 		// Enqueue scripts and CSS.
@@ -107,6 +108,41 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				'oauth2_success' => __( 'Successfully authorized with Kit.', 'convertkit' ),
 			)
 		);
+
+	}
+
+	/**
+	 * Outputs a non-dismissible warning when one or more Default Form settings
+	 * reference Legacy Forms.
+	 *
+	 * @since   3.3.9
+	 */
+	public function maybe_output_legacy_form_notice() {
+
+		// Get warnings.
+		$warnings = WP_ConvertKit()->get_class( 'admin_legacy_resource_notice' )->get_legacy_warnings_for_plugin_settings( $this->settings->get() );
+
+		// Bail if no warnings are found.
+		if ( empty( $warnings ) ) {
+			return;
+		}
+
+		// Output warnings.
+		?>
+		<div id="convertkit-legacy-settings-warning" class="notice notice-warning">
+			<p>
+				<strong><?php esc_html_e( 'Kit', 'convertkit' ); ?>:</strong>
+				<?php esc_html_e( 'Your Default Form settings reference Legacy Forms. They still work, but should be migrated:', 'convertkit' ); ?>
+			</p>
+			<ul>
+				<?php
+				foreach ( $warnings as $warning ) {
+					echo '<li>' . esc_html( $warning ) . '</li>';
+				}
+				?>
+			</ul>
+		</div>
+		<?php
 
 	}
 
