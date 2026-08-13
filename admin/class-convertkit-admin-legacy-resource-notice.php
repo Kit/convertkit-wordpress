@@ -217,6 +217,49 @@ class ConvertKit_Admin_Legacy_Resource_Notice {
 	}
 
 	/**
+	 * Returns an array of warning strings for the Plugin's General Settings,
+	 * when one or more Default Form settings reference Legacy Forms.
+	 *
+	 * @since   3.3.9
+	 *
+	 * @param   array $settings   Plugin settings array.
+	 * @return  array
+	 */
+	public function get_legacy_warnings_for_plugin_settings( $settings ) {
+
+		// Get Forms resource.
+		$forms = new ConvertKit_Resource_Forms();
+
+		// Initialize warnings array.
+		$warnings = array();
+
+		// Check each supported Post Type's Default Form setting.
+		foreach ( convertkit_get_supported_post_types() as $supported_post_type ) {
+			// Get Post Type object.
+			$post_type = get_post_type_object( $supported_post_type );
+			if ( ! $post_type ) {
+				continue;
+			}
+
+			// Get Default Form setting.
+			$setting_key = $supported_post_type . '_form';
+			if ( empty( $settings[ $setting_key ] ) || ! $forms->is_legacy( $settings[ $setting_key ] ) ) {
+				continue;
+			}
+
+			$warnings[] = sprintf(
+				/* translators: 1: Post Type name, plural; 2: Form name */
+				__( 'Default Form (%1$s): %2$s', 'convertkit' ),
+				$post_type->label,
+				$this->get_form_display_name( $settings[ $setting_key ], $forms )
+			);
+		}
+
+		return $warnings;
+
+	}
+
+	/**
 	 * Resolves the form ID to a human-readable "Form Name" string, falling
 	 * back to "a Legacy Form" when the resource isn't cached.
 	 *
