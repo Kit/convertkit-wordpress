@@ -4,7 +4,7 @@
     "type": "project",
     "license": "GPLv3",
     "require": {
-        "convertkit/convertkit-wordpress-libraries": "dev-update-traits-from-sdk"
+        "convertkit/convertkit-wordpress-libraries": "2.6.0"
     },
     "require-dev": {
         "php-webdriver/webdriver": "^1.0",
