@@ -245,15 +245,23 @@ class WP_ConvertKit {
 			return;
 		}
 
-		// Bail if the WordPress MCP Adapter autoloader is missing.
-		if ( ! file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
-			return;
+		// Load MCP Adapter if another Plugin hasn't already loaded it.
+		if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+			// Bail if the WordPress MCP Adapter autoloader is missing.
+			if ( ! file_exists( CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php' ) ) {
+				return;
+			}
+
+			// Load MCP Adapter.
+			require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
+
+			// Bail if the MCP Adapter class doesn't exist - something went wrong with the autoloader.
+			if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+				return;
+			}
 		}
 
-		// Load MCP Adapter.
-		require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
-
-		// Bail if the MCP Adapter class doesn't exist - something went wrong with the autoloader.
+		// Sanity check MCP Adapter is loaded.
 		if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
 			return;
 		}
