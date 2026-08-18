@@ -13,10 +13,13 @@ zip -r convertkit.zip . \
 -x ".scripts/*" \
 -x ".wordpress-org/*" \
 -x "log/*" \
+-x "node_modules/*" \
 -x "tests/*" \
 -x "vendor/convertkit/convertkit-wordpress-libraries/.github" \
 -x "vendor/convertkit/convertkit-wordpress-libraries/tests/*" \
 -x "vendor/convertkit/convertkit-wordpress-libraries/composer.json" \
+-x "vendor/wordpress/mcp-adapter/.github" \
+-x "vendor/wordpress/php-mcp-schema/.github" \
 -x "*.distignore" \
 -x "*.env.*" \
 -x ".gitignore" \
