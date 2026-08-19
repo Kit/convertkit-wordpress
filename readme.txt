@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 3.3.8
+Stable tag: 3.3.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -347,6 +347,18 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.3.9 2026-08-19
+* Added: Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
+* Added: Setup Wizards: Member Content: Check WordPress user can create and publish the chosen Post Type
+* Added: Setup Wizards: Landing Page: Check WordPress user can create and publish Pages
+* Added: Setup Wizards: Plugin: `manage_options` capability is required to configure the Plugin via the Setup Wizard, replacing `edit_posts` capability
+* Added: Bulk Edit: Skip Posts user does not have `edit_post` capability for
+* Added: Caching: Only automatically configure caching plugins if the user has the `manage_options` capability
+* Added: Post Settings: Check WordPress user has `edit_post` capability when saving
+* Added: Category Settings: Check WordPress user has `edit_term` capability when saving
+* Added: Broadcasts: Export: Check WordPress user has `edit_post` capability to export a Post to a Kit Broadcast
+* Updated: WordPress Libraries to 2.6.0
 
 ### 3.3.8 2026-08-10
 * Added: Post Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
