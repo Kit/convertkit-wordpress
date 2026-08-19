@@ -462,8 +462,8 @@ class PluginSettingsFormEntriesCest
 		$I->waitForElementNotVisible('input#convertkit_form_entries_per_page');
 
 		// Select the first two entries.
-		$I->checkOption('tbody#the-list tr:first-child th.check-column input[type="checkbox"]');
-		$I->checkOption('tbody#the-list tr:nth-child(2) th.check-column input[type="checkbox"]');
+		$I->checkOption('tbody#the-list tr:first-child .check-column input[type="checkbox"]');
+		$I->checkOption('tbody#the-list tr:nth-child(2) .check-column input[type="checkbox"]');
 
 		// Click Delete.
 		$I->selectOption('#bulk-action-selector-top', 'Delete');
