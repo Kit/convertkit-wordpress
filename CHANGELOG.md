@@ -1,3 +1,15 @@
+### 3.3.9 2026-08-19
+* Added: Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
+* Added: Setup Wizards: Member Content: Check WordPress user can create and publish the chosen Post Type
+* Added: Setup Wizards: Landing Page: Check WordPress user can create and publish Pages
+* Added: Setup Wizards: Plugin: `manage_options` capability is required to configure the Plugin via the Setup Wizard, replacing `edit_posts` capability
+* Added: Bulk Edit: Skip Posts user does not have `edit_post` capability for
+* Added: Caching: Only automatically configure caching plugins if the user has the `manage_options` capability
+* Added: Post Settings: Check WordPress user has `edit_post` capability when saving
+* Added: Category Settings: Check WordPress user has `edit_term` capability when saving
+* Added: Broadcasts: Export: Check WordPress user has `edit_post` capability to export a Post to a Kit Broadcast
+* Updated: WordPress Libraries to 2.6.0
+
 ### 3.3.8 2026-08-10
 * Added: Post Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
 * Removed: Legacy Forms from settings dropdowns. Existing Legacy Form settings will be honored, but deprecated in the future
