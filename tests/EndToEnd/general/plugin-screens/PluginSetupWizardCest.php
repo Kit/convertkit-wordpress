@@ -53,7 +53,7 @@ class PluginSetupWizardCest
 		$I->waitForElementVisible('table.plugins tr[data-slug=convertkit].active');
 
 		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
-		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
+		$I->click('tr[data-slug="convertkit"] .row-actions span.setup_wizard a');
 	}
 
 	/**
@@ -665,7 +665,7 @@ class PluginSetupWizardCest
 		$I->waitForElementVisible('body.plugins-php');
 
 		// Click Setup Wizard link underneath the Plugin in the WP_List_Table.
-		$I->click('tr[data-slug="convertkit"] td div.row-actions span.setup_wizard a');
+		$I->click('tr[data-slug="convertkit"] .row-actions span.setup_wizard a');
 
 		// Confirm expected setup wizard screen is displayed.
 		$this->_seeExpectedSetupWizardScreen(

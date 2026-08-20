@@ -448,7 +448,7 @@ add_filter( 'convertkit_admin_post_register_add_new_buttons', function( $buttons
 </pre>
 <h3 id="convertkit_admin_setup_wizard_steps_  this-page_name">
 						convertkit_admin_setup_wizard_steps_  this-page_name
-						<code>admin/class-convertkit-admin-setup-wizard.php::179</code>
+						<code>admin/class-convertkit-admin-setup-wizard.php::188</code>
 					</h3><h4>Overview</h4>
 						<p>Define the steps for the setup wizard.</p><h4>Parameters</h4>
 					<table>
@@ -502,7 +502,7 @@ add_filter( 'convertkit_get_supported_post_types', function( $post_types ) {
 </pre>
 <h3 id="convertkit_shortcodes">
 						convertkit_shortcodes
-						<code>includes/functions.php::182</code>
+						<code>includes/functions.php::202</code>
 					</h3><h4>Overview</h4>
 						<p>Registers shortcodes for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -529,7 +529,7 @@ add_filter( 'convertkit_shortcodes', function( $shortcodes ) {
 </pre>
 <h3 id="convertkit_blocks">
 						convertkit_blocks
-						<code>includes/functions.php::206</code>
+						<code>includes/functions.php::226</code>
 					</h3><h4>Overview</h4>
 						<p>Registers blocks for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -556,7 +556,7 @@ add_filter( 'convertkit_blocks', function( $blocks ) {
 </pre>
 <h3 id="convertkit_get_block_formatters">
 						convertkit_get_block_formatters
-						<code>includes/functions.php::230</code>
+						<code>includes/functions.php::250</code>
 					</h3><h4>Overview</h4>
 						<p>Registers block formatters in Gutenberg for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -583,7 +583,7 @@ add_filter( 'convertkit_get_block_formatters', function( $block_formatters ) {
 </pre>
 <h3 id="convertkit_plugin_sidebars">
 						convertkit_plugin_sidebars
-						<code>includes/functions.php::254</code>
+						<code>includes/functions.php::274</code>
 					</h3><h4>Overview</h4>
 						<p>Registers plugin sidebars for the WordPress block editor.</p><h4>Parameters</h4>
 					<table>
@@ -610,7 +610,7 @@ add_filter( 'convertkit_plugin_sidebars', function( $plugin_sidebars ) {
 </pre>
 <h3 id="convertkit_get_pre_publish_actions">
 						convertkit_get_pre_publish_actions
-						<code>includes/functions.php::278</code>
+						<code>includes/functions.php::298</code>
 					</h3><h4>Overview</h4>
 						<p>Registers pre-publish actions for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -637,7 +637,7 @@ add_filter( 'convertkit_get_pre_publish_actions', function( $pre_publish_actions
 </pre>
 <h3 id="convertkit_get_form_importers">
 						convertkit_get_form_importers
-						<code>includes/functions.php::303</code>
+						<code>includes/functions.php::323</code>
 					</h3><h4>Overview</h4>
 						<p>Registers form importers for the ConvertKit Plugin.</p><h4>Parameters</h4>
 					<table>
@@ -2302,7 +2302,7 @@ do_action( 'convertkit_admin_post_enqueue_styles', function(  ) {
 </pre>
 <h3 id="convertkit_admin_setup_wizard_process_form_  this-page_name">
 						convertkit_admin_setup_wizard_process_form_  this-page_name
-						<code>admin/class-convertkit-admin-setup-wizard.php::279</code>
+						<code>admin/class-convertkit-admin-setup-wizard.php::288</code>
 					</h3><h4>Overview</h4>
 						<p>Process submitted form data for the given setup wizard name and current step.</p><h4>Parameters</h4>
 					<table>
@@ -2327,7 +2327,7 @@ do_action( 'convertkit_admin_setup_wizard_process_form_  this-page_name', functi
 </pre>
 <h3 id="convertkit_admin_setup_wizard_load_screen_data_  this-page_name">
 						convertkit_admin_setup_wizard_load_screen_data_  this-page_name
-						<code>admin/class-convertkit-admin-setup-wizard.php::342</code>
+						<code>admin/class-convertkit-admin-setup-wizard.php::351</code>
 					</h3><h4>Overview</h4>
 						<p>Load any data into class variables for the given setup wizard name and current step.</p><h4>Parameters</h4>
 					<table>
