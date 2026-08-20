@@ -35,7 +35,7 @@ The following Composer commands can be used:
 | `composer build-js` | `composer build-js` | Builds the frontend JS file |
 | `composer watch-js` | `composer watch-js` | Builds the frontend JS file when changes are made to frontend JS files |
 | `composer build` | `composer build` | Fixes, lints and builds frontend CSS and JS |
-| `composer static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
+| `composer php-static-analysis` | `composer phpstan` | Runs PHPStan static analysis with increased memory limit |
 | `composer test` | `composer test` | Builds and runs end-to-end tests with `fail-fast` enabled |
 | `composer test-integration` | `composer test-integration` | Builds and runs integration tests with `fail-fast` enabled |
 
@@ -260,7 +260,7 @@ For a full list of available wp-browser and Codeception functions that can be us
 
 ## Required Test Format
 
-Tests can be run in isolation, as part of a suite of tests, sequentially and/or in parralel across different environments.
+Tests can be run in isolation, as part of a suite of tests, sequentially and/or in parallel across different environments.
 It's therefore required that every Cest contain both `_before()` and `_passed()` functions, which handle:
 - `_before()`: Performing prerequisite steps (such as Plugin activation, third party Plugin activation and setup) prior to each test,
 - `_passed()`: Performing cleanup steps (such as Plugin deactivation, removal of Plugin data from the database) after each passing test.
@@ -268,6 +268,12 @@ It's therefore required that every Cest contain both `_before()` and `_passed()`
 The following test format should be used:
 
 ```php
+<?php
+
+namespace Tests\EndToEnd;
+
+use Tests\Support\EndToEndTester;
+
 class ExampleCest
 {
     /**
@@ -279,10 +285,9 @@ class ExampleCest
      */
     public function _before(EndToEndTester $I)
     {
-        $I->activateConvertKitPlugin($I);
+        $I->activateKitPlugin($I);
         $I->activateThirdPartyPlugin($I, 'third-party-plugin-slug');
-        $I->setupConvertKitPlugin($I);
-        $I->enableDebugLog($I);
+        $I->setupKitPlugin($I);
     }
 
     public function testSpecificSteps(EndToEndTester $I)
@@ -308,9 +313,9 @@ class ExampleCest
      */
     public function _passed(EndToEndTester $I)
     {
-        $I->deactivateConvertKitPlugin($I);
+        $I->deactivateKitPlugin($I);
         $I->deactivateThirdPartyPlugin($I, 'third-party-plugin-slug');
-        $I->resetConvertKitPlugin($I);
+        $I->resetKitPlugin($I);
     }
 }
 ```
@@ -321,27 +326,25 @@ Helpers extend testing by registering functions that we might want to use across
 Codeception or PHPUnit.  This helps achieve the principle of DRY code (Don't Repeat Yourself).
 
 For example, in the `tests/Support/Helper` directory, our `Xdebug.php` helper contains the `checkNoWarningsAndNoticesOnScreen()` function,
-which checks that
-- the <body> class does not contain the `php-error` class, which WordPress adds if a PHP error is detected
-- no Xdebug errors were output
-- no PHP Warnings or Notices were output
+which checks that no Xdebug errors or notices (`.xdebug-error`, `.xe-notice`) were output.
 
 Our End to End Tests can now call `$I->checkNoWarningsAndNoticesOnScreen($I)`, instead of having to write several lines of code to perform each 
 error check for every test.
 
 Further End to End Test Helpers that are provided include:
-- `activateConvertKitPlugin($I)`: Logs in to WordPress as the `admin` user, and activates the ConvertKit Plugin.
-- `deactivateConvertKitPlugin($I)`: Logs in to WordPress as the `admin` user, and deactivates the ConvertKit Plugin.
+- `activateKitPlugin($I)`: Logs in to WordPress as the `admin` user, and activates the Kit Plugin.
+- `deactivateKitPlugin($I)`: Logs in to WordPress as the `admin` user, and deactivates the Kit Plugin.
 - `activateThirdPartyPlugin($I, $name)`: Logs in to WordPress as the `admin` user, and activates the given third party Plugin by its slug.
 - `deactivateThirdPartyPlugin($I, $name)`: Logs in to WordPress as the `admin` user, and deactivates the given third party Plugin by its slug.
-- `setupConvertKitPlugin($I)`: Enters the ConvertKit API Key and Secret in the Plugin's Settings screen, saving it.
+- `setupKitPlugin($I, $options = false)`: Writes the Plugin's settings (OAuth Access and Refresh Tokens from `.env.testing`, plus default Forms and other options) directly to the options table. Debug logging is enabled by default, so there's no need to enable it separately. Pass an array of `$options` to override any individual setting.
+- `resetKitPlugin($I)`: Removes the Plugin's settings and data from the database, so the next test starts from a known state.
 
 Other helpers most likely exist; refer to the [Helper](https://github.com/ConvertKit/convertkit-wordpress/blob/main/tests/Support/Helper/) folder for all available functions.
 
 ## Writing Helpers
 
 With this methodology, if two or more of your tests perform the same checks, you should:
-- add a function to the applicable file in the `tests/Support/Helper` directory (e.g. `tests/Support/Helper/Plugin.php`),
+- add a function to the applicable file in the `tests/Support/Helper` directory (e.g. `tests/Support/Helper/KitPlugin.php`),
 usually in the format of
 ```php
 /**
@@ -363,7 +366,7 @@ If the function doesn't fit into any existing helper file:
 - edit the [EndToEnd.suite.yml](https://github.com/ConvertKit/convertkit-wordpress/blob/main/tests/EndToEnd.suite.yml) file, adding
 the Helper's namespace and class under the `enabled` section.
 
-Need to change how Codeception runs?  Edit the [codeception.dist.xml](codeception.dist.xml) file.
+Need to change how Codeception runs?  Edit the [codeception.dist.yml](codeception.dist.yml) file.
 
 ## Block Testing
 
@@ -406,10 +409,14 @@ This will create a PHP test file in the `tests/Integration` directory called `AP
 ```php
 <?php
 
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
 class APITest extends WPTestCase
 {
     /**
-     * @var \WpunitTester
+     * @var \IntegrationTester
      */
     protected $tester;
     
@@ -439,8 +446,10 @@ class APITest extends WPTestCase
 }
 ```
 
-Helpers can be used for WordPress Unit Tests, the same as how they can be used for End To End tests.
-To register your own helper function, add it to the `tests/Support/Helper/Wpunit.php` file.
+Note that Integration tests are namespaced `Tests`, and that the Plugin is activated and configured within `setUp()` (typically by calling
+`activate_plugins()` and saving settings via `ConvertKit_Settings`), rather than by using Helpers. The `Integration` suite enables only the
+`WPLoader` module, so the `$I->` Helper functions available to End to End tests are not available here — refer to an existing test in
+`tests/Integration` for the expected pattern.
 
 ## Run Tests
 
@@ -478,7 +487,7 @@ Any errors should be corrected by making applicable code or test changes.
 ## Run PHP CodeSniffer
 
 > **Quick Command**  
-> `composer coding-standards`: Run PHP Coding Standards on Plugin files
+> `composer php-coding-standards` (or `composer phpcs`): Run PHP Coding Standards on Plugin files
 
 [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) checks that all Plugin code meets the 
 [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/).
@@ -490,9 +499,7 @@ as defined in the `phpcs.xml` configuration:
 vendor/bin/phpcs ./ --standard=phpcs.xml -v -s
 ```
 
-`--standard=phpcs.tests.xml` tells PHP CodeSniffer to use the Coding Standards rules / configuration defined in `phpcs.tests.xml`.
-These differ slightly from WordPress' Coding Standards, to ensure that writing tests isn't a laborious task, whilst maintaing consistency
-in test coding style. 
+`--standard=phpcs.xml` tells PHP CodeSniffer to use the Coding Standards rules / configuration defined in `phpcs.xml`.
 `-v` produces verbose output
 `-s` specifies the precise rule that failed
 ![Coding Standards Screenshot](/.github/docs/coding-standards-error.png?raw=true)
@@ -510,7 +517,7 @@ Need to change the PHP or WordPress coding standard rules applied?  Either:
 ## Run CSS Linting
 
 > **Quick Command**  
-> `composer lint-css`: Run CSS Coding Standards on Plugin files
+> `composer css-coding-standards` (or `composer lint-css`): Run CSS Coding Standards on Plugin files
 
 In the Plugin's directory, run the following command to run CSS and WordPress Coding Standards on CSS, which will check the code meets WordPress' Coding Standards
 as defined in the `.stylelintrc.json` configuration:
@@ -532,7 +539,7 @@ Need to change the CSS or WordPress coding standard rules applied?  WordPress' C
 ## Run JS Linting
 
 > **Quick Command**  
-> `composer lint-js`: Run JS Coding Standards on Plugin files
+> `composer js-coding-standards` (or `composer lint-js`): Run JS Coding Standards on Plugin files
 
 In the Plugin's directory, run the following command to run JS and WordPress Coding Standards on JavaScript, which will check the code meets WordPress' Coding Standards as defined in the `.eslintrc.js` configuration:
 
@@ -550,12 +557,10 @@ Need to change the JS or WordPress coding standard rules applied?  WordPress' JS
 
 **Rules should be ignored with caution**.
 
-**Rules should be ignored with caution**.
-
 ## Run PHPStan
 
 > **Quick Command**  
-> `composer static-analysis`: Run PHPStan static analysis on Plugin files
+> `composer php-static-analysis` (or `composer phpstan`): Run PHPStan static analysis on Plugin files
 
 [PHPStan](https://phpstan.org) performs static analysis on the Plugin's PHP code.  This ensures:
 
@@ -569,7 +574,7 @@ Need to change the JS or WordPress coding standard rules applied?  WordPress' JS
 In the Plugin's directory, run the following command to run PHPStan:
 
 ```bash
-vendor/bin/phpstan --memory-limit=1G
+vendor/bin/phpstan analyse --memory-limit=1250M
 ```
 
 Any errors should be corrected by making applicable code changes.
@@ -579,7 +584,7 @@ False positives [can be excluded by configuring](https://phpstan.org/user-guide/
 ## Run PHP CodeSniffer for Tests
 
 > **Quick Command**  
-> `composer coding-standards-tests`: Run PHP Coding Standards on test files
+> `composer php-coding-standards-on-tests` (or `composer phpcs-tests`): Run PHP Coding Standards on test files
 
 In the Plugin's directory, run the following command to run PHP_CodeSniffer, which will check the code meets Coding Standards
 as defined in the `phpcs.tests.xml` configuration:
@@ -589,7 +594,7 @@ vendor/bin/phpcs ./tests --standard=phpcs.tests.xml -v -s
 ```
 
 `--standard=phpcs.tests.xml` tells PHP CodeSniffer to use the Coding Standards rules / configuration defined in `phpcs.tests.xml`.
-These differ slightly from WordPress' Coding Standards, to ensure that writing tests isn't a laborious task, whilst maintaing consistency
+These differ slightly from WordPress' Coding Standards, to ensure that writing tests isn't a laborious task, whilst maintaining consistency
 in test coding style. 
 `-v` produces verbose output
 `-s` specifies the precise rule that failed

@@ -18,6 +18,7 @@ For Kit Developers, there are guides covering:
 - [Development](DEVELOPMENT.md) - best practices for development
 - [Testing](TESTING.md) - how to write and run tests
 - [Actions and Filters](ACTIONS-FILTERS.md) - Actions and Filters available to WordPress Developers looking to extend Kit's functionality
+- [Security](SECURITY.md) - how to report a security vulnerability
 
 For Kit, there is a separate guide to deploying new versions to wordpress.org:
 - [Deployment](DEPLOYMENT.md) - how to deploy a new Plugin version to [WordPress.org](https://wordpress.org/plugins/convertkit/)

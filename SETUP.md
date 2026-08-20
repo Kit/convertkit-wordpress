@@ -65,9 +65,11 @@ The Kit Plugin (and/or its Addons) provides integrations with the following, and
 Plugins on your local development environment:
 
 - [Contact Form 7](https://wordpress.org/plugins/contact-form-7/) (Free)
-- [Gravity Forms](https://www.gravityforms.com/) (Paid)
-- [WishList Member](https://wishlistmember.com/) (Paid)
+- [Elementor](https://wordpress.org/plugins/elementor/) (Free)
+- [Forminator](https://wordpress.org/plugins/forminator/) (Free)
 - [WooCommerce](https://wordpress.org/plugins/woocommerce/) (Free)
+- [Divi](https://www.elegantthemes.com/gallery/divi/) (Paid)
+- [WishList Member](https://wishlistmember.com/) (Paid)
 
 For Kit employees or contractors, licensed versions of paid Third Party Plugins can be made available to you on request.
 
@@ -193,7 +195,7 @@ In the Plugin's directory, run the following command to run PHPStan, which will 
 standards, that PHP DocBlocks are valid, WordPress action/filter DocBlocks are valid etc:
 
 ```bash
-vendor/bin/phpstan --memory-limit=1G
+vendor/bin/phpstan analyse --memory-limit=1250M
 ```
 
 ![PHPStan Test Results](/.github/docs/phpstan.png?raw=true)
@@ -222,7 +224,7 @@ If you're new to this, use [GitHub Desktop](https://desktop.github.com/) or [Tow
 
 ### Install and Run Dev Containers
 
-- Open Visual Studio Code, and install the [Dev Containers]() extension
+- Open Visual Studio Code, and install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
 - Open the Visual Studio Code Command Palette (`Ctrl + Shift + P`)
 - Type `>Dev Container: Rebuild and Reopen in Container`, pressing Enter
 
@@ -264,7 +266,7 @@ In Visual Studio Code's Terminal, navigate to `/workspaces/convertkit-wordpress`
 standards, that PHP DocBlocks are valid, WordPress action/filter DocBlocks are valid etc:
 
 ```bash
-vendor/bin/phpstan --configuration phpstan-dev.neon --memory-limit=1G
+vendor/bin/phpstan analyse --configuration phpstan-dev.neon --memory-limit=1250M
 ```
 
 If no Terminal instance is open, you can create a new one by clicking the `+` icon.
