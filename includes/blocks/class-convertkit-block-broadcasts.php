@@ -27,6 +27,9 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		// Register this as a Gutenberg block in the ConvertKit Plugin.
 		add_filter( 'convertkit_blocks', array( $this, 'register' ) );
 
+		// Register this block's MCP abilities.
+		add_filter( 'convertkit_abilities', array( $this, 'register_abilities' ) );
+
 		// Enqueue scripts and styles for this Gutenberg Block in the editor and frontend views.
 		add_action( 'convertkit_gutenberg_enqueue_scripts_editor_and_frontend', array( $this, 'enqueue_scripts' ) );
 		add_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', array( $this, 'enqueue_styles' ) );
@@ -166,6 +169,19 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * @since   3.1.1
 	 */
 	public function get_title() {
+
+		return __( 'Kit Broadcasts', 'convertkit' );
+
+	}
+
+	/**
+	 * Returns this block's plural title.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  string
+	 */
+	public function get_title_plural() {
 
 		return __( 'Kit Broadcasts', 'convertkit' );
 

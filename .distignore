@@ -7,8 +7,6 @@
 /node_modules
 /resources/frontend/css/*.map
 /tests
-/vendor/autoload.php
-/vendor/composer
 /vendor/convertkit/convertkit-wordpress-libraries/.git
 /vendor/convertkit/convertkit-wordpress-libraries/.github
 /vendor/convertkit/convertkit-wordpress-libraries/tests

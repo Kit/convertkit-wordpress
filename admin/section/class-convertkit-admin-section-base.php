@@ -47,7 +47,7 @@ abstract class ConvertKit_Admin_Section_Base {
 	 *
 	 * @since   1.9.6
 	 *
-	 * @var     false|ConvertKit_Settings|ConvertKit_ContactForm7_Settings|ConvertKit_Wishlist_Settings|ConvertKit_Settings_Restrict_Content|ConvertKit_Settings_Broadcasts|ConvertKit_Forminator_Settings
+	 * @var     false|ConvertKit_Settings|ConvertKit_ContactForm7_Settings|ConvertKit_Wishlist_Settings|ConvertKit_Settings_Restrict_Content|ConvertKit_Settings_Broadcasts|ConvertKit_Forminator_Settings|ConvertKit_Settings_MCP
 	 */
 	public $settings;
 

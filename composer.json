@@ -4,7 +4,8 @@
     "type": "project",
     "license": "GPLv3",
     "require": {
-        "convertkit/convertkit-wordpress-libraries": "2.6.0"
+        "convertkit/convertkit-wordpress-libraries": "2.6.0",
+        "wordpress/mcp-adapter": "^0.5.0"
     },
     "require-dev": {
         "php-webdriver/webdriver": "^1.0",

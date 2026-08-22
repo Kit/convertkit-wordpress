@@ -44,6 +44,21 @@ class KitRestrictContent extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to load the Plugin's Settings > MCP screen.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function loadKitSettingsMCPScreen($I)
+	{
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=mcp');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
 	 * Returns the expected default settings for Restricted Content.
 	 *
 	 * @since   2.1.0
