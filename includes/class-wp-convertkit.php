@@ -261,11 +261,6 @@ class WP_ConvertKit {
 			}
 		}
 
-		// Sanity check MCP Adapter is loaded.
-		if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
-			return;
-		}
-
 		// Bootstrap the MCP Adapter, per WordPress/mcp-adapter's recommended
 		// integration pattern.
 		// @see https://github.com/WordPress/mcp-adapter#using-mcp-adapter-in-your-plugin.
