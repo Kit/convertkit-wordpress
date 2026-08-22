@@ -256,7 +256,7 @@ class WP_ConvertKit {
 			require_once CONVERTKIT_PLUGIN_PATH . '/vendor/autoload.php';
 
 			// Bail if the MCP Adapter class doesn't exist - something went wrong with the autoloader.
-			if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) {
+			if ( ! class_exists( 'WP\\MCP\\Core\\McpAdapter' ) ) { // @phpstan-ignore-line
 				return;
 			}
 		}
