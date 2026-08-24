@@ -160,10 +160,9 @@ jobs:
       - name: Move Plugin
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
 
-      # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for other integration tests, as Elementor in PHP 8.4 throws a deprecation notice.
+      # WP_DEBUG = true is required so all PHP errors are output and caught by tests.
       - name: Enable WP_DEBUG
-        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' && inputs.php-version != '8.4' }}
+        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_DEBUG true --raw
 
@@ -193,7 +192,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
-          ini-values: error_reporting=E_ALL, display_errors=On, html_errors=On
+          ini-values: 'error_reporting=E_ALL, display_errors=On, html_errors=On, xdebug.mode="develop,coverage"'
           coverage: xdebug
 
       # Workaround for PHP 8.3 (and potentially other versions): the GitHub
