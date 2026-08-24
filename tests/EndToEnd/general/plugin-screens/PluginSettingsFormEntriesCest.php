@@ -40,8 +40,6 @@ class PluginSettingsFormEntriesCest
 		// Load the Form Entries screen.
 		$I->loadKitSettingsFormEntriesScreen($I);
 
-		$I->waitForElementVisible('tbody#an-element-that-does-not-exist');
-
 		$I->see('No items found.');
 	}
 

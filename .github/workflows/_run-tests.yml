@@ -188,6 +188,7 @@ jobs:
       # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
       # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
       # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
+      # error_reporting=E_ALL and xdebug.mode="develop,coverage" are required so all PHP errors are output and caught by tests.
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
