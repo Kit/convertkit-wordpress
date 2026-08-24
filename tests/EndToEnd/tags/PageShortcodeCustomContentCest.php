@@ -112,7 +112,7 @@ class PageShortcodeCustomContentCest
 		// Confirm that the Custom Content is not yet displayed.
 		$I->dontSee('KitCustomContent');
 
-		// Reload the page, this time with an invalid subscriber ID .
+		// Reload the page, this time with an invalid subscriber ID.
 		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-invalid-subscriber-id?ck_subscriber_id=1');
 
 		// Check that no PHP warnings or notices were output.
@@ -149,8 +149,91 @@ class PageShortcodeCustomContentCest
 		// Confirm that the Custom Content is not yet displayed.
 		$I->dontSee('KitCustomContent');
 
-		// Reload the page, this time with a subscriber ID who is already subscribed to the tag.
-		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		// Set cookie with an invalid signed subscriber ID.
+		$I->setRestrictContentCookie($I, 'invalid-signed-subscriber-id');
+
+		// Reload the page, this time with an invalid signed subscriber ID.
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Custom Content is not yet displayed.
+		$I->dontSee('KitCustomContent');
+	}
+
+	/**
+	 * Test the [convertkit_content] shortcode works when a valid Tag ID is specified,
+	 * and an invalid signed subscriber ID is used who is subscribed to the tag.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testCustomContentShortcodeWithValidTagParameterAndInvalidSignedSubscriberID(EndToEndTester $I)
+	{
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id',
+				'post_content' => '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]KitCustomContent[/convertkit_content]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Custom Content is not yet displayed.
+		$I->dontSee('KitCustomContent');
+
+		// Set cookie with signed subscriber ID.
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+
+		// Reload the page.
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Custom Content is now displayed.
+		$I->see('KitCustomContent');
+	}
+
+	/**
+	 * Test the [convertkit_content] shortcode works when a valid Tag ID is specified,
+	 * and a valid signed subscriber ID is used who is subscribed to the tag.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testCustomContentShortcodeWithValidTagParameterAndValidSignedSubscriberID(EndToEndTester $I)
+	{
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id',
+				'post_content' => '[convertkit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]KitCustomContent[/convertkit_content]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Custom Content is not yet displayed.
+		$I->dontSee('KitCustomContent');
+
+		// Set cookie with signed subscriber ID.
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+
+		// Reload the page.
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

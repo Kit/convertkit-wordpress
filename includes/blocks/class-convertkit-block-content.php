@@ -254,15 +254,40 @@ class ConvertKit_Block_Content extends ConvertKit_Block {
 		);
 
 		// Get the subscriber's tags, to see if they subscribed to this tag.
-		$tags = $api->get_subscriber_tags( $subscriber_id );
+		if ( is_numeric( $subscriber_id ) ) {
+			$tags = $api->get_subscriber_tags( $subscriber_id );
 
-		// Bail if an error occurred.
-		if ( is_wp_error( $tags ) ) {
-			if ( $settings->debug_enabled() ) {
-				return '<!-- Kit Custom Content: ' . $tags->get_error_message() . ' -->';
+			// Bail if an error occurred.
+			if ( is_wp_error( $tags ) ) {
+				if ( $settings->debug_enabled() ) {
+					return '<!-- Kit Custom Content: ' . $tags->get_error_message() . ' -->';
+				}
+
+				return '';
+			}
+		} else {
+			// Subscriber ID is a signed subscriber ID.
+			// Get tags that the subscriber has access to via the profile() method.
+			$result = $api->profile( $subscriber_id );
+
+			// If an error occurred, the subscriber ID is invalid.
+			if ( is_wp_error( $result ) ) {
+				if ( $settings->debug_enabled() ) {
+					return '<!-- Kit Custom Content: ' . $result->get_error_message() . ' -->';
+				}
+
+				return '';
 			}
 
-			return '';
+			// Build tags array.
+			$tags = array(
+				'tags' => array(),
+			);
+			foreach ( $result['tags'] as $tag_id ) {
+				$tags['tags'][] = array(
+					'id' => $tag_id,
+				);
+			}
 		}
 
 		// Bail if the subscriber has no tags.
