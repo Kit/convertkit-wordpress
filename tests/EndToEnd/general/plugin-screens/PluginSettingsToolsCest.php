@@ -44,6 +44,47 @@ class PluginSettingsToolsCest
 	}
 
 	/**
+	 * Test that the log is stored in the uploads directory, and that no log directory or
+	 * files are created in the Plugin's directory when the log is written to, as any file
+	 * that isn't part of the WordPress.org release causes `wp plugin verify-checksums` to
+	 * report the Plugin as modified.
+	 *
+	 * @since   3.4.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testDebugLogNotStoredInPluginDirectory(EndToEndTester $I)
+	{
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Load settings screen to trigger some API requests, which are written to the log.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Load tools screen, which reads the log.
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Confirm the Debug Log section is populated, so we know the log was written to.
+		$I->dontSeeInField('#debug-log-textarea', 'No logs have been generated.');
+
+		// Confirm no log directory or files exist in the Plugin's directory.
+		$I->dontSeePluginFileFound('convertkit/log/log.txt');
+		$I->dontSeePluginFileFound('convertkit/log/.htaccess');
+		$I->dontSeePluginFileFound('convertkit/log/index.html');
+		$I->dontSeePluginFileFound('convertkit/log');
+		$I->dontSeePluginFileFound('convertkit/log.txt');
+
+		// Confirm the log directory was created in the uploads directory, with the
+		// .htaccess and index.html files that prevent listing and access on Apache.
+		$I->seeUploadedFileFound('kit-logs/.htaccess');
+		$I->seeUploadedFileFound('kit-logs/index.html');
+
+		// Confirm the Tools screen displays the log file's location, which is in the
+		// uploads directory and named after the Plugin's directory.
+		$I->seeInSource('/wp-content/uploads/kit-logs/convertkit-');
+	}
+
+	/**
 	 * Test that the Download Log option works.
 	 *
 	 * @since   1.9.7.6
