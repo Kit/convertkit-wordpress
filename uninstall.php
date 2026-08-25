@@ -24,7 +24,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 $upload_dir = wp_upload_dir();
 if ( empty( $upload_dir['error'] ) && ! empty( $upload_dir['basedir'] ) ) {
 	$log_slug = sanitize_key( basename( __DIR__ ) );
-	$log_file = trailingslashit( $upload_dir['basedir'] ) . 'kit-logs/' . $log_slug . '-' . wp_hash( 'convertkit-log-' . $log_slug ) . '.log';
+	$log_file = trailingslashit( $upload_dir['basedir'] ) . 'kit-logs/' . $log_slug . '-' . wp_hash( $log_slug ) . '.log';
 
 	if ( file_exists( $log_file ) ) {
 		wp_delete_file( $log_file );
