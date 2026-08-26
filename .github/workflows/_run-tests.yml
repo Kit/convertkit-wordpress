@@ -160,10 +160,9 @@ jobs:
       - name: Move Plugin
         run: mv /home/runner/work/convertkit-wordpress/convertkit-wordpress/convertkit ${{ env.PLUGIN_DIR }}
 
-      # WP_DEBUG = true is required so all PHP errors are output and caught by tests (E_ALL).
-      # WP_DEBUG = false for other integration tests, as Elementor in PHP 8.4 throws a deprecation notice.
+      # WP_DEBUG = true is required so all PHP errors are output and caught by tests.
       - name: Enable WP_DEBUG
-        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' && inputs.php-version != '8.4' }}
+        if: ${{ inputs.test-group != 'EndToEnd/integrations/other' }}
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_DEBUG true --raw
 
@@ -193,6 +192,20 @@ jobs:
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli config set WP_AUTO_UPDATE_CORE false --raw
 
+      # error_reporting=E_ALL and xdebug.mode="develop,coverage" are required so all PHP errors are output and caught by tests.
+      # These settings are disabled for some PHP 8.5 third party integration tests, whose dependencies do not yet support PHP 8.5.
+      - name: Define PHP INI Values
+        run: |
+          if [ "${{ inputs.php-version }}" = '8.5' ]; then
+            case "${{ inputs.test-group }}" in
+              EndToEnd/integrations/divi-builder|EndToEnd/integrations/divi-theme|EndToEnd/integrations/elementor|EndToEnd/restrict-content/post-types)
+                exit 0
+                ;;
+            esac
+          fi
+
+          echo 'PHP_INI_VALUES=error_reporting=E_ALL, display_errors=On, html_errors=On, xdebug.mode="develop,coverage"' >> "$GITHUB_ENV"
+
       # This step is deliberately after WordPress installation and configuration, as enabling PHP 8.x before using WP-CLI results
       # in the workflow failing due to incompatibilities between WP-CLI and PHP 8.x.
       # By installing PHP at this stage, we can still run our tests against e.g. PHP 8.x.
@@ -200,6 +213,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
+          ini-values: ${{ env.PHP_INI_VALUES }}
           coverage: xdebug
 
       # Workaround for PHP 8.3 (and potentially other versions): the GitHub

@@ -140,6 +140,11 @@ abstract class ConvertKit_Admin_Section_Base {
 	 */
 	public function register_section() {
 
+		// Don't register a settings section if no settings key is defined.
+		if ( empty( $this->settings_key ) ) {
+			return;
+		}
+
 		// Register settings sections.
 		foreach ( $this->settings_sections as $name => $settings_section ) {
 			// Determine if this settings section needs to be wrapped in its own container.
