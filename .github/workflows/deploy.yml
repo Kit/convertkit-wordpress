@@ -35,7 +35,6 @@ jobs:
       # Confirm that expected files exist
       # if e.g. `composer install` or `npm run build` fails
       - name: Check Kit WordPress Libraries and Assets Exists
-        working-directory: ${{ env.PLUGIN_DIR }}
         run: |
           set -e
 

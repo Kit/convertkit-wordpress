@@ -12,8 +12,12 @@ use Tests\Support\EndToEndTester;
 class UninstallCest
 {
 	/**
-	 * Test that the Plugin's access and refresh tokens are revoked, and all v4 and v4
-	 * API credentials are removed from the Plugin's settings when the Plugin is deleted.
+	 * Test that the Plugin's access and refresh tokens are revoked, all v4 and v4
+	 * API credentials are removed from the Plugin's settings, and the log file is
+	 * deleted from the uploads directory when the Plugin is deleted.
+	 *
+	 * These assertions are deliberately made in a single test, as deleting the Plugin
+	 * is destructive; the Plugin is no longer available to any subsequent test.
 	 *
 	 * @since   3.2.4
 	 *
@@ -57,6 +61,19 @@ class UninstallCest
 			]
 		);
 
+		// Load the Settings screen, to make API requests that are written to the log file.
+		$I->loadKitSettingsGeneralScreen($I);
+
+		// Load the Tools screen, and grab the log file's location from it. The log file's
+		// name includes a hash, so it cannot be determined by this test.
+		$I->loadKitSettingsToolsScreen($I);
+		$logFile = $I->grabTextFrom('#debug-log code');
+
+		// Confirm the log file exists in the uploads directory, so that the assertion
+		// following Plugin deletion is meaningful.
+		$I->assertStringContainsString('/wp-content/uploads/kit-logs/', $logFile);
+		$I->seeFileFound($logFile);
+
 		// Deactivate the Plugin.
 		$I->deactivateKitPlugin($I);
 
@@ -65,6 +82,9 @@ class UninstallCest
 
 		// Allow the uninstallation routine time to complete.
 		$I->wait(10);
+
+		// Confirm the log file has been deleted from the uploads directory.
+		$I->dontSeeFileFound($logFile);
 
 		// Confirm the credentials have been removed from the Plugin's settings.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');

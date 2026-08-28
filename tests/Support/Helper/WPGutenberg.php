@@ -33,9 +33,15 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function switchToGutenbergIFrameEditor($I)
 	{
-		// Don't switch if the iframe doesn't exist e.g. Divi is active, which prevents
-		// the iframe block editor in WordPress 7.0+ from being used.
-		if ( ! $I->tryToSeeElement('iframe[name="editor-canvas"]')) {
+		// Wait for the iframe to mount. In WordPress 7.1+ the editor iframe
+		// can take longer to appear in the DOM than a tryToSeeElement()
+		// check, causing the switch to be silently skipped. Catch the timeout
+		// so that environments which intentionally have no iframe (e.g. Divi
+		// is active, which prevents the iframe block editor from being used)
+		// still fall through to the non-iframe path.
+		try {
+			$I->waitForElement('iframe[name="editor-canvas"]', 10);
+		} catch (\Facebook\WebDriver\Exception\TimeoutException $e) {
 			return;
 		}
 
@@ -123,7 +129,7 @@ class WPGutenberg extends \Codeception\Module
 			// Also add last segment after slash, for compatibility with older WordPress versions.
 			$parts = explode('/', $blockProgrammaticName);
 			if (count($parts) === 2) {
-				$potentialNames[] = $parts[1];
+				array_unshift($potentialNames, $parts[1]);
 			}
 		}
 
@@ -215,22 +221,15 @@ class WPGutenberg extends \Codeception\Module
 	 */
 	public function addGutenbergParagraphBlock($I, $text)
 	{
-		// Add paragraph block.
-		$I->addGutenbergBlock($I, 'Paragraph', 'paragraph/paragraph');
-
-		// Switch to the Gutenberg IFrame.
-		if ($this->isGutenbergIFrameEditorEnabled()) {
-			$I->switchToGutenbergIFrameEditor($I);
-		}
-
-		// Click the editor area and enter the text in the paragraph.
-		$I->click('.wp-block-post-content');
-		$I->fillField('.wp-block-post-content p[data-empty="true"]', $text);
-
-		// Switch back to main window.
-		if ($this->isGutenbergIFrameEditorEnabled()) {
-			$I->switchToIFrame();
-		}
+		// Programmatically insert a Paragraph block with the given content via
+		// Gutenberg's data store. Bypasses the block inserter + click +
+		// fillField sequence that WP 7.1's iframed editor makes unreliable.
+		// Resolve whichever window has it before dispatching.
+		$I->executeJS(
+			'var w = (typeof wp !== "undefined" && wp.data) ? window : (document.querySelector("iframe[name=\"editor-canvas\"]") || {}).contentWindow;' .
+			'w.wp.data.dispatch("core/block-editor").insertBlock(w.wp.blocks.createBlock("core/paragraph", {content: arguments[0]}));',
+			[ $text ]
+		);
 	}
 
 	/**
@@ -402,12 +401,18 @@ class WPGutenberg extends \Codeception\Module
 		$I->wait(2);
 
 		// Build potential programmatic block names.
+		// Try the short name (last segment after any `/`) FIRST — modern
+		// WordPress uses a class like `editor-block-list-item-paragraph`,
+		// which matches via a fast CSS selector. The full `paragraph/paragraph`
+		// form only matches an XPath that DOM classes can never satisfy (CSS
+		// classes can't contain `/`), so leaving it first burned the full
+		// waitForElementVisible timeout on every insertion.
 		$potentialNames = [ $blockProgrammaticName ];
 		if (strpos($blockProgrammaticName, '/') !== false) {
 			// Also add last segment after slash, for compatibility with older WordPress versions.
 			$parts = explode('/', $blockProgrammaticName);
 			if (count($parts) === 2) {
-				$potentialNames[] = $parts[1];
+				array_unshift($potentialNames, $parts[1]);
 			}
 		}
 

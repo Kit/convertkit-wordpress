@@ -18,7 +18,7 @@
         <exclude name="WordPress.NamingConventions" />
         <exclude name="WordPress.Files.FileName" />
 
-        <!-- Class and function braces and spacing in Codeceptoin differs from WordPress -->
+        <!-- Class and function braces and spacing in Codeception differs from WordPress -->
         <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis" />
         <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.ExtraSpaceAfterCloseParenthesis" />
         <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen" />

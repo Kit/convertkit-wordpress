@@ -66,7 +66,7 @@ Run `npm run watch:css` to compile frontend CSS to `resources/frontend/css/front
 
 ### JS
 
-Run `npm run watch:js` to compile frontend JS to `resources/frontend/js/dist/frontend-min.js` when working on JS in the `resources/frontend/js` folder.
+Run `npm run watch:js` to compile frontend JS to `resources/frontend/js/dist/frontend.min.js` when working on JS in the `resources/frontend/js` folder.
 
 ### Build
 
@@ -83,6 +83,23 @@ If the build process fails, review the terminal and make applicable changes:
 ![npm run build errors](/.github/docs/npm-run-build-errors.png?raw=true)
 
 GitHub actions will run this step for you on testing and deployment, but it's a useful command in development if you need a single command to cover CSS + JS.
+
+## Before Committing
+
+GitHub Actions runs the following checks on every Pull Request. Running them locally first avoids a round trip:
+
+| Command | Checks |
+|---------|--------|
+| `composer php-coding-standards` | PHP Coding Standards on Plugin files (`phpcs.xml`) |
+| `composer php-coding-standards-on-tests` | PHP Coding Standards on test files (`phpcs.tests.xml`) |
+| `composer css-coding-standards` | CSS / SCSS Coding Standards |
+| `composer js-coding-standards` | JS Coding Standards |
+| `composer php-static-analysis` | PHPStan static analysis |
+| `composer test` | End to End tests |
+| `composer test-integration` | Integration tests |
+
+`composer fix-php-coding-standards`, `fix-css-coding-standards` and `fix-js-coding-standards` will automatically correct many
+Coding Standards errors. Refer to the [Testing Guide](TESTING.md) for detail on each.
 
 ## Committing Work
 
