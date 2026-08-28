@@ -12,7 +12,6 @@ zip -r convertkit.zip . \
 -x ".devcontainer/*" \
 -x ".scripts/*" \
 -x ".wordpress-org/*" \
--x "log/*" \
 -x "node_modules/*" \
 -x "tests/*" \
 -x "vendor/convertkit/convertkit-wordpress-libraries/.github" \
