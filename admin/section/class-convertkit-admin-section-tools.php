@@ -19,10 +19,6 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	public function __construct() {
 
-		// Initialize WP_Filesystem.
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		WP_Filesystem();
-
 		$this->settings_key = '_wp_convertkit_tools'; // Required for ConvertKit_Settings_Base, but we don't save settings on the Tools screen.
 		$this->name         = 'tools';
 		$this->title        = __( 'Tools', 'convertkit' );
@@ -125,8 +121,6 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	private function maybe_download_log() {
 
-		global $wp_filesystem;
-
 		// Bail if nonce verification fails.
 		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
 			return;
@@ -149,7 +143,8 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		header( 'Content-Disposition: attachment; filename=convertkit-log.txt' );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
-		echo esc_html( $wp_filesystem->get_contents( $log->get_filename() ) );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		echo esc_html( (string) file_get_contents( $log->get_filename() ) );
 		exit();
 
 	}
@@ -161,8 +156,6 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 * @since   1.9.6
 	 */
 	private function maybe_download_system_info() {
-
-		global $wp_filesystem;
 
 		// Bail if nonce verification fails.
 		if ( ! isset( $_REQUEST['_convertkit_settings_tools_nonce'] ) ) {
@@ -181,21 +174,12 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		// Get System Info.
 		$system_info = $this->get_system_info();
 
-		// Write contents to temporary file.
-		$tmpfile  = tmpfile();
-		$filename = stream_get_meta_data( $tmpfile )['uri'];
-		$wp_filesystem->put_contents(
-			$filename,
-			esc_attr( $system_info )
-		);
-
 		// Download.
 		header( 'Content-type: application/octet-stream' );
 		header( 'Content-Disposition: attachment; filename=convertkit-system-info.txt' );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
-		echo esc_html( $wp_filesystem->get_contents( $filename ) );
-		$wp_filesystem->delete( $filename );
+		echo esc_html( $system_info );
 		exit();
 
 	}
@@ -263,11 +247,6 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Allow us to easily interact with the filesystem.
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		WP_Filesystem();
-		global $wp_filesystem;
-
 		// Bail if the submit button for importing the configuration was not clicked.
 		if ( ! array_key_exists( 'convertkit-import', $_REQUEST ) ) {
 			return;
@@ -284,7 +263,8 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		}
 
 		// Read file.
-		$json = $wp_filesystem->get_contents( sanitize_text_field( wp_unslash( $_FILES['import']['tmp_name'] ) ) );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$json = file_get_contents( sanitize_text_field( wp_unslash( $_FILES['import']['tmp_name'] ) ) );
 
 		// Decode.
 		$import = json_decode( $json, true );

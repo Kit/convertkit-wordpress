@@ -16,6 +16,21 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // are not reliably available due to the Plugin being deactivated and going
 // through deletion now.
 
+// Delete the log file from the uploads directory.
+// The Plugin's own directory is deleted by WordPress once this routine completes,
+// so any historic log file stored there doesn't need deleting here.
+// This mirrors ConvertKit_Log::get_log_file_name() in the Kit WordPress Libraries,
+// which we can't call as the Plugin's classes aren't reliably available.
+$upload_dir = wp_upload_dir();
+if ( empty( $upload_dir['error'] ) && ! empty( $upload_dir['basedir'] ) ) {
+	$log_slug = sanitize_key( basename( __DIR__ ) );
+	$log_file = trailingslashit( $upload_dir['basedir'] ) . 'kit-logs/' . $log_slug . '-' . wp_hash( $log_slug ) . '.log';
+
+	if ( file_exists( $log_file ) ) {
+		wp_delete_file( $log_file );
+	}
+}
+
 // Get settings.
 $settings = get_option( '_wp_convertkit_settings' );
 
