@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.3.9
+Stable tag: 3.4.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -347,6 +347,13 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.4.0 2026-08-27
+* Added: MCP Server and Abilities/Tools
+* Fix: Shortcodes: Custom Content: Support signed subscriber IDs, fixing `PHP Fatal error: Uncaught TypeError`
+* Fix: Tools: Replace `WP_Filesystem` with `file_get_contents`, fixing `PHP Fatal error: Uncaught TypeError`
+* Fix: Logs: Logs are now stored outside the Plugin folder at `wp-content/uploads/kit-logs`, ensuring Plugin checksum verification passes
+* Updated: WordPress Libraries to 2.6.1
 
 ### 3.3.9 2026-08-19
 * Added: Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
