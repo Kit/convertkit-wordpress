@@ -1,3 +1,10 @@
+### 3.4.0 2026-08-27
+* Added: MCP Server and Abilities/Tools
+* Fix: Shortcodes: Custom Content: Support signed subscriber IDs, fixing `PHP Fatal error: Uncaught TypeError`
+* Fix: Tools: Replace `WP_Filesystem` with `file_get_contents`, fixing `PHP Fatal error: Uncaught TypeError`
+* Fix: Logs: Logs are now stored outside the Plugin folder at `wp-content/uploads/kit-logs`, ensuring Plugin checksum verification passes
+* Updated: WordPress Libraries to 2.6.1
+
 ### 3.3.9 2026-08-19
 * Added: Settings: Deprecation warning when using Legacy Form or Legacy Landing Page
 * Added: Setup Wizards: Member Content: Check WordPress user can create and publish the chosen Post Type
