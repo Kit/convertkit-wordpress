@@ -242,3 +242,142 @@ body.settings_page__wp_convertkit_settings .wrap .tablenav input.button {
 	height: 20px;
 	line-height: 20px;
 }
+
+/**
+ * MCP
+ */
+body.settings_page__wp_convertkit_settings .convertkit-mcp {
+	margin-top: 20px;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp p code,
+body.settings_page__wp_convertkit_settings .convertkit-mcp li code {
+	margin: 0;
+}
+
+/**
+ * MCP: Steps
+ */
+body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: convertkit-mcp-step;
+}
+
+body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li {
+	position: relative;
+	margin: 0 0 30px 0;
+	padding: 0 0 0 44px;
+	counter-increment: convertkit-mcp-step;
+}
+
+body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li::before {
+	content: counter(convertkit-mcp-step);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 28px;
+	height: 28px;
+	color: #fff;
+	font-weight: 600;
+	line-height: 28px;
+	text-align: center;
+	background-color: #144264;
+	border-radius: 9999px;
+}
+
+body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li > h3 {
+	margin: 0 0 8px 0;
+	padding: 0;
+	font-size: 15px;
+	line-height: 28px;
+}
+
+/**
+ * MCP: Code blocks
+ */
+body.settings_page__wp_convertkit_settings .convertkit-mcp-code {
+	position: relative;
+	max-width: 800px;
+	margin: 0 0 15px 0;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp-code pre {
+	margin: 0;
+	padding: 15px 100px 15px 15px;
+	overflow-x: auto;
+	background-color: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp-code pre code {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1.7;
+	background: none;
+	border-radius: 0;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp-code button.convertkit-mcp-copy {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+/**
+ * MCP: AI client tabs
+ */
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 0 20px 0;
+	padding: 0;
+	border-bottom: 1px solid #dcdcde;
+}
+
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li button.convertkit-mcp-client-tab {
+	margin: 0 0 -1px 0;
+	padding: 10px 16px;
+	color: #565656;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+}
+
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li button.convertkit-mcp-client-tab:hover {
+	color: #144264;
+}
+
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li button.convertkit-mcp-client-tab.is-active {
+	color: #144264;
+	border-bottom-color: #144264;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp-client-panel {
+	display: none;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp-client-panel.is-active {
+	display: block;
+}
+
+/**
+ * MCP: Capabilities
+ */
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-capabilities {
+	margin: 0 0 15px 20px;
+	list-style-type: disc;
+}

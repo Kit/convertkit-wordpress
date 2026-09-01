@@ -141,6 +141,9 @@ class PluginSettingsMCPCest
 		// Check that the user is back on the Settings > Kit > MCP screen and the Authentication Header is displayed.
 		$I->waitForElementVisible('#kit-authorization-header');
 
+		// Check that the AI client configuration is displayed.
+		$I->seeElement('button.convertkit-mcp-client-tab');
+
 		// Perform a JSON-RPC `initialize` request against the MCP server using
 		// the Authorization Header generated via the Application Password.
 		$response = $I->callRestEndpoint(
@@ -168,7 +171,7 @@ class PluginSettingsMCPCest
 
 		// Reload the MCP settings screen and confirm the Authorization Header is not displayed.
 		$I->loadKitSettingsMCPScreen($I);
-		$I->waitForText('It is not displayed here for security.');
+		$I->waitForText('For security, WordPress only displays an Application Password once');
 		$I->waitForElementNotVisible('#kit-authorization-header');
 
 		// Revoke the application password.

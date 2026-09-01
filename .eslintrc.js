@@ -3,6 +3,7 @@ module.exports = {
 	globals: {
 		// WordPress / PHP-exported globals.
 		convertkit: 'readonly',
+		convertkit_admin_settings_mcp: 'readonly',
 		convertkit_admin_tinymce: 'readonly',
 		convertkit_blocks: 'readonly',
 		convertkit_block_formatters: 'readonly',

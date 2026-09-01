@@ -24,6 +24,15 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	private $authorization_header = false;
 
 	/**
+	 * Whether the Kit account is on a paid plan, once queried.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @var     bool|null
+	 */
+	private $is_paid_plan = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   3.4.0
@@ -49,6 +58,11 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			'general' => array(
 				'title'    => $this->title,
 				'callback' => array( $this, 'print_section_info' ),
+				'wrap'     => true,
+			),
+			'connect' => array(
+				'title'    => __( 'Connect an AI client', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_connect' ),
 				'wrap'     => true,
 			),
 		);
@@ -158,6 +172,18 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 		// Enqueue JS.
 		wp_enqueue_script( 'convertkit-admin-settings-conditional-display', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/settings-conditional-display.js', array( 'jquery' ), CONVERTKIT_PLUGIN_VERSION, true );
+		wp_enqueue_script( 'convertkit-admin-settings-mcp', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/settings-mcp.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
+
+		// Localize the strings displayed when copying a configuration snippet to the clipboard.
+		wp_localize_script(
+			'convertkit-admin-settings-mcp',
+			'convertkit_admin_settings_mcp',
+			array(
+				'copy'   => __( 'Copy', 'convertkit' ),
+				'copied' => __( 'Copied', 'convertkit' ),
+				'failed' => __( 'Press Ctrl/Cmd + C to copy', 'convertkit' ),
+			)
+		);
 
 	}
 
@@ -187,30 +213,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			)
 		);
 
-		// Bail if MCP is not enabled — none of the connect UI applies.
-		if ( ! $this->settings->enabled() ) {
-			return;
-		}
-
-		// If an Application Password exists for this Plugin, display the instructions and revoke section.
-		if ( $this->get_application_password_uuid() ) {
-			add_settings_field(
-				'connect',
-				__( 'Connection', 'convertkit' ),
-				array( $this, 'instructions_disconnect_callback' ),
-				$this->settings_key,
-				$this->name
-			);
-		} else {
-			add_settings_field(
-				'connect',
-				__( 'Connection', 'convertkit' ),
-				array( $this, 'connect_callback' ),
-				$this->settings_key,
-				$this->name
-			);
-		}
-
 	}
 
 	/**
@@ -226,7 +228,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		<?php
 
 	}
-
 
 	/**
 	 * Returns the URL for the ConvertKit documentation for this setting section.
@@ -272,8 +273,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	public function enabled_callback( $args ) {
 
 		// If the user doesn't have a paid plan, show the upgrade required message.
-		$account = new ConvertKit_Resource_Account();
-		if ( ! $account->is_paid_plan() ) {
+		if ( ! $this->is_paid_plan() ) {
 			// Disable saving settings.
 			$this->save_disabled = true;
 
@@ -294,12 +294,129 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
-	 * Renders the Connect a client setting, to allow the user to generate an Application Password
-	 * for this Plugin which is used to connect AI clients to the MCP Server.
+	 * Renders the connection instructions, comprising of the steps the user needs
+	 * to complete to connect an AI client to this site's MCP server.
 	 *
-	 * @since   3.4.0
+	 * @since   3.4.1
 	 */
-	public function connect_callback() {
+	public function print_section_info_connect() {
+
+		// Don't output anything if the Kit account isn't on a paid plan, as the
+		// upgrade message is displayed in the section above.
+		if ( ! $this->is_paid_plan() ) {
+			return;
+		}
+
+		// The output is wrapped in its own container, so that the settings screen's
+		// styles for a beta section's immediate children aren't applied to it.
+		echo '<div class="convertkit-mcp">';
+
+		if ( ! $this->settings->enabled() ) {
+			// The MCP server isn't enabled; tell the user how to enable it.
+			?>
+			<p class="description">
+				<?php esc_html_e( 'Enable the MCP server above and click Save Changes, to then connect an AI client to this site.', 'convertkit' ); ?>
+			</p>
+			<?php
+		} elseif ( $this->application_passwords_available() ) {
+			// Get the Application Password for this Plugin, if one exists.
+			$application_password = $this->get_application_password();
+			?>
+
+			<ol class="convertkit-mcp-steps">
+				<li>
+					<h3><?php esc_html_e( 'Enable the MCP server', 'convertkit' ); ?></h3>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: MCP server URL. */
+							esc_html__( 'Done. AI clients connect to %s', 'convertkit' ),
+							'<code>' . esc_url( ConvertKit_MCP::get_server_url() ) . '</code>'
+						);
+						?>
+					</p>
+				</li>
+
+				<li>
+					<h3><?php esc_html_e( 'Create an Application Password', 'convertkit' ); ?></h3>
+					<?php
+					if ( is_array( $application_password ) ) {
+						$this->output_application_password( $application_password );
+					} else {
+						$this->output_create_application_password();
+					}
+					?>
+				</li>
+
+				<li>
+					<h3><?php esc_html_e( 'Connect your AI client', 'convertkit' ); ?></h3>
+					<?php
+					if ( ! is_array( $application_password ) ) {
+						?>
+						<p class="description">
+							<?php esc_html_e( 'Create an Application Password above to display the configuration for your AI client.', 'convertkit' ); ?>
+						</p>
+						<?php
+					} else {
+						$this->output_environment_notices();
+						$this->output_client_instructions();
+					}
+					?>
+				</li>
+			</ol>
+
+			<?php
+			// Output a summary of what the AI client can do once connected.
+			$this->output_capabilities_summary();
+		}
+
+		echo '</div>';
+
+	}
+
+	/**
+	 * Returns whether WordPress' Application Passwords feature is available for
+	 * the site and the current user, outputting an error message if it isn't.
+	 *
+	 * WordPress disables Application Passwords when the site isn't served over
+	 * HTTPS and isn't a local environment, meaning no AI client can authenticate.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @return  bool    Application Passwords are available.
+	 */
+	private function application_passwords_available() {
+
+		// Application Passwords are disabled for the site.
+		if ( ! wp_is_application_passwords_available() ) {
+			$this->output_error(
+				sprintf(
+					/* translators: %1$s: Site URL, %2$s: WP_ENVIRONMENT_TYPE constant. */
+					__( 'Application Passwords are disabled on this site, so AI clients cannot authenticate. WordPress disables Application Passwords when a site is not served over HTTPS. Serve %1$s over HTTPS, or set %2$s to local on a development site, and then reload this screen.', 'convertkit' ),
+					home_url(),
+					'WP_ENVIRONMENT_TYPE'
+				)
+			);
+			return false;
+		}
+
+		// Application Passwords are disabled for this user.
+		if ( ! wp_is_application_passwords_available_for_user( get_current_user_id() ) ) {
+			$this->output_error( __( 'Application Passwords are disabled for your WordPress user, so you cannot create the password an AI client needs. Ask an administrator to enable Application Passwords for your user.', 'convertkit' ) );
+			return false;
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Renders the Create Application Password button, which sends the user to
+	 * WordPress' authorize-application.php screen.
+	 *
+	 * @since   3.4.1
+	 */
+	private function output_create_application_password() {
 
 		// Build the WordPress authorize-application.php URL.
 		// See: https://developer.wordpress.org/advanced-administration/security/application-passwords/.
@@ -315,8 +432,14 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			)
 			. '&reject_url=' . rawurlencode( $this->get_settings_url() );
 		?>
-		<p>
-			<?php esc_html_e( 'Click Create Application Password to create a password that AI clients can use to connect to this site\'s MCP server.', 'convertkit' ); ?>
+		<p class="description">
+			<?php
+			printf(
+				/* translators: %s: WordPress user's display name. */
+				esc_html__( 'An AI client signs in to this site using an Application Password. The client will act as %s, and can only do what that user can do.', 'convertkit' ),
+				'<strong>' . esc_html( wp_get_current_user()->display_name ) . '</strong>'
+			);
+			?>
 		</p>
 		<p>
 			<a href="<?php echo esc_attr( $authorize_url ); ?>" id="convertkit-settings-mcp-create-application-password" class="button button-primary">
@@ -328,56 +451,131 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
-	 * Renders the instructions and Disconnect section.
+	 * Renders the Application Password's details, the authorization header (if the
+	 * password was just created), and the Revoke Application Password button.
 	 *
-	 * @since   3.4.0
+	 * @since   3.4.1
+	 *
+	 * @param   array $application_password   Application Password.
 	 */
-	public function instructions_disconnect_callback() {
+	private function output_application_password( $application_password ) {
 
 		// Build disconnect URL.
 		$disconnect_url = $this->get_settings_url( array( '_convertkit_settings_mcp_revoke_application_password' => wp_create_nonce( 'convertkit-mcp-revoke-application-password' ) ) );
 
-		// Fetch query parameters to build the Basic auth header.
+		// Define the date and time format used for the Application Password's dates.
+		$date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+		?>
+		<p class="description">
+			<?php
+			printf(
+				/* translators: %1$s: WordPress user's display name, %2$s: Date and time the Application Password was created. */
+				esc_html__( 'AI clients using this Application Password act as %1$s, and can only do what that user can do. Created %2$s.', 'convertkit' ),
+				'<strong>' . esc_html( wp_get_current_user()->display_name ) . '</strong>',
+				esc_html( (string) wp_date( $date_format, $application_password['created'] ) )
+			);
+
+			if ( ! empty( $application_password['last_used'] ) ) {
+				echo ' ';
+				printf(
+					/* translators: %s: Date and time the Application Password was last used. */
+					esc_html__( 'Last used %s.', 'convertkit' ),
+					esc_html( (string) wp_date( $date_format, $application_password['last_used'] ) )
+				);
+			} else {
+				echo ' ';
+				esc_html_e( 'Not yet used by an AI client.', 'convertkit' );
+			}
+			?>
+		</p>
+
+		<?php
 		if ( $this->authorization_header ) {
 			?>
 			<p>
-				<strong><?php esc_html_e( 'Authorization Header:', 'convertkit' ); ?></strong>
-				<code id="kit-authorization-header">Basic <?php echo esc_html( $this->authorization_header ); ?></code>
+				<strong><?php esc_html_e( 'Authorization header:', 'convertkit' ); ?></strong>
 			</p>
-			<p>
-				<?php esc_html_e( 'Copy the above. It won\'t be displayed again. If you lose this, you\'ll need to revoke the Application Password and create a new one.', 'convertkit' ); ?>
+			<?php
+			$this->output_code_block( 'Basic ' . $this->authorization_header, 'kit-authorization-header' );
+			?>
+			<p class="description">
+				<?php esc_html_e( 'Copy the above now. It won\'t be displayed again. If you lose it, revoke the Application Password and create a new one.', 'convertkit' ); ?>
 			</p>
 			<?php
 		} else {
 			?>
-			<p>
-				<?php esc_html_e( 'An Application Password was previously created for this Plugin. It is not displayed here for security.', 'convertkit' ); ?>
-				<br />
-				<?php esc_html_e( 'If you forgot your Application Password, you can revoke it using the Revoke Application Password button below, and then create a new one.', 'convertkit' ); ?>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: Placeholder text displayed in the configuration snippets in place of the authorization header. */
+					esc_html__( 'For security, WordPress only displays an Application Password once, at the point it is created. The configuration below therefore shows %s in place of your Application Password. If you no longer have it, revoke the Application Password and create a new one.', 'convertkit' ),
+					'<code>BASE64_ENCODED_USERNAME_AND_APPLICATION_PASSWORD</code>'
+				);
+				?>
 			</p>
 			<?php
 		}
 		?>
+
 		<p>
 			<a href="<?php echo esc_url( $disconnect_url ); ?>" id="convertkit-settings-mcp-revoke-application-password" class="button button-secondary"><?php esc_html_e( 'Revoke Application Password', 'convertkit' ); ?></a>
 		</p>
-
 		<?php
-		// Build server URL and pre-encoded Basic auth header for use in the
-		// per-client configuration snippets below.
-		$server_url  = ConvertKit_MCP::get_server_url();
-		$auth_header = $this->authorization_header
-			? 'Basic ' . $this->authorization_header
-			: __( 'Your base64 encoded username and application password', 'convertkit' );
 
-		// Claude desktop / Cline JSON.
-		//
-		// The Authorization header value is inlined (not passed via the
-		// `env` block + `${VAR}` substitution as the mcp-remote docs
-		// suggest), because mcp-remote's variable substitution is unreliable
-		// with Basic auth values that contain `$` characters in their
-		// base64 payload — the substitution silently leaves the literal
-		// `${KIT_AUTH}` string in place, producing 401s.
+	}
+
+	/**
+	 * Renders notices when this site's URL means that some AI clients won't be able
+	 * to connect to the MCP server.
+	 *
+	 * @since   3.4.1
+	 */
+	private function output_environment_notices() {
+
+		$host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+
+		// Determine if this site is only reachable from this computer or local network,
+		// meaning AI clients that run in the cloud cannot connect to it.
+		$is_local = (
+			in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true )
+			|| (bool) preg_match( '/\.(local|localhost|test|dev|invalid|example)$/', $host )
+		);
+
+		if ( ! $is_local ) {
+			return;
+		}
+		?>
+		<div class="notice notice-warning inline">
+			<p>
+				<?php
+				printf(
+					/* translators: %s: Site URL. */
+					esc_html__( '%s is a local address. AI clients that run on this computer, such as Claude Desktop, Claude Code, Cursor and Codex, will connect. AI clients that run in the cloud, such as ChatGPT, cannot reach this site.', 'convertkit' ),
+					'<code>' . esc_html( home_url() ) . '</code>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Renders the configuration for each supported AI client, in a tabbed interface.
+	 *
+	 * @since   3.4.1
+	 */
+	private function output_client_instructions() {
+
+		// Build the server URL and authorization header used in each client's configuration.
+		// When the Application Password isn't available to display, a placeholder is used, so
+		// that the configuration is still valid and shows where the header value belongs.
+		$server_url  = ConvertKit_MCP::get_server_url();
+		$auth_header = 'Basic ' . ( $this->authorization_header ? $this->authorization_header : 'BASE64_ENCODED_USERNAME_AND_APPLICATION_PASSWORD' );
+
+		// Claude Desktop JSON.
+		// Claude Desktop only supports remote MCP servers that authenticate using OAuth, so
+		// mcp-remote is used to proxy requests to the MCP server, adding the authorization header.
 		$claude_desktop_config = wp_json_encode(
 			array(
 				'mcpServers' => array(
@@ -396,6 +594,13 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
 		);
 
+		// Claude Code command.
+		$claude_code_command = sprintf(
+			'claude mcp add --transport http kit-wordpress %s --header "Authorization: %s"',
+			$server_url,
+			$auth_header
+		);
+
 		// Cursor JSON.
 		$cursor_config = wp_json_encode(
 			array(
@@ -410,63 +615,179 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			),
 			JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
 		);
+
+		// Codex TOML.
+		$codex_config = '[mcp_servers.kit_wordpress]' . "\n"
+			. 'url = "' . $server_url . '"' . "\n"
+			. 'http_headers = { "Authorization" = "' . $auth_header . '" }';
+
+		// Define the clients to display, in the order they should be displayed.
+		$clients = array(
+			'claude-desktop' => __( 'Claude Desktop', 'convertkit' ),
+			'claude-code'    => __( 'Claude Code', 'convertkit' ),
+			'cursor'         => __( 'Cursor', 'convertkit' ),
+			'codex'          => __( 'Codex', 'convertkit' ),
+			'other'          => __( 'Other clients', 'convertkit' ),
+		);
 		?>
-
-		<h3><?php esc_html_e( 'Claude', 'convertkit' ); ?></h3>
-		<p>
-			<?php
-			printf(
-				/* translators: %s: Path to Claude desktop config file. */
-				esc_html__( 'Add the following to your %s file, then restart Claude desktop:', 'convertkit' ),
-				'<code>claude_desktop_config.json</code>'
-			);
-			?>
-			<br />
-			macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
-			<br />
-			Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>
-		</p>
-		<pre><code><?php echo esc_html( $claude_desktop_config ); ?></code></pre>
-
-		<h3><?php esc_html_e( 'Claude Code', 'convertkit' ); ?></h3>
-		<p>
-			<?php esc_html_e( 'Run the following command in your terminal.', 'convertkit' ); ?>
-			<br />
-			<code>
+		<div class="convertkit-mcp-clients">
+			<ul class="convertkit-mcp-client-tabs">
 				<?php
-				printf(
-					'claude mcp add --transport http kit-wordpress %s --header "Authorization: %s"',
-					esc_html( $server_url ),
-					esc_html( $auth_header )
-				);
+				$first_client = true;
+				foreach ( $clients as $client => $label ) {
+					?>
+					<li>
+						<button type="button" class="convertkit-mcp-client-tab<?php echo ( $first_client ? ' is-active' : '' ); ?>" data-client="<?php echo esc_attr( $client ); ?>">
+							<?php echo esc_html( $label ); ?>
+						</button>
+					</li>
+					<?php
+					$first_client = false;
+				}
 				?>
-			</code>
-		</p>
+			</ul>
 
-		<h3><?php esc_html_e( 'Cursor', 'convertkit' ); ?></h3>
-		<p>
-			<?php
-			printf(
-				/* translators: %s: Path to Cursor MCP config file. */
-				esc_html__( 'Add the following to your %s file, then restart Cursor:', 'convertkit' ),
-				'<code>~/.cursor/mcp.json</code>'
-			);
-			?>
-		</p>
-		<pre><code><?php echo esc_html( $cursor_config ); ?></code></pre>
+			<div class="convertkit-mcp-client-panel is-active" data-client="claude-desktop">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: Claude Desktop configuration file name. */
+						esc_html__( 'Add the following to your %s file, then restart Claude Desktop:', 'convertkit' ),
+						'<code>claude_desktop_config.json</code>'
+					);
+					?>
+					<br />
+					macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+					<br />
+					Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>
+				</p>
+				<?php $this->output_code_block( (string) $claude_desktop_config ); ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %1$s: mcp-remote, %2$s: Node.js. */
+						esc_html__( 'Claude Desktop only connects to remote MCP servers that use OAuth, so %1$s is used to connect to this site. This requires %2$s to be installed on your computer.', 'convertkit' ),
+						'<code>mcp-remote</code>',
+						'<a href="https://nodejs.org/" target="_blank">Node.js</a>'
+					);
+					?>
+				</p>
+			</div>
 
-		<h3><?php esc_html_e( 'Other clients', 'convertkit' ); ?></h3>
-		<p>
-			<?php esc_html_e( 'For any other MCP client, provide it with the following:', 'convertkit' ); ?>
+			<div class="convertkit-mcp-client-panel" data-client="claude-code">
+				<p>
+					<?php esc_html_e( 'Run the following command in your terminal:', 'convertkit' ); ?>
+				</p>
+				<?php $this->output_code_block( $claude_code_command ); ?>
+			</div>
+
+			<div class="convertkit-mcp-client-panel" data-client="cursor">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: Cursor configuration file name. */
+						esc_html__( 'Add the following to your %s file, then restart Cursor:', 'convertkit' ),
+						'<code>~/.cursor/mcp.json</code>'
+					);
+					?>
+				</p>
+				<?php $this->output_code_block( (string) $cursor_config ); ?>
+			</div>
+
+			<div class="convertkit-mcp-client-panel" data-client="codex">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: Codex configuration file name. */
+						esc_html__( 'Add the following to your %s file, then restart Codex:', 'convertkit' ),
+						'<code>~/.codex/config.toml</code>'
+					);
+					?>
+				</p>
+				<?php $this->output_code_block( $codex_config ); ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: Codex configuration option. */
+						esc_html__( 'Older versions of Codex require %s at the top of the configuration file to connect to remote MCP servers.', 'convertkit' ),
+						'<code>experimental_use_rmcp_client = true</code>'
+					);
+					?>
+				</p>
+			</div>
+
+			<div class="convertkit-mcp-client-panel" data-client="other">
+				<p>
+					<?php esc_html_e( 'For any other MCP client, use the following. The server uses the streamable HTTP transport, and authenticates using HTTP Basic authentication.', 'convertkit' ); ?>
+				</p>
+				<p>
+					<strong><?php esc_html_e( 'Server URL:', 'convertkit' ); ?></strong>
+				</p>
+				<?php $this->output_code_block( $server_url ); ?>
+				<p>
+					<strong><?php esc_html_e( 'Authorization header:', 'convertkit' ); ?></strong>
+				</p>
+				<?php $this->output_code_block( $auth_header ); ?>
+			</div>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Renders a summary of what an AI client can do once connected.
+	 *
+	 * @since   3.4.1
+	 */
+	private function output_capabilities_summary() {
+
+		?>
+		<h3><?php esc_html_e( 'What your AI client can do', 'convertkit' ); ?></h3>
+		<p class="description">
+			<?php esc_html_e( 'Describe what you want in your own words; your AI client works out which tools to use.', 'convertkit' ); ?>
 		</p>
-		<p>
-			<strong><?php esc_html_e( 'Server URL:', 'convertkit' ); ?></strong>
-			<code><?php echo esc_html( $server_url ); ?></code>
+		<ul class="convertkit-mcp-capabilities">
+			<li><?php esc_html_e( 'Look up the Forms, Landing Pages, Products and Tags in your Kit account.', 'convertkit' ); ?></li>
+			<li><?php esc_html_e( 'Add, list, change and remove Kit Forms, Form Triggers, Products and Broadcasts within a post or page\'s content.', 'convertkit' ); ?></li>
+			<li><?php esc_html_e( 'Read and change a post or page\'s Kit settings, such as its Form, Landing Page, Tag and Member Content.', 'convertkit' ); ?></li>
+			<li><?php esc_html_e( 'Read and change a category\'s Kit Form and Form Position.', 'convertkit' ); ?></li>
+			<li><?php esc_html_e( 'Read and change this Plugin\'s General, Broadcasts and Member Content settings.', 'convertkit' ); ?></li>
+		</ul>
+		<p class="description">
+			<?php esc_html_e( 'Your Kit account credentials, and your Form Entries, are never exposed to AI clients.', 'convertkit' ); ?>
 		</p>
+		<?php
+
+		// Output a link to the documentation, if it's defined.
+		if ( $this->documentation_url() === '#' ) {
+			return;
+		}
+		?>
 		<p>
-			<strong><?php esc_html_e( 'Authorization header:', 'convertkit' ); ?></strong>
-			<code><?php echo esc_html( $auth_header ); ?></code>
+			<a href="<?php echo esc_url( $this->documentation_url() ); ?>" target="_blank">
+				<?php esc_html_e( 'Read the MCP documentation', 'convertkit' ); ?>
+			</a>
 		</p>
+		<?php
+
+	}
+
+	/**
+	 * Renders the given code in a code block, with a button to copy the code
+	 * to the clipboard.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   string $code   Code to display.
+	 * @param   string $id     Optional ID attribute to assign to the code element.
+	 */
+	private function output_code_block( $code, $id = '' ) {
+
+		?>
+		<div class="convertkit-mcp-code">
+			<pre><code<?php echo ( ! empty( $id ) ? ' id="' . esc_attr( $id ) . '"' : '' ); ?>><?php echo esc_html( $code ); ?></code></pre>
+			<button type="button" class="button button-secondary convertkit-mcp-copy"><?php esc_html_e( 'Copy', 'convertkit' ); ?></button>
+		</div>
 		<?php
 
 	}
@@ -495,14 +816,35 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
-	 * Finds the UUID of the most recently-created Application Password for the
-	 * currently logged in user
+	 * Returns whether the Kit account is on a paid plan.
 	 *
-	 * @since   3.4.0
+	 * @since   3.4.1
 	 *
-	 * @return  bool|string
+	 * @return  bool
 	 */
-	private function get_application_password_uuid() {
+	private function is_paid_plan() {
+
+		// If the result has already been fetched for this request, return it.
+		if ( ! is_null( $this->is_paid_plan ) ) {
+			return $this->is_paid_plan;
+		}
+
+		// Fetch the account resource and return the result.
+		$account            = new ConvertKit_Resource_Account();
+		$this->is_paid_plan = $account->is_paid_plan();
+		return $this->is_paid_plan;
+
+	}
+
+	/**
+	 * Finds the most recently-created Application Password for this Plugin, belonging
+	 * to the currently logged in user.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @return  bool|array
+	 */
+	private function get_application_password() {
 
 		// Get the user's Application Passwords.
 		$passwords = WP_Application_Passwords::get_user_application_passwords( get_current_user_id() );
@@ -515,11 +857,33 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		// Iterate through the Application Passwords and return the password that matches the app name.
 		foreach ( $passwords as $password ) {
 			if ( $password['name'] === CONVERTKIT_MCP_APP_NAME ) {
-				return $password['uuid'];
+				return $password;
 			}
 		}
 
 		return false;
+
+	}
+
+	/**
+	 * Finds the UUID of the most recently-created Application Password for the
+	 * currently logged in user
+	 *
+	 * @since   3.4.0
+	 *
+	 * @return  bool|string
+	 */
+	private function get_application_password_uuid() {
+
+		// Get the Application Password for this Plugin.
+		$password = $this->get_application_password();
+
+		// Return false if no Application Password exists.
+		if ( ! is_array( $password ) ) {
+			return false;
+		}
+
+		return $password['uuid'];
 
 	}
 
