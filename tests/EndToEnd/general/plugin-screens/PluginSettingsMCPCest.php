@@ -142,7 +142,7 @@ class PluginSettingsMCPCest
 		$I->waitForElementVisible('#kit-authorization-header');
 
 		// Check that the AI client configuration is displayed.
-		$I->seeElement('button.convertkit-mcp-client-tab');
+		$I->seeElement('button.kit-inline-tab');
 
 		// Perform a JSON-RPC `initialize` request against the MCP server using
 		// the Authorization Header generated via the Application Password.

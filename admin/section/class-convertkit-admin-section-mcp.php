@@ -172,12 +172,12 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 		// Enqueue JS.
 		wp_enqueue_script( 'convertkit-admin-settings-conditional-display', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/settings-conditional-display.js', array( 'jquery' ), CONVERTKIT_PLUGIN_VERSION, true );
-		wp_enqueue_script( 'convertkit-admin-settings-mcp', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/settings-mcp.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
+		wp_enqueue_script( 'convertkit-admin-ui', CONVERTKIT_PLUGIN_URL . 'resources/backend/js/ui.js', array(), CONVERTKIT_PLUGIN_VERSION, true );
 
-		// Localize the strings displayed when copying a configuration snippet to the clipboard.
+		// Localize the strings displayed when copying a code block to the clipboard.
 		wp_localize_script(
-			'convertkit-admin-settings-mcp',
-			'convertkit_admin_settings_mcp',
+			'convertkit-admin-ui',
+			'convertkit_ui',
 			array(
 				'copy'   => __( 'Copy', 'convertkit' ),
 				'copied' => __( 'Copied', 'convertkit' ),
@@ -238,7 +238,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	 */
 	public function documentation_url() {
 
-		return '#';
+		return 'https://help.kit.com/en/articles/16729038-using-the-kit-plugin-s-mcp-server-on-your-wordpress-website';
 
 	}
 
@@ -323,7 +323,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			$application_password = $this->get_application_password();
 			?>
 
-			<ol class="convertkit-mcp-steps">
+			<ol class="kit-numbered-steps">
 				<li>
 					<h3><?php esc_html_e( 'Enable the MCP server', 'convertkit' ); ?></h3>
 					<p class="description">
@@ -358,7 +358,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 						</p>
 						<?php
 					} else {
-						$this->output_environment_notices();
 						$this->output_client_instructions();
 					}
 					?>
@@ -525,42 +524,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
-	 * Renders notices when this site's URL means that some AI clients won't be able
-	 * to connect to the MCP server.
-	 *
-	 * @since   3.4.1
-	 */
-	private function output_environment_notices() {
-
-		$host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
-
-		// Determine if this site is only reachable from this computer or local network,
-		// meaning AI clients that run in the cloud cannot connect to it.
-		$is_local = (
-			in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true )
-			|| (bool) preg_match( '/\.(local|localhost|test|dev|invalid|example)$/', $host )
-		);
-
-		if ( ! $is_local ) {
-			return;
-		}
-		?>
-		<div class="notice notice-warning inline">
-			<p>
-				<?php
-				printf(
-					/* translators: %s: Site URL. */
-					esc_html__( '%s is a local address. AI clients that run on this computer, such as Claude Desktop, Claude Code, Cursor and Codex, will connect. AI clients that run in the cloud, such as ChatGPT, cannot reach this site.', 'convertkit' ),
-					'<code>' . esc_html( home_url() ) . '</code>'
-				);
-				?>
-			</p>
-		</div>
-		<?php
-
-	}
-
-	/**
 	 * Renders the configuration for each supported AI client, in a tabbed interface.
 	 *
 	 * @since   3.4.1
@@ -630,14 +593,14 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			'other'          => __( 'Other clients', 'convertkit' ),
 		);
 		?>
-		<div class="convertkit-mcp-clients">
-			<ul class="convertkit-mcp-client-tabs">
+		<div class="kit-inline-tabs">
+			<ul class="kit-inline-tabs-nav">
 				<?php
 				$first_client = true;
 				foreach ( $clients as $client => $label ) {
 					?>
 					<li>
-						<button type="button" class="convertkit-mcp-client-tab<?php echo ( $first_client ? ' is-active' : '' ); ?>" data-client="<?php echo esc_attr( $client ); ?>">
+						<button type="button" class="kit-inline-tab<?php echo ( $first_client ? ' is-active' : '' ); ?>" data-tab="<?php echo esc_attr( $client ); ?>">
 							<?php echo esc_html( $label ); ?>
 						</button>
 					</li>
@@ -647,7 +610,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				?>
 			</ul>
 
-			<div class="convertkit-mcp-client-panel is-active" data-client="claude-desktop">
+			<div class="kit-inline-tab-panel is-active" data-tab="claude-desktop">
 				<p>
 					<?php
 					printf(
@@ -674,14 +637,14 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				</p>
 			</div>
 
-			<div class="convertkit-mcp-client-panel" data-client="claude-code">
+			<div class="kit-inline-tab-panel" data-tab="claude-code">
 				<p>
 					<?php esc_html_e( 'Run the following command in your terminal:', 'convertkit' ); ?>
 				</p>
 				<?php $this->output_code_block( $claude_code_command ); ?>
 			</div>
 
-			<div class="convertkit-mcp-client-panel" data-client="cursor">
+			<div class="kit-inline-tab-panel" data-tab="cursor">
 				<p>
 					<?php
 					printf(
@@ -694,7 +657,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				<?php $this->output_code_block( (string) $cursor_config ); ?>
 			</div>
 
-			<div class="convertkit-mcp-client-panel" data-client="codex">
+			<div class="kit-inline-tab-panel" data-tab="codex">
 				<p>
 					<?php
 					printf(
@@ -716,7 +679,7 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				</p>
 			</div>
 
-			<div class="convertkit-mcp-client-panel" data-client="other">
+			<div class="kit-inline-tab-panel" data-tab="other">
 				<p>
 					<?php esc_html_e( 'For any other MCP client, use the following. The server uses the streamable HTTP transport, and authenticates using HTTP Basic authentication.', 'convertkit' ); ?>
 				</p>
@@ -768,26 +731,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				<?php esc_html_e( 'Read the MCP documentation', 'convertkit' ); ?>
 			</a>
 		</p>
-		<?php
-
-	}
-
-	/**
-	 * Renders the given code in a code block, with a button to copy the code
-	 * to the clipboard.
-	 *
-	 * @since   3.4.1
-	 *
-	 * @param   string $code   Code to display.
-	 * @param   string $id     Optional ID attribute to assign to the code element.
-	 */
-	private function output_code_block( $code, $id = '' ) {
-
-		?>
-		<div class="convertkit-mcp-code">
-			<pre><code<?php echo ( ! empty( $id ) ? ' id="' . esc_attr( $id ) . '"' : '' ); ?>><?php echo esc_html( $code ); ?></code></pre>
-			<button type="button" class="button button-secondary convertkit-mcp-copy"><?php esc_html_e( 'Copy', 'convertkit' ); ?></button>
-		</div>
 		<?php
 
 	}

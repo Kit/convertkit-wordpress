@@ -244,36 +244,31 @@ body.settings_page__wp_convertkit_settings .wrap .tablenav input.button {
 }
 
 /**
- * MCP
+ * Reusable UI components.
+ *
+ * These deliberately aren't scoped to a single administration screen, so that
+ * they can be used on any of the Plugin's administration screens.
  */
-body.settings_page__wp_convertkit_settings .convertkit-mcp {
-	margin-top: 20px;
-}
-
-body.settings_page__wp_convertkit_settings .convertkit-mcp p code,
-body.settings_page__wp_convertkit_settings .convertkit-mcp li code {
-	margin: 0;
-}
 
 /**
- * MCP: Steps
+ * Numbered Steps
  */
-body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps {
+ol.kit-numbered-steps {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	counter-reset: convertkit-mcp-step;
+	counter-reset: kit-numbered-step;
 }
 
-body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li {
+ol.kit-numbered-steps > li {
 	position: relative;
 	margin: 0 0 30px 0;
 	padding: 0 0 0 44px;
-	counter-increment: convertkit-mcp-step;
+	counter-increment: kit-numbered-step;
 }
 
-body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li::before {
-	content: counter(convertkit-mcp-step);
+ol.kit-numbered-steps > li::before {
+	content: counter(kit-numbered-step);
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -287,7 +282,7 @@ body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li::before 
 	border-radius: 9999px;
 }
 
-body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li > h3 {
+ol.kit-numbered-steps > li > h3 {
 	margin: 0 0 8px 0;
 	padding: 0;
 	font-size: 15px;
@@ -295,24 +290,26 @@ body.settings_page__wp_convertkit_settings ol.convertkit-mcp-steps > li > h3 {
 }
 
 /**
- * MCP: Code blocks
+ * Code Block
  */
-body.settings_page__wp_convertkit_settings .convertkit-mcp-code {
+.kit-code {
 	position: relative;
 	max-width: 800px;
 	margin: 0 0 15px 0;
 }
 
-body.settings_page__wp_convertkit_settings .convertkit-mcp-code pre {
+.kit-code pre {
 	margin: 0;
-	padding: 15px 100px 15px 15px;
+	padding: 15px 90px 15px 15px;
 	overflow-x: auto;
 	background-color: #f6f7f7;
 	border: 1px solid #dcdcde;
 	border-radius: 4px;
 }
 
-body.settings_page__wp_convertkit_settings .convertkit-mcp-code pre code {
+/* WordPress styles inline <code> elements with their own background and spacing,
+   which would otherwise display behind each line of a multi line code block. */
+.kit-code pre code {
 	display: block;
 	margin: 0;
 	padding: 0;
@@ -322,16 +319,16 @@ body.settings_page__wp_convertkit_settings .convertkit-mcp-code pre code {
 	border-radius: 0;
 }
 
-body.settings_page__wp_convertkit_settings .convertkit-mcp-code button.convertkit-mcp-copy {
+.kit-code button.kit-code-copy {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	top: 8px;
+	right: 8px;
 }
 
 /**
- * MCP: AI client tabs
+ * Inline Tabs
  */
-body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs {
+.kit-inline-tabs ul.kit-inline-tabs-nav {
 	display: flex;
 	flex-wrap: wrap;
 	margin: 0 0 20px 0;
@@ -339,13 +336,13 @@ body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs {
 	border-bottom: 1px solid #dcdcde;
 }
 
-body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li {
+.kit-inline-tabs ul.kit-inline-tabs-nav li {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
 
-body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li button.convertkit-mcp-client-tab {
+.kit-inline-tabs ul.kit-inline-tabs-nav li button.kit-inline-tab {
 	margin: 0 0 -1px 0;
 	padding: 10px 16px;
 	color: #565656;
@@ -357,26 +354,35 @@ body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li butt
 	border-bottom: 2px solid transparent;
 }
 
-body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li button.convertkit-mcp-client-tab:hover {
+.kit-inline-tabs ul.kit-inline-tabs-nav li button.kit-inline-tab:hover {
 	color: #144264;
 }
 
-body.settings_page__wp_convertkit_settings ul.convertkit-mcp-client-tabs li button.convertkit-mcp-client-tab.is-active {
+.kit-inline-tabs ul.kit-inline-tabs-nav li button.kit-inline-tab.is-active {
 	color: #144264;
 	border-bottom-color: #144264;
 }
 
-body.settings_page__wp_convertkit_settings .convertkit-mcp-client-panel {
+.kit-inline-tabs .kit-inline-tab-panel {
 	display: none;
 }
 
-body.settings_page__wp_convertkit_settings .convertkit-mcp-client-panel.is-active {
+.kit-inline-tabs .kit-inline-tab-panel.is-active {
 	display: block;
 }
 
 /**
- * MCP: Capabilities
+ * MCP
  */
+body.settings_page__wp_convertkit_settings .convertkit-mcp {
+	margin-top: 20px;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp p code,
+body.settings_page__wp_convertkit_settings .convertkit-mcp li code {
+	margin: 0;
+}
+
 body.settings_page__wp_convertkit_settings ul.convertkit-mcp-capabilities {
 	margin: 0 0 15px 20px;
 	list-style-type: disc;
