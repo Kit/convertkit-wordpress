@@ -4,7 +4,7 @@
     "type": "project",
     "license": "GPLv3",
     "require": {
-        "convertkit/convertkit-wordpress-libraries": "2.6.1",
+        "convertkit/convertkit-wordpress-libraries": "dev-use-v4-api-posts-endpoint",
         "wordpress/mcp-adapter": "^0.6.1"
     },
     "require-dev": {
