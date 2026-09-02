@@ -85,6 +85,14 @@ class ConvertKit_Broadcasts_Importer {
 			return;
 		}
 
+		// Bail if the Plugin Access Token has not been configured.
+		if ( ! $this->settings->has_access_and_refresh_token() ) {
+			return new WP_Error(
+				'convertkit_broadcasts_importer_error',
+				__( 'No Access Token specified in Plugin Settings', 'convertkit' )
+			);
+		}
+
 		// Bail if no Broadcasts exist.
 		if ( ! count( $broadcasts ) ) {
 			return;
@@ -133,14 +141,6 @@ class ConvertKit_Broadcasts_Importer {
 	 * @return  WP_Error|int
 	 */
 	public function import_broadcast( $broadcast_id, $post_status = 'publish', $author_id = 1, $category_id = false, $import_thumbnail = false, $import_images = false, $disable_styles = false ) {
-
-		// Bail if the Plugin Access Token has not been configured.
-		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return new WP_Error(
-				'convertkit_broadcasts_importer_error',
-				__( 'No Access Token specified in Plugin Settings', 'convertkit' )
-			);
-		}
 
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
@@ -336,7 +336,7 @@ class ConvertKit_Broadcasts_Importer {
 			'post_type'     => 'post',
 			'post_title'    => $broadcast['post']['title'],
 			'post_excerpt'  => ( ! is_null( $broadcast['post']['description'] ) ? $broadcast['post']['description'] : ( ! is_null( $broadcast['post']['meta_description'] ) ? $broadcast['post']['meta_description'] : '' ) ),
-			'post_date_gmt' => gmdate( 'Y-m-d H:i:s', strtotime( $broadcast['published_at'] ) ),
+			'post_date_gmt' => gmdate( 'Y-m-d H:i:s', strtotime( $broadcast['post']['published_at'] ) ),
 			'post_author'   => $author_id,
 			'post_name'     => $this->generate_permalink( $broadcast['post']['title'] ),
 		);
