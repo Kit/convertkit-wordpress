@@ -174,6 +174,38 @@ class PluginSettingsMCPCest
 		$I->waitForText('For security, WordPress only displays an Application Password once');
 		$I->waitForElementNotVisible('#kit-authorization-header');
 
+		// Define each AI client tab, and a string that should only be displayed
+		// in that client's panel.
+		$tabs = [
+			'claude-desktop' => 'claude_desktop_config.json',
+			'claude-code'    => 'claude mcp add --transport http kit-wordpress',
+			'cursor'         => '~/.cursor/mcp.json',
+			'codex'          => '[mcp_servers.kit_wordpress]',
+			'other'          => 'For any other MCP client',
+		];
+
+		// Confirm the tabs work.
+		foreach ($tabs as $tab => $text) {
+			// Click the tab.
+			$I->click('button.kit-inline-tab[data-tab="' . $tab . '"]');
+
+			// Confirm the tab is now the active tab.
+			$I->waitForElementVisible('button.kit-inline-tab.is-active[data-tab="' . $tab . '"]');
+
+			// Confirm the tab's panel is displayed, and contains this client's configuration.
+			$I->waitForElementVisible('.kit-inline-tab-panel[data-tab="' . $tab . '"]');
+			$I->see($text, '.kit-inline-tab-panel[data-tab="' . $tab . '"]');
+
+			// Confirm every other client's panel is hidden.
+			foreach (array_keys($tabs) as $inactiveTab) {
+				if ($inactiveTab === $tab) {
+					continue;
+				}
+
+				$I->waitForElementNotVisible('.kit-inline-tab-panel[data-tab="' . $inactiveTab . '"]');
+			}
+		}
+
 		// Revoke the application password.
 		$I->click('#convertkit-settings-mcp-revoke-application-password');
 
