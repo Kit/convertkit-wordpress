@@ -782,15 +782,20 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		// Convert UTC date to timestamp.
 		$date_timestamp = strtotime( $broadcast['published_at'] );
 
-		// Build broadcast URL.
-		$url = add_query_arg(
-			array(
-				'utm_source'  => 'wordpress',
-				'utm_term'    => get_locale(),
-				'utm_content' => 'convertkit',
-			),
-			$broadcast['url']
-		);
+		// Build broadcast's public URL.
+		$url = $this->get_broadcast_url( $broadcast );
+
+		// If the broadcast's public URL exists, append UTM parameters.
+		if ( $url !== false ) {
+			$url = add_query_arg(
+				array(
+					'utm_source'  => 'wordpress',
+					'utm_term'    => get_locale(),
+					'utm_content' => 'convertkit',
+				),
+				$url
+			);
+		}
 
 		// Build HTML.
 		$html = '<li class="convertkit-broadcast">';
@@ -799,7 +804,11 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$html .= '<time datetime="' . esc_attr( date_i18n( 'Y-m-d', $date_timestamp ) ) . '">' . esc_html( date_i18n( $atts['date_format'], $date_timestamp ) ) . '</time>';
 
 		// Display linked title.
-		$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener"' . $this->get_link_style_tag( $atts ) . ' class="convertkit-broadcast-title">' . esc_html( $broadcast['title'] ) . '</a>';
+		if ( $url ) {
+			$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener"' . $this->get_link_style_tag( $atts ) . ' class="convertkit-broadcast-title">' . esc_html( $broadcast['title'] ) . '</a>';
+		} else {
+			$html .= '<span class="convertkit-broadcast-title">' . esc_html( $broadcast['title'] ) . '</span>';
+		}
 
 		// Display image.
 		// We check for thumbnail_url, as these were added to the API in https://github.com/ConvertKit/convertkit/pull/23938,
@@ -815,12 +824,13 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			$html .= '<span class="convertkit-broadcast-text">';
 
 			// Display description.
-			// We check for description, as these were added to the API in https://github.com/ConvertKit/convertkit/pull/23938,
-			// and might not immediately be available until the resources are refreshed.
-			if ( $atts['display_description'] && array_key_exists( 'description', $broadcast ) && ! is_null( $broadcast['description'] ) ) {
-				$html .= '<span class="convertkit-broadcast-description">' . esc_html( $broadcast['description'] ) . '</span>';
+			if ( $atts['display_description'] ) {
+				$description = $this->get_broadcast_description( $broadcast );
+				if ( $description !== false ) {
+					$html .= '<span class="convertkit-broadcast-description">' . esc_html( $description ) . '</span>';
+				}
 			}
-
+			
 			// Display read more link.
 			if ( $atts['display_read_more'] ) {
 				$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener" class="convertkit-broadcast-read-more">' . esc_html( $atts['read_more_label'] ) . '</a>';
@@ -845,6 +855,42 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		$html = apply_filters( 'convertkit_block_broadcasts_build_html_list_item', $html, $broadcast, $atts );
 
 		return $html;
+
+	}
+
+	private function get_broadcast_url( $broadcast ) {
+			
+		// Posts cached by the ConvertKit_Resource_Posts class that queried the /wordpress/posts endpoint
+		// will store this in `url`.
+		if ( array_key_exists( 'url', $broadcast ) ) {
+			return $broadcast['url'];
+		}
+
+		// Posts cached by the ConvertKit_Resource_Posts class that queried the /v4/posts endpoint
+		// will store this in `public_url`.
+		if ( array_key_exists( 'public_url', $broadcast ) ) {
+			return $broadcast['public_url'];
+		}
+
+		return false;
+
+	}
+
+	private function get_broadcast_description( $broadcast ) {
+
+		// Posts cached by the ConvertKit_Resource_Posts class that queried the /wordpress/posts endpoint
+		// will store this in `description`.
+		if ( array_key_exists( 'meta_description', $broadcast ) ) {
+			return $broadcast['meta_description'];
+		}
+
+		// Posts cached by the ConvertKit_Resource_Posts class that queried the /v4/posts endpoint
+		// will store this in `meta_description`.
+		if ( array_key_exists( 'meta_description', $broadcast ) ) {
+			return $broadcast['meta_description'];
+		}
+
+		return false;
 
 	}
 
