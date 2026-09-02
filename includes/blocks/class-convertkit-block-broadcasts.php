@@ -830,7 +830,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 					$html .= '<span class="convertkit-broadcast-description">' . esc_html( $description ) . '</span>';
 				}
 			}
-			
+
 			// Display read more link.
 			if ( $atts['display_read_more'] ) {
 				$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener" class="convertkit-broadcast-read-more">' . esc_html( $atts['read_more_label'] ) . '</a>';
@@ -858,8 +858,16 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 	}
 
+	/**
+	 * Returns the broadcast's public URL.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   array $broadcast  Broadcast.
+	 * @return  string
+	 */
 	private function get_broadcast_url( $broadcast ) {
-			
+
 		// Posts cached by the ConvertKit_Resource_Posts class that queried the /wordpress/posts endpoint
 		// will store this in `url`.
 		if ( array_key_exists( 'url', $broadcast ) ) {
@@ -876,6 +884,14 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 	}
 
+	/**
+	 * Returns the broadcast's description.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   array $broadcast  Broadcast.
+	 * @return  string
+	 */
 	private function get_broadcast_description( $broadcast ) {
 
 		// Posts cached by the ConvertKit_Resource_Posts class that queried the /wordpress/posts endpoint
