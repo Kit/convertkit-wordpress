@@ -260,8 +260,9 @@ class ConvertKit_MCP {
 	public function register_mcp_server( $adapter ) {
 
 		// Bail if the MCP server isn't enabled.
-		$settings = new ConvertKit_Settings_MCP();
-		if ( ! $settings->enabled() ) {
+		$settings     = new ConvertKit_Settings();
+		$mcp_settings = new ConvertKit_Settings_MCP();
+		if ( ! $mcp_settings->enabled() ) {
 			return;
 		}
 
@@ -275,7 +276,7 @@ class ConvertKit_MCP {
 		}
 
 		// Create the MCP server.
-		$adapter->create_server(
+		$result = $adapter->create_server(
 			self::SERVER_ID,
 			self::SERVER_NAMESPACE,
 			self::SERVER_ROUTE,
@@ -289,6 +290,12 @@ class ConvertKit_MCP {
 			array(), // Resources.
 			array()  // Prompts.
 		);
+
+		// If an error occured when creating the server, log it.
+		if ( is_wp_error( $result ) && $settings->debug_enabled() ) {
+			$log = new ConvertKit_Log( CONVERTKIT_PLUGIN_PATH );
+			$log->add( 'MCP: create_server(): Error: ' . $result->get_error_message() );
+		}
 
 	}
 
