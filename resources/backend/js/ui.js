@@ -106,8 +106,8 @@ function convertKitCopyToClipboard(text, button) {
 	let copied = false;
 	try {
 		copied = document.execCommand('copy');
-	} catch (error) {
-		copied = false;
+	} catch {
+		// Copying isn't supported; the button tells the user to copy manually.
 	}
 
 	document.body.removeChild(textarea);
