@@ -456,24 +456,24 @@ class KitAPI extends \Codeception\Module
 	}
 
 	/**
-	 * Repeatedly invokes the given callback until it returns a truthy value, or the
-	 * maximum number of attempts is reached.
+	 * Repeatedly invokes the given callback until it returns a truthy value, or
+	 * the maximum number of attempts is reached.
 	 *
-	 * Use this to wrap API checks that can be flaky due to eventual consistency at Kit's
-	 * end. List endpoints typically reflect a write within ~30 seconds, and can take up
-	 * to 5 minutes, so reading back immediately after a write is not reliable.
+	 * Use this to wrap API checks that can be flaky due to ingestion lag at
+	 * Kit's end (e.g. a subscriber created via a form submission isn't always
+	 * immediately queryable via the `subscribers` endpoint).
 	 *
-	 * @since   3.4.1
+	 * @since   3.3.2
 	 *
-	 * @see     https://developers.kit.com/api-reference/eventual-consistency
-	 *
-	 * @param   callable $callback  Callback to invoke. Should return the value to use, or
-	 *                              false / null when the check has not yet succeeded.
-	 * @param   int      $attempts  Maximum number of attempts.
-	 * @param   int      $delay     Seconds to wait between attempts. Defaults give up after ~30 seconds.
-	 * @return  mixed               Value returned by the callback, or false if all attempts are exhausted.
+	 * @param   callable $callback   Callback to invoke. Should return the value
+	 *                                to use, or false/null to indicate the
+	 *                                check has not yet succeeded.
+	 * @param   int      $attempts   Maximum number of attempts.
+	 * @param   int      $delay      Seconds to wait between attempts.
+	 * @return  mixed                The truthy value returned by $callback, or
+	 *                                false if all attempts are exhausted.
 	 */
-	public function retryUntil(callable $callback, $attempts = 10, $delay = 3)
+	public function retryUntil(callable $callback, $attempts = 4, $delay = 3)
 	{
 		for ($i = 0; $i < $attempts; $i++) {
 			$result = $callback();
@@ -482,7 +482,7 @@ class KitAPI extends \Codeception\Module
 			}
 
 			// Don't sleep after the final attempt.
-			if ($i < ( $attempts - 1 )) {
+			if ($i < $attempts - 1) {
 				sleep($delay);
 			}
 		}

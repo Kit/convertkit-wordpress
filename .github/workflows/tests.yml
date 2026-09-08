@@ -35,7 +35,7 @@ jobs:
         wp-version: [ 'latest' ]
         php-version: [ '8.2' ]
         test-group:
-          - 'EndToEnd/broadcasts/blocks-shortcodes'
+          - 'EndToEnd/forms/blocks-shortcodes'
 
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit
