@@ -5,7 +5,8 @@ namespace Tests;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
- * Tests for the Kit MCP resource-list abilities:
+ * Tests for the Kit MCP resource-list abilities (tools), exposed as the
+ * kit/*-list tools. The MCP Resource primitives are covered by MCPResourcesTest.
  *
  * - kit/forms-list          (ConvertKit_MCP_Ability_Resource_Forms)
  * - kit/tags-list           (ConvertKit_MCP_Ability_Resource_Tags)
@@ -14,7 +15,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  *
  * @since   3.4.0
  */
-class MCPResourceTest extends WPTestCase
+class MCPResourceListTest extends WPTestCase
 {
 	/**
 	 * The testing implementation.

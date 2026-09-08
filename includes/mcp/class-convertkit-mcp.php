@@ -92,6 +92,9 @@ class ConvertKit_MCP {
 		// so they're added here rather than via a per-class register_abilities().
 		add_filter( 'convertkit_abilities', array( $this, 'register_resource_abilities' ) );
 
+		// Register MCP resources (live-state lists, account, settings and reference docs).
+		add_filter( 'convertkit_resources', array( $this, 'register_mcp_resources' ) );
+
 		// Register settings get / update abilities for each Plugin settings
 		// These are owned by the Plugin (not by any single feature),
 		// so they're added here rather than via a per-class register_abilities().
@@ -204,6 +207,39 @@ class ConvertKit_MCP {
 				'kit/products-list'      => new ConvertKit_MCP_Ability_Resource_Products(),
 			)
 		);
+
+	}
+
+	/**
+	 * Appends the MCP resources (live-state lists, account, settings and
+	 * reference docs) to the convertkit_resources filter, so they are
+	 * registered with the Abilities API and exposed as MCP Resources.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   array $resources   Resources to register.
+	 * @return  array
+	 */
+	public function register_mcp_resources( $resources ) {
+
+		$mcp_resources = array(
+			new ConvertKit_MCP_Resource_Forms(),
+			new ConvertKit_MCP_Resource_Tags(),
+			new ConvertKit_MCP_Resource_Landing_Pages(),
+			new ConvertKit_MCP_Resource_Products(),
+			new ConvertKit_MCP_Resource_Account(),
+			new ConvertKit_MCP_Resource_Settings(),
+			new ConvertKit_MCP_Resource_Overview(),
+			new ConvertKit_MCP_Resource_Forms_Reference(),
+			new ConvertKit_MCP_Resource_Restrict_Content_Reference(),
+			new ConvertKit_MCP_Resource_Settings_Reference(),
+		);
+
+		foreach ( $mcp_resources as $resource ) {
+			$resources[ $resource->get_name() ] = $resource;
+		}
+
+		return $resources;
 
 	}
 
