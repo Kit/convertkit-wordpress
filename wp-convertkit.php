@@ -122,6 +122,11 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-list.php';
