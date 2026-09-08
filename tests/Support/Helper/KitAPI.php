@@ -49,10 +49,7 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberExists($I, $emailAddress, $firstName = false)
 	{
-		// Wait for the API to update.
-		$I->wait(3);
-
-		// Retry the API request as sometimes there's a lag before the subscriber is queryable via the API.
+		// Wait for the subscriber to be queryable, as list endpoints are eventually consistent.
 		$results = $this->retryUntil(
 			function () use ($emailAddress) {
 				$results = $this->apiRequest(
@@ -74,7 +71,10 @@ class KitAPI extends \Codeception\Module
 		);
 
 		// Check at least one subscriber was returned and it matches the email address.
-		$I->assertNotFalse($results);
+		$I->assertNotFalse(
+			$results,
+			sprintf('Subscriber %s was not returned by the API in time.', $emailAddress)
+		);
 		$I->assertGreaterThan(0, $results['pagination']['total_count']);
 		$I->assertEquals($emailAddress, $results['subscribers'][0]['email_address']);
 
@@ -99,27 +99,35 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberHasForm($I, $subscriberID, $formID, $referrer = false)
 	{
-		// Run request.
-		$results = $this->apiRequest(
-			'forms/' . $formID . '/subscribers',
-			'GET',
-			[
-				// Check all subscriber states.
-				'status' => 'all',
-			]
+		// Wait for the subscriber to be assigned to the form, as list endpoints are eventually consistent.
+		$subscriber = $this->retryUntil(
+			function () use ($subscriberID, $formID) {
+				$results = $this->apiRequest(
+					'forms/' . $formID . '/subscribers',
+					'GET',
+					[
+						// Check all subscriber states.
+						'status' => 'all',
+					]
+				);
+
+				// Return the subscriber only if they're assigned to the form, so
+				// retryUntil() will keep trying otherwise.
+				foreach ($results['subscribers'] as $subscriber) {
+					if ( (int) $subscriber['id'] === (int) $subscriberID) {
+						return $subscriber;
+					}
+				}
+
+				return false;
+			}
 		);
 
-		// Iterate through subscribers.
-		$subscriberHasForm = false;
-		foreach ($results['subscribers'] as $subscriber) {
-			if ($subscriber['id'] === $subscriberID) {
-				$subscriberHasForm = true;
-				break;
-			}
-		}
-
-		// Assert if the subscriber has the form.
-		$this->assertTrue($subscriberHasForm);
+		// Assert the subscriber has the form.
+		$I->assertNotFalse(
+			$subscriber,
+			sprintf('Subscriber %s was not assigned to Form %s in time.', $subscriberID, $formID)
+		);
 
 		// If a referrer is specified, assert it matches the subscriber's referrer now.
 		if ($referrer) {
@@ -138,26 +146,34 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberHasSequence($I, $subscriberID, $sequenceID)
 	{
-		// Run request.
-		$results = $this->apiRequest(
-			'sequences/' . $sequenceID . '/subscribers',
-			'GET',
-			[
-				'status' => 'all',
-			]
+		// Wait for the subscriber to be assigned to the sequence, as list endpoints are eventually consistent.
+		$subscriber = $this->retryUntil(
+			function () use ($subscriberID, $sequenceID) {
+				$results = $this->apiRequest(
+					'sequences/' . $sequenceID . '/subscribers',
+					'GET',
+					[
+						'status' => 'all',
+					]
+				);
+
+				// Return the subscriber only if they're assigned to the sequence, so
+				// retryUntil() will keep trying otherwise.
+				foreach ($results['subscribers'] as $subscriber) {
+					if ( (int) $subscriber['id'] === (int) $subscriberID) {
+						return $subscriber;
+					}
+				}
+
+				return false;
+			}
 		);
 
-		// Iterate through subscribers.
-		$subscriberHasSequence = false;
-		foreach ($results['subscribers'] as $subscriber) {
-			if ($subscriber['id'] === $subscriberID) {
-				$subscriberHasSequence = true;
-				break;
-			}
-		}
-
-		// Assert if the subscriber has the sequence.
-		$this->assertTrue($subscriberHasSequence);
+		// Assert the subscriber has the sequence.
+		$I->assertNotFalse(
+			$subscriber,
+			sprintf('Subscriber %s was not assigned to Sequence %s in time.', $subscriberID, $sequenceID)
+		);
 	}
 
 	/**
@@ -169,10 +185,24 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberHasTag($I, $subscriberID, $tagID)
 	{
-		// Run request.
-		$results = $this->apiRequest(
-			'subscribers/' . $subscriberID . '/tags',
-			'GET'
+		// Wait for the tag to be assigned to the subscriber, as list endpoints are eventually consistent.
+		$results = $this->retryUntil(
+			function () use ($subscriberID) {
+				$results = $this->apiRequest(
+					'subscribers/' . $subscriberID . '/tags',
+					'GET'
+				);
+
+				// Return the results only if a tag is assigned, so
+				// retryUntil() will keep trying otherwise.
+				return count($results['tags']) ? $results : false;
+			}
+		);
+
+		// Assert the subscriber has a tag.
+		$I->assertNotFalse(
+			$results,
+			sprintf('Subscriber %s was not assigned Tag %s in time.', $subscriberID, $tagID)
 		);
 
 		// Confirm the tag has been assigned to the subscriber.
@@ -316,8 +346,8 @@ class KitAPI extends \Codeception\Module
 					[
 						'headers' => [
 							'Authorization' => 'Bearer ' . $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
-							'timeout'       => 5,
 						],
+						'timeout' => 5,
 					]
 				);
 				break;
@@ -331,8 +361,8 @@ class KitAPI extends \Codeception\Module
 							'Accept'        => 'application/json',
 							'Content-Type'  => 'application/json; charset=utf-8',
 							'Authorization' => 'Bearer ' . $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
-							'timeout'       => 5,
 						],
+						'timeout' => 5,
 						'body'    => (string) json_encode($params), // phpcs:ignore WordPress.WP.AlternativeFunctions
 					]
 				);
@@ -344,24 +374,24 @@ class KitAPI extends \Codeception\Module
 	}
 
 	/**
-	 * Repeatedly invokes the given callback until it returns a truthy value, or
-	 * the maximum number of attempts is reached.
+	 * Repeatedly invokes the given callback until it returns a truthy value, or the
+	 * maximum number of attempts is reached.
 	 *
-	 * Use this to wrap API checks that can be flaky due to ingestion lag at
-	 * Kit's end (e.g. a subscriber created via a form submission isn't always
-	 * immediately queryable via the `subscribers` endpoint).
+	 * Use this to wrap API checks that can be flaky due to eventual consistency at Kit's
+	 * end. List endpoints typically reflect a write within ~30 seconds, and can take up
+	 * to 5 minutes, so reading back immediately after a write is not reliable.
 	 *
-	 * @since   3.3.2
+	 * @since   3.4.1
 	 *
-	 * @param   callable $callback   Callback to invoke. Should return the value
-	 *                                to use, or false/null to indicate the
-	 *                                check has not yet succeeded.
-	 * @param   int      $attempts   Maximum number of attempts.
-	 * @param   int      $delay      Seconds to wait between attempts.
-	 * @return  mixed                The truthy value returned by $callback, or
-	 *                                false if all attempts are exhausted.
+	 * @see     https://developers.kit.com/api-reference/eventual-consistency
+	 *
+	 * @param   callable $callback  Callback to invoke. Should return the value to use, or
+	 *                              false / null when the check has not yet succeeded.
+	 * @param   int      $attempts  Maximum number of attempts.
+	 * @param   int      $delay     Seconds to wait between attempts. Defaults give up after ~30 seconds.
+	 * @return  mixed               Value returned by the callback, or false if all attempts are exhausted.
 	 */
-	private function retryUntil(callable $callback, $attempts = 4, $delay = 3)
+	public function retryUntil(callable $callback, $attempts = 10, $delay = 3)
 	{
 		for ($i = 0; $i < $attempts; $i++) {
 			$result = $callback();
@@ -370,7 +400,7 @@ class KitAPI extends \Codeception\Module
 			}
 
 			// Don't sleep after the final attempt.
-			if ($i < $attempts - 1) {
+			if ($i < ( $attempts - 1 )) {
 				sleep($delay);
 			}
 		}
