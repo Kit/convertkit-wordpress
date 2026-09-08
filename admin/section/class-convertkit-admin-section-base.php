@@ -872,6 +872,29 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Outputs the given code in a code block, with a button to copy the code
+	 * to the clipboard.
+	 *
+	 * Requires the settings.css and ui.js resources to be enqueued on the screen
+	 * calling this method.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   string $code   Code to display.
+	 * @param   string $id     Optional ID attribute to assign to the code element.
+	 */
+	public function output_code_block( $code, $id = '' ) {
+
+		?>
+		<div class="kit-code">
+			<pre><code<?php echo ( ! empty( $id ) ? ' id="' . esc_attr( $id ) . '"' : '' ); ?>><?php echo esc_html( $code ); ?></code></pre>
+			<button type="button" class="button button-secondary kit-code-copy"><?php esc_html_e( 'Copy', 'convertkit' ); ?></button>
+		</div>
+		<?php
+
+	}
+
+	/**
 	 * Returns the given text wrapped in a paragraph with the description class.
 	 *
 	 * @since   1.9.6
