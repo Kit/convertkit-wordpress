@@ -314,26 +314,26 @@ class KitAPI extends \Codeception\Module
 	/**
 	 * Check the given email address does not exists as a subscriber.
 	 *
-	 * The Plugin's requests are checked, instead of querying the API by email address,
-	 * as querying by email address is subject to eventual consistency and would therefore
-	 * return no results for a subscriber that was created.
-	 *
-	 * @see     https://developers.kit.com/api-reference/eventual-consistency
-	 *
-	 * @param   EndToEndTester $I              EndToEndTester.
+	 * @param   EndToEndTester $I             EndToEndTester.
 	 * @param   string         $emailAddress   Email Address.
 	 */
 	public function apiCheckSubscriberDoesNotExist($I, $emailAddress)
 	{
-		// Wait for any request the Plugin might make e.g. when a form submits using AJAX.
+		// Wait for the API to update.
 		$I->wait(3);
 
-		// Check the Plugin did not create the subscriber.
-		$I->assertCount(
-			0,
-			$this->grabKitAPIRequests($I, 'POST', 'subscribers', $emailAddress),
-			sprintf('The Plugin sent a request to create the subscriber %s.', $emailAddress)
+		// Run request.
+		$results = $this->apiRequest(
+			'subscribers',
+			'GET',
+			[
+				'email_address'       => $emailAddress,
+				'include_total_count' => true,
+			]
 		);
+
+		// Check no subscribers are returned by this request.
+		$I->assertEquals(0, $results['pagination']['total_count']);
 	}
 
 	/**
