@@ -473,7 +473,7 @@ class KitAPI extends \Codeception\Module
 	 * @return  mixed                The truthy value returned by $callback, or
 	 *                                false if all attempts are exhausted.
 	 */
-	public function retryUntil(callable $callback, $attempts = 4, $delay = 3)
+	private function retryUntil(callable $callback, $attempts = 4, $delay = 3)
 	{
 		for ($i = 0; $i < $attempts; $i++) {
 			$result = $callback();
