@@ -10,6 +10,91 @@ namespace Tests\Support\Helper;
 class KitAPI extends \Codeception\Module
 {
 	/**
+	 * Installs the Kit API recorder mu-plugin, and clears any previously recorded
+	 * requests, before each test runs.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   \Codeception\TestInterface $test   Test.
+	 */
+	public function _before(\Codeception\TestInterface $test) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore, Generic.CodeAnalysis.UnusedFunctionParameter
+	{
+		$this->getModule('lucatume\WPBrowser\Module\WPFilesystem')->haveMuPlugin(
+			'kit-api-recorder.php',
+			(string) file_get_contents(__DIR__ . '/../mu-plugins/kit-api-recorder.php') // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		);
+
+		$this->getModule('lucatume\WPBrowser\Module\WPDb')->haveOptionInDatabase('kit_api_log', []);
+	}
+
+	/**
+	 * Returns the Kit API requests the Plugin made during this test, optionally
+	 * filtered by method, path and email address.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   EndToEndTester $I              EndToEndTester.
+	 * @param   string         $method         HTTP method (GET,POST,PUT,DELETE).
+	 * @param   string         $path           Request path, excluding the API version e.g. `subscribers`.
+	 * @param   bool|string    $emailAddress   Email address in the request body.
+	 * @return  array
+	 */
+	public function grabKitAPIRequests($I, $method = false, $path = false, $emailAddress = false)
+	{
+		$log = $I->grabOptionFromDatabase('kit_api_log');
+
+		if ( ! is_array($log)) {
+			return [];
+		}
+
+		return array_values(
+			array_filter(
+				$log,
+				function ($request) use ($method, $path, $emailAddress) {
+					if ($method && $request['method'] !== $method) {
+						return false;
+					}
+					if ($path && $request['path'] !== $path) {
+						return false;
+					}
+					if ($emailAddress && ( ! array_key_exists('email_address', $request['body']) || $request['body']['email_address'] !== $emailAddress )) {
+						return false;
+					}
+
+					return true;
+				}
+			)
+		);
+	}
+
+	/**
+	 * Returns the first Kit API request the Plugin made during this test that matches
+	 * the given method, path and email address, waiting for it to be made.
+	 *
+	 * @since   3.4.1
+	 *
+	 * @param   EndToEndTester $I              EndToEndTester.
+	 * @param   string         $method         HTTP method (GET,POST,PUT,DELETE).
+	 * @param   string         $path           Request path, excluding the API version e.g. `subscribers`.
+	 * @param   bool|string    $emailAddress   Email address in the request body.
+	 * @return  bool|array
+	 */
+	public function grabKitAPIRequest($I, $method, $path, $emailAddress = false)
+	{
+		// The request is made by WordPress when the form is submitted, which may not have
+		// completed when this is called e.g. when a form submits using AJAX.
+		return $this->retryUntil(
+			function () use ($I, $method, $path, $emailAddress) {
+				$requests = $this->grabKitAPIRequests($I, $method, $path, $emailAddress);
+
+				return count($requests) ? $requests[0] : false;
+			},
+			10,
+			1
+		);
+	}
+
+	/**
 	 * Returns an encoded `state` parameter compatible with OAuth.
 	 *
 	 * @since   2.5.0
@@ -42,6 +127,12 @@ class KitAPI extends \Codeception\Module
 	/**
 	 * Check the given email address exists as a subscriber.
 	 *
+	 * The Plugin's request to create the subscriber is used to determine the subscriber ID,
+	 * as querying the API by email address is subject to eventual consistency. Querying by
+	 * subscriber ID returns strongly consistent results.
+	 *
+	 * @see     https://developers.kit.com/api-reference/eventual-consistency
+	 *
 	 * @param   EndToEndTester $I              EndToEndTester.
 	 * @param   string         $emailAddress   Email Address.
 	 * @param   string         $firstName      First Name (false = don't check name matches).
@@ -49,42 +140,33 @@ class KitAPI extends \Codeception\Module
 	 */
 	public function apiCheckSubscriberExists($I, $emailAddress, $firstName = false)
 	{
-		// Wait for the subscriber to be queryable, as list endpoints are eventually consistent.
-		$results = $this->retryUntil(
-			function () use ($emailAddress) {
-				$results = $this->apiRequest(
-					'subscribers',
-					'GET',
-					[
-						'email_address'       => $emailAddress,
-						'include_total_count' => true,
+		// Get the request the Plugin made to create the subscriber.
+		$request = $this->grabKitAPIRequest($I, 'POST', 'subscribers', $emailAddress);
 
-						// Check all subscriber states.
-						'status'              => 'all',
-					]
-				);
-
-				// Return the results only if a subscriber was found, so
-				// retryUntil() will keep trying otherwise.
-				return ( $results['pagination']['total_count'] > 0 ) ? $results : false;
-			}
-		);
-
-		// Check at least one subscriber was returned and it matches the email address.
+		// Check the Plugin created the subscriber.
 		$I->assertNotFalse(
-			$results,
-			sprintf('Subscriber %s was not returned by the API in time.', $emailAddress)
+			$request,
+			sprintf('The Plugin did not send a request to create the subscriber %s.', $emailAddress)
 		);
-		$I->assertGreaterThan(0, $results['pagination']['total_count']);
-		$I->assertEquals($emailAddress, $results['subscribers'][0]['email_address']);
+		$I->assertLessThan(
+			300,
+			$request['code'],
+			sprintf('The API returned a %s response when the Plugin created the subscriber %s.', $request['code'], $emailAddress)
+		);
+
+		// Fetch the subscriber by their ID, which returns strongly consistent results.
+		$results = $this->apiRequest('subscribers/' . $request['response']['subscriber']['id'], 'GET');
+
+		// Check the subscriber matches the email address.
+		$I->assertEquals($emailAddress, $results['subscriber']['email_address']);
 
 		// If defined, check that the name matches for the subscriber.
 		if ($firstName) {
-			$I->assertEquals($firstName, $results['subscribers'][0]['first_name']);
+			$I->assertEquals($firstName, $results['subscriber']['first_name']);
 		}
 
-		// Return subscriber ID.
-		return $results['subscribers'][0];
+		// Return subscriber.
+		return $results['subscriber'];
 	}
 
 	/**
@@ -232,26 +314,26 @@ class KitAPI extends \Codeception\Module
 	/**
 	 * Check the given email address does not exists as a subscriber.
 	 *
-	 * @param   EndToEndTester $I             EndToEndTester.
+	 * The Plugin's requests are checked, instead of querying the API by email address,
+	 * as querying by email address is subject to eventual consistency and would therefore
+	 * return no results for a subscriber that was created.
+	 *
+	 * @see     https://developers.kit.com/api-reference/eventual-consistency
+	 *
+	 * @param   EndToEndTester $I              EndToEndTester.
 	 * @param   string         $emailAddress   Email Address.
 	 */
 	public function apiCheckSubscriberDoesNotExist($I, $emailAddress)
 	{
-		// Wait for the API to update.
+		// Wait for any request the Plugin might make e.g. when a form submits using AJAX.
 		$I->wait(3);
 
-		// Run request.
-		$results = $this->apiRequest(
-			'subscribers',
-			'GET',
-			[
-				'email_address'       => $emailAddress,
-				'include_total_count' => true,
-			]
+		// Check the Plugin did not create the subscriber.
+		$I->assertCount(
+			0,
+			$this->grabKitAPIRequests($I, 'POST', 'subscribers', $emailAddress),
+			sprintf('The Plugin sent a request to create the subscriber %s.', $emailAddress)
 		);
-
-		// Check no subscribers are returned by this request.
-		$I->assertEquals(0, $results['pagination']['total_count']);
 	}
 
 	/**
