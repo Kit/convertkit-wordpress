@@ -2245,7 +2245,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-admin-section-base.php::935</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::958</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
