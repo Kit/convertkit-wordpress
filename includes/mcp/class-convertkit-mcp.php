@@ -83,6 +83,10 @@ class ConvertKit_MCP {
 		// Register abilities.
 		add_action( 'wp_abilities_api_init', array( $this, 'register_abilities' ) );
 
+		// Register resources and prompts.
+		add_action( 'wp_abilities_api_init', array( $this, 'register_resources' ) );
+		add_action( 'wp_abilities_api_init', array( $this, 'register_prompts' ) );
+
 		// Register resource-list abilities (Forms, Tags, Landing Pages, Products).
 		// These are owned by the Plugin (not by any single block or feature),
 		// so they're added here rather than via a per-class register_abilities().
@@ -250,6 +254,64 @@ class ConvertKit_MCP {
 	}
 
 	/**
+	 * Register MCP resources with the WordPress Abilities API.
+	 *
+	 * @since   3.4.2
+	 */
+	public function register_resources() {
+
+		// Get resources.
+		$resources = convertkit_get_resources();
+
+		// Bail if no resources are available.
+		if ( ! count( $resources ) ) {
+			return;
+		}
+
+		// Iterate through resources, registering each as an ability.
+		foreach ( $resources as $resource ) {
+
+			// Skip if this resource is not an instance of ConvertKit_MCP_Resource.
+			if ( ! ( $resource instanceof ConvertKit_MCP_Resource ) ) {
+				continue;
+			}
+
+			// Register resource.
+			wp_register_ability( $resource->get_name(), $resource->get_ability_args() );
+		}
+
+	}
+
+	/**
+	 * Register MCP prompts with the WordPress Abilities API.
+	 *
+	 * @since   3.4.2
+	 */
+	public function register_prompts() {
+
+		// Get prompts.
+		$prompts = convertkit_get_prompts();
+
+		// Bail if no prompts are available.
+		if ( ! count( $prompts ) ) {
+			return;
+		}
+
+		// Iterate through prompts, registering each as an ability.
+		foreach ( $prompts as $prompt ) {
+
+			// Skip if this prompt is not an instance of ConvertKit_MCP_Prompt.
+			if ( ! ( $prompt instanceof ConvertKit_MCP_Prompt ) ) {
+				continue;
+			}
+
+			// Register prompt.
+			wp_register_ability( $prompt->get_name(), $prompt->get_ability_args() );
+		}
+
+	}
+
+	/**
 	 * Register an MCP server that exposes Kit abilities as MCP tools.
 	 *
 	 * @since   3.4.0
@@ -275,6 +337,18 @@ class ConvertKit_MCP {
 			$ability_names[] = $ability->get_name();
 		}
 
+		// Build array of resource names.
+		$resource_names = array();
+		foreach ( convertkit_get_resources() as $resource ) {
+			$resource_names[] = $resource->get_name();
+		}
+
+		// Build array of prompt names.
+		$prompt_names = array();
+		foreach ( convertkit_get_prompts() as $prompt ) {
+			$prompt_names[] = $prompt->get_name();
+		}
+
 		// Create the MCP server.
 		$result = $adapter->create_server(
 			self::SERVER_ID,
@@ -287,8 +361,8 @@ class ConvertKit_MCP {
 			'WP\\MCP\\Infrastructure\\ErrorHandling\\ErrorLogMcpErrorHandler',
 			'WP\\MCP\\Infrastructure\\Observability\\NullMcpObservabilityHandler',
 			$ability_names, // Abilities (Tools).
-			array(), // Resources.
-			array()  // Prompts.
+			$resource_names, // Resources.
+			$prompt_names // Prompts.
 		);
 
 		// If an error occured when creating the server, log it.

@@ -108,6 +108,8 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertk
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-ability.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-resource.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-prompt.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-list.php';
