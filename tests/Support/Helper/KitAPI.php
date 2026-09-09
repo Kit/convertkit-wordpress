@@ -268,27 +268,30 @@ class KitAPI extends \Codeception\Module
 	public function apiCheckSubscriberHasTag($I, $subscriberID, $tagID)
 	{
 		// Wait for the tag to be assigned to the subscriber, as list endpoints are eventually consistent.
-		$results = $this->retryUntil(
-			function () use ($subscriberID) {
+		$tag = $this->retryUntil(
+			function () use ($subscriberID, $tagID) {
 				$results = $this->apiRequest(
 					'subscribers/' . $subscriberID . '/tags',
 					'GET'
 				);
 
-				// Return the results only if a tag is assigned, so
+				// Return the tag only if it's assigned to the subscriber, so
 				// retryUntil() will keep trying otherwise.
-				return count($results['tags']) ? $results : false;
+				foreach ($results['tags'] as $tag) {
+					if ( (int) $tag['id'] === (int) $tagID) {
+						return $tag;
+					}
+				}
+
+				return false;
 			}
 		);
 
-		// Assert the subscriber has a tag.
+		// Assert the subscriber has the tag.
 		$I->assertNotFalse(
-			$results,
+			$tag,
 			sprintf('Subscriber %s was not assigned Tag %s in time.', $subscriberID, $tagID)
 		);
-
-		// Confirm the tag has been assigned to the subscriber.
-		$I->assertEquals($tagID, $results['tags'][0]['id']);
 	}
 
 	/**
