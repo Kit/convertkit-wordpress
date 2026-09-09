@@ -352,6 +352,7 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 * Added: Settings: MCP: Improve UI
 * Added: MCP: Log errors when creating MCP server fails
 * Fix: Settings: MCP: Documentation link
+* Fix: Landing Pages: Exclude anchor links from URL conversion
 
 ### 3.4.0 2026-08-27
 * Added: MCP Server and Abilities/Tools
