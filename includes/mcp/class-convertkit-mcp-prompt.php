@@ -208,7 +208,12 @@ abstract class ConvertKit_MCP_Prompt {
 	 */
 	protected function render( $sections ) {
 
-		$sections = array_filter( array_map( 'trim', (array) $sections ), 'strlen' );
+		$sections = array_filter(
+			array_map( 'trim', (array) $sections ),
+			function ( $section ) {
+				return $section !== '';
+			}
+		);
 
 		return array(
 			'text' => implode( "\n\n", $sections ),
