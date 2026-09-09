@@ -1,3 +1,9 @@
+### 3.4.1 2026-09-09
+* Added: Settings: MCP: Improve UI
+* Added: MCP: Log errors when creating MCP server fails
+* Fix: Settings: MCP: Documentation link
+* Fix: Landing Pages: Exclude anchor links from URL conversion
+
 ### 3.4.0 2026-08-27
 * Added: MCP Server and Abilities/Tools
 * Fix: Shortcodes: Custom Content: Support signed subscriber IDs, fixing `PHP Fatal error: Uncaught TypeError`
