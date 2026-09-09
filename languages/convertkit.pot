@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.4.0\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.4.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-28T02:23:57+00:00\n"
+"POT-Creation-Date: 2026-09-09T08:21:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -167,7 +167,7 @@ msgstr ""
 
 #: admin/class-convertkit-admin-settings.php:300
 #: admin/section/class-convertkit-admin-section-broadcasts.php:348
-#: admin/section/class-convertkit-admin-section-mcp.php:224
+#: admin/section/class-convertkit-admin-section-mcp.php:226
 msgid "Beta"
 msgstr ""
 
@@ -213,6 +213,11 @@ msgstr ""
 
 #: admin/importers/class-convertkit-admin-importer.php:351
 msgid "Default Form"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-base.php:891
+#: admin/section/class-convertkit-admin-section-mcp.php:182
+msgid "Copy"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-broadcasts.php:33
@@ -773,114 +778,224 @@ msgstr ""
 msgid "here"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:41
-#: admin/section/class-convertkit-admin-section-mcp.php:42
+#: admin/section/class-convertkit-admin-section-mcp.php:50
+#: admin/section/class-convertkit-admin-section-mcp.php:51
 msgid "MCP"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:174
-msgid "Enable MCP Server"
+#: admin/section/class-convertkit-admin-section-mcp.php:64
+msgid "Connect an AI client"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:181
-msgid "When enabled, allows AI clients to connect to the Kit Plugin using MCP."
+#: admin/section/class-convertkit-admin-section-mcp.php:183
+msgid "Copied"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-mcp.php:184
+msgid "Press Ctrl/Cmd + C to copy"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:200
+msgid "Enable MCP Server"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:207
+msgid "When enabled, allows AI clients to connect to the Kit Plugin using MCP."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:210
 msgid "MCP server URL:"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:199
-#: admin/section/class-convertkit-admin-section-mcp.php:207
-msgid "Connection"
-msgstr ""
-
-#: admin/section/class-convertkit-admin-section-mcp.php:225
+#: admin/section/class-convertkit-admin-section-mcp.php:227
 msgid "Defines whether AI clients can connect to the Kit Plugin using MCP, and provides instructions for connecting."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:254
+#: admin/section/class-convertkit-admin-section-mcp.php:255
 msgid "The Kit WordPress MCP is available on paid Kit plans. Upgrade your Kit account to connect AI clients to your WordPress site."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:258
+#: admin/section/class-convertkit-admin-section-mcp.php:259
 msgid "Upgrade Kit Account"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:319
-msgid "Click Create Application Password to create a password that AI clients can use to connect to this site's MCP server."
+#: admin/section/class-convertkit-admin-section-mcp.php:318
+msgid "Enable the MCP server above and click Save Changes, to then connect an AI client to this site."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:323
+#: admin/section/class-convertkit-admin-section-mcp.php:328
+msgid "Enable the MCP server"
+msgstr ""
+
+#. translators: %s: MCP server URL.
+#: admin/section/class-convertkit-admin-section-mcp.php:333
+#, php-format
+msgid "Done. AI clients connect to %s"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:341
+msgid "Create an Application Password"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:352
+msgid "Connect your AI client"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:357
+msgid "Create an Application Password above to display the configuration for your AI client."
+msgstr ""
+
+#. translators: %1$s: Site URL, %2$s: WP_ENVIRONMENT_TYPE constant.
+#: admin/section/class-convertkit-admin-section-mcp.php:394
+#, php-format
+msgid "Application Passwords are disabled on this site, so AI clients cannot authenticate. WordPress disables Application Passwords when a site is not served over HTTPS. Serve %1$s over HTTPS, or set %2$s to local on a development site, and then reload this screen."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:404
+msgid "Application Passwords are disabled for your WordPress user, so you cannot create the password an AI client needs. Ask an administrator to enable Application Passwords for your user."
+msgstr ""
+
+#. translators: %s: WordPress user's display name.
+#: admin/section/class-convertkit-admin-section-mcp.php:438
+#, php-format
+msgid "An AI client signs in to this site using an Application Password. The client will act as %s, and can only do what that user can do."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:445
 msgid "Create Application Password"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:344
-msgid "Authorization Header:"
+#. translators: %1$s: WordPress user's display name, %2$s: Date and time the Application Password was created.
+#: admin/section/class-convertkit-admin-section-mcp.php:472
+#, php-format
+msgid "AI clients using this Application Password act as %1$s, and can only do what that user can do. Created %2$s."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:348
-msgid "Copy the above. It won't be displayed again. If you lose this, you'll need to revoke the Application Password and create a new one."
+#. translators: %s: Date and time the Application Password was last used.
+#: admin/section/class-convertkit-admin-section-mcp.php:481
+#, php-format
+msgid "Last used %s."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:354
-msgid "An Application Password was previously created for this Plugin. It is not displayed here for security."
+#: admin/section/class-convertkit-admin-section-mcp.php:486
+msgid "Not yet used by an AI client."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:356
-msgid "If you forgot your Application Password, you can revoke it using the Revoke Application Password button below, and then create a new one."
+#: admin/section/class-convertkit-admin-section-mcp.php:495
+#: admin/section/class-convertkit-admin-section-mcp.php:691
+msgid "Authorization header:"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:362
+#: admin/section/class-convertkit-admin-section-mcp.php:501
+msgid "Copy the above now. It won't be displayed again. If you lose it, revoke the Application Password and create a new one."
+msgstr ""
+
+#. translators: %s: Placeholder text displayed in the configuration snippets in place of the authorization header.
+#: admin/section/class-convertkit-admin-section-mcp.php:510
+#, php-format
+msgid "For security, WordPress only displays an Application Password once, at the point it is created. The configuration below therefore shows %s in place of your Application Password. If you no longer have it, revoke the Application Password and create a new one."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:520
 msgid "Revoke Application Password"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:371
-msgid "Your base64 encoded username and application password"
+#: admin/section/class-convertkit-admin-section-mcp.php:589
+msgid "Claude Desktop"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:415
-msgid "Claude"
-msgstr ""
-
-#. translators: %s: Path to Claude desktop config file.
-#: admin/section/class-convertkit-admin-section-mcp.php:420
-#, php-format
-msgid "Add the following to your %s file, then restart Claude desktop:"
-msgstr ""
-
-#: admin/section/class-convertkit-admin-section-mcp.php:431
+#: admin/section/class-convertkit-admin-section-mcp.php:590
 msgid "Claude Code"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:433
-msgid "Run the following command in your terminal."
-msgstr ""
-
-#: admin/section/class-convertkit-admin-section-mcp.php:446
+#: admin/section/class-convertkit-admin-section-mcp.php:591
 msgid "Cursor"
 msgstr ""
 
-#. translators: %s: Path to Cursor MCP config file.
-#: admin/section/class-convertkit-admin-section-mcp.php:451
+#: admin/section/class-convertkit-admin-section-mcp.php:592
+msgid "Codex"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:593
+msgid "Other clients"
+msgstr ""
+
+#. translators: %s: Claude Desktop configuration file name.
+#: admin/section/class-convertkit-admin-section-mcp.php:618
+#, php-format
+msgid "Add the following to your %s file, then restart Claude Desktop:"
+msgstr ""
+
+#. translators: %1$s: mcp-remote, %2$s: Node.js.
+#: admin/section/class-convertkit-admin-section-mcp.php:632
+#, php-format
+msgid "Claude Desktop only connects to remote MCP servers that use OAuth, so %1$s is used to connect to this site. This requires %2$s to be installed on your computer."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:642
+msgid "Run the following command in your terminal:"
+msgstr ""
+
+#. translators: %s: Cursor configuration file name.
+#: admin/section/class-convertkit-admin-section-mcp.php:652
 #, php-format
 msgid "Add the following to your %s file, then restart Cursor:"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:458
-msgid "Other clients"
+#. translators: %s: Codex configuration file name.
+#: admin/section/class-convertkit-admin-section-mcp.php:665
+#, php-format
+msgid "Add the following to your %s file, then restart Codex:"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:460
-msgid "For any other MCP client, provide it with the following:"
+#. translators: %s: Codex configuration option.
+#: admin/section/class-convertkit-admin-section-mcp.php:675
+#, php-format
+msgid "Older versions of Codex require %s at the top of the configuration file to connect to remote MCP servers."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:463
+#: admin/section/class-convertkit-admin-section-mcp.php:684
+msgid "For any other MCP client, use the following. The server uses the streamable HTTP transport, and authenticates using HTTP Basic authentication."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:687
 msgid "Server URL:"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:467
-msgid "Authorization header:"
+#: admin/section/class-convertkit-admin-section-mcp.php:708
+msgid "What your AI client can do"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:710
+msgid "Describe what you want in your own words; your AI client works out which tools to use."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:713
+msgid "Look up the Forms, Landing Pages, Products and Tags in your Kit account."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:714
+msgid "Add, list, change and remove Kit Forms, Form Triggers, Products and Broadcasts within a post or page's content."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:715
+msgid "Read and change a post or page's Kit settings, such as its Form, Landing Page, Tag and Member Content."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:716
+msgid "Read and change a category's Kit Form and Form Position."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:717
+msgid "Read and change this Plugin's General, Broadcasts and Member Content settings."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:720
+msgid "Your Kit account credentials, and your Form Entries, are never exposed to AI clients."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:731
+msgid "Read the MCP documentation"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-oauth.php:32
@@ -2747,11 +2862,11 @@ msgstr ""
 msgid "Abilities exposed by the Kit Plugin."
 msgstr ""
 
-#: includes/mcp/class-convertkit-mcp.php:282
+#: includes/mcp/class-convertkit-mcp.php:283
 msgid "Kit WordPress Plugin MCP"
 msgstr ""
 
-#: includes/mcp/class-convertkit-mcp.php:283
+#: includes/mcp/class-convertkit-mcp.php:284
 msgid "Exposes Kit Plugin abilities over the Model Context Protocol."
 msgstr ""
 
