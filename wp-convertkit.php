@@ -100,6 +100,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-f
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-email.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-name.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-custom.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-member-content-login.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-product.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-block-post-helper.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-content-post-helper.php';

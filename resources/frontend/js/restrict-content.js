@@ -56,8 +56,12 @@ document.addEventListener('DOMContentLoaded', function () {
  * @param {Event} e Form submission event.
  */
 function convertKitRestrictContentFormSubmit(e) {
+	// Determine where the response should be displayed; either the embedded login
+	// form, or the modal.
+	const container = convertKitRestrictContentContainer(e.target);
+
 	// Disable inputs.
-	document
+	container
 		.querySelectorAll(
 			'input[type="text"], input[type="email"], input[type="submit"]'
 		)
@@ -66,13 +70,11 @@ function convertKitRestrictContentFormSubmit(e) {
 		});
 
 	// Show loading overlay.
-	document.querySelector(
-		'#convertkit-restrict-content-modal-loading'
-	).style.display = 'block';
+	convertKitRestrictContentLoading(true);
 
 	// Determine if this is the email or code submission.
 	const isCodeSubmission =
-		document.querySelector('input#convertkit-subscriber-code') !== null;
+		container.querySelector('input#convertkit-subscriber-code') !== null;
 
 	if (isCodeSubmission) {
 		// Code submission.
@@ -80,7 +82,8 @@ function convertKitRestrictContentFormSubmit(e) {
 			convertkit_restrict_content.nonce,
 			e.target.querySelector('input[name="subscriber_code"]').value,
 			e.target.querySelector('input[name="token"]').value,
-			e.target.querySelector('input[name="convertkit_post_id"]').value
+			e.target.querySelector('input[name="convertkit_post_id"]').value,
+			container
 		);
 
 		return false;
@@ -92,8 +95,75 @@ function convertKitRestrictContentFormSubmit(e) {
 		e.target.querySelector('input[name="convertkit_email"]').value,
 		e.target.querySelector('input[name="convertkit_resource_type"]').value,
 		e.target.querySelector('input[name="convertkit_resource_id"]').value,
-		e.target.querySelector('input[name="convertkit_post_id"]').value
+		e.target.querySelector('input[name="convertkit_post_id"]').value,
+		convertKitRestrictContentSpamProtectionResponse(e.target),
+		container
 	);
+}
+
+/**
+ * Returns whether the heading should be displayed above the login form, which is
+ * the case when the modal is used.
+ *
+ * @since 	3.4.2
+ *
+ * @param {Object} container Container element.
+ * @return {boolean} Display the heading.
+ */
+function convertKitRestrictContentDisplayHeading(container) {
+	return container.id === 'convertkit-restrict-content-modal-content';
+}
+
+/**
+ * Returns the element to display the response in for the given form, which is
+ * either the embedded login form's container, or the modal's content.
+ *
+ * @since 	3.4.2
+ *
+ * @param {Object} form Form element.
+ * @return {Object} Container element.
+ */
+function convertKitRestrictContentContainer(form) {
+	return (
+		form.closest('.convertkit-restrict-content-content') ||
+		document.querySelector('#convertkit-restrict-content-modal-content')
+	);
+}
+
+/**
+ * Shows or hides the modal's loading overlay, if the modal is used.
+ *
+ * @since 	3.4.2
+ *
+ * @param {boolean} display Display the loading overlay.
+ */
+function convertKitRestrictContentLoading(display) {
+	const loading = document.querySelector(
+		'#convertkit-restrict-content-modal-loading'
+	);
+
+	if (loading === null) {
+		return;
+	}
+
+	loading.style.display = display ? 'block' : 'none';
+}
+
+/**
+ * Returns the spam protection response for the given form, if a spam protection
+ * provider is enabled.
+ *
+ * @since 	3.4.2
+ *
+ * @param {Object} form Form element.
+ * @return {string} Spam protection response.
+ */
+function convertKitRestrictContentSpamProtectionResponse(form) {
+	const field = form.querySelector(
+		'[name="g-recaptcha-response"], [name="cf-turnstile-response"]'
+	);
+
+	return field === null ? '' : field.value;
 }
 
 /**
@@ -134,18 +204,22 @@ function convertKitRestrictContentCloseModal() {
  *
  * @since 	2.3.8
  *
- * @param {string} nonce         WordPress nonce.
- * @param {string} email         Email address.
- * @param {string} resource_type Resource Type (form|tag|product).
- * @param {string} resource_id   Resource ID (Kit Form,Tag or Product ID).
- * @param {number} post_id       WordPress Post ID being viewed / accessed.
+ * @param {string} nonce                    WordPress nonce.
+ * @param {string} email                    Email address.
+ * @param {string} resource_type            Resource Type (form|tag|product).
+ * @param {string} resource_id              Resource ID (Kit Form,Tag or Product ID).
+ * @param {number} post_id                  WordPress Post ID being viewed / accessed.
+ * @param {string} spam_protection_response Spam protection response.
+ * @param {Object} container                Element to display the response in.
  */
 function convertKitRestrictContentSubscriberAuthenticationSendCode(
 	nonce,
 	email,
 	resource_type,
 	resource_id,
-	post_id
+	post_id,
+	spam_protection_response,
+	container
 ) {
 	fetch(convertkit_restrict_content.subscriber_authentication_url, {
 		method: 'POST',
@@ -158,6 +232,8 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 			convertkit_resource_type: resource_type,
 			convertkit_resource_id: resource_id,
 			convertkit_post_id: post_id,
+			spam_protection_response,
+			display_heading: convertKitRestrictContentDisplayHeading(container),
 		}),
 	})
 		.then(function (response) {
@@ -174,22 +250,16 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 
 			// Output error message if the response contains a code.
 			if (typeof result.code !== 'undefined') {
-				document.querySelector(
-					'#convertkit-restrict-content-modal-content'
-				).innerHTML = result.message;
+				container.innerHTML = result.message;
 			} else {
 				// Output response, which will be either:
 				// - the email form view, with an error message e.g. invalid email,
 				// - the code form view, where the user can enter the OTP.
-				document.querySelector(
-					'#convertkit-restrict-content-modal-content'
-				).innerHTML = result.data;
+				container.innerHTML = result.data;
 			}
 
 			// Hide loading overlay.
-			document.querySelector(
-				'#convertkit-restrict-content-modal-loading'
-			).style.display = 'none';
+			convertKitRestrictContentLoading(false);
 
 			// Re-bind OTP listener.
 			convertKitRestrictContentOTPField();
@@ -213,12 +283,14 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
  * @param {string} subscriber_code OTP Subscriber Code.
  * @param {string} token           Subscriber Token.
  * @param {number} post_id         WordPress Post ID being viewed / accessed.
+ * @param {Object} container       Element to display the response in.
  */
 function convertKitRestrictContentSubscriberVerification(
 	nonce,
 	subscriber_code,
 	token,
-	post_id
+	post_id,
+	container
 ) {
 	fetch(convertkit_restrict_content.subscriber_verification_url, {
 		method: 'POST',
@@ -244,16 +316,12 @@ function convertKitRestrictContentSubscriberVerification(
 				console.log(result);
 			}
 
-			// If the entered code is invalid, show the response in the modal.
+			// If the entered code is invalid, show the response.
 			if (!result.success) {
-				document.querySelector(
-					'#convertkit-restrict-content-modal-content'
-				).innerHTML = result.data;
+				container.innerHTML = result.data;
 
 				// Hide loading overlay.
-				document.querySelector(
-					'#convertkit-restrict-content-modal-loading'
-				).style.display = 'none';
+				convertKitRestrictContentLoading(false);
 
 				// Re-bind OTP listener.
 				convertKitRestrictContentOTPField();

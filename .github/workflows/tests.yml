@@ -51,6 +51,7 @@ jobs:
           - 'EndToEnd/integrations/woocommerce'
           - 'EndToEnd/landing-pages'
           - 'EndToEnd/products'
+          - 'EndToEnd/restrict-content/blocks-shortcodes'
           - 'EndToEnd/restrict-content/general'
           - 'EndToEnd/restrict-content/post-types'
           - 'EndToEnd/tags'

@@ -109,6 +109,7 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'init', array( $this, 'initialize_classes' ), 2 );
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
+		add_action( 'wp', array( $this, 'maybe_run_subscriber_logout' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
@@ -155,9 +156,10 @@ class ConvertKit_Output_Restrict_Content {
 						'sanitize_callback' => 'absint',
 					),
 
-					// Resource Type: Validate resource type is included in the request and is a string.
+					// Resource Type: Validate resource type is a string, if included in the request.
+					// It's not included when logging in using the Member Content Login block.
 					'convertkit_resource_type' => array(
-						'required'          => true,
+						'required'          => false,
 						'validate_callback' => function ( $param ) {
 
 							return is_string( $param );
@@ -166,15 +168,40 @@ class ConvertKit_Output_Restrict_Content {
 						'sanitize_callback' => 'sanitize_text_field',
 					),
 
-					// Resource ID: Validate resource ID is included in the request and is an integer.
+					// Resource ID: Validate resource ID is an integer, if included in the request.
+					// It's not included when logging in using the Member Content Login block.
 					'convertkit_resource_id'   => array(
-						'required'          => true,
+						'required'          => false,
 						'validate_callback' => function ( $param ) {
 
 							return is_numeric( $param );
 
 						},
 						'sanitize_callback' => 'absint',
+					),
+
+					// Spam protection response, if a spam protection provider is enabled.
+					'spam_protection_response' => array(
+						'required'          => false,
+						'validate_callback' => function ( $param ) {
+
+							return is_string( $param );
+
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+
+					// Whether to display the heading above the login form.
+					// It's not displayed by the Member Content Login block, as it refers to
+					// reading the Member Content the subscriber is logging in to view.
+					'display_heading'          => array(
+						'required'          => false,
+						'default'           => true,
+						'validate_callback' => function ( $param ) {
+
+							return is_bool( $param );
+
+						},
 					),
 				),
 				'callback'            => function ( $request ) {
@@ -189,6 +216,24 @@ class ConvertKit_Output_Restrict_Content {
 					$resource_type = $request->get_param( 'convertkit_resource_type' );
 					$resource_id   = $request->get_param( 'convertkit_resource_id' );
 
+					// Check spam protection (reCAPTCHA or Cloudflare Turnstile, depending on Plugin settings).
+					$result = $output_restrict_content->verify_spam_protection( $request->get_param( 'spam_protection_response' ) );
+
+					// If spam protection failed, build the email form view with the error message.
+					if ( is_wp_error( $result ) ) {
+						$output_restrict_content->error = $result;
+
+						ob_start();
+						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/' . ( $request->get_param( 'display_heading' ) ? 'login-modal-content-email.php' : 'login-email.php' );
+						$output = trim( ob_get_clean() );
+						return rest_ensure_response(
+							array(
+								'success' => false,
+								'data'    => $output,
+							)
+						);
+					}
+
 					// Run subscriber authentication.
 					$result = $output_restrict_content->subscriber_authentication_send_code(
 						$email,
@@ -202,7 +247,7 @@ class ConvertKit_Output_Restrict_Content {
 
 						// Build email form view to return for output with error message.
 						ob_start();
-						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal-content-email.php';
+						include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/' . ( $request->get_param( 'display_heading' ) ? 'login-modal-content-email.php' : 'login-email.php' );
 						$output = trim( ob_get_clean() );
 						return rest_ensure_response(
 							array(
@@ -365,14 +410,8 @@ class ConvertKit_Output_Restrict_Content {
 			return;
 		}
 
-		// Bail if the expected email, resource type, resource ID or Post ID are missing from the request.
+		// Bail if the expected email or Post ID are missing from the request.
 		if ( ! array_key_exists( 'convertkit_email', $_REQUEST ) ) {
-			return;
-		}
-		if ( ! array_key_exists( 'convertkit_resource_type', $_REQUEST ) ) {
-			return;
-		}
-		if ( ! array_key_exists( 'convertkit_resource_id', $_REQUEST ) ) {
 			return;
 		}
 		if ( ! array_key_exists( 'convertkit_post_id', $_REQUEST ) ) {
@@ -386,8 +425,8 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Sanitize inputs.
 		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
-		$this->resource_type = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) );
-		$this->resource_id   = absint( $_REQUEST['convertkit_resource_id'] );
+		$this->resource_type = ( array_key_exists( 'convertkit_resource_type', $_REQUEST ) ? sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) ) : '' );
+		$this->resource_id   = ( array_key_exists( 'convertkit_resource_id', $_REQUEST ) ? absint( $_REQUEST['convertkit_resource_id'] ) : 0 );
 		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
 
 		// If Restrict Content is by tag, tag the subscriber.
@@ -408,6 +447,15 @@ class ConvertKit_Output_Restrict_Content {
 			// Bail if an error occurred.
 			if ( is_wp_error( $result ) ) {
 				$this->error = $result;
+				return;
+			}
+		} else {
+			// Check spam protection (reCAPTCHA or Cloudflare Turnstile, depending on Plugin settings).
+			$spam_check = $this->verify_spam_protection();
+
+			// Bail if spam protection failed.
+			if ( is_wp_error( $spam_check ) ) {
+				$this->error = $spam_check;
 				return;
 			}
 		}
@@ -484,6 +532,133 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Redirect now to reload the Post.
 		$this->redirect( $this->post_id );
+
+	}
+
+	/**
+	 * Logs the subscriber out by deleting their subscriber ID cookie, when the
+	 * log out button is clicked in the Member Content Login block.
+	 *
+	 * @since   3.4.2
+	 */
+	public function maybe_run_subscriber_logout() {
+
+		// Bail if no logout request was made.
+		if ( ! array_key_exists( 'convertkit_logout', $_REQUEST ) ) {
+			return;
+		}
+
+		// Bail if no nonce was specified.
+		if ( ! array_key_exists( '_wpnonce', $_REQUEST ) ) {
+			return;
+		}
+
+		// Bail if the nonce failed validation.
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'convertkit_member_content_logout' ) ) {
+			return;
+		}
+
+		// Delete the subscriber ID cookie.
+		$subscriber = new ConvertKit_Subscriber();
+		$subscriber->forget();
+
+		// Reload the Post, so the login form displays.
+		wp_safe_redirect( $this->get_url( get_the_ID(), true ) );
+		exit();
+
+	}
+
+	/**
+	 * Verifies the spam protection response for the login form, using the spam
+	 * protection provider enabled in the Plugin's settings.
+	 *
+	 * @since   3.4.2
+	 *
+	 * @param   bool|string $response   Spam protection response, if supplied by a REST API request.
+	 * @return  bool|WP_Error
+	 */
+	public function verify_spam_protection( $response = false ) {
+
+		$spam_protection = new ConvertKit_Spam_Protection();
+		$provider        = $spam_protection->get_active_provider();
+
+		// Return true if no spam protection provider is enabled.
+		if ( $provider === false ) {
+			return true;
+		}
+
+		// Verify the response included in the REST API request.
+		if ( ! empty( $response ) ) {
+			return $provider->verify( $response, 'convertkit_member_content_login' );
+		}
+
+		// Verify the response included in the form submission.
+		return $spam_protection->verify( 'convertkit_member_content_login' );
+
+	}
+
+	/**
+	 * Enqueues the CSS and JS required by the login form and modal.
+	 *
+	 * @since   3.4.2
+	 */
+	public function enqueue_scripts_and_styles() {
+
+		// Only load styles if the Disable CSS option is off.
+		if ( ! $this->settings->css_disabled() ) {
+			convertkit_enqueue_frontend_css();
+		}
+
+		// Bail if scripts are disabled.
+		if ( $this->settings->scripts_disabled() ) {
+			return;
+		}
+
+		// Enqueue scripts.
+		convertkit_enqueue_frontend_js();
+
+		// Define variables.
+		wp_localize_script(
+			'convertkit-js',
+			'convertkit_restrict_content',
+			array(
+				'nonce'                         => wp_create_nonce( 'wp_rest' ),
+				'subscriber_authentication_url' => rest_url( 'kit/v1/restrict-content/subscriber-authentication' ),
+				'subscriber_verification_url'   => rest_url( 'kit/v1/restrict-content/subscriber-verification' ),
+				'debug'                         => $this->settings->debug_enabled(),
+			)
+		);
+
+	}
+
+	/**
+	 * Outputs the login modal in the footer, ensuring it is only output once
+	 * when a Post contains multiple Member Content Login blocks.
+	 *
+	 * @since   3.4.2
+	 *
+	 * @param   int         $post_id         Post ID.
+	 * @param   bool|int    $resource_id     Resource ID.
+	 * @param   bool|string $resource_type   Resource Type.
+	 */
+	public function output_login_modal( $post_id, $resource_id = 0, $resource_type = '' ) {
+
+		static $output = false;
+
+		if ( $output ) {
+			return;
+		}
+
+		$output = true;
+
+		add_action(
+			'wp_footer',
+			function () use ( $post_id, $resource_id, $resource_type ) {
+
+				include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
+
+			}
+		);
 
 	}
 
@@ -1345,29 +1520,8 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function get_call_to_action( $post_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 
-		// Only load styles if the Disable CSS option is off.
-		if ( ! $this->settings->css_disabled() ) {
-			// Enqueue styles.
-			convertkit_enqueue_frontend_css();
-		}
-
-		// Only load scripts if the Disable Scripts option is off.
-		if ( ! $this->settings->scripts_disabled() ) {
-			// Enqueue scripts.
-			convertkit_enqueue_frontend_js();
-
-			// Define variables.
-			wp_localize_script(
-				'convertkit-js',
-				'convertkit_restrict_content',
-				array(
-					'nonce'                         => wp_create_nonce( 'wp_rest' ),
-					'subscriber_authentication_url' => rest_url( 'kit/v1/restrict-content/subscriber-authentication' ),
-					'subscriber_verification_url'   => rest_url( 'kit/v1/restrict-content/subscriber-verification' ),
-					'debug'                         => $this->settings->debug_enabled(),
-				)
-			);
-		}
+		// Enqueue CSS and JS.
+		$this->enqueue_scripts_and_styles();
 
 		// Output code form if this request is after the user entered their email address,
 		// which means we're going through the authentication flow.
@@ -1403,14 +1557,7 @@ class ConvertKit_Output_Restrict_Content {
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
 				if ( ! $this->settings->scripts_disabled() ) {
-					add_action(
-						'wp_footer',
-						function () use ( $post_id, $resource_id, $resource_type ) {
-
-							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
-
-						}
-					);
+					$this->output_login_modal( $post_id, $resource_id, $resource_type );
 				}
 
 				// Output.
@@ -1433,14 +1580,7 @@ class ConvertKit_Output_Restrict_Content {
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
 				if ( ! $this->settings->scripts_disabled() ) {
-					add_action(
-						'wp_footer',
-						function () use ( $post_id, $resource_id, $resource_type ) {
-
-							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
-
-						}
-					);
+					$this->output_login_modal( $post_id, $resource_id, $resource_type );
 				}
 
 				// Output.
@@ -1456,14 +1596,7 @@ class ConvertKit_Output_Restrict_Content {
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
 				if ( ! $this->settings->scripts_disabled() ) {
-					add_action(
-						'wp_footer',
-						function () use ( $post_id, $resource_id, $resource_type ) {
-
-							include_once CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/login-modal.php';
-
-						}
-					);
+					$this->output_login_modal( $post_id, $resource_id, $resource_type );
 				}
 
 				// Enqueue the active spam protection provider's client-side script.

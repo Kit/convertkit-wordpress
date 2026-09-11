@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "convertkit/login",
+    "title": "Kit Member Content Login",
+    "category": "kit",
+    "description": "Displays a login form, so subscribers can log in to view Member Content.",
+    "keywords": [ "convertkit", "kit", "member content", "login" ],
+    "textdomain": "convertkit",
+    "attributes": {
+        "logged_in_text": {
+            "type": "string"
+        },
+        "logout_button_label": {
+            "type": "string"
+        },
+        "style": {
+            "type": "object"
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "fontSize": {
+            "type": "string"
+        },
+        "is_gutenberg_example": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "className": true,
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "convertkit-gutenberg"
+}
