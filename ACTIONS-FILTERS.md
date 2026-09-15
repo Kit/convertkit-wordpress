@@ -77,6 +77,14 @@
 						<td><a href="#convertkit_abilities"><code>convertkit_abilities</code></a></td>
 						<td>Registers abilities for the Kit Plugin.</td>
 					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_resources"><code>convertkit_resources</code></a></td>
+						<td>Registers MCP resources for the Kit Plugin.</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_prompts"><code>convertkit_prompts</code></a></td>
+						<td>Registers MCP prompts for the Kit Plugin.</td>
+					</tr><tr>
 						<td colspan="3">includes/blocks/class-convertkit-block-content.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
@@ -703,6 +711,60 @@ add_filter( 'convertkit_abilities', function( $abilities ) {
 	// ... your code here
 	// Return value
 	return $abilities;
+}, 10, 1 );
+</pre>
+<h3 id="convertkit_resources">
+						convertkit_resources
+						<code>includes/functions.php::371</code>
+					</h3><h4>Overview</h4>
+						<p>Registers MCP resources for the Kit Plugin.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$resources</td>
+							<td>array</td>
+							<td>Resources.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_resources', function( $resources ) {
+	// ... your code here
+	// Return value
+	return $resources;
+}, 10, 1 );
+</pre>
+<h3 id="convertkit_prompts">
+						convertkit_prompts
+						<code>includes/functions.php::395</code>
+					</h3><h4>Overview</h4>
+						<p>Registers MCP prompts for the Kit Plugin.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$prompts</td>
+							<td>array</td>
+							<td>Prompts.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_prompts', function( $prompts ) {
+	// ... your code here
+	// Return value
+	return $prompts;
 }, 10, 1 );
 </pre>
 <h3 id="convertkit_block_content_render">

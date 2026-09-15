@@ -1,8 +1,12 @@
+### 3.4.2 2026-09-15
+* Added: MCP: Prompts and Resources for common tasks
+
 ### 3.4.1 2026-09-09
 * Added: Settings: MCP: Improve UI
 * Added: MCP: Log errors when creating MCP server fails
 * Fix: Settings: MCP: Documentation link
 * Fix: Landing Pages: Exclude anchor links from URL conversion
+* Updated: WordPress Libraries to 2.7.0
 
 ### 3.4.0 2026-08-27
 * Added: MCP Server and Abilities/Tools
