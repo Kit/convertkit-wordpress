@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.4.1\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-09T08:21:56+00:00\n"
+"POT-Creation-Date: 2026-09-15T03:08:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -50,7 +50,7 @@ msgstr ""
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:139
 #: includes/integrations/elementor/class-convertkit-elementor.php:70
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:126
-#: includes/mcp/class-convertkit-mcp.php:216
+#: includes/mcp/class-convertkit-mcp.php:287
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:62
 msgid "Kit"
 msgstr ""
@@ -1818,6 +1818,7 @@ msgid "Kit Form"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form.php:116
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms.php:53
 msgid "Kit Forms"
 msgstr ""
 
@@ -1860,6 +1861,7 @@ msgid "Kit Product"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-product.php:110
+#: includes/mcp/resources/class-convertkit-mcp-resource-products.php:53
 msgid "Kit Products"
 msgstr ""
 
@@ -2803,6 +2805,7 @@ msgid "Human-readable name of the resource item."
 msgstr ""
 
 #: includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource.php:143
+#: includes/mcp/resources/class-convertkit-mcp-resource-list.php:61
 msgid "You do not have permission to list Kit resources."
 msgstr ""
 
@@ -2858,16 +2861,568 @@ msgstr ""
 msgid "You do not have permission to read or update Kit Plugin settings."
 msgstr ""
 
-#: includes/mcp/class-convertkit-mcp.php:217
+#: includes/mcp/class-convertkit-mcp-prompt.php:153
+#: includes/mcp/class-convertkit-mcp-resource.php:134
+#: includes/mcp/resources/class-convertkit-mcp-resource-reference.php:44
+msgid "You do not have permission for this operation."
+msgstr ""
+
+#: includes/mcp/class-convertkit-mcp.php:288
 msgid "Abilities exposed by the Kit Plugin."
 msgstr ""
 
-#: includes/mcp/class-convertkit-mcp.php:283
+#: includes/mcp/class-convertkit-mcp.php:424
 msgid "Kit WordPress Plugin MCP"
 msgstr ""
 
-#: includes/mcp/class-convertkit-mcp.php:284
+#: includes/mcp/class-convertkit-mcp.php:425
 msgid "Exposes Kit Plugin abilities over the Model Context Protocol."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:40
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:102
+msgid "Add a Kit Form"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:53
+msgid "Show a Kit Form as a site default, on a single post or page, on a category, or inline in content."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:68
+msgid "The Kit Form to add, by name or numeric ID."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:71
+msgid "Where to add it: default, post, category or inline."
+msgstr ""
+
+#. translators: %s: Form name or ID.
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:93
+#, php-format
+msgid "- Requested Form: %s"
+msgstr ""
+
+#. translators: %s: scope.
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:97
+#, php-format
+msgid "- Requested scope: %s"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:103
+msgid "Goal: show a Kit Form as a site default, on a single post or page, on a category, or inline in content."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:105
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:71
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:105
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:71
+msgid "Preflight"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:106
+msgid "- Read `kit://forms` and map the requested Form to its numeric ID. If nothing matches, list the available Forms and ask the user."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:107
+msgid "- See `kit://reference/forms` for how the Form shown on a post is resolved (post overrides category overrides the default)."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:108
+msgid "Choose the scope"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:109
+msgid "- **Default for a post type** — `kit/settings-general-update`."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:110
+msgid "- **A single Page or Post** — `kit/post-settings-update`, setting `form` (needs `post_id`)."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:111
+msgid "- **A category** — `kit/category-settings-update`."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:112
+msgid "- **Inline at a chosen position in the content** — `kit/form-insert`."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:113
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:73
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:108
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:74
+msgid "Steps"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:114
+msgid "1. Confirm the Form and the scope with the user."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:115
+msgid "2. Apply it with the matching tool above. Confirm before writing."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php:116
+msgid "3. Verify with the matching read tool (e.g. `kit/post-settings-get`)."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:40
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:69
+msgid "Audit Kit configuration"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:53
+msgid "Review the Kit connection, default Forms and per-post settings, and report gaps and misconfigurations. Read only — makes no changes."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:70
+msgid "Goal: review the current Kit setup and report gaps. This is read only — do not change any settings; if the user wants a fix, point them to the relevant prompt (setup, add-form, restrict-content)."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:71
+msgid "Gather"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:72
+msgid "- `kit://account` — is the site connected?"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:73
+msgid "- `kit://settings` — default Forms, broadcasts and restrict-content configuration."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:74
+msgid "- `kit://forms`, `kit://tags`, `kit://products` — what exists on the account."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:75
+msgid "- For a sample of published Pages and Posts, `kit/post-settings-get` to see their Form / Landing Page / Tag / Restrict Content settings."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:76
+msgid "Report"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:77
+msgid "- Whether the account is connected and which account it is."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:78
+msgid "- Whether a default Form is set per post type, and which."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:79
+msgid "- Content that references a Form, Tag or Product ID that no longer exists on the account."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:80
+msgid "- Where Restrict Content is in use, and any content that looks like it should be gated but is not."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php:81
+msgid "Summarise findings as a short list, most important first, with the suggested fix for each."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:40
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:69
+msgid "Import Kit Broadcasts as posts"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:53
+msgid "Set up importing Kit Broadcasts (emails) into WordPress as posts, and how the imported posts are assigned."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:70
+msgid "Goal: turn Kit Broadcasts (emails) into WordPress posts automatically, and control how those posts are assigned."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:72
+msgid "- Read `kit://account` to confirm the site is connected, and `kit://settings` for the current broadcasts settings."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:74
+msgid "1. Ask the user whether to enable importing, and which author, category and post status imported posts should use (and whether to import the email thumbnail as the featured image)."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:75
+msgid "2. Apply with `kit/settings-broadcasts-update`. Confirm before writing."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:76
+msgid "3. Verify with `kit/settings-broadcasts-get`."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php:77
+msgid "Note: once enabled, importing runs automatically on a schedule — there is no manual \"import now\" step to call here."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:40
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:102
+msgid "Restrict content to subscribers"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:53
+msgid "Gate a post or page so only subscribers or paying members can read it, using a Kit Product, Tag or Form."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:68
+msgid "The ID of the Page or Post to restrict."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:71
+msgid "What to gate by: a Product, Tag or Form (name or ID)."
+msgstr ""
+
+#. translators: %s: Post ID.
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:93
+#, php-format
+msgid "- Post to restrict: %s"
+msgstr ""
+
+#. translators: %s: gate description.
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:97
+#, php-format
+msgid "- Gate by: %s"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:103
+msgid "Goal: gate a single post or page so only qualifying visitors see the full content. Read `kit://reference/restrict-content` first for how gating works and what the visitor sees."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:106
+msgid "- Decide what to gate by: a **Product** (paywall) from `kit://products`, a **Tag** from `kit://tags`, or a **Form** from `kit://forms`. Map the name to its numeric ID."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:107
+msgid "- Confirm the target post ID with the user if not given."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:109
+msgid "1. Confirm the post and the gate with the user."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:110
+msgid "2. Set it with `kit/post-settings-update`, supplying `restrict_content` (needs `post_id`). Confirm before writing."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:111
+msgid "3. Verify with `kit/post-settings-get`."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php:112
+msgid "Site wide behaviour (teaser, wording, login) lives in the restrict-content settings group — read `kit://settings` if the user wants to review it."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:40
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:69
+msgid "Set up Kit"
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:53
+msgid "Guided setup: confirm the site is connected to Kit, then choose the default Form shown on your content."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:70
+msgid "Goal: confirm the WordPress site is connected to a Kit account, then set sensible defaults. Read `kit://overview` first for how the pieces fit together."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:72
+msgid "- Read `kit://account`. If it is empty, the site is not connected yet: tell the user to connect it under Settings > Kit in WordPress (this uses OAuth sign in and cannot be done over MCP), then stop until it is connected."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:73
+msgid "- Read `kit://settings` for the current configuration and `kit://forms` for the available Forms."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:75
+msgid "1. Ask the user which Form should show by default, and on which post types. Use `kit://forms` to map the Form name to its numeric ID."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:76
+msgid "2. Set the default Form(s) with `kit/settings-general-update`. Confirm the change with the user before applying it."
+msgstr ""
+
+#: includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php:77
+msgid "3. Verify with `kit/settings-general-get`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-account.php:53
+msgid "Kit Account"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-account.php:66
+msgid "The connected Kit account (name, plan type, primary email address), as JSON. Read this to confirm which account the site is connected to before making changes. An empty object means no account is connected yet."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:53
+msgid "Kit Forms Reference"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:66
+msgid "How Kit Forms embed and display in WordPress: formats, where they appear, and how a default Form is overridden per post or category."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:80
+msgid "Kit Forms in WordPress"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:82
+msgid "Formats"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:84
+msgid "**Inline** forms render in the post content, where the Form is placed or auto-appended."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:85
+msgid "**Modal**, **slide in** and **sticky bar** forms are non-inline: Kit triggers them on the page, so their placement in content does not matter."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:87
+msgid "The `kit://forms` resource and `kit/forms-list` tool return each Form's `format`, so you can tell inline from non-inline Forms."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:89
+msgid "How a Form is chosen for a post"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:91
+msgid "The Form shown on a given post is resolved in this order:"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:93
+msgid "The post's own Form setting (`kit/post-settings-update`), if set."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:94
+msgid "The Form set on one of the post's categories (`kit/category-settings-update`), if set."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:95
+msgid "The default Form for the post type, from General settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:97
+msgid "A post can also be set to \"None\" to show no Form, overriding the defaults."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:99
+msgid "Placing a Form manually"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php:101
+msgid "A specific Form can be inserted into content with the Kit Form block or the `[convertkit]` shortcode, rather than relying on the default. Use `kit/forms` to look up the Form ID first."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-forms.php:66
+msgid "The Kit Forms on the connected account, as JSON (id, name, format). Read this to map a Form name to its numeric ID before configuring form settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-landing-pages.php:53
+msgid "Kit Landing Pages"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-landing-pages.php:66
+msgid "The Kit Landing Pages on the connected account, as JSON (id, name). Read this to map a Landing Page name to its numeric ID before configuring settings."
+msgstr ""
+
+#. translators: %s: Ability class name
+#: includes/mcp/resources/class-convertkit-mcp-resource-list.php:86
+#, php-format
+msgid "The ability class \"%s\" does not exist."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:53
+msgid "Kit Plugin Overview"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:66
+msgid "What the Kit WordPress Plugin does and how its MCP tools and resources fit together. Read this first to understand the available concepts."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:80
+msgid "Kit WordPress Plugin"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:82
+msgid "The Kit Plugin connects a WordPress site to a Kit (formerly ConvertKit) account, letting the site display Kit Forms and Landing Pages, restrict content to subscribers, and import Kit Broadcasts as posts."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:84
+msgid "Core concepts"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:86
+msgid "**Forms** capture subscribers. They display inline in content, or as a modal / slide in / sticky bar. A default Form can be set per post type, and overridden per post or per category."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:87
+msgid "**Landing Pages** are standalone Kit-hosted pages a WordPress page can be set to display."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:88
+msgid "**Tags** label subscribers; a post can tag a visitor who is a subscriber."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:89
+msgid "**Products** are paid offers used to restrict content to paying subscribers."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:90
+msgid "**Restrict Content** gates a post or page behind a Product, Tag or Form."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:91
+msgid "**Broadcasts** are Kit emails that can be imported into WordPress as posts."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:93
+msgid "Where settings live"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:95
+msgid "**General** settings control the connection and default Forms per post type."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:96
+msgid "**Per-post** settings (`kit/post-settings-*`) set the Form, Landing Page, Tag or Restrict Content rule for a single post or page."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:97
+msgid "**Per-category** settings (`kit/category-settings-*`) set a Form for a WordPress category."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:99
+msgid "MCP resources to read for context"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:101
+msgid "current id/name mappings on the connected account. Read these to resolve a name to its numeric ID before configuring settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:102
+msgid "the connected account."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:103
+msgid "the current Plugin settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-overview.php:104
+msgid "how those features work."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-products.php:66
+msgid "The Kit Products on the connected account, as JSON (id, name). Read this to map a Product name to its numeric ID before configuring restrict content settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:53
+msgid "Kit Restrict Content Reference"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:66
+msgid "How Restrict Content gates a post or page behind a Kit Product, Tag or Form, and what the visitor sees."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:80
+#: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:277
+msgid "Restrict Content"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:82
+msgid "Restrict Content gates a single post or page so only qualifying visitors see the full content. Everyone else sees a teaser plus a prompt to subscribe or unlock."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:84
+msgid "What content can be gated by"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:86
+msgid "**Product** — the visitor must have purchased the Kit Product to view the content (a paywall). Look up the Product ID via `kit://products`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:87
+msgid "**Tag** — the visitor must be a subscriber with the given Tag. Look up the Tag ID via `kit://tags`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:88
+msgid "**Form** — the visitor must subscribe via the given Form to unlock. Look up the Form ID via `kit://forms`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:90
+msgid "How to set it"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:92
+msgid "Set Restrict Content on a post or page with `kit/post-settings-update`, supplying the Product, Tag or Form to gate by. Site-wide behaviour (teaser length, wording, login) is configured in the Restrict Content settings group — read the current values from `kit://settings`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:94
+msgid "Visitor experience"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php:96
+msgid "A returning subscriber can authenticate by email to access Tag- or Form-gated content. Product-gated content requires a completed purchase. Restrict Content applies only to the post types that support it."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:53
+msgid "Kit Settings Reference"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:66
+msgid "What each Kit Plugin settings group controls. For current values and exact keys, read kit://settings or the kit/settings-*-get tools."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:80
+msgid "Kit Plugin Settings"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:82
+msgid "The Plugin has three settings groups exposed over MCP. Read live values from `kit://settings`, or a single group's exact schema and values via its `kit/settings-<group>-get` tool; change values with `kit/settings-<group>-update`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:84
+msgid "general"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:86
+msgid "The Kit account connection and site-wide defaults: the default Form displayed for each post type, and how non-inline Forms load. This is where most Form defaults are set."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:88
+msgid "broadcasts"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:90
+msgid "Importing Kit Broadcasts into WordPress as posts: whether importing is enabled, and the author, category and status applied to imported posts."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:92
+msgid "restrict-content"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php:94
+msgid "Site-wide Restrict Content behaviour: the teaser shown to non-qualifying visitors, the calls to action, and how subscribers authenticate. Per-post gating is set with `kit/post-settings-update` — see `kit://reference/restrict-content`."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings.php:56
+msgid "Kit Settings"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings.php:69
+msgid "The current Kit Plugin settings, as JSON keyed by group (general, broadcasts, restrict-content). Secret keys are excluded. Read this to see the current configuration before updating settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-settings.php:102
+msgid "You do not have permission to read Kit Plugin settings."
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-tags.php:53
+msgid "Kit Tags"
+msgstr ""
+
+#: includes/mcp/resources/class-convertkit-mcp-resource-tags.php:66
+msgid "The Kit Tags on the connected account, as JSON (id, name). Read this to map a Tag name to its numeric ID before configuring form or restrict content settings."
 msgstr ""
 
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:127
@@ -2936,10 +3491,6 @@ msgstr ""
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:271
 #: views/backend/post/meta-box.php:151
 msgid "A visitor is deemed to be subscribed if they have clicked a link in an email to this site which includes their subscriber ID, or have entered their email address in a Kit Form on this site."
-msgstr ""
-
-#: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:277
-msgid "Restrict Content"
 msgstr ""
 
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:280
