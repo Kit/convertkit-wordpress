@@ -352,6 +352,54 @@ function convertkit_get_abilities() {
 }
 
 /**
+ * Helper method to get registered MCP resources.
+ *
+ * @since   3.4.2
+ *
+ * @return  array   Resources.
+ */
+function convertkit_get_resources() {
+
+	$resources = array();
+
+	/**
+	 * Registers MCP resources for the Kit Plugin.
+	 *
+	 * @since   3.4.2
+	 *
+	 * @param   array   $resources     Resources.
+	 */
+	$resources = apply_filters( 'convertkit_resources', $resources );
+
+	return $resources;
+
+}
+
+/**
+ * Helper method to get registered MCP prompts.
+ *
+ * @since   3.4.2
+ *
+ * @return  array   Prompts.
+ */
+function convertkit_get_prompts() {
+
+	$prompts = array();
+
+	/**
+	 * Registers MCP prompts for the Kit Plugin.
+	 *
+	 * @since   3.4.2
+	 *
+	 * @param   array   $prompts     Prompts.
+	 */
+	$prompts = apply_filters( 'convertkit_prompts', $prompts );
+
+	return $prompts;
+
+}
+
+/**
  * Helper method to return the Plugin Settings Link
  *
  * @since   1.9.6
