@@ -242,3 +242,148 @@ body.settings_page__wp_convertkit_settings .wrap .tablenav input.button {
 	height: 20px;
 	line-height: 20px;
 }
+
+/**
+ * Reusable UI components.
+ *
+ * These deliberately aren't scoped to a single administration screen, so that
+ * they can be used on any of the Plugin's administration screens.
+ */
+
+/**
+ * Numbered Steps
+ */
+ol.kit-numbered-steps {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: kit-numbered-step;
+}
+
+ol.kit-numbered-steps > li {
+	position: relative;
+	margin: 0 0 30px 0;
+	padding: 0 0 0 44px;
+	counter-increment: kit-numbered-step;
+}
+
+ol.kit-numbered-steps > li::before {
+	content: counter(kit-numbered-step);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 28px;
+	height: 28px;
+	color: #fff;
+	font-weight: 600;
+	line-height: 28px;
+	text-align: center;
+	background-color: #144264;
+	border-radius: 9999px;
+}
+
+ol.kit-numbered-steps > li > h3 {
+	margin: 0 0 8px 0;
+	padding: 0;
+	font-size: 15px;
+	line-height: 28px;
+}
+
+/**
+ * Code Block
+ */
+.kit-code {
+	position: relative;
+	max-width: 800px;
+	margin: 0 0 15px 0;
+}
+
+.kit-code pre {
+	margin: 0;
+	padding: 15px 90px 15px 15px;
+	overflow-x: auto;
+	background-color: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+/* WordPress styles inline <code> elements with their own background and spacing,
+   which would otherwise display behind each line of a multi line code block. */
+.kit-code pre code {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1.7;
+	background: none;
+	border-radius: 0;
+}
+
+.kit-code button.kit-code-copy {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+}
+
+/**
+ * Inline Tabs
+ */
+.kit-inline-tabs ul.kit-inline-tabs-nav {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 0 20px 0;
+	padding: 0;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.kit-inline-tabs ul.kit-inline-tabs-nav li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.kit-inline-tabs ul.kit-inline-tabs-nav li button.kit-inline-tab {
+	margin: 0 0 -1px 0;
+	padding: 10px 16px;
+	color: #565656;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+}
+
+.kit-inline-tabs ul.kit-inline-tabs-nav li button.kit-inline-tab:hover {
+	color: #144264;
+}
+
+.kit-inline-tabs ul.kit-inline-tabs-nav li button.kit-inline-tab.is-active {
+	color: #144264;
+	border-bottom-color: #144264;
+}
+
+.kit-inline-tabs .kit-inline-tab-panel {
+	display: none;
+}
+
+.kit-inline-tabs .kit-inline-tab-panel.is-active {
+	display: block;
+}
+
+/**
+ * MCP
+ */
+body.settings_page__wp_convertkit_settings .convertkit-mcp {
+	margin-top: 20px;
+}
+
+body.settings_page__wp_convertkit_settings .convertkit-mcp p code,
+body.settings_page__wp_convertkit_settings .convertkit-mcp li code {
+	margin: 0;
+}
+
+body.settings_page__wp_convertkit_settings ul.convertkit-mcp-capabilities {
+	margin: 0 0 15px 20px;
+	list-style-type: disc;
+}

@@ -23,6 +23,7 @@ codeception.dist.yml
 composer.json
 composer.lock
 convertkit.zip
+CHANGELOG.md
 DEPLOYMENT.md
 DEVELOPMENT.md
 LICENSE
@@ -36,5 +37,6 @@ phpstan.neon
 phpstan.neon.dist
 phpstan.neon.example
 README.md
+SECURITY.md
 SETUP.md
 TESTING.md

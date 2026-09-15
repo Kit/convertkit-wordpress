@@ -9,7 +9,7 @@
  * Plugin Name: Kit (formerly ConvertKit)
  * Plugin URI: https://kit.com/
  * Description: Display Kit (formerly ConvertKit) email subscription forms, landing pages, products, broadcasts and more.
- * Version: 3.4.0
+ * Version: 3.4.2
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
@@ -27,7 +27,7 @@ define( 'CONVERTKIT_PLUGIN_NAME', 'ConvertKit' ); // Used for user-agent in API 
 define( 'CONVERTKIT_PLUGIN_FILE', plugin_basename( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
-define( 'CONVERTKIT_PLUGIN_VERSION', '3.4.0' );
+define( 'CONVERTKIT_PLUGIN_VERSION', '3.4.2' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 define( 'CONVERTKIT_MCP_APP_NAME', 'Kit WordPress Plugin: MCP Server' );
@@ -108,6 +108,25 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertk
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-ability.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-resource.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-prompt.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-list.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-reference.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-forms.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-tags.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-landing-pages.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-products.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-account.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-settings.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-overview.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-list.php';

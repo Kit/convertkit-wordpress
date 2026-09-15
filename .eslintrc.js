@@ -11,6 +11,7 @@ module.exports = {
 		convertkit_pre_publish_actions: 'readonly',
 		convertkit_quicktags: 'readonly',
 		convertkit_shortcodes: 'readonly',
+		convertkit_ui: 'readonly',
 	},
 	rules: {
 		// Globals are not camelcase; in the future, we should update JS to meet camelcase standards.
