@@ -118,7 +118,7 @@ class ConvertKit_Resource_Account extends ConvertKit_Resource_V4 {
 	 *
 	 * @since   3.4.0
 	 *
-	 * @return  array
+	 * @return  bool|array
 	 */
 	public function get() {
 
