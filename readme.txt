@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.4.2
+Stable tag: 3.4.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -347,6 +347,9 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.4.3 2026-09-17
+* Added: Member Content: Login Form Block and Shortcode
 
 ### 3.4.2 2026-09-15
 * Added: MCP: Prompts and Resources for common tasks
