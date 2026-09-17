@@ -314,3 +314,13 @@ form.convertkit-restrict-content-form {
 		padding: 40px;
 	}
 }
+
+/* Member Content Login block and shortcode */
+#convertkit-restrict-content.convertkit-login {
+
+	/* Honor the block's text color, which the ID selectors above would otherwise override. */
+	p,
+	small {
+		color: inherit;
+	}
+}
