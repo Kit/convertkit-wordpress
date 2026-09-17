@@ -99,6 +99,15 @@ class ConvertKit_Output_Restrict_Content {
 	public $token = false;
 
 	/**
+	 * Whether the login modal has been output.
+	 *
+	 * @since   3.4.2
+	 *
+	 * @var     bool
+	 */
+	public $login_modal_output = false;
+
+	/**
 	 * Constructor. Registers actions and filters to possibly limit output of a Page/Post/CPT's
 	 * content on the frontend site.
 	 *
@@ -643,13 +652,11 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function output_login_modal( $post_id, $resource_id = 0, $resource_type = '' ) {
 
-		static $output = false;
-
-		if ( $output ) {
+		if ( $this->login_modal_output ) {
 			return;
 		}
 
-		$output = true;
+		$this->login_modal_output = true;
 
 		add_action(
 			'wp_footer',
