@@ -69,6 +69,15 @@ class ConvertKit_Shortcodes {
 						$properties['render_callback'][1],
 					)
 				);
+
+				// For the Form shortcode, register the [kit] shortcode.
+				add_shortcode(
+					'kit',
+					array(
+						$properties['render_callback'][0],
+						$properties['render_callback'][1],
+					)
+				);
 			}
 		}
 
