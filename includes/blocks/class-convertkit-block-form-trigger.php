@@ -59,6 +59,7 @@ class ConvertKit_Block_Form_Trigger extends ConvertKit_Block {
 		/**
 		 * This will register as:
 		 * - a shortcode, with the name [convertkit_formtrigger].
+		 * - a shortcode, with the name [kit_formtrigger].
 		 * - a Gutenberg block, with the name convertkit/formtrigger.
 		 */
 		return 'formtrigger';

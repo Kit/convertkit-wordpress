@@ -924,6 +924,41 @@ class PageShortcodeFormCest
 	}
 
 	/**
+	 * Test the [kit_form] shortcode works when a valid Form ID is specified.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormShortcodeWithKitPrefix(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-form-shortcode-kit-prefix',
+				'post_content' => '[kit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-form-shortcode-kit-prefix');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that one Kit Form is output in the DOM.
+		$I->seeFormOutput(
+			$I,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			isShortcode: true
+		);
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
