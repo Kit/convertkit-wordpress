@@ -1,3 +1,6 @@
+### 3.4.3 2026-09-17
+* Added: Member Content: Login Form Block and Shortcode
+
 ### 3.4.2 2026-09-15
 * Added: MCP: Prompts and Resources for common tasks
 

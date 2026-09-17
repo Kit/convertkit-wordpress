@@ -83,8 +83,9 @@ function convertKitRecaptchaFormSubmit(token) {
 	// Get the parent form of the submit button.
 	const form = submitButton.closest('form');
 
-	// Submit the form.
-	form.submit();
+	// Submit the form, using requestSubmit() so any submit event listeners are honored
+	// e.g. the Member Content login form, which submits using AJAX.
+	form.requestSubmit();
 }
 
 // Scope the function to the window object as webpack will wrap everything in a closure,
@@ -117,8 +118,9 @@ function convertKitTurnstileFormSubmit(token) {
 		return;
 	}
 
-	// Submit the form.
-	form.submit();
+	// Submit the form, using requestSubmit() so any submit event listeners are honored
+	// e.g. the Member Content login form, which submits using AJAX.
+	form.requestSubmit();
 }
 
 // Scope the function to the window object as webpack will wrap everything in a closure,
