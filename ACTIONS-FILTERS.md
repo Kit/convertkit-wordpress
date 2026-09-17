@@ -141,6 +141,12 @@
 						<td><a href="#convertkit_block_form_trigger_render"><code>convertkit_block_form_trigger_render</code></a></td>
 						<td>Filter the block's content immediately before it is output.</td>
 					</tr><tr>
+						<td colspan="3">includes/blocks/class-convertkit-block-member-content-login.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_block_member_content_login_render"><code>convertkit_block_member_content_login_render</code></a></td>
+						<td>Filter the block's content immediately before it is output.</td>
+					</tr><tr>
 						<td colspan="3">includes/class-convertkit-admin-notices.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
@@ -1097,6 +1103,37 @@ add_filter( 'convertkit_block_form_trigger_render', function( $html, $atts ) {
 	return $html;
 }, 10, 2 );
 </pre>
+<h3 id="convertkit_block_member_content_login_render">
+						convertkit_block_member_content_login_render
+						<code>includes/blocks/class-convertkit-block-member-content-login.php::395</code>
+					</h3><h4>Overview</h4>
+						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$html</td>
+							<td>string</td>
+							<td>Kit Member Content Login HTML.</td>
+						</tr><tr>
+							<td>$atts</td>
+							<td>array</td>
+							<td>Block Attributes.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_block_member_content_login_render', function( $html, $atts ) {
+	// ... your code here
+	// Return value
+	return $html;
+}, 10, 2 );
+</pre>
 <h3 id="convertkit_admin_notices_output_  notice">
 						convertkit_admin_notices_output_  notice
 						<code>includes/class-convertkit-admin-notices.php::87</code>
@@ -1462,7 +1499,7 @@ add_filter( 'convertkit_wishlist_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_type">
 						convertkit_output_restrict_content_get_resource_type
-						<code>includes/class-convertkit-output-restrict-content.php::945</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1127</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource Type that the visitor must be subscribed against to access this content, overriding the Post setting. Return false or an empty string to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1493,7 +1530,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_type', function( $r
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_id">
 						convertkit_output_restrict_content_get_resource_id
-						<code>includes/class-convertkit-output-restrict-content.php::983</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1165</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource ID that the visitor must be subscribed against to access this content, overriding the Post setting. Return 0 to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1524,7 +1561,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_id', function( $res
 </pre>
 <h3 id="convertkit_output_restrict_content_content_preview">
 						convertkit_output_restrict_content_content_preview
-						<code>includes/class-convertkit-output-restrict-content.php::1219</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1401</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1555,7 +1592,7 @@ add_filter( 'convertkit_output_restrict_content_content_preview', function( $con
 </pre>
 <h3 id="convertkit_output_restrict_content_call_to_action">
 						convertkit_output_restrict_content_call_to_action
-						<code>includes/class-convertkit-output-restrict-content.php::1233</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1415</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1586,7 +1623,7 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 </pre>
 <h3 id="convertkit_output_restrict_content_container_css_classes">
 						convertkit_output_restrict_content_container_css_classes
-						<code>includes/class-convertkit-output-restrict-content.php::1246</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1428</code>
 					</h3><h4>Overview</h4>
 						<p>Define the container CSS classes to wrap the content preview and call to action within.</p><h4>Parameters</h4>
 					<table>
@@ -1617,7 +1654,7 @@ add_filter( 'convertkit_output_restrict_content_container_css_classes', function
 </pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::1977</code>
+						<code>includes/class-convertkit-output-restrict-content.php::2117</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
@@ -1830,7 +1867,7 @@ add_filter( 'convertkit_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_is_admin_or_frontend_editor">
 						convertkit_is_admin_or_frontend_editor
-						<code>includes/class-wp-convertkit.php::387</code>
+						<code>includes/class-wp-convertkit.php::388</code>
 					</h3><h4>Overview</h4>
 						<p>Filters whether the current request is a WordPress Administration / Frontend Editor request or not. Page Builders can set this to true to allow ConvertKit to load its administration functionality.</p><h4>Parameters</h4>
 					<table>
@@ -2654,7 +2691,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', function( 
 </pre>
 <h3 id="convertkit_restrict_content_register_content_filter">
 						convertkit_restrict_content_register_content_filter
-						<code>includes/class-convertkit-output-restrict-content.php::570</code>
+						<code>includes/class-convertkit-output-restrict-content.php::752</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2807,7 +2844,7 @@ do_action( 'convertkit_initialize_frontend', function(  ) {
 </pre>
 <h3 id="convertkit_initialize_global">
 						convertkit_initialize_global
-						<code>includes/class-wp-convertkit.php::220</code>
+						<code>includes/class-wp-convertkit.php::221</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
