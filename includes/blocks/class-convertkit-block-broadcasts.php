@@ -157,6 +157,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		/**
 		 * This will register as:
 		 * - a shortcode, with the name [convertkit_broadcasts].
+		 * - a shortcode, with the name [kit_broadcasts].
 		 * - a Gutenberg block, with the name convertkit/broadcasts.
 		 */
 		return 'broadcasts';

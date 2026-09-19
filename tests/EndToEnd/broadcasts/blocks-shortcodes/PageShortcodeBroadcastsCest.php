@@ -1132,6 +1132,38 @@ class PageShortcodeBroadcastsCest
 	}
 
 	/**
+	 * Test the [kit_broadcasts] shortcode works.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testBroadcastsShortcodeWithKitPrefix(EndToEndTester $I)
+	{
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-broadcasts-shortcode-kit-prefix',
+				'post_content' => '[kit_broadcasts]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-broadcasts-shortcode-kit-prefix');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
+		$I->seeBroadcastsOutput(
+			$I,
+			[
+				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
+			]
+		);
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
