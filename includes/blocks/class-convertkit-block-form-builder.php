@@ -25,6 +25,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public $subscriber_id = false;
 
 	/**
+	 * Holds the WP_Error object if the form submission failed,
+	 * to display on screen as a notice.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @var     bool|WP_Error
+	 */
+	public $error = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @since   3.0.0
@@ -81,12 +91,24 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		$spam_protection = new ConvertKit_Spam_Protection();
 
 		// Bail if spam protection failed.
-		if ( is_wp_error( $spam_protection->verify( 'convertkit_form_builder' ) ) ) {
+		$spam_protection_result = $spam_protection->verify( 'convertkit_form_builder' );
+		if ( is_wp_error( $spam_protection_result ) ) {
+			$this->error = $spam_protection_result;
 			return;
 		}
 
 		// Sanitize form data.
 		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
+
+		// Bail if the email address is invalid. The entry isn't stored, as an invalid
+		// email address is of no use to the creator.
+		if ( ! is_email( $form_data['email'] ) ) {
+			$this->error = new WP_Error(
+				'convertkit_block_form_builder_invalid_email',
+				__( 'Please enter a valid email address.', 'convertkit' )
+			);
+			return;
+		}
 
 		// Build custom fields, if any were specified.
 		$custom_fields = array();
@@ -121,6 +143,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					)
 				);
 			}
+
+			$this->error = new WP_Error(
+				'convertkit_block_form_builder_no_access_token',
+				__( 'Sorry, we were unable to subscribe you. Please try again later.', 'convertkit' )
+			);
 			return;
 		}
 
@@ -165,6 +192,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					)
 				);
 			}
+
+			$this->error = $result;
 			return;
 		}
 
@@ -801,6 +830,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$subscribed_message->setAttribute( 'class', 'convertkit-form-builder-subscribed-message' );
 			$subscribed_message->appendChild( $parser->html->createTextNode( $atts['text_if_subscribed'] ) );
 			$form->insertBefore( $subscribed_message, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		// Add error notice if the submission failed.
+		if ( is_wp_error( $this->error ) ) {
+			$error_notice = $parser->html->createElement( 'div' );
+			$error_notice->setAttribute( 'class', 'convertkit-form-builder-notice convertkit-form-builder-notice-error' );
+			$error_notice->appendChild( $parser->html->createTextNode( $this->error->get_error_message() ) );
+			$form->insertBefore( $error_notice, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
 		// Add hidden fields.
