@@ -858,7 +858,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			// Focus the email field if it caused the error, so screen readers and
 			// browsers move to it. Otherwise focus the notice, as the error isn't
 			// specific to a field.
-			$email_field = $parser->xpath->query( '//input[@name="convertkit[email]"]' )->item( 0 );
+			// Query within the form, as it's not yet appended to the document.
+			$email_field = $parser->xpath->query( './/input[@name="convertkit[email]"]', $form )->item( 0 );
 			if ( $email_field && $this->error->get_error_code() === 'convertkit_block_form_builder_invalid_email' ) {
 				$email_field->setAttribute( 'aria-invalid', 'true' ); // @phpstan-ignore-line
 				$email_field->setAttribute( 'aria-describedby', $error_id ); // @phpstan-ignore-line
