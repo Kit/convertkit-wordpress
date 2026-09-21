@@ -7,14 +7,14 @@ use Tests\Support\EndToEndTester;
 /**
  * Tests for the Kit Member Content Login's Divi Module using the Divi 5 Theme.
  *
- * @since   3.4.2
+ * @since   3.4.4
  */
 class DiviThemeMemberContentLoginCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -27,7 +27,7 @@ class DiviThemeMemberContentLoginCest
 	/**
 	 * Test the Member Content Login module displays the login form.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -75,7 +75,7 @@ class DiviThemeMemberContentLoginCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */

@@ -17,7 +17,7 @@ class ConvertKit_Divi_Module_Login extends ConvertKit_Divi_Module {
 	/**
 	 * The ConvertKit block name.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @var     string
 	 */
@@ -26,7 +26,7 @@ class ConvertKit_Divi_Module_Login extends ConvertKit_Divi_Module {
 	/**
 	 * The ConvertKit Divi module name.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @var     string
 	 */

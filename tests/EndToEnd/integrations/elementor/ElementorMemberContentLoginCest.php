@@ -7,14 +7,14 @@ use Tests\Support\EndToEndTester;
 /**
  * Tests for the Kit Member Content Login Elementor Widget.
  *
- * @since   3.4.2
+ * @since   3.4.4
  */
 class ElementorMemberContentLoginCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -29,7 +29,7 @@ class ElementorMemberContentLoginCest
 	/**
 	 * Test the Member Content Login widget is registered in Elementor.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -56,7 +56,7 @@ class ElementorMemberContentLoginCest
 	 * Test the Member Content Login widget displays the login form, and the logged in
 	 * text and log out button once the subscriber is logged in.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -113,7 +113,7 @@ class ElementorMemberContentLoginCest
 	 * testMemberContentLoginWidgetIsRegistered() above is a sanity check that the widget is registered
 	 * and available to users in Elementor.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I          Tester.
 	 * @param   string         $title      Page Title.
@@ -175,7 +175,7 @@ class ElementorMemberContentLoginCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */

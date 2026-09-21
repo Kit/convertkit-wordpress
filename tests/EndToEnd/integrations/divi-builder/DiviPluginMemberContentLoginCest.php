@@ -7,14 +7,14 @@ use Tests\Support\EndToEndTester;
 /**
  * Tests for the Kit Member Content Login's Divi Module using the Divi 4 Builder Plugin.
  *
- * @since   3.4.2
+ * @since   3.4.4
  */
 class DiviPluginMemberContentLoginCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -28,7 +28,7 @@ class DiviPluginMemberContentLoginCest
 	/**
 	 * Test the Member Content Login module works using Divi's backend editor.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -61,7 +61,7 @@ class DiviPluginMemberContentLoginCest
 	/**
 	 * Test the Member Content Login module works using Divi's frontend editor.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -92,7 +92,7 @@ class DiviPluginMemberContentLoginCest
 	 * Test the Member Content Login module displays the expected message when the Plugin
 	 * has no credentials.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -120,7 +120,7 @@ class DiviPluginMemberContentLoginCest
 	 * Test the Member Content Login module displays the logged in text and log out button
 	 * when the subscriber is logged in.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -162,7 +162,7 @@ class DiviPluginMemberContentLoginCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   3.4.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
