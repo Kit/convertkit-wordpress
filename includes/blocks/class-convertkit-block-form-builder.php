@@ -35,6 +35,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public $error = false;
 
 	/**
+	 * Holds the number of times this block has been rendered on the Post,
+	 * to ensure error notice IDs are unique.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @var     int
+	 */
+	public $render_count = 0;
+
+	/**
 	 * Constructor
 	 *
 	 * @since   3.0.0
@@ -834,10 +844,28 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Add error notice if the submission failed.
 		if ( is_wp_error( $this->error ) ) {
+			++$this->render_count;
+			$error_id = 'convertkit-form-builder-error-' . $this->render_count;
+
 			$error_notice = $parser->html->createElement( 'div' );
+			$error_notice->setAttribute( 'id', $error_id );
 			$error_notice->setAttribute( 'class', 'convertkit-form-builder-notice convertkit-form-builder-notice-error' );
+			$error_notice->setAttribute( 'role', 'alert' );
+			$error_notice->setAttribute( 'tabindex', '-1' );
 			$error_notice->appendChild( $parser->html->createTextNode( $this->error->get_error_message() ) );
 			$form->insertBefore( $error_notice, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
+			// Focus the email field if it caused the error, so screen readers and
+			// browsers move to it. Otherwise focus the notice, as the error isn't
+			// specific to a field.
+			$email_field = $parser->xpath->query( '//input[@name="convertkit[email]"]' )->item( 0 );
+			if ( $email_field && $this->error->get_error_code() === 'convertkit_block_form_builder_invalid_email' ) {
+				$email_field->setAttribute( 'aria-invalid', 'true' ); // @phpstan-ignore-line
+				$email_field->setAttribute( 'aria-describedby', $error_id ); // @phpstan-ignore-line
+				$email_field->setAttribute( 'autofocus', 'autofocus' ); // @phpstan-ignore-line
+			} else {
+				$error_notice->setAttribute( 'autofocus', 'autofocus' );
+			}
 		}
 
 		// Add hidden fields.

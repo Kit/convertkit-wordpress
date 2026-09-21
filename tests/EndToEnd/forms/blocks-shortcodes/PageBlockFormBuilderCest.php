@@ -1486,9 +1486,17 @@ class PageBlockFormBuilderCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm an error notice is displayed, and the form is still displayed.
-		$I->waitForElementVisible('div.convertkit-form-builder-notice-error');
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
 		$I->see('Please enter a valid email address.');
 		$I->seeElementInDOM('input[name="convertkit[email]"]');
+
+		// Confirm the email field is flagged as invalid, described by the notice and focused.
+		$I->seeElementInDOM('input[name="convertkit[email]"][aria-invalid="true"]');
+		$I->seeElementInDOM('input[name="convertkit[email]"][aria-describedby="convertkit-form-builder-error-1"]');
+		$I->assertEquals(
+			'convertkit[email]',
+			$I->executeJS('return document.activeElement.getAttribute("name");')
+		);
 
 		// Confirm the subscribed message is not displayed.
 		$I->dontSeeElementInDOM('div.convertkit-form-builder-subscribed-message');
@@ -1549,9 +1557,13 @@ class PageBlockFormBuilderCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm an error notice is displayed.
-		$I->waitForElementVisible('div.convertkit-form-builder-notice-error');
+		// Confirm an error notice is displayed and focused, as the error isn't specific to a field.
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
 		$I->see('Sorry, we were unable to subscribe you. Please try again later.');
+		$I->assertEquals(
+			'convertkit-form-builder-error-1',
+			$I->executeJS('return document.activeElement.getAttribute("id");')
+		);
 	}
 
 	/**

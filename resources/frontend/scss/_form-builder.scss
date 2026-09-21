@@ -11,6 +11,9 @@
 		padding: 10px;
 		box-sizing: border-box;
 		font-family: inherit;
+
+		/* Leave room above the field when it's focused and scrolled to on error. */
+		scroll-margin-top: 30px;
 	}
 
 	label {
@@ -32,6 +35,7 @@ form {
 	.convertkit-form-builder-notice {
 		display: inline-block;
 		width: 100%;
+		scroll-margin-top: 30px;
 		margin: 0 0 20px 0;
 		padding: 0 0 0 30px;
 		box-sizing: border-box;
