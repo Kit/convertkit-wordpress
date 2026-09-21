@@ -1322,11 +1322,19 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
+		// Confirm an error notice is displayed and focused, as the error isn't specific to a field.
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
+		$I->see('Google reCAPTCHA failed');
+		$I->assertEquals(
+			'convertkit-form-builder-error-1',
+			$I->executeJS('return document.activeElement.getAttribute("id");')
+		);
+
+		// Confirm the subscribed message is not displayed.
+		$I->dontSeeElementInDOM('div.convertkit-form-builder-subscribed-message');
+
 		// Confirm that the email address was not added to Kit, as reCAPTCHA score failed.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
-
-		// Confirm an error notice is displayed.
-		$I->seeElementInDOM('div.wp-block-convertkit-form-builder div.convertkit-form-builder-notice-error');
 	}
 
 	/**
