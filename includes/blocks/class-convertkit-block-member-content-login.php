@@ -59,6 +59,7 @@ class ConvertKit_Block_Member_Content_Login extends ConvertKit_Block {
 		/**
 		 * This will register as:
 		 * - a shortcode, with the name [convertkit_login].
+		 * - a shortcode, with the name [kit_login].
 		 * - a Gutenberg block, with the name convertkit/login.
 		 */
 		return 'login';
