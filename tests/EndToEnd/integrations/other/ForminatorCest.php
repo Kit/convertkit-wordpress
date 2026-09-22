@@ -655,7 +655,7 @@ class ForminatorCest
 
 		// Confirm the warning displays, naming the Forminator Form.
 		$I->seeElementInDOM('div.notice-warning');
-		$I->see('The following Forminator Forms subscribe email addresses to Kit, but have no Captcha field:');
+		$I->see('The following Forminator Forms subscribe email addresses to Kit, but have no spam protection:');
 		$I->see('Forminator Form');
 	}
 
@@ -688,6 +688,81 @@ class ForminatorCest
 
 		// Confirm no warning displays.
 		$I->dontSeeElementInDOM('div.notice-warning');
+	}
+
+	/**
+	 * Tests that no warning displays when a Forminator Form subscribes to Kit,
+	 * and has honeypot protection enabled.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsForminatorSpamProtectionWarningDoesNotDisplayWhenHoneypotEnabled(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Forminator Form with honeypot protection enabled.
+		$forminatorFormID = $this->_createForminatorFormWithHoneypot($I);
+
+		// Load Forminator Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=forminator');
+
+		// Map the Forminator Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_forminator_settings_' . $forminatorFormID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm no warning displays.
+		$I->dontSeeElementInDOM('div.notice-warning');
+	}
+
+	/**
+	 * Creates a Forminator Form with honeypot protection enabled.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 * @return  int                     Form ID
+	 */
+	private function _createForminatorFormWithHoneypot(EndToEndTester $I)
+	{
+		return $I->havePostInDatabase(
+			[
+				'post_name'   => 'forminator-form-honeypot',
+				'post_title'  => 'Forminator Form Honeypot',
+				'post_type'   => 'forminator_forms',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					'forminator_form_meta' => [
+						'fields'   => [
+							[
+								'id'          => 'name-1',
+								'element_id'  => 'name-1',
+								'type'        => 'name',
+								'required'    => 'true',
+								'field_label' => 'First Name',
+							],
+							[
+								'id'          => 'email-1',
+								'element_id'  => 'email-1',
+								'type'        => 'email',
+								'required'    => 'true',
+								'field_label' => 'Email Address',
+							],
+						],
+						'settings' => [
+							'enable-ajax' => 'true',
+							'honeypot'    => 'true',
+						],
+					],
+				],
+			]
+		);
 	}
 
 	/**

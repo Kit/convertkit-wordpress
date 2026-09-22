@@ -205,7 +205,7 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 				continue;
 			}
 
-			if ( $this->form_has_captcha_field( $forminator_form['id'] ) ) {
+			if ( $this->form_has_spam_protection( $forminator_form['id'] ) ) {
 				continue;
 			}
 
@@ -219,25 +219,27 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 
 		$this->output_warning(
 			sprintf(
-				'%s <strong>%s</strong>. %s %s',
-				esc_html__( 'The following Forminator Forms subscribe email addresses to Kit, but have no Captcha field:', 'convertkit' ),
+				'%s <strong>%s</strong>. %s <a href="%s" target="_blank">%s</a>',
+				esc_html__( 'The following Forminator Forms subscribe email addresses to Kit, but have no spam protection:', 'convertkit' ),
 				esc_html( implode( ', ', $unprotected_forms ) ),
 				esc_html__( 'Bots may submit fake email addresses, which are then added to your Kit account.', 'convertkit' ),
-				esc_html__( 'Add a Captcha field to each form in Forminator.', 'convertkit' )
+				'https://wpmudev.com/docs/wpmu-dev-plugins/forminator/#captcha-field',
+				esc_html__( 'Add a Captcha field, or enable honeypot protection, in Forminator.', 'convertkit' )
 			)
 		);
 
 	}
 
 	/**
-	 * Determines if the given Forminator Form has a Captcha field.
+	 * Determines if the given Forminator Form has spam protection, by way of a
+	 * Captcha field or Forminator's honeypot setting.
 	 *
 	 * @since   3.4.4
 	 *
 	 * @param   int $forminator_form_id   Forminator Form ID.
 	 * @return  bool
 	 */
-	private function form_has_captcha_field( $forminator_form_id ) {
+	private function form_has_spam_protection( $forminator_form_id ) {
 
 		if ( ! class_exists( 'Forminator_API' ) ) {
 			return false;
@@ -250,10 +252,16 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 			return true;
 		}
 
+		// Determine if the form has a Captcha field.
 		foreach ( $form->get_fields() as $field ) {
 			if ( $field->type === 'captcha' ) {
 				return true;
 			}
+		}
+
+		// Determine if the form has honeypot protection enabled.
+		if ( isset( $form->settings['honeypot'] ) && filter_var( $form->settings['honeypot'], FILTER_VALIDATE_BOOLEAN ) ) {
+			return true;
 		}
 
 		return false;
