@@ -438,6 +438,83 @@ class ContactForm7FormCest
 	}
 
 	/**
+	 * Tests that a warning displays when a Contact Form 7 Form subscribes to Kit,
+	 * and Contact Form 7 has no spam protection enabled.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsContactForm7SpamProtectionWarningDisplays(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Contact Form 7 Form.
+		$contactForm7ID = $this->_createContactForm7Form($I);
+
+		// Load Contact Form 7 Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
+
+		// Confirm no warning displays, as the Form doesn't subscribe to Kit.
+		$I->dontSeeElementInDOM('div.notice-warning');
+
+		// Map the Contact Form 7 Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the warning displays.
+		$I->seeElementInDOM('div.notice-warning');
+		$I->see('One or more Contact Form 7 Forms below subscribe email addresses to Kit, but Contact Form 7 has no spam protection enabled.');
+		$I->seeElementInDOM('div.notice-warning a[href*="page=wpcf7-integration"]');
+	}
+
+	/**
+	 * Tests that no warning displays when a Contact Form 7 Form subscribes to Kit,
+	 * and Contact Form 7 has reCAPTCHA enabled.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsContactForm7SpamProtectionWarningDoesNotDisplayWhenRecaptchaEnabled(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Enable reCAPTCHA in Contact Form 7.
+		$I->haveOptionInDatabase(
+			'wpcf7',
+			[
+				'recaptcha' => [
+					'site-key' => 'secret-key',
+				],
+			]
+		);
+
+		// Create Contact Form 7 Form.
+		$contactForm7ID = $this->_createContactForm7Form($I);
+
+		// Load Contact Form 7 Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
+
+		// Map the Contact Form 7 Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm no warning displays.
+		$I->dontSeeElementInDOM('div.notice-warning');
+	}
+
+	/**
 	 * Maps the given resource name to the created Contact Form 7 Form,
 	 * embeds the shortcode on a new Page, returning the Page ID.
 	 *

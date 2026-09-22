@@ -129,6 +129,10 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 			return;
 		}
 
+		// Warn the user if any Contact Form 7 Form subscribes to Kit, and Contact Form 7
+		// has no spam protection enabled.
+		$this->maybe_output_spam_protection_warning( $cf7_forms );
+
 		// Get Creator Network Recommendations script.
 		$creator_network_recommendations         = new ConvertKit_Resource_Creator_Network_Recommendations( 'contact_form_7' );
 		$creator_network_recommendations_enabled = $creator_network_recommendations->enabled();
@@ -199,6 +203,75 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 
 		// Render submit button.
 		submit_button();
+
+	}
+
+	/**
+	 * Outputs a warning if one or more Contact Form 7 Forms subscribe email addresses
+	 * to Kit, and Contact Form 7 has no spam protection enabled.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   array $cf7_forms   Contact Form 7 Forms.
+	 */
+	private function maybe_output_spam_protection_warning( $cf7_forms ) {
+
+		// Bail if Contact Form 7 has spam protection enabled.
+		if ( $this->has_spam_protection() ) {
+			return;
+		}
+
+		// Bail if no Contact Form 7 Form subscribes to Kit.
+		$subscribes_to_kit = false;
+		foreach ( $cf7_forms as $cf7_form ) {
+			if ( $this->settings->get_convertkit_subscribe_setting_by_cf7_form_id( $cf7_form['id'] ) ) {
+				$subscribes_to_kit = true;
+				break;
+			}
+		}
+		if ( ! $subscribes_to_kit ) {
+			return;
+		}
+
+		$this->output_warning(
+			sprintf(
+				'%s %s <a href="%s">%s</a>',
+				esc_html__( 'One or more Contact Form 7 Forms below subscribe email addresses to Kit, but Contact Form 7 has no spam protection enabled.', 'convertkit' ),
+				esc_html__( 'Bots may submit fake email addresses, which are then added to your Kit account.', 'convertkit' ),
+				esc_url( admin_url( 'admin.php?page=wpcf7-integration' ) ),
+				esc_html__( 'Enable reCAPTCHA or Turnstile in Contact Form 7.', 'convertkit' )
+			)
+		);
+
+	}
+
+	/**
+	 * Determines if Contact Form 7 has a spam protection service configured.
+	 *
+	 * Contact Form 7 configures reCAPTCHA and Turnstile site wide, applying to every
+	 * Contact Form 7 Form. Akismet is deliberately excluded, as it only checks forms
+	 * whose fields define Akismet options.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @return  bool
+	 */
+	private function has_spam_protection() {
+
+		if ( ! class_exists( 'WPCF7_Integration' ) ) {
+			return false;
+		}
+
+		$integration = WPCF7_Integration::get_instance();
+
+		foreach ( array( 'recaptcha', 'turnstile' ) as $name ) {
+			$service = $integration->get_service( $name );
+			if ( $service && $service->is_active() ) {
+				return true;
+			}
+		}
+
+		return false;
 
 	}
 
