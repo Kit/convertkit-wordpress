@@ -25,3 +25,10 @@
 	background: url(../images/block-icon-product.svg) center no-repeat;
 	background-size: 24px 24px;
 }
+
+.eicon-convertkit-login {
+	width: 24px;
+	height: 24px;
+	background: url(../images/block-icon-login.svg) center no-repeat;
+	background-size: 24px 24px;
+}
