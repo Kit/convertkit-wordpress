@@ -440,11 +440,12 @@ abstract class ConvertKit_Admin_Section_Base {
 	 * @since   3.4.4
 	 *
 	 * @param   string $warning_message  Warning Message.
+	 * @param   string $css_class        Additional CSS class for the notice.
 	 */
-	public function output_warning( $warning_message ) {
+	public function output_warning( $warning_message, $css_class = '' ) {
 
 		?>
-		<div class="notice notice-warning">
+		<div class="notice notice-warning <?php echo esc_attr( sanitize_html_class( $css_class ) ); ?>">
 			<p>
 				<?php
 				echo wp_kses(

@@ -225,7 +225,8 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 				esc_html__( 'Bots may submit fake email addresses, which are then added to your Kit account.', 'convertkit' ),
 				'https://wpmudev.com/docs/wpmu-dev-plugins/forminator/#captcha-field',
 				esc_html__( 'Add a Captcha field, or enable honeypot protection, in Forminator.', 'convertkit' )
-			)
+			),
+			'convertkit-spam-protection-warning'
 		);
 
 	}
@@ -248,13 +249,14 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 		$form = Forminator_API::get_form( $forminator_form_id );
 
 		// Assume the form is protected if it can't be read, so we don't warn incorrectly.
-		if ( is_wp_error( $form ) || ! is_object( $form ) || ! method_exists( $form, 'get_fields' ) ) {
+		if ( is_wp_error( $form ) ) {
 			return true;
 		}
 
 		// Determine if the form has a Captcha field.
 		foreach ( $form->get_fields() as $field ) {
-			if ( $field->type === 'captcha' ) {
+			$field_array = $field->to_formatted_array();
+			if ( ! empty( $field_array['type'] ) && $field_array['type'] === 'captcha' ) {
 				return true;
 			}
 		}

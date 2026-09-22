@@ -243,7 +243,8 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 				esc_html__( 'Bots may submit fake email addresses, which are then added to your Kit account.', 'convertkit' ),
 				esc_url( admin_url( 'admin.php?page=wpcf7-integration' ) ),
 				esc_html__( 'Enable reCAPTCHA, Turnstile or Akismet in Contact Form 7.', 'convertkit' )
-			)
+			),
+			'convertkit-spam-protection-warning'
 		);
 
 	}
