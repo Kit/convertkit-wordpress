@@ -397,6 +397,32 @@ class ContactForm7FormCest
 	}
 
 	/**
+	 * Creates a Contact Form 7 Form whose fields define Akismet options.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 * @return  int                     Form ID
+	 */
+	private function _createContactForm7FormWithAkismet(EndToEndTester $I)
+	{
+		return $I->havePostInDatabase(
+			[
+				'post_name'   => 'contact-form-7-form-akismet',
+				'post_title'  => 'Contact Form 7 Form Akismet',
+				'post_type'   => 'wpcf7_contact_form',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					// Don't attempt to send mail, as this will fail when run through a GitHub Action.
+					// @see https://contactform7.com/additional-settings/#skipping-mail.
+					'_form'                => '[text* your-name akismet:author] [email* your-email akismet:author_email] [text* your-subject] [textarea your-message] [submit "Submit"]',
+					'_additional_settings' => 'skip_mail: on',
+				],
+			]
+		);
+	}
+
+	/**
 	 * Tests that existing settings are automatically migrated when updating
 	 * the Plugin to 2.5.2 or higher, with:
 	 * - Form IDs prefixed with 'form:',
@@ -467,9 +493,10 @@ class ContactForm7FormCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm the warning displays.
+		// Confirm the warning displays, naming the Contact Form 7 Form.
 		$I->seeElementInDOM('div.notice-warning');
-		$I->see('One or more Contact Form 7 Forms below subscribe email addresses to Kit, but Contact Form 7 has no spam protection enabled.');
+		$I->see('The following Contact Form 7 Forms subscribe email addresses to Kit, but have no spam protection:');
+		$I->see('Contact Form 7 Form');
 		$I->seeElementInDOM('div.notice-warning a[href*="page=wpcf7-integration"]');
 	}
 
@@ -512,6 +539,44 @@ class ContactForm7FormCest
 
 		// Confirm no warning displays.
 		$I->dontSeeElementInDOM('div.notice-warning');
+	}
+
+	/**
+	 * Tests that no warning displays when a Contact Form 7 Form subscribes to Kit,
+	 * and the Form's fields define Akismet options.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsContactForm7SpamProtectionWarningDoesNotDisplayWhenAkismetEnabled(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate and configure Akismet.
+		$I->activateThirdPartyPlugin($I, 'akismet');
+		$I->haveOptionInDatabase('wordpress_api_key', 'akismet-api-key');
+
+		// Create Contact Form 7 Form, with Akismet options defined on its fields.
+		$contactForm7ID = $this->_createContactForm7FormWithAkismet($I);
+
+		// Load Contact Form 7 Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
+
+		// Map the Contact Form 7 Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm no warning displays.
+		$I->dontSeeElementInDOM('div.notice-warning');
+
+		// Deactivate Akismet.
+		$I->deactivateThirdPartyPlugin($I, 'akismet');
 	}
 
 	/**

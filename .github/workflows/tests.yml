@@ -65,7 +65,7 @@ jobs:
       test-group: ${{ matrix.test-group }}
       block-editor-v3-enabled: 'true'
       db-sql-dump-file: 'tests/Support/Data/dump.sql'
-      install-plugins: "admin-menu-editor autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui debloat elementor forminator jetpack-boost mailchimp-for-wp rocket-lazy-load woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress"
+      install-plugins: "admin-menu-editor akismet autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui debloat elementor forminator jetpack-boost mailchimp-for-wp rocket-lazy-load woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress"
       install-plugins-urls: "https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip"
       install-themes-urls: "http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/03/Divi_5.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/01/impeka.zip"
 
