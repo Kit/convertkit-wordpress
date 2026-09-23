@@ -172,23 +172,30 @@ class WPWidget extends \Codeception\Module
 		}
 
 		// Save.
-		$I->click('Update');
-
-		// Wait for save to complete.
-		$I->waitForElementVisible('.components-snackbar__content');
-		$result = $I->grabTextFrom('.components-snackbar__content');
-
 		// Sometimes, WordPress throws an intermittent "There was an error. The response is not a valid JSON response."
 		// when saving Widgets in WordPress 5.8+ using the block editor
 		// It's not clear why - see https://wordpress.org/support/topic/widget-config-json-error/, https://wordpress.org/support/topic/there-was-an-error-the-response-is-not-a-valid-json-response/
 		// If this happens, attempt to save again after a couple of seconds.
-		if ($result !== 'Widgets saved.') {
-			$I->wait(5);
+		$result = '';
+		for ($attempt = 0; $attempt < 3; $attempt++) {
 			$I->click('Update');
 
 			// Wait for save to complete.
 			$I->waitForElementVisible('.components-snackbar__content');
+			$result = $I->grabTextFrom('.components-snackbar__content');
+
+			if ($result === 'Widgets saved.') {
+				break;
+			}
+
+			// Wait for this notice to clear, so the next attempt doesn't read it again.
+			$I->waitForElementNotVisible('.components-snackbar__content', 15);
+			$I->wait(5);
 		}
+
+		// Confirm the widgets saved, so a failed save is reported here, and not as
+		// missing output when viewing the frontend site.
+		$I->assertEquals('Widgets saved.', $result);
 	}
 
 	/**

@@ -162,6 +162,9 @@ class WPGutenberg extends \Codeception\Module
 		// Close block inserter.
 		$this->clickAddGutenbergBlockButton($I);
 
+		// Wait for the block inserter to close.
+		$I->waitForElementNotVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+
 		// If a Block configuration is specified, apply it to the Block now.
 		if ($blockConfiguration) {
 			$I->waitForElementVisible('.interface-interface-skeleton__sidebar[aria-label="Editor settings"]');
@@ -451,6 +454,9 @@ class WPGutenberg extends \Codeception\Module
 
 		// Close block inserter.
 		$this->clickAddGutenbergBlockButton($I);
+
+		// Wait for the block inserter to close.
+		$I->waitForElementNotVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
 	}
 
 	/**
@@ -484,6 +490,9 @@ class WPGutenberg extends \Codeception\Module
 
 		// Close block inserter.
 		$this->clickAddGutenbergBlockButton($I);
+
+		// Wait for the block inserter to close.
+		$I->waitForElementNotVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
 	}
 
 	/**
