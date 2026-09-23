@@ -1,3 +1,9 @@
+### 3.4.4 2026-09-23
+* Added: Member Content: Divi: Login Widget
+* Added: Member Content: Elementor: Login Widget
+* Fix: Form Builder: Validate email address
+* Fix: Form Builder: Display errors on submission
+
 ### 3.4.3 2026-09-17
 * Added: Member Content: Login Form Block and Shortcode
 
