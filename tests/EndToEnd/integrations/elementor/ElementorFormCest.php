@@ -46,6 +46,10 @@ class ElementorFormCest
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
 
+		// Wait for Elementor to load, as its loading overlay covers the widget panel,
+		// which makes the panel's search field not interactable.
+		$I->waitForElementNotVisible('#elementor-loading');
+
 		// Search for the Kit Form block.
 		$I->waitForElementVisible('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form');

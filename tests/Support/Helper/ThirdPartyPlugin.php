@@ -192,12 +192,24 @@ class ThirdPartyPlugin extends \Codeception\Module
 		$I->waitForElementVisible('#wp-submit');
 		$I->waitForElementVisible('#backtoblog');
 
-		// Fill in the login form.
-		$I->click('#user_login');
-		$I->fillField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
+		// WordPress' login screen focuses and selects the username field 200ms after it loads.
+		// Wait for that to happen before typing, otherwise focus is stolen part way through
+		// completing the form, and the password is typed over the selected username.
+		$I->wait(1);
+
+		// Fill in the login form, retrying if focus was stolen while typing.
+		for ($attempt = 0; $attempt < 3; $attempt++) {
+			$I->fillField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
+			$I->fillField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
+
+			if ($I->grabValueFrom('#user_login') === $_ENV['WORDPRESS_ADMIN_USER']
+				&& $I->grabValueFrom('#user_pass') === $_ENV['WORDPRESS_ADMIN_PASSWORD']) {
+				break;
+			}
+		}
+
+		// Confirm the login form is completed.
 		$I->seeInField('#user_login', $_ENV['WORDPRESS_ADMIN_USER']);
-		$I->click('#user_pass');
-		$I->fillField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
 		$I->seeInField('#user_pass', $_ENV['WORDPRESS_ADMIN_PASSWORD']);
 
 		// Submit.
