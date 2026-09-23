@@ -117,6 +117,7 @@ class WPGutenberg extends \Codeception\Module
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
 		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->waitForElementClickable('.block-editor-inserter__menu input[type=search]');
 		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
 
 		// Let WordPress load any matching block patterns, which reloads the DOM elements.
@@ -397,6 +398,7 @@ class WPGutenberg extends \Codeception\Module
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
 		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->waitForElementClickable('.block-editor-inserter__menu input[type=search]');
 		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
 
 		// Let WordPress load any matching block patterns, which reloads the DOM elements.
@@ -476,6 +478,7 @@ class WPGutenberg extends \Codeception\Module
 		// When the Blocks sidebar appears, search for the block.
 		$I->waitForElementVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
 		$I->seeElementInDOM('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+		$I->waitForElementClickable('.block-editor-inserter__menu input[type=search]');
 		$I->fillField('.block-editor-inserter__menu input[type=search]', $blockName);
 
 		// Let WordPress load any matching block patterns, which reloads the DOM elements.
