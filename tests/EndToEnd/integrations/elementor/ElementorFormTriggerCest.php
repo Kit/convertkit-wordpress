@@ -46,6 +46,7 @@ class ElementorFormTriggerCest
 
 		// Wait for Elementor to load, as its loading overlay covers the widget panel,
 		// which makes the panel's search field not interactable.
+		$I->waitForElementVisible('#elementor-preview-iframe');
 		$I->waitForElementNotVisible('#elementor-loading');
 
 		// Search for the Kit Form Trigger block.
