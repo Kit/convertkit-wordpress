@@ -627,7 +627,7 @@ class ForminatorCest
 	 * Tests that a warning displays when a Forminator Form subscribes to Kit,
 	 * and has no Captcha field.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -644,7 +644,7 @@ class ForminatorCest
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=forminator');
 
 		// Confirm no warning displays, as the Form doesn't subscribe to Kit.
-		$I->dontSeeElementInDOM('div.convertkit-spam-protection-warning');
+		$I->waitForElementNotVisible('div.convertkit-spam-protection-warning');
 
 		// Map the Forminator Form to a Kit Form.
 		$I->selectOption('#_wp_convertkit_integration_forminator_settings_' . $forminatorFormID, $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -654,7 +654,7 @@ class ForminatorCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm the warning displays, naming the Forminator Form.
-		$I->seeElementInDOM('div.convertkit-spam-protection-warning');
+		$I->waitForElementVisible('div.convertkit-spam-protection-warning');
 		$I->see('The following Forminator Forms subscribe email addresses to Kit, but have no spam protection:');
 		$I->see('Forminator Form');
 	}
@@ -663,7 +663,7 @@ class ForminatorCest
 	 * Tests that no warning displays when a Forminator Form subscribes to Kit,
 	 * and has a Captcha field.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -687,14 +687,14 @@ class ForminatorCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm no warning displays.
-		$I->dontSeeElementInDOM('div.convertkit-spam-protection-warning');
+		$I->waitForElementNotVisible('div.convertkit-spam-protection-warning');
 	}
 
 	/**
 	 * Tests that no warning displays when a Forminator Form subscribes to Kit,
 	 * and has honeypot protection enabled.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -718,13 +718,13 @@ class ForminatorCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm no warning displays.
-		$I->dontSeeElementInDOM('div.convertkit-spam-protection-warning');
+		$I->waitForElementNotVisible('div.convertkit-spam-protection-warning');
 	}
 
 	/**
 	 * Creates a Forminator Form with honeypot protection enabled.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 * @return  int                     Form ID
@@ -768,7 +768,7 @@ class ForminatorCest
 	/**
 	 * Creates a Forminator Form with a Captcha field.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 * @return  int                     Form ID

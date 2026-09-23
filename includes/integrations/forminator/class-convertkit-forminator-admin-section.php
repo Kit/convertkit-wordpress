@@ -192,7 +192,7 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 	 * Outputs a warning if one or more Forminator Forms subscribe email addresses
 	 * to Kit, and have no Captcha field.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   array $forminator_forms   Forminator Forms.
 	 */
@@ -235,7 +235,7 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 	 * Determines if the given Forminator Form has spam protection, by way of a
 	 * Captcha field or Forminator's honeypot setting.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   int $forminator_form_id   Forminator Form ID.
 	 * @return  bool

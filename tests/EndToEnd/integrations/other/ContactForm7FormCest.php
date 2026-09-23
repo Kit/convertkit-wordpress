@@ -441,7 +441,7 @@ class ContactForm7FormCest
 	 * Tests that a warning displays when a Contact Form 7 Form subscribes to Kit,
 	 * and Contact Form 7 has no spam protection enabled.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -458,7 +458,7 @@ class ContactForm7FormCest
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
 
 		// Confirm no warning displays, as the Form doesn't subscribe to Kit.
-		$I->dontSeeElementInDOM('div.convertkit-spam-protection-warning');
+		$I->waitForElementNotVisible('div.convertkit-spam-protection-warning');
 
 		// Map the Contact Form 7 Form to a Kit Form.
 		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
@@ -468,17 +468,16 @@ class ContactForm7FormCest
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm the warning displays, naming the Contact Form 7 Form.
-		$I->seeElementInDOM('div.convertkit-spam-protection-warning');
+		$I->waitForElementVisible('div.convertkit-spam-protection-warning a[href*="page=wpcf7-integration"]');
 		$I->see('The following Contact Form 7 Forms subscribe email addresses to Kit, but have no spam protection:');
 		$I->see('Contact Form 7 Form');
-		$I->seeElementInDOM('div.convertkit-spam-protection-warning a[href*="page=wpcf7-integration"]');
 	}
 
 	/**
 	 * Tests that no warning displays when a Contact Form 7 Form subscribes to Kit,
 	 * and Contact Form 7 has reCAPTCHA enabled.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -488,14 +487,11 @@ class ContactForm7FormCest
 		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 
-		// Enable reCAPTCHA in Contact Form 7.
-		$I->haveOptionInDatabase(
-			'wpcf7',
-			[
-				'recaptcha' => [
-					'site-key' => 'secret-key',
-				],
-			]
+		// Enable reCAPTCHA in Contact Form 7 by defining the constants its reCAPTCHA
+		// service reads, so this test doesn't depend on Contact Form 7's option format.
+		$I->haveMuPlugin(
+			'contact-form-7-recaptcha.php',
+			"<?php\ndefine( 'WPCF7_RECAPTCHA_SITEKEY', 'site-key' );\ndefine( 'WPCF7_RECAPTCHA_SECRET', 'secret-key' );"
 		);
 
 		// Create Contact Form 7 Form.
@@ -519,7 +515,7 @@ class ContactForm7FormCest
 	 * Tests that no warning displays when a Contact Form 7 Form subscribes to Kit,
 	 * and the Form's fields define Akismet options.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */

@@ -210,7 +210,7 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 	 * Outputs a warning naming Contact Form 7 Forms that subscribe email addresses
 	 * to Kit, and have no spam protection.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   array $cf7_forms   Contact Form 7 Forms.
 	 */
@@ -235,14 +235,24 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 			return;
 		}
 
+		// Akismet only checks Contact Form 7 Forms whose fields define an `akismet:` option,
+		// so tell the user to configure their fields instead of enabling a provider.
+		if ( $this->has_akismet() ) {
+			$call_to_action_url  = 'https://contactform7.com/spam-filtering-with-akismet/';
+			$call_to_action_text = __( 'Akismet is enabled in Contact Form 7, but these forms do not use it. Add Akismet options to each form\'s fields.', 'convertkit' );
+		} else {
+			$call_to_action_url  = admin_url( 'admin.php?page=wpcf7-integration' );
+			$call_to_action_text = __( 'Enable reCAPTCHA, Turnstile or Akismet in Contact Form 7.', 'convertkit' );
+		}
+
 		$this->output_warning(
 			sprintf(
 				'%s <strong>%s</strong>. %s <a href="%s">%s</a>',
 				esc_html__( 'The following Contact Form 7 Forms subscribe email addresses to Kit, but have no spam protection:', 'convertkit' ),
 				esc_html( implode( ', ', $unprotected_forms ) ),
 				esc_html__( 'Bots may submit fake email addresses, which are then added to your Kit account.', 'convertkit' ),
-				esc_url( admin_url( 'admin.php?page=wpcf7-integration' ) ),
-				esc_html__( 'Enable reCAPTCHA, Turnstile or Akismet in Contact Form 7.', 'convertkit' )
+				esc_url( $call_to_action_url ),
+				esc_html( $call_to_action_text )
 			),
 			'convertkit-spam-protection-warning'
 		);
@@ -252,7 +262,7 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 	/**
 	 * Determines if the given Contact Form 7 Form has spam protection.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   int $cf7_form_id   Contact Form 7 Form ID.
 	 * @return  bool
@@ -273,7 +283,7 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 	 * Determines if Contact Form 7 has reCAPTCHA or Turnstile configured, which
 	 * apply to every Contact Form 7 Form.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @return  bool
 	 */
@@ -297,26 +307,44 @@ class ConvertKit_ContactForm7_Admin_Section extends ConvertKit_Admin_Section_Bas
 	}
 
 	/**
+	 * Determines if Contact Form 7's Akismet service is configured.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @return  bool
+	 */
+	private function has_akismet() {
+
+		if ( ! class_exists( 'WPCF7_Integration' ) ) {
+			return false;
+		}
+
+		$service = WPCF7_Integration::get_instance()->get_service( 'akismet' );
+
+		return ( $service && $service->is_active() );
+
+	}
+
+	/**
 	 * Determines if Akismet checks the given Contact Form 7 Form.
 	 *
 	 * Contact Form 7 only sends a Form to Akismet when one or more of the Form's
 	 * fields define an akismet: option, so an active Akismet service alone doesn't
 	 * mean the Form is checked.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   int $cf7_form_id   Contact Form 7 Form ID.
 	 * @return  bool
 	 */
 	private function form_has_akismet( $cf7_form_id ) {
 
-		if ( ! class_exists( 'WPCF7_Integration' ) || ! class_exists( 'WPCF7_ContactForm' ) ) {
+		if ( ! class_exists( 'WPCF7_ContactForm' ) ) {
 			return false;
 		}
 
 		// Bail if Akismet isn't configured.
-		$service = WPCF7_Integration::get_instance()->get_service( 'akismet' );
-		if ( ! $service || ! $service->is_active() ) {
+		if ( ! $this->has_akismet() ) {
 			return false;
 		}
 

@@ -51,6 +51,10 @@ class ThirdPartyPlugin extends \Codeception\Module
 
 		// Some Plugins redirect to a welcome screen on activation, so check that screen is visible before continuing.
 		switch ($name) {
+			case 'akismet':
+				$I->waitForElementVisible('body.settings_page_akismet-key-config');
+				break;
+
 			case 'convertkit':
 				// Wait for the Plugin Setup Wizard screen to load, if it's expected to display.
 				if ( $wizardExpectsToDisplay ) {

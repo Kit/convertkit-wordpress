@@ -437,7 +437,7 @@ abstract class ConvertKit_Admin_Section_Base {
 	 * Outputs the given warning message in an inline notice, permitting links
 	 * so the message can tell the user where to go.
 	 *
-	 * @since   3.4.4
+	 * @since   3.4.5
 	 *
 	 * @param   string $warning_message  Warning Message.
 	 * @param   string $css_class        Additional CSS class for the notice.
