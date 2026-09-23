@@ -323,6 +323,9 @@ class ContactForm7FormCest
 		// Save.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -469,6 +472,9 @@ class ContactForm7FormCest
 		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $optionName);
 
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

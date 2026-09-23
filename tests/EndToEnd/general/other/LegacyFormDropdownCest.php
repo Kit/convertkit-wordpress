@@ -139,6 +139,9 @@ class LegacyFormDropdownCest
 		);
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Confirm the warning is no longer displayed.
 		$I->waitForElementNotVisible('#convertkit-legacy-settings-warning');
 	}

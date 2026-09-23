@@ -149,6 +149,9 @@ class PluginSettingsGeneralCest
 		// Save Changes to confirm credentials are not lost.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -326,6 +329,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -404,6 +410,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -476,6 +485,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -546,6 +558,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -638,6 +653,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -653,6 +671,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -704,6 +725,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -717,6 +741,9 @@ class PluginSettingsGeneralCest
 		$I->clearField('#cloudflare_turnstile_site_key');
 		$I->clearField('#cloudflare_turnstile_secret_key');
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -748,6 +775,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -759,6 +789,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -789,6 +822,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -800,6 +836,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -831,6 +870,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -851,6 +893,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -888,6 +933,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -899,6 +947,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -930,6 +981,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -941,6 +995,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -993,6 +1050,9 @@ class PluginSettingsGeneralCest
 		// Click the Save Changes button.
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -1010,6 +1070,9 @@ class PluginSettingsGeneralCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

@@ -207,6 +207,9 @@ class RestrictContentSettingsCest
 		$I->checkOption('#no_css');
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Create Restricted Content Page.
 		$pageID = $I->createRestrictedContentPage(
 			$I,
@@ -254,6 +257,9 @@ class RestrictContentSettingsCest
 
 		// Click the Save Changes button.
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

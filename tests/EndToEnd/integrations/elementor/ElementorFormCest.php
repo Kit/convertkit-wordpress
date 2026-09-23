@@ -52,7 +52,7 @@ class ElementorFormCest
 		$I->waitForElementNotVisible('#elementor-loading');
 
 		// Search for the Kit Form block.
-		$I->waitForElementVisible('#elementor-panel-elements-search-input');
+		$I->waitForElementClickable('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form');
 
 		// Confirm that the Form widget is displayed as an option.

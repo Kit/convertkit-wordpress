@@ -50,7 +50,7 @@ class ElementorBroadcastsCest
 		$I->waitForElementNotVisible('#elementor-loading');
 
 		// Search for the Kit Broadcasts block.
-		$I->waitForElementVisible('#elementor-panel-elements-search-input');
+		$I->waitForElementClickable('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Broadcasts');
 
 		// Confirm that the Broadcasts widget is displayed as an option.
@@ -81,7 +81,7 @@ class ElementorBroadcastsCest
 		$I->waitForElementNotVisible('#elementor-loading');
 
 		// Search for the Kit Broadcasts block.
-		$I->waitForElementVisible('#elementor-panel-elements-search-input');
+		$I->waitForElementClickable('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Broadcasts');
 
 		// Insert the Broadcasts widget.

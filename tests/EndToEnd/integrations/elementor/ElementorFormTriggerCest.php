@@ -50,7 +50,7 @@ class ElementorFormTriggerCest
 		$I->waitForElementNotVisible('#elementor-loading');
 
 		// Search for the Kit Form Trigger block.
-		$I->waitForElementVisible('#elementor-panel-elements-search-input');
+		$I->waitForElementClickable('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form Trigger');
 
 		// Confirm that the Form Trigger widget is displayed as an option.

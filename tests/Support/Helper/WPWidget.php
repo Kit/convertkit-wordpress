@@ -122,9 +122,12 @@ class WPWidget extends \Codeception\Module
 		// If we don't do this, we get stale reference errors when trying to click a block to insert.
 		$I->wait(2);
 
-		$I->waitForElementVisible('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
-		$I->seeElementInDOM('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+		$I->waitForElementClickable('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
 		$I->click('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
+
+		// Confirm the block inserted, so a failed insertion is reported here, and not as
+		// missing output when viewing the frontend site.
+		$I->waitForElementVisible('.wp-block-' . $blockProgrammaticName);
 
 		// Close block inserter.
 		$I->click('button.edit-widgets-header-toolbar__inserter-toggle');
@@ -178,26 +181,22 @@ class WPWidget extends \Codeception\Module
 		// when saving Widgets in WordPress 5.8+ using the block editor
 		// It's not clear why - see https://wordpress.org/support/topic/widget-config-json-error/, https://wordpress.org/support/topic/there-was-an-error-the-response-is-not-a-valid-json-response/
 		// If this happens, attempt to save again after a couple of seconds.
-		$result = '';
-		for ($attempt = 0; $attempt < 3; $attempt++) {
-			$I->click('Update');
+		$I->click('Update');
 
-			// Wait for save to complete.
-			$I->waitForElementVisible('.components-snackbar__content');
-			$result = $I->grabTextFrom('.components-snackbar__content');
+		// Wait for the save to complete.
+		$I->waitForElementVisible('.components-snackbar__content');
 
-			if ($result === 'Widgets saved.') {
-				break;
-			}
-
-			// Wait for this notice to clear, so the next attempt doesn't read it again.
+		// If this happens, attempt to save again.
+		if ($I->grabTextFrom('.components-snackbar__content') !== 'Widgets saved.') {
+			// Wait for this notice to clear, so we read the next save's notice and not this one.
 			$I->waitForElementNotVisible('.components-snackbar__content', 15);
-			$I->wait(5);
+			$I->click('Update');
+			$I->waitForElementVisible('.components-snackbar__content');
 		}
 
 		// Confirm the widgets saved, so a failed save is reported here, and not as
 		// missing output when viewing the frontend site.
-		$I->assertEquals('Widgets saved.', $result);
+		$I->see('Widgets saved.', '.components-snackbar__content');
 	}
 
 	/**
