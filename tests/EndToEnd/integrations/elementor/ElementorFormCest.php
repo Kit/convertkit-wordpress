@@ -52,9 +52,6 @@ class ElementorFormCest
 		$I->waitForElementNotVisible('#elementor-loading');
 
 		// Search for the Kit Form block.
-		// Wait for Elementor to render its widgets. It renders the widget category
-		// containers first, and its search field isn't interactable until the widgets
-		// within them have rendered.
 		$I->waitForElementVisible('#elementor-panel-page-elements .elementor-element');
 		$I->waitForElementClickable('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form');
