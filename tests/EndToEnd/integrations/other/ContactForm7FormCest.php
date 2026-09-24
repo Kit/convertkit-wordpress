@@ -438,6 +438,131 @@ class ContactForm7FormCest
 	}
 
 	/**
+	 * Tests that a warning displays when a Contact Form 7 Form subscribes to Kit,
+	 * and Contact Form 7 has no spam protection enabled.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsContactForm7SpamProtectionWarningDisplays(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Contact Form 7 Form.
+		$contactForm7ID = $this->_createContactForm7Form($I);
+
+		// Load Contact Form 7 Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
+
+		// Confirm no warning displays, as the Form doesn't subscribe to Kit.
+		$I->waitForElementNotVisible('div.convertkit-spam-protection-warning');
+
+		// Map the Contact Form 7 Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the warning displays, naming the Contact Form 7 Form.
+		$I->waitForElementVisible('div.convertkit-spam-protection-warning a[href*="page=wpcf7-integration"]');
+		$I->see('The following Contact Form 7 Forms subscribe email addresses to Kit, but have no spam protection:');
+		$I->see('Contact Form 7 Form');
+	}
+
+	/**
+	 * Tests that no warning displays when a Contact Form 7 Form subscribes to Kit,
+	 * and Contact Form 7 has reCAPTCHA enabled.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsContactForm7SpamProtectionWarningDoesNotDisplayWhenRecaptchaEnabled(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Enable reCAPTCHA in Contact Form 7 by defining the constants its reCAPTCHA
+		// service reads, so this test doesn't depend on Contact Form 7's option format.
+		$I->haveMuPlugin(
+			'contact-form-7-recaptcha.php',
+			"<?php\ndefine( 'WPCF7_RECAPTCHA_SITEKEY', 'site-key' );\ndefine( 'WPCF7_RECAPTCHA_SECRET', 'secret-key' );"
+		);
+
+		// Create Contact Form 7 Form.
+		$contactForm7ID = $this->_createContactForm7Form($I);
+
+		// Load Contact Form 7 Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
+
+		// Map the Contact Form 7 Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm no warning displays.
+		$I->dontSeeElementInDOM('div.convertkit-spam-protection-warning');
+	}
+
+	/**
+	 * Tests that no warning displays when a Contact Form 7 Form subscribes to Kit,
+	 * and the Form's fields define Akismet options.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSettingsContactForm7SpamProtectionWarningDoesNotDisplayWhenAkismetEnabled(EndToEndTester $I)
+	{
+		// Setup Kit Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Activate and configure Akismet.
+		$I->haveOptionInDatabase('wordpress_api_key', 'akismet-api-key');
+		$I->activateThirdPartyPlugin($I, 'akismet');
+
+		// Create Contact Form 7 Form, with Akismet options defined on its fields.
+		$contactForm7ID = $I->havePostInDatabase(
+			[
+				'post_name'   => 'contact-form-7-form-akismet',
+				'post_title'  => 'Contact Form 7 Form Akismet',
+				'post_type'   => 'wpcf7_contact_form',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					// Don't attempt to send mail, as this will fail when run through a GitHub Action.
+					// @see https://contactform7.com/additional-settings/#skipping-mail.
+					'_form'                => '[text* your-name akismet:author] [email* your-email akismet:author_email] [text* your-subject] [textarea your-message] [submit "Submit"]',
+					'_additional_settings' => 'skip_mail: on',
+				],
+			]
+		);
+
+		// Load Contact Form 7 Plugin Settings.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&tab=contactform7');
+
+		// Map the Contact Form 7 Form to a Kit Form.
+		$I->selectOption('#_wp_convertkit_integration_contactform7_settings_' . $contactForm7ID, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		$I->click('Save Changes');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm no warning displays.
+		$I->dontSeeElementInDOM('div.convertkit-spam-protection-warning');
+
+		// Deactivate Akismet.
+		$I->deactivateThirdPartyPlugin($I, 'akismet');
+	}
+
+	/**
 	 * Maps the given resource name to the created Contact Form 7 Form,
 	 * embeds the shortcode on a new Page, returning the Page ID.
 	 *

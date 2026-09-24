@@ -116,6 +116,9 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 			return;
 		}
 
+		// Warn the user if any Forminator Form subscribes to Kit, and has no Captcha field.
+		$this->maybe_output_spam_protection_warning( $forminator_forms );
+
 		// Get Creator Network Recommendations script.
 		$creator_network_recommendations         = new ConvertKit_Resource_Creator_Network_Recommendations( 'forminator' );
 		$creator_network_recommendations_enabled = $creator_network_recommendations->enabled();
@@ -182,6 +185,88 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 
 		// Render submit button.
 		submit_button();
+
+	}
+
+	/**
+	 * Outputs a warning if one or more Forminator Forms subscribe email addresses
+	 * to Kit, and have no Captcha field.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   array $forminator_forms   Forminator Forms.
+	 */
+	private function maybe_output_spam_protection_warning( $forminator_forms ) {
+
+		// Build a list of Forminator Forms that subscribe to Kit, with no Captcha field.
+		$unprotected_forms = array();
+		foreach ( $forminator_forms as $forminator_form ) {
+			if ( ! $this->settings->get_convertkit_subscribe_setting_by_forminator_form_id( $forminator_form['id'] ) ) {
+				continue;
+			}
+
+			if ( $this->form_has_spam_protection( $forminator_form['id'] ) ) {
+				continue;
+			}
+
+			$unprotected_forms[] = $forminator_form['name'];
+		}
+
+		// Bail if all Forminator Forms subscribing to Kit have a Captcha field.
+		if ( ! count( $unprotected_forms ) ) {
+			return;
+		}
+
+		$this->output_warning(
+			sprintf(
+				'%s <strong>%s</strong>. %s <a href="%s" target="_blank">%s</a>',
+				esc_html__( 'The following Forminator Forms subscribe email addresses to Kit, but have no spam protection:', 'convertkit' ),
+				esc_html( implode( ', ', $unprotected_forms ) ),
+				esc_html__( 'Bots may submit fake email addresses, which are then added to your Kit account.', 'convertkit' ),
+				'https://wpmudev.com/docs/wpmu-dev-plugins/forminator/#captcha-field',
+				esc_html__( 'Add a Captcha field, or enable honeypot protection, in Forminator.', 'convertkit' )
+			),
+			'convertkit-spam-protection-warning'
+		);
+
+	}
+
+	/**
+	 * Determines if the given Forminator Form has spam protection, by way of a
+	 * Captcha field or Forminator's honeypot setting.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   int $forminator_form_id   Forminator Form ID.
+	 * @return  bool
+	 */
+	private function form_has_spam_protection( $forminator_form_id ) {
+
+		if ( ! class_exists( 'Forminator_API' ) ) {
+			return false;
+		}
+
+		$form = Forminator_API::get_form( $forminator_form_id );
+
+		// Assume the form is protected if it can't be read, so we don't warn incorrectly.
+		if ( is_wp_error( $form ) ) {
+			return true;
+		}
+
+		// Determine if the form has a Captcha field.
+		foreach ( $form->get_fields() as $field ) {
+			$field_array = $field->to_formatted_array();
+			if ( ! empty( $field_array['type'] ) && $field_array['type'] === 'captcha' ) {
+				return true;
+			}
+		}
+
+		// Determine if the form has honeypot protection enabled.
+		if ( isset( $form->settings['honeypot'] ) && filter_var( $form->settings['honeypot'], FILTER_VALIDATE_BOOLEAN ) ) {
+			return true;
+		}
+
+		return false;
 
 	}
 

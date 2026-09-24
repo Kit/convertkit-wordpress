@@ -434,6 +434,39 @@ abstract class ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Outputs the given warning message in an inline notice, permitting links
+	 * so the message can tell the user where to go.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   string $warning_message  Warning Message.
+	 * @param   string $css_class        Additional CSS class for the notice.
+	 */
+	public function output_warning( $warning_message, $css_class = '' ) {
+
+		?>
+		<div class="notice notice-warning <?php echo esc_attr( sanitize_html_class( $css_class ) ); ?>">
+			<p>
+				<?php
+				echo wp_kses(
+					$warning_message,
+					array(
+						'a'      => array(
+							'href'   => array(),
+							'target' => array(),
+						),
+						'code'   => array(),
+						'strong' => array(),
+					)
+				);
+				?>
+			</p>
+		</div>
+		<?php
+
+	}
+
+	/**
 	 * Outputs the given error message in an inline notice.
 	 *
 	 * @since   1.9.6
