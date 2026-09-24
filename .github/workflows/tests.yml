@@ -35,7 +35,7 @@ jobs:
         wp-version: [ 'latest' ]
         php-version: [ '8.2' ]
         test-group:
-          - 'EndToEnd/integrations/elementor/ElementorFormCest'
+          - 'EndToEnd/integrations/elementor'
 
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit
