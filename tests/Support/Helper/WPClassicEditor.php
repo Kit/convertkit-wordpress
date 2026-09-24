@@ -134,6 +134,9 @@ class WPClassicEditor extends \Codeception\Module
 		// Click the Visual tab on the applicable TinyMCE editor.
 		$I->click('button#' . $targetEditor . '-tmce');
 
+		// Wait for TinyMCE to initialise, as its toolbar isn't in the DOM until it has.
+		$I->waitForElementVisible('#wp-' . $targetEditor . '-editor-container div.mce-container div[aria-label="' . $shortcodeName . '"] button');
+
 		// Click the TinyMCE Button for this shortcode.
 		$I->click('#wp-' . $targetEditor . '-editor-container div.mce-container div[aria-label="' . $shortcodeName . '"] button');
 

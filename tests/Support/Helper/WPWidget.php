@@ -125,12 +125,12 @@ class WPWidget extends \Codeception\Module
 		$I->waitForElementClickable('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
 		$I->click('.block-editor-inserter__panel-content button.editor-block-list-item-' . $blockProgrammaticName);
 
-		// Confirm the block inserted, so a failed insertion is reported here, and not as
-		// missing output when viewing the frontend site.
-		$I->waitForElementVisible('.wp-block-' . $blockProgrammaticName);
-
 		// Close block inserter.
 		$I->click('button.edit-widgets-header-toolbar__inserter-toggle');
+		$I->waitForElementNotVisible('.interface-interface-skeleton__secondary-sidebar[aria-label="Block Library"]');
+
+		// Confirm the block inserted.
+		$I->waitForElementVisible('.interface-interface-skeleton__content .wp-block-' . $blockProgrammaticName);
 
 		// If a Block configuration is specified, apply it to the Block now.
 		if ($blockConfiguration) {

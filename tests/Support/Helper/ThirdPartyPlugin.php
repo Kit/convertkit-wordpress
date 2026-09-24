@@ -53,8 +53,10 @@ class ThirdPartyPlugin extends \Codeception\Module
 		switch ($name) {
 			case 'convertkit':
 				// Wait for the Plugin Setup Wizard screen to load, if it's expected to display.
+				// The Setup Wizard's first screen builds an OAuth URL using the API, so allow
+				// longer than the default timeout for it to render.
 				if ( $wizardExpectsToDisplay ) {
-					$I->waitForElementVisible('body.convertkit');
+					$I->waitForElementVisible('body.convertkit', 30);
 				}
 				break;
 

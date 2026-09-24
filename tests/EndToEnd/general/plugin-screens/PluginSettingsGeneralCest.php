@@ -273,6 +273,7 @@ class PluginSettingsGeneralCest
 
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
@@ -355,6 +356,7 @@ class PluginSettingsGeneralCest
 	{
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
@@ -440,6 +442,7 @@ class PluginSettingsGeneralCest
 	{
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
@@ -542,6 +545,7 @@ class PluginSettingsGeneralCest
 
 		// Setup Plugin, without defining default Forms.
 		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
 
 		// Go to the Plugin's Settings Screen.
 		$I->loadKitSettingsGeneralScreen($I);
