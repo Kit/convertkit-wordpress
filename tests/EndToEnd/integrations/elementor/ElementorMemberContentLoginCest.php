@@ -44,8 +44,14 @@ class ElementorMemberContentLoginCest
 		// Click Edit with Elementor button.
 		$I->click('#elementor-switch-mode-button');
 
+		// Wait for Elementor to load, as its loading overlay covers the widget panel,
+		// which makes the panel's search field not interactable.
+		$I->waitForElementVisible('#elementor-preview-iframe');
+		$I->waitForElementNotVisible('#elementor-loading');
+
 		// Search for the Kit Member Content Login block.
-		$I->waitForElementVisible('#elementor-panel-elements-search-input');
+		$I->waitForElementVisible('#elementor-panel-page-elements .elementor-element');
+		$I->waitForElementClickable('#elementor-panel-elements-search-input');
 		$I->fillField('#elementor-panel-elements-search-input', 'Kit Member Content Login');
 
 		// Confirm that the Member Content Login widget is displayed as an option.

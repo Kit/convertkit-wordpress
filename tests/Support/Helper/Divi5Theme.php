@@ -38,7 +38,14 @@ class Divi5Theme extends \Codeception\Module
 		);
 
 		// Edit Page.
-		$I->amOnPage('/wp-admin/post.php?post=' . $pageID . '&action=edit');
+		// Chrome waits for the load event before returning, which external resources on the
+		// editor screen (such as Divi's Google Fonts stylesheet) can delay indefinitely.
+		try {
+			$I->amOnPage('/wp-admin/post.php?post=' . $pageID . '&action=edit');
+		} catch (\Facebook\WebDriver\Exception\TimeoutException $e) {
+			// Stop loading the outstanding resources, as the editor has rendered by this point.
+			$I->executeJS('window.stop();');
+		}
 
 		// Switch to the Gutenberg IFrame.
 		if ($I->isGutenbergIFrameEditorEnabled()) {
@@ -46,6 +53,7 @@ class Divi5Theme extends \Codeception\Module
 		}
 
 		// Click "Use The Divi Builder" button.
+		$I->waitForElementVisible('#et-switch-to-divi');
 		$I->click('#et-switch-to-divi');
 
 		// Switch back to main window.
