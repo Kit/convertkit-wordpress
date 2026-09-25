@@ -151,17 +151,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_grid'     => true,
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -189,26 +182,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="broadcast-date" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts'      => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_display_order' => 'broadcast-date',
-			]
-		);
-
-		// Confirm that the default date format is as expected.
-		$I->seeInSource('<time datetime="' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '">' . date( 'F j, Y', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '</time>');
-
-		// Confirm that the expected Broadcast name is displayed first links to the expected URL, with UTM parameters.
-		$I->assertEquals(
-			$I->grabAttributeFrom('div.convertkit-broadcasts ul.convertkit-broadcasts-list li.convertkit-broadcast:nth-child(2) a', 'href'),
-			$_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&utm_term=en_US&utm_content=convertkit'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -237,25 +214,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-			]
-		);
-
-		// Confirm that the default date format is as expected.
-		$I->seeInSource('<time datetime="' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '">' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '</time>');
-
-		// Confirm that the expected Broadcast name is displayed first links to the expected URL, with UTM parameters.
-		$I->assertEquals(
-			$I->grabAttributeFrom('div.convertkit-broadcasts ul.convertkit-broadcasts-list li.convertkit-broadcast:nth-child(2) a', 'href'),
-			$_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&utm_term=en_US&utm_content=convertkit'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -283,17 +245,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_image'    => true,
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -321,17 +276,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts'    => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_description' => true,
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -360,17 +308,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts'  => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_read_more' => 'Continue reading',
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -399,22 +340,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode output displays.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => 2,
-			]
-		);
-
-		// Confirm that the expected Broadcast name is displayed first links to the expected URL, with UTM parameters.
-		$I->assertEquals(
-			$I->grabAttributeFrom('div.convertkit-broadcasts ul.convertkit-broadcasts-list li.convertkit-broadcast:nth-child(2) a', 'href'),
-			$_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&utm_term=en_US&utm_content=convertkit'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -720,17 +649,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="1" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_grid'     => true,
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -759,17 +681,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="broadcast-date" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts'      => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_display_order' => 'broadcast-date',
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -798,19 +713,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="Y-m-d" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-			]
-		);
-
-		// Confirm that the default date format is as expected.
-		$I->seeInSource('<time datetime="' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '">' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '</time>');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -839,17 +745,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="1" display_description="0" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the block displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_image'    => true,
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -878,17 +777,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="1" display_read_more="0" read_more_label="Read more" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the block displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts'    => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_description' => true,
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -918,17 +810,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="1" read_more_label="Continue reading" limit="10" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the block displays correctly with the expected number of Broadcasts in the grid format.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts'  => $_ENV['CONVERTKIT_API_BROADCAST_COUNT'],
-				'see_read_more' => 'Continue reading',
-			]
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -957,19 +842,10 @@ class PageShortcodeBroadcastsCest
 			expectedShortcodeOutput: '[convertkit_broadcasts display_grid="0" display_order="date-broadcast" date_format="F j, Y" display_image="0" display_description="0" display_read_more="0" read_more_label="Read more" limit="2" paginate="0" paginate_label_prev="Previous" paginate_label_next="Next"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the shortcode displays correctly with the expected number of Broadcasts.
-		$I->seeBroadcastsOutput(
-			$I,
-			[
-				'number_posts' => 2,
-			]
-		);
-
-		// Confirm that the default date format is as expected.
-		$I->seeInSource('<time datetime="' . date( 'Y-m-d', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '">' . date( 'F j, Y', strtotime( $_ENV['CONVERTKIT_API_BROADCAST_FIRST_DATE'] ) ) . '</time>');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**

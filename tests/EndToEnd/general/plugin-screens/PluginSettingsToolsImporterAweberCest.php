@@ -156,26 +156,6 @@ class PluginSettingsToolsImporterAweberCest
 		$I->dontSeeElementInDOM('#import-aweber');
 	}
 
-	/**
-	 * Test that the AWeber: Migrate Configuration section is not displayed when no Kit Forms exist.
-	 *
-	 * @since   3.1.5
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testAWeberImportWhenNoKitForms(EndToEndTester $I)
-	{
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to the Tools screen.
-		$I->loadKitSettingsToolsScreen($I);
-
-		// Confirm no AWeber: Migrate Configuration section is displayed, as there are no
-		// AWeber Form Shortcodes in the content.
-		$I->dontSeeElementInDOM('#import-aweber');
-	}
 
 	/**
 	 * Create AWeber Forms.

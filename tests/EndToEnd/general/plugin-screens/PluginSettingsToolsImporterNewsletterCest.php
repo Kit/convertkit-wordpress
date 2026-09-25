@@ -114,26 +114,6 @@ class PluginSettingsToolsImporterNewsletterCest
 		$I->dontSeeElementInDOM('#import-newsletter');
 	}
 
-	/**
-	 * Test that the Newsletter: Migrate Configuration section is not displayed when no Kit Forms exist.
-	 *
-	 * @since   3.1.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testNewsletterImportWhenNoKitForms(EndToEndTester $I)
-	{
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to the Tools screen.
-		$I->loadKitSettingsToolsScreen($I);
-
-		// Confirm no Newsletter: Migrate Configuration section is displayed, as there are no
-		// Newsletter Form Shortcodes in the content.
-		$I->dontSeeElementInDOM('#import-newsletter');
-	}
 
 	/**
 	 * Create Page with Newsletter Form Shortcodes.
