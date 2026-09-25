@@ -87,14 +87,15 @@ jobs:
       - name: Checkout Plugin
         uses: actions/checkout@v7
 
+      # package-lock.json isn't committed to this repository, so setup-node's npm cache
+      # can't be used here, and npm install is used instead of npm ci.
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
-          cache: 'npm'
 
       - name: Run npm
-        run: npm ci
+        run: npm install
 
       - name: Run WordPress CSS Coding Standards
         run: npm run lint:css

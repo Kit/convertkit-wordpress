@@ -25,16 +25,16 @@ jobs:
       - name: Checkout Plugin
         uses: actions/checkout@v7
 
+      # package-lock.json isn't committed to this repository, so setup-node's npm cache
+      # can't be used here, and npm install is used instead of npm ci.
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
-          cache: 'npm'
 
-      # npm ci is used instead of npm install, to install the versions defined in package-lock.json.
       - name: Run npm
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Upload Built Assets
@@ -56,6 +56,7 @@ jobs:
     # For Dependabot PRs, only run when the update is for composer (skip github-actions updates).
     if: |
       always() &&
+      needs.build-assets.result == 'success' &&
       (
         github.actor != 'dependabot[bot]' ||
         needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
@@ -156,7 +157,7 @@ jobs:
       # Build the frontend CSS and JS assets.
       - name: Run npm
         run: |
-          npm ci
+          npm install
           npm run build
 
       # Configure AWS Credentials
