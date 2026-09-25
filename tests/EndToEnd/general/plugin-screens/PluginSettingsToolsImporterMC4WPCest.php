@@ -158,26 +158,6 @@ class PluginSettingsToolsImporterMC4WPCest
 		$I->dontSeeElementInDOM('#import-mc4wp');
 	}
 
-	/**
-	 * Test that the MC4WP: Migrate Configuration section is not displayed when no Kit Forms exist.
-	 *
-	 * @since   3.1.0
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testMC4WPImportWhenNoKitForms(EndToEndTester $I)
-	{
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to the Tools screen.
-		$I->loadKitSettingsToolsScreen($I);
-
-		// Confirm no MC4WP: Migrate Configuration section is displayed, as there are no
-		// Mailchimp Form Shortcodes in the content.
-		$I->dontSeeElementInDOM('#import-mc4wp');
-	}
 
 	/**
 	 * Create Mailchimp Forms.

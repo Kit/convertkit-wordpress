@@ -44,6 +44,11 @@ on:
         required: false
         type: string
         default: ''
+      install-paid-plugins:
+        description: 'Whether this test group needs the paid third party Plugins ("true"/"false").'
+        required: false
+        type: string
+        default: 'false'
 
 jobs:
   tests:
@@ -64,6 +69,7 @@ jobs:
       INSTALL_PLUGINS: ${{ inputs.install-plugins }}
       INSTALL_PLUGINS_URLS: ${{ inputs.install-plugins-urls }}
       INSTALL_THEMES_URLS: ${{ inputs.install-themes-urls }}
+      INSTALL_PAID_PLUGINS: ${{ inputs.install-paid-plugins }}
       CONVERTKIT_API_KEY: ${{ secrets.CONVERTKIT_API_KEY }}
       CONVERTKIT_API_SECRET: ${{ secrets.CONVERTKIT_API_SECRET }}
       CONVERTKIT_API_KEY_NO_DATA: ${{ secrets.CONVERTKIT_API_KEY_NO_DATA }}
@@ -140,6 +146,7 @@ jobs:
       # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
       # Skipped silently if the secret is not defined (e.g. backward-compat workflow doesn't need paid plugins).
       - name: Install Paid Third Party WordPress Plugins
+        if: ${{ env.INSTALL_PAID_PLUGINS == 'true' }}
         working-directory: ${{ env.ROOT_DIR }}
         env:
           PAID_URLS: ${{ secrets.CONVERTKIT_PAID_PLUGIN_URLS }}
@@ -319,16 +326,19 @@ jobs:
           ENVEOF
 
       # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
+      # composer install is used instead of composer update, so every job in the matrix installs
+      # the versions defined in composer.lock, instead of resolving dependencies from scratch.
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: composer update
+        run: composer install
 
-      # Build the frontend CSS and JS assets
-      - name: Run npm
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: |
-          npm install
-          npm run build
+      # Download the frontend CSS and JS assets, built once by the calling workflow's build-assets job.
+      # This avoids running npm install and npm run build in every job in the matrix.
+      - name: Download Built Assets
+        uses: actions/download-artifact@v7
+        with:
+          name: plugin-assets
+          path: ${{ env.PLUGIN_DIR }}
 
       # Confirm that expected files exist if e.g. `composer install` or `npm run build` fails
       - name: Check Kit WordPress Libraries and Assets Exists

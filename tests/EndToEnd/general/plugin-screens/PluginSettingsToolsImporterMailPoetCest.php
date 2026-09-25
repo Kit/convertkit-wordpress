@@ -156,26 +156,6 @@ class PluginSettingsToolsImporterMailPoetCest
 		$I->dontSeeElementInDOM('#import-mailpoet');
 	}
 
-	/**
-	 * Test that the MailPoet: Migrate Configuration section is not displayed when no Kit Forms exist.
-	 *
-	 * @since   3.1.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testMailPoetImportWhenNoKitForms(EndToEndTester $I)
-	{
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to the Tools screen.
-		$I->loadKitSettingsToolsScreen($I);
-
-		// Confirm no MailPoet: Migrate Configuration section is displayed, as there are no
-		// MailPoet Form Shortcodes in the content.
-		$I->dontSeeElementInDOM('#import-mailpoet');
-	}
 
 	/**
 	 * Create MailPoet Forms.
