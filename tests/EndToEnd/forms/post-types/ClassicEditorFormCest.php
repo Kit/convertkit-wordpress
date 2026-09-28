@@ -482,7 +482,7 @@ class ClassicEditorFormCest
 		// Confirm the duplicate Post Meta rows were removed.
 		$I->seeNumRecords(
 			1,
-			'postmeta',
+			'wp_postmeta',
 			[
 				'post_id'  => $postID,
 				'meta_key' => '_wp_convertkit_post_meta',

@@ -1258,23 +1258,29 @@ class BlockEditorFormCest
 
 		// Edit the Post.
 		$I->amOnAdminPage('post.php?post=' . $postID . '&action=edit');
-		$I->waitForElementVisible('body.post-php');
 
-		// Save the Post, leaving the Kit settings unchanged.
+		// Change the Form setting, so the block editor sends the Kit Post Meta when saving.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Save the Post.
 		$I->saveGutenbergPage($I);
-
-		// Confirm the Post saved.
-		$I->dontSee('Updating failed');
 
 		// Confirm the duplicate Post Meta rows were removed.
 		$I->seeNumRecords(
 			1,
-			'postmeta',
+			'wp_postmeta',
 			[
 				'post_id'  => $postID,
 				'meta_key' => '_wp_convertkit_post_meta',
 			]
 		);
+
+		// Reload the Post, confirming the Form setting saved.
+		$I->amOnAdminPage('post.php?post=' . $postID . '&action=edit');
+		$I->seePluginSidebarSetting($I, 'form', 'None');
 	}
 
 	/**
