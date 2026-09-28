@@ -289,6 +289,30 @@ class ConvertKit_Post {
 	}
 
 	/**
+	 * Returns all Post Meta rows stored against this Post for the Plugin's Post Meta key.
+	 *
+	 * get_post_meta() isn't used, as each row's meta ID is required to delete individual
+	 * duplicate rows.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @return  array   Post Meta rows, oldest first.
+	 */
+	public function get_meta_rows() {
+
+		global $wpdb;
+
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT meta_id, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s ORDER BY meta_id ASC",
+				$this->post_id,
+				self::POST_META_KEY
+			)
+		);
+
+	}
+
+	/**
 	 * Saves Post settings to the Post.
 	 *
 	 * @since   1.9.6

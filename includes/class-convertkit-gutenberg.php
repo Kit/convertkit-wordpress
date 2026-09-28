@@ -38,6 +38,62 @@ class ConvertKit_Gutenberg {
 		// Register REST API routes.
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 
+		// Delete duplicate Post Meta rows before WordPress updates them.
+		add_filter( 'update_post_metadata', array( $this, 'maybe_delete_duplicate_post_meta' ), 10, 5 );
+
+	}
+
+	/**
+	 * Deletes duplicate Post Meta rows for the Plugin's Post Meta key, before WordPress updates them,
+	 * which have been created by third party Plugins, migrations, or other code.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   null   $check       Whether to short circuit the update.
+	 * @param   int    $post_id     Post ID.
+	 * @param   string $meta_key    Meta key.
+	 * @param   mixed  $meta_value  Meta value.
+	 * @param   mixed  $prev_value  Previous meta value to update.
+	 * @return  null|bool             Whether to short circuit the update.
+	 */
+	public function maybe_delete_duplicate_post_meta( $check, $post_id, $meta_key, $meta_value, $prev_value ) {
+
+		// Bail if this isn't the Plugin's Post Meta key.
+		if ( $meta_key !== ConvertKit_Post::POST_META_KEY ) {
+			return $check;
+		}
+
+		// Bail if a previous value is specified, as WordPress will only update matching rows.
+		if ( ! empty( $prev_value ) ) {
+			return $check;
+		}
+
+		// Bail if no duplicate rows exist.
+		$convertkit_post = new ConvertKit_Post( $post_id );
+		$rows            = $convertkit_post->get_meta_rows();
+		if ( count( $rows ) < 2 ) {
+			return $check;
+		}
+
+		// Delete all but the most recent row.
+		$row = array_pop( $rows );
+		foreach ( $rows as $duplicate_row ) {
+			delete_metadata_by_mid( 'post', $duplicate_row->meta_id );
+		}
+
+		// Restore the Post in the Member Content cache, as deleting the above rows removed it.
+		$value = maybe_unserialize( $row->meta_value );
+		WP_ConvertKit()->get_class( 'restrict_content_cache' )->on_meta_change( 0, $post_id, $meta_key, $value );
+
+		// If the remaining row already holds the value WordPress is about to store, tell WordPress
+		// the update succeeded, as there's nothing to change. Without this, WordPress' own check for
+		// a single unchanged row returns false, and the block editor still cannot save the Post.
+		if ( $value === $meta_value ) {
+			return true;
+		}
+
+		return $check;
+
 	}
 
 	/**
