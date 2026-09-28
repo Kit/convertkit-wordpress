@@ -291,8 +291,8 @@ class ConvertKit_Post {
 	/**
 	 * Returns all Post Meta rows stored against this Post for the Plugin's Post Meta key.
 	 *
-	 * get_post_meta() isn't used, as each row's meta ID is required to delete individual
-	 * duplicate rows.
+	 * Queries the database directly, as each row's meta ID is required to delete individual
+	 * duplicate rows, which get_post_meta() doesn't return.
 	 *
 	 * @since   3.4.5
 	 *
