@@ -40,6 +40,9 @@ class PostMetaDuplicateTest extends WPRestApiTestCase
 		// Activate Plugin, to include the Plugin's constants in tests.
 		activate_plugins('convertkit/wp-convertkit.php');
 
+		// Register the Plugin's Post Meta, as WordPress' test case unregisters all meta keys after each test.
+		\WP_ConvertKit()->get_class('gutenberg')->add_plugin_sidebars();
+
 		// Perform requests as an Administrator, so the Post Meta is editable.
 		wp_set_current_user(
 			static::factory()->user->create( [ 'role' => 'administrator' ] )
