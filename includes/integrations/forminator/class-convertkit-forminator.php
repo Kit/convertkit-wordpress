@@ -77,6 +77,11 @@ class ConvertKit_Forminator {
 	 */
 	public function maybe_subscribe( $entry, $form_id, $form_data_array ) {
 
+		// Bail if the entry is spam, a draft or an abandoned form.
+		if ( ! empty( $entry->is_spam ) || ( isset( $entry->status ) && $entry->status !== 'active' ) ) {
+			return;
+		}
+
 		// Get ConvertKit Form ID mapped to this Forminator Form.
 		// We deliberately use the entry's form ID, as $form_id for a Quiz will point to a lead generation form, which
 		// has a different Form ID.
@@ -106,6 +111,12 @@ class ConvertKit_Forminator {
 			// Extract the name / email address, depending on the field type.
 			switch ( $form_field['field_type'] ) {
 				case 'name':
+					// If the Name field uses multiple fields (prefix, first, middle and last name), use the first name.
+					if ( is_array( $form_field['value'] ) ) {
+						$first_name = isset( $form_field['value']['first-name'] ) ? $form_field['value']['first-name'] : false;
+						break;
+					}
+
 					$name       = explode( ' ', $form_field['value'] );
 					$first_name = $name[0];
 					break;
@@ -153,6 +164,11 @@ class ConvertKit_Forminator {
 			case 'form':
 				// Subscribe with inactive state.
 				$subscriber = $api->create_subscriber( $email, $first_name, 'inactive' );
+
+				// If an error occurred, don't attempt to add the subscriber to the Form, as it won't work.
+				if ( is_wp_error( $subscriber ) ) {
+					return;
+				}
 
 				// For Legacy Forms, a different endpoint is used.
 				$forms = new ConvertKit_Resource_Forms();
@@ -212,14 +228,17 @@ class ConvertKit_Forminator {
 		// If the request includes the HTTP referrer, return that URL
 		// as it will include any UTM parameters.
 		if ( filter_has_var( INPUT_POST, '_wp_http_referer' ) ) {
-			// referrer is a relative path, so use home_url() to return a fully qualified URL.
-			return esc_url( home_url( filter_input( INPUT_POST, '_wp_http_referer', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) );
+			// referrer is relative to the domain and includes any subdirectory, so prefix it with the site's scheme, host and port.
+			$home = wp_parse_url( home_url() );
+			return esc_url_raw(
+				$home['scheme'] . '://' . $home['host'] . ( isset( $home['port'] ) ? ':' . $home['port'] : '' ) . filter_input( INPUT_POST, '_wp_http_referer', FILTER_UNSAFE_RAW )
+			);
 		}
 
 		// If the request includes the current_url, return that URL.
 		// It won't include any UTM parameters, but is still an accurate URL.
 		if ( filter_has_var( INPUT_POST, 'current_url' ) ) {
-			return esc_url( filter_input( INPUT_POST, 'current_url', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+			return esc_url_raw( filter_input( INPUT_POST, 'current_url', FILTER_UNSAFE_RAW ) );
 		}
 
 		// Return the AJAX URL.
