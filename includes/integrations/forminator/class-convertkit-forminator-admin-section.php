@@ -253,17 +253,17 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 			return true;
 		}
 
+		// Determine if the form has honeypot protection enabled.
+		if ( isset( $form->settings['honeypot'] ) && filter_var( $form->settings['honeypot'], FILTER_VALIDATE_BOOLEAN ) ) {
+			return true;
+		}
+
 		// Determine if the form has a Captcha field.
 		foreach ( $form->get_fields() as $field ) {
 			$field_array = $field->to_formatted_array();
 			if ( ! empty( $field_array['type'] ) && $field_array['type'] === 'captcha' ) {
 				return true;
 			}
-		}
-
-		// Determine if the form has honeypot protection enabled.
-		if ( isset( $form->settings['honeypot'] ) && filter_var( $form->settings['honeypot'], FILTER_VALIDATE_BOOLEAN ) ) {
-			return true;
 		}
 
 		return false;
