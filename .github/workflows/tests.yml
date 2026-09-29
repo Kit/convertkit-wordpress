@@ -15,15 +15,48 @@ jobs:
     uses: ./.github/workflows/_dependabot-metadata.yml
     secrets: inherit
 
-  tests:
-    name: ${{ matrix.test-group }} / WordPress ${{ matrix.wp-version }} / PHP ${{ matrix.php-version }}
+  # Build the frontend CSS and JS assets once, for every job in the test matrix to use.
+  build-assets:
+    name: Build Assets
 
-    needs: [dependabot-metadata]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Plugin
+        uses: actions/checkout@v7
+
+      # package-lock.json isn't committed to this repository, so setup-node's npm cache
+      # can't be used here, and npm install is used instead of npm ci.
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+
+      - name: Run npm
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload Built Assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-assets
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            resources/frontend/css/frontend.css
+            resources/frontend/js/dist/
+
+  tests:
+    name: ${{ matrix.group.path }} / WordPress ${{ matrix.wp-version }} / PHP ${{ matrix.php-version }}
+
+    needs: [dependabot-metadata, build-assets]
 
     # Always allow non-Dependabot PRs and pushes.
     # For Dependabot PRs, only run when the update is for composer (skip github-actions updates).
     if: |
       always() &&
+      needs.build-assets.result == 'success' &&
       (
         github.actor != 'dependabot[bot]' ||
         needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
@@ -34,40 +67,43 @@ jobs:
       matrix:
         wp-version: [ 'latest' ]
         php-version: [ '8.2', '8.3', '8.4', '8.5' ]
-        test-group:
-          - 'EndToEnd/broadcasts/blocks-shortcodes'
-          - 'EndToEnd/broadcasts/import-export'
-          - 'EndToEnd/forms/blocks-shortcodes'
-          - 'EndToEnd/forms/general'
-          - 'EndToEnd/forms/post-types'
-          - 'EndToEnd/general/other'
-          - 'EndToEnd/general/uninstall'
-          - 'EndToEnd/general/plugin-screens'
-          - 'EndToEnd/integrations/divi-builder'
-          - 'EndToEnd/integrations/divi-theme'
-          - 'EndToEnd/integrations/elementor'
-          - 'EndToEnd/integrations/other'
-          - 'EndToEnd/integrations/wlm'
-          - 'EndToEnd/integrations/woocommerce'
-          - 'EndToEnd/landing-pages'
-          - 'EndToEnd/products'
-          - 'EndToEnd/restrict-content/blocks-shortcodes'
-          - 'EndToEnd/restrict-content/general'
-          - 'EndToEnd/restrict-content/post-types'
-          - 'EndToEnd/tags'
-          - 'Integration'
+        # Each test group installs only the third party Plugins and Themes its tests activate,
+        # rather than every job in the matrix installing all of them.
+        group:
+          - { path: 'EndToEnd/broadcasts/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/broadcasts/import-export', plugins: 'classic-editor custom-post-type-ui wp-crontrol', paid-plugins: 'false' }
+          - { path: 'EndToEnd/forms/blocks-shortcodes', plugins: 'block-visibility classic-editor autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/forms/general', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/forms/post-types', plugins: 'classic-editor custom-post-type-ui autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/general/other', plugins: 'classic-editor custom-post-type-ui', plugins-urls: 'https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/general/uninstall', paid-plugins: 'false' }
+          - { path: 'EndToEnd/general/plugin-screens', plugins: 'admin-menu-editor custom-post-type-ui mailchimp-for-wp', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/divi-builder', plugins: 'classic-editor', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/integrations/divi-theme', plugins: 'classic-editor', themes-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2026/03/Divi_5.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/elementor', plugins: 'elementor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/other', plugins: 'akismet contact-form-7 forminator', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/wlm', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/integrations/woocommerce', plugins: 'classic-editor woocommerce', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/landing-pages', plugins: 'admin-menu-editor autoptimize classic-editor rocket-lazy-load', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/products', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/restrict-content/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/restrict-content/general', plugins: 'admin-menu-editor custom-post-type-ui litespeed-cache sg-cachepress w3-total-cache wp-fastest-cache wp-optimize wp-super-cache', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/restrict-content/post-types', plugins: 'beaver-builder-lite-version custom-post-type-ui', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip', themes-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/01/impeka.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/tags', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'Integration', paid-plugins: 'false' }
 
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit
     with:
       wp-version: ${{ matrix.wp-version }}
       php-version: ${{ matrix.php-version }}
-      test-group: ${{ matrix.test-group }}
+      test-group: ${{ matrix.group.path }}
       block-editor-v3-enabled: 'true'
       db-sql-dump-file: 'tests/Support/Data/dump.sql'
-      install-plugins: "admin-menu-editor autoptimize beaver-builder-lite-version block-visibility contact-form-7 classic-editor custom-post-type-ui debloat elementor forminator jetpack-boost mailchimp-for-wp rocket-lazy-load woocommerce wordpress-seo wpforms-lite litespeed-cache wp-crontrol wp-super-cache w3-total-cache wp-fastest-cache wp-optimize sg-cachepress"
-      install-plugins-urls: "https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip"
-      install-themes-urls: "http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/03/Divi_5.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/01/impeka.zip"
+      install-plugins: ${{ matrix.group.plugins }}
+      install-plugins-urls: ${{ matrix.group.plugins-urls }}
+      install-themes-urls: ${{ matrix.group.themes-urls }}
+      install-paid-plugins: ${{ matrix.group.paid-plugins }}
 
   build-and-deploy:
     name: WordPress Playground

@@ -53,11 +53,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -90,11 +89,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -158,11 +156,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Sign up"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Sign up');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -195,11 +192,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**

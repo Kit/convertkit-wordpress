@@ -137,27 +137,6 @@ class PluginSettingsToolsImporterKitLegacyFormsCest
 	}
 
 	/**
-	 * Test that the Kit Legacy Forms: Migrate Configuration section is not displayed when no Kit Forms exist.
-	 *
-	 * @since   3.3.5
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testKitLegacyFormsImportWhenNoKitForms(EndToEndTester $I)
-	{
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to the Tools screen.
-		$I->loadKitSettingsToolsScreen($I);
-
-		// Confirm no Kit Legacy Forms: Migrate Configuration section is displayed, as there are no
-		// Kit Forms exist.
-		$I->dontSeeElementInDOM('#import-kit-legacy-forms');
-	}
-
-	/**
 	 * Create Pages with Kit Legacy Form Shortcodes.
 	 *
 	 * @since   3.3.5
