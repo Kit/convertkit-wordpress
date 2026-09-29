@@ -495,13 +495,6 @@ class PageShortcodeFormCest
 		$I->publishAndViewClassicEditorPage($I);
 	}
 
-
-
-
-
-
-
-
 	/**
 	 * Test the [kit_form] shortcode works when a valid Form ID is specified.
 	 *

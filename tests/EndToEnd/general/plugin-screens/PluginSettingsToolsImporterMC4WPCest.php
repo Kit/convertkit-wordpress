@@ -158,7 +158,6 @@ class PluginSettingsToolsImporterMC4WPCest
 		$I->dontSeeElementInDOM('#import-mc4wp');
 	}
 
-
 	/**
 	 * Create Mailchimp Forms.
 	 *

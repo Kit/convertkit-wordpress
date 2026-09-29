@@ -156,7 +156,6 @@ class PluginSettingsToolsImporterMailPoetCest
 		$I->dontSeeElementInDOM('#import-mailpoet');
 	}
 
-
 	/**
 	 * Create MailPoet Forms.
 	 *
