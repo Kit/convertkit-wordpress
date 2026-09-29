@@ -78,7 +78,7 @@ class ConvertKit_Forminator {
 	public function maybe_subscribe( $entry, $form_id, $form_data_array ) {
 
 		// Bail if the entry is spam, a draft or an abandoned form.
-		if ( ! empty( $entry->is_spam ) || ( isset( $entry->status ) && $entry->status !== 'active' ) ) {
+		if ( ! empty( $entry->is_spam ) || $entry->status !== 'active' ) {
 			return;
 		}
 
