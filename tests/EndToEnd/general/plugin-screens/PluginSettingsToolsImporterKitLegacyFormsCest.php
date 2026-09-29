@@ -136,7 +136,6 @@ class PluginSettingsToolsImporterKitLegacyFormsCest
 		$I->dontSeeElementInDOM('#import-kit-legacy-forms');
 	}
 
-
 	/**
 	 * Create Pages with Kit Legacy Form Shortcodes.
 	 *
