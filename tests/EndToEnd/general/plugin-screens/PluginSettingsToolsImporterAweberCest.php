@@ -156,7 +156,6 @@ class PluginSettingsToolsImporterAweberCest
 		$I->dontSeeElementInDOM('#import-aweber');
 	}
 
-
 	/**
 	 * Create AWeber Forms.
 	 *

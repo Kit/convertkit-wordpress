@@ -659,12 +659,6 @@ class RefreshResourcesButtonCest
 		$I->publishAndViewClassicEditorPage($I);
 	}
 
-
-
-
-
-
-
 	/**
 	 * Test that the refresh button triggers an error message when the AJAX request fails,
 	 * or the Kit API returns an error, when adding a Page using the Classic Editor.

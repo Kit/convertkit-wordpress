@@ -110,7 +110,6 @@ class PluginSettingsToolsImporterCampaignMonitorCest
 		$I->dontSeeElementInDOM('#import-campaignmonitor');
 	}
 
-
 	/**
 	 * Create Campaign Monitor Forms.
 	 *

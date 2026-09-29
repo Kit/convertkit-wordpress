@@ -114,7 +114,6 @@ class PluginSettingsToolsImporterNewsletterCest
 		$I->dontSeeElementInDOM('#import-newsletter');
 	}
 
-
 	/**
 	 * Create Page with Newsletter Form Shortcodes.
 	 *

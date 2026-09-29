@@ -169,8 +169,6 @@ class ClassicEditorFormCest
 		}
 	}
 
-
-
 	/**
 	 * Test that the Default Form specified in the Plugin Settings works when
 	 * creating and viewing a new WordPress Page, Post or Article, and its position is set
@@ -237,10 +235,6 @@ class ClassicEditorFormCest
 			$I->seeNoExtraHtmlHeadBodyTagsOutput($I);
 		}
 	}
-
-
-
-
 
 	/**
 	 * Test that the Default Legacy Form specified in the Plugin Settings works when
@@ -369,13 +363,6 @@ class ClassicEditorFormCest
 			);
 		}
 	}
-
-
-
-
-
-
-
 
 	/**
 	 * Test that the Default Form for Pages displays when an invalid Form ID is specified
