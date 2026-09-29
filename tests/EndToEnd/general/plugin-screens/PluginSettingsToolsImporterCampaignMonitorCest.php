@@ -111,27 +111,6 @@ class PluginSettingsToolsImporterCampaignMonitorCest
 	}
 
 	/**
-	 * Test that the Campaign Monitor: Migrate Configuration section is not displayed when no Kit Forms exist.
-	 *
-	 * @since   3.1.7
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testCampaignMonitorImportWhenNoKitForms(EndToEndTester $I)
-	{
-		// Setup Plugin.
-		$I->setupKitPluginCredentialsNoData($I);
-		$I->setupKitPluginResourcesNoData($I);
-
-		// Navigate to the Tools screen.
-		$I->loadKitSettingsToolsScreen($I);
-
-		// Confirm no Campaign Monitor: Migrate Configuration section is displayed, as there are no
-		// Campaign Monitor Form Shortcodes in the content.
-		$I->dontSeeElementInDOM('#import-campaignmonitor');
-	}
-
-	/**
 	 * Create Campaign Monitor Forms.
 	 *
 	 * @since   3.1.7

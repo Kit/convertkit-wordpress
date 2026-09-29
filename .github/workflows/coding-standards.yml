@@ -15,9 +15,9 @@ jobs:
     uses: ./.github/workflows/_dependabot-metadata.yml
     secrets: inherit
 
-  tests:
+  php:
     # Name.
-    name: Coding Standards / WordPress ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
+    name: PHP Coding Standards / WordPress ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
 
     # Virtual Environment to use.
     # @see: https://github.com/actions/virtual-environments
@@ -124,11 +124,6 @@ jobs:
           jq 'del(.require."wordpress/mcp-adapter")' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
           composer update
 
-      # Installs WordPress scripts for CSS and JS Coding Standards.
-      - name: Run npm install
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: npm install
-
       # Run PHP Coding Standards on Tests.
       - name: Run WordPress PHP Coding Standards on Tests
         working-directory: ${{ env.PLUGIN_DIR }}
@@ -140,17 +135,52 @@ jobs:
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/phpcs -q --standard=phpcs.xml --report=checkstyle ./ | cs2pr
 
-      # Run CSS Coding Standards on Plugin.
-      - name: Run WordPress CSS Coding Standards
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: npm run lint:css
-
-      # Run JS Coding Standards on Plugin.
-      - name: Run WordPress JS Coding Standards
-        working-directory: ${{ env.PLUGIN_DIR }}
-        run: npm run lint:js
-
       # Run PHPStan for static analysis.
       - name: Run PHPStan Static Analysis
         working-directory: ${{ env.PLUGIN_DIR }}
         run: php vendor/bin/phpstan analyse --memory-limit=1250M
+
+  # CSS and JS Coding Standards.
+  # These don't depend on the PHP version, so run once instead of once per PHP version.
+  # No WordPress installation is needed, as the linters read the Plugin's CSS and JS directly.
+  assets:
+    # Name.
+    name: CSS and JS Coding Standards
+
+    # Virtual Environment to use.
+    runs-on: ubuntu-latest
+
+    # Requires the dependabot-metadata job to have run successfully.
+    needs: [dependabot-metadata]
+
+    # Always allow non-Dependabot PRs and pushes.
+    # For Dependabot PRs, only run when the update is for composer (skip github-actions updates).
+    if: |
+      always() &&
+      (
+        github.actor != 'dependabot[bot]' ||
+        needs.dependabot-metadata.outputs.package-ecosystem == 'composer'
+      )
+
+    steps:
+      - name: Checkout Plugin
+        uses: actions/checkout@v7
+
+      # package-lock.json isn't committed to this repository, so setup-node's npm cache
+      # can't be used here, and npm install is used instead of npm ci.
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+
+      # Installs WordPress scripts for CSS and JS Coding Standards.
+      - name: Run npm install
+        run: npm install
+
+      # Run CSS Coding Standards on Plugin.
+      - name: Run WordPress CSS Coding Standards
+        run: npm run lint:css
+
+      # Run JS Coding Standards on Plugin.
+      - name: Run WordPress JS Coding Standards
+        run: npm run lint:js

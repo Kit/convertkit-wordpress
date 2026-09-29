@@ -15,15 +15,48 @@ jobs:
     uses: ./.github/workflows/_dependabot-metadata.yml
     secrets: inherit
 
+  # Build the frontend CSS and JS assets once, for every job in the test matrix to use.
+  build-assets:
+    name: Build Assets
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Plugin
+        uses: actions/checkout@v7
+
+      # package-lock.json isn't committed to this repository, so setup-node's npm cache
+      # can't be used here, and npm install is used instead of npm ci.
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+
+      - name: Run npm
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload Built Assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-assets
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            resources/frontend/css/frontend.css
+            resources/frontend/js/dist/
+
   tests:
     name: ${{ matrix.test-group }} / WordPress ${{ matrix.wp-version }} / PHP ${{ matrix.php-version }}
 
-    needs: [dependabot-metadata]
+    needs: [dependabot-metadata, build-assets]
 
     # Always allow non-Dependabot PRs and pushes.
     # For Dependabot PRs, only run when the update is for composer (skip github-actions updates).
     if: |
       always() &&
+      needs.build-assets.result == 'success' &&
       (
         github.actor != 'dependabot[bot]' ||
         needs.dependabot-metadata.outputs.package-ecosystem == 'composer'

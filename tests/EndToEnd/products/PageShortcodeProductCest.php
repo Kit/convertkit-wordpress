@@ -53,15 +53,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy my product" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -94,15 +89,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy my product" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -166,15 +156,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy now" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy now'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -207,15 +192,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
