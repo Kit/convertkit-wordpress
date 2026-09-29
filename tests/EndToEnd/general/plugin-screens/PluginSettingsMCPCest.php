@@ -55,6 +55,9 @@ class PluginSettingsMCPCest
 		$I->checkOption('#enabled');
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -69,6 +72,9 @@ class PluginSettingsMCPCest
 		// Disable MCP server.
 		$I->uncheckOption('#enabled');
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -114,6 +120,9 @@ class PluginSettingsMCPCest
 		// Enable MCP server.
 		$I->checkOption('#enabled');
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
