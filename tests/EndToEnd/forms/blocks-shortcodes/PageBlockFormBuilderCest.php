@@ -708,6 +708,9 @@ class PageBlockFormBuilderCest
 			firstName: 'First'
 		);
 
+		// Confirm that the subscriber is active, as no Form was specified.
+		$I->assertEquals('active', $subscriber['state']);
+
 		// Confirm that the subscriber has the tag.
 		$I->apiCheckSubscriberHasTag(
 			$I,
@@ -810,6 +813,9 @@ class PageBlockFormBuilderCest
 			emailAddress: $emailAddress,
 			firstName: 'First'
 		);
+
+		// Confirm that the subscriber is active, as no Form was specified.
+		$I->assertEquals('active', $subscriber['state']);
 
 		// Confirm that the subscriber has the sequence.
 		$I->apiCheckSubscriberHasSequence(

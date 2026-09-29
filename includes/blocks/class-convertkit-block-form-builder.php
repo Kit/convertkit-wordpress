@@ -126,10 +126,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$custom_fields = $form_data['custom_fields'];
 		}
 
+		// Get First Name, if the Name field was included in the form.
+		$first_name = array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '';
+
 		// Get Form, Tag and Sequence IDs, if any were specified.
-		$form_id     = array_key_exists( 'form_id', $form_data ) ? $form_data['form_id'] : false;
-		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? $form_data['tag_id'] : false;
-		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? $form_data['sequence_id'] : false;
+		$form_id     = array_key_exists( 'form_id', $form_data ) ? absint( $form_data['form_id'] ) : 0;
+		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? absint( $form_data['tag_id'] ) : 0;
+		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? absint( $form_data['sequence_id'] ) : 0;
 
 		// Initialize classes that will be used.
 		$settings = new ConvertKit_Settings();
@@ -143,7 +146,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -174,12 +177,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Determine the subscriber state.
 		// If a Form is specified, mark the subscriber as inactive, so the form's double optin is honored.
 		// If a Tag or Sequence is specified, mark the subscriber as active, as there's no double optin for tags or sequences.
-		$subscriber_state = $form_id !== false ? 'inactive' : 'active';
+		$subscriber_state = $form_id ? 'inactive' : 'active';
 
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
-			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
+			$first_name,
 			$subscriber_state,
 			$custom_fields
 		);
@@ -192,7 +195,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -213,7 +216,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				array(
 					'post_id'       => $form_data['post_id'],
 					'email'         => $form_data['email'],
-					'first_name'    => $form_data['first_name'],
+					'first_name'    => $first_name,
 					'custom_fields' => $custom_fields,
 					'form_id'       => $form_id,
 					'tag_id'        => $tag_id,
@@ -223,9 +226,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			);
 		}
 
+		// Get the subscriber ID, as $result is overwritten by the form, tag and sequence requests below.
+		$subscriber_id = $result['subscriber']['id'];
+
 		// Store the subscriber ID in a cookie.
 		$subscriber = new ConvertKit_Subscriber();
-		$subscriber->set( $result['subscriber']['id'] );
+		$subscriber->set( $subscriber_id );
 
 		// If a form was specified, add the subscriber to the form.
 		if ( $form_id ) {
@@ -234,12 +240,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			if ( $forms->is_legacy( $form_id ) ) {
 				$result = $api->add_subscriber_to_legacy_form(
 					$form_id,
-					$result['subscriber']['id']
+					$subscriber_id
 				);
 			} else {
 				$result = $api->add_subscriber_to_form(
 					$form_id,
-					$result['subscriber']['id'],
+					$subscriber_id,
 					get_permalink( absint( $form_data['post_id'] ) )
 				);
 			}
@@ -249,7 +255,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -263,14 +269,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a tag was specified, add the subscriber to the tag.
 		if ( $tag_id ) {
-			$result = $api->tag_subscriber( $tag_id, $result['subscriber']['id'] );
+			$result = $api->tag_subscriber( $tag_id, $subscriber_id );
 
 			if ( $form_data['store_entries'] ) {
 				$entries->upsert(
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -284,14 +290,14 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a sequence was specified, add the subscriber to the sequence.
 		if ( $sequence_id ) {
-			$result = $api->add_subscriber_to_sequence( $sequence_id, $result['subscriber']['id'] );
+			$result = $api->add_subscriber_to_sequence( $sequence_id, $subscriber_id );
 
 			if ( $form_data['store_entries'] ) {
 				$entries->upsert(
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
