@@ -109,13 +109,13 @@ class ShortcodePostHelperTest extends WPTestCase
 	}
 
 	/**
-	 * Test that the find() method returns false when no shortcodes match the given shortcode tag.
+	 * Test that the find() method returns an empty array when no shortcodes match the given shortcode tag.
 	 *
 	 * @since   3.4.0
 	 */
 	public function testFindWhenNoShortcodesMatch()
 	{
-		$this->assertFalse(\ConvertKit_Shortcode_Post_Helper::find( $this->postID, 'fake_shortcode' ));
+		$this->assertSame([], \ConvertKit_Shortcode_Post_Helper::find( $this->postID, 'fake_shortcode' ));
 	}
 
 	/**
@@ -247,6 +247,87 @@ class ShortcodePostHelperTest extends WPTestCase
 		// Confirm content has been updated and the shortcode is inserted at the correct position.
 		$post = get_post($this->postID);
 		$this->assertStringStartsWith( '[convertkit_form form="' . $_ENV['CONVERTKIT_API_FORM_ID'] . '"]', $post->post_content );
+	}
+
+	/**
+	 * Test that the insert() method inserts a new shortcode at the specified index position
+	 * when the content contains a horizontal rule.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testInsertIndexWithHorizontalRule()
+	{
+		$postID = $this->createPostWithContent("<p>Item #1</p>\n\n<hr />\n\n<p>Item #2</p>");
+
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
+			post_id: $postID,
+			shortcode_tag: 'convertkit_form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'index',
+			index: 2
+		);
+
+		// Confirm result is an array and the post ID is correct.
+		$this->assertIsArray( $result );
+		$this->assertEquals( $postID, $result['post_id'] );
+
+		// Confirm the shortcode is inserted after the horizontal rule.
+		$post = get_post($postID);
+		$this->assertStringContainsString( "<hr />\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
+	}
+
+	/**
+	 * Test that the insert() method inserts a new shortcode at the specified index position
+	 * when the content contains nested elements.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testInsertIndexWithNestedElements()
+	{
+		$postID = $this->createPostWithContent("<div><p>Item #1</p></div>\n\n<p>Item #2</p>\n\n<p>Item #3</p>");
+
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
+			post_id: $postID,
+			shortcode_tag: 'convertkit_form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'index',
+			index: 1
+		);
+
+		// Confirm result is an array and the post ID is correct.
+		$this->assertIsArray( $result );
+		$this->assertEquals( $postID, $result['post_id'] );
+
+		// Confirm the shortcode is inserted after the nested elements.
+		$post = get_post($postID);
+		$this->assertStringContainsString( "</div>\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
+	}
+
+	/**
+	 * Test that the insert() method inserts a new shortcode at the specified index position
+	 * when the content contains no HTML elements.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testInsertIndexWithNoHTMLElements()
+	{
+		$postID = $this->createPostWithContent("Item #1\n\nItem #2\n\nItem #3");
+
+		$result = \ConvertKit_Shortcode_Post_Helper::insert(
+			post_id: $postID,
+			shortcode_tag: 'convertkit_form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'index',
+			index: 1
+		);
+
+		// Confirm result is an array and the post ID is correct.
+		$this->assertIsArray( $result );
+		$this->assertEquals( $postID, $result['post_id'] );
+
+		// Confirm the shortcode is inserted after the first paragraph.
+		$post = get_post($postID);
+		$this->assertStringContainsString( "Item #1\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\nItem #2", $post->post_content );
 	}
 
 	/**
@@ -398,6 +479,43 @@ class ShortcodePostHelperTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the insert(), update() and delete() methods preserve backslashes in the Post's content.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testBackslashesArePreserved()
+	{
+		$content = '<p>C:\\Users\\Kit</p>';
+		$postID  = $this->createPostWithContent($content);
+
+		// Insert.
+		\ConvertKit_Shortcode_Post_Helper::insert(
+			post_id: $postID,
+			shortcode_tag: 'convertkit_form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'append'
+		);
+		$this->assertStringContainsString( $content, get_post($postID)->post_content );
+
+		// Update.
+		\ConvertKit_Shortcode_Post_Helper::update(
+			post_id: $postID,
+			shortcode_tag: 'convertkit_form',
+			occurrence_index: 0,
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ]
+		);
+		$this->assertStringContainsString( $content, get_post($postID)->post_content );
+
+		// Delete.
+		\ConvertKit_Shortcode_Post_Helper::delete(
+			post_id: $postID,
+			shortcode_tag: 'convertkit_form',
+			occurrence_index: 0
+		);
+		$this->assertStringContainsString( $content, get_post($postID)->post_content );
+	}
+
+	/**
 	 * Mocks a post for testing.
 	 *
 	 * @since   3.4.0
@@ -440,6 +558,26 @@ Item #5
 <h3>Item #2</h3>
 
 <h4>Item #2</h4>',
+			]
+		);
+	}
+
+	/**
+	 * Creates a Post with the given content.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   string $content    Post content.
+	 * @return  int
+	 */
+	private function createPostWithContent($content)
+	{
+		return $this->factory->post->create(
+			[
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Shortcode Post',
+				'post_content' => wp_slash($content),
 			]
 		);
 	}
