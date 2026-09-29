@@ -1,6 +1,6 @@
 <?php
 /**
- * Outputs a dropdown filter comprising of Tags and Products
+ * Outputs a dropdown filter comprising of Forms, Tags and Products
  *
  * @package ConvertKit
  * @author ConvertKit
