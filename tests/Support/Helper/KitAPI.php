@@ -432,7 +432,7 @@ class KitAPI extends \Codeception\Module
 						'headers' => [
 							'Authorization' => 'Bearer ' . $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
 						],
-						'timeout' => 5,
+						'timeout' => 30,
 					]
 				);
 				break;
@@ -447,7 +447,7 @@ class KitAPI extends \Codeception\Module
 							'Content-Type'  => 'application/json; charset=utf-8',
 							'Authorization' => 'Bearer ' . $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
 						],
-						'timeout' => 5,
+						'timeout' => 30,
 						'body'    => (string) json_encode($params), // phpcs:ignore WordPress.WP.AlternativeFunctions
 					]
 				);

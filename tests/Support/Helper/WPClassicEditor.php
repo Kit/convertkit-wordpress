@@ -111,6 +111,22 @@ class WPClassicEditor extends \Codeception\Module
 	}
 
 	/**
+	 * Clear the Classic Editor's unsaved changes warning.
+	 *
+	 * Tests that only assert on the shortcode a modal builds don't need to publish the Page.
+	 * Without this, navigating away from the unsaved Page displays a browser dialog, which
+	 * blocks every subsequent WebDriver command.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function clearClassicEditorUnsavedChangesWarning($I)
+	{
+		$I->executeJS('window.onbeforeunload = null; if ( typeof jQuery !== "undefined" ) { jQuery( window ).off( "beforeunload" ); }');
+	}
+
+	/**
 	 * Open the Visual Editor (TinyMCE) modal for the given shortcode.
 	 *
 	 * @since   2.2.4
@@ -133,6 +149,9 @@ class WPClassicEditor extends \Codeception\Module
 
 		// Click the Visual tab on the applicable TinyMCE editor.
 		$I->click('button#' . $targetEditor . '-tmce');
+
+		// Wait for TinyMCE to initialise, as its toolbar isn't in the DOM until it has.
+		$I->waitForElementVisible('#wp-' . $targetEditor . '-editor-container div.mce-container div[aria-label="' . $shortcodeName . '"] button');
 
 		// Click the TinyMCE Button for this shortcode.
 		$I->click('#wp-' . $targetEditor . '-editor-container div.mce-container div[aria-label="' . $shortcodeName . '"] button');
