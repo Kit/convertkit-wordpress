@@ -203,6 +203,7 @@ class WP_ConvertKit {
 		$this->classes['plugin_sidebar_post_settings']                = new ConvertKit_Plugin_Sidebar_Post_Settings();
 		$this->classes['broadcasts_exporter']                         = new ConvertKit_Broadcasts_Exporter();
 		$this->classes['broadcasts_importer']                         = new ConvertKit_Broadcasts_Importer();
+		$this->classes['broadcasts_webhook']                          = new ConvertKit_Broadcasts_Webhook();
 		$this->classes['elementor']                                   = new ConvertKit_Elementor();
 		$this->classes['gutenberg']                                   = new ConvertKit_Gutenberg();
 		$this->classes['mcp']                     = new ConvertKit_MCP();
@@ -278,7 +279,6 @@ class WP_ConvertKit {
 	 */
 	public function setup() {
 
-		$this->get_class( 'setup' )->initialize();
 		$this->get_class( 'setup' )->update();
 
 	}

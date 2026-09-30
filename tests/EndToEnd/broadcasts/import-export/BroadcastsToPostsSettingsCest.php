@@ -93,8 +93,9 @@ class BroadcastsToPostsSettingsCest
 		$I->seeElement('div.convertkit-select2-container');
 		$I->seeElement('input#published_at_min_date');
 
-		// Check the next import date and time is displayed.
-		$I->see('Broadcasts will next import at approximately');
+		// Check the Import now button and webhook status are displayed.
+		$I->seeLink('Import now');
+		$I->see('Broadcasts will only import using the Import now button.');
 
 		// Disable Broadcasts to Posts.
 		$I->uncheckOption('#enabled');
@@ -121,8 +122,43 @@ class BroadcastsToPostsSettingsCest
 		$I->dontSeeElement('input#import_images');
 		$I->dontSeeElement('input#published_at_min_date');
 
-		// Check the next import date and time is not displayed.
-		$I->dontSee('Broadcasts will next import at approximately');
+		// Check the Import now button and webhook status are not displayed.
+		$I->dontSee('Import now');
+		$I->dontSee('Broadcasts will only import using the Import now button.');
+	}
+
+	/**
+	 * Tests that the webhook isn't registered for the local test site, as Kit rejects loopback URLs.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testWebhookNotRegisteredForLocalSite(EndToEndTester $I)
+	{
+		// Enable Broadcasts to Posts.
+		$I->setupKitPluginBroadcasts(
+			$I,
+			[
+				'enabled' => true,
+			]
+		);
+
+		// Confirm the webhook isn't registered.
+		$I->see('Broadcasts will only import using the Import now button.');
+
+		// Attempt to register the webhook.
+		$I->click('Register webhook');
+
+		// Confirm Kit's error is displayed.
+		$I->waitForElementVisible('.notice-error');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the webhook still isn't registered.
+		$I->see('Broadcasts will only import using the Import now button.');
+		$I->seeLink('Register webhook');
 	}
 
 	/**

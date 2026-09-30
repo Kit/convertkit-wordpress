@@ -71,7 +71,7 @@ jobs:
         # rather than every job in the matrix installing all of them.
         group:
           - { path: 'EndToEnd/broadcasts/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
-          - { path: 'EndToEnd/broadcasts/import-export', plugins: 'classic-editor custom-post-type-ui wp-crontrol', paid-plugins: 'false' }
+          - { path: 'EndToEnd/broadcasts/import-export', plugins: 'classic-editor custom-post-type-ui', paid-plugins: 'false' }
           - { path: 'EndToEnd/forms/blocks-shortcodes', plugins: 'block-visibility classic-editor autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/forms/general', plugins: 'classic-editor', paid-plugins: 'false' }
           - { path: 'EndToEnd/forms/post-types', plugins: 'classic-editor custom-post-type-ui autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }

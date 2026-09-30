@@ -931,6 +931,9 @@ class ConvertKit_Settings {
 		// Clear any existing scheduled WordPress Cron event.
 		wp_clear_scheduled_hook( 'convertkit_refresh_token' );
 
+		// Remove the Broadcasts webhook endpoint, as it can't be verified or deleted without credentials.
+		delete_option( ConvertKit_Broadcasts_Webhook::OPTION_NAME );
+
 	}
 
 	/**

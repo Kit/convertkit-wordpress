@@ -37,7 +37,6 @@ modules:
         - \Tests\Support\Helper\WPBulkEdit
         - \Tests\Support\Helper\WPCachePlugins
         - \Tests\Support\Helper\WPClassicEditor
-        - \Tests\Support\Helper\WPCron
         - \Tests\Support\Helper\WPGutenberg
         - \Tests\Support\Helper\WPMetabox
         - \Tests\Support\Helper\WPNotices

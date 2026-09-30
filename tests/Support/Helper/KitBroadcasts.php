@@ -62,6 +62,29 @@ class KitBroadcasts extends \Codeception\Module
 	}
 
 	/**
+	 * Helper method to import Broadcasts using the Import now button at Settings > Kit > Broadcasts.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I     EndToEndTester.
+	 */
+	public function importBroadcasts($I)
+	{
+		// Go to the Plugin's Broadcasts screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Click the Import now button.
+		$I->click('Import now');
+
+		// Confirm that the Broadcasts were imported.
+		$I->waitForElementVisible('.notice-success');
+		$I->see('Broadcasts imported. Check the Posts screen to view imported Broadcasts.');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+	}
+
+	/**
 	 * Helper method to load the Plugin's Settings > Broadcasts screen.
 	 *
 	 * @since   2.2.8

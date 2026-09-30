@@ -657,6 +657,12 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('convertkit_custom_fields');
 		$I->dontHaveOptionInDatabase('convertkit_custom_fields_last_queried');
 
+		// Broadcasts webhook.
+		$I->dontHaveOptionInDatabase('convertkit_broadcasts_webhook');
+		$I->dontHaveOptionInDatabase('convertkit_broadcasts_webhook_events');
+		$I->dontHaveTransientInDatabase('convertkit_broadcasts_webhook_error');
+		$I->dontHaveTransientInDatabase('convertkit_broadcasts_webhook_status');
+
 		// Persistent notices.
 		$I->dontHaveOptionInDatabase('convertkit-admin-notices');
 

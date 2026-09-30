@@ -232,6 +232,9 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Delete the Broadcasts webhook endpoint whilst we still have an access token.
+		WP_ConvertKit()->get_class( 'broadcasts_webhook' )->delete();
+
 		// Revoke Access and Refresh Tokens.
 		// See convertkit_delete_credentials() method in functions.php, which is called
 		// by the `convertkit_api_revoke_tokens` action and deletes credentials from the Plugin's settings.

@@ -57,6 +57,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		parent::__construct();
 
 		$this->maybe_import_now();
+		$this->maybe_register_webhook();
 
 	}
 
@@ -74,8 +75,9 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		return array_merge(
 			$notices,
 			array(
-				'broadcast_import_error'   => __( 'Broadcasts import failed. Please try again.', 'convertkit' ),
-				'broadcast_import_success' => __( 'Broadcasts import started. Check the Posts screen shortly to confirm Broadcasts imported successfully.', 'convertkit' ),
+				'broadcast_import_error'    => __( 'Broadcasts import failed. Please try again.', 'convertkit' ),
+				'broadcast_import_success'  => __( 'Broadcasts imported. Check the Posts screen to view imported Broadcasts.', 'convertkit' ),
+				'broadcast_webhook_success' => __( 'Webhook registered. Kit will notify this site when a broadcast is published.', 'convertkit' ),
 			)
 		);
 
@@ -96,9 +98,14 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			return false;
 		}
 
-		// Run the import task through WordPress' Cron system now.
-		$cron   = new ConvertKit_Cron();
-		$result = $cron->run( 'convertkit_resource_refresh_posts' );
+		// Bail if the user isn't permitted to change settings.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		// Refresh the Posts resource, which imports new Broadcasts.
+		$posts  = new ConvertKit_Resource_Posts( 'settings' );
+		$result = $posts->refresh();
 
 		// If an error occured, show it now.
 		if ( is_wp_error( $result ) ) {
@@ -107,9 +114,39 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			return;
 		}
 
-		// If here, the task scheduled.
 		// Redirect with success notice.
 		$this->redirect_with_success_notice( 'broadcast_import_success' );
+
+	}
+
+	/**
+	 * Registers the webhook endpoint in Kit, if requested through the UI.
+	 *
+	 * @since   3.4.6
+	 */
+	private function maybe_register_webhook() {
+
+		// Bail if nonce verification fails.
+		if ( ! isset( $_REQUEST['_convertkit_settings_broadcasts_webhook_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_broadcasts_webhook_nonce'] ), 'convertkit-settings-broadcasts-webhook' ) ) {
+			return;
+		}
+
+		// Bail if the user isn't permitted to change settings.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$result = WP_ConvertKit()->get_class( 'broadcasts_webhook' )->register();
+
+		if ( is_wp_error( $result ) ) {
+			$this->redirect_with_error_description( $result->get_error_message() );
+			return;
+		}
+
+		$this->redirect_with_success_notice( 'broadcast_webhook_success' );
 
 	}
 
@@ -181,23 +218,11 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			return;
 		}
 
-		// Initialize classes that will be used.
-		$posts = new ConvertKit_Resource_Posts( 'cron' );
-
 		// Define description for the 'Enabled' setting.
-		// If enabled, include the next scheduled date and time the Plugin will import broadcasts.
-		// If the next scheduled timestamp is 1, the event is running now.
 		$enabled_description = '';
-		if ( $this->settings->enabled() && $posts->get_cron_event_next_scheduled() && $posts->get_cron_event_next_scheduled() > 1 ) {
+		if ( $this->settings->enabled() ) {
 			$enabled_description = sprintf(
-				'%s %s<br />%s <strong>%s</strong> %s',
-				esc_html__( 'Broadcasts will next import at approximately ', 'convertkit' ),
-				// The cron event's next scheduled timestamp is always in UTC.
-				// Display it converted to the WordPress site's timezone.
-				get_date_from_gmt(
-					gmdate( 'Y-m-d H:i:s', $posts->get_cron_event_next_scheduled() ),
-					get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
-				),
+				'%s <strong>%s</strong> %s',
 				esc_html__( 'Broadcasts', 'convertkit' ),
 				esc_html__( 'must', 'convertkit' ),
 				esc_html__( 'have their "Enabled on public feeds" setting enabled in Kit, to be eligible for import.', 'convertkit' )
@@ -219,11 +244,22 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		// Render import button if the feature is enabled.
-		if ( $this->settings->enabled() && $posts->get_cron_event_next_scheduled() ) {
+		if ( $this->settings->enabled() ) {
 			add_settings_field(
 				'import_button',
 				'',
 				array( $this, 'import_button_callback' ),
+				$this->settings_key,
+				$this->name
+			);
+		}
+
+		// Render webhook status and register button if the feature is enabled.
+		if ( $this->settings->enabled() ) {
+			add_settings_field(
+				'webhook',
+				__( 'Webhook', 'convertkit' ),
+				array( $this, 'webhook_callback' ),
 				$this->settings_key,
 				$this->name
 			);
@@ -349,27 +385,6 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		<p class="description"><?php esc_html_e( 'Defines whether public broadcasts ("Enabled on public feeds") in Kit should automatically be published on this site as WordPress Posts, and whether to enable options to create draft Kit Broadcasts from WordPress Posts.', 'convertkit' ); ?></p>
 		<?php
 
-		// If the DISABLE_WP_CRON constant exists and is true, display a warning that this functionality
-		// may not work.
-		if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON === true ) { // @phpstan-ignore-line Constant is not always true.
-			?>
-			<div class="notice notice-info">
-				<p>
-					<?php
-					printf(
-						'%s %s %s %s %s',
-						esc_html__( 'We\'ve detected that the', 'convertkit' ),
-						'<code>DISABLE_WP_CRON</code>',
-						esc_html__( 'constant is enabled. If broadcasts do not import automatically or when using the import button below, either remove this constant from your', 'convertkit' ),
-						'<code>wp-config.php</code>',
-						esc_html__( 'file, or check that your web host is triggering the WordPress Cron via an alternate method. If importing broadcasts work, no changes to your WordPress configuration file are required.', 'convertkit' )
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
-
 	}
 
 
@@ -429,6 +444,64 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			__( 'Import now', 'convertkit' ),
 			array( 'button-secondary', 'enabled' )
 		);
+
+	}
+
+	/**
+	 * Renders the webhook status and register button.
+	 *
+	 * @since   3.4.6
+	 */
+	public function webhook_callback() {
+
+		$webhook = WP_ConvertKit()->get_class( 'broadcasts_webhook' );
+
+		switch ( $webhook->get_status() ) {
+			case 'active':
+				$description = __( 'Active. Kit notifies this site when a broadcast is published.', 'convertkit' );
+				break;
+
+			case 'disabled':
+				$description = __( 'Disabled in Kit. Re-register the webhook to import broadcasts when they are published in Kit.', 'convertkit' );
+				break;
+
+			case 'missing':
+				$description = __( 'Not found in Kit. Re-register the webhook to import broadcasts when they are published in Kit.', 'convertkit' );
+				break;
+
+			case 'unknown':
+				$description = __( 'Registered, but its status could not be checked in Kit.', 'convertkit' );
+				break;
+
+			default:
+				$description = __( 'Not registered. Broadcasts will only import using the Import now button.', 'convertkit' );
+				if ( $webhook->get_error() ) {
+					$description = sprintf(
+						/* translators: Error message */
+						__( 'Not registered (%s). Broadcasts will only import using the Import now button.', 'convertkit' ),
+						$webhook->get_error()
+					);
+				}
+				break;
+		}
+
+		// Define link to register the webhook.
+		$register_url = add_query_arg(
+			array(
+				'page'                                          => '_wp_convertkit_settings',
+				'tab'                                           => 'broadcasts',
+				'_convertkit_settings_broadcasts_webhook_nonce' => wp_create_nonce( 'convertkit-settings-broadcasts-webhook' ),
+			),
+			'options-general.php'
+		);
+
+		$this->output_link_button(
+			$register_url,
+			( $webhook->is_registered() ? __( 'Re-register webhook', 'convertkit' ) : __( 'Register webhook', 'convertkit' ) ),
+			array( 'button-secondary', 'enabled' )
+		);
+
+		echo wp_kses( $this->get_description( esc_html( $description ) ), convertkit_kses_allowed_html() );
 
 	}
 
