@@ -5,16 +5,16 @@ namespace Tests\EndToEnd;
 use Tests\Support\EndToEndTester;
 
 /**
- * Tests for the Kit Form Trigger Button Elementor Widget.
+ * Tests for the Kit Member Content Login Elementor Widget.
  *
- * @since   2.2.2
+ * @since   3.4.4
  */
-class ElementorFormTriggerCest
+class ElementorMemberContentLoginCest
 {
 	/**
 	 * Run common actions before running the test functions in this class.
 	 *
-	 * @since   2.2.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -22,23 +22,23 @@ class ElementorFormTriggerCest
 	{
 		$I->activateKitPlugin($I);
 		$I->activateThirdPartyPlugin($I, 'elementor');
-		$I->setupKitPlugin($I);
+		$I->setupKitPluginNoDefaultForms($I);
 		$I->setupKitPluginResources($I);
 	}
 
 	/**
-	 * Test the Form Trigger widget is registered in Elementor.
+	 * Test the Member Content Login widget is registered in Elementor.
 	 *
-	 * @since   2.2.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testFormTriggerWidgetIsRegistered(EndToEndTester $I)
+	public function testMemberContentLoginWidgetIsRegistered(EndToEndTester $I)
 	{
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
 			$I,
-			title: 'Kit: Page: Form Trigger: Elementor: Registered'
+			title: 'Kit: Page: Member Content Login: Elementor: Registered'
 		);
 
 		// Click Edit with Elementor button.
@@ -49,31 +49,32 @@ class ElementorFormTriggerCest
 		$I->waitForElementVisible('#elementor-preview-iframe');
 		$I->waitForElementNotVisible('#elementor-loading');
 
-		// Search for the Kit Form Trigger block.
+		// Search for the Kit Member Content Login block.
 		$I->waitForElementVisible('#elementor-panel-page-elements .elementor-element');
 		$I->waitForElementClickable('#elementor-panel-elements-search-input');
-		$I->fillField('#elementor-panel-elements-search-input', 'Kit Form Trigger');
+		$I->fillField('#elementor-panel-elements-search-input', 'Kit Member Content Login');
 
-		// Confirm that the Form Trigger widget is displayed as an option.
+		// Confirm that the Member Content Login widget is displayed as an option.
 		$I->seeElementInDOM('#elementor-panel-elements .elementor-element');
 	}
 
 	/**
-	 * Test the Form Trigger widget works when using valid parameters.
+	 * Test the Member Content Login widget displays the login form, and the logged in
+	 * text and log out button once the subscriber is logged in.
 	 *
-	 * @since   2.2.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
-	public function testFormTriggerWidgetWithValidParameters(EndToEndTester $I)
+	public function testMemberContentLoginWidget(EndToEndTester $I)
 	{
-		// Create Page with Form Trigger widget in Elementor.
-		$pageID = $this->_createPageWithFormTriggerWidget(
+		// Create Page with Member Content Login widget in Elementor.
+		$pageID = $this->_createPageWithMemberContentLoginWidget(
 			$I,
-			title: 'Kit: Page: Form Trigger: Elementor Widget: Valid Params',
+			title: 'Kit: Page: Member Content Login: Elementor Widget',
 			settings: [
-				'form' => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
-				'text' => 'Subscribe',
+				'logged_in_text'      => 'You are signed in',
+				'logout_button_label' => 'Sign out',
 			]
 		);
 
@@ -83,76 +84,49 @@ class ElementorFormTriggerCest
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
-		// Confirm that the form trigger button displays.
-		$I->seeFormTriggerOutput(
-			$I,
-			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
-			text: 'Subscribe'
-		);
-	}
+		// Confirm the login form is displayed.
+		$I->seeElementInDOM('input#convertkit_email');
+		$I->dontSeeElementInDOM('#convertkit-restrict-content-modal');
 
-	/**
-	 * Test the Form Trigger widget's hex colors work when defined.
-	 *
-	 * @since   2.2.2
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testFormTriggerWidgetWithHexColorParameters(EndToEndTester $I)
-	{
-		// Define colors.
-		$backgroundColor = '#ee1616';
-		$textColor       = '#1212c0';
+		// Log in as a Kit subscriber, as if we entered the code sent in the email.
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		$I->reloadPage();
 
-		// Create Page with Form Trigger widget in Elementor.
-		$pageID = $this->_createPageWithFormTriggerWidget(
-			$I,
-			title: 'Kit: Page: Form Trigger: Elementor Widget: Hex Colors',
-			settings: [
-				'form'             => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
-				'text'             => 'Subscribe',
-				'background_color' => $backgroundColor,
-				'text_color'       => $textColor,
-			]
-		);
+		// Confirm the logged in text and log out button are displayed.
+		$I->waitForElementVisible('a.convertkit-restrict-content-logout');
+		$I->see('You are signed in');
+		$I->see('Sign out', 'a.convertkit-restrict-content-logout');
 
-		// Load Page.
-		$I->amOnPage('?p=' . $pageID);
+		// Log out.
+		$I->click('a.convertkit-restrict-content-logout');
 
-		// Check that no PHP warnings or notices were output.
-		$I->checkNoWarningsAndNoticesOnScreen($I);
-
-		// Confirm that the form trigger button displays.
-		$I->seeFormTriggerOutput(
-			$I,
-			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
-			text: 'Subscribe',
-			textColor: $textColor,
-			backgroundColor: $backgroundColor
-		);
+		// Confirm the login form is displayed, and the subscriber is logged out.
+		$I->waitForElementVisible('input#convertkit_email');
+		$I->dontSee('You are signed in');
+		$I->dontSeeCookie('ck_subscriber_id');
 	}
 
 	/**
 	 * Create a Page in the database comprising of Elementor Page Builder data
-	 * containing a Kit Form widget.
+	 * containing a Kit Member Content Login widget.
 	 *
 	 * Codeception's dragAndDrop() method doesn't support dropping an element into an iframe, which is
 	 * how Elementor works for adding widgets to a Page.
 	 *
 	 * Therefore, we directly create a Page in the database, with Elementor's data structure
-	 * as if we added the Form Trigger widget to a Page edited in Elementor.
+	 * as if we added the Member Content Login widget to a Page edited in Elementor.
 	 *
-	 * testFormTriggerWidgetIsRegistered() above is a sanity check that the Form Trigger Widget is registered
+	 * testMemberContentLoginWidgetIsRegistered() above is a sanity check that the widget is registered
 	 * and available to users in Elementor.
 	 *
-	 * @since   2.2.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I          Tester.
 	 * @param   string         $title      Page Title.
 	 * @param   array          $settings   Widget settings.
 	 * @return  int                             Page ID
 	 */
-	private function _createPageWithFormTriggerWidget(EndToEndTester $I, $title, $settings)
+	private function _createPageWithMemberContentLoginWidget(EndToEndTester $I, $title, $settings)
 	{
 		return $I->havePostInDatabase(
 			[
@@ -163,12 +137,12 @@ class ElementorFormTriggerCest
 					// Elementor.
 					'_elementor_data'          => [
 						0 => [
-							'id'       => '39bb59e',
+							'id'       => '39bb59d',
 							'elType'   => 'section',
 							'settings' => [],
 							'elements' => [
 								[
-									'id'       => 'b7e0e58',
+									'id'       => 'b7e0e57',
 									'elType'   => 'column',
 									'settings' => [
 										'_column_size' => 100,
@@ -176,10 +150,10 @@ class ElementorFormTriggerCest
 									],
 									'elements' => [
 										[
-											'id'         => 'a73a906',
+											'id'         => 'a73a905',
 											'elType'     => 'widget',
 											'settings'   => $settings,
-											'widgetType' => 'convertkit-elementor-formtrigger',
+											'widgetType' => 'convertkit-elementor-login',
 										],
 									],
 								],
@@ -191,7 +165,7 @@ class ElementorFormTriggerCest
 					'_elementor_template_type' => 'wp-page',
 
 					// Configure Kit Plugin to not display a default Form,
-					// as we are testing for the Form in Elementor.
+					// as we are testing for the Member Content Login widget in Elementor.
 					'_wp_convertkit_post_meta' => [
 						'form'         => '0',
 						'landing_page' => '',
@@ -207,12 +181,13 @@ class ElementorFormTriggerCest
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
 	 *
-	 * @since   2.2.2
+	 * @since   3.4.4
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
 	public function _passed(EndToEndTester $I)
 	{
+		$I->clearRestrictContentCookie($I);
 		$I->deactivateThirdPartyPlugin($I, 'elementor');
 		$I->deactivateKitPlugin($I);
 		$I->resetKitPlugin($I);

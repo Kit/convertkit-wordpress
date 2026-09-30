@@ -53,11 +53,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -90,11 +89,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -158,11 +156,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Sign up"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Sign up');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -195,11 +192,10 @@ class PageShortcodeFormTriggerCest
 			expectedShortcodeOutput: '[convertkit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Form Trigger is displayed.
-		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -398,6 +394,37 @@ class PageShortcodeFormTriggerCest
 
 		// Save page to avoid alert box when _passed() runs to deactivate the Plugin.
 		$I->publishAndViewClassicEditorPage($I);
+	}
+
+	/**
+	 * Test the [kit_formtrigger] shortcode works when a valid Form ID is specified.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormTriggerShortcodeWithKitPrefix(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-form-trigger-shortcode-kit-prefix',
+				'post_content' => '[kit_formtrigger form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '" text="Subscribe"]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-form-trigger-shortcode-kit-prefix');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Form Trigger button is output.
+		$I->seeFormTriggerOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'], 'Subscribe');
 	}
 
 	/**

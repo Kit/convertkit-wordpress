@@ -20,3 +20,4 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convert
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convertkit-divi-module-form.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convertkit-divi-module-form-trigger.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convertkit-divi-module-product.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convertkit-divi-module-login.php';

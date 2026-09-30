@@ -11,6 +11,9 @@
 		padding: 10px;
 		box-sizing: border-box;
 		font-family: inherit;
+
+		/* Leave room above the field when it's focused and scrolled to on error. */
+		scroll-margin-top: 30px;
 	}
 
 	label {
@@ -27,5 +30,24 @@ form {
 		width: 100%;
 		margin: 0 0 20px 0;
 		box-sizing: border-box;
+	}
+
+	.convertkit-form-builder-notice {
+		display: inline-block;
+		width: 100%;
+		scroll-margin-top: 30px;
+		margin: 0 0 20px 0;
+		padding: 0 0 0 30px;
+		box-sizing: border-box;
+		font-size: 12px;
+		line-height: 24px;
+		font-weight: 400;
+		background-repeat: no-repeat;
+		background-size: 24px 24px;
+
+		&.convertkit-form-builder-notice-error {
+			color: #d3434a;
+			background-image: url(../images/error.svg);
+		}
 	}
 }

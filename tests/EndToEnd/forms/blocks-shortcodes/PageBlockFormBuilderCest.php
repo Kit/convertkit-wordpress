@@ -1322,6 +1322,17 @@ class PageBlockFormBuilderCest
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
+		// Confirm an error notice is displayed and focused, as the error isn't specific to a field.
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
+		$I->see('Google reCAPTCHA failed');
+		$I->assertEquals(
+			'convertkit-form-builder-error-1',
+			$I->executeJS('return document.activeElement.getAttribute("id");')
+		);
+
+		// Confirm the subscribed message is not displayed.
+		$I->dontSeeElementInDOM('div.convertkit-form-builder-subscribed-message');
+
 		// Confirm that the email address was not added to Kit, as reCAPTCHA score failed.
 		$I->apiCheckSubscriberDoesNotExist($I, $emailAddress);
 	}
@@ -1427,6 +1438,139 @@ class PageBlockFormBuilderCest
 				'sequence_id'   => $_ENV['CONVERTKIT_API_SEQUENCE_ID'],
 				'api_result'    => 'success',
 			]
+		);
+	}
+
+	/**
+	 * Test the Form Builder block displays an error when an invalid email address
+	 * is submitted, bypassing the browser's own validation.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithInvalidEmailAddress(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: Invalid Email'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Add block to Page, storing form submissions so we can confirm the invalid
+		// email address isn't stored.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder',
+			blockConfiguration: [
+				'Store form submissions' => [ 'toggle', true ],
+			]
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Change the email field to a text field, to bypass the browser's own validation
+		// and test the Plugin's server side validation.
+		$I->executeJS('document.querySelector(\'input[name="convertkit[email]"]\').setAttribute("type", "text");');
+
+		// Submit form with an invalid email address.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', 'not-an-email-address');
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm an error notice is displayed, and the form is still displayed.
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
+		$I->see('Please enter a valid email address.');
+		$I->seeElementInDOM('input[name="convertkit[email]"]');
+
+		// Confirm the email field is flagged as invalid, described by the notice and focused.
+		$I->seeElementInDOM('input[name="convertkit[email]"][aria-invalid="true"]');
+		$I->seeElementInDOM('input[name="convertkit[email]"][aria-describedby="convertkit-form-builder-error-1"]');
+		$I->assertEquals(
+			'convertkit[email]',
+			$I->executeJS('return document.activeElement.getAttribute("name");')
+		);
+
+		// Confirm the subscribed message is not displayed.
+		$I->dontSeeElementInDOM('div.convertkit-form-builder-subscribed-message');
+
+		// Confirm the entry was not stored in the database.
+		$I->dontSeeInDatabase(
+			'wp_kit_form_entries',
+			[
+				'email' => 'not-an-email-address',
+			]
+		);
+	}
+
+	/**
+	 * Test the Form Builder block displays an error when the Plugin has no credentials.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockDisplaysErrorWhenNoCredentials(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Form Builder: Block: No Credentials Error'
+		);
+
+		// Configure metabox's Form setting = None, ensuring we only test the block in Gutenberg.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None'
+		);
+
+		// Add block to Page.
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'Kit Form Builder',
+			blockProgrammaticName: 'convertkit-form-builder'
+		);
+
+		// Publish and view the Page on the frontend site.
+		$I->publishAndViewGutenbergPage($I);
+
+		// Remove the Plugin's credentials, as if the Access Token were revoked.
+		$I->resetKitPlugin($I);
+		$I->reloadPage();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
+		$I->fillField('input[name="convertkit[email]"]', $I->generateEmailAddress());
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm an error notice is displayed and focused, as the error isn't specific to a field.
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
+		$I->see('Sorry, we were unable to subscribe you. Please try again later.');
+		$I->assertEquals(
+			'convertkit-form-builder-error-1',
+			$I->executeJS('return document.activeElement.getAttribute("id");')
 		);
 	}
 

@@ -188,11 +188,6 @@ class ConvertKit_Settings_Restrict_Content {
 					'type'        => 'string',
 					'description' => __( 'Body text shown alongside the subscribe call-to-action when content is restricted by Tag.', 'convertkit' ),
 				),
-				'require_tag_login'      => array(
-					'type'        => 'string',
-					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether visitors must log in by email to access Member Content restricted by Tag.', 'convertkit' ),
-				),
 				'no_access_text_tag'     => array(
 					'type'        => 'string',
 					'description' => __( 'Message shown to a visitor without access when content is restricted by Tag.', 'convertkit' ),

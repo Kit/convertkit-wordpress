@@ -1,3 +1,20 @@
+### 3.4.5 2026-09-30
+* Fix: Post Settings: Prevent `rest_meta_database_error` when third party Plugins also save metadata by removing duplicate Kit post metadata
+* Fix: Member Content: Permit Search Engine Crawlers: Recognize DuckDuckBot as a crawler
+* Fix: Member Content: Display dropdown filter in Posts and Pages tables when only Forms exist
+* Fix: Member Content: Configure/display cache plugin notices when Member Content enabled via the Setup Wizard
+* Fix: Member Content: Read 6 digit code when both Login Form Block/Shortcode and modal on the same Page/Post
+* Fix: Member Content: Re-enable form inputs when an invalid JSON response or server error, instead of leaving them disabled
+* Fix: Member Content: Setup Wizard: Remove "ConvertKit" wording
+* Fix: MCP: Removed unused "require_tag_login" setting
+* Fix: MCP: Claude Desktop: Updated instructions for connecting. See Docs: https://help.kit.com/en/articles/16729038-using-the-kit-plugin-s-mcp-server-on-your-wordpress-website#h_6ff6f06cdb
+
+### 3.4.4 2026-09-23
+* Added: Member Content: Divi: Login Widget
+* Added: Member Content: Elementor: Login Widget
+* Fix: Form Builder: Validate email address
+* Fix: Form Builder: Display errors on submission
+
 ### 3.4.3 2026-09-17
 * Added: Member Content: Login Form Block and Shortcode
 

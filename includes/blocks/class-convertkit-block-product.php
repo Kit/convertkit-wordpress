@@ -81,6 +81,7 @@ class ConvertKit_Block_Product extends ConvertKit_Block {
 		/**
 		 * This will register as:
 		 * - a shortcode, with the name [convertkit_product].
+		 * - a shortcode, with the name [kit_product].
 		 * - a Gutenberg block, with the name convertkit/product.
 		 */
 		return 'product';

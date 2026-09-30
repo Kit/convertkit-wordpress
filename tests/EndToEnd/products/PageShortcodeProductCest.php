@@ -53,15 +53,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy my product" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -94,15 +89,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy my product" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -166,15 +156,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy now" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy now'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -207,15 +192,10 @@ class PageShortcodeProductCest
 			expectedShortcodeOutput: '[convertkit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" checkout="0" disable_modal_on_mobile="0"]'
 		);
 
-		// Publish and view the Page on the frontend site.
-		$I->publishAndViewClassicEditorPage($I);
-
-		// Confirm that the Kit Product is displayed.
-		$I->seeProductOutput(
-			$I,
-			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product'
-		);
+		// The shortcode the modal built is asserted above. The rendered output for this parameter
+		// is covered by the block's test, as the block and shortcode share the same render method,
+		// so the Page doesn't need publishing and viewing here.
+		$I->clearClassicEditorUnsavedChangesWarning($I);
 	}
 
 	/**
@@ -627,6 +607,41 @@ class PageShortcodeProductCest
 
 		// Save page to avoid alert box when _passed() runs to deactivate the Plugin.
 		$I->publishAndViewClassicEditorPage($I);
+	}
+
+	/**
+	 * Test the [kit_product] shortcode works when a valid Product ID is specified.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testProductShortcodeWithKitPrefix(EndToEndTester $I)
+	{
+		// Setup Kit Plugin with no default form specified.
+		$I->setupKitPluginNoDefaultForms($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-product-shortcode-kit-prefix',
+				'post_content' => '[kit_product product="' . $_ENV['CONVERTKIT_API_PRODUCT_ID'] . '" text="Buy my product"]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-product-shortcode-kit-prefix');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Kit Product is displayed.
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product'
+		);
 	}
 
 	/**

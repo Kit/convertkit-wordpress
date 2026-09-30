@@ -38,6 +38,7 @@ class ConvertKit_Block_Content extends ConvertKit_Block {
 		/**
 		 * This will register as:
 		 * - a shortcode, with the name [convertkit_content]
+		 * - a shortcode, with the name [kit_content]
 		 * - a Gutenberg block, with the name convertkit/content
 		 */
 		return 'content';

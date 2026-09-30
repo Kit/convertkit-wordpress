@@ -240,6 +240,45 @@ class PageShortcodeCustomContentCest
 	}
 
 	/**
+	 * Test the [kit_content] shortcode works when a valid Tag ID is specified.
+	 *
+	 * @since   3.4.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testCustomContentShortcodeWithKitPrefix(EndToEndTester $I)
+	{
+		// Create Page with Shortcode.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-custom-content-shortcode-kit-prefix',
+				'post_content' => '[kit_content tag="' . $_ENV['CONVERTKIT_API_TAG_ID'] . '"]KitCustomContent[/kit_content]',
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('/kit-custom-content-shortcode-kit-prefix');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Custom Content is not yet displayed.
+		$I->dontSee('KitCustomContent');
+
+		// Set cookie with signed subscriber ID.
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+
+		// Reload the page.
+		$I->amOnPage('/kit-custom-content-shortcode-kit-prefix');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the Custom Content is now displayed.
+		$I->see('KitCustomContent');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

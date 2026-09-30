@@ -55,6 +55,9 @@ class PluginSettingsMCPCest
 		$I->checkOption('#enabled');
 		$I->click('Save Changes');
 
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
@@ -69,6 +72,9 @@ class PluginSettingsMCPCest
 		// Disable MCP server.
 		$I->uncheckOption('#enabled');
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -114,6 +120,9 @@ class PluginSettingsMCPCest
 		// Enable MCP server.
 		$I->checkOption('#enabled');
 		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -177,7 +186,7 @@ class PluginSettingsMCPCest
 		// Define each AI client tab, and a string that should only be displayed
 		// in that client's panel.
 		$tabs = [
-			'claude-desktop' => 'claude_desktop_config.json',
+			'claude-desktop' => 'Add custom connector',
 			'claude-code'    => 'claude mcp add --transport http kit-wordpress',
 			'cursor'         => '~/.cursor/mcp.json',
 			'codex'          => '[mcp_servers.kit_wordpress]',
