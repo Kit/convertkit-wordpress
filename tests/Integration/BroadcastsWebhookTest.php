@@ -435,7 +435,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 		// Schedule the event, as earlier versions of the Plugin would.
 		wp_schedule_event(time(), 'hourly', 'convertkit_resource_refresh_posts');
 
-		// Set Plugin version number in options table to < 3.4.6.
+		// Set Plugin version number in options table to an older version.
 		update_option('convertkit_version', '3.4.4');
 
 		// Run the update action as WordPress would when updating the Plugin to a newer version.
@@ -443,6 +443,32 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 
 		// Confirm the event was removed.
 		$this->assertFalse(wp_next_scheduled('convertkit_resource_refresh_posts'));
+	}
+
+	/**
+	 * Test that the webhook endpoint is registered when the Plugin is updated, if the
+	 * Broadcasts import is enabled and no endpoint is registered.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testRegisteredOnPluginUpdate()
+	{
+		// Enable the import, and remove the registered endpoint, as if it was enabled before webhooks.
+		$this->enableImport();
+		delete_option(\ConvertKit_Broadcasts_Webhook::OPTION_NAME);
+		$this->requests = [];
+
+		// Set Plugin version number in options table to an older version.
+		update_option('convertkit_version', '3.4.4');
+
+		// Run the update action as WordPress would when updating the Plugin to a newer version.
+		\WP_ConvertKit()->setup();
+
+		// Confirm the webhook endpoint was created and stored.
+		$this->assertCount(1, $this->requests);
+		$this->assertEquals('POST', $this->requests[0]['method']);
+		$this->assertStringEndsWith('webhook_endpoints', $this->requests[0]['url']);
+		$this->assertTrue($this->webhook->is_registered());
 	}
 
 	/**

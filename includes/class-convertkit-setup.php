@@ -45,12 +45,11 @@ class ConvertKit_Setup {
 		}
 
 		/**
-		 * 3.4.6: Remove the Posts resource's Cron event, as Broadcasts are now imported
-		 * when Kit notifies this site by webhook.
+		 * 3.4.6+: Remove the Posts resource's Cron event, as Broadcasts are now imported
+		 * when Kit notifies this site by webhook, and register the webhook if needed.
 		 */
-		if ( version_compare( $current_version, '3.4.6', '<' ) ) {
-			wp_clear_scheduled_hook( 'convertkit_resource_refresh_posts' );
-		}
+		wp_clear_scheduled_hook( 'convertkit_resource_refresh_posts' );
+		WP_ConvertKit()->get_class( 'broadcasts_webhook' )->maybe_register();
 
 		/**
 		 * 3.0.4: Add form_id to entries database table.
