@@ -965,6 +965,35 @@ function convertkit_maybe_delete_credentials( $result, $client_id ) {
 
 }
 
+/**
+ * Returns the OAuth authorization URL to begin connecting the Plugin to a Kit account.
+ *
+ * The return URL includes a nonce in the `section` parameter, which is verified when
+ * Kit redirects the user back to the Plugin's settings screen with an authorization
+ * code. This ensures only a logged in user who started the OAuth flow can exchange an
+ * authorization code for an access token.
+ *
+ * @since   3.4.5
+ *
+ * @return  string  OAuth authorization URL.
+ */
+function convertkit_get_oauth_url() {
+
+	$api = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
+
+	return $api->get_oauth_url(
+		add_query_arg(
+			array(
+				'page'    => '_wp_convertkit_settings',
+				'section' => 'convertkit-oauth-' . wp_create_nonce( 'convertkit-oauth-connect' ),
+			),
+			admin_url( 'options-general.php' )
+		),
+		get_site_url()
+	);
+
+}
+
 // Update Access Token when refreshed by the API class.
 add_action( 'convertkit_api_get_access_token', 'convertkit_maybe_update_credentials', 10, 2 );
 add_action( 'convertkit_api_refresh_token', 'convertkit_maybe_update_credentials', 10, 2 );
