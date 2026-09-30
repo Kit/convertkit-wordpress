@@ -147,8 +147,6 @@ class MCPSettingsRestrictContentTest extends WPTestCase
 		$this->assertArrayHasKey('no_access_text', $result);
 		$this->assertArrayHasKey('subscribe_heading_tag', $result);
 		$this->assertArrayHasKey('subscribe_text_tag', $result);
-		$this->assertArrayHasKey('require_tag_login', $result);
-		$this->assertEquals('on', $result['require_tag_login']);
 		$this->assertArrayHasKey('no_access_text_tag', $result);
 		$this->assertArrayHasKey('subscribe_button_label', $result);
 		$this->assertArrayHasKey('email_text', $result);
@@ -176,7 +174,6 @@ class MCPSettingsRestrictContentTest extends WPTestCase
 				'permit_crawlers'        => 'on',
 				'subscribe_heading'      => 'Updated subscribe heading',
 				'subscribe_text'         => 'Updated subscribe text',
-				'require_tag_login'      => 'on',
 				'subscribe_button_label' => 'Join now',
 				'container_css_classes'  => 'kit-restrict kit-restrict-custom',
 			]
@@ -190,7 +187,6 @@ class MCPSettingsRestrictContentTest extends WPTestCase
 		$this->assertArrayHasKey('no_access_text', $result);
 		$this->assertArrayHasKey('subscribe_heading_tag', $result);
 		$this->assertArrayHasKey('subscribe_text_tag', $result);
-		$this->assertArrayHasKey('require_tag_login', $result);
 		$this->assertArrayHasKey('no_access_text_tag', $result);
 		$this->assertArrayHasKey('subscribe_button_label', $result);
 		$this->assertArrayHasKey('email_text', $result);
@@ -205,7 +201,6 @@ class MCPSettingsRestrictContentTest extends WPTestCase
 		$this->assertEquals('on', $result['permit_crawlers']);
 		$this->assertEquals('Updated subscribe heading', $result['subscribe_heading']);
 		$this->assertEquals('Updated subscribe text', $result['subscribe_text']);
-		$this->assertEquals('on', $result['require_tag_login']);
 		$this->assertEquals('Join now', $result['subscribe_button_label']);
 		$this->assertEquals('kit-restrict kit-restrict-custom', $result['container_css_classes']);
 	}
@@ -241,7 +236,6 @@ class MCPSettingsRestrictContentTest extends WPTestCase
 				'no_access_text'         => 'No access (product).',
 				'subscribe_heading_tag'  => 'Subscribe to keep reading',
 				'subscribe_text_tag'     => 'Free but only available to subscribers.',
-				'require_tag_login'      => 'on',
 				'no_access_text_tag'     => 'No access (tag).',
 				'subscribe_button_label' => 'Subscribe',
 				'email_text'             => 'Already subscribed?',

@@ -298,8 +298,8 @@ class ConvertKit_Admin_Restrict_Content {
 		$this->products = new ConvertKit_Resource_Products();
 		$this->tags     = new ConvertKit_Resource_Tags();
 
-		// Don't display filter if no Tags and no Products exist.
-		if ( ! $this->products->exist() && ! $this->tags->exist() ) {
+		// Don't display filter if no Forms, Tags or Products exist.
+		if ( ! $this->forms->inline_exist() && ! $this->products->exist() && ! $this->tags->exist() ) {
 			return;
 		}
 

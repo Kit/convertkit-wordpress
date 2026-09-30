@@ -205,6 +205,69 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that permitted crawlers can access restricted content when the Permit Crawlers
+	 * setting is enabled.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testPermittedCrawlersCanAccessRestrictedContent()
+	{
+		// Store Credentials in Plugin's settings.
+		$settings = new \ConvertKit_Settings();
+		$settings->save(
+			array(
+				'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
+				'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
+				'token_expires' => ( time() + 10000 ),
+			)
+		);
+
+		// Enable the Permit Crawlers setting.
+		$restrict_content_settings = new \ConvertKit_Settings_Restrict_Content();
+		$restrict_content_settings->save(
+			array(
+				'permit_crawlers' => 'on',
+			)
+		);
+
+		// Create a Post, restricting to a Kit Product.
+		$post_id = static::factory()->post->create(
+			[
+				'post_title' => 'Restrict Content: Crawlers',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Load the Post.
+		$this->go_to(get_permalink($post_id));
+		the_post();
+
+		// Initialize the class' settings.
+		$this->resource->initialize_classes();
+
+		// Define crawler user agents and an IP address within each crawler's permitted IP addresses.
+		$crawlers = [
+			'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' => '34.100.182.96',
+			'DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)' => '57.152.72.128',
+		];
+
+		foreach ($crawlers as $user_agent => $ip_address) {
+			$_SERVER['HTTP_USER_AGENT'] = $user_agent;
+			$_SERVER['REMOTE_ADDR']     = $ip_address;
+
+			// Confirm the content is not restricted.
+			$this->assertEquals('Member-only content.', $this->resource->maybe_restrict_content('Member-only content.'), $user_agent);
+		}
+	}
+
+	/**
 	 * Test that IP addresses 34.100.182.96 through .111 (i.e. in the CIDR range /28)
 	 * are returned as true by the ip_in_range() function.
 	 *

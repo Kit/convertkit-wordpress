@@ -89,6 +89,39 @@ class RestrictContentFilterCest
 	}
 
 	/**
+	 * Test that the dropdown filter on the Pages screen is displayed when the Kit
+	 * account has Forms, but no Tags or Products.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFilterDisplayedWhenNoTagsOrProducts(EndToEndTester $I)
+	{
+		// Setup Plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Remove Tags and Products, as if the Kit account has none.
+		$I->haveOptionInDatabase('convertkit_tags', []);
+		$I->haveOptionInDatabase('convertkit_products', []);
+
+		// Test each Post Type.
+		foreach ( $this->postTypes as $postType ) {
+			// Navigate to the Post Type.
+			$I->amOnAdminPage('edit.php?post_type=' . $postType);
+
+			// Check that no PHP warnings or notices were output.
+			$I->checkNoWarningsAndNoticesOnScreen($I);
+
+			// Check the filter is displayed, listing Forms only.
+			$I->seeElementInDOM('#wp-convertkit-restrict-content-filter optgroup[label="Forms"]');
+			$I->dontSeeElementInDOM('#wp-convertkit-restrict-content-filter optgroup[label="Tags"]');
+			$I->dontSeeElementInDOM('#wp-convertkit-restrict-content-filter optgroup[label="Products"]');
+		}
+	}
+
+	/**
 	 * Test that filtering by Product works on the Pages screen.
 	 *
 	 * @since   2.1.0
