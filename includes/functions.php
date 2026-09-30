@@ -971,7 +971,8 @@ function convertkit_maybe_delete_credentials( $result, $client_id ) {
  * The return URL includes a nonce in the `section` parameter, which is verified when
  * Kit redirects the user back to the Plugin's settings screen with an authorization
  * code. This ensures only a logged in user who started the OAuth flow can exchange an
- * authorization code for an access token.
+ * authorization code for an access token. The `section` parameter is used because Kit's
+ * OAuth redirect preserves it, whereas a custom parameter would be dropped.
  *
  * @since   3.4.5
  *
@@ -985,7 +986,11 @@ function convertkit_get_oauth_url() {
 		add_query_arg(
 			array(
 				'page'    => '_wp_convertkit_settings',
-				'section' => 'convertkit-oauth-' . wp_create_nonce( 'convertkit-oauth-connect' ),
+				// The nonce is passed in the `section` parameter, as Kit's OAuth redirect
+				// preserves it when returning the user to the Plugin, whereas a custom
+				// parameter would be dropped. The `kit-oauth-` prefix identifies the
+				// request as an OAuth callback for this Plugin.
+				'section' => 'kit-oauth-' . wp_create_nonce( 'kit-oauth-connect' ),
 			),
 			admin_url( 'options-general.php' )
 		),

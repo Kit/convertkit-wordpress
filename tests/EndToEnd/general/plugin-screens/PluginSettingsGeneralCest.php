@@ -80,7 +80,7 @@ class PluginSettingsGeneralCest
 		$state = $I->apiDecodeStateFromOAuthURL($I->grabAttributeFrom('a[href*="oauth/authorize"]', 'href'));
 		$I->assertEquals($_ENV['CONVERTKIT_OAUTH_CLIENT_ID'], $state['client_id']);
 		$I->assertStringStartsWith($_ENV['WORDPRESS_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings', $state['return_to']);
-		$I->assertStringContainsString('section=convertkit-oauth-', $state['return_to']);
+		$I->assertStringContainsString('section=kit-oauth-', $state['return_to']);
 
 		// Click the connect button.
 		$I->click('Connect');
@@ -1105,7 +1105,7 @@ class PluginSettingsGeneralCest
 		// Attempt to exchange an authorization code without being logged in, with no nonce
 		// and with an invalid nonce in the section parameter.
 		$I->amOnPage('/wp-admin/admin-post.php?action=convertkit&page=_wp_convertkit_settings&code=fakeAuthorizationCode');
-		$I->amOnPage('/wp-admin/admin-post.php?action=convertkit&page=_wp_convertkit_settings&section=convertkit-oauth-invalid&code=fakeAuthorizationCode');
+		$I->amOnPage('/wp-admin/admin-post.php?action=convertkit&page=_wp_convertkit_settings&section=kit-oauth-invalid&code=fakeAuthorizationCode');
 
 		// Confirm the authorization code was not exchanged.
 		$I->apiCheckAuthorizationCodeNotExchanged($I);
@@ -1130,7 +1130,7 @@ class PluginSettingsGeneralCest
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&code=fakeAuthorizationCode');
 
 		// Attempt to exchange an authorization code with an invalid nonce in the section parameter.
-		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&section=convertkit-oauth-invalid&code=fakeAuthorizationCode');
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&section=kit-oauth-invalid&code=fakeAuthorizationCode');
 
 		// Confirm the authorization code was not exchanged.
 		$I->apiCheckAuthorizationCodeNotExchanged($I);

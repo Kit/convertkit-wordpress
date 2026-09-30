@@ -70,18 +70,18 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 
 		// Bail if the request isn't an OAuth callback for this Plugin.
 		// The nonce is passed in the `section` parameter, as Kit's OAuth redirect preserves it,
-		// prefixed with `convertkit-oauth-` to identify the request.
+		// prefixed with `kit-oauth-` to identify the request.
 		if ( ! filter_has_var( INPUT_GET, 'section' ) ) {
 			return;
 		}
 		$section = sanitize_key( filter_input( INPUT_GET, 'section', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
-		if ( strpos( $section, 'convertkit-oauth-' ) !== 0 ) {
+		if ( strpos( $section, 'kit-oauth-' ) !== 0 ) {
 			return;
 		}
 
 		// Bail if the nonce, generated when the OAuth flow began, is invalid.
 		// This ensures only a user who started the OAuth flow can store the resulting tokens.
-		if ( ! wp_verify_nonce( substr( $section, strlen( 'convertkit-oauth-' ) ), 'convertkit-oauth-connect' ) ) {
+		if ( ! wp_verify_nonce( substr( $section, strlen( 'kit-oauth-' ) ), 'kit-oauth-connect' ) ) {
 			return;
 		}
 

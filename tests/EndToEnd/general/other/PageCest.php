@@ -58,7 +58,7 @@ class PageCest
 		$state = $I->apiDecodeStateFromOAuthURL($I->grabAttributeFrom('#wp-convertkit-meta-box a[href*="oauth/authorize"]', 'href'));
 		$I->assertEquals($_ENV['CONVERTKIT_OAUTH_CLIENT_ID'], $state['client_id']);
 		$I->assertStringStartsWith($_ENV['WORDPRESS_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings', $state['return_to']);
-		$I->assertStringContainsString('section=convertkit-oauth-', $state['return_to']);
+		$I->assertStringContainsString('section=kit-oauth-', $state['return_to']);
 
 		// Click the link.
 		$I->click('connect your Kit account.');
