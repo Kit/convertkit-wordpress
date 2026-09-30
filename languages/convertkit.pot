@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.4.4\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.4.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-23T02:42:02+00:00\n"
+"POT-Creation-Date: 2026-09-30T02:58:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -48,9 +48,9 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-form.php:152
 #: includes/blocks/class-convertkit-block-member-content-login.php:120
 #: includes/blocks/class-convertkit-block-product.php:143
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:139
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:143
 #: includes/integrations/elementor/class-convertkit-elementor.php:70
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:126
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:129
 #: includes/mcp/class-convertkit-mcp.php:287
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:62
 msgid "Kit"
@@ -217,7 +217,7 @@ msgstr ""
 msgid "Default Form"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-base.php:891
+#: admin/section/class-convertkit-admin-section-base.php:924
 #: admin/section/class-convertkit-admin-section-mcp.php:182
 msgid "Copy"
 msgstr ""
@@ -885,7 +885,8 @@ msgid "Not yet used by an AI client."
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-mcp.php:495
-#: admin/section/class-convertkit-admin-section-mcp.php:691
+#: admin/section/class-convertkit-admin-section-mcp.php:603
+#: admin/section/class-convertkit-admin-section-mcp.php:659
 msgid "Authorization header:"
 msgstr ""
 
@@ -903,101 +904,98 @@ msgstr ""
 msgid "Revoke Application Password"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:589
+#: admin/section/class-convertkit-admin-section-mcp.php:568
 msgid "Claude Desktop"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:590
+#: admin/section/class-convertkit-admin-section-mcp.php:569
 msgid "Claude Code"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:591
+#: admin/section/class-convertkit-admin-section-mcp.php:570
 msgid "Cursor"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:592
+#: admin/section/class-convertkit-admin-section-mcp.php:571
 msgid "Codex"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:593
+#: admin/section/class-convertkit-admin-section-mcp.php:572
 msgid "Other clients"
 msgstr ""
 
-#. translators: %s: Claude Desktop configuration file name.
-#: admin/section/class-convertkit-admin-section-mcp.php:618
-#, php-format
-msgid "Add the following to your %s file, then restart Claude Desktop:"
+#: admin/section/class-convertkit-admin-section-mcp.php:594
+msgid "In Claude Desktop, go to Settings > Connectors > Add custom connector, enter the server URL below, and add the Authorization header below when prompted to authenticate."
 msgstr ""
 
-#. translators: %1$s: mcp-remote, %2$s: Node.js.
-#: admin/section/class-convertkit-admin-section-mcp.php:632
-#, php-format
-msgid "Claude Desktop only connects to remote MCP servers that use OAuth, so %1$s is used to connect to this site. This requires %2$s to be installed on your computer."
+#: admin/section/class-convertkit-admin-section-mcp.php:596
+msgid "See the documentation for the full guide."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:642
+#: admin/section/class-convertkit-admin-section-mcp.php:599
+#: admin/section/class-convertkit-admin-section-mcp.php:655
+msgid "Server URL:"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-mcp.php:610
 msgid "Run the following command in your terminal:"
 msgstr ""
 
 #. translators: %s: Cursor configuration file name.
-#: admin/section/class-convertkit-admin-section-mcp.php:652
+#: admin/section/class-convertkit-admin-section-mcp.php:620
 #, php-format
 msgid "Add the following to your %s file, then restart Cursor:"
 msgstr ""
 
 #. translators: %s: Codex configuration file name.
-#: admin/section/class-convertkit-admin-section-mcp.php:665
+#: admin/section/class-convertkit-admin-section-mcp.php:633
 #, php-format
 msgid "Add the following to your %s file, then restart Codex:"
 msgstr ""
 
 #. translators: %s: Codex configuration option.
-#: admin/section/class-convertkit-admin-section-mcp.php:675
+#: admin/section/class-convertkit-admin-section-mcp.php:643
 #, php-format
 msgid "Older versions of Codex require %s at the top of the configuration file to connect to remote MCP servers."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:684
+#: admin/section/class-convertkit-admin-section-mcp.php:652
 msgid "For any other MCP client, use the following. The server uses the streamable HTTP transport, and authenticates using HTTP Basic authentication."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:687
-msgid "Server URL:"
-msgstr ""
-
-#: admin/section/class-convertkit-admin-section-mcp.php:708
+#: admin/section/class-convertkit-admin-section-mcp.php:676
 msgid "What your AI client can do"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:710
+#: admin/section/class-convertkit-admin-section-mcp.php:678
 msgid "Describe what you want in your own words; your AI client works out which tools to use."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:713
+#: admin/section/class-convertkit-admin-section-mcp.php:681
 msgid "Look up the Forms, Landing Pages, Products and Tags in your Kit account."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:714
+#: admin/section/class-convertkit-admin-section-mcp.php:682
 msgid "Add, list, change and remove Kit Forms, Form Triggers, Products and Broadcasts within a post or page's content."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:715
+#: admin/section/class-convertkit-admin-section-mcp.php:683
 msgid "Read and change a post or page's Kit settings, such as its Form, Landing Page, Tag and Member Content."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:716
+#: admin/section/class-convertkit-admin-section-mcp.php:684
 msgid "Read and change a category's Kit Form and Form Position."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:717
+#: admin/section/class-convertkit-admin-section-mcp.php:685
 msgid "Read and change this Plugin's General, Broadcasts and Member Content settings."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:720
+#: admin/section/class-convertkit-admin-section-mcp.php:688
 msgid "Your Kit account credentials, and your Form Entries, are never exposed to AI clients."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-mcp.php:731
+#: admin/section/class-convertkit-admin-section-mcp.php:699
 msgid "Read the MCP documentation"
 msgstr ""
 
@@ -1248,6 +1246,7 @@ msgid "Invalid nonce specified."
 msgstr ""
 
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php:179
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:254
 msgid "Connect your Kit account in the Kit Plugin's settings to get started"
 msgstr ""
 
@@ -1297,10 +1296,6 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:254
-msgid "Connect your ConvertKit account in the ConvertKit Plugin's settings to get started"
-msgstr ""
-
 #: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:377
 #: views/backend/setup-wizard/convertkit-restrict-content-setup/content-start.php:71
 msgid "Download"
@@ -1327,7 +1322,7 @@ msgstr ""
 msgid "member-only content goes here."
 msgstr ""
 
-#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:662
+#: admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php:667
 msgid "Start Course"
 msgstr ""
 
@@ -1348,7 +1343,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-form.php:309
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:86
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:73
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:205
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:290
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:70
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:223
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:283
@@ -1798,7 +1793,7 @@ msgid "The text to display for the button."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form-trigger.php:334
-#: includes/class-convertkit-settings-restrict-content.php:265
+#: includes/class-convertkit-settings-restrict-content.php:260
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:84
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:71
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:66
@@ -2208,92 +2203,88 @@ msgstr ""
 msgid "Body text shown alongside the subscribe call-to-action when content is restricted by Tag."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:194
-msgid "Whether visitors must log in by email to access Member Content restricted by Tag."
-msgstr ""
-
-#: includes/class-convertkit-settings-restrict-content.php:198
+#: includes/class-convertkit-settings-restrict-content.php:193
 msgid "Message shown to a visitor without access when content is restricted by Tag."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:202
+#: includes/class-convertkit-settings-restrict-content.php:197
 msgid "Label for the Subscribe button."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:206
+#: includes/class-convertkit-settings-restrict-content.php:201
 msgid "Body text shown above the email log-in form."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:210
+#: includes/class-convertkit-settings-restrict-content.php:205
 msgid "Label for the email log-in button."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:214
+#: includes/class-convertkit-settings-restrict-content.php:209
 msgid "Heading shown above the email log-in form."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:218
+#: includes/class-convertkit-settings-restrict-content.php:213
 msgid "Description shown beneath the email log-in heading."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:222
+#: includes/class-convertkit-settings-restrict-content.php:217
 msgid "Heading shown after the visitor requests a magic log-in code."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:226
+#: includes/class-convertkit-settings-restrict-content.php:221
 msgid "Body text shown after the visitor requests a magic log-in code."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:230
+#: includes/class-convertkit-settings-restrict-content.php:225
 msgid "Additional CSS classes appended to the Restrict Content container element."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:252
-#: includes/class-convertkit-settings-restrict-content.php:262
+#: includes/class-convertkit-settings-restrict-content.php:247
+#: includes/class-convertkit-settings-restrict-content.php:257
 msgid "Your account does not have access to this content. Please use the form above to subscribe."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:255
+#: includes/class-convertkit-settings-restrict-content.php:250
 msgid "Read this post with a premium subscription"
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:256
+#: includes/class-convertkit-settings-restrict-content.php:251
 msgid "This post is only available to premium subscribers. Join today to get access to all posts."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:257
+#: includes/class-convertkit-settings-restrict-content.php:252
 msgid "Your account does not have access to this content. Please use the button above to purchase, or enter the email address you used to purchase the product."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:260
+#: includes/class-convertkit-settings-restrict-content.php:255
 msgid "Subscribe to keep reading"
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:261
+#: includes/class-convertkit-settings-restrict-content.php:256
 msgid "This post is free to read but only available to subscribers. Join today to get access to all posts."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:266
+#: includes/class-convertkit-settings-restrict-content.php:261
 msgid "Already subscribed?"
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:267
+#: includes/class-convertkit-settings-restrict-content.php:262
 msgid "Log in"
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:268
+#: includes/class-convertkit-settings-restrict-content.php:263
 msgid "Log in to read this post"
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:269
+#: includes/class-convertkit-settings-restrict-content.php:264
 msgid "We'll email you a magic code to log you in without a password."
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:270
+#: includes/class-convertkit-settings-restrict-content.php:265
 msgid "We just emailed you a log in code"
 msgstr ""
 
-#: includes/class-convertkit-settings-restrict-content.php:271
+#: includes/class-convertkit-settings-restrict-content.php:266
 msgid "Enter the code below to finish logging in"
 msgstr ""
 
@@ -2448,31 +2439,48 @@ msgstr ""
 msgid "No Contact Form 7 Forms exist in the Contact Form 7 Plugin."
 msgstr ""
 
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:138
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:142
 msgid "Contact Form 7 Form"
 msgstr ""
 
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:140
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:144
 msgid "Contact Form 7 Email Field"
 msgstr ""
 
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:141
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:145
 msgid "Contact Form 7 Name Field"
 msgstr ""
 
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:142
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:127
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:146
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:130
 msgid "Enable Creator Network Recommendations"
 msgstr ""
 
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:173
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:156
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:177
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:159
 msgid "Creator Network Recommendations requires a"
 msgstr ""
 
-#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:175
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:158
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:179
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:161
 msgid "paid Kit Plan"
+msgstr ""
+
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:242
+msgid "Akismet is enabled in Contact Form 7, but these forms do not use it. Add Akismet options to each form's fields."
+msgstr ""
+
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:245
+msgid "Enable reCAPTCHA, Turnstile or Akismet in Contact Form 7."
+msgstr ""
+
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:251
+msgid "The following Contact Form 7 Forms subscribe email addresses to Kit, but have no spam protection:"
+msgstr ""
+
+#: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:253
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:225
+msgid "Bots may submit fake email addresses, which are then added to your Kit account."
 msgstr ""
 
 #: includes/integrations/divi/class-convertkit-divi-module.php:171
@@ -2525,11 +2533,19 @@ msgstr ""
 msgid "No Forminator Forms or Quizzes exist in the Forminator Plugin."
 msgstr ""
 
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:125
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:128
 msgid "Forminator Form"
 msgstr ""
 
-#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:216
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:223
+msgid "The following Forminator Forms subscribe email addresses to Kit, but have no spam protection:"
+msgstr ""
+
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:227
+msgid "Add a Captcha field, or enable honeypot protection, in Forminator."
+msgstr ""
+
+#: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:301
 msgid "Quiz"
 msgstr ""
 

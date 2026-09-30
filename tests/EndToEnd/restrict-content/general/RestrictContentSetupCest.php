@@ -236,6 +236,9 @@ class RestrictContentSetupCest
 		$I->see('Kit: Member Content: Download');
 		$I->seeInSource('<span class="post-state">Kit Member Content</span>');
 
+		// Confirm that the Plugin stored that Restrict Content is enabled.
+		$I->seeOptionInDatabase('convertkit_restrict_content_enabled', '1');
+
 		// Hover mouse over Post's table row.
 		$I->moveMouseOver('tr.iedit');
 
@@ -384,6 +387,9 @@ class RestrictContentSetupCest
 		// Confirm that one Page is listed in the WP_List_Table.
 		$I->see('Kit: Member Content: Download: Tag');
 		$I->seeInSource('<span class="post-state">Kit Member Content</span>');
+
+		// Confirm that the Plugin stored that Restrict Content is enabled.
+		$I->seeOptionInDatabase('convertkit_restrict_content_enabled', '1');
 
 		// Hover mouse over Post's table row.
 		$I->moveMouseOver('tr.iedit');
@@ -535,6 +541,9 @@ class RestrictContentSetupCest
 		// Confirm that one Page is listed in the WP_List_Table.
 		$I->see('Kit: Member Content: Download: Form');
 		$I->seeInSource('<span class="post-state">Kit Member Content</span>');
+
+		// Confirm that the Plugin stored that Restrict Content is enabled.
+		$I->seeOptionInDatabase('convertkit_restrict_content_enabled', '1');
 
 		// Hover mouse over Post's table row.
 		$I->moveMouseOver('tr.iedit');

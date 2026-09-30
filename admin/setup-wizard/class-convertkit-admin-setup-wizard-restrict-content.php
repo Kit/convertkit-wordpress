@@ -251,7 +251,7 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 		// if valid credentials have been specified.
 		$settings = new ConvertKit_Settings();
 		if ( ! $settings->has_access_and_refresh_token() ) {
-			wp_die( esc_html__( 'Connect your ConvertKit account in the ConvertKit Plugin\'s settings to get started', 'convertkit' ) );
+			wp_die( esc_html__( 'Connect your Kit account in the Kit Plugin\'s settings to get started', 'convertkit' ) );
 		}
 
 		// Set and authorize the Post Type.
@@ -568,6 +568,11 @@ class ConvertKit_Admin_Setup_Wizard_Restrict_Content extends ConvertKit_Admin_Se
 				'restrict_content' => ( $restrict_content_setting !== false ? $restrict_content_setting : '0' ),
 			)
 		);
+
+		// Update whether Restrict Content is enabled, as the wp_insert_post hook ran before the Page's settings were saved.
+		if ( $restrict_content_setting !== false ) {
+			WP_ConvertKit()->get_class( 'admin_restrict_content' )->update_restrict_content_enabled();
+		}
 
 		// Return.
 		return $page_id;
