@@ -1105,7 +1105,7 @@ add_filter( 'convertkit_block_form_trigger_render', function( $html, $atts ) {
 </pre>
 <h3 id="convertkit_block_member_content_login_render">
 						convertkit_block_member_content_login_render
-						<code>includes/blocks/class-convertkit-block-member-content-login.php::396</code>
+						<code>includes/blocks/class-convertkit-block-member-content-login.php::392</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1221,7 +1221,7 @@ add_filter( 'convertkit_post_settings', function( $meta, $post_id ) {
 </pre>
 <h3 id="convertkit_post_get_default_settings">
 						convertkit_post_get_default_settings
-						<code>includes/class-convertkit-post.php::329</code>
+						<code>includes/class-convertkit-post.php::353</code>
 					</h3><h4>Overview</h4>
 						<p>The default settings, used to populate the Post's Settings when a Post has no Settings.</p><h4>Parameters</h4>
 					<table>
@@ -1306,7 +1306,7 @@ add_filter( 'convertkit_settings_broadcasts_get_defaults', function( $defaults )
 </pre>
 <h3 id="convertkit_settings_restrict_content_get_defaults">
 						convertkit_settings_restrict_content_get_defaults
-						<code>includes/class-convertkit-settings-restrict-content.php::282</code>
+						<code>includes/class-convertkit-settings-restrict-content.php::277</code>
 					</h3><h4>Overview</h4>
 						<p>The default settings, used when the ConvertKit Restrict Content Settings haven't been saved e.g. on a new installation.</p><h4>Parameters</h4>
 					<table>
@@ -1360,7 +1360,7 @@ add_filter( 'convertkit_user_get_default_settings', function( $defaults ) {
 </pre>
 <h3 id="convertkit_admin_gutenberg_add_block_categories">
 						convertkit_admin_gutenberg_add_block_categories
-						<code>includes/class-convertkit-gutenberg.php::126</code>
+						<code>includes/class-convertkit-gutenberg.php::182</code>
 					</h3><h4>Overview</h4>
 						<p>Adds block categories to the default Gutenberg Block Categories</p><h4>Parameters</h4>
 					<table>
@@ -1391,7 +1391,7 @@ add_filter( 'convertkit_admin_gutenberg_add_block_categories', function( $catego
 </pre>
 <h3 id="convertkit_gutenberg_block_api_version">
 						convertkit_gutenberg_block_api_version
-						<code>includes/class-convertkit-gutenberg.php::279</code>
+						<code>includes/class-convertkit-gutenberg.php::335</code>
 					</h3><h4>Overview</h4>
 						<p>Determine the block API version to use for registering blocks.</p><h4>Parameters</h4>
 					<table>
@@ -2344,7 +2344,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-admin-section-base.php::958</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::991</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2602,7 +2602,7 @@ do_action( 'convertkit_resource_refreshed_  this-type', function( $results ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts">
 						convertkit_gutenberg_enqueue_scripts
-						<code>includes/class-convertkit-gutenberg.php::345</code>
+						<code>includes/class-convertkit-gutenberg.php::401</code>
 					</h3><h4>Overview</h4>
 						<p>Enqueue any additional scripts for Gutenberg blocks that have been registered.</p><h4>Parameters</h4>
 					<table>
@@ -2631,7 +2631,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts', function( $blocks, $block_for
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles">
 						convertkit_gutenberg_enqueue_styles
-						<code>includes/class-convertkit-gutenberg.php::369</code>
+						<code>includes/class-convertkit-gutenberg.php::425</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2651,7 +2651,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles', function(  ) {
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_scripts_editor_and_frontend">
 						convertkit_gutenberg_enqueue_scripts_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::393</code>
+						<code>includes/class-convertkit-gutenberg.php::449</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2671,7 +2671,7 @@ do_action( 'convertkit_gutenberg_enqueue_scripts_editor_and_frontend', function(
 </pre>
 <h3 id="convertkit_gutenberg_enqueue_styles_editor_and_frontend">
 						convertkit_gutenberg_enqueue_styles_editor_and_frontend
-						<code>includes/class-convertkit-gutenberg.php::417</code>
+						<code>includes/class-convertkit-gutenberg.php::473</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
