@@ -1111,8 +1111,9 @@ class PluginSettingsGeneralCest
 		$I->apiCheckAuthorizationCodeNotExchanged($I);
 
 		// Confirm no access token was stored.
+		// The settings may already exist with a blank access token, so check the value rather than the key.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
-		$I->assertArrayNotHasKey('access_token', is_array($settings) ? $settings : []);
+		$I->assertEmpty(is_array($settings) && array_key_exists('access_token', $settings) ? $settings['access_token'] : '');
 	}
 
 	/**
@@ -1136,8 +1137,9 @@ class PluginSettingsGeneralCest
 		$I->apiCheckAuthorizationCodeNotExchanged($I);
 
 		// Confirm no access token was stored.
+		// The settings may already exist with a blank access token, so check the value rather than the key.
 		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
-		$I->assertArrayNotHasKey('access_token', is_array($settings) ? $settings : []);
+		$I->assertEmpty(is_array($settings) && array_key_exists('access_token', $settings) ? $settings['access_token'] : '');
 	}
 
 	/**
