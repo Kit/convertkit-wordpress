@@ -273,7 +273,7 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		// Confirm the shortcode is inserted after the horizontal rule.
 		$post = get_post($postID);
-		$this->assertStringContainsString( "<hr />\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
+		$this->assertEquals( "<p>Item #1</p>\n\n<hr />\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
 	}
 
 	/**
@@ -300,7 +300,7 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		// Confirm the shortcode is inserted after the nested elements.
 		$post = get_post($postID);
-		$this->assertStringContainsString( "</div>\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
+		$this->assertEquals( "<div><p>Item #1</p></div>\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>\n\n<p>Item #3</p>", $post->post_content );
 	}
 
 	/**
@@ -327,7 +327,7 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		// Confirm the shortcode is inserted after the first paragraph.
 		$post = get_post($postID);
-		$this->assertStringContainsString( "Item #1\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\nItem #2", $post->post_content );
+		$this->assertEquals( "Item #1\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\nItem #2\n\nItem #3", $post->post_content );
 	}
 
 	/**
