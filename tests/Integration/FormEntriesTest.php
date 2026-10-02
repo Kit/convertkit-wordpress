@@ -508,6 +508,55 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test that updating an entry returns the entry's ID, and not the ID of the
+	 * last inserted entry.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testUpdateEntryReturnsEntryID()
+	{
+		// Seed database table.
+		$ids = $this->seedDatabaseTable();
+
+		// Update the first entry.
+		$id = $this->entries->update(
+			$ids[0],
+			[
+				'post_id'    => 0,
+				'email'      => 'test0@example.com',
+				'first_name' => 'Updated',
+			]
+		);
+
+		// Assert the first entry's ID is returned.
+		$this->assertEquals($ids[0], $id);
+	}
+
+	/**
+	 * Test that upserting an existing entry returns the entry's ID, and not the ID of the
+	 * last inserted entry.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testUpsertExistingEntryReturnsEntryID()
+	{
+		// Seed database table.
+		$ids = $this->seedDatabaseTable();
+
+		// Upsert the first entry.
+		$id = $this->entries->upsert(
+			[
+				'post_id'    => 0,
+				'email'      => 'test0@example.com',
+				'first_name' => 'Updated',
+			]
+		);
+
+		// Assert the first entry's ID is returned.
+		$this->assertEquals($ids[0], $id);
+	}
+
+	/**
 	 * Test that searching with an invalid order by column falls back to ordering by created_at.
 	 *
 	 * @since   3.4.6
