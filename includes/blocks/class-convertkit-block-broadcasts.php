@@ -865,7 +865,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * @since   3.4.6
 	 *
 	 * @param   array $broadcast  Broadcast.
-	 * @return  string
+	 * @return  string|bool
 	 */
 	private function get_broadcast_url( $broadcast ) {
 
@@ -891,7 +891,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 * @since   3.4.6
 	 *
 	 * @param   array $broadcast  Broadcast.
-	 * @return  string
+	 * @return  string|bool
 	 */
 	private function get_broadcast_description( $broadcast ) {
 
