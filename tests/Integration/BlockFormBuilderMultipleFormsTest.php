@@ -113,6 +113,21 @@ class BlockFormBuilderMultipleFormsTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the form submits to the URL it was displayed on, excluding the subscriber ID.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testFormActionIsCurrentURL()
+	{
+		$_SERVER['REQUEST_URI'] = '/blog/?ck_subscriber_id=123&utm_source=kit';
+
+		$block = new \ConvertKit_Block_Form_Builder();
+		$html  = $block->render([], $this->content);
+
+		$this->assertMatchesRegularExpression('/<form action="\/blog\/\?utm_source=kit"/', $html);
+	}
+
+	/**
 	 * Submits the Form Builder block with an invalid email address, from the given block index.
 	 *
 	 * @since   3.4.6
