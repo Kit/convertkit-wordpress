@@ -51,7 +51,7 @@ class ConvertKit_Block_Form_Builder_Field extends ConvertKit_Block {
 	 *
 	 * @var     bool
 	 */
-	public $field_required = false;
+	private $field_required = false;
 
 	/**
 	 * Constructor
