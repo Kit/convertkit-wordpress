@@ -68,6 +68,33 @@ function convertKitEmitCustomEvent(eventName, detail) {
 	document.dispatchEvent(event);
 }
 
+/**
+ * Holds the most recently clicked reCAPTCHA submit button, so the reCAPTCHA
+ * callback submits that button's form when a page has multiple forms.
+ *
+ * @since 3.4.6
+ */
+let convertKitRecaptchaSubmitButton = null;
+
+// Store the clicked reCAPTCHA submit button. This runs in the capture phase,
+// before reCAPTCHA's own click handler on the button.
+document.addEventListener(
+	'click',
+	function (e) {
+		if (!(e.target instanceof Element)) {
+			return;
+		}
+
+		const button = e.target.closest(
+			'[type="submit"][data-callback="convertKitRecaptchaFormSubmit"]'
+		);
+		if (button) {
+			convertKitRecaptchaSubmitButton = button;
+		}
+	},
+	true
+);
+
 /* eslint-disable no-unused-vars */
 /**
  * Handles form submissions when reCAPTCHA is enabled.
@@ -75,10 +102,12 @@ function convertKitEmitCustomEvent(eventName, detail) {
  * @param {string} token reCAPTCHA token.
  */
 function convertKitRecaptchaFormSubmit(token) {
-	// Find submit button with the data-callback attribute.
-	const submitButton = document.querySelector(
-		'[type="submit"][data-callback="convertKitRecaptchaFormSubmit"]'
-	);
+	// Use the clicked submit button, falling back to the first reCAPTCHA submit button on the page.
+	const submitButton =
+		convertKitRecaptchaSubmitButton ||
+		document.querySelector(
+			'[type="submit"][data-callback="convertKitRecaptchaFormSubmit"]'
+		);
 
 	// Get the parent form of the submit button.
 	const form = submitButton.closest('form');
