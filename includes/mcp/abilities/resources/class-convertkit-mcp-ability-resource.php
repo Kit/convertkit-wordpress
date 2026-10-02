@@ -23,7 +23,7 @@ abstract class ConvertKit_MCP_Ability_Resource extends ConvertKit_MCP_Ability {
 	 *
 	 * @var     bool
 	 */
-	private $readonly = true; // @phpstan-ignore-line
+	protected $readonly = true;
 
 	/**
 	 * Sets whether the ability is idempotent.
@@ -32,7 +32,7 @@ abstract class ConvertKit_MCP_Ability_Resource extends ConvertKit_MCP_Ability {
 	 *
 	 * @var     bool
 	 */
-	private $idempotent = true; // @phpstan-ignore-line
+	protected $idempotent = true;
 
 	/**
 	 * Returns the ability name, derived from the resource slug.
