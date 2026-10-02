@@ -412,8 +412,8 @@ class ConvertKit_Form_Entries {
 		if ( $search ) {
 			$where_clauses[] = $wpdb->prepare(
 				'(first_name LIKE %s OR email LIKE %s)',
-				'%' . $search . '%',
-				'%' . $search . '%'
+				'%' . $wpdb->esc_like( $search ) . '%',
+				'%' . $wpdb->esc_like( $search ) . '%'
 			);
 		}
 
