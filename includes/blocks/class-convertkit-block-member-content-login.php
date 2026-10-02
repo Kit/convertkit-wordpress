@@ -357,10 +357,13 @@ class ConvertKit_Block_Member_Content_Login extends ConvertKit_Block {
 		// Enqueue CSS and JS.
 		$output_restrict_content->enqueue_scripts_and_styles();
 
-		// If the subscriber is logged in, output the log out button.
+		// Get the subscriber ID, if the subscriber is logged in.
 		$subscriber    = new ConvertKit_Subscriber();
 		$subscriber_id = $subscriber->get_subscriber_id();
+
+		ob_start();
 		if ( ! is_wp_error( $subscriber_id ) && $subscriber_id ) {
+			// If the subscriber is logged in, output the log out button.
 			$logout_url = add_query_arg(
 				array(
 					'convertkit_logout' => 1,
@@ -369,21 +372,14 @@ class ConvertKit_Block_Member_Content_Login extends ConvertKit_Block {
 				get_permalink( $post_id )
 			);
 
-			ob_start();
 			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/member-content-logged-in.php';
-			return trim( ob_get_clean() );
-		}
-
-		// If the subscriber submitted their email address, output the code form.
-		if ( $output_restrict_content->token !== false ) {
-			ob_start();
+		} elseif ( $output_restrict_content->token !== false ) {
+			// If the subscriber submitted their email address, output the code form.
 			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/code.php';
-			return trim( ob_get_clean() );
+		} else {
+			// Output the login form.
+			include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/member-content-login.php';
 		}
-
-		// Output.
-		ob_start();
-		include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/member-content-login.php';
 		$html = trim( ob_get_clean() );
 
 		/**

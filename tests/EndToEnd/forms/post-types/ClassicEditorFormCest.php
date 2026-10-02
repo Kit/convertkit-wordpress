@@ -421,6 +421,63 @@ class ClassicEditorFormCest
 	}
 
 	/**
+	 * Test that a Post saves when duplicate Kit Post Meta rows exist, and that the duplicate
+	 * rows are removed.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSavePostWithDuplicatePostMeta(EndToEndTester $I)
+	{
+		// Setup Kit plugin.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Define the Post's Kit settings.
+		$meta = [
+			'form'             => $_ENV['CONVERTKIT_API_FORM_ID'],
+			'landing_page'     => '0',
+			'tag'              => '0',
+			'restrict_content' => '0',
+		];
+
+		// Create a Post with Kit settings.
+		$postID = $I->havePostInDatabase(
+			[
+				'post_title'  => 'Kit: Post: Duplicate Post Meta: Classic Editor',
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					'_wp_convertkit_post_meta' => $meta,
+				],
+			]
+		);
+
+		// Add duplicate Post Meta rows, as a database migration or import would.
+		for ($i = 0; $i < 3; $i++) {
+			$I->havePostmetaInDatabase($postID, '_wp_convertkit_post_meta', $meta);
+		}
+
+		// Edit the Post.
+		$I->amOnAdminPage('post.php?post=' . $postID . '&action=edit');
+		$I->waitForElementVisible('body.post-php');
+
+		// Save the Post, leaving the Kit settings unchanged.
+		$I->publishClassicEditorPage($I);
+
+		// Confirm the duplicate Post Meta rows were removed.
+		$I->seeNumRecords(
+			1,
+			'wp_postmeta',
+			[
+				'post_id'  => $postID,
+				'meta_key' => '_wp_convertkit_post_meta',
+			]
+		);
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

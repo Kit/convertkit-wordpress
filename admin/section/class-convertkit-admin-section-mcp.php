@@ -536,27 +536,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		$server_url  = ConvertKit_MCP::get_server_url();
 		$auth_header = 'Basic ' . ( $this->authorization_header ? $this->authorization_header : 'BASE64_ENCODED_USERNAME_AND_APPLICATION_PASSWORD' );
 
-		// Claude Desktop JSON.
-		// Claude Desktop only supports remote MCP servers that authenticate using OAuth, so
-		// mcp-remote is used to proxy requests to the MCP server, adding the authorization header.
-		$claude_desktop_config = wp_json_encode(
-			array(
-				'mcpServers' => array(
-					'kit-wordpress' => array(
-						'command' => 'npx',
-						'args'    => array(
-							'-y',
-							'mcp-remote',
-							$server_url,
-							'--header',
-							'Authorization: ' . $auth_header,
-						),
-					),
-				),
-			),
-			JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-		);
-
 		// Claude Code command.
 		$claude_code_command = sprintf(
 			'claude mcp add --transport http kit-wordpress %s --header "Authorization: %s"',
@@ -612,29 +591,18 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 			<div class="kit-inline-tab-panel is-active" data-tab="claude-desktop">
 				<p>
-					<?php
-					printf(
-						/* translators: %s: Claude Desktop configuration file name. */
-						esc_html__( 'Add the following to your %s file, then restart Claude Desktop:', 'convertkit' ),
-						'<code>claude_desktop_config.json</code>'
-					);
-					?>
+					<?php esc_html_e( 'In Claude Desktop, go to Settings > Connectors > Add custom connector, enter the server URL below, and add the Authorization header below when prompted to authenticate.', 'convertkit' ); ?>
 					<br />
-					macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
-					<br />
-					Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>
+					<a href="<?php echo esc_url( $this->documentation_url() . '#h_6ff6f06cdb' ); ?>" target="_blank"><?php esc_html_e( 'See the documentation for the full guide.', 'convertkit' ); ?></a>
 				</p>
-				<?php $this->output_code_block( (string) $claude_desktop_config ); ?>
-				<p class="description">
-					<?php
-					printf(
-						/* translators: %1$s: mcp-remote, %2$s: Node.js. */
-						esc_html__( 'Claude Desktop only connects to remote MCP servers that use OAuth, so %1$s is used to connect to this site. This requires %2$s to be installed on your computer.', 'convertkit' ),
-						'<code>mcp-remote</code>',
-						'<a href="https://nodejs.org/" target="_blank">Node.js</a>'
-					);
-					?>
+				<p>
+					<strong><?php esc_html_e( 'Server URL:', 'convertkit' ); ?></strong>
 				</p>
+				<?php $this->output_code_block( $server_url ); ?>
+				<p>
+					<strong><?php esc_html_e( 'Authorization header:', 'convertkit' ); ?></strong>
+				</p>
+				<?php $this->output_code_block( $auth_header ); ?>
 			</div>
 
 			<div class="kit-inline-tab-panel" data-tab="claude-code">

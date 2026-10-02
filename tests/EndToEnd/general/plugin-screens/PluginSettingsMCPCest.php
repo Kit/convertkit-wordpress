@@ -186,7 +186,7 @@ class PluginSettingsMCPCest
 		// Define each AI client tab, and a string that should only be displayed
 		// in that client's panel.
 		$tabs = [
-			'claude-desktop' => 'claude_desktop_config.json',
+			'claude-desktop' => 'Add custom connector',
 			'claude-code'    => 'claude mcp add --transport http kit-wordpress',
 			'cursor'         => '~/.cursor/mcp.json',
 			'codex'          => '[mcp_servers.kit_wordpress]',

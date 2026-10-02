@@ -102,6 +102,23 @@ function convertKitRestrictContentFormSubmit(e) {
 }
 
 /**
+ * Re-enables the inputs in the given container, following a failed request.
+ *
+ * @since 	3.4.5
+ *
+ * @param {Object} container Container element.
+ */
+function convertKitRestrictContentEnableInputs(container) {
+	container
+		.querySelectorAll(
+			'input[type="text"], input[type="email"], input[type="submit"]'
+		)
+		.forEach(function (input) {
+			input.removeAttribute('disabled');
+		});
+}
+
+/**
  * Returns whether the heading should be displayed above the login form, which is
  * the case when the modal is used.
  *
@@ -268,6 +285,10 @@ function convertKitRestrictContentSubscriberAuthenticationSendCode(
 			if (convertkit_restrict_content.debug) {
 				console.error(error);
 			}
+
+			// Re-enable inputs and hide loading overlay, so the form can be resubmitted.
+			convertKitRestrictContentEnableInputs(container);
+			convertKitRestrictContentLoading(false);
 		});
 }
 
@@ -335,6 +356,10 @@ function convertKitRestrictContentSubscriberVerification(
 			if (convertkit_restrict_content.debug) {
 				console.error(error);
 			}
+
+			// Re-enable inputs and hide loading overlay, so the form can be resubmitted.
+			convertKitRestrictContentEnableInputs(container);
+			convertKitRestrictContentLoading(false);
 		});
 }
 
@@ -363,9 +388,7 @@ function convertKitRestrictContentOTPField() {
 		if (otpInput.value.length === 6) {
 			otpInput.setSelectionRange(0, 0);
 			otpInput.blur();
-			document
-				.querySelector('#convertkit-restrict-content-form')
-				.requestSubmit();
+			otpInput.closest('form').requestSubmit();
 		}
 	});
 }
