@@ -281,13 +281,40 @@ class ConvertKit_Form_Entries {
 		}
 
 		$csv = array(
-			'"' . implode( '","', array_keys( $entries[0] ) ) . '"',
+			$this->get_csv_row( array_keys( $entries[0] ) ),
 		);
 		foreach ( $entries as $entry ) {
-			$csv[] = '"' . implode( '","', $entry ) . '"';
+			$csv[] = $this->get_csv_row( $entry );
 		}
 
 		return implode( "\n", $csv );
+
+	}
+
+	/**
+	 * Returns a CSV row for the given values, escaping double quotes and
+	 * values that spreadsheet applications would run as a formula.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   array $values     Values.
+	 * @return  string
+	 */
+	private function get_csv_row( $values ) {
+
+		$row = array();
+		foreach ( $values as $value ) {
+			$value = (string) $value;
+
+			// Prefix values starting with a formula character, so they're treated as text.
+			if ( $value !== '' && in_array( $value[0], array( '=', '+', '-', '@', "\t", "\r" ), true ) ) {
+				$value = "'" . $value;
+			}
+
+			$row[] = '"' . str_replace( '"', '""', $value ) . '"';
+		}
+
+		return implode( ',', $row );
 
 	}
 
