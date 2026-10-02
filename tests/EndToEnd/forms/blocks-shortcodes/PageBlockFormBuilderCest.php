@@ -1569,12 +1569,6 @@ class PageBlockFormBuilderCest
 		// Wait for frontend web site to load.
 		$I->waitForElementVisible('body.page-template-default');
 
-		// Confirm each block's email field has a unique ID, with a matching label.
-		$I->seeNumberOfElements('input#kit-form-builder-email', 1);
-		$I->seeNumberOfElements('input#kit-form-builder-email-2', 1);
-		$I->seeElementInDOM('label[for="kit-form-builder-email"]');
-		$I->seeElementInDOM('label[for="kit-form-builder-email-2"]');
-
 		// Change the email fields to text fields, to bypass the browser's own validation
 		// and test the Plugin's server side validation.
 		$I->executeJS('document.querySelectorAll(\'input[name="convertkit[email]"]\').forEach(function(field) { field.setAttribute("type", "text"); });');
@@ -1732,9 +1726,6 @@ class PageBlockFormBuilderCest
 	 */
 	private function seeFormBuilderField(EndToEndTester $I, $fieldType, $fieldName, $fieldID, $label, $required = true, $container = 'div', $isFrontend = false)
 	{
-		// Field IDs are prefixed to avoid clashing with other elements on the page.
-		$fieldID = 'kit-form-builder-' . $fieldID;
-
 		// Switch to the Gutenberg IFrame.
 		if ( ! $isFrontend && $I->isGutenbergIFrameEditorEnabled()) {
 			$I->switchToGutenbergIFrameEditor($I);

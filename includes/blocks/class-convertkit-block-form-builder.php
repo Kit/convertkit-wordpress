@@ -330,8 +330,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			// Redirect to the URL specified in the form.
 			$redirect = sanitize_url( $form_data['redirect'] );
 		} else {
-			// Redirect to the page the form was displayed on, to show a success message.
-			$redirect = $this->get_current_url( absint( $form_data['post_id'] ) );
+			// Redirect to the Post the form was displayed on, to show a success message.
+			$redirect = get_permalink( absint( $form_data['post_id'] ) );
 		}
 
 		// Redirect.
@@ -850,26 +850,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Create form element.
 		$form = $parser->html->createElement( 'form' );
-		$form->setAttribute( 'action', esc_url( $this->get_current_url( $post_id ) ) );
+		$form->setAttribute( 'action', esc_url( get_permalink( $post_id ) ) );
 		$form->setAttribute( 'method', 'post' );
 
 		// Move form builder div contents into form.
 		while ( $block_container->hasChildNodes() ) {
 			$form->appendChild( $block_container->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		}
-
-		// Suffix field IDs and labels with the block's index from the second block onwards,
-		// so IDs are unique when multiple blocks are on the same page.
-		if ( $this->render_count > 1 ) {
-			foreach ( $parser->xpath->query( './/*[starts-with(@id, "kit-form-builder-")]', $form ) as $element ) {
-				$id     = $element->getAttribute( 'id' ); // @phpstan-ignore-line
-				$new_id = $id . '-' . $this->render_count;
-				$element->setAttribute( 'id', $new_id ); // @phpstan-ignore-line
-
-				foreach ( $parser->xpath->query( './/label[@for="' . $id . '"]', $form ) as $label ) {
-					$label->setAttribute( 'for', $new_id ); // @phpstan-ignore-line
-				}
-			}
 		}
 
 		// Add subscribed message if required.
@@ -931,27 +917,6 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Return modified content.
 		return $parser->get_body_html();
-
-	}
-
-	/**
-	 * Returns the URL of the page the form is displayed on, so the form submits
-	 * back to the same page, falling back to the Post's URL.
-	 *
-	 * @since   3.4.6
-	 *
-	 * @param   int $post_id    Post ID.
-	 * @return  string
-	 */
-	private function get_current_url( $post_id ) {
-
-		// Fallback to the Post's URL if the request URI isn't available.
-		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
-			return get_permalink( $post_id );
-		}
-
-		// Remove the subscriber ID, which is only used when visiting a link from a Kit email.
-		return remove_query_arg( 'ck_subscriber_id', esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 
 	}
 
