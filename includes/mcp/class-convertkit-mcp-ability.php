@@ -22,7 +22,7 @@ abstract class ConvertKit_MCP_Ability {
 	 *
 	 * @var     bool
 	 */
-	private $readonly = false;
+	protected $readonly = false;
 
 	/**
 	 * Sets whether the ability is destructive.
@@ -31,7 +31,7 @@ abstract class ConvertKit_MCP_Ability {
 	 *
 	 * @var     bool
 	 */
-	private $destructive = false;
+	protected $destructive = false;
 
 	/**
 	 * Sets whether the ability is idempotent.
@@ -40,7 +40,7 @@ abstract class ConvertKit_MCP_Ability {
 	 *
 	 * @var     bool
 	 */
-	private $idempotent = false;
+	protected $idempotent = false;
 
 	/**
 	 * Returns the ability name, prefixed with `kit/` (e.g. `kit/form-insert`).
