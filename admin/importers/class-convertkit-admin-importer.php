@@ -262,6 +262,9 @@ abstract class ConvertKit_Admin_Importer {
 			// Replace the third party Form Shortcode with the Kit Form Shortcode.
 			$post_content = $this->replace_shortcodes_in_content( $post_content, $third_party_form_id, $form_id );
 
+			// Double escape backslashes so that wp_update_post doesn't remove them.
+			$post_content = str_replace( '\\', '\\\\', $post_content );
+
 			// Update the Post content.
 			wp_update_post(
 				array(
@@ -293,6 +296,7 @@ abstract class ConvertKit_Admin_Importer {
 		if ( ! $this->shortcode_id_attribute ) {
 			$pattern = '/\['                                     // Start regex with an opening square bracket.
 			. preg_quote( $this->shortcode_name, '/' )       // Match the shortcode name, escaping any regex special chars.
+			. '(?=[\s\]\/])'                                   // Ensure the shortcode name is complete, so e.g. [name_other] isn't matched.
 			. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
 
 			return preg_replace(
@@ -310,10 +314,11 @@ abstract class ConvertKit_Admin_Importer {
 		foreach ( $id_attributes as $id_attribute ) {
 			$pattern = '/\['                                     // Start regex with an opening square bracket.
 				. preg_quote( $this->shortcode_name, '/' )       // Match the shortcode name, escaping any regex special chars.
+				. '(?=[\s\]\/])'                                   // Ensure the shortcode name is complete, so e.g. [name_other] isn't matched.
 				. '[^\]]*?'                                      // Match any characters that are not a closing square bracket, non-greedy.
-				. '\b' . preg_quote( $id_attribute, '/' )        // Match the id attribute word boundary and escape as needed.
+				. '\s' . preg_quote( $id_attribute, '/' )        // Match the id attribute, preceded by whitespace so e.g. data-id isn't matched.
 				. '\s*=\s*'                                      // Match optional whitespace around an equals sign.
-				. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|\'' . preg_quote( (string) $third_party_form_id, '/' ) . '\'|' . preg_quote( (string) $third_party_form_id, '/' ) . ')' // Match the form ID, double quotes, single quotes or unquoted.
+				. '(?:"' . preg_quote( (string) $third_party_form_id, '/' ) . '"|\'' . preg_quote( (string) $third_party_form_id, '/' ) . '\'|' . preg_quote( (string) $third_party_form_id, '/' ) . '(?=[\s\]\/]))' // Match the exact form ID, double quotes, single quotes or unquoted.
 				. '[^\]]*?\]/i';                                 // Match any other characters (non-greedy) up to the closing square bracket, case-insensitive.
 
 			$content = preg_replace(
@@ -379,6 +384,7 @@ abstract class ConvertKit_Admin_Importer {
 		if ( ! $this->shortcode_id_attribute ) {
 			$pattern = '/\['                                       // Start regex with an opening square bracket.
 				. preg_quote( $this->shortcode_name, '/' )         // Match the shortcode name, escaping any regex special chars.
+				. '(?=[\s\]\/])'                                     // Ensure the shortcode name is complete, so e.g. [name_other] isn't matched.
 				. '(?:\s+[^\]]*)?'                                 // Optionally match any attributes (key/value pairs), non-greedy.
 				. '[^\]]*?\]/i';                                   // Match up to closing bracket, case-insensitive.
 
@@ -401,6 +407,7 @@ abstract class ConvertKit_Admin_Importer {
 		foreach ( $id_attributes as $id_attribute ) {
 			$pattern = '/\['                                       // Start regex with an opening square bracket.
 				. preg_quote( $this->shortcode_name, '/' )         // Match the shortcode name, escaping any regex special chars.
+				. '(?=[\s\]\/])'                                     // Ensure the shortcode name is complete, so e.g. [name_other] isn't matched.
 				. '(?:\s+[^\]]*)?'                                 // Optionally match any attributes (key/value pairs), non-greedy.
 				. preg_quote( $id_attribute, '/' )                 // Match the id attribute name.
 				. '\s*=\s*'                                        // Optional whitespace, equals sign, optional whitespace.
@@ -538,7 +545,7 @@ abstract class ConvertKit_Admin_Importer {
 			}
 
 			// Skip if not a third party form block.
-			if ( strpos( $block['blockName'], $this->block_name ) === false ) {
+			if ( $block['blockName'] !== $this->block_name ) {
 				continue;
 			}
 
@@ -556,7 +563,7 @@ abstract class ConvertKit_Admin_Importer {
 						continue;
 					}
 
-					if ( stripos( $block['attrs'][ $id_attribute ], (string) $third_party_form_id ) === false ) {
+					if ( ! $this->block_id_attribute_matches( $block['attrs'][ $id_attribute ], $third_party_form_id ) ) {
 						continue;
 					}
 
@@ -583,6 +590,21 @@ abstract class ConvertKit_Admin_Importer {
 		}
 
 		return $blocks;
+
+	}
+
+	/**
+	 * Returns whether the given block ID attribute value matches the third party form ID.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   mixed      $value                  Block ID attribute value.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @return  bool
+	 */
+	protected function block_id_attribute_matches( $value, $third_party_form_id ) {
+
+		return (string) $value === (string) $third_party_form_id;
 
 	}
 
