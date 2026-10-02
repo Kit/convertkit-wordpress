@@ -127,7 +127,7 @@ class ForminatorTest extends WPTestCase
 	 */
 	public function testSubscribeWithNameField()
 	{
-		$this->forminator->maybe_subscribe($this->getEntry(), $this->forminatorFormID, $this->getFormData('Kit Name'));
+		$this->forminator->maybe_subscribe($this->createEntry(), $this->forminatorFormID, $this->getFormData('Kit Name'));
 
 		// Confirm the subscriber was created and added to the Form.
 		$this->assertCount(2, $this->requests);
@@ -144,7 +144,7 @@ class ForminatorTest extends WPTestCase
 	public function testSubscribeWithMultipleNameFields()
 	{
 		$this->forminator->maybe_subscribe(
-			$this->getEntry(),
+			$this->createEntry(),
 			$this->forminatorFormID,
 			$this->getFormData(
 				[
@@ -172,7 +172,7 @@ class ForminatorTest extends WPTestCase
 		// Return an error from the Kit API.
 		$this->responseCode = 422;
 
-		$this->forminator->maybe_subscribe($this->getEntry(), $this->forminatorFormID, $this->getFormData('Kit Name'));
+		$this->forminator->maybe_subscribe($this->createEntry(), $this->forminatorFormID, $this->getFormData('Kit Name'));
 
 		// Confirm only the create subscriber request was made.
 		$this->assertCount(1, $this->requests);
@@ -187,11 +187,11 @@ class ForminatorTest extends WPTestCase
 	public function testSpamDraftAndAbandonedEntriesAreNotSubscribed()
 	{
 		foreach ( [ 'spam', 'draft', 'abandoned' ] as $status ) {
-			$this->forminator->maybe_subscribe($this->getEntry($status), $this->forminatorFormID, $this->getFormData('Kit Name'));
+			$this->forminator->maybe_subscribe($this->createEntry($status), $this->forminatorFormID, $this->getFormData('Kit Name'));
 		}
 
-		// Flag an active entry as spam.
-		$entry          = $this->getEntry();
+		// Flag an active entry as spam, as Forminator versions before 1.48.0 only set is_spam.
+		$entry          = $this->createEntry();
 		$entry->is_spam = 1;
 		$this->forminator->maybe_subscribe($entry, $this->forminatorFormID, $this->getFormData('Kit Name'));
 
@@ -242,14 +242,14 @@ class ForminatorTest extends WPTestCase
 	}
 
 	/**
-	 * Returns a Forminator Form Entry.
+	 * Creates a Forminator Form Entry with the given status.
 	 *
 	 * @since   3.4.5
 	 *
 	 * @param   string $status     Entry status.
 	 * @return  object
 	 */
-	private function getEntry($status = 'active')
+	private function createEntry($status = 'active')
 	{
 		$entry          = new \stdClass();
 		$entry->form_id = $this->forminatorFormID;
