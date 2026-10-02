@@ -310,21 +310,6 @@ class ConvertKit_Admin_Settings {
 	 */
 	public function register_sections() {
 
-		// @TODO Remove once product_id is added to the API.
-		$settings = new ConvertKit_Settings();
-		$api = new ConvertKit_API_V4(
-			CONVERTKIT_OAUTH_CLIENT_ID,
-			CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI,
-			$settings->get_access_token(),
-			$settings->get_refresh_token(),
-			$settings->debug_enabled(),
-			'broadcasts_importer'
-		);
-		var_dump( $api->get_posts() );
-		$result = $api->get_post( 3175837 );
-		var_dump( $result );
-		die();
-
 		// If no Access Token exists, register a settings section that shows a button
 		// to start the OAuth authentication flow.
 		$settings = new ConvertKit_Settings();

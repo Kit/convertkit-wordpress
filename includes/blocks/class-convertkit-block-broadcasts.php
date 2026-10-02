@@ -862,7 +862,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	/**
 	 * Returns the broadcast's public URL.
 	 *
-	 * @since   3.4.1
+	 * @since   3.4.6
 	 *
 	 * @param   array $broadcast  Broadcast.
 	 * @return  string
@@ -888,21 +888,13 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	/**
 	 * Returns the broadcast's description.
 	 *
-	 * @since   3.4.1
+	 * @since   3.4.6
 	 *
 	 * @param   array $broadcast  Broadcast.
 	 * @return  string
 	 */
 	private function get_broadcast_description( $broadcast ) {
 
-		// Posts cached by the ConvertKit_Resource_Posts class that queried the /wordpress/posts endpoint
-		// will store this in `description`.
-		if ( array_key_exists( 'meta_description', $broadcast ) ) {
-			return $broadcast['meta_description'];
-		}
-
-		// Posts cached by the ConvertKit_Resource_Posts class that queried the /v4/posts endpoint
-		// will store this in `meta_description`.
 		if ( array_key_exists( 'meta_description', $broadcast ) ) {
 			return $broadcast['meta_description'];
 		}
