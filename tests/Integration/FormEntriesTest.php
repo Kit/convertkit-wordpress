@@ -557,6 +557,22 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test that search terms containing SQL wildcard characters are matched literally.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testSearchWithWildcardCharacters()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Assert no entries match, as no entries contain the wildcard characters.
+		$this->assertCount(0, $this->entries->search(search: '%'));
+		$this->assertCount(0, $this->entries->search(search: 'test_@'));
+		$this->assertEquals(0, $this->entries->total(search: '%'));
+	}
+
+	/**
 	 * Test that searching with an invalid order by column falls back to ordering by created_at.
 	 *
 	 * @since   3.4.6
