@@ -223,9 +223,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			);
 		}
 
+		// Get the subscriber ID, as $result is overwritten by the form, tag and sequence requests below.
+		$subscriber_id = $result['subscriber']['id'];
+
 		// Store the subscriber ID in a cookie.
 		$subscriber = new ConvertKit_Subscriber();
-		$subscriber->set( $result['subscriber']['id'] );
+		$subscriber->set( $subscriber_id );
 
 		// If a form was specified, add the subscriber to the form.
 		if ( $form_id ) {
@@ -234,12 +237,12 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			if ( $forms->is_legacy( $form_id ) ) {
 				$result = $api->add_subscriber_to_legacy_form(
 					$form_id,
-					$result['subscriber']['id']
+					$subscriber_id
 				);
 			} else {
 				$result = $api->add_subscriber_to_form(
 					$form_id,
-					$result['subscriber']['id'],
+					$subscriber_id,
 					get_permalink( absint( $form_data['post_id'] ) )
 				);
 			}
@@ -263,7 +266,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a tag was specified, add the subscriber to the tag.
 		if ( $tag_id ) {
-			$result = $api->tag_subscriber( $tag_id, $result['subscriber']['id'] );
+			$result = $api->tag_subscriber( $tag_id, $subscriber_id );
 
 			if ( $form_data['store_entries'] ) {
 				$entries->upsert(
@@ -284,7 +287,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// If a sequence was specified, add the subscriber to the sequence.
 		if ( $sequence_id ) {
-			$result = $api->add_subscriber_to_sequence( $sequence_id, $result['subscriber']['id'] );
+			$result = $api->add_subscriber_to_sequence( $sequence_id, $subscriber_id );
 
 			if ( $form_data['store_entries'] ) {
 				$entries->upsert(

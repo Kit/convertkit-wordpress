@@ -37,6 +37,15 @@ class BlockFormBuilderTest extends WPTestCase
 	private $requests = [];
 
 	/**
+	 * Holds the Kit API endpoints that should return an error.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @var     array
+	 */
+	private $errorEndpoints = [];
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.4.5
@@ -144,6 +153,29 @@ class BlockFormBuilderTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the subscriber is still tagged and added to the Sequence when adding
+	 * the subscriber to the Form fails.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testTagAndSequenceWhenAddingSubscriberToFormFails()
+	{
+		// Return an error when adding the subscriber to the Form.
+		$this->errorEndpoints = [ 'forms/' . $_ENV['CONVERTKIT_API_FORM_ID'] . '/subscribers/123456' ];
+
+		$this->submit(
+			form_id: $_ENV['CONVERTKIT_API_FORM_ID'],
+			tag_id: $_ENV['CONVERTKIT_API_TAG_ID'],
+			sequence_id: $_ENV['CONVERTKIT_API_SEQUENCE_ID']
+		);
+
+		// Confirm the subscriber was tagged and added to the Sequence.
+		$this->assertCount(4, $this->requests);
+		$this->assertStringContainsString('tags/' . $_ENV['CONVERTKIT_API_TAG_ID'] . '/subscribers/123456', $this->requests[2]['url']);
+		$this->assertStringContainsString('sequences/' . $_ENV['CONVERTKIT_API_SEQUENCE_ID'] . '/subscribers/123456', $this->requests[3]['url']);
+	}
+
+	/**
 	 * Submits the Form Builder block with the given Form, Tag and Sequence IDs.
 	 *
 	 * @since   3.4.5
@@ -214,6 +246,21 @@ class BlockFormBuilderTest extends WPTestCase
 			'url'  => $url,
 			'body' => json_decode($args['body'], true),
 		];
+
+		// Return an error if this endpoint should fail.
+		foreach ( $this->errorEndpoints as $endpoint ) {
+			if ( strpos($url, $endpoint) !== false ) {
+				return [
+					'headers'  => [],
+					'body'     => wp_json_encode([ 'errors' => [ 'Not Found' ] ]),
+					'response' => [
+						'code'    => 404,
+						'message' => '',
+					],
+					'cookies'  => [],
+				];
+			}
+		}
 
 		return [
 			'headers'  => [],
