@@ -126,6 +126,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$custom_fields = $form_data['custom_fields'];
 		}
 
+		// Get First Name, if the Name field was included in the form.
+		$first_name = array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '';
+
 		// Get Form, Tag and Sequence IDs, if any were specified.
 		$form_id     = array_key_exists( 'form_id', $form_data ) ? absint( $form_data['form_id'] ) : 0;
 		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? absint( $form_data['tag_id'] ) : 0;
@@ -143,7 +146,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -179,7 +182,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
-			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
+			$first_name,
 			$subscriber_state,
 			$custom_fields
 		);
@@ -192,7 +195,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -213,7 +216,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				array(
 					'post_id'       => $form_data['post_id'],
 					'email'         => $form_data['email'],
-					'first_name'    => $form_data['first_name'],
+					'first_name'    => $first_name,
 					'custom_fields' => $custom_fields,
 					'form_id'       => $form_id,
 					'tag_id'        => $tag_id,
@@ -252,7 +255,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -273,7 +276,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -294,7 +297,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
