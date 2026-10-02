@@ -24,7 +24,7 @@ class ConvertKit_MCP_Ability_Settings_Update extends ConvertKit_MCP_Ability_Sett
 	 *
 	 * @var     bool
 	 */
-	private $idempotent = true; // @phpstan-ignore-line
+	protected $idempotent = true;
 
 	/**
 	 * Returns the operation suffix used in the ability name.
