@@ -142,8 +142,6 @@ class ConvertKit_Broadcasts_Importer {
 	 */
 	public function import_broadcast( $broadcast_id, $post_status = 'publish', $author_id = 1, $category_id = false, $import_thumbnail = false, $import_images = false, $disable_styles = false ) {
 
-		error_log( $broadcast_id );
-
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
 			CONVERTKIT_OAUTH_CLIENT_ID,
@@ -154,20 +152,8 @@ class ConvertKit_Broadcasts_Importer {
 			'broadcasts_importer'
 		);
 
-		// Check that we're using the ConvertKit WordPress Libraries 1.3.8 or higher.
-		// If another ConvertKit Plugin is active and out of date, its libraries might
-		// be loaded that don't have this method.
-		if ( ! method_exists( $api, 'get_post' ) ) { // @phpstan-ignore-line Older WordPress Libraries won't have this function.
-			return new WP_Error(
-				'convertkit_broadcasts_importer_error',
-				__( 'Kit WordPress Libraries 1.3.7 or older detected, missing the `get_post` method.', 'convertkit' )
-			);
-		}
-
 		// Fetch Broadcast. This includes the `content` and `product_id` properties.
 		$broadcast = $api->get_post( $broadcast_id );
-
-		error_log( print_r( $broadcast, true ) );
 
 		// Unset API class.
 		unset( $api );
