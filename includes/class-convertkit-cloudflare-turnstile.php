@@ -133,7 +133,7 @@ class ConvertKit_Cloudflare_Turnstile {
 		}
 
 		// If the token verified, return true.
-		if ( isset( $body['success'] ) && $body['success'] === true ) {
+		if ( $body['success'] === true ) {
 			return true;
 		}
 
@@ -143,7 +143,7 @@ class ConvertKit_Cloudflare_Turnstile {
 			sprintf(
 				/* translators: Error codes */
 				__( 'Cloudflare Turnstile failure: %s', 'convertkit' ),
-				implode( ', ', isset( $body['error-codes'] ) ? (array) $body['error-codes'] : array() )
+				implode( ', ', $body['error-codes'] )
 			)
 		);
 

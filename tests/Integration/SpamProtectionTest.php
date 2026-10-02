@@ -5,7 +5,7 @@ namespace Tests;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
- * Tests Google reCAPTCHA and Cloudflare Turnstile verification, mocking the siteverify responses.
+ * Tests Google reCAPTCHA verification, mocking the siteverify responses.
  *
  * @since   3.4.6
  */
@@ -39,15 +39,13 @@ class SpamProtectionTest extends WPTestCase
 		// Activate Plugin.
 		activate_plugins('convertkit/wp-convertkit.php');
 
-		// Store reCAPTCHA and Cloudflare Turnstile keys in the Plugin's settings.
+		// Store reCAPTCHA keys in the Plugin's settings.
 		$settings = new \ConvertKit_Settings();
 		$settings->save(
 			array(
-				'recaptcha_site_key'              => 'fakeRecaptchaSiteKey',
-				'recaptcha_secret_key'            => 'fakeRecaptchaSecretKey',
-				'recaptcha_minimum_score'         => 0.5,
-				'cloudflare_turnstile_site_key'   => 'fakeTurnstileSiteKey',
-				'cloudflare_turnstile_secret_key' => 'fakeTurnstileSecretKey',
+				'recaptcha_site_key'      => 'fakeRecaptchaSiteKey',
+				'recaptcha_secret_key'    => 'fakeRecaptchaSecretKey',
+				'recaptcha_minimum_score' => 0.5,
 			)
 		);
 
@@ -143,103 +141,6 @@ class SpamProtectionTest extends WPTestCase
 	}
 
 	/**
-	 * Test that an unsuccessful reCAPTCHA response returns the error codes.
-	 *
-	 * @since   3.4.6
-	 */
-	public function testRecaptchaFailureWithErrorCodes()
-	{
-		$this->siteverifyResponse = wp_json_encode(
-			[
-				'success'     => false,
-				'error-codes' => [ 'invalid-input-response' ],
-			]
-		);
-
-		$this->assertRecaptchaFailed($this->verifyRecaptcha(), 'Google reCAPTCHA failure: invalid-input-response');
-	}
-
-	/**
-	 * Test that an unsuccessful reCAPTCHA response with no error codes fails without a PHP error.
-	 *
-	 * @since   3.4.6
-	 */
-	public function testRecaptchaFailureWithNoErrorCodes()
-	{
-		$this->siteverifyResponse = wp_json_encode(
-			[
-				'success' => false,
-			]
-		);
-
-		$this->assertRecaptchaFailed($this->verifyRecaptcha(), 'Google reCAPTCHA failure: ');
-	}
-
-	/**
-	 * Test that an invalid reCAPTCHA response body fails without a PHP error.
-	 *
-	 * @since   3.4.6
-	 */
-	public function testRecaptchaInvalidResponse()
-	{
-		$this->siteverifyResponse = 'not json';
-
-		$this->assertRecaptchaFailed($this->verifyRecaptcha(), 'Google reCAPTCHA failure: invalid response from siteverify.');
-	}
-
-	/**
-	 * Test that a successful Cloudflare Turnstile response passes.
-	 *
-	 * @since   3.4.6
-	 */
-	public function testCloudflareTurnstileValidToken()
-	{
-		$this->siteverifyResponse = wp_json_encode(
-			[
-				'success' => true,
-			]
-		);
-
-		$this->assertTrue($this->verifyCloudflareTurnstile());
-	}
-
-	/**
-	 * Test that an unsuccessful Cloudflare Turnstile response with no error codes fails without a PHP error.
-	 *
-	 * @since   3.4.6
-	 */
-	public function testCloudflareTurnstileFailureWithNoErrorCodes()
-	{
-		$this->siteverifyResponse = wp_json_encode(
-			[
-				'success' => false,
-			]
-		);
-
-		$result = $this->verifyCloudflareTurnstile();
-		$this->assertInstanceOf(\WP_Error::class, $result);
-		$this->assertEquals('Cloudflare Turnstile failure: ', $result->get_error_message());
-	}
-
-	/**
-	 * Test that a Cloudflare Turnstile response with no success key fails without a PHP error.
-	 *
-	 * @since   3.4.6
-	 */
-	public function testCloudflareTurnstileNoSuccess()
-	{
-		$this->siteverifyResponse = wp_json_encode(
-			[
-				'error-codes' => [ 'internal-error' ],
-			]
-		);
-
-		$result = $this->verifyCloudflareTurnstile();
-		$this->assertInstanceOf(\WP_Error::class, $result);
-		$this->assertEquals('Cloudflare Turnstile failure: internal-error', $result->get_error_message());
-	}
-
-	/**
 	 * Verifies a reCAPTCHA token for the Form Builder block's action.
 	 *
 	 * @since   3.4.6
@@ -250,19 +151,6 @@ class SpamProtectionTest extends WPTestCase
 	{
 		$recaptcha = new \ConvertKit_Recaptcha();
 		return $recaptcha->verify('fakeToken', 'convertkit_form_builder');
-	}
-
-	/**
-	 * Verifies a Cloudflare Turnstile token.
-	 *
-	 * @since   3.4.6
-	 *
-	 * @return  bool|WP_Error
-	 */
-	private function verifyCloudflareTurnstile()
-	{
-		$turnstile = new \ConvertKit_Cloudflare_Turnstile();
-		return $turnstile->verify('fakeToken', 'convertkit_form_builder');
 	}
 
 	/**
@@ -281,7 +169,7 @@ class SpamProtectionTest extends WPTestCase
 	}
 
 	/**
-	 * Mocks Google reCAPTCHA and Cloudflare Turnstile siteverify requests.
+	 * Mocks Google reCAPTCHA siteverify requests.
 	 *
 	 * @since   3.4.6
 	 *
@@ -293,7 +181,7 @@ class SpamProtectionTest extends WPTestCase
 	public function mockSiteverifyRequest($response, $args, $url)
 	{
 		// Don't mock requests to other services.
-		if ( strpos($url, 'https://www.google.com/recaptcha/api/siteverify') !== 0 && strpos($url, 'https://challenges.cloudflare.com/turnstile/v0/siteverify') !== 0 ) {
+		if ( strpos($url, 'https://www.google.com/recaptcha/api/siteverify') !== 0 ) {
 			return $response;
 		}
 
