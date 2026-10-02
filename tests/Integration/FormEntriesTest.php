@@ -557,6 +557,23 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test deleting entries with no IDs doesn't delete any entries.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testDeleteEntriesWithNoIDs()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Delete entries with no IDs.
+		$this->assertEquals(0, $this->entries->delete_by_ids([]));
+
+		// Assert no entries were deleted.
+		$this->assertEquals(10, $this->entries->total());
+	}
+
+	/**
 	 * Test that search terms containing SQL wildcard characters are matched literally.
 	 *
 	 * @since   3.4.6

@@ -456,11 +456,19 @@ class ConvertKit_Form_Entries {
 	 * @since   3.0.0
 	 *
 	 * @param   array $ids    Entry IDs.
-	 * @return  bool            Success
+	 * @return  int|bool        Number of entries deleted, or false on error
 	 */
 	public function delete_by_ids( $ids ) {
 
 		global $wpdb;
+
+		// Map IDs as integers.
+		$ids = array_values( array_filter( array_map( 'absint', $ids ) ) );
+
+		// Bail if no IDs are provided.
+		if ( empty( $ids ) ) {
+			return 0;
+		}
 
 		return $wpdb->query(
 			$wpdb->prepare(
