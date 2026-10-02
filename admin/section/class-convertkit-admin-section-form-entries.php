@@ -255,11 +255,6 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 			return;
 		}
 
-		// Bail if the user isn't permitted to manage form entries.
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
 		// Bail if no bulk action is set.
 		$bulk_action = isset( $_REQUEST['action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) : '';
 		if ( empty( $bulk_action ) ) {
@@ -284,7 +279,7 @@ class ConvertKit_Admin_Section_Form_Entries extends ConvertKit_Admin_Section_Bas
 				$csv = $form_entries->get_csv_string( $entries );
 
 				// Force download with output.
-				header( 'Content-Type: text/csv; charset=utf-8' );
+				header( 'Content-type: application/x-msdownload' );
 				header( 'Content-Disposition: attachment; filename=kit-form-entries-export.csv' );
 				header( 'Pragma: no-cache' );
 				header( 'Expires: 0' );

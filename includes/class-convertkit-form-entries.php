@@ -176,7 +176,7 @@ class ConvertKit_Form_Entries {
 		);
 
 		// Return the entry ID.
-		return (int) $id;
+		return $wpdb->insert_id;
 
 	}
 
@@ -281,40 +281,13 @@ class ConvertKit_Form_Entries {
 		}
 
 		$csv = array(
-			$this->get_csv_row( array_keys( $entries[0] ) ),
+			'"' . implode( '","', array_keys( $entries[0] ) ) . '"',
 		);
 		foreach ( $entries as $entry ) {
-			$csv[] = $this->get_csv_row( $entry );
+			$csv[] = '"' . implode( '","', $entry ) . '"';
 		}
 
 		return implode( "\n", $csv );
-
-	}
-
-	/**
-	 * Returns a CSV row for the given values, escaping double quotes and
-	 * values that spreadsheet applications would run as a formula.
-	 *
-	 * @since   3.4.6
-	 *
-	 * @param   array $values     Values.
-	 * @return  string
-	 */
-	private function get_csv_row( $values ) {
-
-		$row = array();
-		foreach ( $values as $value ) {
-			$value = (string) $value;
-
-			// Prefix values starting with a formula character, so they're treated as text.
-			if ( $value !== '' && in_array( $value[0], array( '=', '+', '-', '@', "\t", "\r" ), true ) ) {
-				$value = "'" . $value;
-			}
-
-			$row[] = '"' . str_replace( '"', '""', $value ) . '"';
-		}
-
-		return implode( ',', $row );
 
 	}
 
@@ -412,8 +385,8 @@ class ConvertKit_Form_Entries {
 		if ( $search ) {
 			$where_clauses[] = $wpdb->prepare(
 				'(first_name LIKE %s OR email LIKE %s)',
-				'%' . $wpdb->esc_like( $search ) . '%',
-				'%' . $wpdb->esc_like( $search ) . '%'
+				'%' . $search . '%',
+				'%' . $search . '%'
 			);
 		}
 
@@ -456,19 +429,11 @@ class ConvertKit_Form_Entries {
 	 * @since   3.0.0
 	 *
 	 * @param   array $ids    Entry IDs.
-	 * @return  int|bool        Number of entries deleted, or false on error
+	 * @return  bool            Success
 	 */
 	public function delete_by_ids( $ids ) {
 
 		global $wpdb;
-
-		// Map IDs as integers.
-		$ids = array_values( array_filter( array_map( 'absint', $ids ) ) );
-
-		// Bail if no IDs are provided.
-		if ( empty( $ids ) ) {
-			return 0;
-		}
 
 		return $wpdb->query(
 			$wpdb->prepare(
