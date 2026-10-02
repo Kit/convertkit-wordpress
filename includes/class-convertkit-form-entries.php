@@ -176,7 +176,7 @@ class ConvertKit_Form_Entries {
 		);
 
 		// Return the entry ID.
-		return $wpdb->insert_id;
+		return (int) $id;
 
 	}
 
