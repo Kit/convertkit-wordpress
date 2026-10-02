@@ -203,6 +203,11 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Bail if the user is not permitted to disconnect the Plugin from a Kit account.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// Bail if nonce verification fails.
 		if ( ! isset( $_REQUEST['_convertkit_settings_oauth_disconnect'] ) ) {
 			return;

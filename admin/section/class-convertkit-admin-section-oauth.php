@@ -63,6 +63,28 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Bail if the user is not permitted to connect the Plugin to a Kit account.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Bail if the request isn't an OAuth callback for this Plugin.
+		// The nonce is passed in the `section` parameter, as Kit's OAuth redirect preserves it,
+		// prefixed with `kit-oauth-` to identify the request.
+		if ( ! filter_has_var( INPUT_GET, 'section' ) ) {
+			return;
+		}
+		$section = sanitize_key( filter_input( INPUT_GET, 'section', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+		if ( strpos( $section, 'kit-oauth-' ) !== 0 ) {
+			return;
+		}
+
+		// Bail if the nonce, generated when the OAuth flow began, is invalid.
+		// This ensures only a user who started the OAuth flow can store the resulting tokens.
+		if ( ! wp_verify_nonce( substr( $section, strlen( 'kit-oauth-' ) ), 'kit-oauth-connect' ) ) {
+			return;
+		}
+
 		// Sanitize token.
 		$authorization_code = filter_input( INPUT_GET, 'code', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
@@ -116,8 +138,7 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 	public function render() {
 
 		// Determine the OAuth URL to begin the authorization process.
-		$api       = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
-		$oauth_url = $api->get_oauth_url( admin_url( 'options-general.php?page=_wp_convertkit_settings' ), get_site_url() );
+		$oauth_url = convertkit_get_oauth_url();
 
 		/**
 		 * Performs actions prior to rendering the settings form.
