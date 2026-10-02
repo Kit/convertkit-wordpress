@@ -1525,6 +1525,77 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test that when a Page contains multiple Form Builder blocks, an invalid email address
+	 * submitted in the second block displays the error notice and focuses the email field
+	 * in the second block only.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderBlockWithInvalidEmailAddressInSecondBlock(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+
+		// Create a Page with two Form Builder blocks.
+		$block  = '<!-- wp:convertkit/form-builder -->
+<div class="wp-block-convertkit-form-builder"><!-- wp:convertkit/form-builder-field-email {"label":"Email address"} /-->
+
+<!-- wp:button {"lock":{"move":true,"remove":true},"className":"convertkit-form-builder-submit-button"} -->
+<div class="wp-block-button convertkit-form-builder-submit-button"><a class="wp-block-button__link wp-element-button">Subscribe</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:convertkit/form-builder -->';
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Kit: Page: Form Builder: Block: Multiple Forms: Invalid Email',
+				'post_content' => $block . "\n\n" . $block,
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Wait for frontend web site to load.
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Change the email fields to text fields, to bypass the browser's own validation
+		// and test the Plugin's server side validation.
+		$I->executeJS('document.querySelectorAll(\'input[name="convertkit[email]"]\').forEach(function(field) { field.setAttribute("type", "text"); });');
+
+		// Submit the second form with an invalid email address.
+		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[email]"])[2]', 'not-an-email-address');
+		$I->click('(//div[contains(@class, "wp-block-convertkit-form-builder")]//button[@type="submit"])[2]');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the error notice is only displayed in the second form.
+		$I->waitForElementVisible('div.convertkit-form-builder-notice-error[role="alert"]');
+		$I->seeNumberOfElements('div.convertkit-form-builder-notice-error', 1);
+		$I->assertTrue(
+			$I->executeJS('return document.querySelectorAll("div.wp-block-convertkit-form-builder form")[1].querySelector("#convertkit-form-builder-error-2") !== null;')
+		);
+
+		// Confirm only the second form's email field is flagged as invalid, and is focused.
+		$I->seeNumberOfElements('input[name="convertkit[email]"][aria-invalid="true"]', 1);
+		$I->seeElementInDOM('input[name="convertkit[email]"][aria-describedby="convertkit-form-builder-error-2"]');
+		$I->assertTrue(
+			$I->executeJS('return document.activeElement === document.querySelectorAll(\'input[name="convertkit[email]"]\')[1];')
+		);
+	}
+
+	/**
 	 * Test the Form Builder block displays an error when the Plugin has no credentials.
 	 *
 	 * @since   3.4.4

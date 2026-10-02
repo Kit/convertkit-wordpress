@@ -36,13 +36,23 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 	/**
 	 * Holds the number of times this block has been rendered on the Post,
-	 * to ensure error notice IDs are unique.
+	 * used to identify each block on the page and ensure error notice IDs are unique.
 	 *
 	 * @since   3.4.4
 	 *
 	 * @var     int
 	 */
 	public $render_count = 0;
+
+	/**
+	 * Holds the index of the block that was submitted, so the error notice
+	 * is only displayed on that block.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @var     int
+	 */
+	public $submitted_block_index = 0;
 
 	/**
 	 * Constructor
@@ -95,6 +105,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 		if ( ! array_key_exists( 'post_id', $_REQUEST['convertkit'] ) ) {
 			return;
+		}
+
+		// Store the submitted block's index, so any error is only displayed on that block.
+		if ( array_key_exists( 'block_index', $_REQUEST['convertkit'] ) ) {
+			$this->submitted_block_index = absint( $_REQUEST['convertkit']['block_index'] );
 		}
 
 		// Check spam protection.
@@ -721,6 +736,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Get Post ID.
 		$post_id = is_a( $post, 'WP_Post' ) ? $post->ID : 0;
 
+		// Increment the render count, used to identify this block on the page.
+		++$this->render_count;
+
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
@@ -848,9 +866,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$form->insertBefore( $subscribed_message, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
-		// Add error notice if the submission failed.
-		if ( is_wp_error( $this->error ) ) {
-			++$this->render_count;
+		// Add error notice if the submission failed, and this is the submitted block.
+		// If no block index was submitted (e.g. a cached page from an older version), display it on all blocks.
+		if ( is_wp_error( $this->error ) && ( ! $this->submitted_block_index || $this->submitted_block_index === $this->render_count ) ) {
 			$error_id = 'convertkit-form-builder-error-' . $this->render_count;
 
 			$error_notice = $parser->html->createElement( 'div' );
@@ -883,6 +901,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'convertkit[form_id]'       => absint( $atts['form_id'] ),
 			'convertkit[tag_id]'        => absint( $atts['tag_id'] ),
 			'convertkit[sequence_id]'   => absint( $atts['sequence_id'] ),
+			'convertkit[block_index]'   => absint( $this->render_count ),
 			'_wpnonce'                  => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
 		foreach ( $fields as $name => $value ) {
