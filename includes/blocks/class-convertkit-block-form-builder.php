@@ -127,9 +127,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Get Form, Tag and Sequence IDs, if any were specified.
-		$form_id     = array_key_exists( 'form_id', $form_data ) ? $form_data['form_id'] : false;
-		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? $form_data['tag_id'] : false;
-		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? $form_data['sequence_id'] : false;
+		$form_id     = array_key_exists( 'form_id', $form_data ) ? absint( $form_data['form_id'] ) : 0;
+		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? absint( $form_data['tag_id'] ) : 0;
+		$sequence_id = array_key_exists( 'sequence_id', $form_data ) ? absint( $form_data['sequence_id'] ) : 0;
 
 		// Initialize classes that will be used.
 		$settings = new ConvertKit_Settings();
@@ -174,7 +174,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Determine the subscriber state.
 		// If a Form is specified, mark the subscriber as inactive, so the form's double optin is honored.
 		// If a Tag or Sequence is specified, mark the subscriber as active, as there's no double optin for tags or sequences.
-		$subscriber_state = $form_id !== false ? 'inactive' : 'active';
+		$subscriber_state = $form_id ? 'inactive' : 'active';
 
 		// Create subscriber.
 		$result = $api->create_subscriber(
