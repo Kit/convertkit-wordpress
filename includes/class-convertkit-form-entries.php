@@ -25,6 +25,26 @@ class ConvertKit_Form_Entries {
 	private $table = 'kit_form_entries';
 
 	/**
+	 * Holds the columns that entries can be ordered by.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @var     array
+	 */
+	private $order_by_columns = array(
+		'id',
+		'post_id',
+		'first_name',
+		'email',
+		'form_id',
+		'tag_id',
+		'sequence_id',
+		'created_at',
+		'updated_at',
+		'api_result',
+	);
+
+	/**
 	 * Create database table.
 	 *
 	 * @since   3.0.0
@@ -36,8 +56,8 @@ class ConvertKit_Form_Entries {
 		global $wpdb;
 
 		// Create database table.
-		$query  = $wpdb->prepare(
-			"CREATE TABLE IF NOT EXISTS %i (
+		// The table name isn't prepared, as the %i placeholder requires WordPress 6.2+.
+		$query  = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}{$this->table}` (
 				`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 				`post_id` int(11) NOT NULL,
                 `first_name` varchar(191) NOT NULL DEFAULT '',
@@ -58,9 +78,7 @@ class ConvertKit_Form_Entries {
 				KEY `tag_id` (`tag_id`),
 				KEY `sequence_id` (`sequence_id`),
                 KEY `api_result` (`api_result`)
-			)",
-			$wpdb->prefix . $this->table
-		);
+			)";
 		$query .= ' ' . $wpdb->get_charset_collate() . ' AUTO_INCREMENT=1';
 		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
@@ -198,8 +216,7 @@ class ConvertKit_Form_Entries {
 		// Check if an entry already exists for the given Post ID and Email.
 		$id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT id FROM %i WHERE post_id = %d AND email = %s',
-				$wpdb->prefix . $this->table,
+				"SELECT id FROM `{$wpdb->prefix}{$this->table}` WHERE post_id = %d AND email = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$entry['post_id'],
 				$entry['email']
 			)
@@ -292,10 +309,7 @@ class ConvertKit_Form_Entries {
 		global $wpdb;
 
 		// Prepare query.
-		$query = $wpdb->prepare(
-			'SELECT * FROM %i',
-			$wpdb->prefix . $this->table
-		);
+		$query = "SELECT * FROM `{$wpdb->prefix}{$this->table}`";
 
 		// Build where clauses.
 		$where_clauses = $this->build_where_clauses( $search, $api_result );
@@ -305,13 +319,13 @@ class ConvertKit_Form_Entries {
 			$query .= ' WHERE ' . implode( ' AND ', $where_clauses );
 		}
 
+		// Fallback to ordering by created_at if the order by column is invalid.
+		if ( ! in_array( $order_by, $this->order_by_columns, true ) ) {
+			$order_by = 'created_at';
+		}
+
 		// Order.
-		$query .= $wpdb->prepare(
-			' ORDER BY %i.%i',
-			$wpdb->prefix . $this->table,
-			$order_by
-		);
-		$query .= ' ' . ( strtolower( $order ) === 'asc' ? 'ASC' : 'DESC' );
+		$query .= " ORDER BY `{$order_by}` " . ( strtolower( $order ) === 'asc' ? 'ASC' : 'DESC' );
 
 		// Limit.
 		if ( $page > 0 && $per_page > 0 ) {
@@ -337,11 +351,7 @@ class ConvertKit_Form_Entries {
 		global $wpdb;
 
 		// Prepare query.
-		$query = $wpdb->prepare(
-			'SELECT COUNT(%i.id) FROM %i',
-			$wpdb->prefix . $this->table,
-			$wpdb->prefix . $this->table
-		);
+		$query = "SELECT COUNT(id) FROM `{$wpdb->prefix}{$this->table}`";
 
 		// Build where clauses.
 		$where_clauses = $this->build_where_clauses( $search, $api_result );
@@ -449,12 +459,7 @@ class ConvertKit_Form_Entries {
 
 		global $wpdb;
 
-		return $wpdb->query(
-			$wpdb->prepare(
-				'TRUNCATE TABLE %i',
-				$wpdb->prefix . $this->table
-			)
-		);
+		return $wpdb->query( "TRUNCATE TABLE `{$wpdb->prefix}{$this->table}`" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 	}
 

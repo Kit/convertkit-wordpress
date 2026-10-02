@@ -508,6 +508,25 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test that searching with an invalid order by column falls back to ordering by created_at.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testSearchWithInvalidOrderBy()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Run search ordered by an invalid column.
+		$results = $this->entries->search(
+			order_by: 'invalid_column',
+		);
+
+		// Assert entries are returned.
+		$this->assertCount(10, $results);
+	}
+
+	/**
 	 * Add entries to the database table.
 	 *
 	 * @since   3.0.0
