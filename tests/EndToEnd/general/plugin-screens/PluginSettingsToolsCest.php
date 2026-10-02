@@ -364,6 +364,37 @@ class PluginSettingsToolsCest
 	}
 
 	/**
+	 * Test that the Import Configuration option returns the expected error when a JSON file
+	 * is selected, but its contents are not a JSON object.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testImportConfigurationWithNonObjectJSONFile(EndToEndTester $I)
+	{
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->loadKitSettingsToolsScreen($I);
+
+		// Scroll to Import section.
+		$I->scrollTo('#import');
+
+		// Select the configuration file at tests/Support/Data/convertkit-export-not-an-object.json to import.
+		$I->attachFile('input[name=import]', 'convertkit-export-not-an-object.json');
+
+		// Click the Import button.
+		$I->click('input#convertkit-import');
+
+		// Wait for page to load.
+		$I->waitForElementVisible('#wpfooter');
+
+		// Confirm error message displays.
+		$I->waitForElementVisible('.notice-error');
+		$I->see('The uploaded configuration file isn\'t valid.');
+	}
+
+	/**
 	 * Test that any $_REQUEST['page'] parameter on a settings screen is correctly escaped on output
 	 * to prevent XSS.
 	 *
