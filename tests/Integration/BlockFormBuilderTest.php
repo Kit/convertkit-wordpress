@@ -194,6 +194,18 @@ class BlockFormBuilderTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Email field is always required, even if the block's required
+	 * attribute is false.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testEmailFieldAlwaysRequired()
+	{
+		$field = new \ConvertKit_Block_Form_Builder_Field_Email();
+		$this->assertStringContainsString(' required', $field->render([ 'required' => false ]));
+	}
+
+	/**
 	 * Submits the Form Builder block with the given Form, Tag and Sequence IDs.
 	 *
 	 * @since   3.4.5
