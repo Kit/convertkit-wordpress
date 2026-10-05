@@ -149,7 +149,8 @@ class PageBlockFormPerformancePluginsCest
 
 		// Enable Jetpack Boost's "Defer Non-Essential JavaScript" setting.
 		$I->amOnAdminPage('admin.php?page=jetpack-boost');
-		$I->click('#inspector-toggle-control-1');
+		$I->waitForElementVisible("//label[normalize-space(text())='Defer Non-Essential JavaScript']");
+		$I->click("//label[normalize-space(text())='Defer Non-Essential JavaScript']/preceding-sibling::span/input");
 
 		// Add a Page using the Gutenberg editor.
 		$I->addGutenbergPage(
