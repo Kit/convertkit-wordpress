@@ -1367,12 +1367,17 @@ class PageBlockFormBuilderCest
 		$emailAddress = $I->generateEmailAddress();
 
 		// Submit form.
+		$I->fillField('input[name="convertkit[first_name]"]', 'First');
 		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
 		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
 
 		// Confirm that the email address was added to Kit.
 		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
-		$I->apiCheckSubscriberExists($I, $emailAddress);
+		$I->apiCheckSubscriberExists(
+			$I,
+			emailAddress: $emailAddress,
+			firstName: 'First'
+		);
 	}
 
 	/**
@@ -1437,8 +1442,10 @@ class PageBlockFormBuilderCest
 		// Confirm both forms include a Turnstile widget.
 		$I->seeNumberOfElementsInDOM('div.wp-block-convertkit-form-builder form div.cf-turnstile[data-execution="execute"]', 2);
 
-		// Complete the email field in both forms.
+		// Complete the name and email fields in both forms.
+		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[first_name]"])[1]', 'First');
 		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[email]"])[1]', $I->generateEmailAddress());
+		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[first_name]"])[2]', 'First');
 		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[email]"])[2]', $I->generateEmailAddress());
 
 		// Record which form is submitted and its Turnstile token, without submitting it.
@@ -1730,7 +1737,9 @@ class PageBlockFormBuilderCest
 	private function _createPageWithFormBuilderBlocks(EndToEndTester $I, $title, $count = 1, $before = '')
 	{
 		$block = '<!-- wp:convertkit/form-builder -->
-<div class="wp-block-convertkit-form-builder"><!-- wp:convertkit/form-builder-field-email {"label":"Email address"} /-->
+<div class="wp-block-convertkit-form-builder"><!-- wp:convertkit/form-builder-field-name {"label":"First name"} /-->
+
+<!-- wp:convertkit/form-builder-field-email {"label":"Email address"} /-->
 
 <!-- wp:button {"lock":{"move":true,"remove":true},"className":"convertkit-form-builder-submit-button"} -->
 <div class="wp-block-button convertkit-form-builder-submit-button"><a class="wp-block-button__link wp-element-button">Subscribe</a></div>
