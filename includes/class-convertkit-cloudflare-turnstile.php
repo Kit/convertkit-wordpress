@@ -153,8 +153,9 @@ class ConvertKit_Cloudflare_Turnstile {
 	 * Inserts a Cloudflare Turnstile widget div immediately before the given
 	 * submit button within an existing DOM tree. `data-appearance=interaction-only`
 	 * keeps the widget invisible unless Cloudflare determines a challenge is
-	 * required, and the `convertKitTurnstileFormSubmit` callback submits the
-	 * enclosing form once the challenge is solved.
+	 * required. `data-execution=execute` prevents the challenge running until the
+	 * form is submitted, and the `convertKitTurnstileFormSubmit` callback then
+	 * submits the form once the challenge is solved.
 	 *
 	 * @since   3.3.7
 	 *
@@ -170,6 +171,7 @@ class ConvertKit_Cloudflare_Turnstile {
 		$widget->setAttribute( 'class', 'cf-turnstile' );
 		$widget->setAttribute( 'data-sitekey', esc_attr( $this->settings->cloudflare_turnstile_site_key() ) );
 		$widget->setAttribute( 'data-appearance', 'interaction-only' );
+		$widget->setAttribute( 'data-execution', 'execute' );
 		$widget->setAttribute( 'data-callback', 'convertKitTurnstileFormSubmit' );
 		$button->parentNode->insertBefore( $widget, $button ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
@@ -192,7 +194,7 @@ class ConvertKit_Cloudflare_Turnstile {
 		unset( $plugin_action );
 
 		return sprintf(
-			'<div class="cf-turnstile" data-sitekey="%1$s" data-appearance="interaction-only" data-callback="convertKitTurnstileFormSubmit"></div><input type="submit" class="%2$s" value="%3$s" />',
+			'<div class="cf-turnstile" data-sitekey="%1$s" data-appearance="interaction-only" data-execution="execute" data-callback="convertKitTurnstileFormSubmit"></div><input type="submit" class="%2$s" value="%3$s" />',
 			esc_attr( $this->settings->cloudflare_turnstile_site_key() ),
 			esc_attr( implode( ' ', $css_classes ) ),
 			esc_attr( $label )

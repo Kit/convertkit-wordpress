@@ -1338,6 +1338,127 @@ class PageBlockFormBuilderCest
 	}
 
 	/**
+	 * Test the Form Builder block works when Cloudflare Turnstile is enabled.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderWithCloudflareTurnstileEnabled(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$this->_setupKitPluginWithCloudflareTurnstile($I);
+
+		// Create a Page with a Form Builder block.
+		$pageID = $this->_createPageWithFormBuilderBlocks($I, 'Kit: Page: Form Builder: Block: Cloudflare Turnstile');
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the Turnstile widget is output, and the script is enqueued.
+		$I->seeElementInDOM('div.wp-block-convertkit-form-builder form div.cf-turnstile[data-appearance="interaction-only"][data-execution="execute"]');
+		$I->seeInSource('<script src="https://challenges.cloudflare.com/turnstile/v0/api.js');
+
+		// Generate email address for this test.
+		$emailAddress = $I->generateEmailAddress();
+
+		// Submit form.
+		$I->fillField('input[name="convertkit[email]"]', $emailAddress);
+		$I->click('div.wp-block-convertkit-form-builder button[type="submit"]');
+
+		// Confirm that the email address was added to Kit.
+		$I->waitForElementVisible('.convertkit-form-builder-subscribed-message');
+		$I->apiCheckSubscriberExists($I, $emailAddress);
+	}
+
+	/**
+	 * Test the Form Builder block isn't submitted when the Page loads, and Cloudflare Turnstile is enabled.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderWithCloudflareTurnstileEnabledDoesNotSubmitOnPageLoad(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$this->_setupKitPluginWithCloudflareTurnstile($I);
+
+		// Create a Page with a Form Builder block, below the fold.
+		$pageID = $this->_createPageWithFormBuilderBlocks(
+			$I,
+			'Kit: Page: Form Builder: Block: Cloudflare Turnstile: Page Load',
+			1,
+			'<!-- wp:spacer {"height":"2000px"} -->' . "\n" . '<div style="height:2000px" aria-hidden="true" class="wp-block-spacer"></div>' . "\n" . '<!-- /wp:spacer -->'
+		);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Wait for Turnstile to render the widget, and allow time for a challenge to run.
+		$I->waitForElement('div.wp-block-convertkit-form-builder form input[name="cf-turnstile-response"]', 10);
+		$I->wait(5);
+
+		// Confirm the page didn't scroll to the form, and no field was focused by the browser's validation.
+		$I->assertEquals(0, $I->executeJS('return window.scrollY;'));
+		$I->assertEquals('BODY', $I->executeJS('return document.activeElement.tagName;'));
+
+		// Confirm no token was generated, as the form hasn't been submitted.
+		$I->assertEmpty($I->executeJS('return document.querySelector("div.wp-block-convertkit-form-builder form input[name=\'cf-turnstile-response\']").value;'));
+	}
+
+	/**
+	 * Test that the Form Builder block submits the form whose submit button was clicked,
+	 * when a Page contains multiple forms and Cloudflare Turnstile is enabled.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormBuilderWithCloudflareTurnstileEnabledSubmitsClickedForm(EndToEndTester $I)
+	{
+		// Setup Plugin and Resources.
+		$this->_setupKitPluginWithCloudflareTurnstile($I);
+
+		// Create a Page with two Form Builder blocks.
+		$pageID = $this->_createPageWithFormBuilderBlocks($I, 'Kit: Page: Form Builder: Block: Cloudflare Turnstile: Multiple Forms', 2);
+
+		// Load the Page on the frontend site.
+		$I->amOnPage('?p=' . $pageID);
+		$I->waitForElementVisible('body.page-template-default');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm both forms include a Turnstile widget.
+		$I->seeNumberOfElementsInDOM('div.wp-block-convertkit-form-builder form div.cf-turnstile[data-execution="execute"]', 2);
+
+		// Complete the email field in both forms.
+		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[email]"])[1]', $I->generateEmailAddress());
+		$I->fillField('(//div[contains(@class, "wp-block-convertkit-form-builder")]//input[@name="convertkit[email]"])[2]', $I->generateEmailAddress());
+
+		// Record which form is submitted and its Turnstile token, without submitting it.
+		$I->executeJS('window.convertKitTestSubmittedForms = []; document.querySelectorAll("div.wp-block-convertkit-form-builder form").forEach(function(form, index) { form.addEventListener("submit", function(e) { e.preventDefault(); window.convertKitTestSubmittedForms.push({ index: index, token: form.querySelector("input[name=\'cf-turnstile-response\']").value }); }); });');
+
+		// Click the second form's submit button.
+		$I->click('(//div[contains(@class, "wp-block-convertkit-form-builder")]//button[@type="submit"])[2]');
+
+		// Wait for Turnstile to generate a token and submit the form.
+		$I->waitForJS('return window.convertKitTestSubmittedForms.length > 0;', 10);
+		$I->wait(2);
+
+		// Confirm only the second form was submitted, with a Turnstile token.
+		$submitted = $I->executeJS('return window.convertKitTestSubmittedForms;');
+		$I->assertCount(1, $submitted);
+		$I->assertEquals(1, $submitted[0]['index']);
+		$I->assertNotEmpty($submitted[0]['token']);
+	}
+
+	/**
 	 * Test the Form Builder block works when the Store Entries option is enabled,
 	 * with custom fields, tag and sequence settings defined.
 	 *
@@ -1571,6 +1692,65 @@ class PageBlockFormBuilderCest
 		$I->assertEquals(
 			'convertkit-form-builder-error-1',
 			$I->executeJS('return document.activeElement.getAttribute("id");')
+		);
+	}
+
+	/**
+	 * Sets up the Kit Plugin with Cloudflare Turnstile as the spam protection provider,
+	 * using Cloudflare's test keys that always pass.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	private function _setupKitPluginWithCloudflareTurnstile(EndToEndTester $I)
+	{
+		$I->setupKitPlugin(
+			$I,
+			[
+				'spam_protection_provider'        => 'cloudflare_turnstile',
+				'cloudflare_turnstile_site_key'   => '1x00000000000000000000AA',
+				'cloudflare_turnstile_secret_key' => '1x0000000000000000000000000000000AA',
+			]
+		);
+		$I->setupKitPluginResources($I);
+	}
+
+	/**
+	 * Creates a Page with the given number of Form Builder blocks, returning the Page ID.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I          Tester.
+	 * @param   string         $title      Page title.
+	 * @param   int            $count      Number of Form Builder blocks.
+	 * @param   string         $before     Block markup to output before the Form Builder blocks.
+	 * @return  int
+	 */
+	private function _createPageWithFormBuilderBlocks(EndToEndTester $I, $title, $count = 1, $before = '')
+	{
+		$block = '<!-- wp:convertkit/form-builder -->
+<div class="wp-block-convertkit-form-builder"><!-- wp:convertkit/form-builder-field-email {"label":"Email address"} /-->
+
+<!-- wp:button {"lock":{"move":true,"remove":true},"className":"convertkit-form-builder-submit-button"} -->
+<div class="wp-block-button convertkit-form-builder-submit-button"><a class="wp-block-button__link wp-element-button">Subscribe</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:convertkit/form-builder -->';
+
+		return $I->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => $title,
+				'post_content' => $before . "\n\n" . implode("\n\n", array_fill(0, $count, $block)),
+				'meta_input'   => [
+					// Configure Kit Plugin to not display a default Form.
+					'_wp_convertkit_post_meta' => [
+						'form'         => '0',
+						'landing_page' => '',
+						'tag'          => '',
+					],
+				],
+			]
 		);
 	}
 
