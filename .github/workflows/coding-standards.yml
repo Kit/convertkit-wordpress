@@ -46,7 +46,7 @@ jobs:
       DB_USER: root
       DB_PASS: root
       DB_HOST: localhost
-      INSTALL_PLUGINS: "classic-editor contact-form-7 elementor forminator woocommerce wordpress-seo litespeed-cache w3-total-cache" # Don't include this repository's Plugin here.
+      INSTALL_PLUGINS: "classic-editor contact-form-7 elementor forminator mcp-adapter woocommerce wordpress-seo litespeed-cache w3-total-cache" # Don't include this repository's Plugin here.
 
     # Defines the WordPress and PHP Versions matrix to run tests on.
     strategy:
@@ -117,12 +117,9 @@ jobs:
           tools: cs2pr
 
       # Installs wp-browser, Codeception, PHP CodeSniffer and anything else needed to run tests.
-      # jq is used to remove the wordpress/mcp-adapter package from composer.json, as it requires PHP 7.4+.
       - name: Run Composer
         working-directory: ${{ env.PLUGIN_DIR }}
-        run: |
-          jq 'del(.require."wordpress/mcp-adapter")' composer.json > composer.json.tmp && mv composer.json.tmp composer.json
-          composer update
+        run: composer update
 
       # Run PHP Coding Standards on Tests.
       - name: Run WordPress PHP Coding Standards on Tests

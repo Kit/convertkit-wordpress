@@ -77,7 +77,7 @@ jobs:
           - { path: 'EndToEnd/forms/post-types', plugins: 'classic-editor custom-post-type-ui autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/general/other', plugins: 'classic-editor custom-post-type-ui', plugins-urls: 'https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/general/uninstall', paid-plugins: 'false' }
-          - { path: 'EndToEnd/general/plugin-screens', plugins: 'admin-menu-editor custom-post-type-ui mailchimp-for-wp', paid-plugins: 'false' }
+          - { path: 'EndToEnd/general/plugin-screens', plugins: 'admin-menu-editor custom-post-type-ui mailchimp-for-wp mcp-adapter', paid-plugins: 'false' }
           - { path: 'EndToEnd/integrations/divi-builder', plugins: 'classic-editor', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/integrations/divi-theme', plugins: 'classic-editor', themes-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2026/03/Divi_5.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/integrations/elementor', plugins: 'elementor', paid-plugins: 'false' }

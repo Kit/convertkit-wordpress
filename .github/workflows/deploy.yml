@@ -48,7 +48,6 @@ jobs:
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-log.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-resource-v4.php"
             "vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php"
-            "vendor/wordpress/mcp-adapter/mcp-adapter.php"
           )
 
           for file in "${files[@]}"; do
