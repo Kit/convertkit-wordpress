@@ -108,6 +108,33 @@ class MCPContentFormTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Form block abilities define the expected annotations.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testAbilityAnnotations()
+	{
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
+
+		// The expected readonly, destructive and idempotent annotations for each ability.
+		$expected = array(
+			'kit/form-list'   => array( true, false, true ),
+			'kit/form-insert' => array( false, false, false ),
+			'kit/form-update' => array( false, false, true ),
+			'kit/form-delete' => array( false, true, false ),
+		);
+
+		// Assert that each ability's annotations are correct.
+		foreach ( $expected as $name => $annotations ) {
+			$result = $abilities[ $name ]->get_annotations();
+			$this->assertSame($annotations[0], $result['readonly'], $name);
+			$this->assertSame($annotations[1], $result['destructive'], $name);
+			$this->assertSame($annotations[2], $result['idempotent'], $name);
+		}
+	}
+
+	/**
 	 * Test that the permission_callback() rejects a user who cannot edit the
 	 * given post.
 	 *
@@ -209,6 +236,36 @@ class MCPContentFormTest extends WPTestCase
 				(string) $occurrence['attrs']['form']
 			);
 		}
+	}
+
+	/**
+	 * Test that kit/form-list returns no occurrences for a Classic Editor post
+	 * that does not contain a Form shortcode.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testListReturnsNoOccurrencesWhenClassicPostHasNoForms()
+	{
+		// Create a Classic Editor Post with no Form shortcodes.
+		$postID = $this->factory->post->create(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Classic Post',
+				'post_content' => '<p>Paragraph with no Form.</p>',
+			)
+		);
+
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
+
+		// Execute the ability.
+		$result = $abilities['kit/form-list']->execute_callback([ 'post_id' => $postID ]);
+
+		$this->assertIsArray($result);
+		$this->assertSame($postID, $result['post_id']);
+		$this->assertSame(0, $result['count']);
+		$this->assertSame([], $result['occurrences']);
 	}
 
 	/**

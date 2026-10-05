@@ -99,6 +99,29 @@ class MCPSettingsGeneralTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the General settings abilities define the expected annotations.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testAbilityAnnotations()
+	{
+		// Resolve the abilities array via the same helper the MCP server uses.
+		$abilities = convertkit_get_abilities();
+
+		// Assert the get ability is readonly and idempotent.
+		$annotations = $abilities['kit/settings-general-get']->get_annotations();
+		$this->assertTrue($annotations['readonly']);
+		$this->assertFalse($annotations['destructive']);
+		$this->assertTrue($annotations['idempotent']);
+
+		// Assert the update ability is idempotent.
+		$annotations = $abilities['kit/settings-general-update']->get_annotations();
+		$this->assertFalse($annotations['readonly']);
+		$this->assertFalse($annotations['destructive']);
+		$this->assertTrue($annotations['idempotent']);
+	}
+
+	/**
 	 * Test that the permission_callback() rejects a user who cannot manage options.
 	 *
 	 * @since   3.4.0
