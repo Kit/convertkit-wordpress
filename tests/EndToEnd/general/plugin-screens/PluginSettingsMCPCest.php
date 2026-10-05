@@ -347,6 +347,7 @@ class PluginSettingsMCPCest
 
 		// Assert no option to enable/disable the MCP server, or connect an AI client, are shown.
 		$I->dontSeeElement('#enabled');
+		$I->dontSee('Connect an AI client');
 		$I->dontSee('Create Application Password');
 
 		// Assert that the MCP server is not registered.
@@ -365,6 +366,7 @@ class PluginSettingsMCPCest
 		// Assert that the MCP Adapter Plugin required message is no longer shown, and the Enable checkbox is shown.
 		$I->dontSee('The Kit WordPress MCP requires the MCP Adapter Plugin. Install and activate it to connect AI clients to your WordPress site.');
 		$I->seeElement('#enabled');
+		$I->see('Connect an AI client');
 
 		// Assert that the MCP server is registered.
 		$I->hasRoute($I, '/kit/mcp');

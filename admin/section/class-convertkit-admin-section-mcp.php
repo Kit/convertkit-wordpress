@@ -85,6 +85,11 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			),
 		);
 
+		// Don't register the connect section if the MCP Adapter Plugin isn't active, as an AI client can't connect.
+		if ( ! $this->mcp_adapter_active() ) {
+			unset( $this->settings_sections['connect'] );
+		}
+
 		$this->maybe_generate_authentication_header();
 		$this->maybe_revoke_application_password();
 
@@ -378,11 +383,6 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		// Don't output anything if the Kit account isn't on a paid plan, as the
 		// upgrade message is displayed in the section above.
 		if ( ! $this->is_paid_plan() ) {
-			return;
-		}
-
-		// Don't output anything if the MCP Adapter Plugin isn't active, as its message is displayed in the section above.
-		if ( ! $this->mcp_adapter_active() ) {
 			return;
 		}
 
