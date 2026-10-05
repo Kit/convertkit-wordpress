@@ -54,11 +54,11 @@ class PageCest
 		// Check that a link to the OAuth auth screen exists.
 		$I->seeInSource('<a href="https://app.kit.com/oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID'] . '&amp;response_type=code&amp;redirect_uri=' . urlencode( $_ENV['KIT_OAUTH_REDIRECT_URI'] ) );
 
-		// Check the state parameter returns to the settings screen, with a nonce in the section parameter.
+		// Check the state parameter returns to the settings screen, with a nonce.
 		$state = $I->apiDecodeStateFromOAuthURL($I->grabAttributeFrom('#wp-convertkit-meta-box a[href*="oauth/authorize"]', 'href'));
 		$I->assertEquals($_ENV['CONVERTKIT_OAUTH_CLIENT_ID'], $state['client_id']);
 		$I->assertStringStartsWith($_ENV['WORDPRESS_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings', $state['return_to']);
-		$I->assertStringContainsString('section=kit-oauth-', $state['return_to']);
+		$I->assertStringContainsString('&nonce=', $state['return_to']);
 
 		// Click the link.
 		$I->click('connect your Kit account.');

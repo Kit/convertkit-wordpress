@@ -97,7 +97,7 @@ class KitAPI extends \Codeception\Module
 	/**
 	 * Returns the decoded `state` parameter from the given OAuth authorization URL.
 	 *
-	 * @since   3.4.5
+	 * @since   3.4.6
 	 *
 	 * @param   string $url    OAuth authorization URL.
 	 * @return  array
@@ -141,7 +141,7 @@ class KitAPI extends \Codeception\Module
 	/**
 	 * Check the Plugin did not exchange an authorization code for an access token.
 	 *
-	 * @since   3.4.5
+	 * @since   3.4.6
 	 *
 	 * @param   EndToEndTester $I  EndToEndTester.
 	 */

@@ -76,11 +76,11 @@ class PluginSettingsGeneralCest
 		// Check that a link to the OAuth auth screen exists.
 		$I->seeInSource('<a href="https://app.kit.com/oauth/authorize?client_id=' . $_ENV['CONVERTKIT_OAUTH_CLIENT_ID'] . '&amp;response_type=code&amp;redirect_uri=' . urlencode( $_ENV['KIT_OAUTH_REDIRECT_URI'] ) );
 
-		// Check the state parameter returns to the settings screen, with a nonce in the section parameter.
+		// Check the state parameter returns to the settings screen, with a nonce.
 		$state = $I->apiDecodeStateFromOAuthURL($I->grabAttributeFrom('a[href*="oauth/authorize"]', 'href'));
 		$I->assertEquals($_ENV['CONVERTKIT_OAUTH_CLIENT_ID'], $state['client_id']);
 		$I->assertStringStartsWith($_ENV['WORDPRESS_URL'] . '/wp-admin/options-general.php?page=_wp_convertkit_settings', $state['return_to']);
-		$I->assertStringContainsString('section=kit-oauth-', $state['return_to']);
+		$I->assertStringContainsString('&nonce=', $state['return_to']);
 
 		// Click the connect button.
 		$I->click('Connect');
@@ -1093,7 +1093,7 @@ class PluginSettingsGeneralCest
 	 * callback is requested by a logged out user, as WordPress fires `admin_init` on
 	 * admin-post.php for unauthenticated requests.
 	 *
-	 * @since   3.4.5
+	 * @since   3.4.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -1103,9 +1103,9 @@ class PluginSettingsGeneralCest
 		$I->logOut();
 
 		// Attempt to exchange an authorization code without being logged in, with no nonce
-		// and with an invalid nonce in the section parameter.
+		// and with an invalid nonce.
 		$I->amOnPage('/wp-admin/admin-post.php?action=convertkit&page=_wp_convertkit_settings&code=fakeAuthorizationCode');
-		$I->amOnPage('/wp-admin/admin-post.php?action=convertkit&page=_wp_convertkit_settings&section=kit-oauth-invalid&code=fakeAuthorizationCode');
+		$I->amOnPage('/wp-admin/admin-post.php?action=convertkit&page=_wp_convertkit_settings&code=fakeAuthorizationCode&nonce=invalid');
 
 		// Confirm the authorization code was not exchanged.
 		$I->apiCheckAuthorizationCodeNotExchanged($I);
@@ -1121,7 +1121,7 @@ class PluginSettingsGeneralCest
 	 * Administrator loads the settings screen without a valid nonce, such as from a
 	 * malicious link.
 	 *
-	 * @since   3.4.5
+	 * @since   3.4.6
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
@@ -1130,8 +1130,14 @@ class PluginSettingsGeneralCest
 		// Attempt to exchange an authorization code with no nonce.
 		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&code=fakeAuthorizationCode');
 
-		// Attempt to exchange an authorization code with an invalid nonce in the section parameter.
-		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&section=kit-oauth-invalid&code=fakeAuthorizationCode');
+		// Confirm an error is displayed.
+		$I->see('The Kit authorization request could not be verified. Please click Connect again.');
+
+		// Attempt to exchange an authorization code with an invalid nonce.
+		$I->amOnAdminPage('options-general.php?page=_wp_convertkit_settings&code=fakeAuthorizationCode&nonce=invalid');
+
+		// Confirm an error is displayed.
+		$I->see('The Kit authorization request could not be verified. Please click Connect again.');
 
 		// Confirm the authorization code was not exchanged.
 		$I->apiCheckAuthorizationCodeNotExchanged($I);

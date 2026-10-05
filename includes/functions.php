@@ -966,34 +966,27 @@ function convertkit_maybe_delete_credentials( $result, $client_id ) {
 }
 
 /**
- * Returns the OAuth authorization URL to begin connecting the Plugin to a Kit account.
+ * Returns the OAuth authorization URL to connect the Plugin to a Kit account.
  *
- * The return URL includes a nonce in the `section` parameter, which is verified when
- * Kit redirects the user back to the Plugin's settings screen with an authorization
- * code. This ensures only a logged in user who started the OAuth flow can exchange an
- * authorization code for an access token. The `section` parameter is used because Kit's
- * OAuth redirect preserves it, whereas a custom parameter would be dropped.
+ * A nonce is added to the return URL, which is verified before the authorization
+ * code is exchanged for an access token.
  *
- * @since   3.4.5
+ * @since   3.4.6
  *
- * @return  string  OAuth authorization URL.
+ * @param   string $return_url   URL to return to after authorization. Defaults to the Plugin's settings screen.
+ * @return  string               OAuth authorization URL.
  */
-function convertkit_get_oauth_url() {
+function convertkit_get_oauth_url( $return_url = '' ) {
+
+	// Default to returning to the Plugin's settings screen.
+	if ( empty( $return_url ) ) {
+		$return_url = convertkit_get_settings_link();
+	}
 
 	$api = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
 
 	return $api->get_oauth_url(
-		add_query_arg(
-			array(
-				'page'    => '_wp_convertkit_settings',
-				// The nonce is passed in the `section` parameter, as Kit's OAuth redirect
-				// preserves it when returning the user to the Plugin, whereas a custom
-				// parameter would be dropped. The `kit-oauth-` prefix identifies the
-				// request as an OAuth callback for this Plugin.
-				'section' => 'kit-oauth-' . wp_create_nonce( 'kit-oauth-connect' ),
-			),
-			admin_url( 'options-general.php' )
-		),
+		add_query_arg( 'nonce', wp_create_nonce( CONVERTKIT_NONCE_ACTION_OAUTH_CONNECT ), $return_url ),
 		get_site_url()
 	);
 

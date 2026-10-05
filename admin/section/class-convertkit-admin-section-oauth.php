@@ -58,7 +58,7 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Bail if no authorization code is included in the request.
+		// Bail if no authorization code is included in the request, as this isn't an OAuth callback.
 		if ( ! filter_has_var( INPUT_GET, 'code' ) ) {
 			return;
 		}
@@ -68,21 +68,17 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Bail if the request isn't an OAuth callback for this Plugin.
-		// The nonce is passed in the `section` parameter, as Kit's OAuth redirect preserves it,
-		// prefixed with `kit-oauth-` to identify the request.
-		if ( ! filter_has_var( INPUT_GET, 'section' ) ) {
-			return;
-		}
-		$section = sanitize_key( filter_input( INPUT_GET, 'section', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
-		if ( strpos( $section, 'kit-oauth-' ) !== 0 ) {
-			return;
-		}
-
-		// Bail if the nonce, generated when the OAuth flow began, is invalid.
-		// This ensures only a user who started the OAuth flow can store the resulting tokens.
-		if ( ! wp_verify_nonce( substr( $section, strlen( 'kit-oauth-' ) ), 'kit-oauth-connect' ) ) {
-			return;
+		// Redirect with an error if the nonce is missing or invalid.
+		$nonce = filter_input( INPUT_GET, 'nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! $nonce || ! wp_verify_nonce( sanitize_key( $nonce ), CONVERTKIT_NONCE_ACTION_OAUTH_CONNECT ) ) {
+			wp_safe_redirect(
+				convertkit_get_settings_link(
+					array(
+						'error_description' => __( 'The Kit authorization request could not be verified. Please click Connect again.', 'convertkit' ),
+					)
+				)
+			);
+			exit();
 		}
 
 		// Sanitize token.
