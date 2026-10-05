@@ -169,7 +169,7 @@ jobs:
       # package-lock.json isn't committed to this repository, so setup-node's npm cache
       # can't be used here, and npm install is used instead of npm ci.
       - name: Set up Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 'lts/*'
 
