@@ -99,26 +99,37 @@ class ConvertKit_Recaptcha {
 		// Inspect response.
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
+		// If the response body couldn't be decoded, treat that as a failure.
+		if ( ! is_array( $body ) ) {
+			return new WP_Error(
+				'convertkit_recaptcha_failed',
+				__( 'Google reCAPTCHA failure: invalid response from siteverify.', 'convertkit' )
+			);
+		}
+
 		// If the request wasn't successful, return an error.
-		if ( ! $body['success'] ) {
+		if ( empty( $body['success'] ) ) {
 			return new WP_Error(
 				'convertkit_recaptcha_failed',
 				sprintf(
 					/* translators: Error codes */
 					__( 'Google reCAPTCHA failure: %s', 'convertkit' ),
-					implode( ', ', $body['error-codes'] )
+					implode( ', ', isset( $body['error-codes'] ) ? (array) $body['error-codes'] : array() )
 				)
 			);
 		}
 
-		// Return if the action doesn't match the Plugin action, this might not be a reCAPTCHA request
-		// for this request.
-		if ( $body['action'] !== $plugin_action ) {
-			return true;
+		// If the action doesn't match the Plugin action, the token was generated for a different action.
+		// Treat this as a failure, so the minimum score check can't be bypassed.
+		if ( ! isset( $body['action'] ) || $body['action'] !== $plugin_action ) {
+			return new WP_Error(
+				'convertkit_recaptcha_failed',
+				__( 'Google reCAPTCHA failed', 'convertkit' )
+			);
 		}
 
 		// If the score is less than the required minimum score, it's likely a spam submission.
-		if ( $body['score'] < $this->settings->recaptcha_minimum_score() ) {
+		if ( ! isset( $body['score'] ) || $body['score'] < $this->settings->recaptcha_minimum_score() ) {
 			return new WP_Error(
 				'convertkit_recaptcha_failed',
 				__( 'Google reCAPTCHA failed', 'convertkit' )
