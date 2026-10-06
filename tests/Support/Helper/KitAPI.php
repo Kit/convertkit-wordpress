@@ -95,6 +95,20 @@ class KitAPI extends \Codeception\Module
 	}
 
 	/**
+	 * Returns the decoded `state` parameter from the given OAuth authorization URL.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   string $url    OAuth authorization URL.
+	 * @return  array
+	 */
+	public function apiDecodeStateFromOAuthURL($url)
+	{
+		parse_str( (string) parse_url($url, PHP_URL_QUERY), $args); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
+		return json_decode(base64_decode(strtr($args['state'], '-_', '+/')), true); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
+	}
+
+	/**
 	 * Returns an encoded `state` parameter compatible with OAuth.
 	 *
 	 * @since   2.5.0
@@ -122,6 +136,27 @@ class KitAPI extends \Codeception\Module
 		$str = rtrim( $str, '=' );
 
 		return $str;
+	}
+
+	/**
+	 * Check the Plugin did not exchange an authorization code for an access token.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  EndToEndTester.
+	 */
+	public function apiCheckAuthorizationCodeNotExchanged($I)
+	{
+		// Get any requests the Plugin made to exchange an authorization code for an access token.
+		$requests = array_filter(
+			$this->grabKitAPIRequests($I, 'POST', 'oauth/token'),
+			function ($request) {
+				return array_key_exists('grant_type', $request['body']) && $request['body']['grant_type'] === 'authorization_code';
+			}
+		);
+
+		// Check the Plugin did not exchange the authorization code.
+		$I->assertCount(0, $requests, 'The Plugin exchanged an authorization code for an access token.');
 	}
 
 	/**

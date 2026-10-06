@@ -145,7 +145,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 				'name'        => __( 'Connect', 'convertkit' ),
 				'next_button' => array(
 					'label' => __( 'Connect', 'convertkit' ),
-					'link'  => $this->api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration' ), get_site_url() ),
+					'link'  => convertkit_get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration' ) ),
 				),
 			),
 			'configuration' => array(
@@ -312,6 +312,14 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 			return;
 		}
 
+		// Show an error if the nonce is missing or invalid.
+		if ( ! array_key_exists( 'nonce', $request ) || ! wp_verify_nonce( sanitize_key( $request['nonce'] ), CONVERTKIT_NONCE_ACTION_OAUTH_CONNECT ) ) {
+			// Decrement the step.
+			$this->step  = 'start';
+			$this->error = __( 'The Kit authorization request could not be verified. Please click Connect again.', 'convertkit' );
+			return;
+		}
+
 		// Sanitize token.
 		$authorization_code = sanitize_text_field( wp_unslash( $request['code'] ) );
 
@@ -350,9 +358,6 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 		if ( $this->is_modal() ) {
 			switch ( $step ) {
 				case 'start':
-					// Setup API.
-					$api = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
-
 					// Permit wp_safe_redirect to redirect to app.kit.com.
 					add_filter(
 						'allowed_redirect_hosts',
@@ -369,7 +374,7 @@ class ConvertKit_Admin_Setup_Wizard_Plugin extends ConvertKit_Admin_Setup_Wizard
 					);
 
 					// Redirect to OAuth.
-					wp_safe_redirect( $api->get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration&convertkit-modal=1' ), get_site_url() ) );
+					wp_safe_redirect( convertkit_get_oauth_url( admin_url( 'options.php?page=convertkit-setup&step=configuration&convertkit-modal=1' ) ) );
 					die();
 
 				case 'configuration':

@@ -229,6 +229,53 @@ class PluginSetupWizardCest
 	}
 
 	/**
+	 * Test that an authorization code is not exchanged for an access token when an
+	 * Administrator loads the Setup Wizard without a valid nonce, such as from a
+	 * malicious link.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSetupWizardAuthorizationCodeNotExchangedWithoutNonce(EndToEndTester $I)
+	{
+		// Activate Plugin.
+		$this->_activatePlugin($I);
+
+		// Attempt to exchange an authorization code with no nonce.
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration&code=fakeAuthorizationCode');
+
+		// Confirm the start screen is displayed with an error.
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
+		$I->see('The Kit authorization request could not be verified. Please click Connect again.');
+
+		// Attempt to exchange an authorization code with an invalid nonce.
+		$I->amOnAdminPage('options.php?page=convertkit-setup&step=configuration&code=fakeAuthorizationCode&nonce=invalid');
+
+		// Confirm the start screen is displayed with an error.
+		$this->_seeExpectedSetupWizardScreen(
+			$I,
+			step: 'start',
+			stepCount: 1,
+			title: 'Welcome to the Kit Setup Wizard'
+		);
+		$I->see('The Kit authorization request could not be verified. Please click Connect again.');
+
+		// Confirm the authorization code was not exchanged.
+		$I->apiCheckAuthorizationCodeNotExchanged($I);
+
+		// Confirm no access token was stored.
+		// The settings may already exist with a blank access token, so check the value rather than the key.
+		$settings = $I->grabOptionFromDatabase('_wp_convertkit_settings');
+		$I->assertEmpty(is_array($settings) && array_key_exists('access_token', $settings) ? $settings['access_token'] : '');
+	}
+
+	/**
 	 * Test that the Setup Wizard > Form Configuration screen works as expected.
 	 *
 	 * @since   1.9.8.4
