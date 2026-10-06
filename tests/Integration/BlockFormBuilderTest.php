@@ -176,15 +176,46 @@ class BlockFormBuilderTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the subscriber is created and the entry stored when the Name field
+	 * was removed from the form.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testSubscribeWhenNameFieldRemoved()
+	{
+		$this->submit(form_id: $_ENV['CONVERTKIT_API_FORM_ID'], include_name: false);
+
+		// Confirm the subscriber was created without a first name.
+		$this->assertArrayNotHasKey('first_name', $this->requests[0]['body']);
+
+		// Confirm the entry was stored.
+		$entries = new \ConvertKit_Form_Entries();
+		$this->assertEquals(1, $entries->total());
+	}
+
+	/**
+	 * Test that the Email field is always required, even if the block's required
+	 * attribute is false.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testEmailFieldAlwaysRequired()
+	{
+		$field = new \ConvertKit_Block_Form_Builder_Field_Email();
+		$this->assertStringContainsString(' required', $field->render([ 'required' => false ]));
+	}
+
+	/**
 	 * Submits the Form Builder block with the given Form, Tag and Sequence IDs.
 	 *
 	 * @since   3.4.5
 	 *
-	 * @param   int $form_id        Form ID.
-	 * @param   int $tag_id         Tag ID.
-	 * @param   int $sequence_id    Sequence ID.
+	 * @param   int  $form_id        Form ID.
+	 * @param   int  $tag_id         Tag ID.
+	 * @param   int  $sequence_id    Sequence ID.
+	 * @param   bool $include_name   Include the Name field.
 	 */
-	private function submit($form_id = 0, $tag_id = 0, $sequence_id = 0)
+	private function submit($form_id = 0, $tag_id = 0, $sequence_id = 0, $include_name = true)
 	{
 		$post_id = static::factory()->post->create();
 
@@ -197,8 +228,10 @@ class BlockFormBuilderTest extends WPTestCase
 			'form_id'       => (string) $form_id,
 			'tag_id'        => (string) $tag_id,
 			'sequence_id'   => (string) $sequence_id,
-			'first_name'    => 'First',
 		];
+		if ( $include_name ) {
+			$_REQUEST['convertkit']['first_name'] = 'First';
+		}
 
 		try {
 			$this->block->maybe_subscribe();

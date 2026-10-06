@@ -36,13 +36,23 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 	/**
 	 * Holds the number of times this block has been rendered on the Post,
-	 * to ensure error notice IDs are unique.
+	 * used to identify each block on the page and ensure error notice IDs are unique.
 	 *
 	 * @since   3.4.4
 	 *
 	 * @var     int
 	 */
 	public $render_count = 0;
+
+	/**
+	 * Holds the index of the block that was submitted, so the error notice
+	 * is only displayed on that block.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @var     int
+	 */
+	public $submitted_block_index = 0;
 
 	/**
 	 * Constructor
@@ -97,6 +107,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
+		// Store the submitted block's index, so any error is only displayed on that block.
+		if ( array_key_exists( 'block_index', $_REQUEST['convertkit'] ) ) {
+			$this->submitted_block_index = absint( $_REQUEST['convertkit']['block_index'] );
+		}
+
 		// Check spam protection.
 		$spam_protection = new ConvertKit_Spam_Protection();
 
@@ -126,6 +141,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$custom_fields = $form_data['custom_fields'];
 		}
 
+		// Get First Name, if the Name field was included in the form.
+		$first_name = array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '';
+
 		// Get Form, Tag and Sequence IDs, if any were specified.
 		$form_id     = array_key_exists( 'form_id', $form_data ) ? absint( $form_data['form_id'] ) : 0;
 		$tag_id      = array_key_exists( 'tag_id', $form_data ) ? absint( $form_data['tag_id'] ) : 0;
@@ -143,7 +161,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -179,7 +197,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Create subscriber.
 		$result = $api->create_subscriber(
 			sanitize_email( $form_data['email'] ),
-			array_key_exists( 'first_name', $form_data ) ? $form_data['first_name'] : '',
+			$first_name,
 			$subscriber_state,
 			$custom_fields
 		);
@@ -192,7 +210,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -213,7 +231,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 				array(
 					'post_id'       => $form_data['post_id'],
 					'email'         => $form_data['email'],
-					'first_name'    => $form_data['first_name'],
+					'first_name'    => $first_name,
 					'custom_fields' => $custom_fields,
 					'form_id'       => $form_id,
 					'tag_id'        => $tag_id,
@@ -252,7 +270,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -273,7 +291,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -294,7 +312,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 					array(
 						'post_id'       => $form_data['post_id'],
 						'email'         => $form_data['email'],
-						'first_name'    => $form_data['first_name'],
+						'first_name'    => $first_name,
 						'custom_fields' => $custom_fields,
 						'form_id'       => $form_id,
 						'tag_id'        => $tag_id,
@@ -312,8 +330,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			// Redirect to the URL specified in the form.
 			$redirect = sanitize_url( $form_data['redirect'] );
 		} else {
-			// Redirect to the Post the form was displayed on, to show a success message.
-			$redirect = get_permalink( absint( $form_data['post_id'] ) );
+			// Redirect to the page the form was displayed on, to show a success message.
+			$redirect = $this->get_current_url( absint( $form_data['post_id'] ) );
 		}
 
 		// Redirect.
@@ -718,6 +736,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// Get Post ID.
 		$post_id = is_a( $post, 'WP_Post' ) ? $post->ID : 0;
 
+		// Increment the render count, used to identify this block on the page.
+		++$this->render_count;
+
 		// Parse attributes, defining fallback defaults if required
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
@@ -829,12 +850,26 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Create form element.
 		$form = $parser->html->createElement( 'form' );
-		$form->setAttribute( 'action', esc_url( get_permalink( $post_id ) ) );
+		$form->setAttribute( 'action', esc_url( $this->get_current_url( $post_id ) ) );
 		$form->setAttribute( 'method', 'post' );
 
 		// Move form builder div contents into form.
 		while ( $block_container->hasChildNodes() ) {
 			$form->appendChild( $block_container->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		// Suffix field IDs and labels with the block's index from the second block onwards,
+		// so IDs are unique when multiple blocks are on the same page.
+		if ( $this->render_count > 1 ) {
+			foreach ( $parser->xpath->query( './/*[starts-with(@id, "kit-form-builder-")]', $form ) as $element ) {
+				$id     = $element->getAttribute( 'id' ); // @phpstan-ignore-line
+				$new_id = $id . '-' . $this->render_count;
+				$element->setAttribute( 'id', $new_id ); // @phpstan-ignore-line
+
+				foreach ( $parser->xpath->query( './/label[@for="' . $id . '"]', $form ) as $label ) {
+					$label->setAttribute( 'for', $new_id ); // @phpstan-ignore-line
+				}
+			}
 		}
 
 		// Add subscribed message if required.
@@ -845,9 +880,9 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$form->insertBefore( $subscribed_message, $form->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
-		// Add error notice if the submission failed.
-		if ( is_wp_error( $this->error ) ) {
-			++$this->render_count;
+		// Add error notice if the submission failed, and this is the submitted block.
+		// If no block index was submitted (e.g. a cached page from an older version), display it on all blocks.
+		if ( is_wp_error( $this->error ) && ( ! $this->submitted_block_index || $this->submitted_block_index === $this->render_count ) ) {
 			$error_id = 'convertkit-form-builder-error-' . $this->render_count;
 
 			$error_notice = $parser->html->createElement( 'div' );
@@ -880,6 +915,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'convertkit[form_id]'       => absint( $atts['form_id'] ),
 			'convertkit[tag_id]'        => absint( $atts['tag_id'] ),
 			'convertkit[sequence_id]'   => absint( $atts['sequence_id'] ),
+			'convertkit[block_index]'   => absint( $this->render_count ),
 			'_wpnonce'                  => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
 		foreach ( $fields as $name => $value ) {
@@ -895,6 +931,27 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Return modified content.
 		return $parser->get_body_html();
+
+	}
+
+	/**
+	 * Returns the URL of the page the form is displayed on, so the form submits
+	 * back to the same page, falling back to the Post's URL.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   int $post_id    Post ID.
+	 * @return  string
+	 */
+	private function get_current_url( $post_id ) {
+
+		// Fallback to the Post's URL if the request URI isn't available.
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return get_permalink( $post_id );
+		}
+
+		// Remove the subscriber ID, which is only used when visiting a link from a Kit email.
+		return remove_query_arg( 'ck_subscriber_id', esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 
 	}
 
