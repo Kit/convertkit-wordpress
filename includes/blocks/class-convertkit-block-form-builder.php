@@ -858,6 +858,20 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$form->appendChild( $block_container->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
+		// Suffix field IDs and labels with the block's index from the second block onwards,
+		// so IDs are unique when multiple blocks are on the same page.
+		if ( $this->render_count > 1 ) {
+			foreach ( $parser->xpath->query( './/*[starts-with(@id, "kit-form-builder-")]', $form ) as $element ) {
+				$id     = $element->getAttribute( 'id' ); // @phpstan-ignore-line
+				$new_id = $id . '-' . $this->render_count;
+				$element->setAttribute( 'id', $new_id ); // @phpstan-ignore-line
+
+				foreach ( $parser->xpath->query( './/label[@for="' . $id . '"]', $form ) as $label ) {
+					$label->setAttribute( 'for', $new_id ); // @phpstan-ignore-line
+				}
+			}
+		}
+
 		// Add subscribed message if required.
 		if ( $this->subscriber_id ) {
 			$subscribed_message = $parser->html->createElement( 'div' );
