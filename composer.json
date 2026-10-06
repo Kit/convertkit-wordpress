@@ -5,7 +5,7 @@
     "license": "GPLv3",
     "require": {
         "convertkit/convertkit-wordpress-libraries": "2.7.0",
-        "wordpress/mcp-adapter": "^0.6.1"
+        "wordpress/mcp-adapter": "^0.7.0"
     },
     "require-dev": {
         "php-webdriver/webdriver": "^1.0",
