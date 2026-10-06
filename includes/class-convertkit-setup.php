@@ -246,12 +246,9 @@ class ConvertKit_Setup {
 		}
 
 		// Add the form_id column and key.
-		$wpdb->query(
-			$wpdb->prepare( 'ALTER TABLE %i ADD COLUMN `form_id` int(11) NOT NULL AFTER `custom_fields`', $wpdb->prefix . 'kit_form_entries' )
-		);
-		$wpdb->query(
-			$wpdb->prepare( 'ALTER TABLE %i ADD KEY `form_id` (`form_id`)', $wpdb->prefix . 'kit_form_entries' )
-		);
+		// The table name isn't prepared, as the %i placeholder requires WordPress 6.2+.
+		$wpdb->query( "ALTER TABLE `{$wpdb->prefix}kit_form_entries` ADD COLUMN `form_id` int(11) NOT NULL AFTER `custom_fields`" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "ALTER TABLE `{$wpdb->prefix}kit_form_entries` ADD KEY `form_id` (`form_id`)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 	}
 
