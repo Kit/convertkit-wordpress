@@ -128,6 +128,24 @@ class ConvertKit_Admin_Importer_AWeber extends ConvertKit_Admin_Importer {
 	}
 
 	/**
+	 * Returns whether the given block ID attribute value matches the AWeber form ID.
+	 *
+	 * AWeber's block stores the list ID, form ID and form type e.g. 6924484-289586845-webform.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   mixed      $value                  Block ID attribute value.
+	 * @param   string|int $third_party_form_id    Third Party Form ID.
+	 * @return  bool
+	 */
+	protected function block_id_attribute_matches( $value, $third_party_form_id ) {
+
+		$parts = explode( '-', (string) $value );
+		return isset( $parts[1] ) && $parts[1] === (string) $third_party_form_id;
+
+	}
+
+	/**
 	 * Returns an array of AWeber form IDs and titles found in the posts.
 	 *
 	 * @since   3.1.5

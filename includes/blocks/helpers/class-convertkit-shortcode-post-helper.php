@@ -37,7 +37,7 @@ class ConvertKit_Shortcode_Post_Helper {
 	 *
 	 * @param   int    $post_id          Post ID.
 	 * @param   string $shortcode_tag    Programmatic Shortcode Tag.
-	 * @return  WP_Error|bool|array
+	 * @return  WP_Error|array
 	 */
 	public static function find( $post_id, $shortcode_tag ) {
 
@@ -62,11 +62,6 @@ class ConvertKit_Shortcode_Post_Helper {
 				'occurrence_index' => (int) $occurrence_index,
 				'attrs'            => self::parse_attrs( $match ),
 			);
-		}
-
-		// If no shortcodes found, return false.
-		if ( empty( $found ) ) {
-			return false;
 		}
 
 		return $found;
@@ -157,11 +152,11 @@ class ConvertKit_Shortcode_Post_Helper {
 		$snippet = self::pad_snippet( $shortcode, $content, $insert_at );
 		$content = substr_replace( $content, $snippet, $insert_at, 0 );
 
-		// Update Post.
+		// Update Post, slashing the content as wp_update_post() unslashes it.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => $content,
+				'post_content' => wp_slash( $content ),
 			),
 			true
 		);
@@ -227,11 +222,11 @@ class ConvertKit_Shortcode_Post_Helper {
 		// Replace the matched shortcode text with the rebuilt shortcode.
 		$content = self::replace_match( $post->post_content, $match, $replacement );
 
-		// Update Post.
+		// Update Post, slashing the content as wp_update_post() unslashes it.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => $content,
+				'post_content' => wp_slash( $content ),
 			),
 			true
 		);
@@ -291,11 +286,11 @@ class ConvertKit_Shortcode_Post_Helper {
 		// Remove the matched shortcode text from the content.
 		$content = self::replace_match( $post->post_content, $matches[ (int) $occurrence_index ], '' );
 
-		// Update Post.
+		// Update Post, slashing the content as wp_update_post() unslashes it.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => $content,
+				'post_content' => wp_slash( $content ),
 			),
 			true
 		);
@@ -478,14 +473,13 @@ class ConvertKit_Shortcode_Post_Helper {
 			return array();
 		}
 
-		// Candidate offsets, one per regex-matched element-level opener.
-		$pattern = '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>.*?<\/\1>/is';
-		if ( ! preg_match_all( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
-			return array();
-		}
-
 		// Fallback for WP < 6.2: regex offsets verbatim, no nesting awareness.
 		if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+			$pattern = '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>.*?<\/\1>/is';
+			if ( ! preg_match_all( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
+				return array();
+			}
+
 			$starts = array();
 			foreach ( $matches[0] as $match ) {
 				$starts[] = (int) $match[1];
@@ -493,7 +487,8 @@ class ConvertKit_Shortcode_Post_Helper {
 			return $starts;
 		}
 
-		// Per-tag queue of regex offsets in document order.
+		// Per-tag queue of opening tag offsets in document order, including nested and void tags such as <hr>.
+		preg_match_all( '/<(' . self::ELEMENT_LEVEL_TAGS . ')\b[^>]*>/i', $content, $matches, PREG_OFFSET_CAPTURE );
 		$queues = array();
 		foreach ( $matches[1] as $i => $tag_match ) {
 			$queues[ strtoupper( $tag_match[0] ) ][] = (int) $matches[0][ $i ][1];
@@ -519,9 +514,10 @@ class ConvertKit_Shortcode_Post_Helper {
 				continue;
 			}
 
-			$offset = array_shift( $queues[ $tag ] );
+			// Get this tag's offset, if one was matched.
+			$offset = ! empty( $queues[ $tag ] ) ? array_shift( $queues[ $tag ] ) : false;
 
-			if ( $depth === 0 ) {
+			if ( $depth === 0 && false !== $offset ) {
 				$starts[] = $offset;
 			}
 

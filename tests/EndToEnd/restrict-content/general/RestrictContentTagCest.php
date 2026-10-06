@@ -275,7 +275,65 @@ class RestrictContentTagCest
 		$I->amOnUrl($url);
 
 		// Confirm that the CTA form output includes the Cloudflare Turnstile widget.
-		$I->seeElementInDOM('#convertkit-restrict-content form div.cf-turnstile[data-appearance="interaction-only"]');
+		$I->seeElementInDOM('#convertkit-restrict-content form div.cf-turnstile[data-appearance="interaction-only"][data-execution="execute"]');
+	}
+
+	/**
+	 * Test that restricting content by a Tag specified in the Page Settings works when
+	 * subscribing with Cloudflare Turnstile enabled as the active spam protection provider.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentByTagWithCloudflareTurnstileEnabledSubscribes(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, defining Cloudflare Turnstile as the active spam protection provider,
+		// using Cloudflare's test keys that always pass.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'spam_protection_provider'        => 'cloudflare_turnstile',
+				'cloudflare_turnstile_site_key'   => '1x00000000000000000000AA',
+				'cloudflare_turnstile_secret_key' => '1x0000000000000000000000000000000AA',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Setup Restrict Content functionality.
+		$I->setupKitPluginRestrictContent($I);
+
+		// Add a Page using the Gutenberg editor.
+		$I->addGutenbergPage(
+			$I,
+			title: 'Kit: Page: Restrict Content: Tag: Cloudflare Turnstile: Subscribe'
+		);
+
+		// Configure metabox's Restrict Content setting = Tag name.
+		$I->configurePluginSidebarSettings(
+			$I,
+			form: 'None',
+			restrictContent: $_ENV['CONVERTKIT_API_TAG_NAME']
+		);
+
+		// Add blocks.
+		$I->addGutenbergParagraphBlock($I, 'Visible content.');
+		$I->addGutenbergBlock(
+			$I,
+			blockName: 'More',
+			blockProgrammaticName: 'more'
+		);
+		$I->addGutenbergParagraphBlock($I, 'Member-only content.');
+
+		// Publish Page.
+		$url = $I->publishGutenbergPage($I);
+
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByTagOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress()
+		);
 	}
 
 	/**

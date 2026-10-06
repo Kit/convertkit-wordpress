@@ -269,8 +269,8 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 		// Decode.
 		$import = json_decode( $json, true );
 
-		// Bail if the data isn't JSON.
-		if ( is_null( $import ) ) {
+		// Bail if the data isn't a JSON object.
+		if ( ! is_array( $import ) ) {
 			$this->redirect_with_error_notice( 'import_configuration_invalid_file_type' );
 		}
 

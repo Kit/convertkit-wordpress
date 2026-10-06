@@ -638,6 +638,13 @@ class ConvertKit_Output_Restrict_Content {
 			)
 		);
 
+		// Enqueue the active spam protection provider's client-side script, used by the login form.
+		$spam_protection = new ConvertKit_Spam_Protection();
+		$spam_provider   = $spam_protection->get_active_provider();
+		if ( $spam_provider !== false ) {
+			$spam_provider->enqueue_scripts();
+		}
+
 	}
 
 	/**
@@ -1604,13 +1611,6 @@ class ConvertKit_Output_Restrict_Content {
 				// when the 'log in' link is clicked.
 				if ( ! $this->settings->scripts_disabled() ) {
 					$this->output_login_modal( $post_id, $resource_id, $resource_type );
-				}
-
-				// Enqueue the active spam protection provider's client-side script.
-				$spam          = new ConvertKit_Spam_Protection();
-				$spam_provider = $spam->get_active_provider();
-				if ( $spam_provider !== false ) {
-					$spam_provider->enqueue_scripts();
 				}
 
 				// Output.

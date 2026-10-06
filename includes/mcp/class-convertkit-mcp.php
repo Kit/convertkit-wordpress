@@ -401,18 +401,39 @@ class ConvertKit_MCP {
 		// Build array of ability names.
 		$ability_names = array();
 		foreach ( $abilities as $ability ) {
+
+			// Skip if this ability is not an instance of ConvertKit_MCP_Ability.
+			if ( ! ( $ability instanceof ConvertKit_MCP_Ability ) ) {
+				continue;
+			}
+
+			// Add ability name.
 			$ability_names[] = $ability->get_name();
 		}
 
 		// Build array of resource names.
 		$resource_names = array();
 		foreach ( convertkit_get_resources() as $resource ) {
+
+			// Skip if this resource is not an instance of ConvertKit_MCP_Resource.
+			if ( ! ( $resource instanceof ConvertKit_MCP_Resource ) ) {
+				continue;
+			}
+
+			// Add resource name.
 			$resource_names[] = $resource->get_name();
 		}
 
 		// Build array of prompt names.
 		$prompt_names = array();
 		foreach ( convertkit_get_prompts() as $prompt ) {
+
+			// Skip if this prompt is not an instance of ConvertKit_MCP_Prompt.
+			if ( ! ( $prompt instanceof ConvertKit_MCP_Prompt ) ) {
+				continue;
+			}
+
+			// Add prompt name.
 			$prompt_names[] = $prompt->get_name();
 		}
 

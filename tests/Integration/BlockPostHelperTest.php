@@ -399,6 +399,45 @@ class BlockPostHelperTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the insert(), update() and delete() methods preserve backslashes in the Post's content.
+	 *
+	 * @since   3.4.5
+	 */
+	public function testBackslashesArePreserved()
+	{
+		$content = '<!-- wp:paragraph {"placeholder":"Item \\u0022#1\\u0022"} -->
+<p>C:\\Users\\Kit</p>
+<!-- /wp:paragraph -->';
+		$postID  = $this->createPostWithContent($content);
+
+		// Insert.
+		\ConvertKit_Block_Post_Helper::insert(
+			post_id: $postID,
+			block_name: 'convertkit/form',
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ],
+			position: 'append'
+		);
+		$this->assertStringContainsString( $content, get_post($postID)->post_content );
+
+		// Update.
+		\ConvertKit_Block_Post_Helper::update(
+			post_id: $postID,
+			block_name: 'convertkit/form',
+			occurrence_index: 0,
+			attrs: [ 'form' => $_ENV['CONVERTKIT_API_FORM_ID'] ]
+		);
+		$this->assertStringContainsString( $content, get_post($postID)->post_content );
+
+		// Delete.
+		\ConvertKit_Block_Post_Helper::delete(
+			post_id: $postID,
+			block_name: 'convertkit/form',
+			occurrence_index: 0
+		);
+		$this->assertStringContainsString( $content, get_post($postID)->post_content );
+	}
+
+	/**
 	 * Mocks a post for testing.
 	 *
 	 * @since   3.4.0
@@ -467,6 +506,26 @@ class BlockPostHelperTest extends WPTestCase
 <!-- wp:heading {"level":4} -->
 <h4 class="wp-block-heading">Item #2</h4>
 <!-- /wp:heading -->',
+			]
+		);
+	}
+
+	/**
+	 * Creates a Post with the given content.
+	 *
+	 * @since   3.4.5
+	 *
+	 * @param   string $content    Post content.
+	 * @return  int
+	 */
+	private function createPostWithContent($content)
+	{
+		return $this->factory->post->create(
+			[
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Block Post',
+				'post_content' => wp_slash($content),
 			]
 		);
 	}

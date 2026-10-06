@@ -135,11 +135,11 @@ class ConvertKit_Block_Post_Helper {
 			}
 		}
 
-		// Update Post.
+		// Update Post, slashing the content as wp_update_post() unslashes it.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => serialize_blocks( $blocks ),
+				'post_content' => wp_slash( serialize_blocks( $blocks ) ),
 			),
 			true
 		);
@@ -210,11 +210,11 @@ class ConvertKit_Block_Post_Helper {
 			);
 		}
 
-		// Update Post.
+		// Update Post, slashing the content as wp_update_post() unslashes it.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => serialize_blocks( $blocks ),
+				'post_content' => wp_slash( serialize_blocks( $blocks ) ),
 			),
 			true
 		);
@@ -285,11 +285,11 @@ class ConvertKit_Block_Post_Helper {
 			);
 		}
 
-		// Update Post.
+		// Update Post, slashing the content as wp_update_post() unslashes it.
 		$result = wp_update_post(
 			array(
 				'ID'           => $post_id,
-				'post_content' => serialize_blocks( $blocks ),
+				'post_content' => wp_slash( serialize_blocks( $blocks ) ),
 			),
 			true
 		);

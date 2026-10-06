@@ -217,6 +217,10 @@ class MCPSettingsRestrictContentTest extends WPTestCase
 
 		// Execute the ability.
 		$result = $abilities['kit/settings-restrict-content-update']->execute_callback([ 'invalid_key' => 'invalid_value' ]);
+
+		// Assert that the result is a WP_Error.
+		$this->assertInstanceOf(\WP_Error::class, $result);
+		$this->assertEquals('convertkit_mcp_settings_unknown_keys', $result->get_error_code());
 	}
 
 	/**

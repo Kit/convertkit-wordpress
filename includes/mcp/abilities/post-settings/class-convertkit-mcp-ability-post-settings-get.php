@@ -23,7 +23,7 @@ class ConvertKit_MCP_Ability_Post_Settings_Get extends ConvertKit_MCP_Ability_Po
 	 *
 	 * @var     bool
 	 */
-	private $readonly = true; // @phpstan-ignore-line
+	protected $readonly = true;
 
 	/**
 	 * Sets whether the ability is idempotent.
@@ -32,7 +32,7 @@ class ConvertKit_MCP_Ability_Post_Settings_Get extends ConvertKit_MCP_Ability_Po
 	 *
 	 * @var     bool
 	 */
-	private $idempotent = true; // @phpstan-ignore-line
+	protected $idempotent = true;
 
 	/**
 	 * Returns the operation suffix used in the ability name.
