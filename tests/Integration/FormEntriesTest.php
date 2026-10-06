@@ -508,6 +508,166 @@ class FormEntriesTest extends WPTestCase
 	}
 
 	/**
+	 * Test that updating an entry returns the entry's ID, and not the ID of the
+	 * last inserted entry.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testUpdateEntryReturnsEntryID()
+	{
+		// Seed database table.
+		$ids = $this->seedDatabaseTable();
+
+		// Update the first entry.
+		$id = $this->entries->update(
+			$ids[0],
+			[
+				'post_id'    => 0,
+				'email'      => 'test0@example.com',
+				'first_name' => 'Updated',
+			]
+		);
+
+		// Assert the first entry's ID is returned.
+		$this->assertEquals($ids[0], $id);
+	}
+
+	/**
+	 * Test that upserting an existing entry returns the entry's ID, and not the ID of the
+	 * last inserted entry.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testUpsertExistingEntryReturnsEntryID()
+	{
+		// Seed database table.
+		$ids = $this->seedDatabaseTable();
+
+		// Upsert the first entry.
+		$id = $this->entries->upsert(
+			[
+				'post_id'    => 0,
+				'email'      => 'test0@example.com',
+				'first_name' => 'Updated',
+			]
+		);
+
+		// Assert the first entry's ID is returned.
+		$this->assertEquals($ids[0], $id);
+	}
+
+	/**
+	 * Test deleting entries with no IDs doesn't delete any entries.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testDeleteEntriesWithNoIDs()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Delete entries with no IDs.
+		$this->assertEquals(0, $this->entries->delete_by_ids([]));
+
+		// Assert no entries were deleted.
+		$this->assertEquals(10, $this->entries->total());
+	}
+
+	/**
+	 * Test that search terms containing SQL wildcard characters are matched literally.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testSearchWithWildcardCharacters()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Assert no entries match, as no entries contain the wildcard characters.
+		$this->assertCount(0, $this->entries->search(search: '%'));
+		$this->assertCount(0, $this->entries->search(search: 'test_@'));
+		$this->assertEquals(0, $this->entries->total(search: '%'));
+	}
+
+	/**
+	 * Test that searching with an invalid order by column falls back to ordering by created_at.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testSearchWithInvalidOrderBy()
+	{
+		// Seed database table.
+		$this->seedDatabaseTable();
+
+		// Run search ordered by an invalid column.
+		$results = $this->entries->search(
+			order_by: 'invalid_column',
+		);
+
+		// Assert entries are returned.
+		$this->assertCount(10, $results);
+	}
+
+	/**
+	 * Test that double quotes in values are escaped in the CSV string.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testGetCSVStringEscapesDoubleQuotes()
+	{
+		// Add an entry with double quotes and custom fields, which are stored as JSON.
+		$this->entries->delete_all();
+		$id = $this->entries->add(
+			[
+				'post_id'       => 1,
+				'email'         => 'test@example.com',
+				'first_name'    => 'Test "Quoted", Name',
+				'custom_fields' => [
+					'company' => 'Kit',
+				],
+			]
+		);
+
+		// Get CSV string.
+		$csv = $this->entries->get_csv_string( $this->entries->get_by_ids( [ $id ] ) );
+
+		// Assert double quotes are escaped.
+		$this->assertStringContainsString( '"Test ""Quoted"", Name"', $csv );
+		$this->assertStringContainsString( '"{""company"":""Kit""}"', $csv );
+	}
+
+	/**
+	 * Test that values starting with a formula character are prefixed in the CSV string,
+	 * so spreadsheet applications treat them as text.
+	 *
+	 * @since   3.4.6
+	 */
+	public function testGetCSVStringEscapesFormulas()
+	{
+		// Add entries with names starting with formula characters.
+		$this->entries->delete_all();
+		$ids = [];
+		foreach ( [ '=1+1', '+1+1', '-1+1', '@SUM(1,1)' ] as $i => $first_name ) {
+			$ids[] = $this->entries->add(
+				[
+					'post_id'    => $i,
+					'email'      => 'test' . $i . '@example.com',
+					'first_name' => $first_name,
+				]
+			);
+		}
+
+		// Get CSV string.
+		$csv = $this->entries->get_csv_string( $this->entries->get_by_ids( $ids ) );
+
+		// Assert formula characters are prefixed.
+		$this->assertStringContainsString( '"\'=1+1"', $csv );
+		$this->assertStringContainsString( '"\'+1+1"', $csv );
+		$this->assertStringContainsString( '"\'-1+1"', $csv );
+		$this->assertStringContainsString( '"\'@SUM(1,1)"', $csv );
+	}
+
+	/**
 	 * Add entries to the database table.
 	 *
 	 * @since   3.0.0
