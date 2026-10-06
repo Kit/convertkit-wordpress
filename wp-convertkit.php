@@ -30,6 +30,8 @@ define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
 define( 'CONVERTKIT_PLUGIN_VERSION', '3.4.5' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
+define( 'CONVERTKIT_NONCE_ACTION_OAUTH_CONNECT', 'convertkit-oauth-connect' );
+define( 'CONVERTKIT_NONCE_ACTION_OAUTH_DISCONNECT', 'convertkit-oauth-disconnect' );
 define( 'CONVERTKIT_MCP_APP_NAME', 'Kit WordPress Plugin: MCP Server' );
 
 // Load shared classes, if they have not been included by another Kit Plugin.
