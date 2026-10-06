@@ -58,9 +58,27 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
-		// Bail if no authorization code is included in the request.
+		// Bail if no authorization code is included in the request, as this isn't an OAuth callback.
 		if ( ! filter_has_var( INPUT_GET, 'code' ) ) {
 			return;
+		}
+
+		// Bail if the user is not permitted to connect the Plugin to a Kit account.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Redirect with an error if the nonce is missing or invalid.
+		$nonce = filter_input( INPUT_GET, 'nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! $nonce || ! wp_verify_nonce( sanitize_key( $nonce ), CONVERTKIT_NONCE_ACTION_OAUTH_CONNECT ) ) {
+			wp_safe_redirect(
+				convertkit_get_settings_link(
+					array(
+						'error_description' => __( 'The Kit authorization request could not be verified. Please click Connect again.', 'convertkit' ),
+					)
+				)
+			);
+			exit();
 		}
 
 		// Sanitize token.
@@ -116,8 +134,7 @@ class ConvertKit_Admin_Section_OAuth extends ConvertKit_Admin_Section_Base {
 	public function render() {
 
 		// Determine the OAuth URL to begin the authorization process.
-		$api       = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
-		$oauth_url = $api->get_oauth_url( admin_url( 'options-general.php?page=_wp_convertkit_settings' ), get_site_url() );
+		$oauth_url = convertkit_get_oauth_url();
 
 		/**
 		 * Performs actions prior to rendering the settings form.
