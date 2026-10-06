@@ -203,11 +203,16 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 			return;
 		}
 
+		// Bail if the user is not permitted to disconnect the Plugin from a Kit account.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// Bail if nonce verification fails.
 		if ( ! isset( $_REQUEST['_convertkit_settings_oauth_disconnect'] ) ) {
 			return;
 		}
-		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_oauth_disconnect'] ), 'convertkit-oauth-disconnect' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['_convertkit_settings_oauth_disconnect'] ), CONVERTKIT_NONCE_ACTION_OAUTH_DISCONNECT ) ) {
 			return;
 		}
 
@@ -672,7 +677,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 				add_query_arg(
 					array(
 						'page' => '_wp_convertkit_settings',
-						'_convertkit_settings_oauth_disconnect' => wp_create_nonce( 'convertkit-oauth-disconnect' ),
+						'_convertkit_settings_oauth_disconnect' => wp_create_nonce( CONVERTKIT_NONCE_ACTION_OAUTH_DISCONNECT ),
 					),
 					'options-general.php'
 				)

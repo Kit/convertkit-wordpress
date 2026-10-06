@@ -122,34 +122,106 @@ function convertKitRecaptchaFormSubmit(token) {
 window.convertKitRecaptchaFormSubmit = convertKitRecaptchaFormSubmit;
 
 /**
- * Handles form submissions when Cloudflare Turnstile is enabled.
+ * Holds the form and submit button awaiting a Cloudflare Turnstile token.
  *
- * Turnstile auto-populates a hidden `cf-turnstile-response` input inside the
- * enclosing form once the challenge is solved, so we just need to submit the
- * containing form when the callback fires.
+ * @since 3.4.6
+ */
+let convertKitTurnstileForm = null;
+let convertKitTurnstileSubmitter = null;
+
+// Generate a Cloudflare Turnstile token when a form is submitted, before other submit listeners run.
+document.addEventListener(
+	'submit',
+	function (e) {
+		const form = e.target;
+		if (!(form instanceof HTMLFormElement)) {
+			return;
+		}
+
+		// Bail if the form doesn't contain a Turnstile widget.
+		const widget = form.querySelector(
+			'.cf-turnstile[data-callback="convertKitTurnstileFormSubmit"]'
+		);
+		if (!widget) {
+			return;
+		}
+
+		// Permit the submission if the form has a token, resetting the widget as each token can only be used once.
+		const response = form.querySelector('[name="cf-turnstile-response"]');
+		if (response !== null && response.value !== '') {
+			setTimeout(function () {
+				convertKitTurnstileReset(widget);
+			}, 0);
+			return;
+		}
+
+		// Permit the submission if the Turnstile script isn't loaded, so the server returns an error.
+		if (typeof window.turnstile === 'undefined') {
+			return;
+		}
+
+		// Prevent the submission until a token is generated.
+		e.preventDefault();
+		e.stopImmediatePropagation();
+
+		// Store the form and submit button, so the callback submits this form.
+		convertKitTurnstileForm = form;
+		convertKitTurnstileSubmitter = e.submitter || null;
+
+		// Render the widget if it was inserted after the page loaded e.g. following a failed Member Content login.
+		if (response === null) {
+			window.turnstile.render(widget);
+		}
+
+		// Generate a token.
+		window.turnstile.execute(widget);
+	},
+	true
+);
+
+/**
+ * Resets the given Cloudflare Turnstile widget, so a new token is generated on the
+ * next submission.
+ *
+ * @since 3.4.6
+ *
+ * @param {Element} widget Turnstile widget.
+ */
+function convertKitTurnstileReset(widget) {
+	if (typeof window.turnstile === 'undefined' || !widget.isConnected) {
+		return;
+	}
+
+	window.turnstile.reset(widget);
+}
+
+/**
+ * Submits the form awaiting a Cloudflare Turnstile token, once Turnstile has
+ * generated the token.
+ *
+ * Turnstile populates a hidden `cf-turnstile-response` input inside the form,
+ * which is included when the form is submitted.
  *
  * @param {string} token Turnstile response token.
  */
 function convertKitTurnstileFormSubmit(token) {
-	// Find the Turnstile widget div with the data-callback attribute.
-	const widget = document.querySelector(
-		'.cf-turnstile[data-callback="convertKitTurnstileFormSubmit"]'
-	);
-
-	if (!widget) {
+	// Bail if no form is awaiting a token.
+	if (convertKitTurnstileForm === null) {
 		return;
 	}
 
-	// Get the parent form of the widget.
-	const form = widget.closest('form');
-
-	if (!form) {
-		return;
-	}
+	const form = convertKitTurnstileForm;
+	const submitter = convertKitTurnstileSubmitter;
+	convertKitTurnstileForm = null;
+	convertKitTurnstileSubmitter = null;
 
 	// Submit the form, using requestSubmit() so any submit event listeners are honored
 	// e.g. the Member Content login form, which submits using AJAX.
-	form.requestSubmit();
+	if (submitter !== null && submitter.form === form) {
+		form.requestSubmit(submitter);
+	} else {
+		form.requestSubmit();
+	}
 }
 
 // Scope the function to the window object as webpack will wrap everything in a closure,
