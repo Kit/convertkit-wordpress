@@ -814,10 +814,15 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 		// Display image.
 		// We check for thumbnail_url, as these were added to the API in https://github.com/ConvertKit/convertkit/pull/23938,
 		// and might not immediately be available until the resources are refreshed.
-		if ( $atts['display_image'] && array_key_exists( 'thumbnail_url', $broadcast ) && ! is_null( $broadcast['thumbnail_url'] ) ) {
-			$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener" class="convertkit-broadcast-image">
-				<img src="' . esc_url( $broadcast['thumbnail_url'] ) . '" alt="' . esc_attr( $broadcast['thumbnail_alt'] ) . '" />
-			</a>';
+		if ( $atts['display_image'] && ! empty( $broadcast['thumbnail_url'] ) ) {
+			$image = '<img src="' . esc_url( $broadcast['thumbnail_url'] ) . '" alt="' . esc_attr( $broadcast['thumbnail_alt'] ) . '" />';
+
+			// Link the image to the broadcast, if it has a public URL.
+			if ( $url ) {
+				$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener" class="convertkit-broadcast-image">' . $image . '</a>';
+			} else {
+				$html .= '<span class="convertkit-broadcast-image">' . $image . '</span>';
+			}
 		}
 
 		// Display description / read more.
@@ -833,7 +838,7 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 			}
 
 			// Display read more link.
-			if ( $atts['display_read_more'] ) {
+			if ( $atts['display_read_more'] && $url ) {
 				$html .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow noopener" class="convertkit-broadcast-read-more">' . esc_html( $atts['read_more_label'] ) . '</a>';
 			}
 
@@ -871,13 +876,13 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 
 		// Posts cached by the ConvertKit_Resource_Posts class that queried the /wordpress/posts endpoint
 		// will store this in `url`.
-		if ( array_key_exists( 'url', $broadcast ) ) {
+		if ( ! empty( $broadcast['url'] ) ) {
 			return $broadcast['url'];
 		}
 
 		// Posts cached by the ConvertKit_Resource_Posts class that queried the /v4/posts endpoint
-		// will store this in `public_url`.
-		if ( array_key_exists( 'public_url', $broadcast ) ) {
+		// will store this in `public_url`, which is null if the broadcast isn't public.
+		if ( ! empty( $broadcast['public_url'] ) ) {
 			return $broadcast['public_url'];
 		}
 
@@ -895,8 +900,12 @@ class ConvertKit_Block_Broadcasts extends ConvertKit_Block {
 	 */
 	private function get_broadcast_description( $broadcast ) {
 
-		if ( array_key_exists( 'meta_description', $broadcast ) ) {
+		// Use the SEO description, falling back to the description.
+		if ( ! empty( $broadcast['meta_description'] ) ) {
 			return $broadcast['meta_description'];
+		}
+		if ( ! empty( $broadcast['description'] ) ) {
+			return $broadcast['description'];
 		}
 
 		return false;
