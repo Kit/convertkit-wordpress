@@ -1,3 +1,39 @@
+### 3.4.6 2026-10-06
+* Fix: Settings: OAuth: Verify the connection request originated from the Plugin before connecting to Kit, and require the `manage_options` capability to connect or disconnect
+* Fix: Setup Wizard: Verify the connection request originated from the Plugin before connecting to Kit
+* Fix: Form Builder: Subscribe as active when no Form is specified and a Tag or Sequence is set
+* Fix: Form Builder: Tag and add to Sequence when adding the subscriber to a Form fails
+* Fix: Form Builder: Subscribe and store entry when the Name field is removed
+* Fix: Form Builder: Always require the Email field
+* Fix: Form Builder: Display validation errors on the submitted form only, when a Page has multiple forms
+* Fix: Form Builder: Submit form to the URL it was displayed on
+* Fix: Form Builder: Unique field IDs when a Page has multiple forms
+* Fix: Form Entries: Support WordPress 6.1 and older by not using the `%i` placeholder
+* Fix: Form Entries: Only permit sorting by known columns
+* Fix: Form Entries: Export: Escape double quotes and prevent formula injection in CSV file
+* Fix: Form Entries: Return the entry ID when updating an existing entry
+* Fix: Form Entries: Search: Treat `%` and `_` as literal characters
+* Fix: Form Entries: Don't run a delete query when no entries are selected
+* Fix: Form Entries: Check user permissions for bulk actions, and export CSV file with `text/csv` content type
+* Fix: reCAPTCHA: Fail verification when the token's action is missing or doesn't match
+* Fix: reCAPTCHA: Submit the clicked form when a Page has multiple forms
+* Fix: reCAPTCHA, Cloudflare Turnstile: Handle invalid verification responses without PHP warnings
+* Fix: Cloudflare Turnstile: Don't submit forms on page load
+* Fix: Cloudflare Turnstile: Submit the clicked form when a Page has multiple forms
+* Fix: Member Content: Login Form: Load spam protection script, fixing logins failing when reCAPTCHA or Cloudflare Turnstile is enabled
+* Fix: Forminator: Don't subscribe spam, draft or abandoned form entries
+* Fix: Forminator: Use the first name when the Name field has multiple fields
+* Fix: Forminator: Don't add to Form when creating the subscriber fails
+* Fix: Forminator: Referrer URL includes the site's subdirectory
+* Fix: Importers: Only replace exact third party Form IDs in shortcodes and blocks e.g. Form ID 1 no longer matches 12
+* Fix: Importers: AWeber: Match blocks by Form ID
+* Fix: Importers: Preserve backslashes in Post content
+* Fix: Settings: Tools: Import Configuration: Display error when the uploaded file isn't a JSON object
+* Fix: MCP: Preserve backslashes in Post content when inserting or updating Kit blocks and shortcodes
+* Fix: MCP: Insert blocks and shortcodes at the correct position when content contains nested or void elements e.g. `<hr>`
+* Fix: MCP: Report Ability read-only, idempotent and destructive annotations correctly
+* Fix: MCP: Skip invalid Abilities, Resources and Prompts registered via filters
+
 ### 3.4.5 2026-09-30
 * Fix: Post Settings: Prevent `rest_meta_database_error` when third party Plugins also save metadata by removing duplicate Kit post metadata
 * Fix: Member Content: Permit Search Engine Crawlers: Recognize DuckDuckBot as a crawler
