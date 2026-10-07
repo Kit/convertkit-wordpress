@@ -81,7 +81,7 @@ jobs:
           - { path: 'EndToEnd/integrations/divi-builder', plugins: 'classic-editor', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/integrations/divi-theme', plugins: 'classic-editor', themes-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2026/03/Divi_5.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/integrations/elementor', plugins: 'elementor', paid-plugins: 'false' }
-          - { path: 'EndToEnd/integrations/other', plugins: 'akismet contact-form-7 forminator', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/other', plugins: 'akismet forminator', plugins-urls: 'https://downloads.wordpress.org/plugin/contact-form-7.6.1.7.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/integrations/wlm', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/integrations/woocommerce', plugins: 'classic-editor woocommerce', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/landing-pages', plugins: 'admin-menu-editor autoptimize classic-editor rocket-lazy-load', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }

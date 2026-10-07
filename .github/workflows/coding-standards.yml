@@ -46,7 +46,8 @@ jobs:
       DB_USER: root
       DB_PASS: root
       DB_HOST: localhost
-      INSTALL_PLUGINS: "classic-editor contact-form-7 elementor forminator woocommerce wordpress-seo litespeed-cache w3-total-cache" # Don't include this repository's Plugin here.
+      INSTALL_PLUGINS: "classic-editor elementor forminator woocommerce wordpress-seo litespeed-cache w3-total-cache" # Don't include this repository's Plugin here.
+      INSTALL_PLUGINS_URLS: "https://downloads.wordpress.org/plugin/contact-form-7.6.1.7.zip" # Contact Form 7 6.2+ requires PHP 8.3.
 
     # Defines the WordPress and PHP Versions matrix to run tests on.
     strategy:
@@ -97,6 +98,11 @@ jobs:
       - name: Install Free Third Party WordPress Plugins
         working-directory: ${{ env.ROOT_DIR }}
         run: wp-cli plugin install ${{ env.INSTALL_PLUGINS }}
+
+      # env.INSTALL_PLUGINS_URLS is a list of Plugin URLs, space separated, to install specific versions of third party Plugins.
+      - name: Install Free Third Party WordPress Specific Version Plugins
+        working-directory: ${{ env.ROOT_DIR }}
+        run: wp-cli plugin install ${{ env.INSTALL_PLUGINS_URLS }}
 
       # These should be stored as a separated list of URLs in the repository Settings > Secrets > Repository Secret > CONVERTKIT_PAID_PLUGIN_URLS.
       # We cannot include the URLs in this file, as they're not Plugins we are permitted to distribute.
