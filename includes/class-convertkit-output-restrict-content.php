@@ -108,6 +108,15 @@ class ConvertKit_Output_Restrict_Content {
 	public $login_modal_output = false;
 
 	/**
+	 * Holds the subscriber profiles fetched from the API in this request, keyed by signed subscriber ID.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @var     array
+	 */
+	private $profiles = array();
+
+	/**
 	 * Constructor. Registers actions and filters to possibly limit output of a Page/Post/CPT's
 	 * content on the frontend site.
 	 *
@@ -778,40 +787,80 @@ class ConvertKit_Output_Restrict_Content {
 			return $content;
 		}
 
-		// Bail if the Page is being edited in a frontend Page Builder / Editor by a logged
-		// in WordPress user who has the capability to edit the Page.
+		// Show the full Post Content if the visitor can view it.
+		if ( $this->can_view_post( $this->post_id ) ) {
+			return $content;
+		}
+
+		return $this->restrict_content( $content );
+
+	}
+
+	/**
+	 * Determines if the visitor can view the given Post, based on its Member Content setting.
+	 *
+	 * Also used by integrations, such as WooCommerce, to hide elements that aren't output
+	 * through the Post's content.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   int $post_id    Post ID.
+	 * @return  bool
+	 */
+	public function can_view_post( $post_id ) {
+
+		// If the Plugin Access Token has not been configured, we can't determine the validity of this subscriber ID
+		// or which resource(s) they have access to.
+		if ( ! $this->settings->has_access_and_refresh_token() ) {
+			return true;
+		}
+
+		// Bail if the Restrict Content setting is not enabled on this Post.
+		$this->post_id       = $post_id;
+		$this->post_settings = new ConvertKit_Post( $this->post_id );
+		if ( ! $this->post_settings->restrict_content_enabled() ) {
+			return true;
+		}
+
+		// Bail if the Post is being edited in a frontend Page Builder / Editor by a logged
+		// in WordPress user who has the capability to edit the Post.
 		// This ensures the User can view all content to edit it, instead of seeing the Restrict Content
 		// view.
-		if ( current_user_can( 'edit_post', get_the_ID() ) && WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return $content;
+		if ( current_user_can( 'edit_post', $this->post_id ) && WP_ConvertKit()->is_admin_or_frontend_editor() ) {
+			return true;
 		}
 
 		// Get resource type (Product or Tag) that the visitor must be subscribed against to access this content.
 		$this->resource_type = $this->get_resource_type();
 
-		// Return the Post Content, unedited, if the Resource Type is false.
+		// Bail if the Resource Type is false.
 		if ( ! $this->resource_type ) {
-			return $content;
+			return true;
 		}
 
 		// Get resource ID (Product ID or Tag ID) that the visitor must be subscribed against to access this content.
 		$this->resource_id = $this->get_resource_id();
 
-		// Return the full Post Content, unedited, if the Resource ID is false, as this means
-		// no restrict content setting has been defined for this Post.
+		// Bail if the Resource ID is false, as this means no restrict content setting has been defined for this Post.
 		if ( ! $this->resource_id ) {
-			return $content;
+			return true;
 		}
 
-		// Return the full Post Content, unedited, if the request is from a crawler.
+		// Bail if the request is from a crawler.
 		if ( $this->restrict_content_settings->permit_crawlers() && $this->is_crawler() ) {
-			return $content;
+			return true;
 		}
 
-		// Return if this request is after the user entered their email address,
+		// Bail if the resource no longer exists in Kit e.g. a Tag or Product has been deleted,
+		// but the Post still references it under the 'Member Content' setting.
+		if ( ! $this->resource_exists() ) {
+			return true;
+		}
+
+		// The visitor cannot view the content if this request is after they entered their email address,
 		// which means we're going through the authentication flow.
 		if ( $this->in_authentication_flow() ) {
-			return $this->restrict_content( $content );
+			return false;
 		}
 
 		// Get the subscriber ID, either from the request or an existing cookie.
@@ -819,40 +868,45 @@ class ConvertKit_Output_Restrict_Content {
 
 		// If no subscriber ID exists, the visitor cannot view the content.
 		if ( ! $subscriber_id ) {
-			return $this->restrict_content( $content );
+			return false;
 		}
 
-		// If the subscriber is not subscribed to the product, restrict the content.
-		if ( ! $this->subscriber_has_access( $subscriber_id ) ) {
-			// Show an error before the call to action, to tell the subscriber why they still cannot
-			// view the content.
-			switch ( $this->resource_type ) {
-				case 'form':
-					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_form' );
-					break;
-
-				case 'tag':
-					$message = $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
-					break;
-
-				case 'product':
-				default:
-					$message = $this->restrict_content_settings->get_by_key( 'no_access_text' );
-					break;
-			}
-
-			// Define error for output.
-			$this->error = new WP_Error(
-				'convertkit_restrict_content_subscriber_no_access',
-				esc_html( $message )
-			);
-
-			return $this->restrict_content( $content );
+		// If the subscriber is subscribed to the resource, they can view the content.
+		if ( $this->subscriber_has_access( $subscriber_id ) ) {
+			return true;
 		}
 
-		// If here, the subscriber has subscribed to the product.
-		// Show the full Post Content.
-		return $content;
+		// Show an error before the call to action, to tell the subscriber why they still cannot
+		// view the content.
+		$this->error = new WP_Error(
+			'convertkit_restrict_content_subscriber_no_access',
+			esc_html( $this->get_no_access_text() )
+		);
+
+		return false;
+
+	}
+
+	/**
+	 * Returns the message to show a subscriber who doesn't have access to the Post's resource.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @return  string
+	 */
+	private function get_no_access_text() {
+
+		switch ( $this->resource_type ) {
+			case 'form':
+				return $this->restrict_content_settings->get_by_key( 'no_access_text_form' );
+
+			case 'tag':
+				return $this->restrict_content_settings->get_by_key( 'no_access_text_tag' );
+
+			case 'product':
+			default:
+				return $this->restrict_content_settings->get_by_key( 'no_access_text' );
+		}
 
 	}
 
@@ -1275,7 +1329,7 @@ class ConvertKit_Output_Restrict_Content {
 	private function subscriber_has_access_to_product_by_signed_subscriber_id( $signed_subscriber_id, $product_id ) {
 
 		// Get products that the subscriber has access to.
-		$result = $this->api->profile( $signed_subscriber_id );
+		$result = $this->get_profile( $signed_subscriber_id );
 
 		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $result ) ) {
@@ -1305,7 +1359,7 @@ class ConvertKit_Output_Restrict_Content {
 	private function subscriber_has_access_to_form_by_signed_subscriber_id( $signed_subscriber_id, $form_id ) {
 
 		// Get products that the subscriber has access to.
-		$result = $this->api->profile( $signed_subscriber_id );
+		$result = $this->get_profile( $signed_subscriber_id );
 
 		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $result ) ) {
@@ -1335,7 +1389,7 @@ class ConvertKit_Output_Restrict_Content {
 	private function subscriber_has_access_to_tag_by_signed_subscriber_id( $signed_subscriber_id, $tag_id ) {
 
 		// Get products that the subscriber has access to.
-		$result = $this->api->profile( $signed_subscriber_id );
+		$result = $this->get_profile( $signed_subscriber_id );
 
 		// If an error occurred, the subscriber ID is invalid.
 		if ( is_wp_error( $result ) ) {
@@ -1349,6 +1403,24 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Return if the subscriber is subscribed to the tag or not.
 		return in_array( $tag_id, $result['tags'], true );
+
+	}
+
+	/**
+	 * Returns the subscriber's profile from the API, fetching it once per request.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   string $signed_subscriber_id   Signed Subscriber ID.
+	 * @return  WP_Error|array
+	 */
+	private function get_profile( $signed_subscriber_id ) {
+
+		if ( ! array_key_exists( $signed_subscriber_id, $this->profiles ) ) {
+			$this->profiles[ $signed_subscriber_id ] = $this->api->profile( $signed_subscriber_id );
+		}
+
+		return $this->profiles[ $signed_subscriber_id ];
 
 	}
 
@@ -1384,15 +1456,6 @@ class ConvertKit_Output_Restrict_Content {
 	 * @return  string                 Post Content preview with call to action
 	 */
 	private function restrict_content( $content ) {
-
-		// Check that the resource exists before restricting the content.
-		// This handles cases where e.g. a Tag or Product has been deleted in ConvertKit,
-		// but the Page / Post still references the (now deleted) resource to restrict content with
-		// under the 'Member Content' setting.
-		if ( ! $this->resource_exists() ) {
-			// Return the full Post Content, as we can't restrict it to a Product or Tag that no longer exists.
-			return $content;
-		}
 
 		// Fetch the content preview.
 		$content_preview = $this->get_content_preview( $content );

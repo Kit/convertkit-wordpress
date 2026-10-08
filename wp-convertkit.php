@@ -219,6 +219,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/wishlist/class-con
 
 // WooCommerce Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/woocommerce/class-convertkit-woocommerce-product-form.php';
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/woocommerce/class-convertkit-woocommerce-restrict-content.php';
 
 // Register Plugin activation and deactivation functions.
 register_activation_hook( __FILE__, 'convertkit_plugin_activate' );
