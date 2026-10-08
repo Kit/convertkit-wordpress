@@ -78,8 +78,6 @@ function convertkit_autoloader( $class_name ) {
 		'/includes/plugin-sidebars/',
 		'/includes/widgets/',
 		'/includes/integrations/contactform7/',
-		'/includes/integrations/divi/',
-		'/includes/integrations/elementor/',
 		'/includes/integrations/forminator/',
 		'/includes/integrations/wishlist/',
 		'/includes/mcp/',
@@ -113,6 +111,12 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/functions.php';
 
 // Contact Form 7 Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7.php';
+
+// Divi Integration.
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convertkit-divi.php';
+
+// Elementor Integration.
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/elementor/class-convertkit-elementor.php';
 
 // Forminator Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator.php';
