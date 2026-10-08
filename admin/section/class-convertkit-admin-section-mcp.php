@@ -15,6 +15,24 @@
 class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 
 	/**
+	 * The MCP Adapter Plugin's slug.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @var     string
+	 */
+	const MCP_ADAPTER_PLUGIN_SLUG = 'mcp-adapter';
+
+	/**
+	 * The MCP Adapter Plugin's file, relative to the Plugins directory.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @var     string
+	 */
+	const MCP_ADAPTER_PLUGIN_FILE = 'mcp-adapter/mcp-adapter.php';
+
+	/**
 	 * The authorization header to display on screen.
 	 *
 	 * @since   3.4.0
@@ -66,6 +84,11 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 				'wrap'     => true,
 			),
 		);
+
+		// Don't register the connect section if the MCP Adapter Plugin isn't active, as an AI client can't connect.
+		if ( ! $this->mcp_adapter_active() ) {
+			unset( $this->settings_sections['connect'] );
+		}
 
 		$this->maybe_generate_authentication_header();
 		$this->maybe_revoke_application_password();
@@ -264,6 +287,53 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 	/**
+	 * Renders a message and button to install or activate the MCP Adapter Plugin,
+	 * when the MCP Adapter Plugin isn't active.
+	 *
+	 * @since   3.4.6
+	 */
+	public function output_mcp_adapter_required_message() {
+
+		?>
+		<p>
+			<?php esc_html_e( 'The Kit WordPress MCP requires the MCP Adapter Plugin. Install and activate it to connect AI clients to your WordPress site.', 'convertkit' ); ?>
+		</p>
+		<?php
+
+		// If the MCP Adapter Plugin is installed and the user can activate Plugins, show the activate button.
+		if ( $this->mcp_adapter_installed() && current_user_can( 'activate_plugins' ) ) {
+			?>
+			<p>
+				<a href="<?php echo esc_url( wp_nonce_url( self_admin_url( 'plugins.php?action=activate&plugin=' . rawurlencode( self::MCP_ADAPTER_PLUGIN_FILE ) ), 'activate-plugin_' . self::MCP_ADAPTER_PLUGIN_FILE ) ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Activate MCP Adapter Plugin', 'convertkit' ); ?>
+				</a>
+			</p>
+			<?php
+			return;
+		}
+
+		// If the MCP Adapter Plugin isn't installed and the user can install Plugins, show the install button.
+		if ( ! $this->mcp_adapter_installed() && current_user_can( 'install_plugins' ) ) {
+			?>
+			<p>
+				<a href="<?php echo esc_url( wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=' . self::MCP_ADAPTER_PLUGIN_SLUG ), 'install-plugin_' . self::MCP_ADAPTER_PLUGIN_SLUG ) ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Install MCP Adapter Plugin', 'convertkit' ); ?>
+				</a>
+			</p>
+			<?php
+			return;
+		}
+
+		// The user can't install or activate the MCP Adapter Plugin.
+		?>
+		<p class="description">
+			<?php esc_html_e( 'Ask an administrator to install and activate the MCP Adapter Plugin.', 'convertkit' ); ?>
+		</p>
+		<?php
+
+	}
+
+	/**
 	 * Renders the input for the Enable setting.
 	 *
 	 * @since   3.4.0
@@ -278,6 +348,15 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 			$this->save_disabled = true;
 
 			$this->output_upgrade_required_message();
+			return;
+		}
+
+		// If the MCP Adapter Plugin isn't active, show a message to install or activate it.
+		if ( ! $this->mcp_adapter_active() ) {
+			// Disable saving settings.
+			$this->save_disabled = true;
+
+			$this->output_mcp_adapter_required_message();
 			return;
 		}
 
@@ -370,6 +449,37 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 		}
 
 		echo '</div>';
+
+	}
+
+	/**
+	 * Returns whether the MCP Adapter Plugin is active.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @return  bool
+	 */
+	private function mcp_adapter_active() {
+
+		return class_exists( 'WP\\MCP\\Core\\McpAdapter' );
+
+	}
+
+	/**
+	 * Returns whether the MCP Adapter Plugin is installed.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @return  bool
+	 */
+	private function mcp_adapter_installed() {
+
+		// Load get_plugins(), if it isn't already loaded.
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		return array_key_exists( self::MCP_ADAPTER_PLUGIN_FILE, get_plugins() );
 
 	}
 
