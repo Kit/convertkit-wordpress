@@ -63,7 +63,8 @@ class AutoloadTest extends WPTestCase
 
 			foreach ($this->getDeclaredClasses($file) as $class) {
 				$this->assertTrue(class_exists($class) || trait_exists($class) || interface_exists($class), $class . ' in ' . $file . ' could not be autoloaded.');
-				$this->assertSame(CONVERTKIT_PLUGIN_PATH . $file, (new \ReflectionClass($class))->getFileName(), $class . ' was loaded from the wrong file.');
+				$reflection = new \ReflectionClass($class);
+				$this->assertSame(CONVERTKIT_PLUGIN_PATH . $file, $reflection->getFileName(), $class . ' was loaded from the wrong file.');
 			}
 		}
 	}
@@ -89,7 +90,7 @@ class AutoloadTest extends WPTestCase
 	 */
 	private function getDeclaredClasses($file)
 	{
-		preg_match_all('#^(?:abstract |final )?(?:class|trait|interface) (\w+)#m', file_get_contents(CONVERTKIT_PLUGIN_PATH . $file), $matches);
+		preg_match_all('#^(?:abstract |final )?(?:class|trait|interface) (\w+)#m', file_get_contents(CONVERTKIT_PLUGIN_PATH . $file), $matches); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		return $matches[1];
 	}
 }
