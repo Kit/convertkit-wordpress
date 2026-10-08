@@ -5,7 +5,7 @@ namespace Tests;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
- * Tests the Plugin's class autoloader map at includes/autoload.php.
+ * Tests the Plugin's class autoloader.
  *
  * @since   3.4.7
  */
@@ -19,15 +19,6 @@ class AutoloadTest extends WPTestCase
 	protected $tester;
 
 	/**
-	 * Class names mapped to their files, relative to the Plugin's path.
-	 *
-	 * @since   3.4.7
-	 *
-	 * @var     array
-	 */
-	private $classes = [];
-
-	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.4.7
@@ -36,7 +27,6 @@ class AutoloadTest extends WPTestCase
 	{
 		parent::setUp();
 		activate_plugins('convertkit/wp-convertkit.php');
-		$this->classes = require CONVERTKIT_PLUGIN_PATH . '/includes/autoload.php';
 	}
 
 	/**
@@ -51,30 +41,12 @@ class AutoloadTest extends WPTestCase
 	}
 
 	/**
-	 * Test that each class in the autoloader map exists in its mapped file, and can be autoloaded.
+	 * Test that every Plugin class can be autoloaded from its file.
 	 *
 	 * @since   3.4.7
 	 */
-	public function testMappedClassesCanBeAutoloaded()
+	public function testAllClassesCanBeAutoloaded()
 	{
-		foreach ($this->classes as $class => $file) {
-			$this->assertFileExists(CONVERTKIT_PLUGIN_PATH . $file, $class . ' is mapped to a file that does not exist.');
-			$this->assertSame([ $class ], $this->getDeclaredClasses($file), $file . ' does not declare ' . $class . '.');
-			$this->assertTrue(class_exists($class) || trait_exists($class) || interface_exists($class), $class . ' could not be autoloaded.');
-		}
-	}
-
-	/**
-	 * Test that every Plugin class is either in the autoloader map, or loaded directly.
-	 *
-	 * @since   3.4.7
-	 */
-	public function testAllClassesAreMapped()
-	{
-		// Files loaded directly by wp-convertkit.php, as they register hooks when loaded.
-		preg_match_all("#require_once CONVERTKIT_PLUGIN_PATH \. '([^']+)'#", file_get_contents(CONVERTKIT_PLUGIN_PATH . '/wp-convertkit.php'), $matches);
-		$required = $matches[1];
-
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(CONVERTKIT_PLUGIN_PATH, \FilesystemIterator::SKIP_DOTS));
 		foreach ($iterator as $path) {
 			$file = str_replace(CONVERTKIT_PLUGIN_PATH, '', $path->getPathname());
@@ -84,21 +56,27 @@ class AutoloadTest extends WPTestCase
 				continue;
 			}
 
-			// Skip Divi and Elementor modules and widgets, which are loaded by their integrations.
+			// Skip Divi and Elementor modules and widgets, which extend classes that only exist when Divi or Elementor are active.
 			if (preg_match('#^/includes/integrations/(divi|elementor)/#', $file) && ! in_array($file, [ '/includes/integrations/divi/class-convertkit-divi.php', '/includes/integrations/elementor/class-convertkit-elementor.php' ], true)) {
 				continue;
 			}
 
-			// Skip files loaded directly.
-			if (in_array($file, $required, true)) {
-				continue;
-			}
-
 			foreach ($this->getDeclaredClasses($file) as $class) {
-				$this->assertArrayHasKey($class, $this->classes, $class . ' in ' . $file . ' is missing from includes/autoload.php.');
-				$this->assertSame($file, $this->classes[ $class ], $class . ' is mapped to the wrong file.');
+				$this->assertTrue(class_exists($class) || trait_exists($class) || interface_exists($class), $class . ' in ' . $file . ' could not be autoloaded.');
+				$this->assertSame(CONVERTKIT_PLUGIN_PATH . $file, (new \ReflectionClass($class))->getFileName(), $class . ' was loaded from the wrong file.');
 			}
 		}
+	}
+
+	/**
+	 * Test that the autoloader ignores classes that don't belong to the Plugin.
+	 *
+	 * @since   3.4.7
+	 */
+	public function testNonPluginClassesAreIgnored()
+	{
+		$this->assertFalse(class_exists('ConvertKit_Class_That_Does_Not_Exist'));
+		$this->assertFalse(class_exists('Some_Other_Plugin_Class'));
 	}
 
 	/**

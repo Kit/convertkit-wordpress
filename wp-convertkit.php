@@ -51,18 +51,61 @@ if ( ! class_exists( 'ConvertKit_Review_Request' ) ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php';
 }
 
-// Register an autoloader for the Plugin's classes, so a class's file is only loaded when the class is used.
-$convertkit_classes = array_change_key_case( require CONVERTKIT_PLUGIN_PATH . '/includes/autoload.php' );
-spl_autoload_register(
-	function ( $class_name ) use ( $convertkit_classes ) {
+/**
+ * Loads a Plugin class's file when the class is first used.
+ *
+ * @since   3.4.7
+ *
+ * @param   string $class_name     The class to load.
+ */
+function convertkit_autoloader( $class_name ) {
 
-		$class_name = strtolower( $class_name );
-		if ( isset( $convertkit_classes[ $class_name ] ) ) {
-			require_once CONVERTKIT_PLUGIN_PATH . $convertkit_classes[ $class_name ];
-		}
-
+	// Bail if the class doesn't belong to this Plugin.
+	if ( ! preg_match( '/^(ConvertKit_|CK_|WP_ConvertKit$)/i', $class_name ) ) {
+		return;
 	}
-);
+
+	// Define the file name e.g. ConvertKit_Admin_Notices = class-convertkit-admin-notices.php.
+	$file_name = 'class-' . strtolower( str_replace( '_', '-', $class_name ) ) . '.php';
+
+	// Define the folders to search, most used on the frontend first.
+	$folders = array(
+		'/includes/',
+		'/includes/blocks/',
+		'/includes/blocks/helpers/',
+		'/includes/block-formatters/',
+		'/includes/pre-publish-actions/',
+		'/includes/plugin-sidebars/',
+		'/includes/widgets/',
+		'/includes/integrations/contactform7/',
+		'/includes/integrations/divi/',
+		'/includes/integrations/elementor/',
+		'/includes/integrations/forminator/',
+		'/includes/integrations/wishlist/',
+		'/includes/mcp/',
+		'/includes/mcp/abilities/category-settings/',
+		'/includes/mcp/abilities/content/',
+		'/includes/mcp/abilities/post-settings/',
+		'/includes/mcp/abilities/resources/',
+		'/includes/mcp/abilities/settings/',
+		'/includes/mcp/prompts/',
+		'/includes/mcp/resources/',
+		'/admin/',
+		'/admin/section/',
+		'/admin/setup-wizard/',
+		'/admin/importers/',
+	);
+
+	// Load the file from the first folder it's found in.
+	foreach ( $folders as $folder ) {
+		if ( file_exists( CONVERTKIT_PLUGIN_PATH . $folder . $file_name ) ) {
+			require_once CONVERTKIT_PLUGIN_PATH . $folder . $file_name;
+			return;
+		}
+	}
+
+}
+spl_autoload_register( 'convertkit_autoloader' );
 
 // Load plugin files that are always required.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/cron-functions.php';
