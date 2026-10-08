@@ -22,6 +22,9 @@ class PluginSettingsMCPCest
 	{
 		// Activate Kit Plugin.
 		$I->activateKitPlugin($I);
+
+		// Activate MCP Adapter Plugin.
+		$I->activateThirdPartyPlugin($I, 'mcp-adapter');
 	}
 
 	/**
@@ -303,6 +306,74 @@ class PluginSettingsMCPCest
 	}
 
 	/**
+	 * Tests that the MCP Adapter Plugin required message and Activate button are displayed
+	 * when the MCP Adapter Plugin isn't active, and that the MCP server is not registered.
+	 *
+	 * @since   3.4.6
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testMCPAdapterPluginRequired(EndToEndTester $I)
+	{
+		// Deactivate MCP Adapter Plugin.
+		$I->deactivateThirdPartyPlugin($I, 'mcp-adapter');
+
+		// Simulate a Kit account that is on a paid plan.
+		$I->setupKitPlugin($I);
+		$I->setupKitPluginResources($I);
+		$I->haveOptionInDatabase(
+			'convertkit_account',
+			[
+				'account' => [
+					'plan_type' => 'creator_pro',
+				],
+			]
+		);
+
+		// Enable MCP server.
+		$I->haveOptionInDatabase(
+			'_wp_convertkit_settings_mcp',
+			[
+				'enabled' => 'on',
+			]
+		);
+
+		// Load the MCP settings tab.
+		$I->loadKitSettingsMCPScreen($I);
+
+		// Assert that the MCP Adapter Plugin required message and Activate button are shown.
+		$I->see('The Kit WordPress MCP requires the MCP Adapter Plugin. Install and activate it to connect AI clients to your WordPress site.');
+		$I->seeLink('Activate MCP Adapter Plugin');
+
+		// Assert no option to enable/disable the MCP server, or connect an AI client, are shown.
+		$I->dontSeeElement('#enabled');
+		$I->dontSee('Connect an AI client');
+		$I->dontSee('Create Application Password');
+
+		// Assert that the MCP server is not registered.
+		$I->doesNotHaveRoute($I, '/kit/mcp');
+		$I->doesNotHaveRoute($I, '/kit/mcp/v1');
+
+		// Click the Activate button.
+		$I->click('Activate MCP Adapter Plugin');
+
+		// Confirm the MCP Adapter Plugin is active.
+		$I->waitForElementVisible('table.plugins tr[data-slug=mcp-adapter].active');
+
+		// Load the MCP settings tab.
+		$I->loadKitSettingsMCPScreen($I);
+
+		// Assert that the MCP Adapter Plugin required message is no longer shown, and the Enable checkbox is shown.
+		$I->dontSee('The Kit WordPress MCP requires the MCP Adapter Plugin. Install and activate it to connect AI clients to your WordPress site.');
+		$I->seeElement('#enabled');
+		$I->see('Connect an AI client');
+
+		// Assert that the MCP server is registered.
+		$I->hasRoute($I, '/kit/mcp');
+		$I->hasRoute($I, '/kit/mcp/v1');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.
@@ -314,6 +385,7 @@ class PluginSettingsMCPCest
 	public function _passed(EndToEndTester $I)
 	{
 		$I->deactivateKitPlugin($I);
+		$I->deactivateThirdPartyPlugin($I, 'mcp-adapter');
 		$I->resetKitPlugin($I);
 	}
 }
