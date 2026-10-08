@@ -336,7 +336,7 @@ jobs:
       # This avoids running npm install and npm run build in every job in the matrix.
       # The artifact is rooted at resources/frontend, so it's extracted into that directory.
       - name: Download Built Assets
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: plugin-assets
           path: ${{ env.PLUGIN_DIR }}/resources/frontend
