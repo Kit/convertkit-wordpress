@@ -85,6 +85,14 @@ class ConvertKit_Broadcasts_Importer {
 			return;
 		}
 
+		// Bail if the Plugin Access Token has not been configured.
+		if ( ! $this->settings->has_access_and_refresh_token() ) {
+			return new WP_Error(
+				'convertkit_broadcasts_importer_error',
+				__( 'No Access Token specified in Plugin Settings', 'convertkit' )
+			);
+		}
+
 		// Bail if no Broadcasts exist.
 		if ( ! count( $broadcasts ) ) {
 			return;
@@ -117,8 +125,6 @@ class ConvertKit_Broadcasts_Importer {
 
 	}
 
-
-
 	/**
 	 * Imports the given Kit Broadcast ID to a new WordPress Post.
 	 *
@@ -136,14 +142,6 @@ class ConvertKit_Broadcasts_Importer {
 	 */
 	public function import_broadcast( $broadcast_id, $post_status = 'publish', $author_id = 1, $category_id = false, $import_thumbnail = false, $import_images = false, $disable_styles = false ) {
 
-		// Bail if the Plugin Access Token has not been configured.
-		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return new WP_Error(
-				'convertkit_broadcasts_importer_error',
-				__( 'No Access Token specified in Plugin Settings', 'convertkit' )
-			);
-		}
-
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
 			CONVERTKIT_OAUTH_CLIENT_ID,
@@ -154,18 +152,7 @@ class ConvertKit_Broadcasts_Importer {
 			'broadcasts_importer'
 		);
 
-		// Check that we're using the ConvertKit WordPress Libraries 1.3.8 or higher.
-		// If another ConvertKit Plugin is active and out of date, its libraries might
-		// be loaded that don't have this method.
-		if ( ! method_exists( $api, 'get_post' ) ) { // @phpstan-ignore-line Older WordPress Libraries won't have this function.
-			return new WP_Error(
-				'convertkit_broadcasts_importer_error',
-				__( 'Kit WordPress Libraries 1.3.7 or older detected, missing the `get_post` method.', 'convertkit' )
-			);
-		}
-
-		// Fetch Broadcast's content.
-		// We need to query wordpress/posts/{id} to fetch the full Broadcast information and content.
+		// Fetch Broadcast. This includes the `content` and `product_id` properties.
 		$broadcast = $api->get_post( $broadcast_id );
 
 		// Unset API class.
@@ -202,8 +189,8 @@ class ConvertKit_Broadcasts_Importer {
 				'ID'           => $post_id,
 				'post_content' => $this->parse_broadcast_content(
 					$post_id,
-					$broadcast['content'],
-					$broadcast['title'],
+					$broadcast['post']['content'],
+					$broadcast['post']['title'],
 					$import_images,
 					$disable_styles
 				),
@@ -218,17 +205,17 @@ class ConvertKit_Broadcasts_Importer {
 		}
 
 		// If a Product is specified, apply it as the Restrict Content setting.
-		if ( $broadcast['is_paid'] && $broadcast['product_id'] ) {
+		if ( $broadcast['post']['is_paid'] && $broadcast['post']['product_id'] ) {
 			// Fetch Post's settings.
 			$convertkit_post = new ConvertKit_Post( $post_id );
 			$meta            = $convertkit_post->get();
 
 			// Define Restrict Content setting.
-			$meta['restrict_content'] = 'product_' . $broadcast['product_id'];
+			$meta['restrict_content'] = 'product_' . $broadcast['post']['product_id'];
 
 			// Save Post's settings.
 			$convertkit_post->save( $meta );
-			$this->maybe_log( 'ConvertKit_Broadcasts_Importer::refresh(): Broadcast #' . $broadcast_id . '. Set Restrict Content = ' . $broadcast['product_id'] );
+			$this->maybe_log( 'ConvertKit_Broadcasts_Importer::refresh(): Broadcast #' . $broadcast_id . '. Set Restrict Content = ' . $broadcast['post']['product_id'] );
 		}
 
 		// If the Import Thumbnail setting is enabled, and the Broadcast has an image, save it to the Media Library and link it to the Post.
@@ -337,11 +324,11 @@ class ConvertKit_Broadcasts_Importer {
 		// Define array for the wp_insert_post() compatible arguments.
 		$post_args = array(
 			'post_type'     => 'post',
-			'post_title'    => $broadcast['title'],
-			'post_excerpt'  => ( ! is_null( $broadcast['description'] ) ? $broadcast['description'] : '' ),
-			'post_date_gmt' => gmdate( 'Y-m-d H:i:s', strtotime( $broadcast['published_at'] ) ),
+			'post_title'    => $broadcast['post']['title'],
+			'post_excerpt'  => ( ! is_null( $broadcast['post']['description'] ) ? $broadcast['post']['description'] : ( ! is_null( $broadcast['post']['meta_description'] ) ? $broadcast['post']['meta_description'] : '' ) ),
+			'post_date_gmt' => gmdate( 'Y-m-d H:i:s', strtotime( $broadcast['post']['published_at'] ) ),
 			'post_author'   => $author_id,
-			'post_name'     => $this->generate_permalink( $broadcast['title'] ),
+			'post_name'     => $this->generate_permalink( $broadcast['post']['title'] ),
 		);
 
 		// If a Category was supplied, assign the Post to the given Category ID when created.
@@ -369,7 +356,7 @@ class ConvertKit_Broadcasts_Importer {
 		if ( ! array_key_exists( 'meta_input', $post_args ) ) {
 			$post_args['meta_input'] = array();
 		}
-		$post_args['meta_input']['_convertkit_broadcast_id'] = $broadcast['id'];
+		$post_args['meta_input']['_convertkit_broadcast_id'] = $broadcast['post']['id'];
 
 		return $post_args;
 
@@ -414,7 +401,7 @@ class ConvertKit_Broadcasts_Importer {
 		$content = $broadcast_content;
 
 		// Load the content into the parser.
-		$parser = new ConvertKit_HTML_Parser( $content );
+		$parser = new ConvertKit_HTML_Parser( $content, false, true );
 
 		// Remove certain elements and their contents, as we never want these to be included in the WordPress Post.
 		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -632,15 +619,15 @@ class ConvertKit_Broadcasts_Importer {
 	private function add_broadcast_image_to_post( $broadcast, $post_id ) {
 
 		// Bail if no image specified.
-		if ( empty( $broadcast['thumbnail_url'] ) ) {
+		if ( empty( $broadcast['post']['thumbnail_url'] ) ) {
 			return false;
 		}
 
 		// Import Image into the Media Library.
 		$image_id = $this->media_library->import_remote_image(
-			$broadcast['thumbnail_url'],
+			$broadcast['post']['thumbnail_url'],
 			$post_id,
-			$broadcast['thumbnail_alt']
+			$broadcast['post']['thumbnail_alt']
 		);
 
 		// Bail if an error occurred.
