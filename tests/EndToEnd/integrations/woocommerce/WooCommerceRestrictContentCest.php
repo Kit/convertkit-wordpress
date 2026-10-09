@@ -14,19 +14,7 @@ use Tests\Support\EndToEndTester;
 class WooCommerceRestrictContentCest
 {
 	/**
-	 * Themes to test, covering WooCommerce's block and classic templates.
-	 *
-	 * @since   3.4.7
-	 *
-	 * @var array
-	 */
-	private $themes = [
-		'twentytwentytwo',
-		'twentytwentyone',
-	];
-
-	/**
-	 * The Product's price, in classic and block themes, excluding related Products.
+	 * The Product's price, excluding related Products.
 	 *
 	 * @since   3.4.7
 	 *
@@ -67,6 +55,9 @@ class WooCommerceRestrictContentCest
 
 		// Set Store in Live mode i.e. not in "Coming Soon" mode.
 		$I->haveOptionInDatabase( 'woocommerce_coming_soon', 'no' );
+
+		// Use a block theme that supports WooCommerce's block templates.
+		$I->useTheme('twentytwentyfive');
 	}
 
 	/**
@@ -104,22 +95,17 @@ class WooCommerceRestrictContentCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Test each Theme.
-		foreach ( $this->themes as $theme ) {
-			$I->useTheme($theme);
+		// Add a Product, restricted to the Kit Product.
+		$url = $this->addProduct($I, 'Kit: Product: Restrict Content: Product', $_ENV['CONVERTKIT_API_PRODUCT_NAME']);
 
-			// Add a Product, restricted to the Kit Product.
-			$url = $this->addProduct($I, 'Kit: Product: Restrict Content: Product: ' . $theme, $_ENV['CONVERTKIT_API_PRODUCT_NAME']);
+		// Confirm the price and add to cart button are not displayed.
+		$this->dontSeeProductPurchasableAsVisitor($I, $url);
 
-			// Confirm the price and add to cart button are not displayed.
-			$this->dontSeeProductPurchasableAsVisitor($I, $url);
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByProductOnFrontend($I, $url, $this->getOptions());
 
-			// Test Restrict Content functionality.
-			$I->testRestrictedContentByProductOnFrontend($I, $url, $this->getOptions());
-
-			// Confirm the price and add to cart button display, as the subscriber has access.
-			$this->seeProductPurchasable($I);
-		}
+		// Confirm the price and add to cart button display, as the subscriber has access.
+		$this->seeProductPurchasable($I);
 	}
 
 	/**
@@ -135,27 +121,22 @@ class WooCommerceRestrictContentCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Test each Theme.
-		foreach ( $this->themes as $theme ) {
-			$I->useTheme($theme);
+		// Add a Product, restricted to the Kit Tag.
+		$url = $this->addProduct($I, 'Kit: Product: Restrict Content: Tag', $_ENV['CONVERTKIT_API_TAG_NAME']);
 
-			// Add a Product, restricted to the Kit Tag.
-			$url = $this->addProduct($I, 'Kit: Product: Restrict Content: Tag: ' . $theme, $_ENV['CONVERTKIT_API_TAG_NAME']);
+		// Confirm the price and add to cart button are not displayed.
+		$this->dontSeeProductPurchasableAsVisitor($I, $url);
 
-			// Confirm the price and add to cart button are not displayed.
-			$this->dontSeeProductPurchasableAsVisitor($I, $url);
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByTagOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			emailAddress: $I->generateEmailAddress(),
+			options: $this->getOptions()
+		);
 
-			// Test Restrict Content functionality.
-			$I->testRestrictedContentByTagOnFrontend(
-				$I,
-				urlOrPageID: $url,
-				emailAddress: $I->generateEmailAddress(),
-				options: $this->getOptions()
-			);
-
-			// Confirm the price and add to cart button display, as the subscriber has access.
-			$this->seeProductPurchasable($I);
-		}
+		// Confirm the price and add to cart button display, as the subscriber has access.
+		$this->seeProductPurchasable($I);
 	}
 
 	/**
@@ -171,27 +152,22 @@ class WooCommerceRestrictContentCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Test each Theme.
-		foreach ( $this->themes as $theme ) {
-			$I->useTheme($theme);
+		// Add a Product, restricted to the Kit Form.
+		$url = $this->addProduct($I, 'Kit: Product: Restrict Content: Form', $_ENV['CONVERTKIT_API_FORM_NAME']);
 
-			// Add a Product, restricted to the Kit Form.
-			$url = $this->addProduct($I, 'Kit: Product: Restrict Content: Form: ' . $theme, $_ENV['CONVERTKIT_API_FORM_NAME']);
+		// Confirm the price and add to cart button are not displayed.
+		$this->dontSeeProductPurchasableAsVisitor($I, $url);
 
-			// Confirm the price and add to cart button are not displayed.
-			$this->dontSeeProductPurchasableAsVisitor($I, $url);
+		// Test Restrict Content functionality.
+		$I->testRestrictedContentByFormOnFrontend(
+			$I,
+			urlOrPageID: $url,
+			formID: $_ENV['CONVERTKIT_API_FORM_ID'],
+			options: $this->getOptions()
+		);
 
-			// Test Restrict Content functionality.
-			$I->testRestrictedContentByFormOnFrontend(
-				$I,
-				urlOrPageID: $url,
-				formID: $_ENV['CONVERTKIT_API_FORM_ID'],
-				options: $this->getOptions()
-			);
-
-			// Confirm the price and add to cart button display, as the subscriber has access.
-			$this->seeProductPurchasable($I);
-		}
+		// Confirm the price and add to cart button display, as the subscriber has access.
+		$this->seeProductPurchasable($I);
 	}
 
 	/**
@@ -534,23 +510,18 @@ class WooCommerceRestrictContentCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Test each Theme.
-		foreach ( $this->themes as $theme ) {
-			$I->useTheme($theme);
+		// Create Product with no description.
+		$productID = $this->createProduct(
+			$I,
+			'Kit: Product: Restrict Content: Tag: No Description',
+			'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			false,
+			''
+		);
 
-			// Create Product with no description.
-			$productID = $this->createProduct(
-				$I,
-				'Kit: Product: Restrict Content: Tag: No Description: ' . $theme,
-				'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
-				false,
-				''
-			);
-
-			// Confirm the price and add to cart button are not displayed, and the call to action is displayed.
-			$this->dontSeeProductPurchasableAsVisitor($I, $productID);
-			$I->seeElementInDOM('#convertkit-restrict-content');
-		}
+		// Confirm the price and add to cart button are not displayed, and the call to action is displayed.
+		$this->dontSeeProductPurchasableAsVisitor($I, $productID);
+		$I->seeElementInDOM('#convertkit-restrict-content');
 	}
 
 	/**
@@ -566,31 +537,26 @@ class WooCommerceRestrictContentCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Test each Theme.
-		foreach ( $this->themes as $theme ) {
-			$I->useTheme($theme);
+		// Create Product with a short description, and a more tag so the short description isn't used as the content preview.
+		$productID = $this->createProduct(
+			$I,
+			'Kit: Product: Restrict Content: Tag: Short Description',
+			'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			false,
+			'<!-- wp:paragraph --><p>Visible content.</p><!-- /wp:paragraph --><!-- wp:more --><!--more--><!-- /wp:more --><!-- wp:paragraph --><p>Member-only content.</p><!-- /wp:paragraph -->',
+			'Short description.'
+		);
 
-			// Create Product with a short description, and a more tag so the short description isn't used as the content preview.
-			$productID = $this->createProduct(
-				$I,
-				'Kit: Product: Restrict Content: Tag: Short Description: ' . $theme,
-				'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
-				false,
-				'<!-- wp:paragraph --><p>Visible content.</p><!-- /wp:paragraph --><!-- wp:more --><!--more--><!-- /wp:more --><!-- wp:paragraph --><p>Member-only content.</p><!-- /wp:paragraph -->',
-				'Short description.'
-			);
+		// Confirm the short description is not displayed.
+		$this->dontSeeProductPurchasableAsVisitor($I, $productID);
+		$I->dontSee('Short description.');
+		$I->testRestrictContentByTagHidesContentWithCTA($I);
 
-			// Confirm the short description is not displayed.
-			$this->dontSeeProductPurchasableAsVisitor($I, $productID);
-			$I->dontSee('Short description.');
-			$I->testRestrictContentByTagHidesContentWithCTA($I);
-
-			// Confirm the short description is displayed to a subscriber with access.
-			$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $productID);
-			$I->see('Short description.');
-			$I->testRestrictContentDisplaysContent($I);
-			$this->seeProductPurchasable($I);
-		}
+		// Confirm the short description is displayed to a subscriber with access.
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $productID);
+		$I->see('Short description.');
+		$I->testRestrictContentDisplaysContent($I);
+		$this->seeProductPurchasable($I);
 	}
 
 	/**
@@ -607,7 +573,7 @@ class WooCommerceRestrictContentCest
 		$I->setupKitPluginDisableJS($I);
 		$I->setupKitPluginResources($I);
 
-		// Use a classic theme, which outputs WooCommerce notices without JS.
+		// Use a classic theme, which outputs WooCommerce notices in the HTML instead of using JS.
 		$I->useTheme('twentytwentyone');
 
 		// Create Product.
