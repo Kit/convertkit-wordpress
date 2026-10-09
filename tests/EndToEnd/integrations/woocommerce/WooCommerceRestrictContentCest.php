@@ -655,6 +655,10 @@ class WooCommerceRestrictContentCest
 
 		// Define the title, description and price.
 		$I->fillField('#title', $title);
+
+		// Wait for TinyMCE to initialize, as the Product screen loads slower than other Post Types.
+		$I->waitForJS("return typeof tinymce !== 'undefined' && tinymce.get('content') !== null && tinymce.get('content').initialized;", 10);
+
 		$I->addClassicEditorParagraph($I, $this->visibleContent);
 		$I->addClassicEditorParagraph($I, $this->memberContent);
 		$I->fillField('#_regular_price', '19.99');
