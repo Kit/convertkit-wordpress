@@ -656,11 +656,12 @@ class WooCommerceRestrictContentCest
 		// Define the title, description and price.
 		$I->fillField('#title', $title);
 
-		// Wait for TinyMCE to initialize, as the Product screen loads slower than other Post Types.
-		$I->waitForJS("return typeof tinymce !== 'undefined' && tinymce.get('content') !== null && tinymce.get('content').initialized;", 10);
-
-		$I->addClassicEditorParagraph($I, $this->visibleContent);
-		$I->addClassicEditorParagraph($I, $this->memberContent);
+		// Set the description in the textarea and TinyMCE (if loaded), so it saves whichever editor mode is used.
+		$I->executeJS(
+			'var html = ' . json_encode('<p>' . $this->visibleContent . '</p><p>' . $this->memberContent . '</p>') . ';' . // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+			'document.getElementById("content").value = html;' .
+			'if (typeof tinymce !== "undefined" && tinymce.get("content")) { tinymce.get("content").setContent(html); }'
+		);
 		$I->fillField('#_regular_price', '19.99');
 
 		// Scroll to Kit meta box.
