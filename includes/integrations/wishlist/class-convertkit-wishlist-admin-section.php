@@ -186,26 +186,3 @@ class ConvertKit_Wishlist_Admin_Section extends ConvertKit_Admin_Section_Base {
 	}
 
 }
-
-// Register Admin Settings section.
-add_filter(
-	'convertkit_admin_settings_register_sections',
-	/**
-	 * Register WishList Member as a section at Settings > Kit.
-	 *
-	 * @param   array   $sections   Settings Sections.
-	 * @return  array
-	 */
-	function ( $sections ) {
-
-		// Bail if WishList Member isn't enabled.
-		if ( ! function_exists( 'wlmapi_get_levels' ) ) {
-			return $sections;
-		}
-
-		// Register this class as a section at Settings > Kit.
-		$sections['wishlist-member'] = new ConvertKit_Wishlist_Admin_Section();
-		return $sections;
-
-	}
-);

@@ -314,26 +314,3 @@ class ConvertKit_Forminator_Admin_Section extends ConvertKit_Admin_Section_Base 
 	}
 
 }
-
-// Register Admin Settings section.
-add_filter(
-	'convertkit_admin_settings_register_sections',
-	/**
-	 * Register Forminator as a settings section at Settings > Kit.
-	 *
-	 * @param   array   $sections   Settings Sections.
-	 * @return  array
-	 */
-	function ( $sections ) {
-
-		// Bail if Forminator isn't enabled.
-		if ( ! defined( 'FORMINATOR_VERSION' ) ) {
-			return $sections;
-		}
-
-		// Register this class as a section at Settings > Kit.
-		$sections['forminator'] = new ConvertKit_Forminator_Admin_Section();
-		return $sections;
-
-	}
-);

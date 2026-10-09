@@ -51,149 +51,66 @@ if ( ! class_exists( 'ConvertKit_Review_Request' ) ) {
 	require_once CONVERTKIT_PLUGIN_PATH . '/vendor/convertkit/convertkit-wordpress-libraries/src/class-convertkit-review-request.php';
 }
 
+/**
+ * Loads a Plugin class's file when the class is first used.
+ *
+ * @since   3.4.7
+ *
+ * @param   string $class_name     The class to load.
+ */
+function convertkit_autoloader( $class_name ) {
+
+	// Bail if the class doesn't belong to this Plugin.
+	if ( ! preg_match( '/^(ConvertKit_|CK_|WP_ConvertKit$)/i', $class_name ) ) {
+		return;
+	}
+
+	// Define the file name e.g. ConvertKit_Admin_Notices = class-convertkit-admin-notices.php.
+	$file_name = 'class-' . strtolower( str_replace( '_', '-', $class_name ) ) . '.php';
+
+	// Define the folders to search, most used on the frontend first.
+	$folders = array(
+		'/includes/',
+		'/includes/blocks/',
+		'/includes/blocks/helpers/',
+		'/includes/block-formatters/',
+		'/includes/pre-publish-actions/',
+		'/includes/plugin-sidebars/',
+		'/includes/widgets/',
+		'/includes/integrations/contactform7/',
+		'/includes/integrations/forminator/',
+		'/includes/integrations/wishlist/',
+		'/includes/mcp/',
+		'/includes/mcp/abilities/category-settings/',
+		'/includes/mcp/abilities/content/',
+		'/includes/mcp/abilities/post-settings/',
+		'/includes/mcp/abilities/resources/',
+		'/includes/mcp/abilities/settings/',
+		'/includes/mcp/prompts/',
+		'/includes/mcp/resources/',
+		'/admin/',
+		'/admin/section/',
+		'/admin/setup-wizard/',
+		'/admin/importers/',
+	);
+
+	// Load the file from the first folder it's found in.
+	foreach ( $folders as $folder ) {
+		if ( file_exists( CONVERTKIT_PLUGIN_PATH . $folder . $file_name ) ) {
+			require_once CONVERTKIT_PLUGIN_PATH . $folder . $file_name;
+			return;
+		}
+	}
+
+}
+spl_autoload_register( 'convertkit_autoloader' );
+
 // Load plugin files that are always required.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/cron-functions.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/functions.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-wp-convertkit.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-admin-notices.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-exporter.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-broadcasts-importer.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cache-plugins.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cron.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-form-entries.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-gutenberg.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-html-parser.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-media-library.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output-broadcasts.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-output-restrict-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-post.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-preview-output.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-cloudflare-turnstile.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-recaptcha.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-spam-protection.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-account.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-creator-network-recommendations.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-restrict-content-cache.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-custom-fields.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-forms.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-landing-pages.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-posts.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-products.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-sequences.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-resource-tags.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-settings-broadcasts.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-settings-mcp.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-settings-restrict-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-setup.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-shortcodes.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-subscriber.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-term.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-user.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/class-convertkit-widgets.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-broadcasts.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-trigger.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-email.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-name.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-form-builder-field-custom.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-member-content-login.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/class-convertkit-block-product.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-block-post-helper.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-content-post-helper.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/blocks/helpers/class-convertkit-shortcode-post-helper.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-form-link.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/block-formatters/class-convertkit-block-formatter-product-link.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-ability.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-resource.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp-prompt.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-list.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-reference.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-forms.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-tags.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-landing-pages.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-products.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-account.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-overview.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-forms-reference.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-restrict-content-reference.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/resources/class-convertkit-mcp-resource-settings-reference.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-setup.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-add-form.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-restrict-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-configure-broadcasts-import.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/prompts/class-convertkit-mcp-prompt-audit.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/class-convertkit-mcp.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-list.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-insert.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-update.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/content/class-convertkit-mcp-ability-content-delete.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-forms.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-tags.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-landing-pages.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/resources/class-convertkit-mcp-ability-resource-products.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-get.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/settings/class-convertkit-mcp-ability-settings-update.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings-get.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/post-settings/class-convertkit-mcp-ability-post-settings-update.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings-get.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/mcp/abilities/category-settings/class-convertkit-mcp-ability-category-settings-update.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/pre-publish-actions/class-convertkit-pre-publish-action-broadcast-export.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/widgets/class-ck-widget-form.php';
-
-// Admin classes.
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-bulk-edit.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-quick-edit.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-cache-plugins.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-category.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-landing-page.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-legacy-resource-notice.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-post.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-refresh-resources.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-restrict-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-settings.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-tinymce.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-admin-setup-wizard.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/class-convertkit-wp-list-table.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-activecampaign.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-aweber.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-campaignmonitor.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-convertkit-legacy-forms.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-mc4wp.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-mailpoet.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/importers/class-convertkit-admin-importer-newsletter.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-base.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-broadcasts.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-form-entries.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-general.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-mcp.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-oauth.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-restrict-content.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/section/class-convertkit-admin-section-tools.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/setup-wizard/class-convertkit-admin-setup-wizard-plugin.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/setup-wizard/class-convertkit-admin-setup-wizard-landing-page.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/admin/setup-wizard/class-convertkit-admin-setup-wizard-restrict-content.php';
 
 // Contact Form 7 Integration.
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7-settings.php';
 
 // Divi Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convertkit-divi.php';
@@ -202,9 +119,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/divi/class-convert
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/elementor/class-convertkit-elementor.php';
 
 // Forminator Integration.
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator-admin-section.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/forminator/class-convertkit-forminator-settings.php';
 
 // Impeka Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-impeka.php';
@@ -213,9 +128,7 @@ require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-i
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-uncode.php';
 
 // WishList Member Integration.
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/wishlist/class-convertkit-wishlist.php';
-require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/wishlist/class-convertkit-wishlist-settings.php';
 
 // WooCommerce Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/woocommerce/class-convertkit-woocommerce-product-form.php';
