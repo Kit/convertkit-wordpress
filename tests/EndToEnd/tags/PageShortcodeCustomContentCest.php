@@ -149,8 +149,16 @@ class PageShortcodeCustomContentCest
 		// Confirm that the Custom Content is not yet displayed.
 		$I->dontSee('KitCustomContent');
 
-		// Reload the page, this time with a subscriber ID who is already subscribed to the tag.
+		// Reload the page without the hashed email address.
 		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+
+		// Confirm that the Custom Content is not displayed, as the subscriber ID can't be verified.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+		$I->dontSee('KitCustomContent');
+
+		// Reload the page, this time with a subscriber ID who is already subscribed to the tag, and their hashed email address.
+		$subscriber = $I->apiRequest('subscribers/' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
+		$I->amOnPage('/kit-custom-content-shortcode-valid-tag-param-and-valid-subscriber-id?ck_subscriber_id=' . $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'] . '&sh_kit=' . hash('sha256', $subscriber['subscriber']['email_address']));
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);

@@ -119,7 +119,7 @@ class BlockMemberContentLoginTest extends WPTestCase
 	public function testRenderFilterAppliedWhenLoggedIn()
 	{
 		// Define a subscriber ID, as if the subscriber is logged in.
-		$_COOKIE['ck_subscriber_id'] = $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'];
+		$_COOKIE['ck_subscriber_id'] = $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'];
 
 		$html = $this->block->render([]);
 		$this->assertStringContainsString('convertkit-restrict-content-logout', $html);
