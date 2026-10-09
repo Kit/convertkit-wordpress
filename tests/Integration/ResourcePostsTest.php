@@ -290,8 +290,8 @@ class ResourcePostsTest extends WPTestCase
 		$this->assertArrayHasKey('title', reset($result));
 
 		// Assert order of data is in descending published_at order.
-		$this->assertEquals('2024-04-30T08:00:36.000Z', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('2022-01-24T00:00:00.000Z', end($result)[ $this->resource->order_by ]);
+		$this->assertEquals('2024-04-30T08:00:36Z', reset($result)[ $this->resource->order_by ]);
+		$this->assertEquals('2022-01-24T00:00:00Z', end($result)[ $this->resource->order_by ]);
 	}
 
 	/**
@@ -351,8 +351,8 @@ class ResourcePostsTest extends WPTestCase
 		$this->assertArrayHasKey('title', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('2024-04-30T08:00:36.000Z', reset($result)['published_at']);
-		$this->assertEquals('2022-01-24T00:00:00.000Z', end($result)['published_at']);
+		$this->assertEquals('2024-04-30T08:00:36Z', reset($result)['published_at']);
+		$this->assertEquals('2022-01-24T00:00:00Z', end($result)['published_at']);
 	}
 
 	/**
