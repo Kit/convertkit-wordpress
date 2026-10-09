@@ -659,15 +659,12 @@ class WooCommerceRestrictContentCest
 		$I->addClassicEditorParagraph($I, $this->memberContent);
 		$I->fillField('#_regular_price', '19.99');
 
-		// Configure metabox's Restrict Content setting.
-		$I->configureMetaboxSettings(
-			$I,
-			metabox: 'wp-convertkit-meta-box',
-			configuration: [
-				'form'             => [ 'select2', 'None' ],
-				'restrict_content' => [ 'select2', $restrictContent ],
-			]
-		);
+		// Scroll to Kit meta box.
+		$I->scrollTo('#wp-convertkit-meta-box');
+
+		// Configure metabox's Form and Restrict Content settings, using aria-owns as WooCommerce loads its own Select2.
+		$I->fillSelect2Field($I, '#select2-wp-convertkit-form-container', 'None', 'aria-owns');
+		$I->fillSelect2Field($I, '#select2-wp-convertkit-restrict_content-container', $restrictContent, 'aria-owns');
 
 		// Publish Product.
 		return $I->publishClassicEditorPage($I);

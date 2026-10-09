@@ -83,7 +83,7 @@ jobs:
           - { path: 'EndToEnd/integrations/elementor', plugins: 'elementor', paid-plugins: 'false' }
           - { path: 'EndToEnd/integrations/other', plugins: 'akismet forminator', plugins-urls: 'https://downloads.wordpress.org/plugin/contact-form-7.6.1.7.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/integrations/wlm', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
-          - { path: 'EndToEnd/integrations/woocommerce', plugins: 'classic-editor woocommerce', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/woocommerce', plugins: 'classic-editor woocommerce', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/landing-pages', plugins: 'admin-menu-editor autoptimize classic-editor rocket-lazy-load', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/products', plugins: 'classic-editor', paid-plugins: 'false' }
           - { path: 'EndToEnd/restrict-content/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
