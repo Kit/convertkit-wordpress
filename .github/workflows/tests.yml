@@ -70,7 +70,27 @@ jobs:
         # Each test group installs only the third party Plugins and Themes its tests activate,
         # rather than every job in the matrix installing all of them.
         group:
+          - { path: 'EndToEnd/broadcasts/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/broadcasts/import-export', plugins: 'classic-editor custom-post-type-ui wp-crontrol', paid-plugins: 'false' }
+          - { path: 'EndToEnd/forms/blocks-shortcodes', plugins: 'block-visibility classic-editor autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/forms/general', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/forms/post-types', plugins: 'classic-editor custom-post-type-ui autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/general/other', plugins: 'classic-editor custom-post-type-ui', plugins-urls: 'https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/general/uninstall', paid-plugins: 'false' }
+          - { path: 'EndToEnd/general/plugin-screens', plugins: 'admin-menu-editor custom-post-type-ui mailchimp-for-wp mcp-adapter', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/divi-builder', plugins: 'classic-editor', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/integrations/divi-theme', plugins: 'classic-editor', themes-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2026/03/Divi_5.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/elementor', plugins: 'elementor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/other', plugins: 'akismet forminator', plugins-urls: 'https://downloads.wordpress.org/plugin/contact-form-7.6.1.7.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/integrations/wlm', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/integrations/woocommerce', plugins: 'classic-editor woocommerce', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/landing-pages', plugins: 'admin-menu-editor autoptimize classic-editor rocket-lazy-load', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/products', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/restrict-content/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'EndToEnd/restrict-content/general', plugins: 'admin-menu-editor custom-post-type-ui litespeed-cache sg-cachepress w3-total-cache wp-fastest-cache wp-optimize wp-super-cache', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/restrict-content/post-types', plugins: 'beaver-builder-lite-version custom-post-type-ui', plugins-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2024/01/convertkit-action-filter-tests.zip http://cktestplugins.wpengine.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-js_composer.7.8.zip http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode-core.zip', themes-urls: 'http://cktestplugins.wpengine.com/wp-content/uploads/2025/03/uncode.zip http://cktestplugins.wpengine.com/wp-content/uploads/2026/01/impeka.zip', paid-plugins: 'false' }
+          - { path: 'EndToEnd/tags', plugins: 'classic-editor', paid-plugins: 'false' }
+          - { path: 'Integration', paid-plugins: 'false' }
 
     uses: ./.github/workflows/_run-tests.yml
     secrets: inherit
