@@ -560,6 +560,9 @@ class ConvertKit_Broadcasts_Importer {
 			'h1',
 			'h2',
 			'h3',
+			'h4',
+			'h5',
+			'h6',
 			'p',
 			'ul',
 			'ol',
@@ -574,6 +577,7 @@ class ConvertKit_Broadcasts_Importer {
 			'figure',
 			'figcaption',
 			'br',
+			'hr',
 			'style', // Deliberate; we'll use DOMDocument to remove inline styles and their contents.
 		);
 
