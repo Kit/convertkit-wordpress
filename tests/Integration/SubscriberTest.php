@@ -147,4 +147,72 @@ class SubscriberTest extends WPTestCase
 		$this->assertFalse($method->invoke($this->subscriber, $_ENV['CONVERTKIT_API_SUBSCRIBER_ID'], ''));
 		$this->assertFalse($method->invoke($this->subscriber, '1', hash('sha256', $email)));
 	}
+
+	/**
+	 * Test that the subscriber's email address is trimmed and lowercased, including
+	 * non-ASCII characters, before comparing it to the hashed email address,
+	 * matching how Kit generates the `sh_kit` parameter.
+	 *
+	 * @since   3.4.7
+	 */
+	public function testVerifyHashedEmailNormalizesEmailAddress()
+	{
+		// Mock the API response for the subscriber.
+		add_filter( 'pre_http_request', array( $this, 'mockSubscriberResponse' ), 10, 3 );
+
+		// Call the private verify_hashed_email() method.
+		$method = new \ReflectionMethod(\ConvertKit_Subscriber::class, 'verify_hashed_email');
+		$method->setAccessible(true);
+
+		// Assert the hash of the trimmed, lowercased email address is verified.
+		$this->assertTrue($method->invoke($this->subscriber, '987654321', hash('sha256', 'iñtërnâtiônàlizætiøn@kit.com')));
+
+		// Assert hashes of the email address as stored, or only ASCII lowercased, are not verified.
+		$this->assertFalse($method->invoke($this->subscriber, '987654321', hash('sha256', ' IÑTËRNÂTIÔNÀLIZÆTIØN@Kit.com ')));
+		$this->assertFalse($method->invoke($this->subscriber, '987654321', hash('sha256', 'IÑTËRNÂTIÔNÀLIZÆTIØN@Kit.com')));
+		$this->assertFalse($method->invoke($this->subscriber, '987654321', hash('sha256', strtolower('IÑTËRNÂTIÔNÀLIZÆTIØN@Kit.com'))));
+
+		remove_filter( 'pre_http_request', array( $this, 'mockSubscriberResponse' ) );
+	}
+
+	/**
+	 * Mocks the API response when fetching a subscriber, returning an email address
+	 * with whitespace, uppercase and non-ASCII characters.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   mixed  $response       HTTP Response.
+	 * @param   array  $parsed_args    Request arguments.
+	 * @param   string $url            Request URL.
+	 * @return  mixed
+	 */
+	public function mockSubscriberResponse( $response, $parsed_args, $url )
+	{
+		// Only mock requests made to the subscriber endpoint.
+		if ( strpos( $url, 'https://api.kit.com/v4/subscribers/987654321' ) === false ) {
+			return $response;
+		}
+
+		return array(
+			'headers'       => array(),
+			'body'          => wp_json_encode(
+				array(
+					'subscriber' => array(
+						'id'            => 987654321,
+						'first_name'    => null,
+						'email_address' => ' IÑTËRNÂTIÔNÀLIZÆTIØN@Kit.com ',
+						'state'         => 'active',
+						'created_at'    => '2026-01-01T00:00:00Z',
+						'fields'        => array(),
+					),
+				)
+			),
+			'response'      => array(
+				'code'    => 200,
+				'message' => 'OK',
+			),
+			'cookies'       => array(),
+			'http_response' => null,
+		);
+	}
 }
