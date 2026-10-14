@@ -909,24 +909,3 @@ class ConvertKit_Admin_Section_MCP extends ConvertKit_Admin_Section_Base {
 	}
 
 }
-
-// Bootstrap.
-add_filter(
-	'convertkit_admin_settings_register_sections',
-	function ( $sections ) {
-
-		// Don't register the MCP section if the Abilities API is not available (WordPress < 6.9).
-		if ( ! function_exists( 'wp_register_ability' ) ) {
-			return $sections;
-		}
-
-		// Don't register the MCP section if PHP 7.4+ is not installed.
-		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
-			return $sections;
-		}
-
-		$sections['mcp'] = new ConvertKit_Admin_Section_MCP();
-		return $sections;
-
-	}
-);
