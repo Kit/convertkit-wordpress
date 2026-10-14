@@ -56,7 +56,7 @@ class ConvertKit_Subscriber {
 		if ( filter_has_var( INPUT_GET, $this->key ) ) {
 			$subscriber_id = filter_input( INPUT_GET, $this->key, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-			// Ignore a numeric subscriber ID that doesn't match the hashed email address in the request.
+			// If a numeric subscriber ID doesn't match the hashed email address in the request, only return it if unverified IDs are permitted.
 			if ( is_numeric( $subscriber_id ) && ! $this->verify_hashed_email( $subscriber_id, (string) filter_input( INPUT_GET, 'sh_kit', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ) ) {
 				return $this->get_unverified_subscriber_id( $subscriber_id );
 			}
@@ -69,7 +69,7 @@ class ConvertKit_Subscriber {
 		if ( isset( $_COOKIE[ $this->key ] ) && ! empty( $_COOKIE[ $this->key ] ) ) {
 			$subscriber_id = $this->get_subscriber_id_from_cookie();
 
-			// Ignore a numeric subscriber ID that wasn't signed by this site.
+			// If a numeric subscriber ID wasn't signed by this site, only return it if unverified IDs are permitted.
 			if ( is_numeric( $subscriber_id ) && ! $this->verify_signature( $subscriber_id ) ) {
 				return $this->get_unverified_subscriber_id( $subscriber_id );
 			}
@@ -211,15 +211,11 @@ class ConvertKit_Subscriber {
 			return false;
 		}
 
-		// Compare the hash of the email address as stored, and lowercased.
+		// Kit trims and lowercases the email address (including non-ASCII characters) before hashing.
 		$email_address = trim( $result['subscriber']['email_address'] );
-		foreach ( array( $email_address, strtolower( $email_address ) ) as $email ) {
-			if ( hash_equals( hash( 'sha256', $email ), $hashed_email ) ) {
-				self::$verified[ $cache_key ] = true;
-				break;
-			}
-		}
+		$email_address = ( function_exists( 'mb_strtolower' ) ? mb_strtolower( $email_address, 'UTF-8' ) : strtolower( $email_address ) );
 
+		self::$verified[ $cache_key ] = hash_equals( hash( 'sha256', $email_address ), $hashed_email );
 		return self::$verified[ $cache_key ];
 
 	}

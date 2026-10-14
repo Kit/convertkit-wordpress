@@ -135,7 +135,7 @@ class SubscriberTest extends WPTestCase
 			$_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN']
 		);
 		$subscriber = $api->get_subscriber( (int) $_ENV['CONVERTKIT_API_SUBSCRIBER_ID']);
-		$email      = $subscriber['subscriber']['email_address'];
+		$email      = mb_strtolower(trim($subscriber['subscriber']['email_address']), 'UTF-8');
 
 		// Call the private verify_hashed_email() method.
 		$method = new \ReflectionMethod(\ConvertKit_Subscriber::class, 'verify_hashed_email');
