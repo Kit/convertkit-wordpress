@@ -39,6 +39,7 @@ class ConvertKit_Admin_Settings {
 		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
 		add_action( 'admin_init', array( $this, 'register_sections' ) );
 		add_filter( 'plugin_action_links_' . CONVERTKIT_PLUGIN_FILE, array( $this, 'add_settings_page_link' ) );
+		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
 
 	}
 
@@ -325,11 +326,36 @@ class ConvertKit_Admin_Settings {
 			return;
 		}
 
-		// Register the General and Tools settings sections.
+		// Register the General, Tools, Broadcasts and Form Entries settings sections.
 		$sections = array(
-			'general' => new ConvertKit_Admin_Section_General(),
-			'tools'   => new ConvertKit_Admin_Section_Tools(),
+			'general'      => new ConvertKit_Admin_Section_General(),
+			'tools'        => new ConvertKit_Admin_Section_Tools(),
+			'broadcasts'   => new ConvertKit_Admin_Section_Broadcasts(),
+			'form-entries' => new ConvertKit_Admin_Section_Form_Entries(),
 		);
+
+		// Register the MCP settings section if the Abilities API (WordPress 6.9+) and PHP 7.4+ are available.
+		if ( function_exists( 'wp_register_ability' ) && version_compare( PHP_VERSION, '7.4', '>=' ) ) {
+			$sections['mcp'] = new ConvertKit_Admin_Section_MCP();
+		}
+
+		// Register the Member Content settings section.
+		$sections['restrict-content'] = new ConvertKit_Admin_Section_Restrict_Content();
+
+		// Register the Contact Form 7 settings section if Contact Form 7 is active.
+		if ( defined( 'WPCF7_VERSION' ) ) {
+			$sections['contactform7'] = new ConvertKit_ContactForm7_Admin_Section();
+		}
+
+		// Register the Forminator settings section if Forminator is active.
+		if ( defined( 'FORMINATOR_VERSION' ) ) {
+			$sections['forminator'] = new ConvertKit_Forminator_Admin_Section();
+		}
+
+		// Register the WishList Member settings section if WishList Member is active.
+		if ( function_exists( 'wlmapi_get_levels' ) ) {
+			$sections['wishlist-member'] = new ConvertKit_Wishlist_Admin_Section();
+		}
 
 		/**
 		 * Registers settings sections at Settings > Kit.
@@ -342,6 +368,26 @@ class ConvertKit_Admin_Settings {
 
 		// With our sections now registered, assign them to this class.
 		$this->sections = $sections;
+
+	}
+
+	/**
+	 * Saves the number of Form Entries to display per page, when changed in Screen Options.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   mixed  $screen_option  The value to save instead of the option value. Default false (to skip saving the current option).
+	 * @param   string $option         The option name.
+	 * @param   string $value          The option value.
+	 * @return  mixed                  The option value
+	 */
+	public function set_screen_option( $screen_option, $option, $value ) {
+
+		if ( 'convertkit_form_entries_per_page' === $option ) {
+			return (int) $value;
+		}
+
+		return $screen_option;
 
 	}
 
