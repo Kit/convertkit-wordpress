@@ -61,8 +61,8 @@ class PageTagCest
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Load the page with the ?ck_subscriber_id parameter, as if the subscriber clicked a link in a Kit broadcast.
-		$I->amOnPage($url . '?ck_subscriber_id=' . $subscriberID);
+		// Load the page with the ?ck_subscriber_id and ?sh_kit parameters, as if the subscriber clicked a link in a Kit broadcast.
+		$I->amOnPage($url . '?ck_subscriber_id=' . $subscriberID . '&sh_kit=' . hash('sha256', $emailAddress));
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -104,8 +104,8 @@ class PageTagCest
 		// Publish Page.
 		$url = $I->publishGutenbergPage($I);
 
-		// Load the page with the ?ck_subscriber_id parameter, as if the subscriber clicked a link in a Kit broadcast.
-		$I->amOnUrl($url . '?ck_subscriber_id=' . $subscriberID);
+		// Load the page with the ?ck_subscriber_id and ?sh_kit parameters, as if the subscriber clicked a link in a Kit broadcast.
+		$I->amOnUrl($url . '?ck_subscriber_id=' . $subscriberID . '&sh_kit=' . hash('sha256', $emailAddress));
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -152,6 +152,73 @@ class PageTagCest
 	}
 
 	/**
+	 * Test that the Tag specified in the Page Settings is not assigned to the subscriber
+	 * when the ?ck_subscriber_id parameter is used without the ?sh_kit parameter.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testDefinedTagNotAssignedWithoutHashedEmail(EndToEndTester $I)
+	{
+		$this->testDefinedTagNotAssigned($I, false);
+	}
+
+	/**
+	 * Test that the Tag specified in the Page Settings is not assigned to the subscriber
+	 * when the ?sh_kit parameter doesn't match the subscriber's email address.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testDefinedTagNotAssignedWithInvalidHashedEmail(EndToEndTester $I)
+	{
+		$this->testDefinedTagNotAssigned($I, hash('sha256', 'not-the-subscriber@kit.com'));
+	}
+
+	/**
+	 * Creates a subscriber and a Page with the Tag setting, and loads the Page with the
+	 * subscriber's ID and the given hashed email, confirming the subscriber isn't tagged.
+	 *
+	 * @since   3.4.7
+	 *
+	 * @param   EndToEndTester $I              Tester.
+	 * @param   bool|string    $hashedEmail    Value for the ?sh_kit parameter, or false to omit it.
+	 */
+	private function testDefinedTagNotAssigned(EndToEndTester $I, $hashedEmail)
+	{
+		// Programmatically create a subscriber in Kit.
+		$emailAddress = $I->generateEmailAddress('n7studios.com');
+		$subscriberID = $I->apiSubscribe($emailAddress, $_ENV['CONVERTKIT_API_FORM_ID']);
+
+		// Programmatically create a Page with the Tag setting.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'  => 'page',
+				'post_title' => 'Kit: Page: Tag: ' . $_ENV['CONVERTKIT_API_TAG_NAME'] . ': Unverified Subscriber ID',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => $_ENV['CONVERTKIT_API_TAG_ID'],
+						'restrict_content' => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page with the subscriber ID, and the hashed email if specified.
+		$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID . ( $hashedEmail ? '&sh_kit=' . $hashedEmail : '' ));
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Check that the subscriber has not been assigned to the tag.
+		$I->apiCheckSubscriberHasNoTags($I, $subscriberID);
+	}
+
+	/**
 	 * Test that the defined tag is honored when chosen via
 	 * WordPress' Quick Edit functionality.
 	 *
@@ -187,7 +254,7 @@ class PageTagCest
 		);
 
 		// Load the Page on the frontend site.
-		$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID);
+		$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID . '&sh_kit=' . hash('sha256', $emailAddress));
 
 		// Check that no PHP warnings or notices were output.
 		$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -246,7 +313,7 @@ class PageTagCest
 			$subscriberID = $I->apiSubscribe($emailAddress, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 			// Load the Page on the frontend site.
-			$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID);
+			$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID . '&sh_kit=' . hash('sha256', $emailAddress));
 
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
@@ -316,7 +383,7 @@ class PageTagCest
 			$subscriberID = $I->apiSubscribe($emailAddress, $_ENV['CONVERTKIT_API_FORM_ID']);
 
 			// Load the Page on the frontend site.
-			$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID);
+			$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=' . $subscriberID . '&sh_kit=' . hash('sha256', $emailAddress));
 
 			// Check that no PHP warnings or notices were output.
 			$I->checkNoWarningsAndNoticesOnScreen($I);
