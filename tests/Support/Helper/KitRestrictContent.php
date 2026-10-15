@@ -414,7 +414,7 @@ class KitRestrictContent extends \Codeception\Module
 
 		// Set cookie with signed subscriber ID and reload the restricted content page, as if we entered the
 		// code sent in the email as a Kit subscriber who has not subscribed to the form.
-		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
+		$this->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID_NO_ACCESS'], $urlOrPageID);
 
 		// Confirm an inline error message is displayed.
 		$this->seeRestrictContentError($I, $options['settings']['no_access_text_form']);
