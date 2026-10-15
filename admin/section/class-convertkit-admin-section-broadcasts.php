@@ -729,14 +729,3 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	}
 
 }
-
-// Bootstrap.
-add_filter(
-	'convertkit_admin_settings_register_sections',
-	function ( $sections ) {
-
-		$sections['broadcasts'] = new ConvertKit_Admin_Section_Broadcasts();
-		return $sections;
-
-	}
-);

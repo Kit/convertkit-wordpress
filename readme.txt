@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.4.6
+Stable tag: 3.4.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -347,6 +347,15 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.4.7 2026-10-15
+* Added: Member Content: WooCommerce: Hide price, description and Add to Cart button on restricted Products, and prevent adding them to the cart
+* Updated: MCP: Use the MCP Adapter Plugin, instead of bundling the MCP Adapter library
+* Updated: Performance: Autoload Plugin classes, reducing memory usage
+* Updated: Broadcasts: Use `v4/posts` API endpoint
+* Updated: WordPress Libraries to 2.8.0
+* Fix: Subscriber ID: Verify numeric subscriber IDs in URLs using the `sh_kit` parameter, and sign the subscriber ID cookie. Use the `convertkit_subscriber_allow_unverified_id` filter to permit unverified subscriber IDs
+* Fix: Broadcasts: Importer: Retain dividers and H4 to H6 headings
 
 ### 3.4.6 2026-10-06
 * Fix: Settings: OAuth: Verify the connection request originated from the Plugin before connecting to Kit, and require the `manage_options` capability to connect or disconnect
