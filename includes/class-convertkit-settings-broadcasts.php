@@ -178,6 +178,19 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
+	 * Returns the Kit Tag ID to send Broadcasts created from WordPress Posts to.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  int     Tag ID (0 = all subscribers)
+	 */
+	public function export_tag_id() {
+
+		return absint( $this->settings['export_tag_id'] );
+
+	}
+
+	/**
 	 * Returns whether Broadcasts should have their styles imported.
 	 *
 	 * @since   2.2.9
@@ -282,6 +295,10 @@ class ConvertKit_Settings_Broadcasts {
 					'enum'        => array( '', 'on' ),
 					'description' => __( 'Whether exporting WordPress Posts to Kit Broadcasts is enabled.', 'convertkit' ),
 				),
+				'export_tag_id'         => array(
+					'type'        => array( 'integer', 'string' ),
+					'description' => __( 'Kit Tag ID to send Broadcasts created from WordPress Posts to. Blank for all subscribers.', 'convertkit' ),
+				),
 				'no_styles'             => array(
 					'type'        => 'string',
 					'enum'        => array( '', 'on' ),
@@ -314,6 +331,7 @@ class ConvertKit_Settings_Broadcasts {
 			'published_at_min_date' => gmdate( 'Y-m-d', strtotime( '-30 days' ) ),
 
 			'enabled_export'        => '',
+			'export_tag_id'         => '',
 			'no_styles'             => '',
 		);
 

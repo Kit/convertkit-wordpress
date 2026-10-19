@@ -328,6 +328,19 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		add_settings_field(
+			'export_tag_id',
+			__( 'Send To', 'convertkit' ),
+			array( $this, 'export_tag_id_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_tag_id',
+				'label_for'   => $this->settings_key . '_export_tag_id',
+				'description' => __( 'The subscribers to send draft broadcasts to. This can be changed in Kit before sending.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
 			'no_styles',
 			__( 'Disable Styles', 'convertkit' ),
 			array( $this, 'no_styles_callback' ),
@@ -617,8 +630,50 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			$args['name'],
 			'on',
 			$this->settings->enabled_export(),
-			$args['label']
+			$args['label'],
+			false,
+			array( 'convertkit-conditional-display' )
 		);
+
+	}
+
+	/**
+	 * Renders the input for the Send To setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_tag_id_callback( $args ) {
+
+		// Build options.
+		$options = array(
+			'' => esc_html__( 'All subscribers', 'convertkit' ),
+		);
+		$tags    = new ConvertKit_Resource_Tags( 'settings' );
+		if ( $tags->exist() ) {
+			foreach ( $tags->get() as $tag ) {
+				$options[ absint( $tag['id'] ) ] = sprintf(
+					/* translators: Kit Tag name */
+					esc_html__( 'Subscribers tagged %s', 'convertkit' ),
+					esc_html( $tag['name'] )
+				);
+			}
+		}
+
+		// Output field.
+		echo '<div class="convertkit-select2-container">';
+		$this->output_select_field(
+			$args['name'],
+			(string) $this->settings->export_tag_id(),
+			$options,
+			$args['description'],
+			array(
+				'convertkit-select2',
+				'enabled_export',
+			)
+		);
+		echo '</div>';
 
 	}
 
