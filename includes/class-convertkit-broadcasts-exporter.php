@@ -240,8 +240,8 @@ class ConvertKit_Broadcasts_Exporter {
 			$post->post_title,
 			$content,
 			$post->post_excerpt,
-			false,
-			null,
+			$this->broadcasts_settings->export_public(),
+			$this->get_published_at( $post ),
 			null,
 			'',
 			'',
@@ -261,6 +261,30 @@ class ConvertKit_Broadcasts_Exporter {
 
 		// Return result.
 		return $result['broadcast'];
+
+	}
+
+	/**
+	 * Returns the Post's published date and time, if the Broadcast is public and the Post is published.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_Post $post   WordPress Post.
+	 * @return  null|DateTime
+	 */
+	private function get_published_at( $post ) {
+
+		// Bail if the Broadcast isn't public.
+		if ( ! $this->broadcasts_settings->export_public() ) {
+			return null;
+		}
+
+		// Bail if the Post hasn't been published.
+		if ( $post->post_date_gmt === '0000-00-00 00:00:00' ) {
+			return null;
+		}
+
+		return new DateTime( $post->post_date_gmt, new DateTimeZone( 'UTC' ) );
 
 	}
 

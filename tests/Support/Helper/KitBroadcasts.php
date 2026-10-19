@@ -30,6 +30,7 @@ class KitBroadcasts extends \Codeception\Module
 					case 'import_thumbnail':
 					case 'import_images':
 					case 'enabled_export':
+					case 'export_public':
 					case 'no_styles':
 						if ( $value ) {
 							$I->checkOption('_wp_convertkit_settings_broadcasts[' . $key . ']');
