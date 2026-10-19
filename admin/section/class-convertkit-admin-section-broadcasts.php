@@ -488,8 +488,8 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		// Define link to register the webhook.
 		$register_url = add_query_arg(
 			array(
-				'page'                                          => '_wp_convertkit_settings',
-				'tab'                                           => 'broadcasts',
+				'page' => '_wp_convertkit_settings',
+				'tab'  => 'broadcasts',
 				'_convertkit_settings_broadcasts_webhook_nonce' => wp_create_nonce( 'convertkit-settings-broadcasts-webhook' ),
 			),
 			'options-general.php'
