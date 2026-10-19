@@ -45,7 +45,7 @@ class ConvertKit_Setup {
 		}
 
 		/**
-		 * 3.4.6+: Remove the Posts resource's Cron event, as Broadcasts are now imported
+		 * 3.4.8+: Remove the Posts resource's Cron event, as Broadcasts are now imported
 		 * when Kit notifies this site by webhook, and register the webhook if needed.
 		 */
 		wp_clear_scheduled_hook( 'convertkit_resource_refresh_posts' );

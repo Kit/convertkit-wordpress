@@ -8,7 +8,7 @@ use lucatume\WPBrowser\TestCase\WPRestApiTestCase;
  * Tests for registering the Broadcasts webhook endpoint in Kit, and receiving
  * webhook deliveries, mocking Kit API requests.
  *
- * @since   3.4.6
+ * @since   3.4.8
  */
 class BroadcastsWebhookTest extends WPRestApiTestCase
 {
@@ -22,7 +22,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Holds the ConvertKit Settings class.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @var     ConvertKit_Settings
 	 */
@@ -31,7 +31,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Holds the Broadcasts Webhook class.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @var     ConvertKit_Broadcasts_Webhook
 	 */
@@ -40,7 +40,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Holds the Kit API requests made.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @var     array
 	 */
@@ -49,7 +49,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Holds the Kit API response code and body to return, keyed by method and endpoint.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @var     array
 	 */
@@ -58,7 +58,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Performs actions before each test.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function setUp(): void
 	{
@@ -131,7 +131,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Performs actions after each test.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function tearDown(): void
 	{
@@ -150,7 +150,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that the webhook endpoint is registered in Kit when the Broadcasts import is enabled.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testRegisteredWhenImportEnabled()
 	{
@@ -178,7 +178,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that the webhook endpoint is deleted from Kit when the Broadcasts import is disabled.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testDeletedWhenImportDisabled()
 	{
@@ -200,7 +200,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	 * Test that the registration error is stored, and registration isn't retried on every request,
 	 * when Kit rejects the webhook endpoint.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testRegistrationFailed()
 	{
@@ -225,7 +225,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that re-registering the webhook endpoint deletes the existing endpoint from Kit.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testRegisterReplacesExistingEndpoint()
 	{
@@ -245,7 +245,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	 * Test that registering the webhook endpoint doesn't delete an existing endpoint registered
 	 * for a different URL, such as when the site was cloned to a staging site.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testRegisterWhenURLChanged()
 	{
@@ -269,7 +269,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that get_status() returns the webhook endpoint's status in Kit.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testGetStatus()
 	{
@@ -280,7 +280,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that get_status() returns missing when the webhook endpoint was deleted in Kit.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testGetStatusWhenDeletedInKit()
 	{
@@ -296,7 +296,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that the stored webhook endpoint is removed when the Plugin's credentials are deleted.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testRemovedWhenCredentialsDeleted()
 	{
@@ -310,7 +310,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that a delivery with a post.published event refreshes the Posts resource, which imports Broadcasts.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceivePostPublished()
 	{
@@ -327,7 +327,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that a delivery without a post.published event doesn't refresh the Posts resource.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceiveOtherEvent()
 	{
@@ -343,7 +343,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that a duplicate delivery of the same event doesn't refresh the Posts resource again.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceiveDuplicateEvent()
 	{
@@ -363,7 +363,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that a delivery with an invalid signature is rejected.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceiveInvalidSignature()
 	{
@@ -379,7 +379,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that a delivery without a signature is rejected.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceiveNoSignature()
 	{
@@ -397,7 +397,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Test that a delivery signed more than five minutes ago is rejected.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceiveExpiredSignature()
 	{
@@ -414,7 +414,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	 * Test that a delivery returns a 410 when the Broadcasts import is disabled,
 	 * so Kit stops retrying it.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testReceiveWhenImportDisabled()
 	{
@@ -428,7 +428,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	 * Test that the Posts resource's WordPress Cron event, used before webhooks, is removed
 	 * when the Plugin is updated.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testPostsCronEventRemovedOnPluginUpdate()
 	{
@@ -449,7 +449,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	 * Test that the webhook endpoint is registered when the Plugin is updated, if the
 	 * Broadcasts import is enabled and no endpoint is registered.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	public function testRegisteredOnPluginUpdate()
 	{
@@ -474,7 +474,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Enables the Broadcasts import, which registers the webhook endpoint.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 */
 	private function enableImport()
 	{
@@ -485,7 +485,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Returns a webhook delivery payload containing a single event of the given type.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @param   string $type   Event type.
 	 * @return  string
@@ -516,7 +516,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Sends the given payload to the webhook REST API route, signed with the given secret.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @param   string $payload     Payload.
 	 * @param   string $secret      Signing secret.
@@ -537,7 +537,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Returns whether the Posts resource was refreshed from the Kit API.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @return  bool
 	 */
@@ -555,7 +555,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	/**
 	 * Mocks Kit API requests, storing each request made and returning the defined response.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @param   false|array $response   Response.
 	 * @param   array       $args       Request arguments.

@@ -64,7 +64,7 @@ class KitBroadcasts extends \Codeception\Module
 	/**
 	 * Helper method to import Broadcasts using the Import now button at Settings > Kit > Broadcasts.
 	 *
-	 * @since   3.4.6
+	 * @since   3.4.8
 	 *
 	 * @param   EndToEndTester $I     EndToEndTester.
 	 */
