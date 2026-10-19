@@ -38,8 +38,13 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		// Define settings sections.
 		$this->settings_sections = array(
 			'general' => array(
-				'title'    => $this->title,
+				'title'    => __( 'Import', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info' ),
+				'wrap'     => true,
+			),
+			'export'  => array(
+				'title'    => __( 'Export', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_export' ),
 				'wrap'     => true,
 			),
 		);
@@ -314,7 +319,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			__( 'Enable Export Actions', 'convertkit' ),
 			array( $this, 'enable_export_callback' ),
 			$this->settings_key,
-			$this->name,
+			$this->name . '-export',
 			array(
 				'name'      => 'enabled_export',
 				'label_for' => 'enabled_export',
@@ -346,7 +351,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 
 		?>
 		<span class="convertkit-beta-label"><?php esc_html_e( 'Beta', 'convertkit' ); ?></span>
-		<p class="description"><?php esc_html_e( 'Defines whether public broadcasts ("Enabled on public feeds") in Kit should automatically be published on this site as WordPress Posts, and whether to enable options to create draft Kit Broadcasts from WordPress Posts.', 'convertkit' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Defines whether public broadcasts ("Enabled on public feeds") in Kit should automatically be published on this site as WordPress Posts.', 'convertkit' ); ?></p>
 		<?php
 
 		// If the DISABLE_WP_CRON constant exists and is true, display a warning that this functionality
@@ -372,6 +377,19 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 
 	}
 
+	/**
+	 * Prints help info for the export section of the settings screen.
+	 *
+	 * @since   3.4.8
+	 */
+	public function print_section_info_export() {
+
+		?>
+		<span class="convertkit-beta-label"><?php esc_html_e( 'Beta', 'convertkit' ); ?></span>
+		<p class="description"><?php esc_html_e( 'Defines whether to display options to create draft Kit Broadcasts from WordPress Posts.', 'convertkit' ); ?></p>
+		<?php
+
+	}
 
 	/**
 	 * Returns the URL for the ConvertKit documentation for this setting section.
