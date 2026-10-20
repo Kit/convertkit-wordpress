@@ -109,6 +109,7 @@ class BroadcastsExportTest extends WPTestCase
 			[
 				'post_title'   => 'Kit: Export: Preview Text: No Excerpt',
 				'post_content' => '<p>Post content.</p>',
+				'post_excerpt' => '',
 			]
 		);
 
