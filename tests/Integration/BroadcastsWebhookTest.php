@@ -114,12 +114,17 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 				'code' => 204,
 				'body' => null,
 			],
-			'GET wordpress/posts'          => [
+			'GET posts'                    => [
 				'code' => 200,
 				'body' => [
-					'posts'       => [],
-					'page'        => 1,
-					'total_pages' => 1,
+					'posts'      => [],
+					'pagination' => [
+						'has_previous_page' => false,
+						'has_next_page'     => false,
+						'start_cursor'      => null,
+						'end_cursor'        => null,
+						'per_page'          => 100,
+					],
 				],
 			],
 		];
@@ -544,7 +549,7 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	private function postsRefreshed()
 	{
 		foreach ( $this->requests as $request ) {
-			if ( $request['method'] === 'GET' && strpos($request['url'], 'https://api.kit.com/wordpress/posts?') === 0 ) {
+			if ( $request['method'] === 'GET' && strtok($request['url'], '?') === 'https://api.kit.com/v4/posts' ) {
 				return true;
 			}
 		}
