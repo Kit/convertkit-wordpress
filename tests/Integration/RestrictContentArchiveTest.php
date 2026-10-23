@@ -172,7 +172,7 @@ class RestrictContentArchiveTest extends WPTestCase
 	}
 
 	/**
-	 * Returns the content WordPress outputs in the blog archive for the given Post.
+	 * Returns the content WordPress outputs in the search results archive for the given Post.
 	 *
 	 * @since   3.4.8
 	 *
@@ -183,9 +183,9 @@ class RestrictContentArchiveTest extends WPTestCase
 	{
 		global $post;
 
-		// Load the blog archive.
-		$this->go_to( home_url( '/' ) );
-		$this->assertTrue( is_home() );
+		// Load the search results archive, which doesn't depend on the site's front page settings.
+		$this->go_to( home_url( '/?s=content' ) );
+		$this->assertTrue( is_search() );
 
 		// Setup the Post, as the archive's loop would.
 		$post = get_post( $post_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
