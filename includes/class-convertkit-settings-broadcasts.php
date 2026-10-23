@@ -191,6 +191,19 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
+	 * Returns whether Broadcasts created from WordPress Posts should be public.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  bool
+	 */
+	public function export_public() {
+
+		return ( $this->settings['export_public'] === 'on' ? true : false );
+
+	}
+
+	/**
 	 * Returns whether Broadcasts should have their styles imported.
 	 *
 	 * @since   2.2.9
@@ -299,6 +312,11 @@ class ConvertKit_Settings_Broadcasts {
 					'type'        => array( 'integer', 'string' ),
 					'description' => __( 'Kit Tag ID to send Broadcasts created from WordPress Posts to. Blank for all subscribers.', 'convertkit' ),
 				),
+				'export_public'         => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether Broadcasts created from WordPress Posts are published to the web (Kit Creator Profile and Landing Pages).', 'convertkit' ),
+				),
 				'no_styles'             => array(
 					'type'        => 'string',
 					'enum'        => array( '', 'on' ),
@@ -332,6 +350,7 @@ class ConvertKit_Settings_Broadcasts {
 
 			'enabled_export'        => '',
 			'export_tag_id'         => '',
+			'export_public'         => '',
 			'no_styles'             => '',
 		);
 

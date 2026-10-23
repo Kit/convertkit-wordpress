@@ -132,11 +132,11 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
-	 * Test that Broadcasts are sent to all subscribers by default.
+	 * Test that Broadcasts are sent to all subscribers and aren't public by default.
 	 *
 	 * @since   3.4.8
 	 */
-	public function testExportDefaultAudience()
+	public function testExportDefaultAudienceAndVisibility()
 	{
 		// Create Post.
 		$post_id = $this->factory->post->create(
@@ -150,8 +150,10 @@ class BroadcastsExportTest extends WPTestCase
 		$result = $this->exporter->export_post_to_broadcast( $post_id );
 		$this->assertNotInstanceOf(\WP_Error::class, $result);
 
-		// Confirm the Broadcast is sent to all subscribers.
+		// Confirm the Broadcast is sent to all subscribers, and isn't public.
 		$this->assertArrayNotHasKey( 'subscriber_filter', $this->request );
+		$this->assertFalse( $this->request['public'] );
+		$this->assertArrayNotHasKey( 'published_at', $this->request );
 	}
 
 	/**
@@ -190,6 +192,63 @@ class BroadcastsExportTest extends WPTestCase
 			],
 			$this->request['subscriber_filter']
 		);
+	}
+
+	/**
+	 * Test that Broadcasts are public, with the Post's published date, when the Make Public setting is enabled.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPublic()
+	{
+		// Enable Make Public setting.
+		$this->saveBroadcastsSettings( [ 'export_public' => 'on' ] );
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'    => 'Kit: Export: Public',
+				'post_content'  => '<p>Post content.</p>',
+				'post_date_gmt' => '2026-01-02 03:04:05',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Broadcast is public, with the Post's published date.
+		$this->assertTrue( $this->request['public'] );
+		$this->assertEquals( '2026-01-02 03:04:05', $this->request['published_at'] );
+	}
+
+	/**
+	 * Test that Broadcasts created from draft Posts are public, without a published date,
+	 * when the Make Public setting is enabled.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPublicDraftPost()
+	{
+		// Enable Make Public setting.
+		$this->saveBroadcastsSettings( [ 'export_public' => 'on' ] );
+
+		// Create draft Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Public: Draft',
+				'post_content' => '<p>Post content.</p>',
+				'post_status'  => 'draft',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Broadcast is public, without a published date.
+		$this->assertTrue( $this->request['public'] );
+		$this->assertArrayNotHasKey( 'published_at', $this->request );
 	}
 
 	/**

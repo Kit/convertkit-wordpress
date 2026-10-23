@@ -341,6 +341,19 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		add_settings_field(
+			'export_public',
+			__( 'Make Public', 'convertkit' ),
+			array( $this, 'export_public_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'      => 'export_public',
+				'label_for' => 'export_public',
+				'label'     => __( 'If enabled, draft broadcasts will be published to your Kit Creator Profile and Landing Pages when sent.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
 			'no_styles',
 			__( 'Disable Styles', 'convertkit' ),
 			array( $this, 'no_styles_callback' ),
@@ -674,6 +687,27 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			)
 		);
 		echo '</div>';
+
+	}
+
+	/**
+	 * Renders the input for the Make Public setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,label).
+	 */
+	public function export_public_callback( $args ) {
+
+		// Output field.
+		$this->output_checkbox_field(
+			$args['name'],
+			'on',
+			$this->settings->export_public(),
+			$args['label'],
+			false,
+			array( 'enabled_export' )
+		);
 
 	}
 

@@ -51,6 +51,7 @@ class BroadcastsToPostsSettingsCest
 		$I->seeInSource('<label for="no_styles">');
 		$I->seeInSource('<label for="enabled_export">');
 		$I->seeInSource('<label for="_wp_convertkit_settings_broadcasts_export_tag_id">');
+		$I->seeInSource('<label for="export_public">');
 	}
 
 	/**
@@ -67,19 +68,22 @@ class BroadcastsToPostsSettingsCest
 		$I->loadKitSettingsBroadcastsScreen($I);
 
 		// Confirm that export fields are hidden, because the 'Enable Export Actions' option is not checked.
+		$I->dontSeeElement('input#export_public');
 		$I->dontSeeElement('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_tag_id-container"]');
 
 		// Enable Export Actions.
 		$I->checkOption('#enabled_export');
 
 		// Confirm that export fields are now displayed.
-		$I->waitForElementVisible('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_tag_id-container"]');
+		$I->waitForElementVisible('input#export_public');
+		$I->seeElement('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_tag_id-container"]');
 
 		// Disable Export Actions.
 		$I->uncheckOption('#enabled_export');
 
 		// Confirm that export fields are hidden.
-		$I->waitForElementNotVisible('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_tag_id-container"]');
+		$I->waitForElementNotVisible('input#export_public');
+		$I->dontSeeElement('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_tag_id-container"]');
 	}
 
 	/**
@@ -203,6 +207,7 @@ class BroadcastsToPostsSettingsCest
 		$I->fillField('_wp_convertkit_settings_broadcasts[published_at_min_date]', '01/01/2023');
 		$I->checkOption('#enabled_export');
 		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_broadcasts_export_tag_id-container', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->checkOption('#export_public');
 		$I->checkOption('#no_styles');
 
 		// Click the Save Changes button.
@@ -224,6 +229,7 @@ class BroadcastsToPostsSettingsCest
 		$I->seeInField('_wp_convertkit_settings_broadcasts[published_at_min_date]', '2023-01-01');
 		$I->seeCheckboxIsChecked('#enabled_export');
 		$I->seeInField('_wp_convertkit_settings_broadcasts[export_tag_id]', 'Subscribers tagged ' . $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->seeCheckboxIsChecked('#export_public');
 		$I->seeCheckboxIsChecked('#no_styles');
 	}
 

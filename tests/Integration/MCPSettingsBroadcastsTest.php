@@ -150,6 +150,7 @@ class MCPSettingsBroadcastsTest extends WPTestCase
 		$this->assertArrayHasKey('published_at_min_date', $result);
 		$this->assertArrayHasKey('enabled_export', $result);
 		$this->assertArrayHasKey('export_tag_id', $result);
+		$this->assertArrayHasKey('export_public', $result);
 		$this->assertArrayHasKey('no_styles', $result);
 	}
 
@@ -172,6 +173,7 @@ class MCPSettingsBroadcastsTest extends WPTestCase
 				'import_images'    => 'on',
 				'enabled_export'   => 'on',
 				'export_tag_id'    => $_ENV['CONVERTKIT_API_TAG_ID'],
+				'export_public'    => 'on',
 				'no_styles'        => 'on',
 			]
 		);
@@ -186,6 +188,7 @@ class MCPSettingsBroadcastsTest extends WPTestCase
 		$this->assertArrayHasKey('published_at_min_date', $result);
 		$this->assertArrayHasKey('enabled_export', $result);
 		$this->assertArrayHasKey('export_tag_id', $result);
+		$this->assertArrayHasKey('export_public', $result);
 		$this->assertArrayHasKey('no_styles', $result);
 
 		// Confirm settings are updated.
@@ -195,6 +198,7 @@ class MCPSettingsBroadcastsTest extends WPTestCase
 		$this->assertEquals('on', $result['import_images']);
 		$this->assertEquals('on', $result['enabled_export']);
 		$this->assertEquals($_ENV['CONVERTKIT_API_TAG_ID'], $result['export_tag_id']);
+		$this->assertEquals('on', $result['export_public']);
 		$this->assertEquals('on', $result['no_styles']);
 	}
 
@@ -235,6 +239,7 @@ class MCPSettingsBroadcastsTest extends WPTestCase
 				'published_at_min_date' => gmdate( 'Y-m-d', strtotime( '-30 days' ) ),
 				'enabled_export'        => '',
 				'export_tag_id'         => '',
+				'export_public'         => '',
 				'no_styles'             => '',
 			]
 		);
