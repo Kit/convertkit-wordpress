@@ -604,6 +604,48 @@ class WooCommerceRestrictContentCest
 	}
 
 	/**
+	 * Test that a restricted Product's description and short description are only returned
+	 * by WooCommerce's Store API to subscribers with access.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testRestrictContentInStoreAPI(EndToEndTester $I)
+	{
+		// Setup Kit Plugin, disabling JS.
+		$I->setupKitPluginDisableJS($I);
+		$I->setupKitPluginResources($I);
+
+		// Create Product with a short description.
+		$productID = $this->createProduct(
+			$I,
+			'Kit: Product: Restrict Content: Tag: Store API',
+			'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'],
+			false,
+			false,
+			'Short description.'
+		);
+
+		// Request the Product from the Store API as a visitor who isn't a subscriber.
+		$I->clearRestrictContentCookie($I);
+		$I->amOnPage('?rest_route=/wc/store/v1/products/' . $productID);
+
+		// Confirm only the content before the more tag is returned.
+		$I->see('Visible content.');
+		$I->dontSee('Member-only content.');
+		$I->dontSee('Short description.');
+
+		// Request the Product from the Store API as a subscriber who has access.
+		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
+		$I->amOnPage('?rest_route=/wc/store/v1/products/' . $productID . '&ck-cache-bust=' . microtime());
+
+		// Confirm the full content and short description are returned.
+		$I->see('Member-only content.');
+		$I->see('Short description.');
+	}
+
+	/**
 	 * Adds a Product using the WooCommerce Product editor, restricted to the given Kit resource
 	 * using the Kit meta box, returning its URL.
 	 *
