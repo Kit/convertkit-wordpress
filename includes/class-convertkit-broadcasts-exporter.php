@@ -245,7 +245,16 @@ class ConvertKit_Broadcasts_Exporter {
 		$result = $api->create_broadcast(
 			$post->post_title,
 			$content,
-			$post->post_excerpt
+			$post->post_excerpt,
+			false,
+			null,
+			null,
+			'',
+			'',
+			'',
+			'',
+			'',
+			$this->get_subscriber_filter()
 		);
 
 		// If an error occurred, return it now.
@@ -258,6 +267,33 @@ class ConvertKit_Broadcasts_Exporter {
 
 		// Return result.
 		return $result['broadcast'];
+
+	}
+
+	/**
+	 * Returns the subscriber filter for the Broadcast, based on the Send To setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  array
+	 */
+	private function get_subscriber_filter() {
+
+		// Send to all subscribers if no Tag is specified.
+		if ( ! $this->broadcasts_settings->export_tag_id() ) {
+			return array();
+		}
+
+		return array(
+			array(
+				'all' => array(
+					array(
+						'type' => 'tag',
+						'ids'  => array( $this->broadcasts_settings->export_tag_id() ),
+					),
+				),
+			),
+		);
 
 	}
 

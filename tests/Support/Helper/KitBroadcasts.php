@@ -41,6 +41,7 @@ class KitBroadcasts extends \Codeception\Module
 					case 'post_status':
 					case 'category_id':
 					case 'author_id':
+					case 'export_tag_id':
 						$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_broadcasts_' . $key . '-container', $value);
 
 						break;
