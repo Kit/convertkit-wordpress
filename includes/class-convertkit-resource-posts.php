@@ -37,17 +37,6 @@ class ConvertKit_Resource_Posts extends ConvertKit_Resource_V4 {
 	public $cache_duration = DAY_IN_SECONDS;
 
 	/**
-	 * How often to refresh this resource through WordPress' Cron.
-	 * If false, won't be refreshed through WordPress' Cron
-	 * If a string, must be a value from wp_get_schedules().
-	 *
-	 * @since   1.9.7.4
-	 *
-	 * @var     bool|string
-	 */
-	public $wp_cron_schedule = 'hourly';
-
-	/**
 	 * The key to use when alphabetically sorting resources.
 	 *
 	 * @since   2.0.8

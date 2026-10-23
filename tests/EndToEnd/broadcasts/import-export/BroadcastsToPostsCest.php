@@ -12,15 +12,6 @@ use Tests\Support\EndToEndTester;
 class BroadcastsToPostsCest
 {
 	/**
-	 * The WordPress Cron event name to test.
-	 *
-	 * @since   2.2.8
-	 *
-	 * @var     string
-	 */
-	private $cronEventName = 'convertkit_resource_refresh_posts';
-
-	/**
 	 * The WordPress Category name, used for tests that assign imported Broadcasts
 	 * to Posts where the Category setting is defined.
 	 *
@@ -53,46 +44,9 @@ class BroadcastsToPostsCest
 		$I->setupKitPlugin($I);
 		$I->setupKitPluginResources($I);
 
-		// Activate WP Crontrol, to manually run scheduled events.
-		$I->activateThirdPartyPlugin($I, 'wp-crontrol');
-
 		// Create a Category named 'Kit Broadcasts to Posts'.
 		$result           = $I->haveTermInDatabase($this->categoryName, 'category');
 		$this->categoryID = $result[0]; // term_id.
-	}
-
-	/**
-	 * Tests that the Broadcasts to Posts Cron Event is recreated when it is deleted
-	 * by e.g. a third party Plugin.
-	 *
-	 * @since   2.6.6
-	 *
-	 * @param   EndToEndTester $I  Tester.
-	 */
-	public function testBroadcastsCronEventRecreatedWhenDeleted(EndToEndTester $I)
-	{
-		// Confirm Cron event exists.
-		$I->seeCronEvent($I, $this->cronEventName);
-
-		// Enable Broadcasts to Posts.
-		$I->setupKitPluginBroadcasts(
-			$I,
-			[
-				'enabled' => true,
-			]
-		);
-
-		// Delete Cron event.
-		$I->deleteCronEvent($I, $this->cronEventName);
-
-		// Make a request.
-		$I->loadKitSettingsBroadcastsScreen($I);
-
-		// Confirm Cron event was recreated.
-		$I->seeCronEvent($I, $this->cronEventName);
-
-		// Confirm Import Now button displays.
-		$I->see('Import now');
 	}
 
 	/**
@@ -112,11 +66,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to refresh Broadcasts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Confirm the Import now button isn't displayed.
+		$I->dontSee('Import now');
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -148,11 +99,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -231,13 +179,7 @@ class BroadcastsToPostsCest
 		$I->click('Import now');
 
 		// Confirm a success message displays.
-		$I->see('Broadcasts import started. Check the Posts screen shortly to confirm Broadcasts imported successfully.');
-
-		// Confirm the next scheduled date/time is not displayed, as the event is running.
-		$I->dontSee('Broadcasts will next import at approximately');
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		$I->see('Broadcasts imported. Check the Posts screen to view imported Broadcasts.');
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -306,11 +248,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -366,11 +305,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -422,11 +358,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -481,11 +414,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -546,11 +476,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -605,11 +532,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -643,11 +567,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -690,11 +611,8 @@ class BroadcastsToPostsCest
 			]
 		);
 
-		// Run the WordPress Cron event to import Broadcasts to WordPress Posts.
-		$I->runCronEvent($I, $this->cronEventName);
-
-		// Wait a few seconds for the Cron event to complete importing Broadcasts.
-		$I->wait(7);
+		// Import Broadcasts to WordPress Posts.
+		$I->importBroadcasts($I);
 
 		// Load the Posts screen.
 		$I->amOnAdminPage('edit.php');
@@ -749,7 +667,6 @@ class BroadcastsToPostsCest
 	public function _passed(EndToEndTester $I)
 	{
 		$I->deactivateKitPlugin($I);
-		$I->deactivateThirdPartyPlugin($I, 'wp-crontrol');
 		$I->resetKitPlugin($I);
 
 		// Remove Category named 'Kit Broadcasts to Posts'.

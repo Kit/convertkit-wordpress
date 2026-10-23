@@ -22,25 +22,9 @@ class ConvertKit_Setup {
 	 */
 	public function activate() {
 
-		// Call any functions to e.g. schedule WordPress Cron events now.
-		$this->schedule_cron_events();
-
 		// Install entries database table.
 		$entries = new ConvertKit_Form_Entries();
 		$entries->create_database_table();
-
-	}
-
-	/**
-	 * Runs routines on every Plugin request e.g.
-	 * ensuring WordPress Cron events are scheduled.
-	 *
-	 * @since   2.6.6
-	 */
-	public function initialize() {
-
-		// Call any functions to e.g. schedule WordPress Cron events now.
-		$this->schedule_cron_events();
 
 	}
 
@@ -59,6 +43,13 @@ class ConvertKit_Setup {
 		if ( $current_version === CONVERTKIT_PLUGIN_VERSION ) {
 			return;
 		}
+
+		/**
+		 * 3.4.8+: Remove the Posts resource's Cron event, as Broadcasts are now imported
+		 * when Kit notifies this site by webhook, and register the webhook if needed.
+		 */
+		wp_clear_scheduled_hook( 'convertkit_resource_refresh_posts' );
+		WP_ConvertKit()->get_class( 'broadcasts_webhook' )->maybe_register();
 
 		/**
 		 * 3.0.4: Add form_id to entries database table.
@@ -140,15 +131,6 @@ class ConvertKit_Setup {
 		 */
 		if ( version_compare( $current_version, '1.9.6', '<' ) ) {
 			$this->migrate_default_form_settings();
-		}
-
-		/**
-		 * 1.9.7.4+: Schedule Post Resources' Cron event to refresh Posts cache hourly,
-		 * as the activate() routine won't pick this up for existing active installations.
-		 */
-		if ( version_compare( $current_version, '1.9.7.4', '<' ) ) {
-			$posts = new ConvertKit_Resource_Posts( 'cron' );
-			$posts->schedule_cron_event();
 		}
 
 		// Actions that should run regardless of the version number
@@ -717,32 +699,8 @@ class ConvertKit_Setup {
 	 */
 	public function deactivate() {
 
-		// Call any functions to e.g. unschedule WordPress Cron events now.
-		$this->unschedule_cron_events();
-
-	}
-
-	/**
-	 * Schedules any Plugin specific CRON events, if they do not already exist.
-	 *
-	 * @since   2.6.6
-	 */
-	private function schedule_cron_events() {
-
-		$posts = new ConvertKit_Resource_Posts( 'cron' );
-		$posts->schedule_cron_event();
-
-	}
-
-	/**
-	 * Unschedules any Plugin specific CRON events, if they exist.
-	 *
-	 * @since   2.6.6
-	 */
-	private function unschedule_cron_events() {
-
-		$posts = new ConvertKit_Resource_Posts( 'cron' );
-		$posts->unschedule_cron_event();
+		// Delete the Broadcasts webhook endpoint, so Kit stops sending deliveries.
+		WP_ConvertKit()->get_class( 'broadcasts_webhook' )->delete();
 
 	}
 
