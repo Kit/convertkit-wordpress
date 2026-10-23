@@ -225,6 +225,12 @@ class ConvertKit_Broadcasts_Exporter {
 		// Remove HTML tags that are not supported in ConvertKit Broadcasts.
 		$content = WP_ConvertKit()->get_class( 'broadcasts_importer' )->get_permitted_html( $content, $this->broadcasts_settings->no_styles() );
 
+		// Remove responsive image attributes, which email clients don't support.
+		$content = $this->remove_responsive_image_attributes( $content );
+
+		// Convert relative URLs to absolute URLs, as emails have no site context.
+		$content = links_add_base_url( $content, get_permalink( $post ) );
+
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
 			CONVERTKIT_OAUTH_CLIENT_ID,
@@ -286,6 +292,34 @@ class ConvertKit_Broadcasts_Exporter {
 		$preview_text = apply_filters( 'convertkit_broadcasts_exporter_preview_text', $preview_text, $post );
 
 		return (string) $preview_text;
+
+	}
+
+	/**
+	 * Removes `srcset` and `sizes` attributes from images in the given content.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $content    HTML Content.
+	 * @return  string             HTML Content
+	 */
+	private function remove_responsive_image_attributes( $content ) {
+
+		// Bail if no images have responsive image attributes.
+		if ( strpos( $content, 'srcset=' ) === false && strpos( $content, 'sizes=' ) === false ) {
+			return $content;
+		}
+
+		// Load the content into the parser.
+		$parser = new ConvertKit_HTML_Parser( $content );
+
+		// Remove attributes.
+		foreach ( $parser->xpath->query( '//img[@srcset or @sizes]' ) as $node ) {
+			$node->removeAttribute( 'srcset' ); // @phpstan-ignore-line
+			$node->removeAttribute( 'sizes' ); // @phpstan-ignore-line
+		}
+
+		return $parser->get_body_html();
 
 	}
 
