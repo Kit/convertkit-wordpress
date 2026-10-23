@@ -228,6 +228,9 @@ class ConvertKit_Broadcasts_Exporter {
 		// Remove responsive image attributes, which email clients don't support.
 		$content = $this->remove_responsive_image_attributes( $content );
 
+		// Convert relative URLs to absolute URLs, as emails have no site context.
+		$content = links_add_base_url( $content, get_permalink( $post ) );
+
 		// Initialize the API.
 		$api = new ConvertKit_API_V4(
 			CONVERTKIT_OAUTH_CLIENT_ID,
