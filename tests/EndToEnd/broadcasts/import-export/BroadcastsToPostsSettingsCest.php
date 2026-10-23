@@ -49,6 +49,29 @@ class BroadcastsToPostsSettingsCest
 		$I->seeInSource('<label for="import_images">');
 		$I->seeInSource('<label for="published_at_min_date">');
 		$I->seeInSource('<label for="no_styles">');
+		$I->seeInSource('<label for="enabled_export">');
+	}
+
+	/**
+	 * Test that the Settings > Kit > Broadcasts screen displays import and export
+	 * settings in separate panels.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testImportAndExportPanels(EndToEndTester $I)
+	{
+		// Go to the Plugin's Broadcasts Screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Confirm import settings are in the Import panel.
+		$I->seeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Import"]]//input[@id="enabled"]');
+		$I->seeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Import"]]//input[@id="no_styles"]');
+
+		// Confirm export settings are in the Export panel.
+		$I->seeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Export"]]//input[@id="enabled_export"]');
+		$I->dontSeeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Import"]]//input[@id="enabled_export"]');
 	}
 
 	/**

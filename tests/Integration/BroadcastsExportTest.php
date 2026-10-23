@@ -106,6 +106,32 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that srcset and sizes attributes are removed from images.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportRemovesResponsiveImageAttributes()
+	{
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Responsive Images',
+				'post_content' => '<p><img src="https://kit.com/image.png" srcset="/image-300.png 300w, /image-600.png 600w" sizes="(max-width: 600px) 100vw, 600px" alt="Responsive image"></p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm responsive image attributes are removed, and the image remains.
+		$this->assertStringContainsString( 'src="https://kit.com/image.png"', $this->request['content'] );
+		$this->assertStringContainsString( 'alt="Responsive image"', $this->request['content'] );
+		$this->assertStringNotContainsString( 'srcset=', $this->request['content'] );
+		$this->assertStringNotContainsString( 'sizes=', $this->request['content'] );
+	}
+
+	/**
 	 * Mocks the API response when creating a Broadcast, storing the request body.
 	 *
 	 * @since   3.4.8
