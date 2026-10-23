@@ -74,6 +74,64 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that relative and root-relative URLs in links and images are converted to
+	 * absolute URLs, and other URLs are unchanged.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportConvertsRelativeURLsToAbsoluteURLs()
+	{
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Absolute URLs',
+				'post_content' => '<p><a href="/book/">Root relative</a> <a href="book/">Relative</a> <a href="https://kit.com/">Absolute</a> <a href="mailto:hello@kit.com">Email</a> <a href="tel:123456">Phone</a></p><p><img src="/wp-content/uploads/image.png" alt="Root relative image"><img src="https://kit.com/image.png" alt="Absolute image"></p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm relative and root-relative URLs are converted to absolute URLs.
+		$this->assertStringContainsString( '<a href="' . home_url( '/book/' ) . '">Root relative</a>', $this->request['content'] );
+		$this->assertStringContainsString( '<a href="' . \WP_Http::make_absolute_url( 'book/', get_permalink( $post_id ) ) . '">Relative</a>', $this->request['content'] );
+		$this->assertStringContainsString( 'src="' . home_url( '/wp-content/uploads/image.png' ) . '"', $this->request['content'] );
+
+		// Confirm other URLs are unchanged.
+		$this->assertStringContainsString( '<a href="https://kit.com/">Absolute</a>', $this->request['content'] );
+		$this->assertStringContainsString( '<a href="mailto:hello@kit.com">Email</a>', $this->request['content'] );
+		$this->assertStringContainsString( '<a href="tel:123456">Phone</a>', $this->request['content'] );
+		$this->assertStringContainsString( 'src="https://kit.com/image.png"', $this->request['content'] );
+	}
+
+	/**
+	 * Test that srcset and sizes attributes are removed from images.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportRemovesResponsiveImageAttributes()
+	{
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Responsive Images',
+				'post_content' => '<p><img src="https://kit.com/image.png" srcset="/image-300.png 300w, /image-600.png 600w" sizes="(max-width: 600px) 100vw, 600px" alt="Responsive image"></p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm responsive image attributes are removed, and the image remains.
+		$this->assertStringContainsString( 'src="https://kit.com/image.png"', $this->request['content'] );
+		$this->assertStringContainsString( 'alt="Responsive image"', $this->request['content'] );
+		$this->assertStringNotContainsString( 'srcset=', $this->request['content'] );
+		$this->assertStringNotContainsString( 'sizes=', $this->request['content'] );
+	}
+
+	/**
 	 * Test that Broadcasts are sent to all subscribers by default.
 	 *
 	 * @since   3.4.8
