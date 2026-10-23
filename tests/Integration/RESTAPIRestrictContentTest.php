@@ -52,8 +52,26 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 		// Reload the Member Content class' settings, as they were loaded before credentials were stored.
 		WP_ConvertKit()->get_class( 'output_restrict_content' )->initialize_classes();
 
+		// Store the Product the Post is restricted to, so it exists without querying the API.
+		update_option(
+			'convertkit_products',
+			[
+				$_ENV['CONVERTKIT_API_PRODUCT_ID'] => [
+					'id'        => (int) $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					'name'      => 'Product',
+					'url'       => 'https://example.com',
+					'published' => true,
+				],
+			]
+		);
+		update_option( 'convertkit_products_last_queried', time() );
+
 		// Make requests as a visitor.
 		wp_set_current_user( 0 );
+
+		// Reset the REST API server, so rest_api_init runs in this test and registers the Plugin's REST API filters.
+		global $wp_rest_server;
+		$wp_rest_server = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 
 	/**
