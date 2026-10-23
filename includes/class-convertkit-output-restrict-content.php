@@ -125,6 +125,7 @@ class ConvertKit_Output_Restrict_Content {
 	public function __construct() {
 
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		add_action( 'rest_api_init', array( $this, 'register_rest_content_filters' ) );
 		add_action( 'init', array( $this, 'initialize_classes' ), 2 );
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_logout' ), 3 );
@@ -767,6 +768,62 @@ class ConvertKit_Output_Restrict_Content {
 		 * @since   2.7.7
 		 */
 		do_action( 'convertkit_restrict_content_register_content_filter' );
+
+	}
+
+	/**
+	 * Registers filters to restrict content in REST API responses for Post Types
+	 * supporting Member Content.
+	 *
+	 * @since   3.4.8
+	 */
+	public function register_rest_content_filters() {
+
+		foreach ( convertkit_get_supported_restrict_content_post_types() as $post_type ) {
+			add_filter( 'rest_prepare_' . $post_type, array( $this, 'maybe_restrict_rest_content' ), 10, 2 );
+		}
+
+	}
+
+	/**
+	 * Replaces the rendered content in a REST API response with the content preview,
+	 * if the Post is restricted and the visitor cannot view it.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_REST_Response $response   REST API Response.
+	 * @param   WP_Post          $post       Post.
+	 * @return  WP_REST_Response
+	 */
+	public function maybe_restrict_rest_content( $response, $post ) {
+
+		// Bail if the response doesn't include the rendered content e.g. the _fields parameter was used.
+		if ( ! isset( $response->data['content']['rendered'] ) ) {
+			return $response;
+		}
+
+		// Bail if the user can edit the Post, so the block editor and other tools can access its content.
+		if ( current_user_can( 'edit_post', $post->ID ) ) {
+			return $response;
+		}
+
+		// Bail if the visitor can view the Post.
+		if ( $this->can_view_post( $post->ID ) ) {
+			return $response;
+		}
+
+		/**
+		 * Define the output for the content preview when the visitor is not
+		 * an authenticated subscriber.
+		 *
+		 * @since   2.4.1
+		 *
+		 * @param   string  $content_preview    Content preview.
+		 * @param   int     $post_id            Post ID.
+		 */
+		$response->data['content']['rendered'] = apply_filters( 'convertkit_output_restrict_content_content_preview', $this->get_content_preview( $response->data['content']['rendered'] ), $post->ID );
+
+		return $response;
 
 	}
 
