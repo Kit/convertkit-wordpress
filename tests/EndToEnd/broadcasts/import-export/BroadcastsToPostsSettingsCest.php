@@ -187,6 +187,9 @@ class BroadcastsToPostsSettingsCest
 	 */
 	public function testSaveSettings(EndToEndTester $I)
 	{
+		// Define cached Tags, so the Send To setting lists them.
+		$I->setupKitPluginResources($I);
+
 		// Go to the Plugin's Broadcasts Screen.
 		$I->loadKitSettingsBroadcastsScreen($I);
 
