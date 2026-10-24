@@ -645,7 +645,7 @@ class WooCommerceRestrictContentCest
 
 		// Request the Product from the Store API as a subscriber who has access.
 		$I->amOnPage('?rest_route=/wc/store/v1/products/' . $productID . '&ck-cache-bust=' . microtime());
-		
+
 		// Confirm the full content and short description are returned.
 		$I->see('Member-only content.');
 		$I->see('Short description.');
