@@ -627,6 +627,9 @@ class WooCommerceRestrictContentCest
 			'Short description.'
 		);
 
+		// Log out, as the Store API authenticates logged in users, who can view the Product as they can edit it.
+		$I->logOut();
+
 		// Request the Product from the Store API as a visitor who isn't a subscriber.
 		$I->clearRestrictContentCookie($I);
 		$I->amOnPage('?rest_route=/wc/store/v1/products/' . $productID);
@@ -636,10 +639,13 @@ class WooCommerceRestrictContentCest
 		$I->dontSee('Member-only content.');
 		$I->dontSee('Short description.');
 
-		// Request the Product from the Store API as a subscriber who has access.
-		$I->setRestrictContentCookie($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID']);
-		$I->amOnPage('?rest_route=/wc/store/v1/products/' . $productID . '&ck-cache-bust=' . microtime());
+		// Confirm the subscriber has access to the Product.
+		$I->setRestrictContentCookieAndReload($I, $_ENV['CONVERTKIT_API_SIGNED_SUBSCRIBER_ID'], $productID);
+		$I->testRestrictContentDisplaysContent($I);
 
+		// Request the Product from the Store API as a subscriber who has access.
+		$I->amOnPage('?rest_route=/wc/store/v1/products/' . $productID . '&ck-cache-bust=' . microtime());
+		
 		// Confirm the full content and short description are returned.
 		$I->see('Member-only content.');
 		$I->see('Short description.');
