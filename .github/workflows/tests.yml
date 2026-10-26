@@ -72,9 +72,9 @@ jobs:
         group:
           - { path: 'EndToEnd/broadcasts/blocks-shortcodes', plugins: 'classic-editor', paid-plugins: 'false' }
           - { path: 'EndToEnd/broadcasts/import-export', plugins: 'classic-editor custom-post-type-ui wp-crontrol', paid-plugins: 'false' }
-          - { path: 'EndToEnd/forms/blocks-shortcodes', plugins: 'block-visibility classic-editor autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'https://kittestplugin.wpenginepowered.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/forms/blocks-shortcodes', plugins: 'block-visibility classic-editor autoptimize jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'https://kittestplugin.wpenginepowered.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip https://downloads.wordpress.org/plugin/debloat.1.3.0.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/forms/general', plugins: 'classic-editor', paid-plugins: 'false' }
-          - { path: 'EndToEnd/forms/post-types', plugins: 'classic-editor custom-post-type-ui autoptimize debloat jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'https://kittestplugin.wpenginepowered.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip', paid-plugins: 'true' }
+          - { path: 'EndToEnd/forms/post-types', plugins: 'classic-editor custom-post-type-ui autoptimize jetpack-boost litespeed-cache sg-cachepress', plugins-urls: 'https://kittestplugin.wpenginepowered.com/wp-content/uploads/2024/11/disable-doing-it-wrong-notices.zip https://downloads.wordpress.org/plugin/debloat.1.3.0.zip', paid-plugins: 'true' }
           - { path: 'EndToEnd/general/other', plugins: 'classic-editor custom-post-type-ui', plugins-urls: 'https://downloads.wordpress.org/plugin/convertkit-for-woocommerce.1.6.4.zip', paid-plugins: 'false' }
           - { path: 'EndToEnd/general/uninstall', paid-plugins: 'false' }
           - { path: 'EndToEnd/general/plugin-screens', plugins: 'admin-menu-editor custom-post-type-ui mailchimp-for-wp mcp-adapter', paid-plugins: 'false' }
