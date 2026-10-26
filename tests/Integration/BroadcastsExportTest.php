@@ -315,6 +315,104 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Greeting and Sign-off settings are added to the start and end of the Broadcast,
+	 * keeping Liquid tags.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportGreetingAndSignOff()
+	{
+		// Define Greeting and Sign-off settings.
+		$this->saveBroadcastsSettings(
+			[
+				'export_greeting' => 'Hi {{ subscriber.first_name | default: "there" }},',
+				'export_sign_off' => '<strong>Thanks</strong>',
+			]
+		);
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Greeting and Sign-off',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Greeting, content and Sign-off are in order.
+		$this->assertStringStartsWith( '<p>Hi {{ subscriber.first_name | default: "there" }},</p>', $this->request['content'] );
+		$this->assertStringContainsString( '<p>Post content.</p>', $this->request['content'] );
+		$this->assertStringEndsWith( '<p><strong>Thanks</strong></p>' . "\n", $this->request['content'] );
+	}
+
+	/**
+	 * Test that a link to read the Post on the web is added to the bottom or top of the Broadcast,
+	 * with link text that can be changed using a filter.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportWebLink()
+	{
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Web Link',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+		$link    = '<p><a href="' . get_permalink( $post_id ) . '">Read this on the web</a></p>';
+
+		// Confirm the link is added to the bottom.
+		$this->saveBroadcastsSettings( [ 'export_web_link' => 'bottom' ] );
+		$this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertStringEndsWith( $link, $this->request['content'] );
+
+		// Confirm the link is added to the top.
+		$this->saveBroadcastsSettings( [ 'export_web_link' => 'top' ] );
+		$this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertStringStartsWith( $link, $this->request['content'] );
+
+		// Confirm the link text can be changed.
+		add_filter(
+			'convertkit_broadcasts_exporter_web_link_text',
+			function () {
+				return 'View online';
+			}
+		);
+		$this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertStringStartsWith( '<p><a href="' . get_permalink( $post_id ) . '">View online</a></p>', $this->request['content'] );
+	}
+
+	/**
+	 * Test that a link to read the Post on the web isn't added when the Post isn't published.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportWebLinkNotAddedToDraftPost()
+	{
+		// Define Read on the Web setting.
+		$this->saveBroadcastsSettings( [ 'export_web_link' => 'bottom' ] );
+
+		// Create draft Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Web Link: Draft',
+				'post_content' => '<p>Post content.</p>',
+				'post_status'  => 'draft',
+			]
+		);
+
+		// Export Post.
+		$this->exporter->export_post_to_broadcast( $post_id );
+
+		// Confirm no link was added.
+		$this->assertStringNotContainsString( 'Read this on the web', $this->request['content'] );
+	}
+
+	/**
 	 * Test that exporting a Post creates a Broadcast, storing its ID in the Post's meta.
 	 *
 	 * @since   3.4.8

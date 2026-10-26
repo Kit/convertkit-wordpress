@@ -266,6 +266,39 @@ class BroadcastsToPostsSettingsCest
 	}
 
 	/**
+	 * Tests that saving the Greeting, Sign-off and Read on the Web settings works.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSaveGreetingSignOffAndWebLink(EndToEndTester $I)
+	{
+		// Go to the Plugin's Broadcasts Screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Enable export, and define the Greeting, Sign-off and Read on the Web settings.
+		$I->checkOption('#enabled_export');
+		$I->fillField('_wp_convertkit_settings_broadcasts[export_greeting]', 'Hi {{ subscriber.first_name | default: "there" }},');
+		$I->fillField('_wp_convertkit_settings_broadcasts[export_sign_off]', '<strong>Thanks</strong><script>alert(1)</script>');
+		$I->selectOption('_wp_convertkit_settings_broadcasts[export_web_link]', 'Bottom of broadcast');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the settings saved, keeping Liquid and permitted HTML, and removing scripts.
+		$I->seeInField('_wp_convertkit_settings_broadcasts[export_greeting]', 'Hi {{ subscriber.first_name | default: "there" }},');
+		$I->seeInField('_wp_convertkit_settings_broadcasts[export_sign_off]', '<strong>Thanks</strong>alert(1)');
+		$I->seeOptionIsSelected('_wp_convertkit_settings_broadcasts[export_web_link]', 'Bottom of broadcast');
+	}
+
+	/**
 	 * Deactivate and reset Plugin(s) after each test, if the test passes.
 	 * We don't use _after, as this would provide a screenshot of the Plugin
 	 * deactivation and not the true test error.

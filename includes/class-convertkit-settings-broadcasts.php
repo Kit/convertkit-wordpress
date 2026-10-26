@@ -204,6 +204,46 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
+	 * Returns the greeting to add to the start of Broadcasts created from WordPress Posts.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  HTML, which may include Liquid
+	 */
+	public function export_greeting() {
+
+		return wp_kses_post( $this->settings['export_greeting'] );
+
+	}
+
+	/**
+	 * Returns the sign-off to add to the end of Broadcasts created from WordPress Posts.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  HTML, which may include Liquid
+	 */
+	public function export_sign_off() {
+
+		return wp_kses_post( $this->settings['export_sign_off'] );
+
+	}
+
+	/**
+	 * Returns where to add a link to read the WordPress Post on the web, in Broadcasts
+	 * created from WordPress Posts.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  Position (blank = none, top, bottom)
+	 */
+	public function export_web_link() {
+
+		return ( in_array( $this->settings['export_web_link'], array( 'top', 'bottom' ), true ) ? $this->settings['export_web_link'] : '' );
+
+	}
+
+	/**
 	 * Returns whether Broadcasts should have their styles imported.
 	 *
 	 * @since   2.2.9
@@ -318,6 +358,19 @@ class ConvertKit_Settings_Broadcasts {
 					'enum'        => array( '', 'on' ),
 					'description' => __( 'Whether Broadcasts created from WordPress Posts are published to the web (Kit Creator Profile and Landing Pages).', 'convertkit' ),
 				),
+				'export_greeting'       => array(
+					'type'        => 'string',
+					'description' => __( 'HTML to add to the start of Broadcasts created from WordPress Posts. Supports Liquid e.g. {{ subscriber.first_name }}.', 'convertkit' ),
+				),
+				'export_sign_off'       => array(
+					'type'        => 'string',
+					'description' => __( 'HTML to add to the end of Broadcasts created from WordPress Posts. Supports Liquid.', 'convertkit' ),
+				),
+				'export_web_link'       => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'top', 'bottom' ),
+					'description' => __( 'Where to add a link to read the published WordPress Post on the web, in Broadcasts created from WordPress Posts. Blank for none.', 'convertkit' ),
+				),
 				'no_styles'             => array(
 					'type'        => 'string',
 					'enum'        => array( '', 'on' ),
@@ -352,6 +405,9 @@ class ConvertKit_Settings_Broadcasts {
 			'enabled_export'        => '',
 			'export_send_to'        => '',
 			'export_public'         => '',
+			'export_greeting'       => '',
+			'export_sign_off'       => '',
+			'export_web_link'       => '',
 			'no_styles'             => '',
 		);
 
