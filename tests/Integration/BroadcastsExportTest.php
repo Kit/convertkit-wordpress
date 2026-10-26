@@ -413,6 +413,71 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Post's featured image is used as the Broadcast's thumbnail when the Make Public setting is enabled.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportFeaturedImageAsThumbnail()
+	{
+		// Enable Make Public setting.
+		$this->saveBroadcastsSettings( [ 'export_public' => 'on' ] );
+
+		// Create Post with a featured image.
+		$post_id = $this->createPostWithFeaturedImage( 'Kit: Export: Featured Image' );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the featured image is the Broadcast's thumbnail.
+		$this->assertEquals( wp_get_attachment_image_url( get_post_thumbnail_id( $post_id ), 'full' ), $this->request['thumbnail_url'] );
+		$this->assertEquals( 'Featured image alt text', $this->request['thumbnail_alt'] );
+	}
+
+	/**
+	 * Test that the Post's featured image isn't sent when the Make Public setting is disabled,
+	 * as Kit only uses thumbnails for public Broadcasts.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportFeaturedImageNotUsedWhenNotPublic()
+	{
+		// Create Post with a featured image.
+		$post_id = $this->createPostWithFeaturedImage( 'Kit: Export: Featured Image: Not Public' );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm no thumbnail was sent.
+		$this->assertArrayNotHasKey( 'thumbnail_url', $this->request );
+		$this->assertArrayNotHasKey( 'thumbnail_alt', $this->request );
+	}
+
+	/**
+	 * Creates a Post with a featured image that has alt text.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $title  Post title.
+	 * @return  int
+	 */
+	private function createPostWithFeaturedImage( $title )
+	{
+		$post_id  = $this->factory->post->create(
+			[
+				'post_title'   => $title,
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+		$image_id = $this->factory->attachment->create_upload_object( dirname( __DIR__ ) . '/Support/Data/icon.png', $post_id );
+		update_post_meta( $image_id, '_wp_attachment_image_alt', 'Featured image alt text' );
+		set_post_thumbnail( $post_id, $image_id );
+
+		return $post_id;
+	}
+
+	/**
 	 * Test that exporting a Post creates a Broadcast, storing its ID in the Post's meta.
 	 *
 	 * @since   3.4.8
