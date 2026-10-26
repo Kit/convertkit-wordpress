@@ -164,7 +164,7 @@ class BroadcastsExportTest extends WPTestCase
 	public function testExportSendToTag()
 	{
 		// Define Send To setting.
-		$this->saveBroadcastsSettings( [ 'export_tag_id' => $_ENV['CONVERTKIT_API_TAG_ID'] ] );
+		$this->saveBroadcastsSettings( [ 'export_send_to' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] ] );
 
 		// Create Post.
 		$post_id = $this->factory->post->create(
@@ -186,6 +186,44 @@ class BroadcastsExportTest extends WPTestCase
 						[
 							'type' => 'tag',
 							'ids'  => [ (int) $_ENV['CONVERTKIT_API_TAG_ID'] ],
+						],
+					],
+				],
+			],
+			$this->request['subscriber_filter']
+		);
+	}
+
+	/**
+	 * Test that Broadcasts are sent to subscribers in the Segment defined in the Send To setting.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportSendToSegment()
+	{
+		// Define Send To setting.
+		$this->saveBroadcastsSettings( [ 'export_send_to' => 'segment_' . $_ENV['CONVERTKIT_API_SEGMENT_ID'] ] );
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Send To Segment',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Broadcast is sent to subscribers in the Segment.
+		$this->assertEquals(
+			[
+				[
+					'all' => [
+						[
+							'type' => 'segment',
+							'ids'  => [ (int) $_ENV['CONVERTKIT_API_SEGMENT_ID'] ],
 						],
 					],
 				],

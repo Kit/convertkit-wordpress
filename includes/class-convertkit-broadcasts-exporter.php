@@ -303,8 +303,16 @@ class ConvertKit_Broadcasts_Exporter {
 	 */
 	private function get_subscriber_filter() {
 
-		// Send to all subscribers if no Tag is specified.
-		if ( ! $this->broadcasts_settings->export_tag_id() ) {
+		// Send to all subscribers if no Tag or Segment is specified.
+		if ( ! $this->broadcasts_settings->export_send_to() ) {
+			return array();
+		}
+
+		// Get the resource type and ID e.g. tag_123.
+		list( $type, $id ) = array_pad( explode( '_', $this->broadcasts_settings->export_send_to(), 2 ), 2, 0 );
+
+		// Send to all subscribers if the setting is invalid.
+		if ( ! in_array( $type, array( 'tag', 'segment' ), true ) || ! absint( $id ) ) {
 			return array();
 		}
 
@@ -312,8 +320,8 @@ class ConvertKit_Broadcasts_Exporter {
 			array(
 				'all' => array(
 					array(
-						'type' => 'tag',
-						'ids'  => array( $this->broadcasts_settings->export_tag_id() ),
+						'type' => $type,
+						'ids'  => array( absint( $id ) ),
 					),
 				),
 			),
