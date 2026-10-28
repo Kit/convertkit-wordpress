@@ -157,6 +157,88 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Post's excerpt is used as the Broadcast's preview text.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPreviewTextUsesExcerpt()
+	{
+		// Create Post with an excerpt.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Preview Text',
+				'post_content' => '<p>Post content.</p>',
+				'post_excerpt' => 'Post excerpt.',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the excerpt is used as the preview text.
+		$this->assertEquals( 'Post excerpt.', $this->request['preview_text'] );
+	}
+
+	/**
+	 * Test that no preview text is sent when the Post has no excerpt.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPreviewTextWhenNoExcerpt()
+	{
+		// Create Post without an excerpt.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Preview Text: No Excerpt',
+				'post_content' => '<p>Post content.</p>',
+				'post_excerpt' => '',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm no preview text is sent, so Kit doesn't use an auto-generated excerpt.
+		$this->assertArrayNotHasKey( 'preview_text', $this->request );
+	}
+
+	/**
+	 * Test that the convertkit_broadcasts_exporter_preview_text filter defines the preview text.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPreviewTextFilter()
+	{
+		// Define preview text using the filter.
+		add_filter(
+			'convertkit_broadcasts_exporter_preview_text',
+			function ( $preview_text, $post ) {
+				return 'Filtered preview text for ' . $post->post_title;
+			},
+			10,
+			2
+		);
+
+		// Create Post with an excerpt.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Preview Text: Filter',
+				'post_content' => '<p>Post content.</p>',
+				'post_excerpt' => 'Post excerpt.',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the filtered preview text is used.
+		$this->assertEquals( 'Filtered preview text for Kit: Export: Preview Text: Filter', $this->request['preview_text'] );
+	}
+
+	/**
 	 * Test that Broadcasts are sent to all subscribers and aren't public by default.
 	 *
 	 * @since   3.4.8

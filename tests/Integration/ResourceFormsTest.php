@@ -11,6 +11,8 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class ResourceFormsTest extends WPTestCase
 {
+	use ResourceAssertionsTrait;
+
 	/**
 	 * The testing implementation.
 	 *
@@ -145,9 +147,8 @@ class ResourceFormsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('AAA Test', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('WooCommerce Product Form', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -176,9 +177,8 @@ class ResourceFormsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('WooCommerce Product Form', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('AAA Test', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -207,8 +207,7 @@ class ResourceFormsTest extends WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('WPForms Form', reset($result)['name']);
-		$this->assertEquals('Legacy Form', end($result)['name']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**
@@ -233,9 +232,8 @@ class ResourceFormsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals($_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'], reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals($_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'], end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -264,9 +262,8 @@ class ResourceFormsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals($_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'], reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals($_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'], end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -295,8 +292,7 @@ class ResourceFormsTest extends WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals($_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_NAME_ONLY'], reset($result)['name']);
-		$this->assertEquals($_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_NAME_ONLY'], end($result)['name']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**

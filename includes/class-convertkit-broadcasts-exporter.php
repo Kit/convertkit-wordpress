@@ -284,7 +284,7 @@ class ConvertKit_Broadcasts_Exporter {
 			'',
 			'',
 			'',
-			'',
+			$this->get_preview_text( $post ),
 			$this->get_subscriber_filter(),
 		);
 
@@ -306,6 +306,32 @@ class ConvertKit_Broadcasts_Exporter {
 
 		// Return result.
 		return $result['broadcast'];
+
+	}
+
+	/**
+	 * Returns the preview text for the Broadcast, using the Post's excerpt if one was written.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_Post $post   WordPress Post.
+	 * @return  string          Preview text
+	 */
+	private function get_preview_text( $post ) {
+
+		$preview_text = ( has_excerpt( $post ) ? $post->post_excerpt : '' );
+
+		/**
+		 * Define the preview text for the Broadcast created from the WordPress Post.
+		 *
+		 * @since   3.4.8
+		 *
+		 * @param   string  $preview_text   Preview text.
+		 * @param   WP_Post $post           WordPress Post.
+		 */
+		$preview_text = apply_filters( 'convertkit_broadcasts_exporter_preview_text', $preview_text, $post );
+
+		return (string) $preview_text;
 
 	}
 

@@ -11,6 +11,8 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class ResourceCustomFieldsTest extends WPTestCase
 {
+	use ResourceAssertionsTrait;
+
 	/**
 	 * The testing implementation.
 	 *
@@ -145,9 +147,8 @@ class ResourceCustomFieldsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('ck_field_1075083_url', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('ck_field_276295_payment_method', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -176,9 +177,8 @@ class ResourceCustomFieldsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('ck_field_276295_payment_method', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('ck_field_1075083_url', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -207,8 +207,7 @@ class ResourceCustomFieldsTest extends WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('ck_field_1075083_url', reset($result)['name']);
-		$this->assertEquals('ck_field_258240_notes', end($result)['name']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**
