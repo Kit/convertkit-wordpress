@@ -178,6 +178,32 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
+	 * Returns the Kit Tag or Segment to send Broadcasts created from WordPress Posts to.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  Tag or Segment e.g. tag_123, segment_456 (blank = all subscribers)
+	 */
+	public function export_send_to() {
+
+		return (string) $this->settings['export_send_to'];
+
+	}
+
+	/**
+	 * Returns whether Broadcasts created from WordPress Posts should be public.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  bool
+	 */
+	public function export_public() {
+
+		return ( $this->settings['export_public'] === 'on' ? true : false );
+
+	}
+
+	/**
 	 * Returns whether Broadcasts should have their styles imported.
 	 *
 	 * @since   2.2.9
@@ -282,6 +308,16 @@ class ConvertKit_Settings_Broadcasts {
 					'enum'        => array( '', 'on' ),
 					'description' => __( 'Whether exporting WordPress Posts to Kit Broadcasts is enabled.', 'convertkit' ),
 				),
+				'export_send_to'        => array(
+					'type'        => 'string',
+					'pattern'     => '^((tag|segment)_[0-9]+)?$',
+					'description' => __( 'Kit Tag or Segment to send Broadcasts created from WordPress Posts to, in the format tag_ID or segment_ID. Blank for all subscribers.', 'convertkit' ),
+				),
+				'export_public'         => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether Broadcasts created from WordPress Posts are published to the web (Kit Creator Profile and Landing Pages).', 'convertkit' ),
+				),
 				'no_styles'             => array(
 					'type'        => 'string',
 					'enum'        => array( '', 'on' ),
@@ -314,6 +350,8 @@ class ConvertKit_Settings_Broadcasts {
 			'published_at_min_date' => gmdate( 'Y-m-d', strtotime( '-30 days' ) ),
 
 			'enabled_export'        => '',
+			'export_send_to'        => '',
+			'export_public'         => '',
 			'no_styles'             => '',
 		);
 

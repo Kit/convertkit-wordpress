@@ -328,6 +328,32 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		add_settings_field(
+			'export_send_to',
+			__( 'Send To', 'convertkit' ),
+			array( $this, 'export_send_to_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_send_to',
+				'label_for'   => $this->settings_key . '_export_send_to',
+				'description' => __( 'The subscribers to send draft broadcasts to. This can be changed in Kit before sending.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_public',
+			__( 'Make Public', 'convertkit' ),
+			array( $this, 'export_public_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'      => 'export_public',
+				'label_for' => 'export_public',
+				'label'     => __( 'If enabled, draft broadcasts will be published to your Kit Creator Profile and Landing Pages when sent.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
 			'no_styles',
 			__( 'Disable Styles', 'convertkit' ),
 			array( $this, 'no_styles_callback' ),
@@ -617,7 +643,79 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			$args['name'],
 			'on',
 			$this->settings->enabled_export(),
-			$args['label']
+			$args['label'],
+			false,
+			array( 'convertkit-conditional-display' )
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Send To setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_send_to_callback( $args ) {
+
+		// Build options.
+		$options = array(
+			'' => esc_html__( 'All subscribers', 'convertkit' ),
+		);
+
+		// Add Tags.
+		$tags = new ConvertKit_Resource_Tags( 'settings' );
+		if ( $tags->exist() ) {
+			foreach ( $tags->get() as $tag ) {
+				$options[ __( 'Tags', 'convertkit' ) ][ 'tag_' . absint( $tag['id'] ) ] = esc_html( $tag['name'] );
+			}
+		}
+
+		// Refresh Segments, as they're only used by this setting and aren't refreshed elsewhere.
+		$segments = new ConvertKit_Resource_Segments( 'settings' );
+		$segments->refresh();
+
+		// Add Segments.
+		if ( $segments->exist() ) {
+			foreach ( $segments->get() as $segment ) {
+				$options[ __( 'Segments', 'convertkit' ) ][ 'segment_' . absint( $segment['id'] ) ] = esc_html( $segment['name'] );
+			}
+		}
+
+		// Output field.
+		echo '<div class="convertkit-select2-container">';
+		$this->output_select_field(
+			$args['name'],
+			$this->settings->export_send_to(),
+			$options,
+			$args['description'],
+			array(
+				'convertkit-select2',
+				'enabled_export',
+			)
+		);
+		echo '</div>';
+
+	}
+
+	/**
+	 * Renders the input for the Make Public setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,label).
+	 */
+	public function export_public_callback( $args ) {
+
+		// Output field.
+		$this->output_checkbox_field(
+			$args['name'],
+			'on',
+			$this->settings->export_public(),
+			$args['label'],
+			false,
+			array( 'enabled_export' )
 		);
 
 	}
