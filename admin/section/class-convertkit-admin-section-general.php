@@ -254,6 +254,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$landing_pages   = new ConvertKit_Resource_Landing_Pages();
 		$posts           = new ConvertKit_Resource_Posts();
 		$products        = new ConvertKit_Resource_Products();
+		$segments        = new ConvertKit_Resource_Segments();
 		$sequences       = new ConvertKit_Resource_Sequences();
 		$tags            = new ConvertKit_Resource_Tags();
 		$account->delete();
@@ -263,6 +264,7 @@ class ConvertKit_Admin_Section_General extends ConvertKit_Admin_Section_Base {
 		$landing_pages->delete();
 		$posts->delete();
 		$products->delete();
+		$segments->delete();
 		$sequences->delete();
 		$tags->delete();
 

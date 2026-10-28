@@ -328,14 +328,14 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		add_settings_field(
-			'export_tag_id',
+			'export_send_to',
 			__( 'Send To', 'convertkit' ),
-			array( $this, 'export_tag_id_callback' ),
+			array( $this, 'export_send_to_callback' ),
 			$this->settings_key,
 			$this->name . '-export',
 			array(
-				'name'        => 'export_tag_id',
-				'label_for'   => $this->settings_key . '_export_tag_id',
+				'name'        => 'export_send_to',
+				'label_for'   => $this->settings_key . '_export_send_to',
 				'description' => __( 'The subscribers to send draft broadcasts to. This can be changed in Kit before sending.', 'convertkit' ),
 			)
 		);
@@ -657,20 +657,29 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	 *
 	 * @param   array $args   Setting field arguments (name,description).
 	 */
-	public function export_tag_id_callback( $args ) {
+	public function export_send_to_callback( $args ) {
 
 		// Build options.
 		$options = array(
 			'' => esc_html__( 'All subscribers', 'convertkit' ),
 		);
-		$tags    = new ConvertKit_Resource_Tags( 'settings' );
+
+		// Add Tags.
+		$tags = new ConvertKit_Resource_Tags( 'settings' );
 		if ( $tags->exist() ) {
 			foreach ( $tags->get() as $tag ) {
-				$options[ absint( $tag['id'] ) ] = sprintf(
-					/* translators: Kit Tag name */
-					esc_html__( 'Subscribers tagged %s', 'convertkit' ),
-					esc_html( $tag['name'] )
-				);
+				$options[ __( 'Tags', 'convertkit' ) ][ 'tag_' . absint( $tag['id'] ) ] = esc_html( $tag['name'] );
+			}
+		}
+
+		// Refresh Segments, as they're only used by this setting and aren't refreshed elsewhere.
+		$segments = new ConvertKit_Resource_Segments( 'settings' );
+		$segments->refresh();
+
+		// Add Segments.
+		if ( $segments->exist() ) {
+			foreach ( $segments->get() as $segment ) {
+				$options[ __( 'Segments', 'convertkit' ) ][ 'segment_' . absint( $segment['id'] ) ] = esc_html( $segment['name'] );
 			}
 		}
 
@@ -678,7 +687,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		echo '<div class="convertkit-select2-container">';
 		$this->output_select_field(
 			$args['name'],
-			(string) $this->settings->export_tag_id(),
+			$this->settings->export_send_to(),
 			$options,
 			$args['description'],
 			array(
