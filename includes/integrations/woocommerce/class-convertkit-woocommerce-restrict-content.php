@@ -35,6 +35,12 @@ class ConvertKit_WooCommerce_Restrict_Content {
 		add_action( 'wp', array( $this, 'maybe_restrict_product' ), 6 );
 		add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_to_cart' ), 10, 2 );
 
+		// Restrict the Product's description and short description wherever WooCommerce outputs them,
+		// such as the Store API and Product blocks.
+		add_filter( 'woocommerce_product_get_description', array( $this, 'maybe_restrict_description' ), 10, 2 );
+		add_filter( 'woocommerce_product_variation_get_description', array( $this, 'maybe_restrict_description' ), 10, 2 );
+		add_filter( 'woocommerce_product_get_short_description', array( $this, 'maybe_restrict_short_description' ), 10, 2 );
+
 	}
 
 	/**
@@ -233,6 +239,88 @@ class ConvertKit_WooCommerce_Restrict_Content {
 
 		wc_add_notice( __( 'Sorry, this product is only available to members.', 'convertkit' ), 'error' );
 		return false;
+
+	}
+
+	/**
+	 * Replaces the Product's description with the content preview if the visitor cannot access the Product.
+	 * A variation's description is hidden.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string     $description    Description.
+	 * @param   WC_Product $product        Product.
+	 * @return  string
+	 */
+	public function maybe_restrict_description( $description, $product ) {
+
+		global $post;
+
+		// Bail if the visitor can view the Product.
+		if ( $this->can_view_product( $product ) ) {
+			return $description;
+		}
+
+		// Hide a variation's description.
+		if ( $product->get_parent_id() ) {
+			return '';
+		}
+
+		// Setup the Product as the global Post, which the content preview requires.
+		$original_post = $post;
+		$post          = get_post( $product->get_id() ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		setup_postdata( $post );
+
+		$description = WP_ConvertKit()->get_class( 'output_restrict_content' )->maybe_restrict_content_preview( $description );
+
+		// Restore the original global Post.
+		$post = $original_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		if ( $post ) {
+			setup_postdata( $post );
+		}
+
+		return $description;
+
+	}
+
+	/**
+	 * Hides the Product's short description if the visitor cannot access the Product.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string     $short_description  Short description.
+	 * @param   WC_Product $product            Product.
+	 * @return  string
+	 */
+	public function maybe_restrict_short_description( $short_description, $product ) {
+
+		// Bail if the visitor can view the Product.
+		if ( $this->can_view_product( $product ) ) {
+			return $short_description;
+		}
+
+		return '';
+
+	}
+
+	/**
+	 * Determines if the visitor can view the given Product, or its parent if it's a variation.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WC_Product $product    Product.
+	 * @return  bool
+	 */
+	private function can_view_product( $product ) {
+
+		$product_id = $product->get_parent_id() ? $product->get_parent_id() : $product->get_id();
+
+		// Users who can edit the Product can view it, so the WooCommerce REST API and other tools can access its content.
+		if ( current_user_can( 'edit_post', $product_id ) ) {
+			return true;
+		}
+
+		return WP_ConvertKit()->get_class( 'output_restrict_content' )->can_view_post( $product_id );
 
 	}
 
