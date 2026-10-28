@@ -11,6 +11,8 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class ResourceSequencesTest extends WPTestCase
 {
+	use ResourceAssertionsTrait;
+
 	/**
 	 * The testing implementation.
 	 *
@@ -145,9 +147,8 @@ class ResourceSequencesTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Another Sequence', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('WordPress Sequence', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -176,9 +177,8 @@ class ResourceSequencesTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('WordPress Sequence', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Another Sequence', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -207,8 +207,7 @@ class ResourceSequencesTest extends WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('Another Sequence', reset($result)['name']);
-		$this->assertEquals('WordPress Sequence', end($result)['name']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**
