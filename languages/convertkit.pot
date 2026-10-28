@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.4.7\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.4.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T01:30:07+00:00\n"
+"POT-Creation-Date: 2026-10-28T02:39:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -168,7 +168,8 @@ msgid "Settings"
 msgstr ""
 
 #: admin/class-convertkit-admin-settings.php:301
-#: admin/section/class-convertkit-admin-section-broadcasts.php:348
+#: admin/section/class-convertkit-admin-section-broadcasts.php:353
+#: admin/section/class-convertkit-admin-section-broadcasts.php:388
 #: admin/section/class-convertkit-admin-section-mcp.php:249
 msgid "Beta"
 msgstr ""
@@ -223,128 +224,143 @@ msgid "Copy"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-broadcasts.php:33
-#: admin/section/class-convertkit-admin-section-broadcasts.php:201
+#: admin/section/class-convertkit-admin-section-broadcasts.php:206
 #: includes/blocks/class-convertkit-block-broadcasts.php:221
 msgid "Broadcasts"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:77
+#: admin/section/class-convertkit-admin-section-broadcasts.php:41
+#: views/backend/settings/tools.php:95
+msgid "Import"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-broadcasts.php:46
+#: admin/section/class-convertkit-admin-section-form-entries.php:141
+#: views/backend/settings/tools.php:71
+msgid "Export"
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-broadcasts.php:82
 msgid "Broadcasts import failed. Please try again."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:78
+#: admin/section/class-convertkit-admin-section-broadcasts.php:83
 msgid "Broadcasts import started. Check the Posts screen shortly to confirm Broadcasts imported successfully."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:179
+#: admin/section/class-convertkit-admin-section-broadcasts.php:184
 msgid "Importing public broadcasts from Kit requires the PHP extensions `php-dom` and `php-xml` to be installed. Work with your web host to do this, and reload the page when done."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:194
+#: admin/section/class-convertkit-admin-section-broadcasts.php:199
 msgid "Broadcasts will next import at approximately "
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:202
+#: admin/section/class-convertkit-admin-section-broadcasts.php:207
 msgid "must"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:203
+#: admin/section/class-convertkit-admin-section-broadcasts.php:208
 msgid "have their \"Enabled on public feeds\" setting enabled in Kit, to be eligible for import."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:209
+#: admin/section/class-convertkit-admin-section-broadcasts.php:214
 msgid "Enable Automatic Import"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:216
+#: admin/section/class-convertkit-admin-section-broadcasts.php:221
 msgid "Enables automatic publication of public Kit Broadcasts as WordPress Posts."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:234
+#: admin/section/class-convertkit-admin-section-broadcasts.php:239
 msgid "Status"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:241
+#: admin/section/class-convertkit-admin-section-broadcasts.php:246
 msgid "The WordPress Post status to assign imported public broadcasts to."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:247
+#: admin/section/class-convertkit-admin-section-broadcasts.php:252
 msgid "Author"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:254
+#: admin/section/class-convertkit-admin-section-broadcasts.php:259
 msgid "The WordPress User to set as the author for WordPress Posts created from imported public broadcasts."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:260
+#: admin/section/class-convertkit-admin-section-broadcasts.php:265
 msgid "Category"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:267
+#: admin/section/class-convertkit-admin-section-broadcasts.php:272
 msgid "The category to assign imported public broadcasts to."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:273
+#: admin/section/class-convertkit-admin-section-broadcasts.php:278
 msgid "Include Thumbnail"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:280
+#: admin/section/class-convertkit-admin-section-broadcasts.php:285
 msgid "If enabled, the Broadcast's thumbnail will be used as the WordPress Post's featured image."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:287
+#: admin/section/class-convertkit-admin-section-broadcasts.php:292
 msgid "Import Images"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:294
+#: admin/section/class-convertkit-admin-section-broadcasts.php:299
 msgid "If enabled, the imported Broadcast's inline images will be stored in the Media Library, instead of served by Kit."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:301
+#: admin/section/class-convertkit-admin-section-broadcasts.php:306
 msgid "Earliest Date"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:308
+#: admin/section/class-convertkit-admin-section-broadcasts.php:313
 msgid "The earliest date to import public broadcasts from, based on the broadcast's published date and time."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:314
+#: admin/section/class-convertkit-admin-section-broadcasts.php:319
 msgid "Enable Export Actions"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:321
+#: admin/section/class-convertkit-admin-section-broadcasts.php:326
 msgid "Displays actions in WordPress to create draft broadcasts from existing WordPress posts."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:327
+#: admin/section/class-convertkit-admin-section-broadcasts.php:332
 msgid "Disable Styles"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:334
+#: admin/section/class-convertkit-admin-section-broadcasts.php:339
 msgid "Removes inline styles and layout when importing broadcasts and exporting posts."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:349
-msgid "Defines whether public broadcasts (\"Enabled on public feeds\") in Kit should automatically be published on this site as WordPress Posts, and whether to enable options to create draft Kit Broadcasts from WordPress Posts."
+#: admin/section/class-convertkit-admin-section-broadcasts.php:354
+msgid "Defines whether public broadcasts (\"Enabled on public feeds\") in Kit should automatically be published on this site as WordPress Posts."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:361
+#: admin/section/class-convertkit-admin-section-broadcasts.php:366
 msgid "We've detected that the"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:363
+#: admin/section/class-convertkit-admin-section-broadcasts.php:368
 msgid "constant is enabled. If broadcasts do not import automatically or when using the import button below, either remove this constant from your"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:365
+#: admin/section/class-convertkit-admin-section-broadcasts.php:370
 msgid "file, or check that your web host is triggering the WordPress Cron via an alternate method. If importing broadcasts work, no changes to your WordPress configuration file are required."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:429
+#: admin/section/class-convertkit-admin-section-broadcasts.php:389
+msgid "Defines whether to display options to create draft Kit Broadcasts from WordPress Posts."
+msgstr ""
+
+#: admin/section/class-convertkit-admin-section-broadcasts.php:447
 msgid "Import now"
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-broadcasts.php:501
+#: admin/section/class-convertkit-admin-section-broadcasts.php:519
 #: admin/section/class-convertkit-admin-section-general.php:834
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:128
 #: includes/plugin-sidebars/class-convertkit-plugin-sidebar-post-settings.php:153
@@ -377,11 +393,6 @@ msgstr ""
 
 #: admin/section/class-convertkit-admin-section-form-entries.php:93
 msgid "Displays a list of form entries from Form Builder blocks that have \"store form submissions\" enabled. Entries submitted using embedded Kit Forms or Landing Pages are not included."
-msgstr ""
-
-#: admin/section/class-convertkit-admin-section-form-entries.php:141
-#: views/backend/settings/tools.php:71
-msgid "Export"
 msgstr ""
 
 #: admin/section/class-convertkit-admin-section-form-entries.php:142
@@ -2612,11 +2623,11 @@ msgstr ""
 msgid "Remove from member"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-convertkit-woocommerce-restrict-content.php:184
+#: includes/integrations/woocommerce/class-convertkit-woocommerce-restrict-content.php:190
 msgid "Description"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-convertkit-woocommerce-restrict-content.php:234
+#: includes/integrations/woocommerce/class-convertkit-woocommerce-restrict-content.php:240
 msgid "Sorry, this product is only available to members."
 msgstr ""
 
@@ -3795,10 +3806,6 @@ msgstr ""
 
 #: views/backend/settings/tools.php:86
 msgid "This will overwrite any existing settings stored on this installation."
-msgstr ""
-
-#: views/backend/settings/tools.php:95
-msgid "Import"
 msgstr ""
 
 #. translators: %s: Importer title

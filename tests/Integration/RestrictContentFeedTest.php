@@ -1,0 +1,202 @@
+<?php
+
+namespace Tests;
+
+use lucatume\WPBrowser\TestCase\WPTestCase;
+
+/**
+ * Tests for Restrict Content functionality in RSS and Atom feeds.
+ *
+ * @since   3.4.8
+ */
+class RestrictContentFeedTest extends WPTestCase
+{
+	/**
+	 * The testing implementation.
+	 *
+	 * @var \WpunitTester.
+	 */
+	protected $tester;
+
+	/**
+	 * Holds the ConvertKit Settings class.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @var     ConvertKit_Settings
+	 */
+	private $settings;
+
+	/**
+	 * Performs actions before each test.
+	 *
+	 * @since   3.4.8
+	 */
+	public function setUp(): void
+	{
+		parent::setUp();
+
+		// Activate Plugin.
+		activate_plugins('convertkit/wp-convertkit.php');
+
+		// Store Credentials in Plugin's settings.
+		$this->settings = new \ConvertKit_Settings();
+		$this->settings->save(
+			array(
+				'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
+				'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
+				'token_expires' => ( time() + 10000 ),
+			)
+		);
+
+		// Reload the Member Content class' settings, as they were loaded before credentials were stored.
+		WP_ConvertKit()->get_class( 'output_restrict_content' )->initialize_classes();
+
+		// Store the Product the Post is restricted to, so it exists without querying the API.
+		update_option(
+			'convertkit_products',
+			[
+				$_ENV['CONVERTKIT_API_PRODUCT_ID'] => [
+					'id'        => (int) $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					'name'      => 'Product',
+					'url'       => 'https://example.com',
+					'published' => true,
+				],
+			]
+		);
+		update_option( 'convertkit_products_last_queried', time() );
+	}
+
+	/**
+	 * Performs actions after each test.
+	 *
+	 * @since   3.4.8
+	 */
+	public function tearDown(): void
+	{
+		// Delete Credentials from Plugin's settings.
+		$this->settings->delete_credentials();
+
+		// Deactivate Plugin.
+		deactivate_plugins('convertkit/wp-convertkit.php');
+
+		parent::tearDown();
+	}
+
+	/**
+	 * Test that a feed returns the content preview, and not the full content, for a Post
+	 * restricted by Member Content with a teaser.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testFeedContentRestricted()
+	{
+		// Create a restricted Post with a teaser.
+		$post_id = $this->createRestrictedPost( '<p>Teaser content.</p><!--more--><p>Member-only content.</p>' );
+
+		// Get the Post's feed content and excerpt.
+		$feed = $this->getFeedContentAndExcerpt( $post_id );
+
+		// Assert only the teaser is returned in the content and excerpt.
+		$this->assertStringContainsString( 'Teaser content.', $feed['content'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $feed['content'] );
+		$this->assertStringContainsString( 'Teaser content.', $feed['excerpt'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $feed['excerpt'] );
+	}
+
+	/**
+	 * Test that a feed returns the excerpt, and not the full content, for a Post
+	 * restricted by Member Content with no teaser.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testFeedContentRestrictedWithExcerpt()
+	{
+		// Create a restricted Post with an excerpt.
+		$post_id = $this->createRestrictedPost( '<p>Member-only content.</p>', 'Excerpt content.' );
+
+		// Get the Post's feed content and excerpt.
+		$feed = $this->getFeedContentAndExcerpt( $post_id );
+
+		// Assert only the excerpt is returned in the content and excerpt.
+		$this->assertStringContainsString( 'Excerpt content.', $feed['content'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $feed['content'] );
+		$this->assertEquals( 'Excerpt content.', $feed['excerpt'] );
+	}
+
+	/**
+	 * Test that a feed returns the full content for a Post that is not restricted by Member Content.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testFeedContentNotRestricted()
+	{
+		// Create a Post.
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => '<p>Public content.</p>',
+				'post_excerpt' => '',
+			]
+		);
+
+		// Get the Post's feed content and excerpt.
+		$feed = $this->getFeedContentAndExcerpt( $post_id );
+
+		// Assert the full content is returned in the content and excerpt.
+		$this->assertStringContainsString( 'Public content.', $feed['content'] );
+		$this->assertStringContainsString( 'Public content.', $feed['excerpt'] );
+	}
+
+	/**
+	 * Creates a Post restricted to a Kit Product.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $post_content   Post content.
+	 * @param   string $post_excerpt   Post excerpt.
+	 * @return  int
+	 */
+	private function createRestrictedPost( $post_content, $post_excerpt = '' )
+	{
+		return static::factory()->post->create(
+			[
+				'post_content' => $post_content,
+				'post_excerpt' => $post_excerpt,
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Returns the content and excerpt WordPress outputs in the RSS feed for the given Post.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   int $post_id    Post ID.
+	 * @return  array
+	 */
+	private function getFeedContentAndExcerpt( $post_id )
+	{
+		global $post;
+
+		// Load the RSS feed.
+		$this->go_to( get_feed_link() );
+		$this->assertTrue( is_feed() );
+
+		// Setup the Post, as the feed's loop would.
+		$post = get_post( $post_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		setup_postdata( $post );
+
+		return [
+			'content' => get_the_content_feed( 'rss2' ),
+			'excerpt' => apply_filters( 'the_excerpt_rss', get_the_excerpt() ),
+		];
+	}
+}
