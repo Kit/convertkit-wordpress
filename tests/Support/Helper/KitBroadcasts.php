@@ -30,6 +30,7 @@ class KitBroadcasts extends \Codeception\Module
 					case 'import_thumbnail':
 					case 'import_images':
 					case 'enabled_export':
+					case 'export_public':
 					case 'no_styles':
 						if ( $value ) {
 							$I->checkOption('_wp_convertkit_settings_broadcasts[' . $key . ']');
@@ -41,7 +42,7 @@ class KitBroadcasts extends \Codeception\Module
 					case 'post_status':
 					case 'category_id':
 					case 'author_id':
-					case 'export_tag_id':
+					case 'export_send_to':
 						$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_broadcasts_' . $key . '-container', $value);
 
 						break;

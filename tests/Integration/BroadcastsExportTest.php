@@ -28,6 +28,27 @@ class BroadcastsExportTest extends WPTestCase
 	private $request = array();
 
 	/**
+	 * Holds the requests sent to the Broadcasts API, in the format `METHOD endpoint`.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @var     array
+	 */
+	private $requests = array();
+
+	/**
+	 * The HTTP response code and status to return when fetching an existing Broadcast.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @var     array
+	 */
+	private $existingBroadcast = array(
+		'code'   => 200,
+		'status' => 'draft',
+	);
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.4.8
@@ -53,6 +74,9 @@ class BroadcastsExportTest extends WPTestCase
 
 		// Mock the API response when creating a Broadcast.
 		add_filter( 'pre_http_request', array( $this, 'mockCreateBroadcastResponse' ), 10, 3 );
+
+		// Mock the API responses when fetching and updating an existing Broadcast.
+		add_filter( 'pre_http_request', array( $this, 'mockExistingBroadcastResponse' ), 10, 3 );
 	}
 
 	/**
@@ -63,6 +87,7 @@ class BroadcastsExportTest extends WPTestCase
 	public function tearDown(): void
 	{
 		remove_filter( 'pre_http_request', array( $this, 'mockCreateBroadcastResponse' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mockExistingBroadcastResponse' ) );
 
 		// Destroy the class we tested.
 		unset($this->exporter);
@@ -132,11 +157,11 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
-	 * Test that Broadcasts are sent to all subscribers by default.
+	 * Test that Broadcasts are sent to all subscribers and aren't public by default.
 	 *
 	 * @since   3.4.8
 	 */
-	public function testExportDefaultAudience()
+	public function testExportDefaultAudienceAndVisibility()
 	{
 		// Create Post.
 		$post_id = $this->factory->post->create(
@@ -150,8 +175,10 @@ class BroadcastsExportTest extends WPTestCase
 		$result = $this->exporter->export_post_to_broadcast( $post_id );
 		$this->assertNotInstanceOf(\WP_Error::class, $result);
 
-		// Confirm the Broadcast is sent to all subscribers.
-		$this->assertArrayNotHasKey( 'subscriber_filter', $this->request );
+		// Confirm the Broadcast is sent to all subscribers, and isn't public.
+		$this->assertEquals( [ [ 'all' => [] ] ], $this->request['subscriber_filter'] );
+		$this->assertFalse( $this->request['public'] );
+		$this->assertArrayNotHasKey( 'published_at', $this->request );
 	}
 
 	/**
@@ -162,7 +189,7 @@ class BroadcastsExportTest extends WPTestCase
 	public function testExportSendToTag()
 	{
 		// Define Send To setting.
-		$this->saveBroadcastsSettings( [ 'export_tag_id' => $_ENV['CONVERTKIT_API_TAG_ID'] ] );
+		$this->saveBroadcastsSettings( [ 'export_send_to' => 'tag_' . $_ENV['CONVERTKIT_API_TAG_ID'] ] );
 
 		// Create Post.
 		$post_id = $this->factory->post->create(
@@ -189,6 +216,210 @@ class BroadcastsExportTest extends WPTestCase
 				],
 			],
 			$this->request['subscriber_filter']
+		);
+	}
+
+	/**
+	 * Test that Broadcasts are sent to subscribers in the Segment defined in the Send To setting.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportSendToSegment()
+	{
+		// Define Send To setting.
+		$this->saveBroadcastsSettings( [ 'export_send_to' => 'segment_' . $_ENV['CONVERTKIT_API_SEGMENT_ID'] ] );
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Send To Segment',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Broadcast is sent to subscribers in the Segment.
+		$this->assertEquals(
+			[
+				[
+					'all' => [
+						[
+							'type' => 'segment',
+							'ids'  => [ (int) $_ENV['CONVERTKIT_API_SEGMENT_ID'] ],
+						],
+					],
+				],
+			],
+			$this->request['subscriber_filter']
+		);
+	}
+
+	/**
+	 * Test that Broadcasts are public, with the Post's published date, when the Make Public setting is enabled.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPublic()
+	{
+		// Enable Make Public setting.
+		$this->saveBroadcastsSettings( [ 'export_public' => 'on' ] );
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'    => 'Kit: Export: Public',
+				'post_content'  => '<p>Post content.</p>',
+				'post_date_gmt' => '2026-01-02 03:04:05',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Broadcast is public, with the Post's published date.
+		$this->assertTrue( $this->request['public'] );
+		$this->assertEquals( '2026-01-02 03:04:05', $this->request['published_at'] );
+	}
+
+	/**
+	 * Test that Broadcasts created from draft Posts are public, without a published date,
+	 * when the Make Public setting is enabled.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportPublicDraftPost()
+	{
+		// Enable Make Public setting.
+		$this->saveBroadcastsSettings( [ 'export_public' => 'on' ] );
+
+		// Create draft Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Public: Draft',
+				'post_content' => '<p>Post content.</p>',
+				'post_status'  => 'draft',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Broadcast is public, without a published date.
+		$this->assertTrue( $this->request['public'] );
+		$this->assertArrayNotHasKey( 'published_at', $this->request );
+	}
+
+	/**
+	 * Test that exporting a Post creates a Broadcast, storing its ID in the Post's meta.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportStoresBroadcastID()
+	{
+		// Create Post.
+		$post_id = $this->factory->post->create( [ 'post_title' => 'Kit: Export: Store Broadcast ID' ] );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm a Broadcast was created, and its ID stored.
+		$this->assertEquals( [ 'POST broadcasts' ], $this->requests );
+		$this->assertEquals( 123, $this->exporter->get_post_broadcast_id( $post_id ) );
+	}
+
+	/**
+	 * Test that exporting a previously exported Post updates its draft Broadcast,
+	 * instead of creating a new Broadcast.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportUpdatesDraftBroadcast()
+	{
+		// Create Post that was previously exported.
+		$post_id = $this->createExportedPost( 'Kit: Export: Update Draft Broadcast' );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the existing Broadcast was updated.
+		$this->assertEquals( [ 'GET broadcasts/456', 'PUT broadcasts/456' ], $this->requests );
+		$this->assertEquals( 'Kit: Export: Update Draft Broadcast', $this->request['subject'] );
+		$this->assertEquals( 456, $this->exporter->get_post_broadcast_id( $post_id ) );
+	}
+
+	/**
+	 * Test that exporting a previously exported Post returns an error if its Broadcast
+	 * has been sent or scheduled, without creating or updating a Broadcast.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportErrorWhenBroadcastSentOrScheduled()
+	{
+		foreach ( [ 'scheduled', 'sending', 'completed', 'aborted' ] as $status ) {
+			$this->requests                    = [];
+			$this->existingBroadcast['status'] = $status;
+
+			// Create Post that was previously exported.
+			$post_id = $this->createExportedPost( 'Kit: Export: Broadcast ' . $status );
+
+			// Export Post.
+			$result = $this->exporter->export_post_to_broadcast( $post_id );
+
+			// Confirm an error is returned, and the Broadcast wasn't updated.
+			$this->assertInstanceOf(\WP_Error::class, $result, $status);
+			$this->assertEquals( 'This Post\'s Kit Broadcast has already been sent or scheduled, so it can\'t be updated.', $result->get_error_message() );
+			$this->assertEquals( [ 'GET broadcasts/456' ], $this->requests, $status );
+			$this->assertEquals( 456, $this->exporter->get_post_broadcast_id( $post_id ) );
+		}
+	}
+
+	/**
+	 * Test that exporting a previously exported Post creates a new Broadcast if its
+	 * Broadcast was deleted in Kit.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportCreatesBroadcastWhenDeletedInKit()
+	{
+		$this->existingBroadcast['code'] = 404;
+
+		// Create Post that was previously exported.
+		$post_id = $this->createExportedPost( 'Kit: Export: Broadcast Deleted' );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm a new Broadcast was created, and its ID stored.
+		$this->assertEquals( [ 'GET broadcasts/456', 'POST broadcasts' ], $this->requests );
+		$this->assertEquals( 123, $this->exporter->get_post_broadcast_id( $post_id ) );
+	}
+
+	/**
+	 * Creates a Post that was previously exported to Broadcast ID 456.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $title  Post title.
+	 * @return  int
+	 */
+	private function createExportedPost( $title )
+	{
+		return $this->factory->post->create(
+			[
+				'post_title'   => $title,
+				'post_content' => '<p>Post content.</p>',
+				'meta_input'   => [
+					'_convertkit_broadcast_export_id' => 456,
+				],
+			]
 		);
 	}
 
@@ -224,7 +455,8 @@ class BroadcastsExportTest extends WPTestCase
 		}
 
 		// Store the request body.
-		$this->request = json_decode( $parsed_args['body'], true );
+		$this->request    = json_decode( $parsed_args['body'], true );
+		$this->requests[] = 'POST broadcasts';
 
 		return array(
 			'headers'       => array(),
@@ -241,6 +473,65 @@ class BroadcastsExportTest extends WPTestCase
 			'response'      => array(
 				'code'    => 201,
 				'message' => 'Created',
+			),
+			'cookies'       => array(),
+			'http_response' => null,
+		);
+	}
+
+	/**
+	 * Mocks the API responses when fetching and updating an existing Broadcast, storing the request body
+	 * when updating.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   mixed  $response       HTTP Response.
+	 * @param   array  $parsed_args    Request arguments.
+	 * @param   string $url            Request URL.
+	 * @return  mixed
+	 */
+	public function mockExistingBroadcastResponse( $response, $parsed_args, $url )
+	{
+		// Only mock requests made to fetch or update a Broadcast.
+		if ( ! preg_match( '#^https://api\.kit\.com/v4/broadcasts/([0-9]+)#', $url, $matches ) || ! in_array( $parsed_args['method'], [ 'GET', 'PUT' ], true ) ) {
+			return $response;
+		}
+
+		$this->requests[] = $parsed_args['method'] . ' broadcasts/' . $matches[1];
+
+		// Return a 404 if the Broadcast should not exist.
+		if ( $parsed_args['method'] === 'GET' && $this->existingBroadcast['code'] === 404 ) {
+			return array(
+				'headers'       => array(),
+				'body'          => wp_json_encode( array( 'errors' => array( 'Not Found' ) ) ),
+				'response'      => array(
+					'code'    => 404,
+					'message' => 'Not Found',
+				),
+				'cookies'       => array(),
+				'http_response' => null,
+			);
+		}
+
+		// Store the request body when updating.
+		if ( $parsed_args['method'] === 'PUT' ) {
+			$this->request = json_decode( $parsed_args['body'], true );
+		}
+
+		return array(
+			'headers'       => array(),
+			'body'          => wp_json_encode(
+				array(
+					'broadcast' => array(
+						'id'      => (int) $matches[1],
+						'status'  => $this->existingBroadcast['status'],
+						'send_at' => ( $this->existingBroadcast['status'] === 'draft' ? null : '2026-01-01T00:00:00Z' ),
+					),
+				)
+			),
+			'response'      => array(
+				'code'    => 200,
+				'message' => 'OK',
 			),
 			'cookies'       => array(),
 			'http_response' => null,
