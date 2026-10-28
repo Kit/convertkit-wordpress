@@ -316,7 +316,7 @@ class ConvertKit_Settings_Broadcasts {
 				'export_public'         => array(
 					'type'        => 'string',
 					'enum'        => array( '', 'on' ),
-					'description' => __( 'Whether Broadcasts created from WordPress Posts are published to the web (Kit Creator Profile and Landing Pages).', 'convertkit' ),
+					'description' => __( 'Whether Broadcasts created from WordPress Posts are published to the web (Kit Newsletter site and Landing Pages).', 'convertkit' ),
 				),
 				'no_styles'             => array(
 					'type'        => 'string',

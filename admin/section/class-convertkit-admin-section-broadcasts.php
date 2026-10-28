@@ -349,7 +349,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			array(
 				'name'      => 'export_public',
 				'label_for' => 'export_public',
-				'label'     => __( 'If enabled, draft broadcasts will be published to your Kit Creator Profile and Landing Pages when sent.', 'convertkit' ),
+				'label'     => __( 'If enabled, draft broadcasts will be published to your Kit Newsletter site and Landing Pages when sent.', 'convertkit' ),
 			)
 		);
 
