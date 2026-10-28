@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Shows all table rows on a ConvertKit settings screen, and then hides
- * table rows related to a setting, if that setting is disabled.
+ * Shows or hides table rows related to a setting, depending on whether
+ * that setting is enabled.
  *
  * @since 	2.2.4
  *
@@ -38,28 +38,21 @@ function convertKitConditionallyDisplaySettings(input) {
 
 	switch (input.type) {
 		case 'checkbox':
-			// Show all rows.
-			rows.forEach((row) => (row.style.display = ''));
-
-			// Don't do anything else if the checkbox is checked.
-			if (input.checked) {
-				return;
-			}
-
-			// Iterate through the table rows, hiding any settings.
+			// Iterate through the table rows, showing or hiding only the settings related to this checkbox,
+			// so multiple checkboxes on the same screen don't affect each other's settings.
 			rows.forEach(function (row) {
 				// Skip if this table row is for the setting we've just checked/unchecked.
 				if (row.querySelector(`[id = "${input.id}"]`)) {
 					return;
 				}
 
-				// Hide this row if the input, select, link or span element within the row has the CSS class of the setting ID.
+				// Show or hide this row if the input, select, link or span element within the row has the CSS class of the setting ID.
 				if (
 					row.querySelector(
 						`input.${input.id}, select.${input.id}, a.${input.id}, span.${input.id}`
 					)
 				) {
-					row.style.display = 'none';
+					row.style.display = input.checked ? '' : 'none';
 				}
 			});
 			break;

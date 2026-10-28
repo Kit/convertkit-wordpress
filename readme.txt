@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.4.7
+Stable tag: 3.4.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -347,6 +347,15 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.4.8 2026-10-28
+* Added: Settings: Broadcasts: Separate Import and Export settings panels
+* Updated: Broadcasts: Export: Convert relative links and image URLs to absolute URLs
+* Updated: Broadcasts: Export: Remove responsive image attributes, which email clients don't support
+* Fix: Member Content: Restrict content in REST API responses
+* Fix: Member Content: Restrict content in RSS and Atom feeds
+* Fix: Member Content: Restrict content in archives, such as the blog, categories and search results
+* Fix: Member Content: WooCommerce: Restrict Product descriptions in the Store API and Product blocks
 
 ### 3.4.7 2026-10-15
 * Added: Member Content: WooCommerce: Hide price, description and Add to Cart button on restricted Products, and prevent adding them to the cart
