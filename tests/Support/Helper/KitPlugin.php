@@ -484,6 +484,18 @@ class KitPlugin extends \Codeception\Module
 			]
 		);
 
+		// Define Segments.
+		$I->haveOptionInDatabase(
+			'convertkit_segments',
+			[
+				$_ENV['CONVERTKIT_API_SEGMENT_ID'] => [
+					'id'         => (int) $_ENV['CONVERTKIT_API_SEGMENT_ID'],
+					'name'       => $_ENV['CONVERTKIT_API_SEGMENT_NAME'],
+					'created_at' => '2024-01-01T00:00:00.000Z',
+				],
+			]
+		);
+
 		// Define Tags.
 		$I->haveOptionInDatabase(
 			'convertkit_tags',
@@ -566,6 +578,7 @@ class KitPlugin extends \Codeception\Module
 		$I->haveOptionInDatabase( 'convertkit_posts_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_products_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_tags_last_queried', strtotime( 'now' ) );
+		$I->haveOptionInDatabase( 'convertkit_segments_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_custom_fields_last_queried', strtotime( 'now' ) );
 	}
 
@@ -654,6 +667,8 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('convertkit_products_last_queried');
 		$I->dontHaveOptionInDatabase('convertkit_tags');
 		$I->dontHaveOptionInDatabase('convertkit_tags_last_queried');
+		$I->dontHaveOptionInDatabase('convertkit_segments');
+		$I->dontHaveOptionInDatabase('convertkit_segments_last_queried');
 		$I->dontHaveOptionInDatabase('convertkit_custom_fields');
 		$I->dontHaveOptionInDatabase('convertkit_custom_fields_last_queried');
 
