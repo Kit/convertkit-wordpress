@@ -11,6 +11,8 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class ResourceProductsTest extends WPTestCase
 {
+	use ResourceAssertionsTrait;
+
 	/**
 	 * The testing implementation.
 	 *
@@ -145,9 +147,8 @@ class ResourceProductsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Example Tip Jar', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('PDF Guide', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -176,9 +177,8 @@ class ResourceProductsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('PDF Guide', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Example Tip Jar', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -207,8 +207,7 @@ class ResourceProductsTest extends WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('PDF Guide', reset($result)['name']);
-		$this->assertEquals('Newsletter Subscription', end($result)['name']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**
