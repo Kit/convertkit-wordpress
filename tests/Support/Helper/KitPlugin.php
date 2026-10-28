@@ -844,8 +844,8 @@ class KitPlugin extends \Codeception\Module
 		// Wait for the options to load.
 		$I->waitForElementVisible('select' . $selectElement . ' option:last-child');
 
-		// Get the text of each option.
-		$options = array_map( 'trim', $I->grabMultiple('select' . $selectElement . ' option', 'textContent') );
+		// Get the text of each visible option, ignoring hidden copies of the select e.g. Quick Edit's template, whose text is blank.
+		$options = array_values( array_filter( array_map( 'trim', $I->grabMultiple('select' . $selectElement . ' option') ), 'strlen' ) );
 
 		// Assert the prepended options are first.
 		$prependOptions = ( $prependOptions ? $prependOptions : [] );
