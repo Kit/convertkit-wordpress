@@ -125,6 +125,9 @@ class ConvertKit_Output_Restrict_Content {
 	public function __construct() {
 
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		add_action( 'rest_api_init', array( $this, 'register_rest_content_filters' ) );
+		add_filter( 'the_content_feed', array( $this, 'maybe_restrict_content_preview' ) );
+		add_filter( 'the_excerpt_rss', array( $this, 'maybe_restrict_feed_excerpt' ) );
 		add_action( 'init', array( $this, 'initialize_classes' ), 2 );
 		add_action( 'init', array( $this, 'maybe_run_subscriber_authentication' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_logout' ), 3 );
@@ -771,6 +774,124 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
+	 * Registers filters to restrict content in REST API responses for Post Types
+	 * supporting Member Content.
+	 *
+	 * @since   3.4.8
+	 */
+	public function register_rest_content_filters() {
+
+		foreach ( convertkit_get_supported_restrict_content_post_types() as $post_type ) {
+			add_filter( 'rest_prepare_' . $post_type, array( $this, 'maybe_restrict_rest_content' ), 10, 2 );
+		}
+
+	}
+
+	/**
+	 * Replaces the rendered content in a REST API response with the content preview,
+	 * if the Post is restricted and the visitor cannot view it.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_REST_Response $response   REST API Response.
+	 * @param   WP_Post          $post       Post.
+	 * @return  WP_REST_Response
+	 */
+	public function maybe_restrict_rest_content( $response, $post ) {
+
+		// Bail if the response doesn't include the rendered content e.g. the _fields parameter was used.
+		if ( ! isset( $response->data['content']['rendered'] ) ) {
+			return $response;
+		}
+
+		// Bail if the user can edit the Post, so the block editor and other tools can access its content.
+		if ( current_user_can( 'edit_post', $post->ID ) ) {
+			return $response;
+		}
+
+		// Bail if the visitor can view the Post.
+		if ( $this->can_view_post( $post->ID ) ) {
+			return $response;
+		}
+
+		/**
+		 * Define the output for the content preview when the visitor is not
+		 * an authenticated subscriber.
+		 *
+		 * @since   2.4.1
+		 *
+		 * @param   string  $content_preview    Content preview.
+		 * @param   int     $post_id            Post ID.
+		 */
+		$response->data['content']['rendered'] = apply_filters( 'convertkit_output_restrict_content_content_preview', $this->get_content_preview( $response->data['content']['rendered'] ), $post->ID );
+
+		return $response;
+
+	}
+
+	/**
+	 * Replaces a Post's content in RSS and Atom feeds and archives with the content
+	 * preview, if the Post is restricted and the visitor cannot view it.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $content    Post Content.
+	 * @return  string
+	 */
+	public function maybe_restrict_content_preview( $content ) {
+
+		// Bail if the visitor can view the Post.
+		if ( $this->can_view_post( get_the_ID() ) ) {
+			return $content;
+		}
+
+		/**
+		 * Define the output for the content preview when the visitor is not
+		 * an authenticated subscriber.
+		 *
+		 * @since   2.4.1
+		 *
+		 * @param   string  $content_preview    Content preview.
+		 * @param   int     $post_id            Post ID.
+		 */
+		return apply_filters( 'convertkit_output_restrict_content_content_preview', $this->get_content_preview( $content ), get_the_ID() );
+
+	}
+
+	/**
+	 * Replaces a Post's generated excerpt in RSS and Atom feeds with one built from the
+	 * content preview, if the Post is restricted and the visitor cannot view it.
+	 *
+	 * Feeds generate the excerpt from the full content, which would include restricted
+	 * content after a Read More tag.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $excerpt    Post Excerpt.
+	 * @return  string
+	 */
+	public function maybe_restrict_feed_excerpt( $excerpt ) {
+
+		// Bail if the Post has a manually defined excerpt.
+		if ( has_excerpt() ) {
+			return $excerpt;
+		}
+
+		// Bail if the visitor can view the Post.
+		if ( $this->can_view_post( get_the_ID() ) ) {
+			return $excerpt;
+		}
+
+		// Build the excerpt from the content preview, using the same length and more text as WordPress.
+		return wp_trim_words(
+			$this->maybe_restrict_content_preview( apply_filters( 'the_content', get_the_content() ) ),
+			apply_filters( 'excerpt_length', 55 ),
+			apply_filters( 'excerpt_more', ' [&hellip;]' )
+		);
+
+	}
+
+	/**
 	 * Displays (or hides) content on a singular Page, Post or Custom Post Type's Content,
 	 * depending on whether the visitor is an authenticated ConvertKit subscriber and has
 	 * subscribed to the ConvertKit Product or Tag.
@@ -781,6 +902,12 @@ class ConvertKit_Output_Restrict_Content {
 	 * @return  string              Post Content with content restricted/not restricted
 	 */
 	public function maybe_restrict_content( $content ) {
+
+		// Restrict content in archives, such as the blog, categories and search results.
+		// Feeds are handled by maybe_restrict_content_preview().
+		if ( ! is_singular() && ! is_feed() ) {
+			return $this->maybe_restrict_archive_content( $content );
+		}
 
 		// Bail if the Restrict Content setting is not enabled on this Page.
 		if ( ! $this->is_restricted_content() ) {
@@ -793,6 +920,34 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		return $this->restrict_content( $content );
+
+	}
+
+	/**
+	 * Replaces a Post's content in archives, such as the blog, categories and search results,
+	 * with the content preview, if the Post is restricted and the visitor cannot view it.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $content    Post Content.
+	 * @return  string
+	 */
+	private function maybe_restrict_archive_content( $content ) {
+
+		global $more;
+
+		// Bail if no Post is being output.
+		$post = get_post();
+		if ( ! $post ) {
+			return $content;
+		}
+
+		// Bail if WordPress is only outputting the content before the Read More tag.
+		if ( ! $more && strpos( $post->post_content, '<!--more' ) !== false ) {
+			return $content;
+		}
+
+		return $this->maybe_restrict_content_preview( $content );
 
 	}
 
