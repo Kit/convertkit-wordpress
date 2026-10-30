@@ -212,7 +212,7 @@ class ConvertKit_Settings_Broadcasts {
 	 */
 	public function export_greeting() {
 
-		return wp_kses_post( $this->settings['export_greeting'] );
+		return (string) $this->settings['export_greeting'];
 
 	}
 
@@ -225,7 +225,7 @@ class ConvertKit_Settings_Broadcasts {
 	 */
 	public function export_sign_off() {
 
-		return wp_kses_post( $this->settings['export_sign_off'] );
+		return (string) $this->settings['export_sign_off'];
 
 	}
 
@@ -433,6 +433,13 @@ class ConvertKit_Settings_Broadcasts {
 	 * @param   array $settings   Settings.
 	 */
 	public function save( $settings ) {
+
+		// Remove disallowed HTML from the greeting and sign-off.
+		foreach ( array( 'export_greeting', 'export_sign_off' ) as $key ) {
+			if ( array_key_exists( $key, $settings ) ) {
+				$settings[ $key ] = wp_kses_post( $settings[ $key ] );
+			}
+		}
 
 		update_option( self::SETTINGS_NAME, array_merge( $this->get(), $settings ) );
 

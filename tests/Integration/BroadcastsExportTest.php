@@ -431,6 +431,43 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that disallowed HTML is removed from the Greeting and Sign-off settings when saved
+	 * programmatically e.g. using MCP, and isn't included in the Broadcast.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportGreetingAndSignOffSanitizedOnSave()
+	{
+		// Define Greeting and Sign-off settings, including disallowed HTML.
+		$this->saveBroadcastsSettings(
+			[
+				'export_greeting' => 'Hi {{ subscriber.first_name }},<script>alert(1)</script>',
+				'export_sign_off' => '<strong>Thanks</strong><script>alert(2)</script>',
+			]
+		);
+
+		// Confirm the settings were stored without disallowed HTML.
+		$settings = new \ConvertKit_Settings_Broadcasts();
+		$this->assertEquals( 'Hi {{ subscriber.first_name }},alert(1)', $settings->export_greeting() );
+		$this->assertEquals( '<strong>Thanks</strong>alert(2)', $settings->export_sign_off() );
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Greeting and Sign-off: Sanitized',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm no script tags are in the Broadcast.
+		$this->assertStringNotContainsString( '<script', $this->request['content'] );
+	}
+
+	/**
 	 * Test that a link to read the Post on the web is added to the bottom or top of the Broadcast,
 	 * with link text that can be changed using a filter.
 	 *
