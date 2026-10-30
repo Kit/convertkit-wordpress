@@ -397,6 +397,206 @@ class BroadcastsExportTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Greeting and Sign-off settings are added to the start and end of the Broadcast,
+	 * keeping Liquid tags.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportGreetingAndSignOff()
+	{
+		// Define Greeting and Sign-off settings.
+		$this->saveBroadcastsSettings(
+			[
+				'export_greeting' => 'Hi {{ subscriber.first_name | default: "there" }},',
+				'export_sign_off' => '<strong>Thanks</strong>',
+			]
+		);
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Greeting and Sign-off',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the Greeting, content and Sign-off are in order.
+		$this->assertStringStartsWith( '<p>Hi {{ subscriber.first_name | default: "there" }},</p>', $this->request['content'] );
+		$this->assertStringContainsString( '<p>Post content.</p>', $this->request['content'] );
+		$this->assertStringEndsWith( '<p><strong>Thanks</strong></p>' . "\n", $this->request['content'] );
+	}
+
+	/**
+	 * Test that disallowed HTML is removed from the Greeting and Sign-off settings when saved
+	 * programmatically e.g. using MCP, and isn't included in the Broadcast.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportGreetingAndSignOffSanitizedOnSave()
+	{
+		// Define Greeting and Sign-off settings, including disallowed HTML.
+		$this->saveBroadcastsSettings(
+			[
+				'export_greeting' => 'Hi {{ subscriber.first_name }},<script>alert(1)</script>',
+				'export_sign_off' => '<strong>Thanks</strong><script>alert(2)</script>',
+			]
+		);
+
+		// Confirm the settings were stored without disallowed HTML.
+		$settings = new \ConvertKit_Settings_Broadcasts();
+		$this->assertEquals( 'Hi {{ subscriber.first_name }},alert(1)', $settings->export_greeting() );
+		$this->assertEquals( '<strong>Thanks</strong>alert(2)', $settings->export_sign_off() );
+
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Greeting and Sign-off: Sanitized',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm no script tags are in the Broadcast.
+		$this->assertStringNotContainsString( '<script', $this->request['content'] );
+	}
+
+	/**
+	 * Test that a link to read the Post on the web is added to the bottom or top of the Broadcast,
+	 * with link text that can be changed using a filter.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportWebLink()
+	{
+		// Create Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Web Link',
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+		$link    = '<p><a href="' . get_permalink( $post_id ) . '">Read this on the web</a></p>';
+
+		// Confirm the link is added to the bottom.
+		$this->saveBroadcastsSettings( [ 'export_web_link' => 'bottom' ] );
+		$this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertStringEndsWith( $link, $this->request['content'] );
+
+		// Confirm the link is added to the top.
+		$this->saveBroadcastsSettings( [ 'export_web_link' => 'top' ] );
+		$this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertStringStartsWith( $link, $this->request['content'] );
+
+		// Confirm the link text can be changed.
+		add_filter(
+			'convertkit_broadcasts_exporter_web_link_text',
+			function () {
+				return 'View online';
+			}
+		);
+		$this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertStringStartsWith( '<p><a href="' . get_permalink( $post_id ) . '">View online</a></p>', $this->request['content'] );
+	}
+
+	/**
+	 * Test that a link to read the Post on the web isn't added when the Post isn't published.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportWebLinkNotAddedToDraftPost()
+	{
+		// Define Read on the Web setting.
+		$this->saveBroadcastsSettings( [ 'export_web_link' => 'bottom' ] );
+
+		// Create draft Post.
+		$post_id = $this->factory->post->create(
+			[
+				'post_title'   => 'Kit: Export: Web Link: Draft',
+				'post_content' => '<p>Post content.</p>',
+				'post_status'  => 'draft',
+			]
+		);
+
+		// Export Post.
+		$this->exporter->export_post_to_broadcast( $post_id );
+
+		// Confirm no link was added.
+		$this->assertStringNotContainsString( 'Read this on the web', $this->request['content'] );
+	}
+
+	/**
+	 * Test that the Post's featured image is used as the Broadcast's thumbnail when the Make Public setting is enabled.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportFeaturedImageAsThumbnail()
+	{
+		// Enable Make Public setting.
+		$this->saveBroadcastsSettings( [ 'export_public' => 'on' ] );
+
+		// Create Post with a featured image.
+		$post_id = $this->createPostWithFeaturedImage( 'Kit: Export: Featured Image' );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm the featured image is the Broadcast's thumbnail.
+		$this->assertEquals( wp_get_attachment_image_url( get_post_thumbnail_id( $post_id ), 'full' ), $this->request['thumbnail_url'] );
+		$this->assertEquals( 'Featured image alt text', $this->request['thumbnail_alt'] );
+	}
+
+	/**
+	 * Test that the Post's featured image isn't sent when the Make Public setting is disabled,
+	 * as Kit only uses thumbnails for public Broadcasts.
+	 *
+	 * @since   3.4.8
+	 */
+	public function testExportFeaturedImageNotUsedWhenNotPublic()
+	{
+		// Create Post with a featured image.
+		$post_id = $this->createPostWithFeaturedImage( 'Kit: Export: Featured Image: Not Public' );
+
+		// Export Post.
+		$result = $this->exporter->export_post_to_broadcast( $post_id );
+		$this->assertNotInstanceOf(\WP_Error::class, $result);
+
+		// Confirm no thumbnail was sent.
+		$this->assertArrayNotHasKey( 'thumbnail_url', $this->request );
+		$this->assertArrayNotHasKey( 'thumbnail_alt', $this->request );
+	}
+
+	/**
+	 * Creates a Post with a featured image that has alt text.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string $title  Post title.
+	 * @return  int
+	 */
+	private function createPostWithFeaturedImage( $title )
+	{
+		$post_id  = $this->factory->post->create(
+			[
+				'post_title'   => $title,
+				'post_content' => '<p>Post content.</p>',
+			]
+		);
+		$image_id = $this->factory->attachment->create_upload_object( dirname( __DIR__ ) . '/Support/Data/icon.png', $post_id );
+		update_post_meta( $image_id, '_wp_attachment_image_alt', 'Featured image alt text' );
+		set_post_thumbnail( $post_id, $image_id );
+
+		return $post_id;
+	}
+
+	/**
 	 * Test that exporting a Post creates a Broadcast, storing its ID in the Post's meta.
 	 *
 	 * @since   3.4.8
