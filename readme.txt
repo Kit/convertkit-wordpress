@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.4.8
+Stable tag: 3.4.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -347,6 +347,15 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.4.9 2026-10-30
+* Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
+* Added: Broadcasts: Export: Make Public setting, to publish Broadcasts to your Kit Newsletter site, using the Post's published date and featured image
+* Added: Broadcasts: Export: Greeting, Sign-off and Read on the Web settings
+* Added: Broadcasts: Export: Open in Kit row action for exported Posts
+* Updated: Broadcasts: Export: Update the existing draft Broadcast when exporting a Post again, instead of creating a duplicate
+* Updated: Broadcasts: Export: Use the Post's excerpt as the Broadcast's preview text
+* Updated: WordPress Libraries to 2.8.1
 
 ### 3.4.8 2026-10-28
 * Added: Settings: Broadcasts: Separate Import and Export settings panels

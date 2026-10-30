@@ -1,3 +1,12 @@
+### 3.4.9 2026-10-30
+* Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
+* Added: Broadcasts: Export: Make Public setting, to publish Broadcasts to your Kit Newsletter site, using the Post's published date and featured image
+* Added: Broadcasts: Export: Greeting, Sign-off and Read on the Web settings
+* Added: Broadcasts: Export: Open in Kit row action for exported Posts
+* Updated: Broadcasts: Export: Update the existing draft Broadcast when exporting a Post again, instead of creating a duplicate
+* Updated: Broadcasts: Export: Use the Post's excerpt as the Broadcast's preview text
+* Updated: WordPress Libraries to 2.8.1
+
 ### 3.4.8 2026-10-28
 * Added: Settings: Broadcasts: Separate Import and Export settings panels
 * Updated: Broadcasts: Export: Convert relative links and image URLs to absolute URLs
