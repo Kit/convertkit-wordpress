@@ -273,7 +273,8 @@ class ConvertKit_Broadcasts_Exporter {
 		}
 
 		// Define the Broadcast's parameters.
-		$args = array(
+		$thumbnail = $this->get_thumbnail( $post );
+		$args      = array(
 			$post->post_title,
 			$content,
 			$post->post_excerpt,
@@ -282,8 +283,8 @@ class ConvertKit_Broadcasts_Exporter {
 			null,
 			'',
 			'',
-			'',
-			'',
+			$thumbnail['alt'],
+			$thumbnail['url'],
 			$this->get_preview_text( $post ),
 			$this->get_subscriber_filter(),
 		);
@@ -390,6 +391,46 @@ class ConvertKit_Broadcasts_Exporter {
 		}
 
 		return $broadcast_id;
+
+	}
+
+	/**
+	 * Returns the Post's featured image URL and alt text, to use as the Broadcast's thumbnail
+	 * if the Broadcast is public.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_Post $post   WordPress Post.
+	 * @return  array           Thumbnail URL and alt text (blank if no thumbnail)
+	 */
+	private function get_thumbnail( $post ) {
+
+		$thumbnail = array(
+			'url' => '',
+			'alt' => '',
+		);
+
+		// Bail if the Broadcast isn't public, as Kit only uses thumbnails for public Broadcasts.
+		if ( ! $this->broadcasts_settings->export_public() ) {
+			return $thumbnail;
+		}
+
+		// Bail if the Post has no featured image.
+		$image_id = get_post_thumbnail_id( $post );
+		if ( ! $image_id ) {
+			return $thumbnail;
+		}
+
+		// Bail if the featured image's URL can't be fetched.
+		$url = wp_get_attachment_image_url( $image_id, 'full' );
+		if ( ! $url ) {
+			return $thumbnail;
+		}
+
+		return array(
+			'url' => $url,
+			'alt' => (string) get_post_meta( $image_id, '_wp_attachment_image_alt', true ),
+		);
 
 	}
 
