@@ -354,6 +354,45 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		);
 
 		add_settings_field(
+			'export_greeting',
+			__( 'Greeting', 'convertkit' ),
+			array( $this, 'export_greeting_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_greeting',
+				'label_for'   => 'export_greeting',
+				'description' => __( 'Optional. Added to the start of draft broadcasts. Supports HTML and Liquid, for example: Hi {{ subscriber.first_name | default: "there" }},', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_sign_off',
+			__( 'Sign-off', 'convertkit' ),
+			array( $this, 'export_sign_off_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_sign_off',
+				'label_for'   => 'export_sign_off',
+				'description' => __( 'Optional. Added to the end of draft broadcasts. Supports HTML and Liquid.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_web_link',
+			__( 'Read on the Web', 'convertkit' ),
+			array( $this, 'export_web_link_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_web_link',
+				'label_for'   => $this->settings_key . '_export_web_link',
+				'description' => __( 'Adds a link to read the post on your site to draft broadcasts. Only added once the post is published.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
 			'no_styles',
 			__( 'Disable Styles', 'convertkit' ),
 			array( $this, 'no_styles_callback' ),
@@ -721,6 +760,76 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	}
 
 	/**
+	 * Renders the input for the Greeting setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_greeting_callback( $args ) {
+
+		// Output field.
+		$this->output_textarea_field(
+			$args['name'],
+			esc_textarea( $this->settings->export_greeting() ),
+			$args['description'],
+			array(
+				'large-text',
+				'enabled_export',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Sign-off setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_sign_off_callback( $args ) {
+
+		// Output field.
+		$this->output_textarea_field(
+			$args['name'],
+			esc_textarea( $this->settings->export_sign_off() ),
+			$args['description'],
+			array(
+				'large-text',
+				'enabled_export',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Read on the Web setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_web_link_callback( $args ) {
+
+		// Output field.
+		$this->output_select_field(
+			$args['name'],
+			$this->settings->export_web_link(),
+			array(
+				''       => esc_html__( 'None', 'convertkit' ),
+				'top'    => esc_html__( 'Top of broadcast', 'convertkit' ),
+				'bottom' => esc_html__( 'Bottom of broadcast', 'convertkit' ),
+			),
+			$args['description'],
+			array(
+				'enabled_export',
+			)
+		);
+
+	}
+
+	/**
 	 * Renders the input for the No Styles setting.
 	 *
 	 * @since   2.2.9
@@ -761,6 +870,13 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		// Therefore, if the setting doesn't exist, set it to blank.
 		if ( ! array_key_exists( 'import_images', $settings ) ) {
 			$settings['import_images'] = '';
+		}
+
+		// Remove disallowed HTML from the greeting and sign-off.
+		foreach ( array( 'export_greeting', 'export_sign_off' ) as $key ) {
+			if ( array_key_exists( $key, $settings ) ) {
+				$settings[ $key ] = wp_kses_post( $settings[ $key ] );
+			}
 		}
 
 		// Merge settings with defaults.
