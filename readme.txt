@@ -5,7 +5,7 @@ Tags: email marketing, email newsletter, subscribers, landing page, membership
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.4.8
+Stable tag: 3.4.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,7 +15,7 @@ Build your email subscriber lists, send email marketing newsletters, create land
 
 [Kit](https://kit.com?utm_source=wordpress&utm_term=en_US&utm_content=readme) makes it easy to create, send and manage your email marketing campaigns; grow your email subscribers lists; send targeted email newsletters; sell more products and build your membership site - all by easily embedding email marketing / email subscriber forms anywhere on your WordPress web site, either using pre-designed forms from Kit or building your own with the Form Builder block.
 
-**New to Kit? [Creating an account](https://app.kit.com/users/signup?plan=newsletter-free&utm_source=wordpress&utm_term=en_US&utm_content=readme) is 100% free for your first 10,000 subscribers, making Kit an email marketing solution for everyone - whether you're new to email newsletter marketing or a seasoned professional email newsletter marketer.**
+**New to Kit? [Creating an account](https://app.kit.com/users/signup?plan=kit-free&utm_source=wordpress&utm_term=en_US&utm_content=readme) is 100% free for your first 10,000 subscribers, making Kit an email marketing solution for everyone - whether you're new to email newsletter marketing or a seasoned professional email newsletter marketer.**
 
 ## Email Newsletter and Email Marketing Features
 
@@ -347,6 +347,15 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track email subscriber growth, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.4.9 2026-10-30
+* Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
+* Added: Broadcasts: Export: Make Public setting, to publish Broadcasts to your Kit Newsletter site, using the Post's published date and featured image
+* Added: Broadcasts: Export: Greeting, Sign-off and Read on the Web settings
+* Added: Broadcasts: Export: Open in Kit row action for exported Posts
+* Updated: Broadcasts: Export: Update the existing draft Broadcast when exporting a Post again, instead of creating a duplicate
+* Updated: Broadcasts: Export: Use the Post's excerpt as the Broadcast's preview text
+* Updated: WordPress Libraries to 2.8.1
 
 ### 3.4.8 2026-10-28
 * Added: Settings: Broadcasts: Separate Import and Export settings panels
