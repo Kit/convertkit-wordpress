@@ -15,7 +15,7 @@ Build your email subscriber lists, send email marketing newsletters, create land
 
 [Kit](https://kit.com?utm_source=wordpress&utm_term=en_US&utm_content=readme) makes it easy to create, send and manage your email marketing campaigns; grow your email subscribers lists; send targeted email newsletters; sell more products and build your membership site - all by easily embedding email marketing / email subscriber forms anywhere on your WordPress web site, either using pre-designed forms from Kit or building your own with the Form Builder block.
 
-**New to Kit? [Creating an account](https://app.kit.com/users/signup?plan=newsletter-free&utm_source=wordpress&utm_term=en_US&utm_content=readme) is 100% free for your first 10,000 subscribers, making Kit an email marketing solution for everyone - whether you're new to email newsletter marketing or a seasoned professional email newsletter marketer.**
+**New to Kit? [Creating an account](https://app.kit.com/users/signup?plan=kit-free&utm_source=wordpress&utm_term=en_US&utm_content=readme) is 100% free for your first 10,000 subscribers, making Kit an email marketing solution for everyone - whether you're new to email newsletter marketing or a seasoned professional email newsletter marketer.**
 
 ## Email Newsletter and Email Marketing Features
 

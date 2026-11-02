@@ -452,6 +452,7 @@ function convertkit_get_registration_url() {
 
 	return add_query_arg(
 		array(
+			'plan'        => 'kit-free',
 			'utm_source'  => 'wordpress',
 			'utm_term'    => get_locale(),
 			'utm_content' => 'convertkit',
