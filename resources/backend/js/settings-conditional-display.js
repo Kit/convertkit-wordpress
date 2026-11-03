@@ -46,10 +46,10 @@ function convertKitConditionallyDisplaySettings(input) {
 					return;
 				}
 
-				// Show or hide this row if the input, select, link or span element within the row has the CSS class of the setting ID.
+				// Show or hide this row if the input, select, textarea, link or span element within the row has the CSS class of the setting ID.
 				if (
 					row.querySelector(
-						`input.${input.id}, select.${input.id}, a.${input.id}, span.${input.id}`
+						`input.${input.id}, select.${input.id}, textarea.${input.id}, a.${input.id}, span.${input.id}`
 					)
 				) {
 					row.style.display = input.checked ? '' : 'none';

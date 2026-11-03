@@ -248,6 +248,9 @@ class ConvertKit_Broadcasts_Exporter {
 		// Remove responsive image attributes, which email clients don't support.
 		$content = $this->remove_responsive_image_attributes( $content );
 
+		// Add the greeting, sign-off and link to read the Post on the web.
+		$content = $this->add_greeting_sign_off_and_web_link( $content, $post );
+
 		// Convert relative URLs to absolute URLs, as emails have no site context.
 		$content = links_add_base_url( $content, get_permalink( $post ) );
 
@@ -270,7 +273,8 @@ class ConvertKit_Broadcasts_Exporter {
 		}
 
 		// Define the Broadcast's parameters.
-		$args = array(
+		$thumbnail = $this->get_thumbnail( $post );
+		$args      = array(
 			$post->post_title,
 			$content,
 			$post->post_excerpt,
@@ -279,9 +283,9 @@ class ConvertKit_Broadcasts_Exporter {
 			null,
 			'',
 			'',
-			'',
-			'',
-			'',
+			$thumbnail['alt'],
+			$thumbnail['url'],
+			$this->get_preview_text( $post ),
 			$this->get_subscriber_filter(),
 		);
 
@@ -303,6 +307,32 @@ class ConvertKit_Broadcasts_Exporter {
 
 		// Return result.
 		return $result['broadcast'];
+
+	}
+
+	/**
+	 * Returns the preview text for the Broadcast, using the Post's excerpt if one was written.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_Post $post   WordPress Post.
+	 * @return  string          Preview text
+	 */
+	private function get_preview_text( $post ) {
+
+		$preview_text = ( has_excerpt( $post ) ? $post->post_excerpt : '' );
+
+		/**
+		 * Define the preview text for the Broadcast created from the WordPress Post.
+		 *
+		 * @since   3.4.8
+		 *
+		 * @param   string  $preview_text   Preview text.
+		 * @param   WP_Post $post           WordPress Post.
+		 */
+		$preview_text = apply_filters( 'convertkit_broadcasts_exporter_preview_text', $preview_text, $post );
+
+		return (string) $preview_text;
 
 	}
 
@@ -361,6 +391,46 @@ class ConvertKit_Broadcasts_Exporter {
 		}
 
 		return $broadcast_id;
+
+	}
+
+	/**
+	 * Returns the Post's featured image URL and alt text, to use as the Broadcast's thumbnail
+	 * if the Broadcast is public.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   WP_Post $post   WordPress Post.
+	 * @return  array           Thumbnail URL and alt text (blank if no thumbnail)
+	 */
+	private function get_thumbnail( $post ) {
+
+		$thumbnail = array(
+			'url' => '',
+			'alt' => '',
+		);
+
+		// Bail if the Broadcast isn't public, as Kit only uses thumbnails for public Broadcasts.
+		if ( ! $this->broadcasts_settings->export_public() ) {
+			return $thumbnail;
+		}
+
+		// Bail if the Post has no featured image.
+		$image_id = get_post_thumbnail_id( $post );
+		if ( ! $image_id ) {
+			return $thumbnail;
+		}
+
+		// Bail if the featured image's URL can't be fetched.
+		$url = wp_get_attachment_image_url( $image_id, 'full' );
+		if ( ! $url ) {
+			return $thumbnail;
+		}
+
+		return array(
+			'url' => $url,
+			'alt' => (string) get_post_meta( $image_id, '_wp_attachment_image_alt', true ),
+		);
 
 	}
 
@@ -427,6 +497,57 @@ class ConvertKit_Broadcasts_Exporter {
 				),
 			),
 		);
+
+	}
+
+	/**
+	 * Adds the greeting, sign-off and link to read the Post on the web to the given content,
+	 * based on the Plugin's settings.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   string  $content    HTML Content.
+	 * @param   WP_Post $post       WordPress Post.
+	 * @return  string              HTML Content
+	 */
+	private function add_greeting_sign_off_and_web_link( $content, $post ) {
+
+		// Add the greeting and sign-off, converting any line breaks to paragraphs.
+		if ( $this->broadcasts_settings->export_greeting() ) {
+			$content = wpautop( $this->broadcasts_settings->export_greeting() ) . $content;
+		}
+		if ( $this->broadcasts_settings->export_sign_off() ) {
+			$content .= wpautop( $this->broadcasts_settings->export_sign_off() );
+		}
+
+		// Bail if no link to read the Post on the web is required, or the Post isn't published, as its link won't work.
+		if ( ! $this->broadcasts_settings->export_web_link() || $post->post_status !== 'publish' ) {
+			return $content;
+		}
+
+		/**
+		 * Define the text for the link to read the Post on the web, in Broadcasts created from WordPress Posts.
+		 *
+		 * @since   3.4.8
+		 *
+		 * @param   string  $text       Link text.
+		 * @param   WP_Post $post       WordPress Post.
+		 */
+		$text = apply_filters( 'convertkit_broadcasts_exporter_web_link_text', __( 'Read this on the web', 'convertkit' ), $post );
+
+		// Build link.
+		$link = sprintf(
+			'<p><a href="%s">%s</a></p>',
+			esc_url( get_permalink( $post ) ),
+			esc_html( $text )
+		);
+
+		// Add link to the top or bottom of the content.
+		if ( $this->broadcasts_settings->export_web_link() === 'top' ) {
+			return $link . $content;
+		}
+
+		return $content . $link;
 
 	}
 

@@ -11,6 +11,8 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class ResourcePostsTest extends WPTestCase
 {
+	use ResourceAssertionsTrait;
+
 	/**
 	 * The testing implementation.
 	 *
@@ -289,9 +291,8 @@ class ResourcePostsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('title', reset($result));
 
-		// Assert order of data is in descending published_at order.
-		$this->assertEquals('2024-04-30T08:00:36Z', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('2022-01-24T00:00:00Z', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -320,9 +321,8 @@ class ResourcePostsTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('title', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Broadcast 2', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Test Subject', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -351,8 +351,7 @@ class ResourcePostsTest extends WPTestCase
 		$this->assertArrayHasKey('title', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('2024-04-30T08:00:36Z', reset($result)['published_at']);
-		$this->assertEquals('2022-01-24T00:00:00Z', end($result)['published_at']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**

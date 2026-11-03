@@ -181,6 +181,16 @@
 						<td><a href="#convertkit_settings_broadcasts_get_defaults"><code>convertkit_settings_broadcasts_get_defaults</code></a></td>
 						<td>The default settings, used when the ConvertKit Broadcasts Settings haven't been saved e.g. on a new installation.</td>
 					</tr><tr>
+						<td colspan="3">includes/class-convertkit-broadcasts-exporter.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_broadcasts_exporter_preview_text"><code>convertkit_broadcasts_exporter_preview_text</code></a></td>
+						<td>Define the preview text for the Broadcast created from the WordPress Post.</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_broadcasts_exporter_web_link_text"><code>convertkit_broadcasts_exporter_web_link_text</code></a></td>
+						<td>Define the text for the link to read the Post on the web, in Broadcasts created from WordPress Posts.</td>
+					</tr><tr>
 						<td colspan="3">includes/class-convertkit-settings-restrict-content.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
@@ -1285,7 +1295,7 @@ add_filter( 'convertkit_term_get_default_settings', function( $defaults ) {
 </pre>
 <h3 id="convertkit_settings_broadcasts_get_defaults">
 						convertkit_settings_broadcasts_get_defaults
-						<code>includes/class-convertkit-settings-broadcasts.php::327</code>
+						<code>includes/class-convertkit-settings-broadcasts.php::421</code>
 					</h3><h4>Overview</h4>
 						<p>The default settings, used when the ConvertKit Broadcasts Settings haven't been saved e.g. on a new installation.</p><h4>Parameters</h4>
 					<table>
@@ -1309,6 +1319,68 @@ add_filter( 'convertkit_settings_broadcasts_get_defaults', function( $defaults )
 	// Return value
 	return $defaults;
 }, 10, 1 );
+</pre>
+<h3 id="convertkit_broadcasts_exporter_preview_text">
+						convertkit_broadcasts_exporter_preview_text
+						<code>includes/class-convertkit-broadcasts-exporter.php::332</code>
+					</h3><h4>Overview</h4>
+						<p>Define the preview text for the Broadcast created from the WordPress Post.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$preview_text</td>
+							<td>string</td>
+							<td>Preview text.</td>
+						</tr><tr>
+							<td>WordPress</td>
+							<td>WP_Post $post</td>
+							<td>Post.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_broadcasts_exporter_preview_text', function( $preview_text, $post ) {
+	// ... your code here
+	// Return value
+	return $preview_text;
+}, 10, 2 );
+</pre>
+<h3 id="convertkit_broadcasts_exporter_web_link_text">
+						convertkit_broadcasts_exporter_web_link_text
+						<code>includes/class-convertkit-broadcasts-exporter.php::535</code>
+					</h3><h4>Overview</h4>
+						<p>Define the text for the link to read the Post on the web, in Broadcasts created from WordPress Posts.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$text</td>
+							<td>string</td>
+							<td>Link text.</td>
+						</tr><tr>
+							<td>WordPress</td>
+							<td>WP_Post $post</td>
+							<td>Post.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_broadcasts_exporter_web_link_text', function( __( 'Read this on the web', 'convertkit' ) {
+	// ... your code here
+	// Return value
+	return __( 'Read this on the web';
+}, 10, 2 );
 </pre>
 <h3 id="convertkit_settings_restrict_content_get_defaults">
 						convertkit_settings_restrict_content_get_defaults
@@ -2381,7 +2453,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-admin-section-base.php::991</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::1005</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

@@ -11,6 +11,8 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class ResourceLandingPagesTest extends WPTestCase
 {
+	use ResourceAssertionsTrait;
+
 	/**
 	 * The testing implementation.
 	 *
@@ -145,9 +147,8 @@ class ResourceLandingPagesTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Character Encoding', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Legacy Landing Page', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -176,9 +177,8 @@ class ResourceLandingPagesTest extends WPTestCase
 		$this->assertArrayHasKey('id', reset($result));
 		$this->assertArrayHasKey('name', reset($result));
 
-		// Assert order of data is in ascending alphabetical order.
-		$this->assertEquals('Legacy Landing Page', reset($result)[ $this->resource->order_by ]);
-		$this->assertEquals('Character Encoding', end($result)[ $this->resource->order_by ]);
+		// Assert order of data matches the order_by and order properties.
+		$this->assertResourcesSorted($result);
 	}
 
 	/**
@@ -207,8 +207,7 @@ class ResourceLandingPagesTest extends WPTestCase
 		$this->assertArrayHasKey('name', reset($result));
 
 		// Assert order of data has not changed.
-		$this->assertEquals('Character Encoding', reset($result)['name']);
-		$this->assertEquals('Legacy Landing Page', end($result)['name']);
+		$this->assertResourcesInOriginalOrder($result);
 	}
 
 	/**
