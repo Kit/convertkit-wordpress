@@ -365,7 +365,7 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 
 == Changelog ==
 
-### 3.4.9 2026-10-30
+### 3.4.9 2026-11-03
 * Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
 * Added: Broadcasts: Export: Make Public setting, to publish Broadcasts to your Kit Newsletter site, using the Post's published date and featured image
 * Added: Broadcasts: Export: Greeting, Sign-off and Read on the Web settings
