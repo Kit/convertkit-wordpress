@@ -715,6 +715,55 @@ class NonInlineFormCest
 	}
 
 	/**
+	 * Test that the non-inline form limit per session setting only outputs one non-inline form
+	 * when multiple Default Forms (Site Wide) are specified.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testNonInlineFormLimitPerSessionWithMultipleNonInlineForms(EndToEndTester $I)
+	{
+		// Setup Plugin with two non-inline Default Forms for Site Wide,
+		// and set to limit the display of non-inline forms per session.
+		$I->setupKitPlugin(
+			$I,
+			[
+				'non_inline_form'                   => array(
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
+					$_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				),
+				'non_inline_form_limit_per_session' => 'on',
+			]
+		);
+		$I->setupKitPluginResources($I);
+
+		// Create a Page in the database.
+		$I->havePostInDatabase(
+			[
+				'post_title'  => 'Kit: Non Inline Form: Limit Per Session: Multiple',
+				'post_name'   => 'kit-non-inline-form-limit-per-session-multiple',
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+			]
+		);
+
+		// View the home page.
+		$I->amOnPage('/');
+
+		// Confirm that only the first Kit Form is output in the DOM.
+		$I->seeFormOutput($I, $_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID']);
+		$I->dontSeeElementInDOM('form[data-sv-form="' . $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'] . '"]');
+
+		// View Page.
+		$I->amOnPage('/kit-non-inline-form-limit-per-session-multiple');
+
+		// Confirm that no Kit Form is output in the DOM, and the cookie is set, because a non-inline form was output in the previous request.
+		$I->dontSeeElementInDOM('form[data-sv-form]');
+		$I->seeCookie('ck_non_inline_form_displayed');
+	}
+
+	/**
 	 * Test that the non-inline form limit per session setting does not set a cookie
 	 * when disabled.
 	 *
