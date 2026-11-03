@@ -726,9 +726,11 @@ class NonInlineFormCest
 	{
 		// Setup Plugin with two non-inline Default Forms for Site Wide,
 		// and set to limit the display of non-inline forms per session.
+		// Don't display the inline Default Form for Pages, so we only test non-inline forms.
 		$I->setupKitPlugin(
 			$I,
 			[
+				'page_form'                         => '',
 				'non_inline_form'                   => array(
 					$_ENV['CONVERTKIT_API_FORM_FORMAT_STICKY_BAR_ID'],
 					$_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
