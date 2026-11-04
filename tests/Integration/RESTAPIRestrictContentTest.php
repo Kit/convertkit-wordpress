@@ -361,6 +361,74 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	}
 
 	/**
+	 * Test that the WordPress REST API returns an excerpt built from the content preview, and not
+	 * from the full content, for a Post restricted by Member Content with no teaser or excerpt
+	 * when requested by a visitor using the excerpt_length parameter.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIPostExcerptRestricted()
+	{
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = $this->createRestrictedPost( 'post', '<p>' . str_repeat( 'Preview ', 55 ) . 'Member-only content.</p>' );
+
+		// Request the Post as a visitor, with an excerpt length covering the full content.
+		$data = $this->getRESTAPIPost( '/wp/v2/posts/' . $post_id, [ 'excerpt_length' => 1000 ] );
+
+		// Assert the full content is not returned in the content or excerpt.
+		$this->assertStringContainsString( 'Preview', $data['excerpt']['rendered'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $data['content']['rendered'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $data['excerpt']['rendered'] );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns an excerpt built from the content preview
+	 * for a Post restricted by Member Content when the _fields parameter excludes the content.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIPostExcerptRestrictedWhenContentExcluded()
+	{
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = $this->createRestrictedPost( 'post', '<p>' . str_repeat( 'Preview ', 55 ) . 'Member-only content.</p>' );
+
+		// Request the Posts as a visitor, only including the ID and excerpt.
+		$data = $this->getRESTAPIPost(
+			'/wp/v2/posts',
+			[
+				'include'        => [ $post_id ],
+				'_fields'        => 'id,excerpt',
+				'excerpt_length' => 1000,
+			]
+		);
+
+		// Assert the full content is not returned in the excerpt.
+		$this->assertCount( 1, $data );
+		$this->assertArrayNotHasKey( 'content', $data[0] );
+		$this->assertStringContainsString( 'Preview', $data[0]['excerpt']['rendered'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $data[0]['excerpt']['rendered'] );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns the Post's manually defined excerpt
+	 * for a Post restricted by Member Content when requested by a visitor.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIPostManualExcerptNotChanged()
+	{
+		// Create a restricted Post with an excerpt.
+		$post_id = $this->createRestrictedPost( 'post', '<p>Member-only content.</p>', 'Excerpt content.' );
+
+		// Request the Post as a visitor.
+		$data = $this->getRESTAPIPost( '/wp/v2/posts/' . $post_id );
+
+		// Assert the manually defined excerpt is returned.
+		$this->assertStringContainsString( 'Excerpt content.', $data['excerpt']['rendered'] );
+		$this->assertStringNotContainsString( 'Member-only content.', $data['excerpt']['rendered'] );
+	}
+
+	/**
 	 * Test that the WordPress REST API returns the full content of a Post restricted
 	 * by Member Content when requested by a user who can edit the Post.
 	 *

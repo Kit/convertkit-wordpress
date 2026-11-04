@@ -788,7 +788,7 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
-	 * Replaces the rendered content in a REST API response with the content preview,
+	 * Replaces the rendered content and excerpt in a REST API response with the content preview,
 	 * if the Post is restricted and the visitor cannot view it.
 	 *
 	 * @since   3.4.8
@@ -799,8 +799,8 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function maybe_restrict_rest_content( $response, $post ) {
 
-		// Bail if the response doesn't include the rendered content e.g. the _fields parameter was used.
-		if ( ! isset( $response->data['content']['rendered'] ) ) {
+		// Bail if the response doesn't include the rendered content or excerpt e.g. the _fields parameter was used.
+		if ( ! isset( $response->data['content']['rendered'] ) && ! isset( $response->data['excerpt']['rendered'] ) ) {
 			return $response;
 		}
 
@@ -814,6 +814,9 @@ class ConvertKit_Output_Restrict_Content {
 			return $response;
 		}
 
+		// Use the rendered content if included in the response, otherwise render the Post's content.
+		$content = isset( $response->data['content']['rendered'] ) ? $response->data['content']['rendered'] : apply_filters( 'the_content', $post->post_content );
+
 		/**
 		 * Define the output for the content preview when the visitor is not
 		 * an authenticated subscriber.
@@ -823,7 +826,17 @@ class ConvertKit_Output_Restrict_Content {
 		 * @param   string  $content_preview    Content preview.
 		 * @param   int     $post_id            Post ID.
 		 */
-		$response->data['content']['rendered'] = apply_filters( 'convertkit_output_restrict_content_content_preview', $this->get_content_preview( $response->data['content']['rendered'] ), $post->ID );
+		$content_preview = apply_filters( 'convertkit_output_restrict_content_content_preview', $this->get_content_preview( $content ), $post->ID );
+
+		// Replace the rendered content with the content preview.
+		if ( isset( $response->data['content']['rendered'] ) ) {
+			$response->data['content']['rendered'] = $content_preview;
+		}
+
+		// Replace the generated excerpt with one built from the content preview, as WordPress builds it from the full content.
+		if ( isset( $response->data['excerpt']['rendered'] ) && ! has_excerpt( $post ) ) {
+			$response->data['excerpt']['rendered'] = wpautop( $this->get_excerpt_from_content_preview( $content_preview ) );
+		}
 
 		return $response;
 
@@ -882,9 +895,23 @@ class ConvertKit_Output_Restrict_Content {
 			return $excerpt;
 		}
 
-		// Build the excerpt from the content preview, using the same length and more text as WordPress.
+		// Build the excerpt from the content preview.
+		return $this->get_excerpt_from_content_preview( $this->maybe_restrict_content_preview( apply_filters( 'the_content', get_the_content() ) ) );
+
+	}
+
+	/**
+	 * Builds an excerpt from the given content preview, using the same length and more text as WordPress.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   string $content_preview    Content preview.
+	 * @return  string
+	 */
+	private function get_excerpt_from_content_preview( $content_preview ) {
+
 		return wp_trim_words(
-			$this->maybe_restrict_content_preview( apply_filters( 'the_content', get_the_content() ) ),
+			$content_preview,
 			apply_filters( 'excerpt_length', 55 ),
 			apply_filters( 'excerpt_more', ' [&hellip;]' )
 		);
@@ -1728,13 +1755,15 @@ class ConvertKit_Output_Restrict_Content {
 
 		// Remove 'the_content' filter, as if the Post contains no defined excerpt, WordPress
 		// will invoke the Post's content to build an excerpt, resulting in an infinite loop.
-		remove_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
+		$filter_removed = remove_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 
 		// Generate the Post's excerpt.
 		$excerpt = get_the_excerpt( $post_id );
 
-		// Restore filters so other functions and Plugins aren't affected.
-		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
+		// Restore the filter if it was registered e.g. not in a REST API request, so other functions and Plugins aren't affected.
+		if ( $filter_removed ) {
+			add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
+		}
 
 		// Return the excerpt.
 		return wpautop( $excerpt );
