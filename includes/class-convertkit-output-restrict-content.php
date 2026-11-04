@@ -133,6 +133,7 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_logout' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
+		add_action( 'admin_init', array( $this, 'register_ajax_content_filter' ) );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
@@ -770,6 +771,23 @@ class ConvertKit_Output_Restrict_Content {
 		 * @since   2.7.7
 		 */
 		do_action( 'convertkit_restrict_content_register_content_filter' );
+
+	}
+
+	/**
+	 * Registers the content filter for AJAX requests, as the `wp` action doesn't run in them,
+	 * so content output by Themes and Plugins using AJAX e.g. "load more" buttons is restricted.
+	 *
+	 * @since   3.5.0
+	 */
+	public function register_ajax_content_filter() {
+
+		// Bail if this isn't an AJAX request.
+		if ( ! wp_doing_ajax() ) {
+			return;
+		}
+
+		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 
 	}
 
