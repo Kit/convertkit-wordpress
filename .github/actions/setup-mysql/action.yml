@@ -1,7 +1,7 @@
 name: 'Set up MySQL'
 description: >
   Starts MySQL, creates the test database, and switches the user to
-  mysql_native_password authentication so WordPress can connect on MySQL 8.0.
+  mysql_native_password authentication so WordPress can connect on MySQL 8.0+.
   Used by every workflow that runs WordPress against MySQL.
 
 inputs:
@@ -25,6 +25,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    # MySQL 8.4+ (Ubuntu 26.04 runners) doesn't load the mysql_native_password plugin by default.
+    # The loose- prefix ensures MySQL 8.0 ignores this option.
+    - name: Enable MySQL Native Password Plugin
+      shell: bash
+      run: printf '[mysqld]\nloose-mysql_native_password=ON\n' | sudo tee /etc/mysql/mysql.conf.d/native-password.cnf
+
     - name: Start MySQL
       shell: bash
       run: sudo systemctl start mysql.service
@@ -36,6 +42,6 @@ runs:
         mysql -e 'SHOW DATABASES;' -u${{ inputs.db-user }} -p${{ inputs.db-pass }}
 
     # WordPress won't be able to connect to the DB if we don't perform this step.
-    - name: Permit MySQL Password Auth for MySQL 8.0
+    - name: Permit MySQL Password Auth for MySQL 8.0+
       shell: bash
       run: mysql -e "ALTER USER '${{ inputs.db-user }}'@'${{ inputs.db-host }}' IDENTIFIED WITH mysql_native_password BY '${{ inputs.db-pass }}';" -u${{ inputs.db-user }} -p${{ inputs.db-pass }}
