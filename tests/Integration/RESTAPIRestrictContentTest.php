@@ -429,6 +429,64 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	}
 
 	/**
+	 * Test that the WordPress REST API only returns the ID of an attachment attached to a Post
+	 * restricted by Member Content when requested by a visitor, so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIAttachmentRestricted()
+	{
+		// Create an attachment attached to a restricted Post.
+		$attachment_id = $this->createAttachment( $this->createRestrictedPost( 'post', '<p>Member-only content.</p>' ) );
+
+		// Request the attachment and attachments as a visitor.
+		$data       = $this->getRESTAPIPost( '/wp/v2/media/' . $attachment_id );
+		$collection = $this->getRESTAPIPost( '/wp/v2/media', [ 'include' => [ $attachment_id ] ] );
+
+		// Assert only the attachment's ID is returned.
+		$this->assertSame( [ 'id' => $attachment_id ], $data );
+		$this->assertCount( 1, $collection );
+		$this->assertSame( [ 'id' => $attachment_id ], $collection[0] );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns an attachment attached to a Post restricted
+	 * by Member Content when requested by a user who can edit the Post.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIAttachmentNotRestrictedForEditor()
+	{
+		// Create an attachment attached to a restricted Post.
+		$attachment_id = $this->createAttachment( $this->createRestrictedPost( 'post', '<p>Member-only content.</p>' ) );
+
+		// Request the attachment as an editor.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$data = $this->getRESTAPIPost( '/wp/v2/media/' . $attachment_id );
+
+		// Assert the attachment's file URL is returned.
+		$this->assertArrayHasKey( 'source_url', $data );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns an attachment attached to a Post
+	 * that is not restricted by Member Content.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIAttachmentNotRestricted()
+	{
+		// Create an attachment attached to a Post.
+		$attachment_id = $this->createAttachment( static::factory()->post->create( [ 'post_content' => '<p>Public content.</p>' ] ) );
+
+		// Request the attachment as a visitor.
+		$data = $this->getRESTAPIPost( '/wp/v2/media/' . $attachment_id );
+
+		// Assert the attachment's file URL is returned.
+		$this->assertArrayHasKey( 'source_url', $data );
+	}
+
+	/**
 	 * Test that the WordPress REST API returns the full content of a Post restricted
 	 * by Member Content when requested by a user who can edit the Post.
 	 *
@@ -490,6 +548,25 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 					],
 				],
+			]
+		);
+	}
+
+	/**
+	 * Creates an attachment attached to the given Post.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   int $post_id    Post ID.
+	 * @return  int
+	 */
+	private function createAttachment( $post_id )
+	{
+		return static::factory()->attachment->create(
+			[
+				'file'           => 'member-content.pdf',
+				'post_parent'    => $post_id,
+				'post_mime_type' => 'application/pdf',
 			]
 		);
 	}

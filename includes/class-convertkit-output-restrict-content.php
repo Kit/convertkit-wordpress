@@ -134,6 +134,7 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
 		add_action( 'admin_init', array( $this, 'register_ajax_content_filter' ) );
+		add_action( 'template_redirect', array( $this, 'maybe_restrict_attachment' ), 1 );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
@@ -803,6 +804,8 @@ class ConvertKit_Output_Restrict_Content {
 			add_filter( 'rest_prepare_' . $post_type, array( $this, 'maybe_restrict_rest_content' ), 10, 2 );
 		}
 
+		add_filter( 'rest_prepare_attachment', array( $this, 'maybe_restrict_rest_attachment' ), 10, 2 );
+
 	}
 
 	/**
@@ -857,6 +860,82 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		return $response;
+
+	}
+
+	/**
+	 * Removes an attachment's details from a REST API response, if it's attached to a Post
+	 * that is restricted and the visitor cannot view it, so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   WP_REST_Response $response   REST API Response.
+	 * @param   WP_Post          $post       Attachment.
+	 * @return  WP_REST_Response
+	 */
+	public function maybe_restrict_rest_attachment( $response, $post ) {
+
+		// Bail if the visitor can view the attachment.
+		if ( $this->can_view_attachment( $post ) ) {
+			return $response;
+		}
+
+		// Only return the attachment's ID.
+		return rest_ensure_response( array( 'id' => $post->ID ) );
+
+	}
+
+	/**
+	 * Displays a 404 for an attachment's page, if it's attached to a Post that is restricted
+	 * and the visitor cannot view it, so its file URL isn't disclosed.
+	 *
+	 * Runs before WordPress redirects attachment pages to the file, when attachment pages are disabled.
+	 *
+	 * @since   3.5.0
+	 */
+	public function maybe_restrict_attachment() {
+
+		global $wp_query;
+
+		// Bail if this isn't an attachment's page.
+		if ( ! is_attachment() ) {
+			return;
+		}
+
+		// Bail if the visitor can view the attachment.
+		if ( $this->can_view_attachment( get_queried_object() ) ) {
+			return;
+		}
+
+		// Display a 404.
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+
+	}
+
+	/**
+	 * Determines if the visitor can view the given attachment, based on the Member Content
+	 * setting of the Post it's attached to.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   WP_Post $attachment     Attachment.
+	 * @return  bool
+	 */
+	private function can_view_attachment( $attachment ) {
+
+		// Bail if the attachment isn't attached to a Post.
+		if ( ! $attachment instanceof WP_Post || ! $attachment->post_parent ) {
+			return true;
+		}
+
+		// Bail if the user can edit the Post the attachment is attached to.
+		if ( current_user_can( 'edit_post', $attachment->post_parent ) ) {
+			return true;
+		}
+
+		return $this->can_view_post( $attachment->post_parent );
 
 	}
 
