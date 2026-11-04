@@ -127,6 +127,11 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 		// Confirm the Avada Header and Footer display when the subscriber has access.
 		$I->see('Avada Header Section');
 		$I->see('Avada Footer Section');
+
+		// Revert theme and deactivate Avada Plugins, so they don't affect other tests.
+		$I->useTheme('twentytwentyfive');
+		$I->deactivateThirdPartyPlugin($I, 'fusion-builder');
+		$I->deactivateThirdPartyPlugin($I, 'fusion-core');
 	}
 
 	/**
