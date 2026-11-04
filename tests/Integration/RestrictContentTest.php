@@ -268,6 +268,57 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that restricted content is not displayed when the Plugin has no credentials
+	 * e.g. the access token was revoked and the credentials deleted.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRestrictedContentNotDisplayedWhenNoCredentials()
+	{
+		// Confirm the content is restricted.
+		$this->assertContentRestricted($this->createRestrictedPostAndLoad());
+	}
+
+	/**
+	 * Test that restricted content is not displayed when the Plugin's resources couldn't be
+	 * fetched from Kit e.g. an API error.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRestrictedContentNotDisplayedWhenResourcesUnavailable()
+	{
+		// Store Credentials in Plugin's settings.
+		$this->storeCredentials();
+
+		// Remove the cached Products, as if they couldn't be fetched from Kit.
+		delete_option('convertkit_products');
+		update_option('convertkit_products_last_queried', time());
+
+		// Confirm the content is restricted.
+		$this->assertContentRestricted($this->createRestrictedPostAndLoad());
+	}
+
+	/**
+	 * Test that restricted content is displayed when the Product it's restricted to
+	 * no longer exists in Kit.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRestrictedContentDisplayedWhenResourceDeleted()
+	{
+		// Store Credentials in Plugin's settings.
+		$this->storeCredentials();
+
+		// Store no Products, as if the Product was deleted in Kit.
+		update_option('convertkit_products', []);
+		update_option('convertkit_products_last_queried', time());
+
+		// Confirm the content is not restricted.
+		$content = $this->createRestrictedPostAndLoad();
+		$this->assertEquals($content, $this->resource->maybe_restrict_content($content));
+	}
+
+	/**
 	 * Test that IP addresses 34.100.182.96 through .111 (i.e. in the CIDR range /28)
 	 * are returned as true by the ip_in_range() function.
 	 *
@@ -318,5 +369,70 @@ class RestrictContentTest extends WPTestCase
 		$this->assertFalse($this->resource->ip_in_range('34.100.182.96', '999.999.999.999/999'));
 		$this->assertFalse($this->resource->ip_in_range('34.100.182.96', '999.999.999.999/not-a-range'));
 		$this->assertFalse($this->resource->ip_in_range('34.100.182.96', 'not-an-ip-address/not-a-range'));
+	}
+
+	/**
+	 * Stores credentials in the Plugin's settings.
+	 *
+	 * @since   3.5.0
+	 */
+	private function storeCredentials()
+	{
+		$settings = new \ConvertKit_Settings();
+		$settings->save(
+			array(
+				'access_token'  => $_ENV['CONVERTKIT_OAUTH_ACCESS_TOKEN'],
+				'refresh_token' => $_ENV['CONVERTKIT_OAUTH_REFRESH_TOKEN'],
+				'token_expires' => ( time() + 10000 ),
+			)
+		);
+	}
+
+	/**
+	 * Creates a Post restricted to a Kit Product, loads it and returns its content.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @return  string
+	 */
+	private function createRestrictedPostAndLoad()
+	{
+		$content = '<p>Teaser content.</p><!--more--><p>Member-only content.</p>';
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => $content,
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Load the Post.
+		$this->go_to(get_permalink($post_id));
+		the_post();
+
+		// Initialize the class' settings.
+		$this->resource->initialize_classes();
+
+		return $content;
+	}
+
+	/**
+	 * Asserts that the given content is restricted, displaying the teaser and not the member-only content.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   string $content    Post content.
+	 */
+	private function assertContentRestricted($content)
+	{
+		$output = $this->resource->maybe_restrict_content($content);
+		$this->assertStringContainsString('Teaser content.', $output);
+		$this->assertStringNotContainsString('Member-only content.', $output);
 	}
 }

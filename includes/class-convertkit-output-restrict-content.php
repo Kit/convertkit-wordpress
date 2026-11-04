@@ -991,12 +991,6 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function can_view_post( $post_id ) {
 
-		// If the Plugin Access Token has not been configured, we can't determine the validity of this subscriber ID
-		// or which resource(s) they have access to.
-		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return true;
-		}
-
 		// Bail if the Restrict Content setting is not enabled on this Post.
 		$this->post_id       = $post_id;
 		$this->post_settings = new ConvertKit_Post( $this->post_id );
@@ -1031,6 +1025,12 @@ class ConvertKit_Output_Restrict_Content {
 		// Bail if the request is from a crawler.
 		if ( $this->restrict_content_settings->permit_crawlers() && $this->is_crawler() ) {
 			return true;
+		}
+
+		// The visitor cannot view the content if the Plugin isn't connected to Kit e.g. the access token was revoked,
+		// as we can't determine whether they have access.
+		if ( ! $this->settings->has_access_and_refresh_token() ) {
+			return false;
 		}
 
 		// Bail if the resource no longer exists in Kit e.g. a Tag or Product has been deleted,
@@ -1284,12 +1284,6 @@ class ConvertKit_Output_Restrict_Content {
 			return false;
 		}
 
-		// If the Plugin Access Token has not been configured, we can't determine the validity of this subscriber ID
-		// or which resource(s) they have access to.
-		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return false;
-		}
-
 		// Get Post ID.
 		$this->post_id = get_the_ID();
 
@@ -1423,50 +1417,30 @@ class ConvertKit_Output_Restrict_Content {
 	private function resource_exists() {
 
 		switch ( $this->resource_type ) {
-
 			case 'product':
-				// Get Product.
-				$products = new ConvertKit_Resource_Products( 'restrict_content' );
-				$product  = $products->get_by_id( $this->resource_id );
-
-				// If the Product does not exist, return false.
-				if ( ! $product ) {
-					return false;
-				}
-
-				// Product exists in ConvertKit.
-				return true;
+				$resources = new ConvertKit_Resource_Products( 'restrict_content' );
+				break;
 
 			case 'form':
-				// Get Form.
-				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
-				$form  = $forms->get_by_id( $this->resource_id );
-
-				// If the Form does not exist, return false.
-				if ( ! $form ) {
-					return false;
-				}
-
-				// Form exists in ConvertKit.
-				return true;
+				$resources = new ConvertKit_Resource_Forms( 'restrict_content' );
+				break;
 
 			case 'tag':
-				// Get Tag.
-				$tags = new ConvertKit_Resource_Tags( 'restrict_content' );
-				$tag  = $tags->get_by_id( $this->resource_id );
-
-				// If the Tag does not exist, return false.
-				if ( ! $tag ) {
-					return false;
-				}
-
-				// Tag exists in ConvertKit.
-				return true;
+				$resources = new ConvertKit_Resource_Tags( 'restrict_content' );
+				break;
 
 			default:
 				return false;
-
 		}
+
+		// Assume the resource exists if resources couldn't be fetched from Kit e.g. an API error,
+		// so content remains restricted instead of being displayed to everyone.
+		if ( ! is_array( $resources->resources ) ) {
+			return true;
+		}
+
+		// Return whether the resource exists in Kit.
+		return (bool) $resources->get_by_id( $this->resource_id );
 
 	}
 
@@ -1805,9 +1779,7 @@ class ConvertKit_Output_Restrict_Content {
 				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
 
 				// Output product restricted message and email form.
-				// Get Product.
 				$products = new ConvertKit_Resource_Products( 'restrict_content' );
-				$product  = $products->get_by_id( $resource_id );
 
 				// Get commerce.js URL and enqueue.
 				$url = $products->get_commerce_js_url();
@@ -1821,15 +1793,25 @@ class ConvertKit_Output_Restrict_Content {
 					$this->output_login_modal( $post_id, $resource_id, $resource_type );
 				}
 
+				// Get the Product button, if Products could be fetched from Kit.
+				$button = '';
+				if ( $products->exist() ) {
+					$button = $products->get_html(
+						$resource_id,
+						$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
+						array(
+							'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
+						)
+					);
+				}
+
+				// Don't output the Product button if it couldn't be generated e.g. the Product doesn't exist.
+				if ( is_wp_error( $button ) ) {
+					$button = '';
+				}
+
 				// Output.
 				ob_start();
-				$button = $products->get_html(
-					$resource_id,
-					$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
-					array(
-						'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
-					)
-				);
 				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
 				return trim( ob_get_clean() );
 
@@ -1837,6 +1819,11 @@ class ConvertKit_Output_Restrict_Content {
 				// Display the Form.
 				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
 				$form  = $forms->get_html( $resource_id, $post_id );
+
+				// Don't output the Form if it couldn't be generated e.g. Forms couldn't be fetched from Kit.
+				if ( is_wp_error( $form ) ) {
+					$form = '';
+				}
 
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
