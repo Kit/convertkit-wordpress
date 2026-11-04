@@ -397,6 +397,48 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that a frontend search doesn't return a restricted Post when the search only matches
+	 * its restricted content, and only displays the content preview when it does return it.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testSearchResultsRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => '<p>' . str_repeat('Preview ', 55) . 'Memberonlyword.</p>',
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Search for a word in the restricted content, confirming the Post isn't returned.
+		$this->go_to(home_url('?s=Memberonlyword'));
+		$this->assertFalse(have_posts());
+
+		// Search for a word in the content preview, confirming the Post is returned with only the content preview,
+		// as a Theme would display it in search results.
+		$this->go_to(home_url('?s=Preview'));
+		$this->assertTrue(have_posts());
+		the_post();
+		$this->assertSame($post_id, get_the_ID());
+		$this->assertStringNotContainsString('Memberonlyword', apply_filters('the_content', get_the_content()));
+		$this->assertStringNotContainsString('Memberonlyword', get_the_excerpt());
+	}
+
+	/**
 	 * Test that IP addresses 34.100.182.96 through .111 (i.e. in the CIDR range /28)
 	 * are returned as true by the ip_in_range() function.
 	 *
