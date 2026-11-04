@@ -606,7 +606,7 @@ class KitRestrictContent extends \Codeception\Module
 		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
 		$I->seeElementInDOM('#convertkit-restrict-content');
 
-		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading'] . '</h3>');
+		$I->see($options['settings']['subscribe_heading'], '#convertkit-restrict-content h3');
 		$I->see($options['settings']['subscribe_text']);
 
 		$I->see($options['settings']['subscribe_button_label']);
@@ -654,7 +654,7 @@ class KitRestrictContent extends \Codeception\Module
 
 		// Confirm that the CTA displays with the expected headings, text, buttons and other elements.
 		$I->seeElementInDOM('#convertkit-restrict-content');
-		$I->seeInSource('<h3>' . $options['settings']['subscribe_heading_tag'] . '</h3>');
+		$I->see($options['settings']['subscribe_heading_tag'], '#convertkit-restrict-content h3');
 		$I->see($options['settings']['subscribe_text_tag']);
 		$I->seeInSource('<input type="submit" class="wp-block-button__link wp-block-button__link' . ( $testRecaptcha ? ' g-recaptcha' : '' ) . '" value="' . $options['settings']['subscribe_button_label'] . '"');
 	}
