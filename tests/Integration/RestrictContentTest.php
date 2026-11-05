@@ -319,6 +319,54 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that restricted content is not displayed when output in an AJAX request
+	 * e.g. a Theme's "load more" button.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRestrictedContentNotDisplayedInAJAXRequest()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => '<p>' . str_repeat('Preview ', 55) . 'Member-only content.</p>',
+				'post_excerpt' => '', // Don't use the factory's excerpt, so the excerpt is generated from the content.
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Register the content filter as if this were an AJAX request.
+		add_filter('wp_doing_ajax', '__return_true');
+		$this->resource->initialize_classes();
+		$this->resource->register_ajax_content_filter();
+
+		// Output the Post's content, as a Theme would in an AJAX request.
+		$query = new \WP_Query([ 'p' => $post_id ]);
+		$query->the_post();
+		$output = apply_filters('the_content', get_the_content());
+		wp_reset_postdata();
+
+		// Confirm the content is restricted.
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Member-only content.', $output);
+
+		// Remove the content filter and AJAX override, so other tests aren't affected.
+		remove_filter('the_content', [ $this->resource, 'maybe_restrict_content' ]);
+		remove_filter('wp_doing_ajax', '__return_true');
+	}
+
+	/**
 	 * Test that IP addresses 34.100.182.96 through .111 (i.e. in the CIDR range /28)
 	 * are returned as true by the ip_in_range() function.
 	 *
@@ -386,6 +434,27 @@ class RestrictContentTest extends WPTestCase
 				'token_expires' => ( time() + 10000 ),
 			)
 		);
+	}
+
+	/**
+	 * Stores the Product that Posts are restricted to, so it exists without querying the API.
+	 *
+	 * @since   3.5.0
+	 */
+	private function storeProduct()
+	{
+		update_option(
+			'convertkit_products',
+			[
+				$_ENV['CONVERTKIT_API_PRODUCT_ID'] => [
+					'id'        => (int) $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					'name'      => 'Product',
+					'url'       => 'https://example.com',
+					'published' => true,
+				],
+			]
+		);
+		update_option('convertkit_products_last_queried', time());
 	}
 
 	/**
