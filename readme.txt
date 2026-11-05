@@ -5,7 +5,7 @@ Tags: email subscribers, email newsletter, email marketing, landing page, member
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.4.9
+Stable tag: 3.5.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -364,6 +364,9 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track growth in email subscribers, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.5.0 2026-11-05
+* Fix: Settings: Non-inline Forms: Limit Display: Only display one non-inline form per session when multiple Default Forms (Site Wide) are specified
 
 ### 3.4.9 2026-11-03
 * Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
