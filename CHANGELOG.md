@@ -1,3 +1,6 @@
+### 3.5.0 2026-11-05
+* Fix: Settings: Non-inline Forms: Limit Display: Only display one non-inline form per session when multiple Default Forms (Site Wide) are specified
+
 ### 3.4.9 2026-11-03
 * Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
 * Added: Broadcasts: Export: Make Public setting, to publish Broadcasts to your Kit Newsletter site, using the Post's published date and featured image
