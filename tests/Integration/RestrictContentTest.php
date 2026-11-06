@@ -367,6 +367,37 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that a 404 is displayed for the page of an attachment attached to a restricted Post,
+	 * so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testAttachmentPageNotDisplayedWhenAttachedToRestrictedPost()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+
+		// Create an attachment attached to a restricted Post.
+		$this->createRestrictedPostAndLoad();
+		$attachment_id = static::factory()->attachment->create(
+			[
+				'file'           => 'member-content.pdf',
+				'post_parent'    => get_the_ID(),
+				'post_mime_type' => 'application/pdf',
+			]
+		);
+
+		// Load the attachment's page.
+		$this->go_to(get_permalink($attachment_id));
+		$this->resource->initialize_classes();
+		$this->resource->maybe_restrict_attachment();
+
+		// Confirm a 404 is displayed.
+		$this->assertTrue(is_404());
+	}
+
+	/**
 	 * Test that IP addresses 34.100.182.96 through .111 (i.e. in the CIDR range /28)
 	 * are returned as true by the ip_in_range() function.
 	 *
