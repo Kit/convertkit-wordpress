@@ -334,6 +334,7 @@ class RestrictContentTest extends WPTestCase
 		$post_id = static::factory()->post->create(
 			[
 				'post_content' => '<p>' . str_repeat('Preview ', 55) . 'Member-only content.</p>',
+				'post_excerpt' => '', // Don't use the factory's excerpt, so the excerpt is generated from the content.
 				'meta_input'   => [
 					'_wp_convertkit_post_meta' => [
 						'form'             => '0',
