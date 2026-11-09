@@ -117,15 +117,6 @@ class ConvertKit_Output_Restrict_Content {
 	private $profiles = array();
 
 	/**
-	 * Whether Posts matching a search are being found, to exclude restricted Posts from search results.
-	 *
-	 * @since   3.5.0
-	 *
-	 * @var     bool
-	 */
-	private $excluding_search_results = false;
-
-	/**
 	 * Constructor. Registers actions and filters to possibly limit output of a Page/Post/CPT's
 	 * content on the frontend site.
 	 *
@@ -934,21 +925,26 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function maybe_exclude_restricted_search_results( $query ) {
 
-		// Bail if this isn't a search, or we're already finding Posts matching the search.
-		if ( ! $query->is_search() || $this->excluding_search_results ) {
+		// Bail if this isn't a search, or is the query below finding Posts matching the search.
+		if ( ! $query->is_search() || $query->get( 'convertkit_restrict_content_search' ) ) {
 			return;
 		}
 
+		// Initialize classes, if this query runs before the init hook.
+		if ( ! $this->restrict_content_settings ) {
+			$this->initialize_classes();
+		}
+
 		// Find Posts matching the search that have the Member Content setting defined.
-		$this->excluding_search_results = true;
-		$post_ids                       = get_posts(
+		$post_ids = get_posts(
 			array(
-				's'              => $query->get( 's' ),
-				'post_type'      => $query->get( 'post_type' ) ? $query->get( 'post_type' ) : 'any',
-				'post_status'    => 'publish',
-				'fields'         => 'ids',
-				'posts_per_page' => -1,
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'convertkit_restrict_content_search' => true,
+				's'                                  => $query->get( 's' ),
+				'post_type'                          => $query->get( 'post_type' ) ? $query->get( 'post_type' ) : 'any',
+				'post_status'                        => 'publish',
+				'fields'                             => 'ids',
+				'posts_per_page'                     => -1,
+				'meta_query'                         => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 					array(
 						'key'     => '_wp_convertkit_post_meta',
 						'value'   => 's:16:"restrict_content";s:0:""',
@@ -957,7 +953,6 @@ class ConvertKit_Output_Restrict_Content {
 				),
 			)
 		);
-		$this->excluding_search_results = false;
 
 		// Load Post meta in a single query, as each Post's Member Content setting is checked below.
 		update_meta_cache( 'post', $post_ids );
