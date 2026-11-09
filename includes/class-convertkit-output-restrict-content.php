@@ -904,7 +904,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Bail if the visitor can view the attachment.
-		if ( $this->can_view_attachment( get_queried_object() ) ) {
+		if ( $this->can_view_attachment( get_post( get_queried_object_id() ) ) ) {
 			return;
 		}
 
@@ -1019,13 +1019,13 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * @since   3.5.0
 	 *
-	 * @param   WP_Post $attachment     Attachment.
+	 * @param   WP_Post|null $attachment     Attachment.
 	 * @return  bool
 	 */
 	private function can_view_attachment( $attachment ) {
 
-		// Bail if the attachment isn't attached to a Post.
-		if ( ! $attachment instanceof WP_Post || ! $attachment->post_parent ) {
+		// Bail if the attachment doesn't exist or isn't attached to a Post.
+		if ( ! $attachment || ! $attachment->post_parent ) {
 			return true;
 		}
 
