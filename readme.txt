@@ -5,7 +5,7 @@ Tags: email subscribers, email newsletter, email marketing, landing page, member
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.5.0
+Stable tag: 3.5.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -364,6 +364,15 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track growth in email subscribers, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.5.1 2026-11-10
+* Added: Member Content: Avada: Don't restrict Header, Page Title Bar and Footer Layout Sections
+* Fix: Member Content: REST API: Restrict the excerpt, which could include restricted content
+* Fix: Member Content: Don't display restricted content when the Plugin isn't connected to Kit, or Kit can't be reached
+* Fix: Member Content: Restrict content output in AJAX requests e.g. a Theme's "load more" button
+* Fix: Member Content: Don't disclose attachments of restricted Pages and Posts in the REST API and attachment pages
+* Fix: Member Content: Don't include restricted Pages and Posts in search results when the search only matches restricted content
+* Fix: Don't load QuickTags scripts and styles on the frontend site unless an editor is used
 
 ### 3.5.0 2026-11-05
 * Fix: Settings: Non-inline Forms: Limit Display: Only display one non-inline form per session when multiple Default Forms (Site Wide) are specified

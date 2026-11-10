@@ -365,7 +365,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * from the full content, for a Post restricted by Member Content with no teaser or excerpt
 	 * when requested by a visitor using the excerpt_length parameter.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPIPostExcerptRestricted()
 	{
@@ -385,7 +385,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API returns an excerpt built from the content preview
 	 * for a Post restricted by Member Content when the _fields parameter excludes the content.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPIPostExcerptRestrictedWhenContentExcluded()
 	{
@@ -413,7 +413,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API returns the Post's manually defined excerpt
 	 * for a Post restricted by Member Content when requested by a visitor.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPIPostManualExcerptNotChanged()
 	{
@@ -432,7 +432,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API only returns the ID of an attachment attached to a Post
 	 * restricted by Member Content when requested by a visitor, so its file URL isn't disclosed.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPIAttachmentRestricted()
 	{
@@ -453,7 +453,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API returns an attachment attached to a Post restricted
 	 * by Member Content when requested by a user who can edit the Post.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPIAttachmentNotRestrictedForEditor()
 	{
@@ -472,7 +472,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API returns an attachment attached to a Post
 	 * that is not restricted by Member Content.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPIAttachmentNotRestricted()
 	{
@@ -490,7 +490,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API doesn't return a Post restricted by Member Content in search
 	 * results when the search only matches its restricted content, including the total count.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPISearchExcludesRestrictedContentMatches()
 	{
@@ -511,7 +511,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API returns a Post restricted by Member Content in search
 	 * results when the search matches its title, excerpt or content preview.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPISearchIncludesRestrictedContentPreviewMatches()
 	{
@@ -531,7 +531,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	 * Test that the WordPress REST API returns a Post restricted by Member Content in search
 	 * results when the search matches its restricted content and the user can edit the Post.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRESTAPISearchIncludesRestrictedContentMatchesForEditor()
 	{
@@ -616,7 +616,7 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	/**
 	 * Creates an attachment attached to the given Post.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   int $post_id    Post ID.
 	 * @return  int

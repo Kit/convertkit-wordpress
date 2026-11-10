@@ -780,7 +780,7 @@ class ConvertKit_Output_Restrict_Content {
 	 * Registers the content filter for AJAX requests, as the `wp` action doesn't run in them,
 	 * so content output by Themes and Plugins using AJAX e.g. "load more" buttons is restricted.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function register_ajax_content_filter() {
 
@@ -868,7 +868,7 @@ class ConvertKit_Output_Restrict_Content {
 	 * Removes an attachment's details from a REST API response, if it's attached to a Post
 	 * that is restricted and the visitor cannot view it, so its file URL isn't disclosed.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   WP_REST_Response $response   REST API Response.
 	 * @param   WP_Post          $post       Attachment.
@@ -892,7 +892,7 @@ class ConvertKit_Output_Restrict_Content {
 	 *
 	 * Runs before WordPress redirects attachment pages to the file, when attachment pages are disabled.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function maybe_restrict_attachment() {
 
@@ -919,7 +919,7 @@ class ConvertKit_Output_Restrict_Content {
 	 * Excludes Posts from search results that the visitor cannot view, if the search terms
 	 * only match the Post's restricted content, so searches can't be used to discover it.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   WP_Query $query  Query.
 	 */
@@ -985,7 +985,7 @@ class ConvertKit_Output_Restrict_Content {
 	 * Determines if all search terms match the content of a restricted Post that the visitor can see:
 	 * its title, excerpt and content preview.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   WP_Post $post       Post.
 	 * @param   string  $search     Search string.
@@ -1017,7 +1017,7 @@ class ConvertKit_Output_Restrict_Content {
 	 * Determines if the visitor can view the given attachment, based on the Member Content
 	 * setting of the Post it's attached to.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   WP_Post|null $attachment     Attachment.
 	 * @return  bool
@@ -1099,7 +1099,7 @@ class ConvertKit_Output_Restrict_Content {
 	/**
 	 * Builds an excerpt from the given content preview, using the same length and more text as WordPress.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   string $content_preview    Content preview.
 	 * @return  string

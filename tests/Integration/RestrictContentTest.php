@@ -271,7 +271,7 @@ class RestrictContentTest extends WPTestCase
 	 * Test that restricted content is not displayed when the Plugin has no credentials
 	 * e.g. the access token was revoked and the credentials deleted.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRestrictedContentNotDisplayedWhenNoCredentials()
 	{
@@ -283,7 +283,7 @@ class RestrictContentTest extends WPTestCase
 	 * Test that restricted content is not displayed when the Plugin's resources couldn't be
 	 * fetched from Kit e.g. an API error.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRestrictedContentNotDisplayedWhenResourcesUnavailable()
 	{
@@ -302,7 +302,7 @@ class RestrictContentTest extends WPTestCase
 	 * Test that restricted content is displayed when the Product it's restricted to
 	 * no longer exists in Kit.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRestrictedContentDisplayedWhenResourceDeleted()
 	{
@@ -322,7 +322,7 @@ class RestrictContentTest extends WPTestCase
 	 * Test that restricted content is not displayed when output in an AJAX request
 	 * e.g. a Theme's "load more" button.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testRestrictedContentNotDisplayedInAJAXRequest()
 	{
@@ -370,7 +370,7 @@ class RestrictContentTest extends WPTestCase
 	 * Test that a 404 is displayed for the page of an attachment attached to a restricted Post,
 	 * so its file URL isn't disclosed.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testAttachmentPageNotDisplayedWhenAttachedToRestrictedPost()
 	{
@@ -401,7 +401,7 @@ class RestrictContentTest extends WPTestCase
 	 * Test that a frontend search doesn't return a restricted Post when the search only matches
 	 * its restricted content, and only displays the content preview when it does return it.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function testSearchResultsRestricted()
 	{
@@ -495,7 +495,7 @@ class RestrictContentTest extends WPTestCase
 	/**
 	 * Stores credentials in the Plugin's settings.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	private function storeCredentials()
 	{
@@ -512,7 +512,7 @@ class RestrictContentTest extends WPTestCase
 	/**
 	 * Stores the Product that Posts are restricted to, so it exists without querying the API.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	private function storeProduct()
 	{
@@ -533,7 +533,7 @@ class RestrictContentTest extends WPTestCase
 	/**
 	 * Creates a Post restricted to a Kit Product, loads it and returns its content.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @return  string
 	 */
@@ -567,7 +567,7 @@ class RestrictContentTest extends WPTestCase
 	/**
 	 * Asserts that the given content is restricted, displaying the teaser and not the member-only content.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   string $content    Post content.
 	 */

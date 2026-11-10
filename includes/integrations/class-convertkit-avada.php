@@ -11,14 +11,14 @@
  * in Avada Layout Sections that are not the Post's content, such as
  * the Header, Page Title Bar and Footer.
  *
- * @since   3.5.0
+ * @since   3.5.1
  */
 class ConvertKit_Avada {
 
 	/**
 	 * Avada Layout Sections that should not have Restrict Content applied.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @var     array
 	 */
@@ -31,7 +31,7 @@ class ConvertKit_Avada {
 	/**
 	 * Whether the Restrict Content filter was removed whilst rendering an Avada Layout Section.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @var     bool
 	 */
@@ -40,7 +40,7 @@ class ConvertKit_Avada {
 	/**
 	 * Constructor.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function __construct() {
 
@@ -53,7 +53,7 @@ class ConvertKit_Avada {
 	/**
 	 * Removes the Restrict Content filter if Avada is rendering a Header, Page Title Bar or Footer Layout Section.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function maybe_remove_restrict_content_filter() {
 
@@ -77,7 +77,7 @@ class ConvertKit_Avada {
 	/**
 	 * Re-adds the Restrict Content filter if it was removed by maybe_remove_restrict_content_filter().
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 */
 	public function maybe_readd_restrict_content_filter() {
 
