@@ -109,6 +109,9 @@ spl_autoload_register( 'convertkit_autoloader' );
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/cron-functions.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/functions.php';
 
+// Avada Integration.
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-avada.php';
+
 // Contact Form 7 Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7.php';
 
