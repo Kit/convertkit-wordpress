@@ -114,6 +114,23 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 				'code' => 204,
 				'body' => null,
 			],
+			'GET posts/123456'             => [
+				'code' => 200,
+				'body' => [
+					'post' => [
+						'id'               => 123456,
+						'title'            => 'Broadcast',
+						'description'      => null,
+						'meta_description' => null,
+						'published_at'     => gmdate('c'),
+						'content'          => '<p>Broadcast content.</p>',
+						'is_paid'          => false,
+						'product_id'       => null,
+						'thumbnail_url'    => null,
+						'thumbnail_alt'    => null,
+					],
+				],
+			],
 			'GET posts'                    => [
 				'code' => 200,
 				'body' => [
@@ -313,9 +330,10 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	}
 
 	/**
-	 * Test that a delivery with a post.published event refreshes the Posts resource, which imports Broadcasts.
+	 * Test that a delivery with a post.published event imports the published Broadcast, without
+	 * refreshing all Posts, and schedules the Posts resource to be refreshed in the background.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function testReceivePostPublished()
 	{
@@ -325,14 +343,20 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 
 		$response = $this->deliver($this->payload('post.published'));
 
+		// Confirm the Broadcast was imported, without refreshing all Posts.
 		$this->assertSame(200, $response->get_status());
-		$this->assertTrue($this->postsRefreshed());
+		$this->assertTrue($this->broadcastFetched());
+		$this->assertFalse($this->postsRefreshed());
+		$this->assertCount(1, $this->importedPostIDs());
+
+		// Confirm the Posts resource is scheduled to be refreshed in the background.
+		$this->assertNotFalse(wp_next_scheduled(\ConvertKit_Broadcasts_Webhook::REFRESH_POSTS_EVENT_NAME));
 	}
 
 	/**
-	 * Test that a delivery without a post.published event doesn't refresh the Posts resource.
+	 * Test that a delivery without a post.published event doesn't import a Broadcast.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function testReceiveOtherEvent()
 	{
@@ -342,13 +366,14 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 		$response = $this->deliver($this->payload('subscriber.created'));
 
 		$this->assertSame(200, $response->get_status());
-		$this->assertFalse($this->postsRefreshed());
+		$this->assertFalse($this->broadcastFetched());
+		$this->assertFalse(wp_next_scheduled(\ConvertKit_Broadcasts_Webhook::REFRESH_POSTS_EVENT_NAME));
 	}
 
 	/**
-	 * Test that a duplicate delivery of the same event doesn't refresh the Posts resource again.
+	 * Test that a duplicate delivery of the same event doesn't import the Broadcast again.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function testReceiveDuplicateEvent()
 	{
@@ -362,7 +387,23 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 		$response = $this->deliver($payload);
 
 		$this->assertSame(200, $response->get_status());
-		$this->assertFalse($this->postsRefreshed());
+		$this->assertFalse($this->broadcastFetched());
+		$this->assertCount(1, $this->importedPostIDs());
+	}
+
+	/**
+	 * Test that the WordPress Cron event scheduled by a delivery refreshes the Posts resource.
+	 *
+	 * @since   3.5.2
+	 */
+	public function testRefreshPostsEvent()
+	{
+		$this->enableImport();
+		$this->requests = [];
+
+		do_action(\ConvertKit_Broadcasts_Webhook::REFRESH_POSTS_EVENT_NAME);
+
+		$this->assertTrue($this->postsRefreshed());
 	}
 
 	/**
@@ -485,6 +526,9 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 	{
 		$settings = new \ConvertKit_Settings_Broadcasts();
 		$settings->save([ 'enabled' => 'on' ]);
+
+		// Reload the importer's settings, as they were loaded before the import was enabled.
+		\WP_ConvertKit()->get_class('broadcasts_importer')->__construct();
 	}
 
 	/**
@@ -555,6 +599,43 @@ class BroadcastsWebhookTest extends WPRestApiTestCase
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns whether the published Broadcast was fetched from the Kit API to import it.
+	 *
+	 * @since   3.5.2
+	 *
+	 * @return  bool
+	 */
+	private function broadcastFetched()
+	{
+		foreach ( $this->requests as $request ) {
+			if ( $request['method'] === 'GET' && strtok($request['url'], '?') === 'https://api.kit.com/v4/posts/123456' ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the IDs of WordPress Posts imported from the published Broadcast.
+	 *
+	 * @since   3.5.2
+	 *
+	 * @return  array
+	 */
+	private function importedPostIDs()
+	{
+		return get_posts(
+			[
+				'post_status' => 'any',
+				'fields'      => 'ids',
+				'meta_key'    => '_convertkit_broadcast_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value'  => 123456, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			]
+		);
 	}
 
 	/**

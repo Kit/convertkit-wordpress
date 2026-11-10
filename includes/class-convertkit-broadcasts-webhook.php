@@ -60,6 +60,15 @@ class ConvertKit_Broadcasts_Webhook {
 	const EVENTS_LIMIT = 100;
 
 	/**
+	 * Holds the WordPress Cron event name that refreshes the Posts resource after a Broadcast is published.
+	 *
+	 * @since   3.5.2
+	 *
+	 * @var     string
+	 */
+	const REFRESH_POSTS_EVENT_NAME = 'convertkit_broadcasts_webhook_refresh_posts';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since   3.4.8
@@ -68,6 +77,7 @@ class ConvertKit_Broadcasts_Webhook {
 
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'admin_init', array( $this, 'maybe_register' ) );
+		add_action( self::REFRESH_POSTS_EVENT_NAME, array( $this, 'refresh_posts' ) );
 
 		// Register or delete the webhook endpoint when the Broadcasts settings change.
 		add_action( 'add_option_' . ConvertKit_Settings_Broadcasts::SETTINGS_NAME, array( $this, 'settings_updated' ) );
@@ -97,8 +107,8 @@ class ConvertKit_Broadcasts_Webhook {
 	}
 
 	/**
-	 * Receives a webhook delivery from Kit, scheduling the Broadcasts import if a
-	 * post.published event is included.
+	 * Receives a webhook delivery from Kit, importing the Broadcasts included in any
+	 * post.published events.
 	 *
 	 * @since   3.4.8
 	 *
@@ -118,7 +128,7 @@ class ConvertKit_Broadcasts_Webhook {
 		// Check that we're using the Kit WordPress Libraries 2.8.0 or higher.
 		$api = new ConvertKit_API_V4( CONVERTKIT_OAUTH_CLIENT_ID, CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI );
 		if ( ! method_exists( $api, 'verify_webhook_signature' ) ) { // @phpstan-ignore-line Older WordPress Libraries won't have this function.
-			return new WP_REST_Response( null, 503 );
+			return new WP_REST_Response( null, 501 );
 		}
 
 		// Bail if the signature is invalid.
@@ -134,7 +144,7 @@ class ConvertKit_Broadcasts_Webhook {
 
 		// Iterate through events, ignoring any we've already received.
 		$received_events = get_option( self::EVENTS_OPTION_NAME, array() );
-		$import          = false;
+		$broadcasts      = array();
 		foreach ( $payload['events'] as $event ) {
 			if ( ! isset( $event['id'], $event['type'] ) || in_array( $event['id'], $received_events, true ) ) {
 				continue;
@@ -142,8 +152,11 @@ class ConvertKit_Broadcasts_Webhook {
 
 			$received_events[] = $event['id'];
 
-			if ( $event['type'] === 'post.published' ) {
-				$import = true;
+			// Store the published Broadcast's ID and published date, to import it.
+			if ( $event['type'] === 'post.published' && isset( $event['data']['post']['id'], $event['data']['post']['published_at'] ) ) {
+				$broadcasts[ (int) $event['data']['post']['id'] ] = array(
+					'published_at' => $event['data']['post']['published_at'],
+				);
 			}
 		}
 
@@ -151,13 +164,29 @@ class ConvertKit_Broadcasts_Webhook {
 		// after a slow import doesn't import again.
 		update_option( self::EVENTS_OPTION_NAME, array_slice( $received_events, -self::EVENTS_LIMIT ), false );
 
-		// Refresh the Posts resource, which imports new Broadcasts.
-		if ( $import ) {
-			$posts = new ConvertKit_Resource_Posts( 'broadcasts_webhook' );
-			$posts->refresh();
+		// Import the published Broadcasts, instead of refreshing all Posts, so the delivery is acknowledged quickly.
+		if ( count( $broadcasts ) ) {
+			WP_ConvertKit()->get_class( 'broadcasts_importer' )->refresh( $broadcasts );
+
+			// Refresh the Posts resource in the background, so the Broadcasts block lists the new Broadcasts.
+			if ( ! wp_next_scheduled( self::REFRESH_POSTS_EVENT_NAME ) ) {
+				wp_schedule_single_event( time(), self::REFRESH_POSTS_EVENT_NAME );
+			}
 		}
 
 		return new WP_REST_Response( null, 200 );
+
+	}
+
+	/**
+	 * Refreshes the Posts resource, so the Broadcasts block lists the most recent Broadcasts.
+	 *
+	 * @since   3.5.2
+	 */
+	public function refresh_posts() {
+
+		$posts = new ConvertKit_Resource_Posts( 'broadcasts_webhook' );
+		$posts->refresh();
 
 	}
 
