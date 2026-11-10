@@ -187,7 +187,7 @@ class BroadcastsToPostsSettingsCest
 	/**
 	 * Tests that the webhook isn't registered for the local test site, as Kit rejects loopback URLs.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */

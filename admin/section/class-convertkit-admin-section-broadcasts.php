@@ -127,7 +127,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	/**
 	 * Registers the webhook endpoint in Kit, if requested through the UI.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	private function maybe_register_webhook() {
 
@@ -533,7 +533,7 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 	/**
 	 * Renders the webhook status and register button.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function webhook_callback() {
 

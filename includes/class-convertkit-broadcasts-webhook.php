@@ -10,14 +10,14 @@
  * Registers a Kit webhook endpoint for the post.published event, so Kit notifies
  * this site when a Broadcast is published.
  *
- * @since   3.4.8
+ * @since   3.5.2
  */
 class ConvertKit_Broadcasts_Webhook {
 
 	/**
 	 * Holds the option name storing the registered webhook endpoint's ID, secret and URL.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @var     string
 	 */
@@ -26,7 +26,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Holds the option name storing the most recently received event IDs.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @var     string
 	 */
@@ -35,7 +35,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Holds the transient name storing the last registration error.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @var     string
 	 */
@@ -44,7 +44,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Holds the transient name storing the webhook endpoint's status in Kit.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @var     string
 	 */
@@ -53,7 +53,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * The number of received event IDs to store, to ignore duplicate deliveries.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @var     int
 	 */
@@ -71,7 +71,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Constructor.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function __construct() {
 
@@ -88,7 +88,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Registers the REST API route that receives webhook deliveries from Kit.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function register_routes() {
 
@@ -110,7 +110,7 @@ class ConvertKit_Broadcasts_Webhook {
 	 * Receives a webhook delivery from Kit, importing the Broadcasts included in any
 	 * post.published events.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @param   WP_REST_Request $request    Request.
 	 * @return  WP_REST_Response
@@ -193,7 +193,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Registers or deletes the webhook endpoint when the Broadcasts settings are saved.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function settings_updated() {
 
@@ -215,7 +215,7 @@ class ConvertKit_Broadcasts_Webhook {
 	 * Registers the webhook endpoint if the Broadcasts import is enabled and no
 	 * endpoint is registered for this site.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function maybe_register() {
 
@@ -238,7 +238,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Registers the webhook endpoint in Kit, replacing any existing endpoint registered by this site.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  WP_Error|bool
 	 */
@@ -286,7 +286,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Deletes the webhook endpoint from Kit, and the stored endpoint from this site.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 */
 	public function delete() {
 
@@ -309,7 +309,7 @@ class ConvertKit_Broadcasts_Webhook {
 	 * Returns the webhook endpoint's status in Kit (active, disabled, missing or unknown),
 	 * or false if no endpoint is registered.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  bool|string
 	 */
@@ -348,7 +348,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Returns the last registration error, if any.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  bool|string
 	 */
@@ -361,7 +361,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Returns whether a webhook endpoint is registered for this site's URL.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  bool
 	 */
@@ -376,7 +376,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Returns the URL Kit sends webhook deliveries to.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  string
 	 */
@@ -389,7 +389,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Returns the signing secret for the registered webhook endpoint.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  bool|string
 	 */
@@ -407,7 +407,7 @@ class ConvertKit_Broadcasts_Webhook {
 	/**
 	 * Stores the registration error, and removes any stored endpoint.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @param   WP_Error $error  Error.
 	 * @return  WP_Error
@@ -426,7 +426,7 @@ class ConvertKit_Broadcasts_Webhook {
 	 * Returns the API class, if the Plugin has an access token and the Kit WordPress Libraries
 	 * support webhook endpoints.
 	 *
-	 * @since   3.4.8
+	 * @since   3.5.2
 	 *
 	 * @return  WP_Error|ConvertKit_API_V4
 	 */
