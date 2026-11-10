@@ -133,6 +133,9 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_logout' ), 3 );
 		add_action( 'wp', array( $this, 'maybe_run_subscriber_verification' ), 4 );
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
+		add_action( 'admin_init', array( $this, 'register_ajax_content_filter' ) );
+		add_action( 'template_redirect', array( $this, 'maybe_restrict_attachment' ), 1 );
+		add_action( 'pre_get_posts', array( $this, 'maybe_exclude_restricted_search_results' ) );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
@@ -774,6 +777,23 @@ class ConvertKit_Output_Restrict_Content {
 	}
 
 	/**
+	 * Registers the content filter for AJAX requests, as the `wp` action doesn't run in them,
+	 * so content output by Themes and Plugins using AJAX e.g. "load more" buttons is restricted.
+	 *
+	 * @since   3.5.0
+	 */
+	public function register_ajax_content_filter() {
+
+		// Bail if this isn't an AJAX request.
+		if ( ! wp_doing_ajax() ) {
+			return;
+		}
+
+		add_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
+
+	}
+
+	/**
 	 * Registers filters to restrict content in REST API responses for Post Types
 	 * supporting Member Content.
 	 *
@@ -784,6 +804,8 @@ class ConvertKit_Output_Restrict_Content {
 		foreach ( convertkit_get_supported_restrict_content_post_types() as $post_type ) {
 			add_filter( 'rest_prepare_' . $post_type, array( $this, 'maybe_restrict_rest_content' ), 10, 2 );
 		}
+
+		add_filter( 'rest_prepare_attachment', array( $this, 'maybe_restrict_rest_attachment' ), 10, 2 );
 
 	}
 
@@ -839,6 +861,180 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		return $response;
+
+	}
+
+	/**
+	 * Removes an attachment's details from a REST API response, if it's attached to a Post
+	 * that is restricted and the visitor cannot view it, so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   WP_REST_Response $response   REST API Response.
+	 * @param   WP_Post          $post       Attachment.
+	 * @return  WP_REST_Response
+	 */
+	public function maybe_restrict_rest_attachment( $response, $post ) {
+
+		// Bail if the visitor can view the attachment.
+		if ( $this->can_view_attachment( $post ) ) {
+			return $response;
+		}
+
+		// Only return the attachment's ID.
+		return rest_ensure_response( array( 'id' => $post->ID ) );
+
+	}
+
+	/**
+	 * Displays a 404 for an attachment's page, if it's attached to a Post that is restricted
+	 * and the visitor cannot view it, so its file URL isn't disclosed.
+	 *
+	 * Runs before WordPress redirects attachment pages to the file, when attachment pages are disabled.
+	 *
+	 * @since   3.5.0
+	 */
+	public function maybe_restrict_attachment() {
+
+		global $wp_query;
+
+		// Bail if this isn't an attachment's page.
+		if ( ! is_attachment() ) {
+			return;
+		}
+
+		// Bail if the visitor can view the attachment.
+		if ( $this->can_view_attachment( get_post( get_queried_object_id() ) ) ) {
+			return;
+		}
+
+		// Display a 404.
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+
+	}
+
+	/**
+	 * Excludes Posts from search results that the visitor cannot view, if the search terms
+	 * only match the Post's restricted content, so searches can't be used to discover it.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   WP_Query $query  Query.
+	 */
+	public function maybe_exclude_restricted_search_results( $query ) {
+
+		// Bail if this isn't a search, or is the query below finding Posts matching the search.
+		if ( ! $query->is_search() || $query->get( 'convertkit_restrict_content_search' ) ) {
+			return;
+		}
+
+		// Initialize classes, if this query runs before the init hook.
+		if ( ! $this->restrict_content_settings ) {
+			$this->initialize_classes();
+		}
+
+		// Find Posts matching the search that have the Member Content setting defined.
+		$post_ids = get_posts(
+			array(
+				'convertkit_restrict_content_search' => true,
+				's'                                  => $query->get( 's' ),
+				'post_type'                          => $query->get( 'post_type' ) ? $query->get( 'post_type' ) : 'any',
+				'post_status'                        => 'publish',
+				'fields'                             => 'ids',
+				'posts_per_page'                     => -1,
+				'meta_query'                         => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'     => '_wp_convertkit_post_meta',
+						'value'   => 's:16:"restrict_content";s:0:""',
+						'compare' => 'NOT LIKE',
+					),
+				),
+			)
+		);
+
+		// Load Post meta in a single query, as each Post's Member Content setting is checked below.
+		update_meta_cache( 'post', $post_ids );
+
+		$excluded_post_ids = array();
+		foreach ( $post_ids as $post_id ) {
+			// Skip if the user can edit or the visitor can view the Post.
+			if ( current_user_can( 'edit_post', $post_id ) || $this->can_view_post( $post_id ) ) {
+				continue;
+			}
+
+			// Skip if all search terms match the content the visitor can see.
+			if ( $this->search_terms_match_visible_content( get_post( $post_id ), $query->get( 's' ) ) ) {
+				continue;
+			}
+
+			$excluded_post_ids[] = $post_id;
+		}
+
+		// Bail if no Posts need to be excluded.
+		if ( empty( $excluded_post_ids ) ) {
+			return;
+		}
+
+		$query->set( 'post__not_in', array_merge( (array) $query->get( 'post__not_in' ), $excluded_post_ids ) );
+
+	}
+
+	/**
+	 * Determines if all search terms match the content of a restricted Post that the visitor can see:
+	 * its title, excerpt and content preview.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   WP_Post $post       Post.
+	 * @param   string  $search     Search string.
+	 * @return  bool
+	 */
+	private function search_terms_match_visible_content( $post, $search ) {
+
+		// Use the content before the Read More tag as the preview, or the start of the content if no tag exists, as
+		// WordPress does when generating an excerpt.
+		$content_breakdown = get_extended( $post->post_content );
+		$preview           = ! empty( $content_breakdown['extended'] ) ? $content_breakdown['main'] : wp_trim_words( strip_shortcodes( $post->post_content ), apply_filters( 'excerpt_length', 55 ), '' );
+
+		// Build the content the visitor can see.
+		$visible_content = wp_strip_all_tags( $post->post_title . ' ' . $post->post_excerpt . ' ' . $preview );
+
+		// Split the search into terms, removing quotes, as WordPress does.
+		preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search, $matches );
+		foreach ( $matches[0] as $search_term ) {
+			if ( stripos( $visible_content, trim( $search_term, "\"' \n\r" ) ) === false ) {
+				return false;
+			}
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Determines if the visitor can view the given attachment, based on the Member Content
+	 * setting of the Post it's attached to.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   WP_Post|null $attachment     Attachment.
+	 * @return  bool
+	 */
+	private function can_view_attachment( $attachment ) {
+
+		// Bail if the attachment doesn't exist or isn't attached to a Post.
+		if ( ! $attachment || ! $attachment->post_parent ) {
+			return true;
+		}
+
+		// Bail if the user can edit the Post the attachment is attached to.
+		if ( current_user_can( 'edit_post', $attachment->post_parent ) ) {
+			return true;
+		}
+
+		return $this->can_view_post( $attachment->post_parent );
 
 	}
 
@@ -991,12 +1187,6 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function can_view_post( $post_id ) {
 
-		// If the Plugin Access Token has not been configured, we can't determine the validity of this subscriber ID
-		// or which resource(s) they have access to.
-		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return true;
-		}
-
 		// Bail if the Restrict Content setting is not enabled on this Post.
 		$this->post_id       = $post_id;
 		$this->post_settings = new ConvertKit_Post( $this->post_id );
@@ -1031,6 +1221,12 @@ class ConvertKit_Output_Restrict_Content {
 		// Bail if the request is from a crawler.
 		if ( $this->restrict_content_settings->permit_crawlers() && $this->is_crawler() ) {
 			return true;
+		}
+
+		// The visitor cannot view the content if the Plugin isn't connected to Kit e.g. the access token was revoked,
+		// as we can't determine whether they have access.
+		if ( ! $this->settings->has_access_and_refresh_token() ) {
+			return false;
 		}
 
 		// Bail if the resource no longer exists in Kit e.g. a Tag or Product has been deleted,
@@ -1284,12 +1480,6 @@ class ConvertKit_Output_Restrict_Content {
 			return false;
 		}
 
-		// If the Plugin Access Token has not been configured, we can't determine the validity of this subscriber ID
-		// or which resource(s) they have access to.
-		if ( ! $this->settings->has_access_and_refresh_token() ) {
-			return false;
-		}
-
 		// Get Post ID.
 		$this->post_id = get_the_ID();
 
@@ -1423,50 +1613,30 @@ class ConvertKit_Output_Restrict_Content {
 	private function resource_exists() {
 
 		switch ( $this->resource_type ) {
-
 			case 'product':
-				// Get Product.
-				$products = new ConvertKit_Resource_Products( 'restrict_content' );
-				$product  = $products->get_by_id( $this->resource_id );
-
-				// If the Product does not exist, return false.
-				if ( ! $product ) {
-					return false;
-				}
-
-				// Product exists in ConvertKit.
-				return true;
+				$resources = new ConvertKit_Resource_Products( 'restrict_content' );
+				break;
 
 			case 'form':
-				// Get Form.
-				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
-				$form  = $forms->get_by_id( $this->resource_id );
-
-				// If the Form does not exist, return false.
-				if ( ! $form ) {
-					return false;
-				}
-
-				// Form exists in ConvertKit.
-				return true;
+				$resources = new ConvertKit_Resource_Forms( 'restrict_content' );
+				break;
 
 			case 'tag':
-				// Get Tag.
-				$tags = new ConvertKit_Resource_Tags( 'restrict_content' );
-				$tag  = $tags->get_by_id( $this->resource_id );
-
-				// If the Tag does not exist, return false.
-				if ( ! $tag ) {
-					return false;
-				}
-
-				// Tag exists in ConvertKit.
-				return true;
+				$resources = new ConvertKit_Resource_Tags( 'restrict_content' );
+				break;
 
 			default:
 				return false;
-
 		}
+
+		// Assume the resource exists if resources couldn't be fetched from Kit e.g. an API error,
+		// so content remains restricted instead of being displayed to everyone.
+		if ( ! is_array( $resources->resources ) ) {
+			return true;
+		}
+
+		// Return whether the resource exists in Kit.
+		return (bool) $resources->get_by_id( $this->resource_id );
 
 	}
 
@@ -1805,9 +1975,7 @@ class ConvertKit_Output_Restrict_Content {
 				$text    = $this->restrict_content_settings->get_by_key( 'subscribe_text' );
 
 				// Output product restricted message and email form.
-				// Get Product.
 				$products = new ConvertKit_Resource_Products( 'restrict_content' );
-				$product  = $products->get_by_id( $resource_id );
 
 				// Get commerce.js URL and enqueue.
 				$url = $products->get_commerce_js_url();
@@ -1821,15 +1989,25 @@ class ConvertKit_Output_Restrict_Content {
 					$this->output_login_modal( $post_id, $resource_id, $resource_type );
 				}
 
+				// Get the Product button, if Products could be fetched from Kit.
+				$button = '';
+				if ( $products->exist() ) {
+					$button = $products->get_html(
+						$resource_id,
+						$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
+						array(
+							'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
+						)
+					);
+				}
+
+				// Don't output the Product button if it couldn't be generated e.g. the Product doesn't exist.
+				if ( is_wp_error( $button ) ) {
+					$button = '';
+				}
+
 				// Output.
 				ob_start();
-				$button = $products->get_html(
-					$resource_id,
-					$this->restrict_content_settings->get_by_key( 'subscribe_button_label' ),
-					array(
-						'css_classes' => array( 'wp-block-button__link', 'wp-element-button' ),
-					)
-				);
 				include CONVERTKIT_PLUGIN_PATH . '/views/frontend/restrict-content/product.php';
 				return trim( ob_get_clean() );
 
@@ -1837,6 +2015,11 @@ class ConvertKit_Output_Restrict_Content {
 				// Display the Form.
 				$forms = new ConvertKit_Resource_Forms( 'restrict_content' );
 				$form  = $forms->get_html( $resource_id, $post_id );
+
+				// Don't output the Form if it couldn't be generated e.g. Forms couldn't be fetched from Kit.
+				if ( is_wp_error( $form ) ) {
+					$form = '';
+				}
 
 				// If scripts are enabled, output the email login form in a modal, which will be displayed
 				// when the 'log in' link is clicked.
