@@ -429,6 +429,125 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	}
 
 	/**
+	 * Test that the WordPress REST API only returns the ID of an attachment attached to a Post
+	 * restricted by Member Content when requested by a visitor, so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIAttachmentRestricted()
+	{
+		// Create an attachment attached to a restricted Post.
+		$attachment_id = $this->createAttachment( $this->createRestrictedPost( 'post', '<p>Member-only content.</p>' ) );
+
+		// Request the attachment and attachments as a visitor.
+		$data       = $this->getRESTAPIPost( '/wp/v2/media/' . $attachment_id );
+		$collection = $this->getRESTAPIPost( '/wp/v2/media', [ 'include' => [ $attachment_id ] ] );
+
+		// Assert only the attachment's ID is returned.
+		$this->assertSame( [ 'id' => $attachment_id ], $data );
+		$this->assertCount( 1, $collection );
+		$this->assertSame( [ 'id' => $attachment_id ], $collection[0] );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns an attachment attached to a Post restricted
+	 * by Member Content when requested by a user who can edit the Post.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIAttachmentNotRestrictedForEditor()
+	{
+		// Create an attachment attached to a restricted Post.
+		$attachment_id = $this->createAttachment( $this->createRestrictedPost( 'post', '<p>Member-only content.</p>' ) );
+
+		// Request the attachment as an editor.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$data = $this->getRESTAPIPost( '/wp/v2/media/' . $attachment_id );
+
+		// Assert the attachment's file URL is returned.
+		$this->assertArrayHasKey( 'source_url', $data );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns an attachment attached to a Post
+	 * that is not restricted by Member Content.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPIAttachmentNotRestricted()
+	{
+		// Create an attachment attached to a Post.
+		$attachment_id = $this->createAttachment( static::factory()->post->create( [ 'post_content' => '<p>Public content.</p>' ] ) );
+
+		// Request the attachment as a visitor.
+		$data = $this->getRESTAPIPost( '/wp/v2/media/' . $attachment_id );
+
+		// Assert the attachment's file URL is returned.
+		$this->assertArrayHasKey( 'source_url', $data );
+	}
+
+	/**
+	 * Test that the WordPress REST API doesn't return a Post restricted by Member Content in search
+	 * results when the search only matches its restricted content, including the total count.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPISearchExcludesRestrictedContentMatches()
+	{
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$this->createRestrictedPost( 'post', '<p>' . str_repeat( 'Preview ', 55 ) . 'Memberonlyword.</p>' );
+
+		// Search as a visitor for a word in the restricted content.
+		$request = new \WP_REST_Request( 'GET', '/wp/v2/posts' );
+		$request->set_query_params( [ 'search' => 'Memberonlyword' ] );
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert the Post isn't returned or counted.
+		$this->assertSame( [], $response->get_data() );
+		$this->assertSame( 0, $response->get_headers()['X-WP-Total'] );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns a Post restricted by Member Content in search
+	 * results when the search matches its title, excerpt or content preview.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPISearchIncludesRestrictedContentPreviewMatches()
+	{
+		// Create a restricted Post with a teaser.
+		$post_id = $this->createRestrictedPost( 'post', '<p>Teaserword content.</p><!--more--><p>Memberonlyword content.</p>' );
+
+		// Search as a visitor for a word in the teaser.
+		$data = $this->getRESTAPIPost( '/wp/v2/posts', [ 'search' => 'Teaserword' ] );
+
+		// Assert the Post is returned, without its restricted content.
+		$this->assertCount( 1, $data );
+		$this->assertSame( $post_id, $data[0]['id'] );
+		$this->assertStringNotContainsString( 'Memberonlyword', $data[0]['content']['rendered'] );
+	}
+
+	/**
+	 * Test that the WordPress REST API returns a Post restricted by Member Content in search
+	 * results when the search matches its restricted content and the user can edit the Post.
+	 *
+	 * @since   3.5.0
+	 */
+	public function testRESTAPISearchIncludesRestrictedContentMatchesForEditor()
+	{
+		// Create a restricted Post with a teaser.
+		$post_id = $this->createRestrictedPost( 'post', '<p>Teaser content.</p><!--more--><p>Memberonlyword content.</p>' );
+
+		// Search as an editor for a word in the restricted content.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$data = $this->getRESTAPIPost( '/wp/v2/posts', [ 'search' => 'Memberonlyword' ] );
+
+		// Assert the Post is returned.
+		$this->assertCount( 1, $data );
+		$this->assertSame( $post_id, $data[0]['id'] );
+	}
+
+	/**
 	 * Test that the WordPress REST API returns the full content of a Post restricted
 	 * by Member Content when requested by a user who can edit the Post.
 	 *
@@ -490,6 +609,25 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
 					],
 				],
+			]
+		);
+	}
+
+	/**
+	 * Creates an attachment attached to the given Post.
+	 *
+	 * @since   3.5.0
+	 *
+	 * @param   int $post_id    Post ID.
+	 * @return  int
+	 */
+	private function createAttachment( $post_id )
+	{
+		return static::factory()->attachment->create(
+			[
+				'file'           => 'member-content.pdf',
+				'post_parent'    => $post_id,
+				'post_mime_type' => 'application/pdf',
 			]
 		);
 	}
