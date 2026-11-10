@@ -38,8 +38,13 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		// Define settings sections.
 		$this->settings_sections = array(
 			'general' => array(
-				'title'    => $this->title,
+				'title'    => __( 'Import', 'convertkit' ),
 				'callback' => array( $this, 'print_section_info' ),
+				'wrap'     => true,
+			),
+			'export'  => array(
+				'title'    => __( 'Export', 'convertkit' ),
+				'callback' => array( $this, 'print_section_info_export' ),
 				'wrap'     => true,
 			),
 		);
@@ -350,11 +355,76 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			__( 'Enable Export Actions', 'convertkit' ),
 			array( $this, 'enable_export_callback' ),
 			$this->settings_key,
-			$this->name,
+			$this->name . '-export',
 			array(
 				'name'      => 'enabled_export',
 				'label_for' => 'enabled_export',
 				'label'     => __( 'Displays actions in WordPress to create draft broadcasts from existing WordPress posts.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_send_to',
+			__( 'Send To', 'convertkit' ),
+			array( $this, 'export_send_to_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_send_to',
+				'label_for'   => $this->settings_key . '_export_send_to',
+				'description' => __( 'The subscribers to send draft broadcasts to. This can be changed in Kit before sending.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_public',
+			__( 'Make Public', 'convertkit' ),
+			array( $this, 'export_public_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'      => 'export_public',
+				'label_for' => 'export_public',
+				'label'     => __( 'If enabled, draft broadcasts will be published to your Kit Newsletter site and Landing Pages when sent.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_greeting',
+			__( 'Greeting', 'convertkit' ),
+			array( $this, 'export_greeting_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_greeting',
+				'label_for'   => 'export_greeting',
+				'description' => __( 'Optional. Added to the start of draft broadcasts. Supports HTML and Liquid, for example: Hi {{ subscriber.first_name | default: "there" }},', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_sign_off',
+			__( 'Sign-off', 'convertkit' ),
+			array( $this, 'export_sign_off_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_sign_off',
+				'label_for'   => 'export_sign_off',
+				'description' => __( 'Optional. Added to the end of draft broadcasts. Supports HTML and Liquid.', 'convertkit' ),
+			)
+		);
+
+		add_settings_field(
+			'export_web_link',
+			__( 'Read on the Web', 'convertkit' ),
+			array( $this, 'export_web_link_callback' ),
+			$this->settings_key,
+			$this->name . '-export',
+			array(
+				'name'        => 'export_web_link',
+				'label_for'   => $this->settings_key . '_export_web_link',
+				'description' => __( 'Adds a link to read the post on your site to draft broadcasts. Only added once the post is published.', 'convertkit' ),
 			)
 		);
 
@@ -382,11 +452,24 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 
 		?>
 		<span class="convertkit-beta-label"><?php esc_html_e( 'Beta', 'convertkit' ); ?></span>
-		<p class="description"><?php esc_html_e( 'Defines whether public broadcasts ("Enabled on public feeds") in Kit should automatically be published on this site as WordPress Posts, and whether to enable options to create draft Kit Broadcasts from WordPress Posts.', 'convertkit' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Defines whether public broadcasts ("Enabled on public feeds") in Kit should automatically be published on this site as WordPress Posts.', 'convertkit' ); ?></p>
 		<?php
 
 	}
 
+	/**
+	 * Prints help info for the export section of the settings screen.
+	 *
+	 * @since   3.4.8
+	 */
+	public function print_section_info_export() {
+
+		?>
+		<span class="convertkit-beta-label"><?php esc_html_e( 'Beta', 'convertkit' ); ?></span>
+		<p class="description"><?php esc_html_e( 'Defines whether to display options to create draft Kit Broadcasts from WordPress Posts.', 'convertkit' ); ?></p>
+		<?php
+
+	}
 
 	/**
 	 * Returns the URL for the ConvertKit documentation for this setting section.
@@ -672,7 +755,149 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 			$args['name'],
 			'on',
 			$this->settings->enabled_export(),
-			$args['label']
+			$args['label'],
+			false,
+			array( 'convertkit-conditional-display' )
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Send To setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_send_to_callback( $args ) {
+
+		// Build options.
+		$options = array(
+			'' => esc_html__( 'All subscribers', 'convertkit' ),
+		);
+
+		// Add Tags.
+		$tags = new ConvertKit_Resource_Tags( 'settings' );
+		if ( $tags->exist() ) {
+			foreach ( $tags->get() as $tag ) {
+				$options[ __( 'Tags', 'convertkit' ) ][ 'tag_' . absint( $tag['id'] ) ] = esc_html( $tag['name'] );
+			}
+		}
+
+		// Refresh Segments, as they're only used by this setting and aren't refreshed elsewhere.
+		$segments = new ConvertKit_Resource_Segments( 'settings' );
+		$segments->refresh();
+
+		// Add Segments.
+		if ( $segments->exist() ) {
+			foreach ( $segments->get() as $segment ) {
+				$options[ __( 'Segments', 'convertkit' ) ][ 'segment_' . absint( $segment['id'] ) ] = esc_html( $segment['name'] );
+			}
+		}
+
+		// Output field.
+		echo '<div class="convertkit-select2-container">';
+		$this->output_select_field(
+			$args['name'],
+			$this->settings->export_send_to(),
+			$options,
+			$args['description'],
+			array(
+				'convertkit-select2',
+				'enabled_export',
+			)
+		);
+		echo '</div>';
+
+	}
+
+	/**
+	 * Renders the input for the Make Public setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,label).
+	 */
+	public function export_public_callback( $args ) {
+
+		// Output field.
+		$this->output_checkbox_field(
+			$args['name'],
+			'on',
+			$this->settings->export_public(),
+			$args['label'],
+			false,
+			array( 'enabled_export' )
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Greeting setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_greeting_callback( $args ) {
+
+		// Output field.
+		$this->output_textarea_field(
+			$args['name'],
+			esc_textarea( $this->settings->export_greeting() ),
+			$args['description'],
+			array(
+				'large-text',
+				'enabled_export',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Sign-off setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_sign_off_callback( $args ) {
+
+		// Output field.
+		$this->output_textarea_field(
+			$args['name'],
+			esc_textarea( $this->settings->export_sign_off() ),
+			$args['description'],
+			array(
+				'large-text',
+				'enabled_export',
+			)
+		);
+
+	}
+
+	/**
+	 * Renders the input for the Read on the Web setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   array $args   Setting field arguments (name,description).
+	 */
+	public function export_web_link_callback( $args ) {
+
+		// Output field.
+		$this->output_select_field(
+			$args['name'],
+			$this->settings->export_web_link(),
+			array(
+				''       => esc_html__( 'None', 'convertkit' ),
+				'top'    => esc_html__( 'Top of broadcast', 'convertkit' ),
+				'bottom' => esc_html__( 'Bottom of broadcast', 'convertkit' ),
+			),
+			$args['description'],
+			array(
+				'enabled_export',
+			)
 		);
 
 	}
@@ -718,6 +943,13 @@ class ConvertKit_Admin_Section_Broadcasts extends ConvertKit_Admin_Section_Base 
 		// Therefore, if the setting doesn't exist, set it to blank.
 		if ( ! array_key_exists( 'import_images', $settings ) ) {
 			$settings['import_images'] = '';
+		}
+
+		// Remove disallowed HTML from the greeting and sign-off.
+		foreach ( array( 'export_greeting', 'export_sign_off' ) as $key ) {
+			if ( array_key_exists( $key, $settings ) ) {
+				$settings[ $key ] = wp_kses_post( $settings[ $key ] );
+			}
 		}
 
 		// Merge settings with defaults.

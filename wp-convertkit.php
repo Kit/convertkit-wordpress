@@ -9,7 +9,7 @@
  * Plugin Name: Kit (formerly ConvertKit)
  * Plugin URI: https://kit.com/
  * Description: Display Kit (formerly ConvertKit) email subscription forms, landing pages, products, broadcasts and more.
- * Version: 3.4.7
+ * Version: 3.5.1
  * Author: Kit
  * Author URI: https://kit.com/
  * Text Domain: convertkit
@@ -27,7 +27,7 @@ define( 'CONVERTKIT_PLUGIN_NAME', 'ConvertKit' ); // Used for user-agent in API 
 define( 'CONVERTKIT_PLUGIN_FILE', plugin_basename( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CONVERTKIT_PLUGIN_PATH', __DIR__ );
-define( 'CONVERTKIT_PLUGIN_VERSION', '3.4.7' );
+define( 'CONVERTKIT_PLUGIN_VERSION', '3.5.1' );
 define( 'CONVERTKIT_OAUTH_CLIENT_ID', 'HXZlOCj-K5r0ufuWCtyoyo3f688VmMAYSsKg1eGvw0Y' );
 define( 'CONVERTKIT_OAUTH_CLIENT_REDIRECT_URI', 'https://app.kit.com/wordpress/redirect' );
 define( 'CONVERTKIT_NONCE_ACTION_OAUTH_CONNECT', 'convertkit-oauth-connect' );
@@ -108,6 +108,9 @@ spl_autoload_register( 'convertkit_autoloader' );
 // Load plugin files that are always required.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/cron-functions.php';
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/functions.php';
+
+// Avada Integration.
+require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/class-convertkit-avada.php';
 
 // Contact Form 7 Integration.
 require_once CONVERTKIT_PLUGIN_PATH . '/includes/integrations/contactform7/class-convertkit-contactform7.php';

@@ -484,6 +484,18 @@ class KitPlugin extends \Codeception\Module
 			]
 		);
 
+		// Define Segments.
+		$I->haveOptionInDatabase(
+			'convertkit_segments',
+			[
+				$_ENV['CONVERTKIT_API_SEGMENT_ID'] => [
+					'id'         => (int) $_ENV['CONVERTKIT_API_SEGMENT_ID'],
+					'name'       => $_ENV['CONVERTKIT_API_SEGMENT_NAME'],
+					'created_at' => '2024-01-01T00:00:00.000Z',
+				],
+			]
+		);
+
 		// Define Tags.
 		$I->haveOptionInDatabase(
 			'convertkit_tags',
@@ -566,6 +578,7 @@ class KitPlugin extends \Codeception\Module
 		$I->haveOptionInDatabase( 'convertkit_posts_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_products_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_tags_last_queried', strtotime( 'now' ) );
+		$I->haveOptionInDatabase( 'convertkit_segments_last_queried', strtotime( 'now' ) );
 		$I->haveOptionInDatabase( 'convertkit_custom_fields_last_queried', strtotime( 'now' ) );
 	}
 
@@ -654,6 +667,8 @@ class KitPlugin extends \Codeception\Module
 		$I->dontHaveOptionInDatabase('convertkit_products_last_queried');
 		$I->dontHaveOptionInDatabase('convertkit_tags');
 		$I->dontHaveOptionInDatabase('convertkit_tags_last_queried');
+		$I->dontHaveOptionInDatabase('convertkit_segments');
+		$I->dontHaveOptionInDatabase('convertkit_segments_last_queried');
 		$I->dontHaveOptionInDatabase('convertkit_custom_fields');
 		$I->dontHaveOptionInDatabase('convertkit_custom_fields_last_queried');
 
@@ -784,19 +799,8 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function checkSelectFormOptionOrder($I, $selectElement, $prependOptions = false)
 	{
-		// Define options.
-		$options = [
-			'AAA Test [inline]', // First item.
-			'WooCommerce Product Form [inline]', // Last item.
-		];
-
-		// Prepend options, such as 'Default' and 'None' to the options, if required.
-		if ( $prependOptions ) {
-			$options = array_merge( $prependOptions, $options );
-		}
-
-		// Check order.
-		$I->checkSelectOptionOrder($I, $selectElement, $options);
+		// Form options include the format e.g. [inline], which isn't part of the sorted name.
+		$I->checkSelectResourceOptionsSorted($I, $selectElement, $prependOptions, true);
 	}
 
 	/**
@@ -811,22 +815,7 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function checkSelectLandingPageOptionOrder($I, $selectElement, $prependOptions = false)
 	{
-		// Define options.
-		// Legacy Landing Pages are hidden from dropdowns (as of the legacy
-		// landing page dropdown removal work), so `Landing Page` is now the
-		// last alphabetical entry rather than `Legacy Landing Page`.
-		$options = [
-			'Character Encoding', // First item.
-			'Landing Page', // Last item.
-		];
-
-		// Prepend options, such as 'Default' and 'None' to the options, if required.
-		if ( $prependOptions ) {
-			$options = array_merge( $prependOptions, $options );
-		}
-
-		// Check order.
-		$I->checkSelectOptionOrder($I, $selectElement, $options);
+		$I->checkSelectResourceOptionsSorted($I, $selectElement, $prependOptions);
 	}
 
 	/**
@@ -841,19 +830,44 @@ class KitPlugin extends \Codeception\Module
 	 */
 	public function checkSelectTagOptionOrder($I, $selectElement, $prependOptions = false)
 	{
-		// Define options.
-		$options = [
-			'gravityforms-tag-1', // First item.
-			'wpforms', // Last item.
-		];
+		$I->checkSelectResourceOptionsSorted($I, $selectElement, $prependOptions);
+	}
 
-		// Prepend options, such as 'Default' and 'None' to the options, if required.
-		if ( $prependOptions ) {
-			$options = array_merge( $prependOptions, $options );
+	/**
+	 * Helper method to determine that the resources in the given select element are in
+	 * ascending alphabetical order, after any prepended options, regardless of which
+	 * resources exist on the Kit account.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I                 EndToEndTester.
+	 * @param   string         $selectElement     <select> element.
+	 * @param   bool|array     $prependOptions    Option elements that should appear before the resources.
+	 * @param   bool           $removeFormat      Remove the Form format e.g. [inline] from each option before comparing.
+	 */
+	public function checkSelectResourceOptionsSorted($I, $selectElement, $prependOptions = false, $removeFormat = false)
+	{
+		// Wait for the options to load.
+		$I->waitForElementVisible('select' . $selectElement . ' option:last-child');
+
+		// Get the text of each visible option, ignoring hidden copies of the select e.g. Quick Edit's template, whose text is blank.
+		$options = array_values( array_filter( array_map( 'trim', $I->grabMultiple('select' . $selectElement . ' option') ), 'strlen' ) );
+
+		// Assert the prepended options are first.
+		$prependOptions = ( $prependOptions ? $prependOptions : [] );
+		$I->assertEquals($prependOptions, array_slice($options, 0, count($prependOptions)));
+
+		// Get the resources, removing the Form format if required.
+		$resources = array_slice($options, count($prependOptions));
+		if ($removeFormat) {
+			$resources = preg_replace('/ \[[^\]]+\]$/', '', $resources);
 		}
 
-		// Check order.
-		$I->checkSelectOptionOrder($I, $selectElement, $options);
+		// Assert resources exist, and are in ascending order, using the same comparison as the resource classes.
+		$I->assertNotEmpty($resources);
+		$sorted = $resources;
+		usort($sorted, 'strcmp');
+		$I->assertEquals($sorted, $resources);
 	}
 
 	/**

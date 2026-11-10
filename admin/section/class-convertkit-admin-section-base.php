@@ -731,7 +731,7 @@ abstract class ConvertKit_Admin_Section_Base {
 	 *
 	 * @param   string      $name            Name.
 	 * @param   string      $value           Value.
-	 * @param   array       $options         Options / Choices.
+	 * @param   array       $options         Options / Choices. An array of options as a value outputs an <optgroup>.
 	 * @param   bool|string $description     Description.
 	 * @param   bool|array  $css_classes     <select> CSS class(es).
 	 * @param   bool|array  $attributes      <select> attributes.
@@ -749,8 +749,22 @@ abstract class ConvertKit_Admin_Section_Base {
 			( is_array( $attributes ) ? $this->array_to_attributes( $attributes ) : '' )
 		);
 
-		// Build <option> tags.
+		// Build <option> tags, wrapping any nested options in an <optgroup>.
 		foreach ( $options as $option => $label ) {
+			if ( is_array( $label ) ) {
+				$html .= sprintf( '<optgroup label="%s">', esc_attr( $option ) );
+				foreach ( $label as $group_option => $group_label ) {
+					$html .= sprintf(
+						'<option value="%s"%s>%s</option>',
+						$group_option,
+						selected( $value, $group_option, false ),
+						$group_label
+					);
+				}
+				$html .= '</optgroup>';
+				continue;
+			}
+
 			$html .= sprintf(
 				'<option value="%s"%s>%s</option>',
 				$option,
@@ -779,7 +793,7 @@ abstract class ConvertKit_Admin_Section_Base {
 	 *
 	 * @param   string      $name            Name.
 	 * @param   string      $value           Value.
-	 * @param   array       $options         Options / Choices.
+	 * @param   array       $options         Options / Choices. An array of options as a value outputs an <optgroup>.
 	 * @param   bool|string $description     Description.
 	 * @param   bool|array  $css_classes     <select> CSS class(es).
 	 * @param   bool|array  $attributes      <select> attributes.

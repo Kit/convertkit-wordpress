@@ -49,6 +49,63 @@ class BroadcastsToPostsSettingsCest
 		$I->seeInSource('<label for="import_images">');
 		$I->seeInSource('<label for="published_at_min_date">');
 		$I->seeInSource('<label for="no_styles">');
+		$I->seeInSource('<label for="enabled_export">');
+		$I->seeInSource('<label for="_wp_convertkit_settings_broadcasts_export_send_to">');
+		$I->seeInSource('<label for="export_public">');
+	}
+
+	/**
+	 * Tests that enabling and disabling the export option works with no errors,
+	 * and that other export fields show / hide depending on the setting.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testEnableDisableExport(EndToEndTester $I)
+	{
+		// Go to the Plugin's Broadcasts Screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Confirm that export fields are hidden, because the 'Enable Export Actions' option is not checked.
+		$I->dontSeeElement('input#export_public');
+		$I->dontSeeElement('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_send_to-container"]');
+
+		// Enable Export Actions.
+		$I->checkOption('#enabled_export');
+
+		// Confirm that export fields are now displayed.
+		$I->waitForElementVisible('input#export_public');
+		$I->seeElement('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_send_to-container"]');
+
+		// Disable Export Actions.
+		$I->uncheckOption('#enabled_export');
+
+		// Confirm that export fields are hidden.
+		$I->waitForElementNotVisible('input#export_public');
+		$I->dontSeeElement('span[aria-labelledby="select2-_wp_convertkit_settings_broadcasts_export_send_to-container"]');
+	}
+
+	/**
+	 * Test that the Settings > Kit > Broadcasts screen displays import and export
+	 * settings in separate panels.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testImportAndExportPanels(EndToEndTester $I)
+	{
+		// Go to the Plugin's Broadcasts Screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Confirm import settings are in the Import panel.
+		$I->seeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Import"]]//input[@id="enabled"]');
+		$I->seeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Import"]]//input[@id="no_styles"]');
+
+		// Confirm export settings are in the Export panel.
+		$I->seeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Export"]]//input[@id="enabled_export"]');
+		$I->dontSeeElementInDOM('//div[contains(@class, "postbox")][.//h2[text()="Import"]]//input[@id="enabled_export"]');
 	}
 
 	/**
@@ -170,6 +227,9 @@ class BroadcastsToPostsSettingsCest
 	 */
 	public function testSaveSettings(EndToEndTester $I)
 	{
+		// Define cached Tags, so the Send To setting lists them.
+		$I->setupKitPluginResources($I);
+
 		// Go to the Plugin's Broadcasts Screen.
 		$I->loadKitSettingsBroadcastsScreen($I);
 
@@ -182,6 +242,8 @@ class BroadcastsToPostsSettingsCest
 		$I->checkOption('#import_images');
 		$I->fillField('_wp_convertkit_settings_broadcasts[published_at_min_date]', '01/01/2023');
 		$I->checkOption('#enabled_export');
+		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_broadcasts_export_send_to-container', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->checkOption('#export_public');
 		$I->checkOption('#no_styles');
 
 		// Click the Save Changes button.
@@ -202,7 +264,74 @@ class BroadcastsToPostsSettingsCest
 		$I->seeCheckboxIsChecked('#import_images');
 		$I->seeInField('_wp_convertkit_settings_broadcasts[published_at_min_date]', '2023-01-01');
 		$I->seeCheckboxIsChecked('#enabled_export');
+		$I->seeInField('_wp_convertkit_settings_broadcasts[export_send_to]', $_ENV['CONVERTKIT_API_TAG_NAME']);
+		$I->seeCheckboxIsChecked('#export_public');
 		$I->seeCheckboxIsChecked('#no_styles');
+	}
+
+	/**
+	 * Tests that saving the Send To setting with a Segment works.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSaveSendToSegment(EndToEndTester $I)
+	{
+		// Define cached Tags and Segments, so the Send To setting lists them.
+		$I->setupKitPluginResources($I);
+
+		// Go to the Plugin's Broadcasts Screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Enable export, and send to the Segment.
+		$I->checkOption('#enabled_export');
+		$I->fillSelect2Field($I, '#select2-_wp_convertkit_settings_broadcasts_export_send_to-container', $_ENV['CONVERTKIT_API_SEGMENT_NAME']);
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the setting saved.
+		$I->seeInField('_wp_convertkit_settings_broadcasts[export_send_to]', $_ENV['CONVERTKIT_API_SEGMENT_NAME']);
+	}
+
+	/**
+	 * Tests that saving the Greeting, Sign-off and Read on the Web settings works.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSaveGreetingSignOffAndWebLink(EndToEndTester $I)
+	{
+		// Go to the Plugin's Broadcasts Screen.
+		$I->loadKitSettingsBroadcastsScreen($I);
+
+		// Enable export, and define the Greeting, Sign-off and Read on the Web settings.
+		$I->checkOption('#enabled_export');
+		$I->fillField('_wp_convertkit_settings_broadcasts[export_greeting]', 'Hi {{ subscriber.first_name | default: "there" }},');
+		$I->fillField('_wp_convertkit_settings_broadcasts[export_sign_off]', '<strong>Thanks</strong><script>alert(1)</script>');
+		$I->selectOption('_wp_convertkit_settings_broadcasts[export_web_link]', 'Bottom of broadcast');
+
+		// Click the Save Changes button.
+		$I->click('Save Changes');
+
+		// Wait for the settings to save.
+		$I->waitForElementVisible('#setting-error-settings_updated');
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the settings saved, keeping Liquid and permitted HTML, and removing scripts.
+		$I->seeInField('_wp_convertkit_settings_broadcasts[export_greeting]', 'Hi {{ subscriber.first_name | default: "there" }},');
+		$I->seeInField('_wp_convertkit_settings_broadcasts[export_sign_off]', '<strong>Thanks</strong>alert(1)');
+		$I->seeOptionIsSelected('_wp_convertkit_settings_broadcasts[export_web_link]', 'Bottom of broadcast');
 	}
 
 	/**

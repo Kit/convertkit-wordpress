@@ -181,6 +181,16 @@
 						<td><a href="#convertkit_settings_broadcasts_get_defaults"><code>convertkit_settings_broadcasts_get_defaults</code></a></td>
 						<td>The default settings, used when the ConvertKit Broadcasts Settings haven't been saved e.g. on a new installation.</td>
 					</tr><tr>
+						<td colspan="3">includes/class-convertkit-broadcasts-exporter.php</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_broadcasts_exporter_preview_text"><code>convertkit_broadcasts_exporter_preview_text</code></a></td>
+						<td>Define the preview text for the Broadcast created from the WordPress Post.</td>
+					</tr><tr>
+						<td>&nbsp;</td>
+						<td><a href="#convertkit_broadcasts_exporter_web_link_text"><code>convertkit_broadcasts_exporter_web_link_text</code></a></td>
+						<td>Define the text for the link to read the Post on the web, in Broadcasts created from WordPress Posts.</td>
+					</tr><tr>
 						<td colspan="3">includes/class-convertkit-settings-restrict-content.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
@@ -224,16 +234,16 @@
 						<td colspan="3">includes/class-convertkit-output-restrict-content.php</td>
 					</tr><tr>
 						<td>&nbsp;</td>
+						<td><a href="#convertkit_output_restrict_content_content_preview"><code>convertkit_output_restrict_content_content_preview</code></a></td>
+						<td>Define the output for the content preview when the visitor is not an authenticated subscriber.</td>
+					</tr><tr>
+						<td>&nbsp;</td>
 						<td><a href="#convertkit_output_restrict_content_get_resource_type"><code>convertkit_output_restrict_content_get_resource_type</code></a></td>
 						<td>Define the ConvertKit Resource Type that the visitor must be subscribed against to access this content, overriding the Post setting. Return false or an empty string to not restrict content.</td>
 					</tr><tr>
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_output_restrict_content_get_resource_id"><code>convertkit_output_restrict_content_get_resource_id</code></a></td>
 						<td>Define the ConvertKit Resource ID that the visitor must be subscribed against to access this content, overriding the Post setting. Return 0 to not restrict content.</td>
-					</tr><tr>
-						<td>&nbsp;</td>
-						<td><a href="#convertkit_output_restrict_content_content_preview"><code>convertkit_output_restrict_content_content_preview</code></a></td>
-						<td>Define the output for the content preview when the visitor is not an authenticated subscriber.</td>
 					</tr><tr>
 						<td>&nbsp;</td>
 						<td><a href="#convertkit_output_restrict_content_call_to_action"><code>convertkit_output_restrict_content_call_to_action</code></a></td>
@@ -1285,7 +1295,7 @@ add_filter( 'convertkit_term_get_default_settings', function( $defaults ) {
 </pre>
 <h3 id="convertkit_settings_broadcasts_get_defaults">
 						convertkit_settings_broadcasts_get_defaults
-						<code>includes/class-convertkit-settings-broadcasts.php::327</code>
+						<code>includes/class-convertkit-settings-broadcasts.php::421</code>
 					</h3><h4>Overview</h4>
 						<p>The default settings, used when the ConvertKit Broadcasts Settings haven't been saved e.g. on a new installation.</p><h4>Parameters</h4>
 					<table>
@@ -1309,6 +1319,68 @@ add_filter( 'convertkit_settings_broadcasts_get_defaults', function( $defaults )
 	// Return value
 	return $defaults;
 }, 10, 1 );
+</pre>
+<h3 id="convertkit_broadcasts_exporter_preview_text">
+						convertkit_broadcasts_exporter_preview_text
+						<code>includes/class-convertkit-broadcasts-exporter.php::332</code>
+					</h3><h4>Overview</h4>
+						<p>Define the preview text for the Broadcast created from the WordPress Post.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$preview_text</td>
+							<td>string</td>
+							<td>Preview text.</td>
+						</tr><tr>
+							<td>WordPress</td>
+							<td>WP_Post $post</td>
+							<td>Post.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_broadcasts_exporter_preview_text', function( $preview_text, $post ) {
+	// ... your code here
+	// Return value
+	return $preview_text;
+}, 10, 2 );
+</pre>
+<h3 id="convertkit_broadcasts_exporter_web_link_text">
+						convertkit_broadcasts_exporter_web_link_text
+						<code>includes/class-convertkit-broadcasts-exporter.php::535</code>
+					</h3><h4>Overview</h4>
+						<p>Define the text for the link to read the Post on the web, in Broadcasts created from WordPress Posts.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$text</td>
+							<td>string</td>
+							<td>Link text.</td>
+						</tr><tr>
+							<td>WordPress</td>
+							<td>WP_Post $post</td>
+							<td>Post.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_broadcasts_exporter_web_link_text', function( __( 'Read this on the web', 'convertkit' ) {
+	// ... your code here
+	// Return value
+	return __( 'Read this on the web';
+}, 10, 2 );
 </pre>
 <h3 id="convertkit_settings_restrict_content_get_defaults">
 						convertkit_settings_restrict_content_get_defaults
@@ -1503,9 +1575,40 @@ add_filter( 'convertkit_wishlist_settings_get_defaults', function( $defaults ) {
 	return $defaults;
 }, 10, 1 );
 </pre>
+<h3 id="convertkit_output_restrict_content_content_preview">
+						convertkit_output_restrict_content_content_preview
+						<code>includes/class-convertkit-output-restrict-content.php::1823</code>
+					</h3><h4>Overview</h4>
+						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
+					<table>
+						<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+							<td>$content_preview</td>
+							<td>string</td>
+							<td>Content preview.</td>
+						</tr><tr>
+							<td>$post_id</td>
+							<td>int</td>
+							<td>Post ID.</td>
+						</tr>
+						</tbody>
+					</table><h4>Usage</h4>
+<pre>
+add_filter( 'convertkit_output_restrict_content_content_preview', function( $content_preview, $post_id ) {
+	// ... your code here
+	// Return value
+	return $content_preview;
+}, 10, 2 );
+</pre>
 <h3 id="convertkit_output_restrict_content_get_resource_type">
 						convertkit_output_restrict_content_get_resource_type
-						<code>includes/class-convertkit-output-restrict-content.php::1188</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1560</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource Type that the visitor must be subscribed against to access this content, overriding the Post setting. Return false or an empty string to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1536,7 +1639,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_type', function( $r
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_id">
 						convertkit_output_restrict_content_get_resource_id
-						<code>includes/class-convertkit-output-restrict-content.php::1226</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1598</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource ID that the visitor must be subscribed against to access this content, overriding the Post setting. Return 0 to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1565,40 +1668,9 @@ add_filter( 'convertkit_output_restrict_content_get_resource_id', function( $res
 	return $resource_id;
 }, 10, 2 );
 </pre>
-<h3 id="convertkit_output_restrict_content_content_preview">
-						convertkit_output_restrict_content_content_preview
-						<code>includes/class-convertkit-output-restrict-content.php::1471</code>
-					</h3><h4>Overview</h4>
-						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
-					<table>
-						<thead>
-							<tr>
-								<th>Parameter</th>
-								<th>Type</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody><tr>
-							<td>$content_preview</td>
-							<td>string</td>
-							<td>Content preview.</td>
-						</tr><tr>
-							<td>$post_id</td>
-							<td>int</td>
-							<td>Post ID.</td>
-						</tr>
-						</tbody>
-					</table><h4>Usage</h4>
-<pre>
-add_filter( 'convertkit_output_restrict_content_content_preview', function( $content_preview, $post_id ) {
-	// ... your code here
-	// Return value
-	return $content_preview;
-}, 10, 2 );
-</pre>
 <h3 id="convertkit_output_restrict_content_call_to_action">
 						convertkit_output_restrict_content_call_to_action
-						<code>includes/class-convertkit-output-restrict-content.php::1485</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1837</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1629,7 +1701,7 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 </pre>
 <h3 id="convertkit_output_restrict_content_container_css_classes">
 						convertkit_output_restrict_content_container_css_classes
-						<code>includes/class-convertkit-output-restrict-content.php::1498</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1850</code>
 					</h3><h4>Overview</h4>
 						<p>Define the container CSS classes to wrap the content preview and call to action within.</p><h4>Parameters</h4>
 					<table>
@@ -1660,7 +1732,7 @@ add_filter( 'convertkit_output_restrict_content_container_css_classes', function
 </pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::2180</code>
+						<code>includes/class-convertkit-output-restrict-content.php::2547</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
@@ -1819,7 +1891,7 @@ add_filter( 'convertkit_output_scripts_footer', function( $scripts ) {
 </pre>
 <h3 id="convertkit_output_script_footer">
 						convertkit_output_script_footer
-						<code>includes/class-convertkit-output.php::894</code>
+						<code>includes/class-convertkit-output.php::897</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the form <script> key/value pairs immediately before the script is output.</p><h4>Parameters</h4>
 					<table>
@@ -2381,7 +2453,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_sanitize_settings">
 						convertkit_settings_base_sanitize_settings
-						<code>admin/section/class-convertkit-admin-section-base.php::991</code>
+						<code>admin/section/class-convertkit-admin-section-base.php::1005</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2728,7 +2800,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', function( 
 </pre>
 <h3 id="convertkit_restrict_content_register_content_filter">
 						convertkit_restrict_content_register_content_filter
-						<code>includes/class-convertkit-output-restrict-content.php::768</code>
+						<code>includes/class-convertkit-output-restrict-content.php::774</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

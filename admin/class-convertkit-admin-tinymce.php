@@ -25,7 +25,8 @@ class ConvertKit_Admin_TinyMCE {
 
 		// Add filters to register QuickTag Plugins.
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_quicktags' ) ); // WordPress Admin.
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_quicktags' ) ); // Frontend Editors.
+		add_action( 'wp_enqueue_scripts', array( $this, 'maybe_register_quicktags_frontend' ) ); // Frontend Page Builders.
+		add_action( 'wp_enqueue_editor', array( $this, 'maybe_register_quicktags_frontend' ) ); // Frontend Editors.
 
 		// Add filters to register TinyMCE Plugins.
 		// Low priority ensures this works with Frontend Page Builders.
@@ -125,6 +126,38 @@ class ConvertKit_Admin_TinyMCE {
 		// Output tabbed view.
 		require_once CONVERTKIT_PLUGIN_PATH . '/views/backend/tinymce/modal-tabbed.php';
 		return ob_get_clean();
+
+	}
+
+	/**
+	 * Registers QuickTags JS for the TinyMCE Text (non-Visual) Editor on the frontend site when a
+	 * Page Builder is used or an editor is output, so assets aren't loaded on every frontend page.
+	 *
+	 * @since   3.5.1
+	 */
+	public function maybe_register_quicktags_frontend() {
+
+		// Bail if in the WordPress Admin, as admin_enqueue_scripts registers QuickTags.
+		if ( is_admin() ) {
+			return;
+		}
+
+		// Bail if the user can't edit Posts.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		// Bail if this isn't a frontend Page Builder, and no editor is being output.
+		if ( ! doing_action( 'wp_enqueue_editor' ) && ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
+			return;
+		}
+
+		// Bail if QuickTags are already registered.
+		if ( wp_script_is( 'convertkit-admin-quicktags' ) ) {
+			return;
+		}
+
+		$this->register_quicktags();
 
 	}
 

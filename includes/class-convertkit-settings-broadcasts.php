@@ -178,6 +178,72 @@ class ConvertKit_Settings_Broadcasts {
 	}
 
 	/**
+	 * Returns the Kit Tag or Segment to send Broadcasts created from WordPress Posts to.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  Tag or Segment e.g. tag_123, segment_456 (blank = all subscribers)
+	 */
+	public function export_send_to() {
+
+		return (string) $this->settings['export_send_to'];
+
+	}
+
+	/**
+	 * Returns whether Broadcasts created from WordPress Posts should be public.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  bool
+	 */
+	public function export_public() {
+
+		return ( $this->settings['export_public'] === 'on' ? true : false );
+
+	}
+
+	/**
+	 * Returns the greeting to add to the start of Broadcasts created from WordPress Posts.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  HTML, which may include Liquid
+	 */
+	public function export_greeting() {
+
+		return (string) $this->settings['export_greeting'];
+
+	}
+
+	/**
+	 * Returns the sign-off to add to the end of Broadcasts created from WordPress Posts.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  HTML, which may include Liquid
+	 */
+	public function export_sign_off() {
+
+		return (string) $this->settings['export_sign_off'];
+
+	}
+
+	/**
+	 * Returns where to add a link to read the WordPress Post on the web, in Broadcasts
+	 * created from WordPress Posts.
+	 *
+	 * @since   3.4.8
+	 *
+	 * @return  string  Position (blank = none, top, bottom)
+	 */
+	public function export_web_link() {
+
+		return ( in_array( $this->settings['export_web_link'], array( 'top', 'bottom' ), true ) ? $this->settings['export_web_link'] : '' );
+
+	}
+
+	/**
 	 * Returns whether Broadcasts should have their styles imported.
 	 *
 	 * @since   2.2.9
@@ -282,6 +348,29 @@ class ConvertKit_Settings_Broadcasts {
 					'enum'        => array( '', 'on' ),
 					'description' => __( 'Whether exporting WordPress Posts to Kit Broadcasts is enabled.', 'convertkit' ),
 				),
+				'export_send_to'        => array(
+					'type'        => 'string',
+					'pattern'     => '^((tag|segment)_[0-9]+)?$',
+					'description' => __( 'Kit Tag or Segment to send Broadcasts created from WordPress Posts to, in the format tag_ID or segment_ID. Blank for all subscribers.', 'convertkit' ),
+				),
+				'export_public'         => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'on' ),
+					'description' => __( 'Whether Broadcasts created from WordPress Posts are published to the web (Kit Newsletter site and Landing Pages).', 'convertkit' ),
+				),
+				'export_greeting'       => array(
+					'type'        => 'string',
+					'description' => __( 'HTML to add to the start of Broadcasts created from WordPress Posts. Supports Liquid e.g. {{ subscriber.first_name }}.', 'convertkit' ),
+				),
+				'export_sign_off'       => array(
+					'type'        => 'string',
+					'description' => __( 'HTML to add to the end of Broadcasts created from WordPress Posts. Supports Liquid.', 'convertkit' ),
+				),
+				'export_web_link'       => array(
+					'type'        => 'string',
+					'enum'        => array( '', 'top', 'bottom' ),
+					'description' => __( 'Where to add a link to read the published WordPress Post on the web, in Broadcasts created from WordPress Posts. Blank for none.', 'convertkit' ),
+				),
 				'no_styles'             => array(
 					'type'        => 'string',
 					'enum'        => array( '', 'on' ),
@@ -314,6 +403,11 @@ class ConvertKit_Settings_Broadcasts {
 			'published_at_min_date' => gmdate( 'Y-m-d', strtotime( '-30 days' ) ),
 
 			'enabled_export'        => '',
+			'export_send_to'        => '',
+			'export_public'         => '',
+			'export_greeting'       => '',
+			'export_sign_off'       => '',
+			'export_web_link'       => '',
 			'no_styles'             => '',
 		);
 
@@ -339,6 +433,13 @@ class ConvertKit_Settings_Broadcasts {
 	 * @param   array $settings   Settings.
 	 */
 	public function save( $settings ) {
+
+		// Remove disallowed HTML from the greeting and sign-off.
+		foreach ( array( 'export_greeting', 'export_sign_off' ) as $key ) {
+			if ( array_key_exists( $key, $settings ) ) {
+				$settings[ $key ] = wp_kses_post( $settings[ $key ] );
+			}
+		}
 
 		update_option( self::SETTINGS_NAME, array_merge( $this->get(), $settings ) );
 

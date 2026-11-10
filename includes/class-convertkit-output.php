@@ -883,6 +883,9 @@ class ConvertKit_Output {
 		// Define array to store <script> outputs.
 		$output_scripts = array();
 
+		// Track whether a script limited by the Non-inline Form Limit per Session setting has been output.
+		$limited_script_output = false;
+
 		// Iterate through scripts, building the <script> tag for each.
 		foreach ( $scripts as $script ) {
 			/**
@@ -895,8 +898,13 @@ class ConvertKit_Output {
 			$script = apply_filters( 'convertkit_output_script_footer', $script );
 
 			// Skip script if it is limited by the Non-inline Form Limit per Session setting.
-			if ( $this->is_script_output_limited_by_session( $script ) ) {
+			if ( $this->is_script_output_limited_by_session( $script, $limited_script_output ) ) {
 				continue;
+			}
+
+			// Flag that a limited script is being output, so no further limited scripts are output in this request.
+			if ( isset( $script['data-kit-limit-per-session'] ) ) {
+				$limited_script_output = true;
 			}
 
 			// Build output.
@@ -945,10 +953,11 @@ class ConvertKit_Output {
 	 *
 	 * @since   3.0.0
 	 *
-	 * @param   array $script   Script.
+	 * @param   array $script                  Script.
+	 * @param   bool  $limited_script_output   Whether a limited script has already been output in this request (@since 3.5.0).
 	 * @return  bool
 	 */
-	private function is_script_output_limited_by_session( $script ) {
+	private function is_script_output_limited_by_session( $script, $limited_script_output = false ) {
 
 		// Get Settings, if they have not yet been loaded.
 		if ( ! $this->settings ) {
@@ -963,6 +972,11 @@ class ConvertKit_Output {
 		// Display script if the "Display Limit" setting should not be applied to this script.
 		if ( ! isset( $script['data-kit-limit-per-session'] ) ) {
 			return false;
+		}
+
+		// Don't display script if a non-inline form has already been output in this request.
+		if ( $limited_script_output ) {
+			return true;
 		}
 
 		// Display script if this is the first time the visitor has seen any non-inline form.

@@ -1,3 +1,33 @@
+### 3.5.1 2026-11-10
+* Added: Member Content: Avada: Don't restrict Header, Page Title Bar and Footer Layout Sections
+* Fix: Member Content: REST API: Restrict the excerpt, which could include restricted content
+* Fix: Member Content: Don't display restricted content when the Plugin isn't connected to Kit, or Kit can't be reached
+* Fix: Member Content: Restrict content output in AJAX requests e.g. a Theme's "load more" button
+* Fix: Member Content: Don't disclose attachments of restricted Pages and Posts in the REST API and attachment pages
+* Fix: Member Content: Don't include restricted Pages and Posts in search results when the search only matches restricted content
+* Fix: Don't load QuickTags scripts and styles on the frontend site unless an editor is used
+
+### 3.5.0 2026-11-05
+* Fix: Settings: Non-inline Forms: Limit Display: Only display one non-inline form per session when multiple Default Forms (Site Wide) are specified
+
+### 3.4.9 2026-11-03
+* Added: Broadcasts: Export: Send To setting, to send draft Broadcasts to all subscribers, a Tag or a Segment
+* Added: Broadcasts: Export: Make Public setting, to publish Broadcasts to your Kit Newsletter site, using the Post's published date and featured image
+* Added: Broadcasts: Export: Greeting, Sign-off and Read on the Web settings
+* Added: Broadcasts: Export: Open in Kit row action for exported Posts
+* Updated: Broadcasts: Export: Update the existing draft Broadcast when exporting a Post again, instead of creating a duplicate
+* Updated: Broadcasts: Export: Use the Post's excerpt as the Broadcast's preview text
+* Updated: WordPress Libraries to 2.8.1
+
+### 3.4.8 2026-10-28
+* Added: Settings: Broadcasts: Separate Import and Export settings panels
+* Updated: Broadcasts: Export: Convert relative links and image URLs to absolute URLs
+* Updated: Broadcasts: Export: Remove responsive image attributes, which email clients don't support
+* Fix: Member Content: Restrict content in REST API responses
+* Fix: Member Content: Restrict content in RSS and Atom feeds
+* Fix: Member Content: Restrict content in archives, such as the blog, categories and search results
+* Fix: Member Content: WooCommerce: Restrict Product descriptions in the Store API and Product blocks
+
 ### 3.4.7 2026-10-15
 * Added: Member Content: WooCommerce: Hide price, description and Add to Cart button on restricted Products, and prevent adding them to the cart
 * Updated: MCP: Use the MCP Adapter Plugin, instead of bundling the MCP Adapter library
