@@ -36,7 +36,7 @@ class RestrictContentProductThirdPartyThemeOrPageBuilderCest
 	 * creating and viewing a new WordPress Page using the Avada theme with a Layout
 	 * that has a custom Header and Footer, and that the Header and Footer are not restricted.
 	 *
-	 * @since   3.5.0
+	 * @since   3.5.1
 	 *
 	 * @param   EndToEndTester $I  Tester.
 	 */
