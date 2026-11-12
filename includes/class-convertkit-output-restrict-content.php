@@ -136,6 +136,7 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'admin_init', array( $this, 'register_ajax_content_filter' ) );
 		add_action( 'template_redirect', array( $this, 'maybe_restrict_attachment' ), 1 );
 		add_action( 'pre_get_posts', array( $this, 'maybe_exclude_restricted_search_results' ) );
+		add_filter( 'posts_where', array( $this, 'maybe_exclude_restricted_search_results_where' ), 10, 2 );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
 		add_filter( 'get_previous_post_sort', array( $this, 'maybe_change_previous_next_post_order_by_clause' ), 10, 3 );
@@ -925,8 +926,9 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	public function maybe_exclude_restricted_search_results( $query ) {
 
-		// Bail if this isn't a search, or is the query below finding Posts matching the search.
-		if ( ! $query->is_search() || $query->get( 'convertkit_restrict_content_search' ) ) {
+		// Bail if there's no search term, or this is the query below finding Posts matching the search.
+		// The search term is checked instead of is_search(), which is false when e.g. the `p` parameter is also used.
+		if ( ! strlen( (string) $query->get( 's' ) ) || $query->get( 'convertkit_restrict_content_search' ) ) {
 			return;
 		}
 
@@ -977,7 +979,37 @@ class ConvertKit_Output_Restrict_Content {
 			return;
 		}
 
+		// Store the excluded Posts, so maybe_exclude_restricted_search_results_where() excludes them, as WordPress
+		// ignores post__not_in when post__in (e.g. the REST API's include parameter) or p is used.
+		$query->set( 'convertkit_restrict_content_excluded_post_ids', $excluded_post_ids );
+
+		// Also exclude using post__not_in, for queries that suppress filters and therefore don't run posts_where.
 		$query->set( 'post__not_in', array_merge( (array) $query->get( 'post__not_in' ), $excluded_post_ids ) );
+
+	}
+
+	/**
+	 * Excludes Posts from search results that maybe_exclude_restricted_search_results() determined
+	 * the visitor cannot view, using the query's WHERE clause so it can't be overridden by
+	 * query parameters such as post__in or p.
+	 *
+	 * @since   3.5.2
+	 *
+	 * @param   string   $where  WHERE clause.
+	 * @param   WP_Query $query  Query.
+	 * @return  string
+	 */
+	public function maybe_exclude_restricted_search_results_where( $where, $query ) {
+
+		global $wpdb;
+
+		// Bail if no Posts need to be excluded.
+		$excluded_post_ids = $query->get( 'convertkit_restrict_content_excluded_post_ids' );
+		if ( empty( $excluded_post_ids ) ) {
+			return $where;
+		}
+
+		return $where . ' AND ' . $wpdb->posts . '.ID NOT IN (' . implode( ',', array_map( 'absint', $excluded_post_ids ) ) . ')';
 
 	}
 
