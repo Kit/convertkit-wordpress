@@ -448,8 +448,9 @@ class BroadcastsExportTest extends WPTestCase
 
 		// Confirm the settings were stored without disallowed HTML.
 		$settings = new \ConvertKit_Settings_Broadcasts();
-		$this->assertEquals( 'Hi {{ subscriber.first_name }},alert(1)', $settings->export_greeting() );
-		$this->assertEquals( '<strong>Thanks</strong>alert(2)', $settings->export_sign_off() );
+		// WordPress 7.2+ also removes the script's contents.
+		$this->assertContains( $settings->export_greeting(), [ 'Hi {{ subscriber.first_name }},alert(1)', 'Hi {{ subscriber.first_name }},' ] );
+		$this->assertContains( $settings->export_sign_off(), [ '<strong>Thanks</strong>alert(2)', '<strong>Thanks</strong>' ] );
 
 		// Create Post.
 		$post_id = $this->factory->post->create(
