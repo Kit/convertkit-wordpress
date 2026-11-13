@@ -20,7 +20,7 @@ class BlockEditorLegacyNoticeCest
 	 *
 	 * @var     string
 	 */
-	private $noticeSelector = '.components-notice.is-warning';
+	private $noticeSelector = '.editor-notices .is-warning';
 
 	/**
 	 * Run common actions before running the test functions in this class.
@@ -69,7 +69,7 @@ class BlockEditorLegacyNoticeCest
 		$I->see('Form: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], $this->noticeSelector);
 
 		// Assert the notice does not have a dismiss button.
-		$I->dontSeeElementInDOM($this->noticeSelector . ' button.components-notice__dismiss');
+		$I->dontSeeElementInDOM($this->noticeSelector . ' button[aria-label="Close"]');
 	}
 
 	/**
@@ -106,7 +106,7 @@ class BlockEditorLegacyNoticeCest
 		$I->see('Landing Page: ' . $_ENV['CONVERTKIT_API_LEGACY_LANDING_PAGE_NAME'], $this->noticeSelector);
 
 		// Assert the notice does not have a dismiss button.
-		$I->dontSeeElementInDOM($this->noticeSelector . ' button.components-notice__dismiss');
+		$I->dontSeeElementInDOM($this->noticeSelector . ' button[aria-label="Close"]');
 	}
 
 	/**
@@ -145,7 +145,7 @@ class BlockEditorLegacyNoticeCest
 		$I->see('Member Content: ' . $_ENV['CONVERTKIT_API_LEGACY_FORM_NAME'], $this->noticeSelector);
 
 		// Assert the notice does not have a dismiss button.
-		$I->dontSeeElementInDOM($this->noticeSelector . ' button.components-notice__dismiss');
+		$I->dontSeeElementInDOM($this->noticeSelector . ' button[aria-label="Close"]');
 	}
 
 	/**
