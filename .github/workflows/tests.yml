@@ -65,7 +65,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        wp-version: [ 'latest' ]
+        wp-version: [ '7.2-beta5' ]
         php-version: [ '8.2', '8.3', '8.4', '8.5' ]
         # Each test group installs only the third party Plugins and Themes its tests activate,
         # rather than every job in the matrix installing all of them.

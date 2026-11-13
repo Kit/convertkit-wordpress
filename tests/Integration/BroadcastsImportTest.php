@@ -455,7 +455,8 @@ class BroadcastsImportTest extends WPTestCase
 		$this->assertStringContainsString( '<ul><li>Unordered</li></ul>', $post->post_content );
 		$this->assertStringContainsString( '<ol><li>Ordered</li></ol>', $post->post_content );
 		$this->assertStringContainsString( '<blockquote>Quote</blockquote>', $post->post_content );
-		$this->assertStringContainsString( '<figure><img src="https://embed.filekitcdn.com/image.png" alt="Image"><figcaption>Caption</figcaption></figure>', $post->post_content );
+		// WordPress 7.2+ outputs attributes in alphabetical order.
+		$this->assertMatchesRegularExpression( '/<figure><img (src="https:\/\/embed\.filekitcdn\.com\/image\.png" alt="Image"|alt="Image" src="https:\/\/embed\.filekitcdn\.com\/image\.png")><figcaption>Caption<\/figcaption><\/figure>/', $post->post_content );
 		$this->assertStringContainsString( '<hr', $post->post_content );
 	}
 
@@ -499,7 +500,7 @@ class BroadcastsImportTest extends WPTestCase
 		$this->assertStringNotContainsString($_ENV['CONVERTKIT_API_BROADCAST_FIRST_TITLE'] . '</h1>', $post->post_content);
 
 		// Confirm tracking image has been removed.
-		$this->assertStringNotContainsString('<img src="https://preview.convertkit-mail2.com/open" alt="">', $post->post_content);
+		$this->assertDoesNotMatchRegularExpression('/<img[^>]+src="https:\/\/preview\.convertkit-mail2\.com\/open"/', $post->post_content);
 
 		// Confirm images included retain their <figure> and <figcaption> elements.
 		$this->assertStringContainsString('<figure', $post->post_content);
