@@ -187,11 +187,17 @@ class BlockFormBuilderMultipleFormsTest extends WPTestCase
 	 */
 	private function submit($block_index)
 	{
+		// Build the request from the block's signed hidden fields.
+		$html = ( new \ConvertKit_Block_Form_Builder() )->render([], $this->content);
+		preg_match_all('/<input type="hidden" name="convertkit\[([a-z_]+)\]" value="([^"]*)"/', $html, $matches, PREG_SET_ORDER);
 		$_REQUEST['_wpnonce']   = wp_create_nonce('convertkit_block_form_builder');
 		$_REQUEST['convertkit'] = [
-			'email'   => 'not-an-email-address',
-			'post_id' => '1',
+			'email' => 'not-an-email-address',
 		];
+		foreach ( $matches as $match ) {
+			$_REQUEST['convertkit'][ $match[1] ] = html_entity_decode($match[2]);
+		}
+		unset($_REQUEST['convertkit']['block_index']);
 		if ( $block_index ) {
 			$_REQUEST['convertkit']['block_index'] = (string) $block_index;
 		}
