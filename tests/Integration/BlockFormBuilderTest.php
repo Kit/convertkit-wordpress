@@ -46,6 +46,15 @@ class BlockFormBuilderTest extends WPTestCase
 	private $errorEndpoints = [];
 
 	/**
+	 * Holds the URL the block redirected to.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @var     string
+	 */
+	private $redirect = '';
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.4.5
@@ -99,7 +108,7 @@ class BlockFormBuilderTest extends WPTestCase
 	{
 		remove_filter('pre_http_request', array( $this, 'mockKitAPIRequest' ), 10);
 		remove_filter('wp_redirect', array( $this, 'throwOnRedirect' ));
-		unset($_REQUEST['_wpnonce'], $_REQUEST['convertkit']);
+		unset($_REQUEST['_wpnonce'], $_REQUEST['convertkit'], $_COOKIE['ck_subscriber_id'], $_COOKIE['ck_subscriber_id_signature']);
 
 		// Deactivate Plugin.
 		deactivate_plugins('convertkit/wp-convertkit.php');
@@ -206,6 +215,79 @@ class BlockFormBuilderTest extends WPTestCase
 	}
 
 	/**
+	 * Test that subscribing doesn't store the subscriber ID in a signed cookie, as the email
+	 * address hasn't been verified, and anyone could submit another subscriber's email address.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscriberIDNotStoredInCookie()
+	{
+		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID']);
+
+		// Confirm no signed subscriber ID was stored.
+		$this->assertArrayNotHasKey('ck_subscriber_id_signature', $_COOKIE);
+
+		// Confirm the visitor isn't identified as the subscriber.
+		$subscriber = new \ConvertKit_Subscriber();
+		$this->assertFalse($subscriber->get_subscriber_id());
+	}
+
+	/**
+	 * Test that subscribing redirects to the current page with the submitted block's index,
+	 * so the subscribed message is displayed.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testRedirectIncludesSubscribedBlockIndex()
+	{
+		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID'], block_index: 2);
+
+		$this->assertStringContainsString('convertkit_form_builder_subscribed=2', $this->redirect);
+		$this->assertStringNotContainsString((string) 123456, $this->redirect);
+	}
+
+	/**
+	 * Test that the subscribed message is only displayed on the submitted block after redirecting.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscribedMessageDisplayedOnSubmittedBlock()
+	{
+		$content = '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /></div>';
+
+		$_GET['convertkit_form_builder_subscribed'] = '2';
+		$first  = $this->block->render([], $content);
+		$second = $this->block->render([], $content);
+		unset($_GET['convertkit_form_builder_subscribed']);
+
+		$this->assertStringNotContainsString('convertkit-form-builder-subscribed-message', $first);
+		$this->assertStringContainsString('convertkit-form-builder-subscribed-message', $second);
+	}
+
+	/**
+	 * Test that the form is hidden after redirecting when the block is configured to not display the form if subscribed.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testFormHiddenAfterSubscribingWhenDisplayFormIfSubscribedDisabled()
+	{
+		$content = '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /></div>';
+
+		$_GET['convertkit_form_builder_subscribed'] = '1';
+		$html = $this->block->render(
+			[
+				'display_form_if_subscribed' => false,
+				'text_if_subscribed'         => 'Welcome to the newsletter!',
+			],
+			$content
+		);
+		unset($_GET['convertkit_form_builder_subscribed']);
+
+		$this->assertStringContainsString('Welcome to the newsletter!', $html);
+		$this->assertStringNotContainsString('name="convertkit[email]"', $html);
+	}
+
+	/**
 	 * Submits the Form Builder block with the given Form, Tag and Sequence IDs.
 	 *
 	 * @since   3.4.5
@@ -214,8 +296,9 @@ class BlockFormBuilderTest extends WPTestCase
 	 * @param   int  $tag_id         Tag ID.
 	 * @param   int  $sequence_id    Sequence ID.
 	 * @param   bool $include_name   Include the Name field.
+	 * @param   int  $block_index    Block index.
 	 */
-	private function submit($form_id = 0, $tag_id = 0, $sequence_id = 0, $include_name = true)
+	private function submit($form_id = 0, $tag_id = 0, $sequence_id = 0, $include_name = true, $block_index = 0)
 	{
 		$post_id = static::factory()->post->create();
 
@@ -231,6 +314,9 @@ class BlockFormBuilderTest extends WPTestCase
 		];
 		if ( $include_name ) {
 			$_REQUEST['convertkit']['first_name'] = 'First';
+		}
+		if ( $block_index ) {
+			$_REQUEST['convertkit']['block_index'] = (string) $block_index;
 		}
 
 		try {
@@ -254,6 +340,7 @@ class BlockFormBuilderTest extends WPTestCase
 	 */
 	public function throwOnRedirect($location)
 	{
+		$this->redirect = $location;
 		throw new \Exception('redirect');
 	}
 

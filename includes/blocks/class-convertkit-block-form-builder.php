@@ -55,6 +55,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public $submitted_block_index = 0;
 
 	/**
+	 * The query parameter added to the redirect URL after subscribing,
+	 * so the subscribed message is displayed on the submitted block.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @var     string
+	 */
+	private $subscribed_query_arg = 'convertkit_form_builder_subscribed';
+
+	/**
 	 * Constructor
 	 *
 	 * @since   3.0.0
@@ -242,11 +252,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Get the subscriber ID, as $result is overwritten by the form, tag and sequence requests below.
+		// The subscriber ID isn't stored in a cookie, as the email address hasn't been verified.
 		$subscriber_id = $result['subscriber']['id'];
-
-		// Store the subscriber ID in a cookie.
-		$subscriber = new ConvertKit_Subscriber();
-		$subscriber->set( $subscriber_id );
 
 		// If a form was specified, add the subscriber to the form.
 		if ( $form_id ) {
@@ -331,7 +338,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$redirect = sanitize_url( $form_data['redirect'] );
 		} else {
 			// Redirect to the page the form was displayed on, to show a success message.
-			$redirect = $this->get_current_url( absint( $form_data['post_id'] ) );
+			$redirect = add_query_arg( $this->subscribed_query_arg, $this->submitted_block_index, $this->get_current_url( absint( $form_data['post_id'] ) ) );
 		}
 
 		// Redirect.
@@ -743,10 +750,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
 
-		// Check if subscriber is already subscribed, and whether the form should be displayed.
+		// Check if subscriber is already subscribed, or just subscribed using this block, and whether the form should be displayed.
 		$subscriber          = new ConvertKit_Subscriber();
 		$this->subscriber_id = $subscriber->get_subscriber_id();
-		$display_form        = $this->subscriber_id && ! $atts['display_form_if_subscribed'] ? false : true;
+		$subscribed          = $this->subscriber_id || $this->subscribed_using_block();
+		$display_form        = $subscribed && ! $atts['display_form_if_subscribed'] ? false : true;
 
 		// If the form should not be displayed, return the subscribed text.
 		if ( ! $display_form ) {
@@ -757,7 +765,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Add the <form> element and hidden fields immediate inside the block's container.
-		$html = $this->add_form_to_block_content( $content, $atts, $post_id );
+		$html = $this->add_form_to_block_content( $content, $atts, $post_id, $subscribed );
 
 		/**
 		 * Filter the block's content immediately before it is output.
@@ -832,9 +840,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 * @param   string $content     Block content.
 	 * @param   array  $atts        Block attributes.
 	 * @param   int    $post_id     Post ID.
+	 * @param   bool   $subscribed  Whether to display the subscribed message.
 	 * @return  string
 	 */
-	private function add_form_to_block_content( $content, $atts, $post_id ) {
+	private function add_form_to_block_content( $content, $atts, $post_id, $subscribed = false ) {
 
 		// Load the content into the parser.
 		$parser = new ConvertKit_HTML_Parser( $content );
@@ -873,7 +882,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Add subscribed message if required.
-		if ( $this->subscriber_id ) {
+		if ( $subscribed ) {
 			$subscribed_message = $parser->html->createElement( 'div' );
 			$subscribed_message->setAttribute( 'class', 'convertkit-form-builder-subscribed-message' );
 			$subscribed_message->appendChild( $parser->html->createTextNode( $atts['text_if_subscribed'] ) );
@@ -950,8 +959,31 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return get_permalink( $post_id );
 		}
 
-		// Remove the subscriber ID, which is only used when visiting a link from a Kit email.
-		return remove_query_arg( 'ck_subscriber_id', esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+		// Remove the subscriber ID, which is only used when visiting a link from a Kit email, and the subscribed parameter.
+		return remove_query_arg( array( 'ck_subscriber_id', $this->subscribed_query_arg ), esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+
+	}
+
+	/**
+	 * Returns whether the visitor was redirected after subscribing using this block,
+	 * so the subscribed message is displayed.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @return  bool
+	 */
+	private function subscribed_using_block() {
+
+		// Bail if the visitor wasn't redirected after subscribing.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET[ $this->subscribed_query_arg ] ) ) {
+			return false;
+		}
+
+		// If no block index was submitted (e.g. a cached page from an older version), display it on all blocks.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$block_index = absint( $_GET[ $this->subscribed_query_arg ] );
+		return ! $block_index || $block_index === $this->render_count;
 
 	}
 
