@@ -495,12 +495,12 @@ class PageBlockFormBuilderCest
 		// This honors a Form's single optin setting.
 		$I->assertEquals('active', $subscriber['state']);
 
-		// Confirm that the subscriber has the form.
+		// Confirm that the subscriber has the form, excluding the subscribed query parameter from the referrer.
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
 			formID: $_ENV['CONVERTKIT_API_FORM_SINGLE_OPTIN_ID'],
-			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
+			referrer: $_ENV['WORDPRESS_URL'] . strtok($I->grabFromCurrentUrl(), '?')
 		);
 	}
 
@@ -604,12 +604,12 @@ class PageBlockFormBuilderCest
 		// This honors a Form's double optin setting.
 		$I->assertEquals('inactive', $subscriber['state']);
 
-		// Confirm that the subscriber has the form.
+		// Confirm that the subscriber has the form, excluding the subscribed query parameter from the referrer.
 		$I->apiCheckSubscriberHasForm(
 			$I,
 			subscriberID: $subscriber['id'],
 			formID: $_ENV['CONVERTKIT_API_FORM_DOUBLE_OPTIN_ID'],
-			referrer: $_ENV['WORDPRESS_URL'] . $I->grabFromCurrentUrl()
+			referrer: $_ENV['WORDPRESS_URL'] . strtok($I->grabFromCurrentUrl(), '?')
 		);
 	}
 
