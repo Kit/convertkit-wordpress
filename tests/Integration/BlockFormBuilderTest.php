@@ -243,7 +243,7 @@ class BlockFormBuilderTest extends WPTestCase
 		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID'], block_index: 2);
 
 		$this->assertStringContainsString('convertkit_form_builder_subscribed=2', $this->redirect);
-		$this->assertStringNotContainsString((string) 123456, $this->redirect);
+		$this->assertStringNotContainsString( (string) 123456, $this->redirect);
 	}
 
 	/**
@@ -256,8 +256,8 @@ class BlockFormBuilderTest extends WPTestCase
 		$content = '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /></div>';
 
 		$_GET['convertkit_form_builder_subscribed'] = '2';
-		$first  = $this->block->render([], $content);
-		$second = $this->block->render([], $content);
+		$first                                      = $this->block->render([], $content);
+		$second                                     = $this->block->render([], $content);
 		unset($_GET['convertkit_form_builder_subscribed']);
 
 		$this->assertStringNotContainsString('convertkit-form-builder-subscribed-message', $first);
@@ -274,7 +274,7 @@ class BlockFormBuilderTest extends WPTestCase
 		$content = '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /></div>';
 
 		$_GET['convertkit_form_builder_subscribed'] = '1';
-		$html = $this->block->render(
+		$html                                       = $this->block->render(
 			[
 				'display_form_if_subscribed' => false,
 				'text_if_subscribed'         => 'Welcome to the newsletter!',
