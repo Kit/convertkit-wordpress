@@ -369,12 +369,12 @@ class BlockFormBuilderTest extends WPTestCase
 	 *
 	 * @since   3.4.5
 	 *
-	 * @param   int   $form_id          Form ID.
-	 * @param   int   $tag_id           Tag ID.
-	 * @param   int   $sequence_id      Sequence ID.
-	 * @param   bool  $include_name     Include the Name field.
-	 * @param   int   $block_index      Block index.
-	 * @param   array $changes          Changes to make to the submitted fields. A null value removes the field.
+	 * @param   int    $form_id          Form ID.
+	 * @param   int    $tag_id           Tag ID.
+	 * @param   int    $sequence_id      Sequence ID.
+	 * @param   bool   $include_name     Include the Name field.
+	 * @param   int    $block_index      Block index.
+	 * @param   array  $changes          Changes to make to the submitted fields. A null value removes the field.
 	 * @param   bool   $expect_redirect  Whether the block should redirect after subscribing.
 	 * @param   string $redirect         Redirect URL block setting.
 	 */
