@@ -66,6 +66,11 @@ class ConvertKit_Pre_Publish_Action {
 	 */
 	public function register( $pre_publish_actions ) {
 
+		// Don't register the action if the user can't publish Posts, as it only runs when publishing.
+		if ( ! current_user_can( 'publish_posts' ) ) {
+			return $pre_publish_actions;
+		}
+
 		$pre_publish_actions[ $this->get_name() ] = array(
 			'name'        => $this->get_name(),
 			'label'       => $this->get_label(),
@@ -90,10 +95,14 @@ class ConvertKit_Pre_Publish_Action {
 			'post',
 			$this->meta_key,
 			array(
-				'show_in_rest'  => true,
-				'single'        => true,
-				'type'          => 'boolean',
-				'auth_callback' => '__return_true',
+				'show_in_rest'      => true,
+				'single'            => true,
+				'type'              => 'boolean',
+				// Ignore the value for users who can't publish, as the block editor sends all meta when saving.
+				'sanitize_callback' => function ( $meta_value ) {
+					return current_user_can( 'publish_posts' ) ? (bool) $meta_value : false;
+				},
+				'auth_callback'     => '__return_true',
 			)
 		);
 
@@ -211,8 +220,8 @@ class ConvertKit_Pre_Publish_Action {
 			return;
 		}
 
-		// Bail if the current user cannot edit this Post.
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		// Bail if the current user cannot publish this Post, as the action only runs when publishing.
+		if ( ! current_user_can( 'publish_post', $post_id ) ) {
 			return;
 		}
 
