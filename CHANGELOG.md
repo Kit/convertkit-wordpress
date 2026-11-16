@@ -1,3 +1,8 @@
+### 3.5.2 2026-11-16
+* Added: Broadcasts: Import Broadcasts when they're published in Kit using a webhook, instead of hourly using WordPress' Cron
+* Added: Broadcasts: Display the webhook's status, with a button to register or re-register the webhook
+* Fix: Member Content: Don't include restricted Pages and Posts in search results when the search only matches restricted content and the `include` or `p` parameters are used
+
 ### 3.5.1 2026-11-10
 * Added: Member Content: Avada: Don't restrict Header, Page Title Bar and Footer Layout Sections
 * Fix: Member Content: REST API: Restrict the excerpt, which could include restricted content
