@@ -75,6 +75,32 @@ class SubscriberIDURLCest
 	}
 
 	/**
+	 * Test that the subscriber ID cookie is set as HttpOnly, so it can't be read by JavaScript.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSubscriberIDCookieIsHttpOnly(EndToEndTester $I)
+	{
+		// Create Page.
+		$I->havePageInDatabase(
+			[
+				'post_name'    => 'kit-subscriber-id-cookie',
+				'post_content' => 'Test',
+			]
+		);
+
+		// Load the Page with a subscriber ID, so the cookie is set.
+		$I->amOnPage('/kit-subscriber-id-cookie?ck_subscriber_id=abcde');
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the cookie was set, but can't be read by JavaScript.
+		$I->seeCookie('ck_subscriber_id');
+		$I->assertStringNotContainsString('ck_subscriber_id', $I->executeJS('return document.cookie;'));
+	}
+
+	/**
 	 * Test that the ck_subscriber_id parameter is removed from the URL
 	 * and that a hash is retained if specified in the URL
 	 *
