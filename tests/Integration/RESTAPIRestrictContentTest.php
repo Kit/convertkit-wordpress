@@ -508,6 +508,56 @@ class RESTAPIRestrictContentTest extends WPRestApiTestCase
 	}
 
 	/**
+	 * Test that the WordPress REST API doesn't return a Post restricted by Member Content in search
+	 * results when the search only matches its restricted content and the include parameter is used,
+	 * as WordPress ignores post__not_in when post__in is used.
+	 *
+	 * @since   3.5.2
+	 */
+	public function testRESTAPISearchExcludesRestrictedContentMatchesWithInclude()
+	{
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = $this->createRestrictedPost( 'post', '<p>' . str_repeat( 'Preview ', 55 ) . 'Memberonlyword.</p>' );
+
+		// Search Posts as a visitor for a word in the restricted content, including the Post's ID.
+		$request = new \WP_REST_Request( 'GET', '/wp/v2/posts' );
+		$request->set_query_params(
+			[
+				'search'  => 'Memberonlyword',
+				'include' => [ $post_id ],
+			]
+		);
+		$response = rest_get_server()->dispatch( $request );
+
+		// Assert the Post isn't returned or counted.
+		$this->assertSame( [], $response->get_data() );
+		$this->assertSame( 0, $response->get_headers()['X-WP-Total'] );
+
+		// Assert the search endpoint doesn't return the Post.
+		$this->assertSame(
+			[],
+			$this->getRESTAPIPost(
+				'/wp/v2/search',
+				[
+					'search'  => 'Memberonlyword',
+					'include' => [ $post_id ],
+				]
+			)
+		);
+
+		// Assert the Post is returned when searching for a word in the content preview.
+		$data = $this->getRESTAPIPost(
+			'/wp/v2/posts',
+			[
+				'search'  => 'Preview',
+				'include' => [ $post_id ],
+			]
+		);
+		$this->assertCount( 1, $data );
+		$this->assertSame( $post_id, $data[0]['id'] );
+	}
+
+	/**
 	 * Test that the WordPress REST API returns a Post restricted by Member Content in search
 	 * results when the search matches its title, excerpt or content preview.
 	 *
