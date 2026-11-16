@@ -440,6 +440,45 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that a frontend request for a restricted Post with a search term doesn't return the Post
+	 * when the search only matches its restricted content, as WordPress applies the search term
+	 * even though the request isn't a search.
+	 *
+	 * @since   3.5.2
+	 */
+	public function testSearchResultsRestrictedWithPostID()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => '<p>' . str_repeat('Preview ', 55) . 'Memberonlyword.</p>',
+				'post_excerpt' => '',
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Request the Post with a word in the restricted content, confirming the Post isn't returned.
+		$this->go_to(home_url('?p=' . $post_id . '&s=Memberonlyword'));
+		$this->assertFalse(have_posts());
+
+		// Request the Post with a word in the content preview, confirming the Post is returned.
+		$this->go_to(home_url('?p=' . $post_id . '&s=Preview'));
+		$this->assertTrue(have_posts());
+	}
+
+	/**
 	 * Test that IP addresses 34.100.182.96 through .111 (i.e. in the CIDR range /28)
 	 * are returned as true by the ip_in_range() function.
 	 *

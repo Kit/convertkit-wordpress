@@ -20,7 +20,7 @@ class WooCommerceRestrictContentCest
 	 *
 	 * @var string
 	 */
-	private $priceSelector = '.entry-summary .price, .wp-block-woocommerce-product-price[data-is-descendent-of-single-product-template]';
+	private $priceSelector = '.entry-summary .price, .wp-block-woocommerce-product-price';
 
 	/**
 	 * Visible content, long enough for WordPress to generate an excerpt that excludes the member-only content.
