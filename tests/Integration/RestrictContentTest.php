@@ -543,6 +543,58 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Latest Posts block, displaying excerpts longer than the default excerpt length,
+	 * only displays the content preview of a restricted Post.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testLatestPostsBlockExcerptRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$this->createRestrictedPost('<p>' . str_repeat('Preview ', 60) . 'Memberonlyword.</p>');
+
+		// Load a Page displaying the Latest Posts block with the maximum excerpt length.
+		$output = $this->loadPageAndGetContent('<!-- wp:latest-posts {"postsToShow":1,"displayPostContent":true,"excerptLength":100} /-->');
+
+		// Confirm only the content preview is displayed.
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+	}
+
+	/**
+	 * Test that the Post Excerpt block, displaying an excerpt longer than the default excerpt length,
+	 * only displays the content preview of a restricted Post.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testPostExcerptBlockRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = $this->createRestrictedPost('<p>' . str_repeat('Preview ', 60) . 'Memberonlyword.</p>');
+
+		// Load a Page displaying the Post using the Post Excerpt block with the maximum excerpt length.
+		$output = $this->loadPageAndGetContent(
+			'<!-- wp:query {"queryId":1,"query":{"perPage":1,"postType":"post","inherit":false,"include":[' . $post_id . ']}} -->' .
+			'<div class="wp-block-query"><!-- wp:post-template --><!-- wp:post-excerpt {"excerptLength":100} /--><!-- /wp:post-template --></div>' .
+			'<!-- /wp:query -->'
+		);
+
+		// Confirm only the content preview is displayed.
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+	}
+
+	/**
 	 * Test that a frontend request for a restricted Post with a search term doesn't return the Post
 	 * when the search only matches its restricted content, as WordPress applies the search term
 	 * even though the request isn't a search.
@@ -681,6 +733,29 @@ class RestrictContentTest extends WPTestCase
 			]
 		);
 		return wp_list_pluck(rest_do_request($request)->get_data(), 'id');
+	}
+
+	/**
+	 * Creates a Page with the given content, loads it and returns its content, as a Theme would display it.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   string $content    Page content.
+	 * @return  string
+	 */
+	private function loadPageAndGetContent($content)
+	{
+		$page_id = static::factory()->post->create(
+			[
+				'post_type'    => 'page',
+				'post_content' => $content,
+			]
+		);
+
+		$this->go_to(get_permalink($page_id));
+		the_post();
+		$this->resource->initialize_classes();
+		return apply_filters('the_content', get_the_content());
 	}
 
 	/**

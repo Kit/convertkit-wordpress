@@ -1999,8 +1999,23 @@ class ConvertKit_Output_Restrict_Content {
 		// will invoke the Post's content to build an excerpt, resulting in an infinite loop.
 		$filter_removed = remove_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 
+		// Remove excerpt lengths set by blocks, such as Latest Posts and Post Excerpt, so the preview is never longer than on the Post.
+		$removed_excerpt_lengths = array();
+		foreach ( array( 'block_core_latest_posts_get_excerpt_length', 'block_core_post_excerpt_excerpt_length' ) as $callback ) {
+			$priority = has_filter( 'excerpt_length', $callback );
+			if ( false !== $priority ) {
+				remove_filter( 'excerpt_length', $callback, $priority );
+				$removed_excerpt_lengths[ $callback ] = $priority;
+			}
+		}
+
 		// Generate the Post's excerpt.
 		$excerpt = get_the_excerpt( $post_id );
+
+		// Restore the excerpt lengths set by blocks.
+		foreach ( $removed_excerpt_lengths as $callback => $priority ) {
+			add_filter( 'excerpt_length', $callback, $priority );
+		}
 
 		// Restore the filter if it was registered e.g. not in a REST API request, so other functions and Plugins aren't affected.
 		if ( $filter_removed ) {
