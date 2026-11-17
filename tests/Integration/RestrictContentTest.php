@@ -410,10 +410,11 @@ class RestrictContentTest extends WPTestCase
 		$this->storeProduct();
 		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
 
-		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		// Create a restricted Post with no teaser or excerpt (the factory defines one by default), longer than the default excerpt length.
 		$post_id = static::factory()->post->create(
 			[
 				'post_content' => '<p>' . str_repeat('Preview ', 55) . 'Memberonlyword.</p>',
+				'post_excerpt' => '',
 				'meta_input'   => [
 					'_wp_convertkit_post_meta' => [
 						'form'             => '0',
@@ -437,6 +438,87 @@ class RestrictContentTest extends WPTestCase
 		$this->assertSame($post_id, get_the_ID());
 		$this->assertStringNotContainsString('Memberonlyword', apply_filters('the_content', get_the_content()));
 		$this->assertStringNotContainsString('Memberonlyword', get_the_excerpt());
+	}
+
+	/**
+	 * Test that search results don't include a restricted Post when the search only matches its restricted
+	 * content, and the Post has a manual excerpt, which is the only preview displayed to visitors.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSearchResultsRestrictedWithManualExcerpt()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with a manual excerpt and no Read More tag.
+		$post_id = $this->createRestrictedPost(
+			'<p>Memberonlyword opens the paid analysis. ' . str_repeat('Hidden ', 60) . '</p>',
+			'Public teaser line'
+		);
+
+		// Confirm a search for the restricted content's first words doesn't return the Post.
+		$this->go_to(home_url('?p=' . $post_id . '&s=Memberonlyword'));
+		$this->assertFalse(have_posts());
+		$this->go_to(home_url('?p=' . $post_id . '&s=' . rawurlencode('"Memberonlyword opens the paid"')));
+		$this->assertFalse(have_posts());
+		$this->assertSame([], $this->searchUsingRESTAPI('Memberonlyword', $post_id));
+
+		// Confirm a search for the manual excerpt returns the Post.
+		$this->go_to(home_url('?p=' . $post_id . '&s=' . rawurlencode('"Public teaser"')));
+		$this->assertTrue(have_posts());
+		$this->assertSame([ $post_id ], $this->searchUsingRESTAPI('teaser', $post_id));
+	}
+
+	/**
+	 * Test that search results don't include a restricted Post when the search only matches a block
+	 * that WordPress excludes from the excerpt, which is the preview displayed to visitors.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSearchResultsRestrictedWithBlockExcludedFromExcerpt()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post starting with a Code block, which WordPress excludes from excerpts.
+		$post_id = $this->createRestrictedPost(
+			'<!-- wp:code --><pre class="wp-block-code"><code>Memberonlyword</code></pre><!-- /wp:code --><!-- wp:paragraph --><p>Preview</p><!-- /wp:paragraph -->'
+		);
+
+		// Confirm the excerpt displayed to visitors doesn't include the Code block.
+		$this->assertStringNotContainsString('Memberonlyword', get_the_excerpt($post_id));
+
+		// Confirm a search for the Code block doesn't return the Post, and a search for the excerpt does.
+		$this->go_to(home_url('?p=' . $post_id . '&s=Memberonlyword'));
+		$this->assertFalse(have_posts());
+		$this->go_to(home_url('?p=' . $post_id . '&s=Preview'));
+		$this->assertTrue(have_posts());
+	}
+
+	/**
+	 * Test that search results don't include a restricted Post when the search only matches the content
+	 * before the Read More tag, and the teaser is hidden.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSearchResultsRestrictedWithNoTeaser()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with a hidden teaser.
+		$post_id = $this->createRestrictedPost('<p>Teaserword</p><!--more--><!--noteaser--><p>Memberonlyword</p>');
+
+		// Confirm a search for the hidden teaser doesn't return the Post.
+		$this->go_to(home_url('?p=' . $post_id . '&s=Teaserword'));
+		$this->assertFalse(have_posts());
 	}
 
 	/**
@@ -529,6 +611,55 @@ class RestrictContentTest extends WPTestCase
 		$this->assertFalse($this->resource->ip_in_range('34.100.182.96', '999.999.999.999/999'));
 		$this->assertFalse($this->resource->ip_in_range('34.100.182.96', '999.999.999.999/not-a-range'));
 		$this->assertFalse($this->resource->ip_in_range('34.100.182.96', 'not-an-ip-address/not-a-range'));
+	}
+
+	/**
+	 * Creates a Post restricted to the Product, with the given content and excerpt.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   string $content    Post content.
+	 * @param   string $excerpt    Post excerpt.
+	 * @return  int
+	 */
+	private function createRestrictedPost($content, $excerpt = '')
+	{
+		return static::factory()->post->create(
+			[
+				'post_content' => $content,
+				'post_excerpt' => $excerpt,
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Searches Posts using the REST API, limited to the given Post, returning the IDs of matching Posts.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   string $search     Search terms.
+	 * @param   int    $post_id    Post ID.
+	 * @return  array
+	 */
+	private function searchUsingRESTAPI($search, $post_id)
+	{
+		$request = new \WP_REST_Request('GET', '/wp/v2/posts');
+		$request->set_query_params(
+			[
+				'search'  => $search,
+				'include' => [ $post_id ],
+				'_fields' => 'id',
+			]
+		);
+		return wp_list_pluck(rest_do_request($request)->get_data(), 'id');
 	}
 
 	/**

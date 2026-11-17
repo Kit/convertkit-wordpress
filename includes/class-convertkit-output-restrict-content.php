@@ -1025,13 +1025,8 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function search_terms_match_visible_content( $post, $search ) {
 
-		// Use the content before the Read More tag as the preview, or the start of the content if no tag exists, as
-		// WordPress does when generating an excerpt.
-		$content_breakdown = get_extended( $post->post_content );
-		$preview           = ! empty( $content_breakdown['extended'] ) ? $content_breakdown['main'] : wp_trim_words( strip_shortcodes( $post->post_content ), apply_filters( 'excerpt_length', 55 ), '' );
-
-		// Build the content the visitor can see.
-		$visible_content = wp_strip_all_tags( $post->post_title . ' ' . $post->post_excerpt . ' ' . $preview );
+		// Build the content the visitor can see, using the same preview that's displayed to visitors.
+		$visible_content = wp_strip_all_tags( $post->post_title . ' ' . $post->post_excerpt . ' ' . $this->get_search_content_preview( $post ) );
 
 		// Split the search into terms, removing quotes, as WordPress does.
 		preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search, $matches );
@@ -1042,6 +1037,49 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		return true;
+
+	}
+
+	/**
+	 * Returns the content preview displayed to visitors who can't view the given restricted Post,
+	 * matching get_content_preview(), so search results can't reveal any other restricted content.
+	 *
+	 * The Post's content isn't rendered, as this runs before the search query.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   WP_Post $post   Post.
+	 * @return  string
+	 */
+	private function get_search_content_preview( $post ) {
+
+		$content_breakdown = get_extended( $post->post_content );
+
+		if ( ! empty( $content_breakdown['extended'] ) ) {
+			// The content before the Read More tag is the preview, unless the teaser is hidden.
+			$preview = ( strpos( $post->post_content, '<!--noteaser-->' ) !== false ) ? '' : $content_breakdown['main'];
+		} elseif ( has_excerpt( $post ) ) {
+			// The manual excerpt is the preview, which is already included in the visible content.
+			$preview = '';
+		} else {
+			// The excerpt WordPress generates from the content is the preview, built as wp_trim_excerpt() does.
+			$preview = excerpt_remove_blocks( strip_shortcodes( $post->post_content ) );
+			if ( function_exists( 'excerpt_remove_footnotes' ) ) {
+				$preview = excerpt_remove_footnotes( $preview );
+			}
+			$preview = wp_trim_words( $preview, (int) apply_filters( 'excerpt_length', 55 ), '' );
+		}
+
+		/**
+		 * Define the output for the content preview when the visitor is not
+		 * an authenticated subscriber.
+		 *
+		 * @since   2.4.1
+		 *
+		 * @param   string  $preview    Content preview.
+		 * @param   int     $post_id    Post ID.
+		 */
+		return apply_filters( 'convertkit_output_restrict_content_content_preview', $preview, $post->ID );
 
 	}
 
