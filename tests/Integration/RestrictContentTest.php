@@ -635,6 +635,48 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the second page of a paginated restricted Post doesn't display its content as the content preview.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testPaginatedPostRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages.
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => '<p>Pageoneword</p><!--nextpage--><p>Memberonlyword</p>',
+				'post_excerpt' => '',
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Confirm the first page displays the content preview.
+		$this->go_to(get_permalink($post_id));
+		the_post();
+		$this->resource->initialize_classes();
+		$this->assertStringContainsString('Pageoneword', apply_filters('the_content', get_the_content()));
+
+		// Confirm the second page doesn't display its restricted content.
+		$this->go_to(add_query_arg('page', 2, get_permalink($post_id)));
+		the_post();
+		$output = apply_filters('the_content', get_the_content());
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+		$this->assertStringContainsString('convertkit-restrict-content', $output);
+	}
+
+	/**
 	 * Test that a frontend request for a restricted Post with a search term doesn't return the Post
 	 * when the search only matches its restricted content, as WordPress applies the search term
 	 * even though the request isn't a search.
