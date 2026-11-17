@@ -567,6 +567,46 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that the Latest Posts block, displaying the full content of Posts, only displays the content preview
+	 * of restricted Posts, and the full content of other Posts.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testLatestPostsBlockFullContentRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create an unrestricted Post, a restricted Post with a Read More tag, and a restricted Post with no teaser or excerpt.
+		static::factory()->post->create(
+			[
+				'post_content' => '<!-- wp:paragraph --><p>Publicword</p><!-- /wp:paragraph -->',
+				'post_date'    => '2026-01-01 00:00:00',
+			]
+		);
+		$teaser_post_id = $this->createRestrictedPost(
+			'<!-- wp:paragraph --><p>Teaserword</p><!-- /wp:paragraph --><!-- wp:more --><!--more--><!-- /wp:more --><!-- wp:paragraph --><p>Memberonlyword</p><!-- /wp:paragraph -->'
+		);
+		$this->createRestrictedPost('<!-- wp:paragraph --><p>' . str_repeat('Preview ', 60) . 'Secondmemberonlyword.</p><!-- /wp:paragraph -->');
+
+		// Load a Page displaying the Latest Posts block with the full content of Posts.
+		$output = $this->loadPageAndGetContent('<!-- wp:latest-posts {"postsToShow":3,"displayPostContent":true,"displayPostContentRadio":"full_post"} /-->');
+
+		// Confirm only the content previews of restricted Posts are displayed, and the full content of the unrestricted Post.
+		$this->assertStringContainsString('Publicword', $output);
+		$this->assertStringContainsString('Teaserword', $output);
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+		$this->assertStringNotContainsString('Secondmemberonlyword', $output);
+
+		// Confirm the restricted Post's content wasn't changed elsewhere.
+		$this->assertStringContainsString('Memberonlyword', get_post($teaser_post_id)->post_content);
+		$this->assertStringContainsString('Memberonlyword', get_post_field('post_content', $teaser_post_id));
+	}
+
+	/**
 	 * Test that the Post Excerpt block, displaying an excerpt longer than the default excerpt length,
 	 * only displays the content preview of a restricted Post.
 	 *
