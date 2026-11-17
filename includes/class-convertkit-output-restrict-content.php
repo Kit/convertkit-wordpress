@@ -1053,17 +1053,19 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function get_search_content_preview( $post ) {
 
-		$content_breakdown = get_extended( $post->post_content );
+		// Only the first page of a paginated Post is previewed.
+		$content           = explode( '<!--nextpage-->', $post->post_content )[0];
+		$content_breakdown = get_extended( $content );
 
 		if ( ! empty( $content_breakdown['extended'] ) ) {
 			// The content before the Read More tag is the preview, unless the teaser is hidden.
-			$preview = ( strpos( $post->post_content, '<!--noteaser-->' ) !== false ) ? '' : $content_breakdown['main'];
+			$preview = ( strpos( $content, '<!--noteaser-->' ) !== false ) ? '' : $content_breakdown['main'];
 		} elseif ( has_excerpt( $post ) ) {
 			// The manual excerpt is the preview, which is already included in the visible content.
 			$preview = '';
 		} else {
 			// The excerpt WordPress generates from the content is the preview, built as wp_trim_excerpt() does.
-			$preview = excerpt_remove_blocks( strip_shortcodes( $post->post_content ) );
+			$preview = excerpt_remove_blocks( strip_shortcodes( $content ) );
 			if ( function_exists( 'excerpt_remove_footnotes' ) ) {
 				$preview = excerpt_remove_footnotes( $preview );
 			}

@@ -522,6 +522,27 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that search results don't include a restricted Post when the search only matches a later page
+	 * of the paginated Post, as only the first page is previewed.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSearchResultsRestrictedWithPagination()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages.
+		$post_id = $this->createRestrictedPost('<p>Pageoneword</p><!--nextpage--><p>Memberonlyword</p>');
+
+		// Confirm a search for the second page doesn't return the Post, and a search for the first page does.
+		$this->assertSame([], $this->searchUsingRESTAPI('Memberonlyword', $post_id));
+		$this->assertSame([ $post_id ], $this->searchUsingRESTAPI('Pageoneword', $post_id));
+	}
+
+	/**
 	 * Test that a frontend request for a restricted Post with a search term doesn't return the Post
 	 * when the search only matches its restricted content, as WordPress applies the search term
 	 * even though the request isn't a search.
