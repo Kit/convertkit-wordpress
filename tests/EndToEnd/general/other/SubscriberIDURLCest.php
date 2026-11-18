@@ -83,16 +83,24 @@ class SubscriberIDURLCest
 	 */
 	public function testSubscriberIDCookieIsHttpOnly(EndToEndTester $I)
 	{
-		// Create Page.
-		$I->havePageInDatabase(
+		// Create Page with the Tag setting, so the subscriber ID is read from the request and stored in the cookie.
+		$pageID = $I->havePostInDatabase(
 			[
-				'post_name'    => 'kit-subscriber-id-cookie',
-				'post_content' => 'Test',
+				'post_type'  => 'page',
+				'post_title' => 'Kit: Subscriber ID Cookie',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => $_ENV['CONVERTKIT_API_TAG_ID'],
+						'restrict_content' => '',
+					],
+				],
 			]
 		);
 
 		// Load the Page with a subscriber ID, so the cookie is set.
-		$I->amOnPage('/kit-subscriber-id-cookie?ck_subscriber_id=abcde');
+		$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=abcde');
 		$I->checkNoWarningsAndNoticesOnScreen($I);
 
 		// Confirm the cookie was set, but can't be read by JavaScript.
