@@ -5,7 +5,7 @@ Tags: email subscribers, email newsletter, email marketing, landing page, member
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -364,6 +364,11 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track growth in email subscribers, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.5.2 2026-11-16
+* Added: Broadcasts: Import Broadcasts when they're published in Kit using a webhook, instead of hourly using WordPress' Cron
+* Added: Broadcasts: Display the webhook's status, with a button to register or re-register the webhook
+* Fix: Member Content: Don't include restricted Pages and Posts in search results when the search only matches restricted content and the `include` or `p` parameters are used
 
 ### 3.5.1 2026-11-10
 * Added: Member Content: Avada: Don't restrict Header, Page Title Bar and Footer Layout Sections
