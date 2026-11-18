@@ -543,6 +543,27 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that search results don't include a restricted Post when the search only matches a later page
+	 * of a Post paginated using the Page Break block.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSearchResultsRestrictedWithPageBreakBlock()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages, using the Page Break block.
+		$post_id = $this->createRestrictedPost('<!-- wp:paragraph --><p>Pageoneword</p><!-- /wp:paragraph --><!-- wp:nextpage --><!--nextpage--><!-- /wp:nextpage --><!-- wp:paragraph --><p>Memberonlyword</p><!-- /wp:paragraph -->');
+
+		// Confirm a search for the second page doesn't return the Post, and a search for the first page does.
+		$this->assertSame([], $this->searchUsingRESTAPI('Memberonlyword', $post_id));
+		$this->assertSame([ $post_id ], $this->searchUsingRESTAPI('Pageoneword', $post_id));
+	}
+
+	/**
 	 * Test that the Latest Posts block, displaying excerpts longer than the default excerpt length,
 	 * only displays the content preview of a restricted Post.
 	 *
@@ -661,6 +682,36 @@ class RestrictContentTest extends WPTestCase
 				],
 			]
 		);
+
+		// Confirm the first page displays the content preview.
+		$this->go_to(get_permalink($post_id));
+		the_post();
+		$this->resource->initialize_classes();
+		$this->assertStringContainsString('Pageoneword', apply_filters('the_content', get_the_content()));
+
+		// Confirm the second page doesn't display its restricted content.
+		$this->go_to(add_query_arg('page', 2, get_permalink($post_id)));
+		the_post();
+		$output = apply_filters('the_content', get_the_content());
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+		$this->assertStringContainsString('convertkit-restrict-content', $output);
+	}
+
+	/**
+	 * Test that the second page of a restricted Post paginated using the Page Break block doesn't display
+	 * its content as the content preview.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testPaginatedPostRestrictedWithPageBreakBlock()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages, using the Page Break block.
+		$post_id = $this->createRestrictedPost('<!-- wp:paragraph --><p>Pageoneword</p><!-- /wp:paragraph --><!-- wp:nextpage --><!--nextpage--><!-- /wp:nextpage --><!-- wp:paragraph --><p>Memberonlyword</p><!-- /wp:paragraph -->');
 
 		// Confirm the first page displays the content preview.
 		$this->go_to(get_permalink($post_id));
