@@ -132,6 +132,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
+		// Bail if the block's settings (e.g. the Form, Tag and Sequence IDs) don't match their signature,
+		// meaning they were changed in the request.
+		if ( ! $this->verify_signature( wp_unslash( $_REQUEST['convertkit'] ) ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$this->error = new WP_Error(
+				'convertkit_block_form_builder_invalid_signature',
+				__( 'Sorry, we were unable to subscribe you. Please refresh the page and try again.', 'convertkit' )
+			);
+			return;
+		}
+
 		// Sanitize form data.
 		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
 
@@ -145,10 +155,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
-		// Build custom fields, if any were specified.
+		// Build custom fields, if any were specified, only accepting those included in the block.
 		$custom_fields = array();
-		if ( array_key_exists( 'custom_fields', $form_data ) ) {
-			$custom_fields = $form_data['custom_fields'];
+		if ( array_key_exists( 'custom_fields', $form_data ) && is_array( $form_data['custom_fields'] ) ) {
+			$custom_fields = array_intersect_key(
+				$form_data['custom_fields'],
+				array_flip( array_filter( explode( ',', $form_data['custom_field_keys'] ) ) )
+			);
 		}
 
 		// Get First Name, if the Name field was included in the form.
@@ -927,6 +940,26 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'convertkit[block_index]'   => absint( $this->render_count ),
 			'_wpnonce'                  => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
+
+		// Get the custom fields included in the block, so only these are accepted when submitted.
+		$custom_field_keys = array();
+		foreach ( $parser->xpath->query( './/*[starts-with(@name, "convertkit[custom_fields][")]', $form ) as $field ) {
+			$custom_field_keys[] = substr( $field->getAttribute( 'name' ), 26, -1 ); // @phpstan-ignore-line
+		}
+		$fields['convertkit[custom_field_keys]'] = implode( ',', array_unique( $custom_field_keys ) );
+
+		// Sign the block's settings, so they can't be changed when submitted.
+		$fields['convertkit[signature]'] = $this->get_signature(
+			array(
+				'post_id'           => $fields['convertkit[post_id]'],
+				'store_entries'     => $fields['convertkit[store_entries]'],
+				'redirect'          => $fields['convertkit[redirect]'],
+				'form_id'           => $fields['convertkit[form_id]'],
+				'tag_id'            => $fields['convertkit[tag_id]'],
+				'sequence_id'       => $fields['convertkit[sequence_id]'],
+				'custom_field_keys' => $fields['convertkit[custom_field_keys]'],
+			)
+		);
 		foreach ( $fields as $name => $value ) {
 			$hidden = $parser->html->createElement( 'input' );
 			$hidden->setAttribute( 'type', 'hidden' );
@@ -961,6 +994,49 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 
 		// Remove the subscriber ID, which is only used when visiting a link from a Kit email, and the subscribed parameter.
 		return remove_query_arg( array( 'ck_subscriber_id', $this->subscribed_query_arg ), esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+
+	}
+
+	/**
+	 * Returns the signature for the given block settings.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   array $settings   Block settings, as output in the form's hidden fields.
+	 * @return  string
+	 */
+	private function get_signature( $settings ) {
+
+		return hash_hmac( 'sha256', 'convertkit_block_form_builder_' . wp_json_encode( array_map( 'strval', $settings ) ), wp_salt() );
+
+	}
+
+	/**
+	 * Returns whether the submitted block settings match their signature.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   array $form_data  Unsanitized form data.
+	 * @return  bool
+	 */
+	private function verify_signature( $form_data ) {
+
+		// Bail if no signature was submitted e.g. a cached page from an older version.
+		if ( ! array_key_exists( 'signature', $form_data ) || ! is_string( $form_data['signature'] ) ) {
+			return false;
+		}
+
+		// Build the settings that were signed, using the submitted values.
+		$settings = array();
+		foreach ( array( 'post_id', 'store_entries', 'redirect', 'form_id', 'tag_id', 'sequence_id', 'custom_field_keys' ) as $key ) {
+			if ( ! array_key_exists( $key, $form_data ) || ! is_string( $form_data[ $key ] ) ) {
+				return false;
+			}
+
+			$settings[ $key ] = $form_data[ $key ];
+		}
+
+		return hash_equals( $this->get_signature( $settings ), $form_data['signature'] );
 
 	}
 
