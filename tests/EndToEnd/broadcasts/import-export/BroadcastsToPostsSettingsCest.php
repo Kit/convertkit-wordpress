@@ -330,7 +330,14 @@ class BroadcastsToPostsSettingsCest
 
 		// Confirm that the settings saved, keeping Liquid and permitted HTML, and removing scripts.
 		$I->seeInField('_wp_convertkit_settings_broadcasts[export_greeting]', 'Hi {{ subscriber.first_name | default: "there" }},');
-		$I->seeInField('_wp_convertkit_settings_broadcasts[export_sign_off]', '<strong>Thanks</strong>alert(1)');
+		// WordPress 7.2+ also removes the script's contents.
+		$I->assertContains(
+			$I->grabValueFrom('_wp_convertkit_settings_broadcasts[export_sign_off]'),
+			[
+				'<strong>Thanks</strong>alert(1)',
+				'<strong>Thanks</strong>',
+			]
+		);
 		$I->seeOptionIsSelected('_wp_convertkit_settings_broadcasts[export_web_link]', 'Bottom of broadcast');
 	}
 

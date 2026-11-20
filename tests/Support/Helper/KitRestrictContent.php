@@ -610,7 +610,7 @@ class KitRestrictContent extends \Codeception\Module
 		$I->see($options['settings']['subscribe_text']);
 
 		$I->see($options['settings']['subscribe_button_label']);
-		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '" class="wp-block-button__link');
+		$I->seeElementInDOM('#convertkit-restrict-content a.wp-block-button__link[href="' . $_ENV['CONVERTKIT_API_PRODUCT_URL'] . '"]');
 
 		$I->see($options['settings']['email_text']);
 

@@ -257,7 +257,7 @@ class ShortcodePostHelperTest extends WPTestCase
 	 */
 	public function testInsertIndexWithHorizontalRule()
 	{
-		$postID = $this->createPostWithContent("<p>Item #1</p>\n\n<hr />\n\n<p>Item #2</p>");
+		$postID = $this->createPostWithContent("<p>Item #1</p>\n\n<hr>\n\n<p>Item #2</p>");
 
 		$result = \ConvertKit_Shortcode_Post_Helper::insert(
 			post_id: $postID,
@@ -273,7 +273,7 @@ class ShortcodePostHelperTest extends WPTestCase
 
 		// Confirm the shortcode is inserted after the horizontal rule.
 		$post = get_post($postID);
-		$this->assertEquals( "<p>Item #1</p>\n\n<hr />\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
+		$this->assertEquals( "<p>Item #1</p>\n\n<hr>\n\n[convertkit_form form=\"" . $_ENV['CONVERTKIT_API_FORM_ID'] . "\"]\n\n<p>Item #2</p>", $post->post_content );
 	}
 
 	/**
