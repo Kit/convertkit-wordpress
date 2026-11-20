@@ -75,6 +75,40 @@ class SubscriberIDURLCest
 	}
 
 	/**
+	 * Test that the subscriber ID cookie is set as HttpOnly, so it can't be read by JavaScript.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testSubscriberIDCookieIsHttpOnly(EndToEndTester $I)
+	{
+		// Create Page with the Tag setting, so the subscriber ID is read from the request and stored in the cookie.
+		$pageID = $I->havePostInDatabase(
+			[
+				'post_type'  => 'page',
+				'post_title' => 'Kit: Subscriber ID Cookie',
+				'meta_input' => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => $_ENV['CONVERTKIT_API_TAG_ID'],
+						'restrict_content' => '',
+					],
+				],
+			]
+		);
+
+		// Load the Page with a subscriber ID, so the cookie is set.
+		$I->amOnPage('/?p=' . $pageID . '&ck_subscriber_id=abcde');
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the cookie was set, but can't be read by JavaScript.
+		$I->seeCookie('ck_subscriber_id');
+		$I->assertStringNotContainsString('ck_subscriber_id', $I->executeJS('return document.cookie;'));
+	}
+
+	/**
 	 * Test that the ck_subscriber_id parameter is removed from the URL
 	 * and that a hash is retained if specified in the URL
 	 *
