@@ -460,10 +460,13 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Sanitize inputs.
-		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
-		$this->resource_type = ( array_key_exists( 'convertkit_resource_type', $_REQUEST ) ? sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) ) : '' );
-		$this->resource_id   = ( array_key_exists( 'convertkit_resource_id', $_REQUEST ) ? absint( $_REQUEST['convertkit_resource_id'] ) : 0 );
-		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
+		$email         = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
+		$this->post_id = absint( $_REQUEST['convertkit_post_id'] );
+
+		// Get the resource type and ID from the Post's settings, not the request, so the subscriber
+		// can only be tagged with the Tag the Post is restricted to.
+		$this->resource_type = $this->get_resource_type();
+		$this->resource_id   = $this->get_resource_id();
 
 		// If Restrict Content is by tag, tag the subscriber.
 		if ( $this->resource_type === 'tag' ) {
