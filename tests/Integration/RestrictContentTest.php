@@ -543,6 +543,191 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that search results don't include a restricted Post when the search only matches a later page
+	 * of a Post paginated using the Page Break block.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSearchResultsRestrictedWithPageBreakBlock()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages, using the Page Break block.
+		$post_id = $this->createRestrictedPost('<!-- wp:paragraph --><p>Pageoneword</p><!-- /wp:paragraph --><!-- wp:nextpage --><!--nextpage--><!-- /wp:nextpage --><!-- wp:paragraph --><p>Memberonlyword</p><!-- /wp:paragraph -->');
+
+		// Confirm a search for the second page doesn't return the Post, and a search for the first page does.
+		$this->assertSame([], $this->searchUsingRESTAPI('Memberonlyword', $post_id));
+		$this->assertSame([ $post_id ], $this->searchUsingRESTAPI('Pageoneword', $post_id));
+	}
+
+	/**
+	 * Test that the Latest Posts block, displaying excerpts longer than the default excerpt length,
+	 * only displays the content preview of a restricted Post.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testLatestPostsBlockExcerptRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$this->createRestrictedPost('<p>' . str_repeat('Preview ', 60) . 'Memberonlyword.</p>');
+
+		// Load a Page displaying the Latest Posts block with the maximum excerpt length.
+		$output = $this->loadPageAndGetContent('<!-- wp:latest-posts {"postsToShow":1,"displayPostContent":true,"excerptLength":100} /-->');
+
+		// Confirm only the content preview is displayed.
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+	}
+
+	/**
+	 * Test that the Latest Posts block, displaying the full content of Posts, only displays the content preview
+	 * of restricted Posts, and the full content of other Posts.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testLatestPostsBlockFullContentRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create an unrestricted Post, a restricted Post with a Read More tag, and a restricted Post with no teaser or excerpt.
+		static::factory()->post->create(
+			[
+				'post_content' => '<!-- wp:paragraph --><p>Publicword</p><!-- /wp:paragraph -->',
+				'post_date'    => '2026-01-01 00:00:00',
+			]
+		);
+		$teaser_post_id = $this->createRestrictedPost(
+			'<!-- wp:paragraph --><p>Teaserword</p><!-- /wp:paragraph --><!-- wp:more --><!--more--><!-- /wp:more --><!-- wp:paragraph --><p>Memberonlyword</p><!-- /wp:paragraph -->'
+		);
+		$this->createRestrictedPost('<!-- wp:paragraph --><p>' . str_repeat('Preview ', 60) . 'Secondmemberonlyword.</p><!-- /wp:paragraph -->');
+
+		// Load a Page displaying the Latest Posts block with the full content of Posts.
+		$output = $this->loadPageAndGetContent('<!-- wp:latest-posts {"postsToShow":3,"displayPostContent":true,"displayPostContentRadio":"full_post"} /-->');
+
+		// Confirm only the content previews of restricted Posts are displayed, and the full content of the unrestricted Post.
+		$this->assertStringContainsString('Publicword', $output);
+		$this->assertStringContainsString('Teaserword', $output);
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+		$this->assertStringNotContainsString('Secondmemberonlyword', $output);
+
+		// Confirm the restricted Post's content wasn't changed elsewhere.
+		$this->assertStringContainsString('Memberonlyword', get_post($teaser_post_id)->post_content);
+		$this->assertStringContainsString('Memberonlyword', get_post_field('post_content', $teaser_post_id));
+	}
+
+	/**
+	 * Test that the Post Excerpt block, displaying an excerpt longer than the default excerpt length,
+	 * only displays the content preview of a restricted Post.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testPostExcerptBlockRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with no teaser or excerpt, longer than the default excerpt length.
+		$post_id = $this->createRestrictedPost('<p>' . str_repeat('Preview ', 60) . 'Memberonlyword.</p>');
+
+		// Load a Page displaying the Post using the Post Excerpt block with the maximum excerpt length.
+		$output = $this->loadPageAndGetContent(
+			'<!-- wp:query {"queryId":1,"query":{"perPage":1,"postType":"post","inherit":false,"include":[' . $post_id . ']}} -->' .
+			'<div class="wp-block-query"><!-- wp:post-template --><!-- wp:post-excerpt {"excerptLength":100} /--><!-- /wp:post-template --></div>' .
+			'<!-- /wp:query -->'
+		);
+
+		// Confirm only the content preview is displayed.
+		$this->assertStringContainsString('Preview', $output);
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+	}
+
+	/**
+	 * Test that the second page of a paginated restricted Post doesn't display its content as the content preview.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testPaginatedPostRestricted()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages.
+		$post_id = static::factory()->post->create(
+			[
+				'post_content' => '<p>Pageoneword</p><!--nextpage--><p>Memberonlyword</p>',
+				'post_excerpt' => '',
+				'meta_input'   => [
+					'_wp_convertkit_post_meta' => [
+						'form'             => '0',
+						'landing_page'     => '',
+						'tag'              => '',
+						'restrict_content' => 'product_' . $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+					],
+				],
+			]
+		);
+
+		// Confirm the first page displays the content preview.
+		$this->go_to(get_permalink($post_id));
+		the_post();
+		$this->resource->initialize_classes();
+		$this->assertStringContainsString('Pageoneword', apply_filters('the_content', get_the_content()));
+
+		// Confirm the second page doesn't display its restricted content.
+		$this->go_to(add_query_arg('page', 2, get_permalink($post_id)));
+		the_post();
+		$output = apply_filters('the_content', get_the_content());
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+		$this->assertStringContainsString('convertkit-restrict-content', $output);
+	}
+
+	/**
+	 * Test that the second page of a restricted Post paginated using the Page Break block doesn't display
+	 * its content as the content preview.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testPaginatedPostRestrictedWithPageBreakBlock()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+
+		// Create a restricted Post with two pages, using the Page Break block.
+		$post_id = $this->createRestrictedPost('<!-- wp:paragraph --><p>Pageoneword</p><!-- /wp:paragraph --><!-- wp:nextpage --><!--nextpage--><!-- /wp:nextpage --><!-- wp:paragraph --><p>Memberonlyword</p><!-- /wp:paragraph -->');
+
+		// Confirm the first page displays the content preview.
+		$this->go_to(get_permalink($post_id));
+		the_post();
+		$this->resource->initialize_classes();
+		$this->assertStringContainsString('Pageoneword', apply_filters('the_content', get_the_content()));
+
+		// Confirm the second page doesn't display its restricted content.
+		$this->go_to(add_query_arg('page', 2, get_permalink($post_id)));
+		the_post();
+		$output = apply_filters('the_content', get_the_content());
+		$this->assertStringNotContainsString('Memberonlyword', $output);
+		$this->assertStringContainsString('convertkit-restrict-content', $output);
+	}
+
+	/**
 	 * Test that a frontend request for a restricted Post with a search term doesn't return the Post
 	 * when the search only matches its restricted content, as WordPress applies the search term
 	 * even though the request isn't a search.
@@ -681,6 +866,29 @@ class RestrictContentTest extends WPTestCase
 			]
 		);
 		return wp_list_pluck(rest_do_request($request)->get_data(), 'id');
+	}
+
+	/**
+	 * Creates a Page with the given content, loads it and returns its content, as a Theme would display it.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   string $content    Page content.
+	 * @return  string
+	 */
+	private function loadPageAndGetContent($content)
+	{
+		$page_id = static::factory()->post->create(
+			[
+				'post_type'    => 'page',
+				'post_content' => $content,
+			]
+		);
+
+		$this->go_to(get_permalink($page_id));
+		the_post();
+		$this->resource->initialize_classes();
+		return apply_filters('the_content', get_the_content());
 	}
 
 	/**
