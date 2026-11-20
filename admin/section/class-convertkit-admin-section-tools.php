@@ -73,6 +73,11 @@ class ConvertKit_Admin_Section_Tools extends ConvertKit_Admin_Section_Base {
 	 */
 	private function maybe_perform_actions() {
 
+		// Bail if the user isn't permitted to manage the Plugin's settings.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$this->maybe_clear_log();
 		$this->maybe_download_log();
 		$this->maybe_download_system_info();
