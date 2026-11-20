@@ -993,7 +993,7 @@ add_filter( 'convertkit_block_broadcasts_build_html_list_item', function( $html,
 </pre>
 <h3 id="convertkit_block_form_builder_render">
 						convertkit_block_form_builder_render
-						<code>includes/blocks/class-convertkit-block-form-builder.php::769</code>
+						<code>includes/blocks/class-convertkit-block-form-builder.php::790</code>
 					</h3><h4>Overview</h4>
 						<p>Filter the block's content immediately before it is output.</p><h4>Parameters</h4>
 					<table>
@@ -1577,7 +1577,7 @@ add_filter( 'convertkit_wishlist_settings_get_defaults', function( $defaults ) {
 </pre>
 <h3 id="convertkit_output_restrict_content_content_preview">
 						convertkit_output_restrict_content_content_preview
-						<code>includes/class-convertkit-output-restrict-content.php::1855</code>
+						<code>includes/class-convertkit-output-restrict-content.php::2073</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the content preview when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1608,7 +1608,7 @@ add_filter( 'convertkit_output_restrict_content_content_preview', function( $con
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_type">
 						convertkit_output_restrict_content_get_resource_type
-						<code>includes/class-convertkit-output-restrict-content.php::1592</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1810</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource Type that the visitor must be subscribed against to access this content, overriding the Post setting. Return false or an empty string to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1639,7 +1639,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_type', function( $r
 </pre>
 <h3 id="convertkit_output_restrict_content_get_resource_id">
 						convertkit_output_restrict_content_get_resource_id
-						<code>includes/class-convertkit-output-restrict-content.php::1630</code>
+						<code>includes/class-convertkit-output-restrict-content.php::1848</code>
 					</h3><h4>Overview</h4>
 						<p>Define the ConvertKit Resource ID that the visitor must be subscribed against to access this content, overriding the Post setting. Return 0 to not restrict content.</p><h4>Parameters</h4>
 					<table>
@@ -1670,7 +1670,7 @@ add_filter( 'convertkit_output_restrict_content_get_resource_id', function( $res
 </pre>
 <h3 id="convertkit_output_restrict_content_call_to_action">
 						convertkit_output_restrict_content_call_to_action
-						<code>includes/class-convertkit-output-restrict-content.php::1869</code>
+						<code>includes/class-convertkit-output-restrict-content.php::2087</code>
 					</h3><h4>Overview</h4>
 						<p>Define the output for the call to action, displayed below the content preview, when the visitor is not an authenticated subscriber.</p><h4>Parameters</h4>
 					<table>
@@ -1701,7 +1701,7 @@ add_filter( 'convertkit_output_restrict_content_call_to_action', function( $call
 </pre>
 <h3 id="convertkit_output_restrict_content_container_css_classes">
 						convertkit_output_restrict_content_container_css_classes
-						<code>includes/class-convertkit-output-restrict-content.php::1882</code>
+						<code>includes/class-convertkit-output-restrict-content.php::2100</code>
 					</h3><h4>Overview</h4>
 						<p>Define the container CSS classes to wrap the content preview and call to action within.</p><h4>Parameters</h4>
 					<table>
@@ -1732,7 +1732,7 @@ add_filter( 'convertkit_output_restrict_content_container_css_classes', function
 </pre>
 <h3 id="convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges">
 						convertkit_output_restrict_content_is_crawler_permitted_user_agent_ip_ranges
-						<code>includes/class-convertkit-output-restrict-content.php::2579</code>
+						<code>includes/class-convertkit-output-restrict-content.php::2817</code>
 					</h3><h4>Overview</h4>
 						<p>Define the permitted user agents and their IP address ranges that can bypass Restrict Content to index content for search engines.</p><h4>Parameters</h4>
 					<table>
@@ -1999,7 +1999,7 @@ add_filter( 'convertkit_resource_forms_output_script', function( $script ) {
 </pre>
 <h3 id="convertkit_subscriber_allow_unverified_id">
 						convertkit_subscriber_allow_unverified_id
-						<code>includes/class-convertkit-subscriber.php::274</code>
+						<code>includes/class-convertkit-subscriber.php::275</code>
 					</h3><h4>Overview</h4>
 						<p>Whether to use a numeric subscriber ID that couldn't be verified, either from a request without a matching `sh_kit` parameter, or from a cookie without a valid signature.</p><h4>Parameters</h4>
 					<table>
@@ -2333,7 +2333,7 @@ do_action( 'convertkit_settings_base_render_after', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_before">
 						convertkit_settings_base_render_before
-						<code>admin/section/class-convertkit-admin-section-tools.php::360</code>
+						<code>admin/section/class-convertkit-admin-section-tools.php::365</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2353,7 +2353,7 @@ do_action( 'convertkit_settings_base_render_before', function(  ) {
 </pre>
 <h3 id="convertkit_settings_base_render_after">
 						convertkit_settings_base_render_after
-						<code>admin/section/class-convertkit-admin-section-tools.php::383</code>
+						<code>admin/section/class-convertkit-admin-section-tools.php::388</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>
@@ -2661,7 +2661,7 @@ do_action( 'convertkit_admin_setup_wizard_load_screen_data_  this-page_name', fu
 </pre>
 <h3 id="convertkit_pre_publish_action_run_  this-get_name">
 						convertkit_pre_publish_action_run_  this-get_name
-						<code>includes/pre-publish-actions/class-convertkit-pre-publish-action.php::179</code>
+						<code>includes/pre-publish-actions/class-convertkit-pre-publish-action.php::188</code>
 					</h3><h4>Overview</h4>
 						<p>Run this pre-publish action, as the WordPress Post has just transitioned to publish from another state.</p><h4>Parameters</h4>
 					<table>
@@ -2800,7 +2800,7 @@ do_action( 'convertkit_gutenberg_enqueue_styles_editor_and_frontend', function( 
 </pre>
 <h3 id="convertkit_restrict_content_register_content_filter">
 						convertkit_restrict_content_register_content_filter
-						<code>includes/class-convertkit-output-restrict-content.php::775</code>
+						<code>includes/class-convertkit-output-restrict-content.php::789</code>
 					</h3><h4>Parameters</h4>
 					<table>
 						<thead>

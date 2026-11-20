@@ -1,3 +1,15 @@
+### 3.5.3 2026-11-20
+* Updated: Subscriber: Set the subscriber ID cookies as HttpOnly, so they can't be read by JavaScript
+* Fix: Form Builder: Don't store the subscriber ID in a cookie, as the email address isn't verified
+* Fix: Form Builder: Sign the block's settings, so Form, Tag, Sequence and other settings can't be changed when submitted
+* Fix: Member Content: Tag subscribers with the Post's Tag, not a Tag specified in the request
+* Fix: Member Content: Search: Only match the content preview displayed to visitors, such as the manual excerpt and the first page of paginated Posts
+* Fix: Member Content: Don't extend the content preview when blocks increase the excerpt length
+* Fix: Member Content: Latest Posts block: Only display the content preview of restricted Posts
+* Fix: Member Content: Don't display restricted content as the preview on later pages of paginated Posts
+* Fix: Settings: Tools: Check the user can manage options before running actions
+* Fix: Broadcasts: Only permit users who can publish Posts to enable creating a Broadcast on publish
+
 ### 3.5.2 2026-11-16
 * Added: Broadcasts: Import Broadcasts when they're published in Kit using a webhook, instead of hourly using WordPress' Cron
 * Added: Broadcasts: Display the webhook's status, with a button to register or re-register the webhook
