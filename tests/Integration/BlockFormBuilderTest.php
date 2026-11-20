@@ -46,6 +46,15 @@ class BlockFormBuilderTest extends WPTestCase
 	private $errorEndpoints = [];
 
 	/**
+	 * Holds the URL the block redirected to.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @var     string
+	 */
+	private $redirect = '';
+
+	/**
 	 * Performs actions before each test.
 	 *
 	 * @since   3.4.5
@@ -99,7 +108,7 @@ class BlockFormBuilderTest extends WPTestCase
 	{
 		remove_filter('pre_http_request', array( $this, 'mockKitAPIRequest' ), 10);
 		remove_filter('wp_redirect', array( $this, 'throwOnRedirect' ));
-		unset($_REQUEST['_wpnonce'], $_REQUEST['convertkit']);
+		unset($_REQUEST['_wpnonce'], $_REQUEST['convertkit'], $_COOKIE['ck_subscriber_id'], $_COOKIE['ck_subscriber_id_signature']);
 
 		// Deactivate Plugin.
 		deactivate_plugins('convertkit/wp-convertkit.php');
@@ -206,31 +215,202 @@ class BlockFormBuilderTest extends WPTestCase
 	}
 
 	/**
-	 * Submits the Form Builder block with the given Form, Tag and Sequence IDs.
+	 * Test that subscribing doesn't store the subscriber ID in a signed cookie, as the email
+	 * address hasn't been verified, and anyone could submit another subscriber's email address.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscriberIDNotStoredInCookie()
+	{
+		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID']);
+
+		// Confirm no signed subscriber ID was stored.
+		$this->assertArrayNotHasKey('ck_subscriber_id_signature', $_COOKIE);
+
+		// Confirm the visitor isn't identified as the subscriber.
+		$subscriber = new \ConvertKit_Subscriber();
+		$this->assertFalse($subscriber->get_subscriber_id());
+	}
+
+	/**
+	 * Test that subscribing redirects to the current page with the submitted block's index,
+	 * so the subscribed message is displayed.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testRedirectIncludesSubscribedBlockIndex()
+	{
+		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID'], block_index: 2);
+
+		$this->assertStringContainsString('convertkit_form_builder_subscribed=2', $this->redirect);
+		$this->assertStringNotContainsString( (string) 123456, $this->redirect);
+	}
+
+	/**
+	 * Test that the subscribed message is only displayed on the submitted block after redirecting.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscribedMessageDisplayedOnSubmittedBlock()
+	{
+		$content = '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /></div>';
+
+		$_GET['convertkit_form_builder_subscribed'] = '2';
+		$first                                      = $this->block->render([], $content);
+		$second                                     = $this->block->render([], $content);
+		unset($_GET['convertkit_form_builder_subscribed']);
+
+		$this->assertStringNotContainsString('convertkit-form-builder-subscribed-message', $first);
+		$this->assertStringContainsString('convertkit-form-builder-subscribed-message', $second);
+	}
+
+	/**
+	 * Test that the form is hidden after redirecting when the block is configured to not display the form if subscribed.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testFormHiddenAfterSubscribingWhenDisplayFormIfSubscribedDisabled()
+	{
+		$content = '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /></div>';
+
+		$_GET['convertkit_form_builder_subscribed'] = '1';
+		$html                                       = $this->block->render(
+			[
+				'display_form_if_subscribed' => false,
+				'text_if_subscribed'         => 'Welcome to the newsletter!',
+			],
+			$content
+		);
+		unset($_GET['convertkit_form_builder_subscribed']);
+
+		$this->assertStringContainsString('Welcome to the newsletter!', $html);
+		$this->assertStringNotContainsString('name="convertkit[email]"', $html);
+	}
+
+	/**
+	 * Test that the subscriber isn't created when the Tag, Form, Sequence or other block settings
+	 * are changed in the request, as they don't match the block's signature.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscriberNotCreatedWhenBlockSettingsChanged()
+	{
+		$changes = [
+			'form_id'           => '999',
+			'tag_id'            => '999',
+			'sequence_id'       => '999',
+			'store_entries'     => '0',
+			'redirect'          => 'https://example.com',
+			'post_id'           => '999',
+			'custom_field_keys' => 'last_name,secret',
+		];
+
+		foreach ( $changes as $key => $value ) {
+			$this->requests = [];
+			$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID'], changes: [ $key => $value ], expect_redirect: false);
+
+			// Confirm no requests were made to Kit, and the error is displayed.
+			$this->assertCount(0, $this->requests, $key);
+			$this->assertInstanceOf(\WP_Error::class, $this->block->error, $key);
+			$this->assertEquals('convertkit_block_form_builder_invalid_signature', $this->block->error->get_error_code(), $key);
+		}
+	}
+
+	/**
+	 * Test that the subscriber isn't created when the signature is missing, such as a cached page
+	 * from an older version of the Plugin.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscriberNotCreatedWhenSignatureMissing()
+	{
+		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID'], changes: [ 'signature' => null ], expect_redirect: false);
+
+		$this->assertCount(0, $this->requests);
+		$this->assertEquals('convertkit_block_form_builder_invalid_signature', $this->block->error->get_error_code());
+	}
+
+	/**
+	 * Test that only custom fields included in the block are sent to Kit.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testOnlyBlockCustomFieldsSubscribed()
+	{
+		$this->submit(
+			tag_id: $_ENV['CONVERTKIT_API_TAG_ID'],
+			changes: [
+				'custom_fields' => [
+					'last_name' => 'Last',
+					'secret'    => 'Changed',
+				],
+			]
+		);
+
+		// Confirm only the block's custom field was sent when creating the subscriber.
+		$this->assertEquals([ 'last_name' => 'Last' ], $this->requests[0]['body']['fields']);
+	}
+
+	/**
+	 * Test that the signature matches when the block's redirect URL includes a query string.
+	 *
+	 * @since   3.5.3
+	 */
+	public function testSubscribeWithRedirectURL()
+	{
+		$this->submit(tag_id: $_ENV['CONVERTKIT_API_TAG_ID'], redirect: 'https://example.com/thanks/?a=1&b=2');
+
+		$this->assertStringStartsWith('https://example.com/thanks/', $this->redirect);
+	}
+
+	/**
+	 * Submits the Form Builder block with the given Form, Tag and Sequence IDs, using the
+	 * hidden fields output by the block.
 	 *
 	 * @since   3.4.5
 	 *
-	 * @param   int  $form_id        Form ID.
-	 * @param   int  $tag_id         Tag ID.
-	 * @param   int  $sequence_id    Sequence ID.
-	 * @param   bool $include_name   Include the Name field.
+	 * @param   int    $form_id          Form ID.
+	 * @param   int    $tag_id           Tag ID.
+	 * @param   int    $sequence_id      Sequence ID.
+	 * @param   bool   $include_name     Include the Name field.
+	 * @param   int    $block_index      Block index.
+	 * @param   array  $changes          Changes to make to the submitted fields. A null value removes the field.
+	 * @param   bool   $expect_redirect  Whether the block should redirect after subscribing.
+	 * @param   string $redirect         Redirect URL block setting.
 	 */
-	private function submit($form_id = 0, $tag_id = 0, $sequence_id = 0, $include_name = true)
+	private function submit($form_id = 0, $tag_id = 0, $sequence_id = 0, $include_name = true, $block_index = 0, $changes = [], $expect_redirect = true, $redirect = '')
 	{
 		$post_id = static::factory()->post->create();
 
-		// Build the request, matching the hidden fields output by the block.
+		// Build the request from the block's hidden fields.
 		$_REQUEST['_wpnonce']   = wp_create_nonce('convertkit_block_form_builder');
-		$_REQUEST['convertkit'] = [
-			'email'         => 'kit@example.com',
-			'post_id'       => (string) $post_id,
-			'store_entries' => '1',
-			'form_id'       => (string) $form_id,
-			'tag_id'        => (string) $tag_id,
-			'sequence_id'   => (string) $sequence_id,
-		];
+		$_REQUEST['convertkit'] = array_merge(
+			$this->getHiddenFields(
+				$post_id,
+				[
+					'form_id'       => (int) $form_id,
+					'tag_id'        => (int) $tag_id,
+					'sequence_id'   => (int) $sequence_id,
+					'store_entries' => true,
+					'redirect'      => $redirect,
+				]
+			),
+			[
+				'email' => 'kit@example.com',
+			]
+		);
 		if ( $include_name ) {
 			$_REQUEST['convertkit']['first_name'] = 'First';
+		}
+		if ( $block_index ) {
+			$_REQUEST['convertkit']['block_index'] = (string) $block_index;
+		}
+		foreach ( $changes as $key => $value ) {
+			if ( is_null($value) ) {
+				unset($_REQUEST['convertkit'][ $key ]);
+				continue;
+			}
+			$_REQUEST['convertkit'][ $key ] = $value;
 		}
 
 		try {
@@ -238,10 +418,40 @@ class BlockFormBuilderTest extends WPTestCase
 		} catch ( \Exception $e ) {
 			// Confirm the block redirected, meaning no error occurred.
 			$this->assertEquals('redirect', $e->getMessage());
+			$this->assertTrue($expect_redirect, 'The block redirected after subscribing.');
 			return;
 		}
 
-		$this->fail('The block did not redirect after subscribing.');
+		if ( $expect_redirect ) {
+			$this->fail('The block did not redirect after subscribing.');
+		}
+	}
+
+	/**
+	 * Renders the Form Builder block for the given Post, returning the hidden fields
+	 * as they'd be submitted.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   int   $post_id    Post ID.
+	 * @param   array $atts       Block attributes.
+	 * @return  array
+	 */
+	private function getHiddenFields($post_id, $atts)
+	{
+		global $post;
+		$post = get_post($post_id); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+		$block = new \ConvertKit_Block_Form_Builder();
+		$html  = $block->render($atts, '<div class="wp-block-convertkit-form-builder"><input type="email" name="convertkit[email]" /><input type="text" name="convertkit[custom_fields][last_name]" /></div>');
+
+		$fields = [];
+		preg_match_all('/<input type="hidden" name="convertkit\[([a-z_]+)\]" value="([^"]*)"/', $html, $matches, PREG_SET_ORDER);
+		foreach ( $matches as $match ) {
+			$fields[ $match[1] ] = html_entity_decode($match[2]);
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -254,6 +464,7 @@ class BlockFormBuilderTest extends WPTestCase
 	 */
 	public function throwOnRedirect($location)
 	{
+		$this->redirect = $location;
 		throw new \Exception('redirect');
 	}
 
