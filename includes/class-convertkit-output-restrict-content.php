@@ -2129,7 +2129,12 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function get_content_preview( $content ) {
 
-		global $post;
+		global $post, $page;
+
+		// Don't display a preview on the second and later pages of a paginated Post, as their content is restricted.
+		if ( $page > 1 ) {
+			return '';
+		}
 
 		// Check if the content contains a <!--more--> tag, which the editor might have placed
 		// in the content through WordPress' Classic Editor.
