@@ -145,6 +145,7 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
 		add_action( 'admin_init', array( $this, 'register_ajax_content_filter' ) );
 		add_action( 'template_redirect', array( $this, 'maybe_restrict_attachment' ), 1 );
+		add_filter( 'oembed_response_data', array( $this, 'maybe_restrict_oembed_attachment' ), 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'maybe_exclude_restricted_search_results' ) );
 		add_filter( 'render_block_data', array( $this, 'maybe_restrict_latest_posts_block' ) );
 		add_filter( 'posts_where', array( $this, 'maybe_exclude_restricted_search_results_where' ), 10, 2 );
@@ -927,6 +928,37 @@ class ConvertKit_Output_Restrict_Content {
 		$wp_query->set_404();
 		status_header( 404 );
 		nocache_headers();
+
+		// Remove the attachment, and stop a feed or embed template from rendering it, as set_404() keeps the feed flag.
+		$wp_query->posts           = array();
+		$wp_query->post_count      = 0;
+		$wp_query->post            = null;
+		$wp_query->is_feed         = false;
+		$wp_query->is_comment_feed = false;
+		$wp_query->is_embed        = false;
+		$GLOBALS['post']           = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+	}
+
+	/**
+	 * Removes an attachment's oEmbed response, if it's attached to a Post that is restricted
+	 * and the visitor cannot view it, so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   array|false $data   oEmbed response data.
+	 * @param   WP_Post     $post   Post.
+	 * @return  array|false
+	 */
+	public function maybe_restrict_oembed_attachment( $data, $post ) {
+
+		// Bail if this isn't an attachment, or the visitor can view it.
+		if ( 'attachment' !== $post->post_type || $this->can_view_attachment( $post ) ) {
+			return $data;
+		}
+
+		// Return no data, so WordPress returns a 404.
+		return false;
 
 	}
 
