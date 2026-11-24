@@ -24,6 +24,9 @@ class ConvertKit_Elementor {
 		// Enqueue CSS when using the Elementor editor.
 		add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'enqueue_styles' ) );
 
+		// Enqueue JS when using the Elementor editor.
+		add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
 		// Register Widget Category.
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_elementor_widget_categories' ) );
 
@@ -50,6 +53,24 @@ class ConvertKit_Elementor {
 			CONVERTKIT_PLUGIN_URL . 'resources/backend/css/elementor.css',
 			array(),
 			CONVERTKIT_PLUGIN_VERSION
+		);
+
+	}
+
+	/**
+	 * Enqueue scripts for the Elementor editor.
+	 *
+	 * @since   3.5.4
+	 */
+	public function enqueue_scripts() {
+
+		// Re-renders Kit widgets when an Elementor Global Color is changed.
+		wp_enqueue_script(
+			'convertkit-elementor',
+			CONVERTKIT_PLUGIN_URL . 'resources/backend/js/elementor.js',
+			array(),
+			CONVERTKIT_PLUGIN_VERSION,
+			true
 		);
 
 	}

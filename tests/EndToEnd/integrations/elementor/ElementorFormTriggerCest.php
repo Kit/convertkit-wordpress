@@ -133,6 +133,87 @@ class ElementorFormTriggerCest
 	}
 
 	/**
+	 * Test the Form Trigger widget's Elementor Global Colors work when defined.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormTriggerWidgetWithGlobalColorParameters(EndToEndTester $I)
+	{
+		// Create Page with Form Trigger widget in Elementor, using Elementor's Global Colors.
+		$pageID = $this->_createPageWithFormTriggerWidget(
+			$I,
+			title: 'Kit: Page: Form Trigger: Elementor Widget: Global Colors',
+			settings: [
+				'form'             => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'text'             => 'Subscribe',
+				'background_color' => '',
+				'text_color'       => '',
+				'__globals__'      => [
+					'background_color' => 'globals/colors?id=primary',
+					'text_color'       => 'globals/colors?id=text',
+				],
+			]
+		);
+
+		// Load Page.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the form trigger button displays with the Global Colors' CSS variables.
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe',
+			textColor: 'var(--e-global-color-text)',
+			backgroundColor: 'var(--e-global-color-primary)'
+		);
+	}
+
+	/**
+	 * Test the Form Trigger widget re-renders in the Elementor editor when an Elementor Global Color is selected.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormTriggerWidgetRerendersInEditorWhenGlobalColorSelected(EndToEndTester $I)
+	{
+		// Create Page with Form Trigger widget in Elementor.
+		$pageID = $this->_createPageWithFormTriggerWidget(
+			$I,
+			title: 'Kit: Page: Form Trigger: Elementor Widget: Editor Global Colors',
+			settings: [
+				'form'             => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'text'             => 'Subscribe',
+				'background_color' => '#ee1616',
+			]
+		);
+
+		// Edit the Page in Elementor.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=elementor');
+
+		// Wait for Elementor to load.
+		$I->waitForElementVisible('#elementor-preview-iframe');
+		$I->waitForElementNotVisible('#elementor-loading');
+
+		// Open the widget's settings, and select a Global Color for the background, as the panel's color picker does.
+		$I->executeJS(
+			'const container = elementor.getContainer("a73a906");
+			$e.run("panel/editor/open", { model: container.model, view: container.view });
+			$e.run("document/globals/enable", { container: container, settings: { background_color: "globals/colors?id=primary" } })'
+		);
+
+		// Confirm the widget re-rendered in the preview with the Global Color's CSS variable.
+		$I->switchToIFrame('#elementor-preview-iframe');
+		$I->waitForElementVisible('a.convertkit-formtrigger[style*="background-color:var(--e-global-color-primary)"]');
+		$I->switchToIFrame();
+	}
+
+	/**
 	 * Create a Page in the database comprising of Elementor Page Builder data
 	 * containing a Kit Form widget.
 	 *

@@ -274,7 +274,45 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 
 		// Render using Block class' render() function.
 		// Output is already escaped in render() function.
-		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_for_display() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_with_global_colors() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	}
+
+	/**
+	 * Returns the widget's settings, replacing any color setting that uses an Elementor
+	 * Global Color with the Global Color's CSS variable.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @return  array
+	 */
+	private function get_settings_with_global_colors() {
+
+		$settings = $this->get_settings_for_display();
+
+		// Bail if no Global Colors are used.
+		if ( ! isset( $settings['__globals__'] ) || ! is_array( $settings['__globals__'] ) ) {
+			return $settings;
+		}
+
+		// Elementor stores Global Colors in __globals__, leaving the color setting empty.
+		foreach ( $settings['__globals__'] as $setting => $global ) {
+			// Skip if this isn't a Global Color.
+			if ( ! is_string( $global ) || strpos( $global, 'globals/colors?id=' ) !== 0 ) {
+				continue;
+			}
+
+			// Skip if the Global Color ID is invalid.
+			$global_id = sanitize_key( substr( $global, strlen( 'globals/colors?id=' ) ) );
+			if ( empty( $global_id ) ) {
+				continue;
+			}
+
+			// Use the Global Color's CSS variable, which Elementor outputs.
+			$settings[ $setting ] = 'var(--e-global-color-' . $global_id . ')';
+		}
+
+		return $settings;
 
 	}
 

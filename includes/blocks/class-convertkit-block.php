@@ -407,9 +407,12 @@ class ConvertKit_Block {
 
 		// Get the block wrapper attributes string, extracting any styles that the block has set,
 		// such as margin, padding or block spacing.
-		$wrapper_attributes = get_block_wrapper_attributes();
-		if ( preg_match( '/style="([^"]*)"/', $wrapper_attributes, $matches ) ) {
-			return array_filter( explode( ';', $matches[1] ) );
+		// Skip if another block is being rendered (e.g. Post Content in a block theme), as its styles aren't for this block.
+		if ( $this->is_rendering_block() ) {
+			$wrapper_attributes = get_block_wrapper_attributes();
+			if ( preg_match( '/style="([^"]*)"/', $wrapper_attributes, $matches ) ) {
+				return array_filter( explode( ';', $matches[1] ) );
+			}
 		}
 
 		// If here, no block styles were found.
@@ -423,6 +426,25 @@ class ConvertKit_Block {
 		}
 
 		return $styles;
+
+	}
+
+	/**
+	 * Determines if WordPress is rendering this block, and not another block
+	 * this block's shortcode or page builder widget is output within.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @return  bool
+	 */
+	private function is_rendering_block() {
+
+		// Bail if no block is being rendered.
+		if ( ! class_exists( 'WP_Block_Supports' ) || ! is_array( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
+			return false;
+		}
+
+		return isset( WP_Block_Supports::$block_to_render['blockName'] ) && WP_Block_Supports::$block_to_render['blockName'] === 'convertkit/' . $this->get_name(); // @phpstan-ignore-line
 
 	}
 

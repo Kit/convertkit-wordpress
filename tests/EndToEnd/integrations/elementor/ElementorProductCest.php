@@ -129,6 +129,47 @@ class ElementorProductCest
 	}
 
 	/**
+	 * Test the Product widget's Elementor Global Colors work when defined.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testProductWidgetWithGlobalColorParameters(EndToEndTester $I)
+	{
+		// Create Page with Product widget in Elementor, using Elementor's Global Colors.
+		$pageID = $this->_createPageWithProductWidget(
+			$I,
+			title: 'Kit: Page: Product: Elementor Widget: Global Colors',
+			settings: [
+				'product'          => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+				'text'             => 'Buy my product',
+				'background_color' => '',
+				'text_color'       => '',
+				'__globals__'      => [
+					'background_color' => 'globals/colors?id=primary',
+					'text_color'       => 'globals/colors?id=text',
+				],
+			]
+		);
+
+		// Load Page.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the product button displays with the Global Colors' CSS variables.
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product',
+			textColor: 'var(--e-global-color-text)',
+			backgroundColor: 'var(--e-global-color-primary)'
+		);
+	}
+
+	/**
 	 * Create a Page in the database comprising of Elementor Page Builder data
 	 * containing a Kit Product widget.
 	 *
