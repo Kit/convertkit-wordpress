@@ -157,8 +157,8 @@ class PermissionsTest extends WPTestCase
 		// Attempt to save the Post's settings.
 		( new \ConvertKit_Admin_Post() )->save_post_meta( $post_id );
 
-		// Confirm no settings were saved.
-		$this->assertSame( '', get_post_meta( $post_id, '_wp_convertkit_post_meta', true ) );
+		// Confirm no settings were saved, ignoring the default registered by register_post_meta().
+		$this->assertFalse( metadata_exists( 'post', $post_id, '_wp_convertkit_post_meta' ) );
 	}
 
 	/**
