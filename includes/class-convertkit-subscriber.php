@@ -152,6 +152,7 @@ class ConvertKit_Subscriber {
 					'expires'  => $expires,
 					'path'     => '/',
 					'secure'   => is_ssl(),
+					'httponly' => true,
 					'samesite' => 'Lax',
 				)
 			);
@@ -159,7 +160,7 @@ class ConvertKit_Subscriber {
 		}
 
 		// Older PHP versions require the SameSite attribute to be appended to the path.
-		setcookie( $name, $value, $expires, '/; samesite=Lax', '', is_ssl() );
+		setcookie( $name, $value, $expires, '/; samesite=Lax', '', is_ssl(), true );
 
 	}
 

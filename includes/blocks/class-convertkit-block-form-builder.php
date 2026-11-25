@@ -55,6 +55,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	public $submitted_block_index = 0;
 
 	/**
+	 * The query parameter added to the redirect URL after subscribing,
+	 * so the subscribed message is displayed on the submitted block.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @var     string
+	 */
+	private $subscribed_query_arg = 'convertkit_form_builder_subscribed';
+
+	/**
 	 * Constructor
 	 *
 	 * @since   3.0.0
@@ -122,6 +132,16 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
+		// Bail if the block's settings (e.g. the Form, Tag and Sequence IDs) don't match their signature,
+		// meaning they were changed in the request.
+		if ( ! $this->verify_signature( wp_unslash( $_REQUEST['convertkit'] ) ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$this->error = new WP_Error(
+				'convertkit_block_form_builder_invalid_signature',
+				__( 'Sorry, we were unable to subscribe you. Please refresh the page and try again.', 'convertkit' )
+			);
+			return;
+		}
+
 		// Sanitize form data.
 		$form_data = map_deep( wp_unslash( $_REQUEST['convertkit'] ), 'sanitize_text_field' );
 
@@ -135,10 +155,13 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return;
 		}
 
-		// Build custom fields, if any were specified.
+		// Build custom fields, if any were specified, only accepting those included in the block.
 		$custom_fields = array();
-		if ( array_key_exists( 'custom_fields', $form_data ) ) {
-			$custom_fields = $form_data['custom_fields'];
+		if ( array_key_exists( 'custom_fields', $form_data ) && is_array( $form_data['custom_fields'] ) ) {
+			$custom_fields = array_intersect_key(
+				$form_data['custom_fields'],
+				array_flip( array_filter( explode( ',', $form_data['custom_field_keys'] ) ) )
+			);
 		}
 
 		// Get First Name, if the Name field was included in the form.
@@ -242,11 +265,8 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Get the subscriber ID, as $result is overwritten by the form, tag and sequence requests below.
+		// The subscriber ID isn't stored in a cookie, as the email address hasn't been verified.
 		$subscriber_id = $result['subscriber']['id'];
-
-		// Store the subscriber ID in a cookie.
-		$subscriber = new ConvertKit_Subscriber();
-		$subscriber->set( $subscriber_id );
 
 		// If a form was specified, add the subscriber to the form.
 		if ( $form_id ) {
@@ -331,7 +351,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			$redirect = sanitize_url( $form_data['redirect'] );
 		} else {
 			// Redirect to the page the form was displayed on, to show a success message.
-			$redirect = $this->get_current_url( absint( $form_data['post_id'] ) );
+			$redirect = add_query_arg( $this->subscribed_query_arg, $this->submitted_block_index, $this->get_current_url( absint( $form_data['post_id'] ) ) );
 		}
 
 		// Redirect.
@@ -743,10 +763,11 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		// and moving some attributes (such as Gutenberg's styles), if defined.
 		$atts = $this->sanitize_and_declare_atts( $atts );
 
-		// Check if subscriber is already subscribed, and whether the form should be displayed.
+		// Check if subscriber is already subscribed, or just subscribed using this block, and whether the form should be displayed.
 		$subscriber          = new ConvertKit_Subscriber();
 		$this->subscriber_id = $subscriber->get_subscriber_id();
-		$display_form        = $this->subscriber_id && ! $atts['display_form_if_subscribed'] ? false : true;
+		$subscribed          = $this->subscriber_id || $this->subscribed_using_block();
+		$display_form        = $subscribed && ! $atts['display_form_if_subscribed'] ? false : true;
 
 		// If the form should not be displayed, return the subscribed text.
 		if ( ! $display_form ) {
@@ -757,7 +778,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Add the <form> element and hidden fields immediate inside the block's container.
-		$html = $this->add_form_to_block_content( $content, $atts, $post_id );
+		$html = $this->add_form_to_block_content( $content, $atts, $post_id, $subscribed );
 
 		/**
 		 * Filter the block's content immediately before it is output.
@@ -832,9 +853,10 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 	 * @param   string $content     Block content.
 	 * @param   array  $atts        Block attributes.
 	 * @param   int    $post_id     Post ID.
+	 * @param   bool   $subscribed  Whether to display the subscribed message.
 	 * @return  string
 	 */
-	private function add_form_to_block_content( $content, $atts, $post_id ) {
+	private function add_form_to_block_content( $content, $atts, $post_id, $subscribed = false ) {
 
 		// Load the content into the parser.
 		$parser = new ConvertKit_HTML_Parser( $content );
@@ -873,7 +895,7 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 		}
 
 		// Add subscribed message if required.
-		if ( $this->subscriber_id ) {
+		if ( $subscribed ) {
 			$subscribed_message = $parser->html->createElement( 'div' );
 			$subscribed_message->setAttribute( 'class', 'convertkit-form-builder-subscribed-message' );
 			$subscribed_message->appendChild( $parser->html->createTextNode( $atts['text_if_subscribed'] ) );
@@ -918,6 +940,26 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			'convertkit[block_index]'   => absint( $this->render_count ),
 			'_wpnonce'                  => wp_create_nonce( 'convertkit_block_form_builder' ),
 		);
+
+		// Get the custom fields included in the block, so only these are accepted when submitted.
+		$custom_field_keys = array();
+		foreach ( $parser->xpath->query( './/*[starts-with(@name, "convertkit[custom_fields][")]', $form ) as $field ) {
+			$custom_field_keys[] = substr( $field->getAttribute( 'name' ), 26, -1 ); // @phpstan-ignore-line
+		}
+		$fields['convertkit[custom_field_keys]'] = implode( ',', array_unique( $custom_field_keys ) );
+
+		// Sign the block's settings, so they can't be changed when submitted.
+		$fields['convertkit[signature]'] = $this->get_signature(
+			array(
+				'post_id'           => $fields['convertkit[post_id]'],
+				'store_entries'     => $fields['convertkit[store_entries]'],
+				'redirect'          => $fields['convertkit[redirect]'],
+				'form_id'           => $fields['convertkit[form_id]'],
+				'tag_id'            => $fields['convertkit[tag_id]'],
+				'sequence_id'       => $fields['convertkit[sequence_id]'],
+				'custom_field_keys' => $fields['convertkit[custom_field_keys]'],
+			)
+		);
 		foreach ( $fields as $name => $value ) {
 			$hidden = $parser->html->createElement( 'input' );
 			$hidden->setAttribute( 'type', 'hidden' );
@@ -950,8 +992,74 @@ class ConvertKit_Block_Form_Builder extends ConvertKit_Block {
 			return get_permalink( $post_id );
 		}
 
-		// Remove the subscriber ID, which is only used when visiting a link from a Kit email.
-		return remove_query_arg( 'ck_subscriber_id', esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+		// Remove the subscriber ID, which is only used when visiting a link from a Kit email, and the subscribed parameter.
+		return remove_query_arg( array( 'ck_subscriber_id', $this->subscribed_query_arg ), esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+
+	}
+
+	/**
+	 * Returns the signature for the given block settings.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   array $settings   Block settings, as output in the form's hidden fields.
+	 * @return  string
+	 */
+	private function get_signature( $settings ) {
+
+		return hash_hmac( 'sha256', 'convertkit_block_form_builder_' . wp_json_encode( array_map( 'strval', $settings ) ), wp_salt() );
+
+	}
+
+	/**
+	 * Returns whether the submitted block settings match their signature.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   array $form_data  Unsanitized form data.
+	 * @return  bool
+	 */
+	private function verify_signature( $form_data ) {
+
+		// Bail if no signature was submitted e.g. a cached page from an older version.
+		if ( ! array_key_exists( 'signature', $form_data ) || ! is_string( $form_data['signature'] ) ) {
+			return false;
+		}
+
+		// Build the settings that were signed, using the submitted values.
+		$settings = array();
+		foreach ( array( 'post_id', 'store_entries', 'redirect', 'form_id', 'tag_id', 'sequence_id', 'custom_field_keys' ) as $key ) {
+			if ( ! array_key_exists( $key, $form_data ) || ! is_string( $form_data[ $key ] ) ) {
+				return false;
+			}
+
+			$settings[ $key ] = $form_data[ $key ];
+		}
+
+		return hash_equals( $this->get_signature( $settings ), $form_data['signature'] );
+
+	}
+
+	/**
+	 * Returns whether the visitor was redirected after subscribing using this block,
+	 * so the subscribed message is displayed.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @return  bool
+	 */
+	private function subscribed_using_block() {
+
+		// Bail if the visitor wasn't redirected after subscribing.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET[ $this->subscribed_query_arg ] ) ) {
+			return false;
+		}
+
+		// If no block index was submitted (e.g. a cached page from an older version), display it on all blocks.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$block_index = absint( $_GET[ $this->subscribed_query_arg ] );
+		return ! $block_index || $block_index === $this->render_count;
 
 	}
 

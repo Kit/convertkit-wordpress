@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kit (formerly ConvertKit) 3.5.2\n"
+"Project-Id-Version: Kit (formerly ConvertKit) 3.5.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertkit\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T00:44:33+00:00\n"
+"POT-Creation-Date: 2026-11-20T02:41:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convertkit\n"
@@ -43,7 +43,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:72
 #: includes/blocks/class-convertkit-block-form-builder-field-email.php:108
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:90
-#: includes/blocks/class-convertkit-block-form-builder.php:423
+#: includes/blocks/class-convertkit-block-form-builder.php:443
 #: includes/blocks/class-convertkit-block-form-trigger.php:121
 #: includes/blocks/class-convertkit-block-form.php:152
 #: includes/blocks/class-convertkit-block-member-content-login.php:120
@@ -548,7 +548,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-broadcasts.php:488
 #: includes/blocks/class-convertkit-block-content.php:160
 #: includes/blocks/class-convertkit-block-form-builder-field.php:245
-#: includes/blocks/class-convertkit-block-form-builder.php:681
+#: includes/blocks/class-convertkit-block-form-builder.php:701
 #: includes/blocks/class-convertkit-block-form-trigger.php:311
 #: includes/blocks/class-convertkit-block-form.php:337
 #: includes/blocks/class-convertkit-block-member-content-login.php:279
@@ -1327,11 +1327,11 @@ msgstr ""
 msgid "Newsletter forms migrated successfully."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-tools.php:394
+#: admin/section/class-convertkit-admin-section-tools.php:399
 msgid "Tools to help you manage Kit on your site."
 msgstr ""
 
-#: admin/section/class-convertkit-admin-section-tools.php:422
+#: admin/section/class-convertkit-admin-section-tools.php:427
 msgid "WordPress 5.2 or higher is required for system information report."
 msgstr ""
 
@@ -1452,7 +1452,7 @@ msgid "Displays a modal, sticky bar or slide in form to display when the link is
 msgstr ""
 
 #: includes/block-formatters/class-convertkit-block-formatter-form-link.php:143
-#: includes/blocks/class-convertkit-block-form-builder.php:648
+#: includes/blocks/class-convertkit-block-form-builder.php:668
 #: includes/blocks/class-convertkit-block-form-trigger.php:122
 #: includes/blocks/class-convertkit-block-form-trigger.php:272
 #: includes/blocks/class-convertkit-block-form.php:153
@@ -1511,7 +1511,7 @@ msgstr ""
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:71
 #: includes/blocks/class-convertkit-block-form-builder-field-email.php:107
 #: includes/blocks/class-convertkit-block-form-builder-field-name.php:89
-#: includes/blocks/class-convertkit-block-form-builder.php:422
+#: includes/blocks/class-convertkit-block-form-builder.php:442
 #: includes/blocks/class-convertkit-block-form-trigger.php:120
 #: includes/blocks/class-convertkit-block-form.php:151
 #: includes/blocks/class-convertkit-block-member-content-login.php:119
@@ -1524,7 +1524,7 @@ msgid "Posts"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-broadcasts.php:245
-#: includes/blocks/class-convertkit-block-form-builder.php:462
+#: includes/blocks/class-convertkit-block-form-builder.php:482
 #: includes/blocks/class-convertkit-block-form-trigger.php:145
 #: includes/blocks/class-convertkit-block-form.php:176
 #: includes/blocks/class-convertkit-block-member-content-login.php:142
@@ -1533,7 +1533,7 @@ msgid "Not connected to Kit."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-broadcasts.php:247
-#: includes/blocks/class-convertkit-block-form-builder.php:464
+#: includes/blocks/class-convertkit-block-form-builder.php:484
 #: includes/blocks/class-convertkit-block-form-trigger.php:147
 #: includes/blocks/class-convertkit-block-form.php:178
 #: includes/blocks/class-convertkit-block-member-content-login.php:144
@@ -1681,7 +1681,7 @@ msgid "Content"
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-content.php:141
-#: includes/blocks/class-convertkit-block-form-builder.php:655
+#: includes/blocks/class-convertkit-block-form-builder.php:675
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:88
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:75
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:72
@@ -1721,7 +1721,7 @@ msgid "The type of field to display."
 msgstr ""
 
 #: includes/blocks/class-convertkit-block-form-builder-field-custom.php:144
-#: includes/blocks/class-convertkit-block-form-builder.php:639
+#: includes/blocks/class-convertkit-block-form-builder.php:659
 msgid "Text"
 msgstr ""
 
@@ -1785,82 +1785,86 @@ msgstr ""
 msgid "Whether the field is required."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:133
+#: includes/blocks/class-convertkit-block-form-builder.php:140
+msgid "Sorry, we were unable to subscribe you. Please refresh the page and try again."
+msgstr ""
+
+#: includes/blocks/class-convertkit-block-form-builder.php:153
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:170
+#: includes/blocks/class-convertkit-block-form-builder.php:193
 msgid "Plugin Access Token not configured"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:177
+#: includes/blocks/class-convertkit-block-form-builder.php:200
 msgid "Sorry, we were unable to subscribe you. Please try again later."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:389
+#: includes/blocks/class-convertkit-block-form-builder.php:409
 msgid "Kit Form Builder"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:418
+#: includes/blocks/class-convertkit-block-form-builder.php:438
 msgid "Build a subscription form with Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:424
+#: includes/blocks/class-convertkit-block-form-builder.php:444
 msgid "Form Builder"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:465
+#: includes/blocks/class-convertkit-block-form-builder.php:485
 msgid "Connect your Kit account at Settings > Kit, and then refresh this page to configure this block."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:624
+#: includes/blocks/class-convertkit-block-form-builder.php:644
 msgid "Redirect"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:626
+#: includes/blocks/class-convertkit-block-form-builder.php:646
 msgid "The URL to redirect to after the visitor subscribes. If not specified, the visitor will remain on the current page."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:629
+#: includes/blocks/class-convertkit-block-form-builder.php:649
 msgid "Store form submissions"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:631
+#: includes/blocks/class-convertkit-block-form-builder.php:651
 msgid "If enabled, stores copies of form submissions in the WordPress database. Submissions are always sent to Kit."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:634
+#: includes/blocks/class-convertkit-block-form-builder.php:654
 msgid "Display form"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:636
+#: includes/blocks/class-convertkit-block-form-builder.php:656
 msgid "If enabled, displays the form if the visitor is already subscribed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:641
+#: includes/blocks/class-convertkit-block-form-builder.php:661
 msgid "The text to display if the visitor is already subscribed."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:650
+#: includes/blocks/class-convertkit-block-form-builder.php:670
 msgid "The Kit form to add the subscriber to. Useful if you want to send an incentive email."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:657
+#: includes/blocks/class-convertkit-block-form-builder.php:677
 msgid "The Kit tag to add the subscriber to."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:661
+#: includes/blocks/class-convertkit-block-form-builder.php:681
 #: includes/integrations/contactform7/class-convertkit-contactform7-admin-section.php:90
 #: includes/integrations/forminator/class-convertkit-forminator-admin-section.php:77
 #: includes/integrations/wishlist/class-convertkit-wishlist-admin-section.php:74
 msgid "Sequence"
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:663
+#: includes/blocks/class-convertkit-block-form-builder.php:683
 msgid "The Kit sequence to add the subscriber to."
 msgstr ""
 
-#: includes/blocks/class-convertkit-block-form-builder.php:712
+#: includes/blocks/class-convertkit-block-form-builder.php:732
 msgid "Thanks for subscribing!"
 msgstr ""
 

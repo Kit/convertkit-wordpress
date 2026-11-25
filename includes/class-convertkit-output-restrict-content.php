@@ -117,6 +117,16 @@ class ConvertKit_Output_Restrict_Content {
 	private $profiles = array();
 
 	/**
+	 * Holds the content previews of restricted Posts displayed by the Latest Posts block being rendered,
+	 * keyed by Post ID. False when a Latest Posts block isn't being rendered.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @var     bool|array
+	 */
+	private $latest_posts_previews = false;
+
+	/**
 	 * Constructor. Registers actions and filters to possibly limit output of a Page/Post/CPT's
 	 * content on the frontend site.
 	 *
@@ -135,7 +145,9 @@ class ConvertKit_Output_Restrict_Content {
 		add_action( 'wp', array( $this, 'register_content_filter' ), 5 );
 		add_action( 'admin_init', array( $this, 'register_ajax_content_filter' ) );
 		add_action( 'template_redirect', array( $this, 'maybe_restrict_attachment' ), 1 );
+		add_filter( 'oembed_response_data', array( $this, 'maybe_restrict_oembed_attachment' ), 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'maybe_exclude_restricted_search_results' ) );
+		add_filter( 'render_block_data', array( $this, 'maybe_restrict_latest_posts_block' ) );
 		add_filter( 'posts_where', array( $this, 'maybe_exclude_restricted_search_results_where' ), 10, 2 );
 		add_filter( 'get_previous_post_where', array( $this, 'maybe_change_previous_post_where_clause' ), 10, 5 );
 		add_filter( 'get_next_post_where', array( $this, 'maybe_change_next_post_where_clause' ), 10, 5 );
@@ -449,10 +461,13 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Sanitize inputs.
-		$email               = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
-		$this->resource_type = ( array_key_exists( 'convertkit_resource_type', $_REQUEST ) ? sanitize_text_field( wp_unslash( $_REQUEST['convertkit_resource_type'] ) ) : '' );
-		$this->resource_id   = ( array_key_exists( 'convertkit_resource_id', $_REQUEST ) ? absint( $_REQUEST['convertkit_resource_id'] ) : 0 );
-		$this->post_id       = absint( $_REQUEST['convertkit_post_id'] );
+		$email         = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
+		$this->post_id = absint( $_REQUEST['convertkit_post_id'] );
+
+		// Get the resource type and ID from the Post's settings, not the request, so the subscriber
+		// can only be tagged with the Tag the Post is restricted to.
+		$this->resource_type = $this->get_resource_type();
+		$this->resource_id   = $this->get_resource_id();
 
 		// If Restrict Content is by tag, tag the subscriber.
 		if ( $this->resource_type === 'tag' ) {
@@ -914,6 +929,37 @@ class ConvertKit_Output_Restrict_Content {
 		status_header( 404 );
 		nocache_headers();
 
+		// Remove the attachment, and stop a feed or embed template from rendering it, as set_404() keeps the feed flag.
+		$wp_query->posts           = array();
+		$wp_query->post_count      = 0;
+		$wp_query->post            = null;
+		$wp_query->is_feed         = false;
+		$wp_query->is_comment_feed = false;
+		$wp_query->is_embed        = false;
+		$GLOBALS['post']           = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+	}
+
+	/**
+	 * Removes an attachment's oEmbed response, if it's attached to a Post that is restricted
+	 * and the visitor cannot view it, so its file URL isn't disclosed.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   array|false $data   oEmbed response data.
+	 * @param   WP_Post     $post   Post.
+	 * @return  array|false
+	 */
+	public function maybe_restrict_oembed_attachment( $data, $post ) {
+
+		// Bail if this isn't an attachment, or the visitor can view it.
+		if ( 'attachment' !== $post->post_type || $this->can_view_attachment( $post ) ) {
+			return $data;
+		}
+
+		// Return no data, so WordPress returns a 404.
+		return false;
+
 	}
 
 	/**
@@ -1025,13 +1071,8 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function search_terms_match_visible_content( $post, $search ) {
 
-		// Use the content before the Read More tag as the preview, or the start of the content if no tag exists, as
-		// WordPress does when generating an excerpt.
-		$content_breakdown = get_extended( $post->post_content );
-		$preview           = ! empty( $content_breakdown['extended'] ) ? $content_breakdown['main'] : wp_trim_words( strip_shortcodes( $post->post_content ), apply_filters( 'excerpt_length', 55 ), '' );
-
-		// Build the content the visitor can see.
-		$visible_content = wp_strip_all_tags( $post->post_title . ' ' . $post->post_excerpt . ' ' . $preview );
+		// Build the content the visitor can see, using the same preview that's displayed to visitors.
+		$visible_content = wp_strip_all_tags( $post->post_title . ' ' . $post->post_excerpt . ' ' . $this->get_search_content_preview( $post ) );
 
 		// Split the search into terms, removing quotes, as WordPress does.
 		preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search, $matches );
@@ -1042,6 +1083,210 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		return true;
+
+	}
+
+	/**
+	 * Returns the content preview displayed to visitors who can't view the given restricted Post,
+	 * matching get_content_preview(), so search results can't reveal any other restricted content.
+	 *
+	 * The Post's content isn't rendered, as this runs before the search query.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   WP_Post $post   Post.
+	 * @return  string
+	 */
+	private function get_search_content_preview( $post ) {
+
+		// Only the first page of a paginated Post is previewed.
+		$content           = explode( '<!--nextpage-->', $post->post_content )[0];
+		$content_breakdown = get_extended( $content );
+
+		if ( ! empty( $content_breakdown['extended'] ) ) {
+			// The content before the Read More tag is the preview, unless the teaser is hidden.
+			$preview = ( strpos( $content, '<!--noteaser-->' ) !== false ) ? '' : $content_breakdown['main'];
+		} elseif ( has_excerpt( $post ) ) {
+			// The manual excerpt is the preview, which is already included in the visible content.
+			$preview = '';
+		} else {
+			// The excerpt WordPress generates from the content is the preview, built as wp_trim_excerpt() does.
+			$preview = excerpt_remove_blocks( strip_shortcodes( $content ) );
+			if ( function_exists( 'excerpt_remove_footnotes' ) ) {
+				$preview = excerpt_remove_footnotes( $preview );
+			}
+			$preview = wp_trim_words( $preview, (int) apply_filters( 'excerpt_length', 55 ), '' );
+		}
+
+		/**
+		 * Define the output for the content preview when the visitor is not
+		 * an authenticated subscriber.
+		 *
+		 * @since   2.4.1
+		 *
+		 * @param   string  $preview    Content preview.
+		 * @param   int     $post_id    Post ID.
+		 */
+		return apply_filters( 'convertkit_output_restrict_content_content_preview', $preview, $post->ID );
+
+	}
+
+	/**
+	 * Restricts the content of restricted Posts displayed by the Latest Posts block, which WordPress
+	 * displays without the_content filter.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   array $parsed_block   Block.
+	 * @return  array
+	 */
+	public function maybe_restrict_latest_posts_block( $parsed_block ) {
+
+		// Bail if this isn't a Latest Posts block displaying the content or excerpt of Posts.
+		if ( 'core/latest-posts' !== $parsed_block['blockName'] || empty( $parsed_block['attrs']['displayPostContent'] ) ) {
+			return $parsed_block;
+		}
+
+		// Replace the content of restricted Posts the block queries until the block is rendered.
+		$this->latest_posts_previews = array();
+		add_action( 'pre_get_posts', array( $this, 'latest_posts_disable_cache' ) );
+		add_filter( 'the_posts', array( $this, 'restrict_latest_posts' ) );
+		add_filter( 'pre_render_block', array( $this, 'restrict_latest_posts_full_content' ), 10, 3 );
+		add_filter( 'render_block', array( $this, 'latest_posts_block_rendered' ), 10, 2 );
+
+		return $parsed_block;
+
+	}
+
+	/**
+	 * Disables caching of the Posts queried by the Latest Posts block, as restricted Posts' content
+	 * is replaced with the content preview.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   WP_Query $query  Query.
+	 */
+	public function latest_posts_disable_cache( $query ) {
+
+		remove_action( 'pre_get_posts', array( $this, 'latest_posts_disable_cache' ) );
+		$query->set( 'cache_results', false );
+
+	}
+
+	/**
+	 * Replaces the content of restricted Posts queried by the Latest Posts block with the content preview,
+	 * if the visitor can't view them.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   WP_Post[] $posts  Posts.
+	 * @return  WP_Post[]
+	 */
+	public function restrict_latest_posts( $posts ) {
+
+		remove_filter( 'the_posts', array( $this, 'restrict_latest_posts' ) );
+
+		foreach ( $posts as $index => $post ) {
+			// Skip Posts the visitor can view.
+			if ( $this->can_view_post( $post->ID ) ) {
+				continue;
+			}
+
+			// Use a copy of the Post, so the content preview isn't used elsewhere.
+			$this->latest_posts_previews[ $post->ID ] = $this->get_post_content_preview( $post );
+			$posts[ $index ]                          = clone $post;
+			$posts[ $index ]->post_content            = $this->latest_posts_previews[ $post->ID ];
+		}
+
+		return $posts;
+
+	}
+
+	/**
+	 * Outputs the content preview in place of a restricted Post's full content in the Latest Posts block,
+	 * as WordPress 7.1 and later fetch the Post's content again to render its blocks.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   string|null   $pre_render     Block output.
+	 * @param   array         $parsed_block   Block.
+	 * @param   WP_Block|null $parent_block   Parent block.
+	 * @return  string|null
+	 */
+	public function restrict_latest_posts_full_content( $pre_render, $parsed_block, $parent_block = null ) {
+
+		// Bail if this isn't a top level block of a restricted Post's content.
+		$post_id = get_the_ID();
+		if ( ! is_null( $parent_block ) || ! isset( $this->latest_posts_previews[ $post_id ] ) ) {
+			return $pre_render;
+		}
+
+		// Output the content preview in place of the first block, and nothing for the remaining blocks.
+		$preview                                 = $this->latest_posts_previews[ $post_id ];
+		$this->latest_posts_previews[ $post_id ] = '';
+		return $preview;
+
+	}
+
+	/**
+	 * Stops restricting Posts queried by the Latest Posts block once it's rendered.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   string $block_content  Block output.
+	 * @param   array  $parsed_block   Block.
+	 * @return  string
+	 */
+	public function latest_posts_block_rendered( $block_content, $parsed_block ) {
+
+		// Bail if this isn't the Latest Posts block.
+		if ( 'core/latest-posts' !== $parsed_block['blockName'] ) {
+			return $block_content;
+		}
+
+		remove_action( 'pre_get_posts', array( $this, 'latest_posts_disable_cache' ) );
+		remove_filter( 'the_posts', array( $this, 'restrict_latest_posts' ) );
+		remove_filter( 'pre_render_block', array( $this, 'restrict_latest_posts_full_content' ) );
+		remove_filter( 'render_block', array( $this, 'latest_posts_block_rendered' ) );
+		$this->latest_posts_previews = false;
+
+		return $block_content;
+
+	}
+
+	/**
+	 * Returns the content preview displayed to visitors who can't view the given restricted Post,
+	 * without using the_content filter.
+	 *
+	 * @since   3.5.3
+	 *
+	 * @param   WP_Post $post   Post.
+	 * @return  string
+	 */
+	private function get_post_content_preview( $post ) {
+
+		// Only the first page of a paginated Post is previewed.
+		$content           = explode( '<!--nextpage-->', $post->post_content )[0];
+		$content_breakdown = get_extended( $content );
+
+		if ( ! empty( $content_breakdown['extended'] ) ) {
+			// The content before the Read More tag is the preview, unless the teaser is hidden.
+			$preview = ( strpos( $content, '<!--noteaser-->' ) !== false ) ? '' : do_shortcode( has_blocks( $content_breakdown['main'] ) ? do_blocks( $content_breakdown['main'] ) : wpautop( $content_breakdown['main'] ) );
+		} else {
+			// The excerpt is the preview.
+			$preview = $this->get_excerpt( $post->ID );
+		}
+
+		/**
+		 * Define the output for the content preview when the visitor is not
+		 * an authenticated subscriber.
+		 *
+		 * @since   2.4.1
+		 *
+		 * @param   string  $preview    Content preview.
+		 * @param   int     $post_id    Post ID.
+		 */
+		return apply_filters( 'convertkit_output_restrict_content_content_preview', $preview, $post->ID );
 
 	}
 
@@ -1157,6 +1402,11 @@ class ConvertKit_Output_Restrict_Content {
 	 * @return  string              Post Content with content restricted/not restricted
 	 */
 	public function maybe_restrict_content( $content ) {
+
+		// Bail if rendering the Latest Posts block, as restricted Posts' content is already the content preview.
+		if ( false !== $this->latest_posts_previews ) {
+			return $content;
+		}
 
 		// Restrict content in archives, such as the blog, categories and search results.
 		// Feeds are handled by maybe_restrict_content_preview().
@@ -1914,7 +2164,12 @@ class ConvertKit_Output_Restrict_Content {
 	 */
 	private function get_content_preview( $content ) {
 
-		global $post;
+		global $post, $page;
+
+		// Don't display a preview on the second and later pages of a paginated Post, as their content is restricted.
+		if ( $page > 1 ) {
+			return '';
+		}
 
 		// Check if the content contains a <!--more--> tag, which the editor might have placed
 		// in the content through WordPress' Classic Editor.
@@ -1959,8 +2214,23 @@ class ConvertKit_Output_Restrict_Content {
 		// will invoke the Post's content to build an excerpt, resulting in an infinite loop.
 		$filter_removed = remove_filter( 'the_content', array( $this, 'maybe_restrict_content' ) );
 
+		// Remove excerpt lengths set by blocks, such as Latest Posts and Post Excerpt, so the preview is never longer than on the Post.
+		$removed_excerpt_lengths = array();
+		foreach ( array( 'block_core_latest_posts_get_excerpt_length', 'block_core_post_excerpt_excerpt_length' ) as $callback ) {
+			$priority = has_filter( 'excerpt_length', $callback );
+			if ( false !== $priority ) {
+				remove_filter( 'excerpt_length', $callback, $priority );
+				$removed_excerpt_lengths[ $callback ] = $priority;
+			}
+		}
+
 		// Generate the Post's excerpt.
 		$excerpt = get_the_excerpt( $post_id );
+
+		// Restore the excerpt lengths set by blocks.
+		foreach ( $removed_excerpt_lengths as $callback => $priority ) {
+			add_filter( 'excerpt_length', $callback, $priority );
+		}
 
 		// Restore the filter if it was registered e.g. not in a REST API request, so other functions and Plugins aren't affected.
 		if ( $filter_removed ) {
