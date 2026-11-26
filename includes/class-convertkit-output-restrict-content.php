@@ -202,7 +202,7 @@ class ConvertKit_Output_Restrict_Content {
 							return is_string( $param );
 
 						},
-						'sanitize_callback' => 'sanitize_text_field',
+						'sanitize_callback' => 'sanitize_key',
 					),
 
 					// Resource ID: Validate resource ID is an integer, if included in the request.
@@ -341,7 +341,7 @@ class ConvertKit_Output_Restrict_Content {
 							return is_string( $param );
 
 						},
-						'sanitize_callback' => 'sanitize_text_field',
+						'sanitize_callback' => 'sanitize_key',
 					),
 
 					// Subscriber Code: Validate subscriber code is included in the request and is a string.
@@ -352,7 +352,7 @@ class ConvertKit_Output_Restrict_Content {
 							return is_string( $param );
 
 						},
-						'sanitize_callback' => 'sanitize_text_field',
+						'sanitize_callback' => 'sanitize_key',
 					),
 				),
 				'callback'            => function ( $request ) {
@@ -461,7 +461,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Sanitize inputs.
-		$email         = sanitize_text_field( wp_unslash( $_REQUEST['convertkit_email'] ) );
+		$email         = sanitize_email( wp_unslash( $_REQUEST['convertkit_email'] ) );
 		$this->post_id = absint( $_REQUEST['convertkit_post_id'] );
 
 		// Get the resource type and ID from the Post's settings, not the request, so the subscriber
@@ -550,7 +550,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Store the token so it's included in the subscriber code form if verification fails.
-		$this->token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
+		$this->token = sanitize_key( wp_unslash( $_REQUEST['token'] ) );
 
 		// Store the post ID if this is an AJAX request.
 		// This won't be included if clicking the link in the magic link email, so fall back to using
@@ -562,7 +562,7 @@ class ConvertKit_Output_Restrict_Content {
 		}
 
 		// Run subscriber verification.
-		$subscriber_id = $this->subscriber_authentication_verify( $this->post_id, sanitize_text_field( wp_unslash( $_REQUEST['token'] ) ), sanitize_text_field( wp_unslash( $_REQUEST['subscriber_code'] ) ) );
+		$subscriber_id = $this->subscriber_authentication_verify( $this->post_id, $this->token, sanitize_key( wp_unslash( $_REQUEST['subscriber_code'] ) ) );
 
 		// Bail if an error occurred.
 		if ( is_wp_error( $subscriber_id ) ) {
