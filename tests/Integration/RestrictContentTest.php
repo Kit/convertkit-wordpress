@@ -398,6 +398,74 @@ class RestrictContentTest extends WPTestCase
 	}
 
 	/**
+	 * Test that an attachment's feed and embed don't display the attachment when it's attached to a restricted Post.
+	 *
+	 * @since   3.5.4
+	 */
+	public function testAttachmentFeedAndEmbedNotDisplayedWhenAttachedToRestrictedPost()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+
+		// Create an attachment attached to a restricted Post.
+		$this->createRestrictedPostAndLoad();
+		$attachment_id = static::factory()->attachment->create(
+			[
+				'file'           => 'member-content.pdf',
+				'post_parent'    => get_the_ID(),
+				'post_mime_type' => 'application/pdf',
+			]
+		);
+
+		// Confirm the attachment's feed and embed display a 404, without the attachment.
+		foreach ( [ add_query_arg('feed', 'rss2', get_permalink($attachment_id)), get_post_embed_url($attachment_id) ] as $url ) {
+			$this->go_to($url);
+			$this->resource->initialize_classes();
+			$this->resource->maybe_restrict_attachment();
+			$this->assertTrue(is_404());
+			$this->assertFalse(is_feed());
+			$this->assertFalse(is_embed());
+			$this->assertFalse(have_posts());
+		}
+	}
+
+	/**
+	 * Test that an attachment's oEmbed response is empty when it's attached to a restricted Post,
+	 * and returned when it's attached to an unrestricted Post.
+	 *
+	 * @since   3.5.4
+	 */
+	public function testAttachmentOEmbedNotReturnedWhenAttachedToRestrictedPost()
+	{
+		// Store Credentials and the Product in Plugin's settings.
+		$this->storeCredentials();
+		$this->storeProduct();
+		WP_ConvertKit()->get_class('output_restrict_content')->initialize_classes();
+		$this->resource->initialize_classes();
+
+		// Create attachments attached to a restricted and an unrestricted Post.
+		$restricted_attachment_id   = static::factory()->attachment->create(
+			[
+				'file'           => 'member-content.pdf',
+				'post_parent'    => $this->createRestrictedPost('<p>Memberonlyword</p>'),
+				'post_mime_type' => 'application/pdf',
+			]
+		);
+		$unrestricted_attachment_id = static::factory()->attachment->create(
+			[
+				'file'           => 'public-content.pdf',
+				'post_parent'    => static::factory()->post->create(),
+				'post_mime_type' => 'application/pdf',
+			]
+		);
+
+		// Confirm only the unrestricted attachment's oEmbed response is returned.
+		$this->assertFalse(get_oembed_response_data($restricted_attachment_id, 600));
+		$this->assertIsArray(get_oembed_response_data($unrestricted_attachment_id, 600));
+	}
+
+	/**
 	 * Test that a frontend search doesn't return a restricted Post when the search only matches
 	 * its restricted content, and only displays the content preview when it does return it.
 	 *
