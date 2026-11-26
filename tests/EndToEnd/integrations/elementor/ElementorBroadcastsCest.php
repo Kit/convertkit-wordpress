@@ -352,15 +352,28 @@ class ElementorBroadcastsCest
 		// Confirm that our stylesheet loaded.
 		$I->seeInSource('<link rel="stylesheet" id="convertkit-frontend-css" href="' . $_ENV['WORDPRESS_URL'] . '/wp-content/plugins/convertkit/resources/frontend/css/frontend.css');
 
-		// Confirm that the chosen colors are applied as CSS styles.
-		$I->seeInSource('<div class="convertkit-broadcasts" style="color:' . $textColor . ';background-color:' . $backgroundColor . '"');
-		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
+		// Confirm that Elementor applies the colors.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: '.convertkit-broadcasts',
+			textColor: $textColor,
+			backgroundColor: $backgroundColor
+		);
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: '.convertkit-broadcasts a',
+			textColor: $linkColor
+		);
 
 		// Test pagination.
 		$I->testBroadcastsPagination($I, 'Older', 'Newer');
 
-		// Confirm that link styles are still applied to refreshed data.
-		$I->seeInSource('<a href="' . $_ENV['CONVERTKIT_API_BROADCAST_FIRST_URL'] . '?utm_source=wordpress&amp;utm_term=en_US&amp;utm_content=convertkit" target="_blank" rel="nofollow noopener" style="color:' . $linkColor . '"');
+		// Confirm that the link color is still applied to refreshed data.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: '.convertkit-broadcasts a',
+			textColor: $linkColor
+		);
 	}
 
 	/**
