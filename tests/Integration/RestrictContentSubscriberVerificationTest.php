@@ -8,7 +8,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  * Tests the Member Content subscriber verification request, when the token and subscriber code
  * are in the request e.g. clicking the link in the email.
  *
- * @since   3.5.4
+ * @since   3.5.5
  */
 class RestrictContentSubscriberVerificationTest extends WPTestCase
 {
@@ -22,7 +22,7 @@ class RestrictContentSubscriberVerificationTest extends WPTestCase
 	/**
 	 * Holds the number of times the test shortcode ran.
 	 *
-	 * @since   3.5.4
+	 * @since   3.5.5
 	 *
 	 * @var     int
 	 */
@@ -31,7 +31,7 @@ class RestrictContentSubscriberVerificationTest extends WPTestCase
 	/**
 	 * Performs actions before each test.
 	 *
-	 * @since   3.5.4
+	 * @since   3.5.5
 	 */
 	public function setUp(): void
 	{
@@ -81,7 +81,7 @@ class RestrictContentSubscriberVerificationTest extends WPTestCase
 	/**
 	 * Performs actions after each test.
 	 *
-	 * @since   3.5.4
+	 * @since   3.5.5
 	 */
 	public function tearDown(): void
 	{
@@ -99,7 +99,7 @@ class RestrictContentSubscriberVerificationTest extends WPTestCase
 	 * Test that a shortcode in the request's token isn't run when the subscriber code form
 	 * is displayed in the restricted Post's content.
 	 *
-	 * @since   3.5.4
+	 * @since   3.5.5
 	 */
 	public function testShortcodeInTokenNotRunInContent()
 	{
@@ -141,7 +141,7 @@ class RestrictContentSubscriberVerificationTest extends WPTestCase
 	 * Test that a shortcode in the token is removed from the subscriber code form returned
 	 * by the REST API subscriber verification route.
 	 *
-	 * @since   3.5.4
+	 * @since   3.5.5
 	 */
 	public function testShortcodeInTokenRemovedInRESTAPI()
 	{
@@ -162,7 +162,7 @@ class RestrictContentSubscriberVerificationTest extends WPTestCase
 	/**
 	 * Mocks Kit API requests, returning an error as if the token and subscriber code are invalid.
 	 *
-	 * @since   3.5.4
+	 * @since   3.5.5
 	 *
 	 * @param   false|array $response   Response.
 	 * @param   array       $args       Request arguments.
