@@ -1,3 +1,8 @@
+### 3.5.4 2026-11-26
+* Fix: Member Content: Don't display restricted attachments in feeds, embeds or oEmbed responses
+* Fix: Elementor: Widgets: Output colors using Elementor's styles, supporting Global Colors and the editor's live preview
+* Fix: Blocks: Don't apply another block's classes and styles to shortcodes and page builder widgets
+
 ### 3.5.3 2026-11-20
 * Updated: Subscriber: Set the subscriber ID cookies as HttpOnly, so they can't be read by JavaScript
 * Fix: Form Builder: Don't store the subscriber ID in a cookie, as the email address isn't verified
