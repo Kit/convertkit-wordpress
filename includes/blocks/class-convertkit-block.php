@@ -333,21 +333,8 @@ class ConvertKit_Block {
 	 */
 	public function get_css_classes( $additional_classes = array() ) {
 
-		// To avoid errors in get_block_wrapper_attributes() in non-block themes using the shortcode,
-		// tell WordPress that a block is being rendered.
-		// The attributes don't matter, as we send them to the render() function.
-		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
-			WP_Block_Supports::$block_to_render = array(
-				'blockName'    => 'convertkit/' . $this->get_name(),
-				'attrs'        => array(),
-				'innerBlocks'  => array(),
-				'innerHTML'    => '',
-				'innerContent' => array(),
-			);
-		}
-
 		// Get the block wrapper attributes string.
-		$wrapper_attributes = get_block_wrapper_attributes(
+		$wrapper_attributes = $this->get_block_wrapper_attributes(
 			array(
 				'class' => implode(
 					' ',
@@ -390,24 +377,11 @@ class ConvertKit_Block {
 	 */
 	public function get_css_styles( $atts ) {
 
-		// To avoid errors in get_block_wrapper_attributes() in non-block themes using the shortcode,
-		// tell WordPress that a block is being rendered.
-		// The attributes don't matter, as we send them to the render() function.
-		if ( class_exists( 'WP_Block_Supports' ) && is_null( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
-			WP_Block_Supports::$block_to_render = array(
-				'blockName'    => 'convertkit/' . $this->get_name(),
-				'attrs'        => array(),
-				'innerBlocks'  => array(),
-				'innerHTML'    => '',
-				'innerContent' => array(),
-			);
-		}
-
 		$styles = array();
 
 		// Get the block wrapper attributes string, extracting any styles that the block has set,
 		// such as margin, padding or block spacing.
-		$wrapper_attributes = get_block_wrapper_attributes();
+		$wrapper_attributes = $this->get_block_wrapper_attributes();
 		if ( preg_match( '/style="([^"]*)"/', $wrapper_attributes, $matches ) ) {
 			return array_filter( explode( ';', $matches[1] ) );
 		}
@@ -423,6 +397,66 @@ class ConvertKit_Block {
 		}
 
 		return $styles;
+
+	}
+
+	/**
+	 * Returns the block wrapper attributes for this block.
+	 *
+	 * If another block is being rendered (e.g. Post Content in a block theme, when using
+	 * the shortcode or a page builder module / widget), this block is used instead, so the
+	 * other block's classes and styles aren't applied to this block.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   array $extra_attributes   Extra attributes to render on the block wrapper.
+	 * @return  string
+	 */
+	private function get_block_wrapper_attributes( $extra_attributes = array() ) {
+
+		// Bail if WordPress doesn't support block wrapper attributes.
+		if ( ! class_exists( 'WP_Block_Supports' ) ) {
+			return '';
+		}
+
+		// Bail if WordPress is rendering this block.
+		if ( $this->is_rendering_block() ) {
+			return get_block_wrapper_attributes( $extra_attributes );
+		}
+
+		// Tell WordPress this block is being rendered, restoring the block being rendered (if any) after.
+		// The attributes don't matter, as we send them to the render() function.
+		$block_to_render                    = WP_Block_Supports::$block_to_render; // @phpstan-ignore-line
+		WP_Block_Supports::$block_to_render = array( // @phpstan-ignore-line
+			'blockName'    => 'convertkit/' . $this->get_name(),
+			'attrs'        => array(),
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		);
+		$wrapper_attributes                 = get_block_wrapper_attributes( $extra_attributes );
+		WP_Block_Supports::$block_to_render = $block_to_render; // @phpstan-ignore-line
+
+		return $wrapper_attributes;
+
+	}
+
+	/**
+	 * Determines if WordPress is rendering this block, and not another block
+	 * this block's shortcode or page builder widget is output within.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @return  bool
+	 */
+	private function is_rendering_block() {
+
+		// Bail if no block is being rendered.
+		if ( ! class_exists( 'WP_Block_Supports' ) || ! is_array( WP_Block_Supports::$block_to_render ) ) { // @phpstan-ignore-line
+			return false;
+		}
+
+		return isset( WP_Block_Supports::$block_to_render['blockName'] ) && WP_Block_Supports::$block_to_render['blockName'] === 'convertkit/' . $this->get_name(); // @phpstan-ignore-line
 
 	}
 
