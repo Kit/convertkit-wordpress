@@ -107,6 +107,47 @@ class ElementorMemberContentLoginCest
 	}
 
 	/**
+	 * Test the Member Content Login widget's hex colors work when defined.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testMemberContentLoginWidgetWithHexColorParameters(EndToEndTester $I)
+	{
+		// Define colors.
+		$backgroundColor = '#ee1616';
+		$textColor       = '#1212c0';
+
+		// Create Page with Member Content Login widget in Elementor.
+		$pageID = $this->_createPageWithMemberContentLoginWidget(
+			$I,
+			title: 'Kit: Page: Member Content Login: Elementor Widget: Hex Colors',
+			settings: [
+				'background_color' => $backgroundColor,
+				'text_color'       => $textColor,
+			]
+		);
+
+		// Load Page.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm the login form is displayed.
+		$I->seeElementInDOM('input#convertkit_email');
+
+		// Confirm that Elementor applies the colors.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: '.convertkit-login',
+			textColor: $textColor,
+			backgroundColor: $backgroundColor
+		);
+	}
+
+	/**
 	 * Create a Page in the database comprising of Elementor Page Builder data
 	 * containing a Kit Member Content Login widget.
 	 *

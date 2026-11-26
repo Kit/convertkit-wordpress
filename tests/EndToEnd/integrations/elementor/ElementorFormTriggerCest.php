@@ -126,10 +126,109 @@ class ElementorFormTriggerCest
 		$I->seeFormTriggerOutput(
 			$I,
 			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
-			text: 'Subscribe',
+			text: 'Subscribe'
+		);
+
+		// Confirm that Elementor applies the colors.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: 'a.convertkit-formtrigger',
 			textColor: $textColor,
 			backgroundColor: $backgroundColor
 		);
+	}
+
+	/**
+	 * Test the Form Trigger widget's Elementor Global Colors work when defined.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormTriggerWidgetWithGlobalColorParameters(EndToEndTester $I)
+	{
+		// Create Page with Form Trigger widget in Elementor, using Elementor's default Primary and Text Global Colors.
+		$pageID = $this->_createPageWithFormTriggerWidget(
+			$I,
+			title: 'Kit: Page: Form Trigger: Elementor Widget: Global Colors',
+			settings: [
+				'form'        => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'text'        => 'Subscribe',
+				'__globals__' => [
+					'background_color' => 'globals/colors?id=primary',
+					'text_color'       => 'globals/colors?id=text',
+				],
+			]
+		);
+
+		// Load Page.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the form trigger button displays.
+		$I->seeFormTriggerOutput(
+			$I,
+			formURL: $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_URL'],
+			text: 'Subscribe'
+		);
+
+		// Confirm that Elementor applies the Global Colors.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: 'a.convertkit-formtrigger',
+			textColor: '#7A7A7A',
+			backgroundColor: '#6EC1E4'
+		);
+	}
+
+	/**
+	 * Test the Form Trigger widget's colors update in the Elementor editor's preview when changed.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testFormTriggerWidgetColorsUpdateInEditor(EndToEndTester $I)
+	{
+		// Create Page with Form Trigger widget in Elementor.
+		$pageID = $this->_createPageWithFormTriggerWidget(
+			$I,
+			title: 'Kit: Page: Form Trigger: Elementor Widget: Editor Colors',
+			settings: [
+				'form'             => $_ENV['CONVERTKIT_API_FORM_FORMAT_MODAL_ID'],
+				'text'             => 'Subscribe',
+				'background_color' => '#ee1616',
+			]
+		);
+
+		// Edit the Page in Elementor.
+		$I->amOnAdminPage('post.php?post=' . $pageID . '&action=elementor');
+
+		// Wait for Elementor to load.
+		$I->waitForElementVisible('#elementor-preview-iframe');
+		$I->waitForElementNotVisible('#elementor-loading');
+
+		// Change the text color, and select the Primary Global Color for the background, as the color controls do.
+		$I->executeJS(
+			'const container = elementor.getContainer("a73a906");
+			$e.run("panel/editor/open", { model: container.model, view: container.view });
+			$e.run("document/elements/settings", { container: container, settings: { text_color: "#1212c0" } });
+			$e.run("document/globals/enable", { container: container, settings: { background_color: "globals/colors?id=primary" } });'
+		);
+
+		// Confirm the preview displays the new colors.
+		$I->switchToIFrame('#elementor-preview-iframe');
+		$I->waitForElementVisible('a.convertkit-formtrigger');
+		$I->wait(2);
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: 'a.convertkit-formtrigger',
+			textColor: '#1212c0',
+			backgroundColor: '#6EC1E4'
+		);
+		$I->switchToIFrame();
 	}
 
 	/**
