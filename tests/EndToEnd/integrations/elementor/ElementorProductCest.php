@@ -122,9 +122,60 @@ class ElementorProductCest
 		$I->seeProductOutput(
 			$I,
 			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
-			text: 'Buy my product',
+			text: 'Buy my product'
+		);
+
+		// Confirm that Elementor applies the colors.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: 'a.convertkit-product',
 			textColor: $textColor,
 			backgroundColor: $backgroundColor
+		);
+	}
+
+	/**
+	 * Test the Product widget's Elementor Global Colors work when defined.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @param   EndToEndTester $I  Tester.
+	 */
+	public function testProductWidgetWithGlobalColorParameters(EndToEndTester $I)
+	{
+		// Create Page with Product widget in Elementor, using Elementor's default Primary and Text Global Colors.
+		$pageID = $this->_createPageWithProductWidget(
+			$I,
+			title: 'Kit: Page: Product: Elementor Widget: Global Colors',
+			settings: [
+				'product'     => $_ENV['CONVERTKIT_API_PRODUCT_ID'],
+				'text'        => 'Buy my product',
+				'__globals__' => [
+					'background_color' => 'globals/colors?id=primary',
+					'text_color'       => 'globals/colors?id=text',
+				],
+			]
+		);
+
+		// Load Page.
+		$I->amOnPage('?p=' . $pageID);
+
+		// Check that no PHP warnings or notices were output.
+		$I->checkNoWarningsAndNoticesOnScreen($I);
+
+		// Confirm that the block displays.
+		$I->seeProductOutput(
+			$I,
+			productURL: $_ENV['CONVERTKIT_API_PRODUCT_URL'],
+			text: 'Buy my product'
+		);
+
+		// Confirm that Elementor applies the Global Colors.
+		$I->seeElementorWidgetColors(
+			$I,
+			selector: 'a.convertkit-product',
+			textColor: '#7A7A7A',
+			backgroundColor: '#6EC1E4'
 		);
 	}
 

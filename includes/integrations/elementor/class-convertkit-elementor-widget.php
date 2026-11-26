@@ -115,10 +115,22 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 	 */
 	protected function register_controls() {
 
-		// Bail if the request is not for the WordPress Administration or frontend editor.
-		if ( ! WP_ConvertKit()->is_admin_or_frontend_editor() ) {
-			return;
+		// Register block controls in the WordPress Administration or frontend editor.
+		if ( WP_ConvertKit()->is_admin_or_frontend_editor() ) {
+			$this->register_block_controls();
 		}
+
+		// Register color controls on all requests, as Elementor uses them to build the widget's CSS.
+		$this->register_color_controls();
+
+	}
+
+	/**
+	 * Registers the block's fields as controls in Elementor's Content tab.
+	 *
+	 * @since   3.5.4
+	 */
+	private function register_block_controls() {
 
 		// Get block.
 		$this->block = $this->get_block();
@@ -130,6 +142,14 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 
 		// Iterate through panels, building a section for each.
 		foreach ( $this->block['panels'] as $panel_name => $panel_properties ) {
+			// Skip fields registered as color controls.
+			$panel_properties['fields'] = array_diff( $panel_properties['fields'], array_keys( $this->get_color_controls() ) );
+
+			// Skip this panel if it has no fields.
+			if ( ! count( $panel_properties['fields'] ) ) {
+				continue;
+			}
+
 			// Start section.
 			$this->start_controls_section(
 				// Deliberately prefix, as if a tab and field have the same name, it won't render.
@@ -156,6 +176,60 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 			$this->end_controls_section();
 
 		}
+
+	}
+
+	/**
+	 * Returns the widget's color controls, keyed by setting name, with each control's
+	 * label and Elementor selectors.
+	 *
+	 * Override in a widget to output its colors as CSS using Elementor's selectors,
+	 * which supports Elementor's Global Colors and the editor's live preview.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @return  array
+	 */
+	protected function get_color_controls() {
+
+		return array();
+
+	}
+
+	/**
+	 * Registers the widget's color controls in Elementor's Style tab.
+	 *
+	 * @since   3.5.4
+	 */
+	private function register_color_controls() {
+
+		$color_controls = $this->get_color_controls();
+
+		// Bail if this widget has no color controls.
+		if ( ! count( $color_controls ) ) {
+			return;
+		}
+
+		$this->start_controls_section(
+			'section_colors',
+			array(
+				'label' => __( 'Colors', 'convertkit' ),
+				'tab'   => Elementor\Controls_Manager::TAB_STYLE,
+			)
+		);
+
+		foreach ( $color_controls as $name => $control ) {
+			$this->add_control(
+				$name,
+				array(
+					'label'     => $control['label'],
+					'type'      => Elementor\Controls_Manager::COLOR,
+					'selectors' => $control['selectors'],
+				)
+			);
+		}
+
+		$this->end_controls_section();
 
 	}
 
@@ -274,7 +348,27 @@ class ConvertKit_Elementor_Widget extends Elementor\Widget_Base {
 
 		// Render using Block class' render() function.
 		// Output is already escaped in render() function.
-		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_for_display() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo WP_ConvertKit()->get_class( 'blocks_convertkit_' . $this->get_block_name() )->render( $this->get_settings_without_color_controls() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	}
+
+	/**
+	 * Returns the widget's settings, with color control values removed, as Elementor
+	 * outputs these as CSS and inline styles would override them.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @return  array
+	 */
+	private function get_settings_without_color_controls() {
+
+		$settings = $this->get_settings_for_display();
+
+		foreach ( array_keys( $this->get_color_controls() ) as $name ) {
+			$settings[ $name ] = '';
+		}
+
+		return $settings;
 
 	}
 

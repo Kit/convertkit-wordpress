@@ -23,4 +23,30 @@ class ConvertKit_Elementor_Widget_Login extends ConvertKit_Elementor_Widget {
 	 */
 	public $slug = 'convertkit-elementor-login';
 
+	/**
+	 * Returns the widget's color controls.
+	 *
+	 * @since   3.5.4
+	 *
+	 * @return  array
+	 */
+	protected function get_color_controls() {
+
+		return array(
+			'background_color' => array(
+				'label'     => __( 'Background color', 'convertkit' ),
+				'selectors' => array(
+					'{{WRAPPER}} #convertkit-restrict-content.convertkit-login' => 'background-color: {{VALUE}};',
+				),
+			),
+			'text_color'       => array(
+				'label'     => __( 'Text color', 'convertkit' ),
+				'selectors' => array(
+					'{{WRAPPER}} #convertkit-restrict-content.convertkit-login' => 'color: {{VALUE}};',
+				),
+			),
+		);
+
+	}
+
 }
