@@ -5,7 +5,7 @@ Tags: email subscribers, email newsletter, email marketing, landing page, member
 Requires at least: 5.6
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 3.5.3
+Stable tag: 3.5.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -364,6 +364,11 @@ Please report security bugs found in the source code of the Kit (formerly Conver
 10. Track growth in email subscribers, newsletter performance, landing page conversions, and membership site analytics in real-time
 
 == Changelog ==
+
+### 3.5.4 2026-11-26
+* Fix: Member Content: Don't display restricted attachments in feeds, embeds or oEmbed responses
+* Fix: Elementor: Widgets: Output colors using Elementor's styles, supporting Global Colors and the editor's live preview
+* Fix: Blocks: Don't apply another block's classes and styles to shortcodes and page builder widgets
 
 ### 3.5.3 2026-11-20
 * Updated: Subscriber: Set the subscriber ID cookies as HttpOnly, so they can't be read by JavaScript
