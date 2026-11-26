@@ -52,6 +52,14 @@ class ConvertKit_Setup {
 		WP_ConvertKit()->get_class( 'broadcasts_webhook' )->maybe_register();
 
 		/**
+		 * 3.5.4: Clear Elementor's CSS cache, so Elementor outputs the colors
+		 * set in Kit widgets, which are no longer output as inline styles.
+		 */
+		if ( $current_version && version_compare( $current_version, '3.5.4', '<' ) ) {
+			$this->clear_elementor_css_cache();
+		}
+
+		/**
 		 * 3.0.4: Add form_id to entries database table.
 		 */
 		if ( version_compare( $current_version, '3.0.4', '<' ) ) {
@@ -140,6 +148,23 @@ class ConvertKit_Setup {
 
 		// Update the installed version number in the options table.
 		update_option( 'convertkit_version', CONVERTKIT_PLUGIN_VERSION );
+
+	}
+
+	/**
+	 * Clears Elementor's CSS cache, if Elementor is active, so each page's
+	 * CSS is rebuilt on its next view.
+	 *
+	 * @since   3.5.4
+	 */
+	private function clear_elementor_css_cache() {
+
+		// Bail if Elementor isn't active and initialized.
+		if ( ! class_exists( '\Elementor\Plugin' ) || ! did_action( 'elementor/init' ) ) {
+			return;
+		}
+
+		\Elementor\Plugin::$instance->files_manager->clear_cache();
 
 	}
 

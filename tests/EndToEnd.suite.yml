@@ -31,6 +31,7 @@ modules:
         - \Tests\Support\Helper\CustomPostType
         - \Tests\Support\Helper\Divi5Theme
         - \Tests\Support\Helper\DiviBuilder
+        - \Tests\Support\Helper\Elementor
         - \Tests\Support\Helper\Email
         - \Tests\Support\Helper\Select2
         - \Tests\Support\Helper\ThirdPartyPlugin
